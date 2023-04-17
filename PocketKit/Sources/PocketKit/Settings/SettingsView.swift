@@ -8,14 +8,9 @@ struct SettingsView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            if #available(iOS 16.0, *) {
-                    SettingsForm(model: model)
-                        .scrollContentBackground(.hidden)
-                        .background(Color(.ui.white1))
-            } else {
-                    SettingsForm(model: model)
-                        .background(Color(.ui.white1))
-            }
+            SettingsForm(model: model)
+                .scrollContentBackground(.hidden)
+                .background(Color(.ui.white1))
         }
         .navigationBarTitle(Localization.settings, displayMode: .large)
         .accessibilityIdentifier("settings")
@@ -51,17 +46,17 @@ struct SettingsForm: View {
                         }
                     SettingsRowButton(title: Localization.termsOfService, icon: SFIconModel("doc.plaintext")) { model.isPresentingTerms.toggle() }
                         .sheet(isPresented: $model.isPresentingTerms) {
-                            SFSafariView(url: LinkedExternalURLS.TermsOfService)
+                            SFSafariView(url: LinkedExternalURLS.TermsOfService, readerMode: true)
                                 .edgesIgnoringSafeArea(.bottom)
                         }
                     SettingsRowButton(title: Localization.privacyPolicy, icon: SFIconModel("doc.plaintext")) { model.isPresentingPrivacy.toggle() }
                         .sheet(isPresented: $model.isPresentingPrivacy) {
-                            SFSafariView(url: LinkedExternalURLS.PrivacyPolicy)
+                            SFSafariView(url: LinkedExternalURLS.PrivacyPolicy, readerMode: true)
                                 .edgesIgnoringSafeArea(.bottom)
                         }
                     SettingsRowButton(title: Localization.Settings.openSourceLicenses, icon: SFIconModel("doc.plaintext")) { model.isPresentingLicenses.toggle() }
                         .sheet(isPresented: $model.isPresentingLicenses) {
-                            SFSafariView(url: LinkedExternalURLS.OpenSourceNotices)
+                            SFSafariView(url: LinkedExternalURLS.OpenSourceNotices, readerMode: true)
                                 .edgesIgnoringSafeArea(.bottom)
                         }
                 }.textCase(nil)
@@ -97,14 +92,10 @@ extension SettingsForm {
     /// Handles top section separator on different versions of iOS
     @ViewBuilder
     private func topSectionWithLeadingDivider() -> some View {
-        if #available(iOS 16.0, *) {
-            topSection()
-                .alignmentGuide(.listRowSeparatorLeading) { _ in
-                    return 0
-                }
-        } else {
-            topSection()
-        }
+        topSection()
+            .alignmentGuide(.listRowSeparatorLeading) { _ in
+                return 0
+            }
     }
     /// Provides the standard top section view
     private func topSection() -> some View {

@@ -34,7 +34,7 @@ class FetchSaves: SyncOperation {
     }
 
     func execute(syncTaskId: NSManagedObjectID) async -> SyncOperationResult {
-        guard let safeSpace = SavedItemSpace(space: space, taskID: syncTaskId) else {
+        guard let safeSpace = DerivedSpace(space: space, taskID: syncTaskId) else {
             return .retry(NoPersistentTaskOperationError())
         }
         self.safeSpace = safeSpace
@@ -47,6 +47,10 @@ class FetchSaves: SyncOperation {
                     // However many states may not come from a user, IE. Instant Sync, Persistent Tasks that never finished, Retries
                     return .success
                 }
+            }
+
+            if lastRefresh.lastRefreshSaves == nil {
+                initialDownloadState.send(.started)
             }
 
             try await fetchSaves()
@@ -130,7 +134,7 @@ class FetchSaves: SyncOperation {
               let cursor = result.data?.user?.savedItems?.pageInfo.endCursor else {
             return
         }
-        try safeSpace.savePage(edges: edges, cursor: cursor)
+        try safeSpace.updateSavedItems(edges: edges, cursor: cursor)
     }
 
     struct PaginationSpec {

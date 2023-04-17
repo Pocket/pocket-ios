@@ -133,6 +133,11 @@
 //General Messages
 "general.oops" = "Errore della ricerca. Riprovare?";
 
+// Tags
+"tags.upsell.tagStoriesFasterThanEver" = "Tagga le storie più velocemente che mai: ottieni i tag più recenti con Pocket Premium.";
+"tags.upsell.getPocketPremium" = "Passa a Pocket Premium";
+"tags.section.recentTags" = "Tag recenti";
+"tags.section.userTags" = "I miei tag";
 
 // Search
 "search.errorMessage" = "Abbiamo rilevato un errore e al momento non possiamo fornirti ciò di cui hai bisogno. Riprova più tardi.";

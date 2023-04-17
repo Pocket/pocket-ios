@@ -2,7 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import Foundation
+import UIKit
 
 struct Keys {
     static let shared = Keys()
@@ -24,6 +24,10 @@ struct Keys {
 
         guard let pocketApiConsumerKey = info["PocketAPIConsumerKey"] as? String else {
             fatalError("Unable to extract PocketApiConsumerKey from main bundle")
+        }
+
+        guard let pocketApiConsumerKeyPad = info["PocketAPIConsumerKeyPad"] as? String else {
+            fatalError("Unable to extract PocketApiConsumerKeyPad from main bundle")
         }
 
         guard let sentryDSN = info["SentryDSN"] as? String else {
@@ -58,7 +62,7 @@ struct Keys {
             fatalError("Unable to extract adjustEventToken from main bundle")
         }
 
-        self.pocketApiConsumerKey = pocketApiConsumerKey
+        self.pocketApiConsumerKey = UIDevice.current.userInterfaceIdiom == .pad ? pocketApiConsumerKeyPad : pocketApiConsumerKey
         self.sentryDSN = sentryDSN
         self.brazeAPIEndpoint = brazeAPIEndpoint
         self.brazeAPIKey = brazeAPIKey

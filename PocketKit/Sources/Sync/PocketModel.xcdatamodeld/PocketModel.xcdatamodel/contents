@@ -11,6 +11,12 @@
         <attribute name="name" optional="YES" attributeType="String"/>
         <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="domainMetadata" inverseEntity="Item"/>
     </entity>
+    <entity name="FeatureFlag" representedClassName="FeatureFlag" syncable="YES" codeGenerationType="class">
+        <attribute name="assigned" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="name" attributeType="String"/>
+        <attribute name="payloadValue" optional="YES" attributeType="String"/>
+        <attribute name="variant" optional="YES" attributeType="String"/>
+    </entity>
     <entity name="Image" representedClassName="Image" syncable="YES" codeGenerationType="class">
         <attribute name="isDownloaded" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="source" optional="YES" attributeType="URI"/>
@@ -33,6 +39,7 @@
         <attribute name="title" optional="YES" attributeType="String"/>
         <attribute name="topImageURL" optional="YES" attributeType="URI"/>
         <attribute name="videoness" optional="YES" attributeType="String"/>
+        <attribute name="wordCount" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="authors" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Author" inverseName="item" inverseEntity="Author"/>
         <relationship name="domainMetadata" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="DomainMetadata" inverseName="item" inverseEntity="DomainMetadata"/>
         <relationship name="images" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Image" inverseName="item" inverseEntity="Image"/>
@@ -101,6 +108,11 @@
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="remoteID" optional="YES" attributeType="String"/>
         <relationship name="savedItems" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="SavedItem" inverseName="tags" inverseEntity="SavedItem"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="remoteID"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
     </entity>
     <entity name="UnresolvedSavedItem" representedClassName="UnresolvedSavedItem" syncable="YES" codeGenerationType="class">
         <relationship name="savedItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SavedItem" inverseName="unresolvedSavedItem" inverseEntity="SavedItem"/>

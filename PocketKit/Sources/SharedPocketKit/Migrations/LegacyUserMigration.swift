@@ -1,7 +1,6 @@
 import Foundation
 
 public enum LegacyUserMigrationError: LoggableError {
-    case missingKey
     case missingStore
     case failedDecryption(Error)
     case missingData
@@ -9,7 +8,6 @@ public enum LegacyUserMigrationError: LoggableError {
 
     public var logDescription: String {
         switch self {
-        case .missingKey: return "Missing decryption key for legacy user migration"
         case .missingStore: return "Missing file for legacy store"
         case .failedDecryption(let error): return "Failed to decrypt store: \(error)"
         case .missingData: return "Data is missing after decrypting store"
@@ -46,11 +44,7 @@ public class LegacyUserMigration {
         self.groupID = groupID
     }
 
-    func decryptUserData() throws -> Data {
-        guard let password = currentPassword else {
-            throw LegacyUserMigrationError.missingKey
-        }
-
+    func decryptUserData(with password: String) throws -> Data {
         let decryptedData: Data?
         do {
             decryptedData = try encryptedStore.decryptStore(securedBy: password)
@@ -83,8 +77,11 @@ public class LegacyUserMigration {
 
     @discardableResult
     public func attemptMigration(migrationWillBegin: () -> Void) throws -> Bool {
+        guard let password = currentPassword else {
+            return false // If no password exists either the user never used v7 or has already migrated.
+        }
 
-        let userData = try decryptUserData()
+        let userData = try decryptUserData(with: password)
         let legacyStore = try getLegacyStore(from: userData)
 
         guard isRequired(version: legacyStore.version) else {
@@ -101,6 +98,7 @@ public class LegacyUserMigration {
         )
 
         updateUserDefaults()
+        NotificationCenter.default.post(name: .userLoggedIn, object: appSession.currentSession)
         return true
     }
 

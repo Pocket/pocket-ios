@@ -11,6 +11,7 @@ class SavedItemViewModelTests: XCTestCase {
     private var dismissTimer: Timer.TimerPublisher!
     private var tracker: MockTracker!
     private var userDefaults: UserDefaults!
+    private var user: MockUser!
     private var consumerKey: String!
     private var space: Space!
 
@@ -20,7 +21,8 @@ class SavedItemViewModelTests: XCTestCase {
         dismissTimer: Timer.TimerPublisher? = nil,
         tracker: Tracker? = nil,
         consumerKey: String? = nil,
-        userDefaults: UserDefaults? = nil
+        userDefaults: UserDefaults? = nil,
+        user: User? = nil
     ) -> SavedItemViewModel {
         SavedItemViewModel(
             appSession: appSession ?? self.appSession,
@@ -28,7 +30,8 @@ class SavedItemViewModelTests: XCTestCase {
             dismissTimer: dismissTimer ?? self.dismissTimer,
             tracker: tracker ?? self.tracker,
             consumerKey: consumerKey ?? self.consumerKey,
-            userDefaults: userDefaults ?? self.userDefaults
+            userDefaults: userDefaults ?? self.userDefaults,
+            user: user ?? self.user
         )
     }
 
@@ -42,6 +45,7 @@ class SavedItemViewModelTests: XCTestCase {
         consumerKey = "test-key"
         space = .testSpace()
         userDefaults = UserDefaults(suiteName: "SavedItemViewModelTests")
+        user = MockUser()
 
         let savedItem = SavedItem(context: space.backgroundContext, url: URL(string: "http://mozilla.com")!)
         saveService.stubSave { _ in .newItem(savedItem) }
@@ -140,6 +144,32 @@ extension SavedItemViewModelTests {
         }
         provider.stubLoadItem { _, _ in
             "https://getpocket.com" as NSSecureCoding
+        }
+
+        let extensionItem = MockExtensionItem(itemProviders: [provider])
+
+        let context = MockExtensionContext(extensionItems: [extensionItem])
+        context.stubCompleteRequest { _, _ in }
+
+        await viewModel.save(from: context)
+        XCTAssertEqual(saveService.saveCall(at: 0)?.url, URL(string: "https://getpocket.com")!)
+    }
+
+    func test_save_withStringContainingURL_sendsCorrectURLToService() async {
+        let appSession = AppSession(keychain: MockKeychain(), groupID: "group.com.ideashower.ReadItLaterPro")
+        appSession.currentSession = Session(
+            guid: "mock-guid",
+            accessToken: "mock-access-token",
+            userIdentifier: "mock-user-identifier"
+        )
+        let viewModel = subject(appSession: appSession)
+
+        let provider = MockItemProvider()
+        provider.stubHasItemConformingToTypeIdentifier { identifier in
+            return identifier == "public.plain-text"
+        }
+        provider.stubLoadItem { _, _ in
+            "Get Pocket https://getpocket.com" as NSSecureCoding
         }
 
         let extensionItem = MockExtensionItem(itemProviders: [provider])
@@ -295,6 +325,7 @@ extension SavedItemViewModelTests {
         saveService.stubRetrieveTags { _ in
             let tag: Tag = Tag(context: self.space.backgroundContext)
             tag.name = "tag 1"
+            tag.remoteID = tag.name?.uppercased()
             return [tag]
         }
         let tags = viewModel.retrieveTags(excluding: [])

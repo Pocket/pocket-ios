@@ -45,6 +45,9 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
     @Published var presentedSearch: Bool?
 
+    @Published
+    var presentedListenViewModel: ListenViewModel?
+
     private let listOptions: ListOptions
 
     var emptyState: EmptyStateViewModel? {
@@ -76,13 +79,14 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     private var subscriptions: [AnyCancellable] = []
     private var store: SubscriptionStore
     private var networkPathMonitor: NetworkPathMonitor
+    private var featureFlags: FeatureFlagServiceProtocol
 
     private var selectedFilters: Set<ItemsListFilter>
     private let availableFilters: [ItemsListFilter]
     private let notificationCenter: NotificationCenter
     private let viewType: SavesViewType
 
-    init(source: Source, tracker: Tracker, viewType: SavesViewType, listOptions: ListOptions, notificationCenter: NotificationCenter, user: User, store: SubscriptionStore, refreshCoordinator: RefreshCoordinator, networkPathMonitor: NetworkPathMonitor, userDefaults: UserDefaults) {
+    init(source: Source, tracker: Tracker, viewType: SavesViewType, listOptions: ListOptions, notificationCenter: NotificationCenter, user: User, store: SubscriptionStore, refreshCoordinator: RefreshCoordinator, networkPathMonitor: NetworkPathMonitor, userDefaults: UserDefaults, featureFlags: FeatureFlagServiceProtocol) {
         self.source = source
         self.refreshCoordinator = refreshCoordinator
         self.tracker = tracker
@@ -94,6 +98,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         self.store = store
         self.networkPathMonitor = networkPathMonitor
         self.userDefaults = userDefaults
+        self.featureFlags = featureFlags
 
         switch self.viewType {
         case .saves:
@@ -134,6 +139,8 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     func fetch() {
         let filters = selectedFilters.compactMap { filter -> NSPredicate? in
             switch filter {
+            case.listen:
+                return nil
             case.search:
                 return nil
             case .favorites:
@@ -143,9 +150,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
                     source: source,
                     tracker: tracker,
                     userDefaults: userDefaults,
-                    fetchedTags: { [weak self] in
-                        self?.source.fetchAllTags()
-                    }(),
+                    user: user,
                     selectAllAction: { [weak self] in
                         self?.selectCell(with: .filterButton(.all))
                     }
@@ -404,8 +409,12 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         let sections: [ItemsListSection] = [.filters]
         snapshot.appendSections(sections)
 
+        var cases = ItemsListFilter.allCases
+        if !self.featureFlags.isAssigned(flag: .listen) {
+            cases.removeAll(where: {$0 == .listen})
+        }
         snapshot.appendItems(
-            ItemsListFilter.allCases.map { ItemsListCell<ItemIdentifier>.filterButton($0) },
+            cases.map { ItemsListCell<ItemIdentifier>.filterButton($0) },
             toSection: .filters
         )
 
@@ -427,7 +436,15 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
                 .fetchedObjects?
                 .map { .item($0.objectID) } ?? []
         case .started:
-            itemCellIDs = (0..<4).map { .placeholder($0) }
+            // If you background the app, and reopen the Fetch operations can override the sent staus,
+            // so instead we will first make sure we have no objects before switching to placeholders.
+            if let fetchedObjects = itemsController.fetchedObjects, fetchedObjects.count > 0 {
+                itemCellIDs = (0..<fetchedObjects.count).compactMap { index in
+                    .item(fetchedObjects[index].objectID)
+                }
+            } else {
+                itemCellIDs = (0..<4).map { .placeholder($0) }
+            }
         case .paginating(let totalCount):
             itemCellIDs = (0..<totalCount).compactMap { index in
                 guard let fetchedObjects = itemsController.fetchedObjects,
@@ -594,6 +611,17 @@ extension SavedItemsListViewModel {
         guard !reTappedTagFilter else { return }
 
         switch filter {
+        case .listen:
+            // If the user selected a filter, and the user is not in the Listen tags playlist feature flag
+            // Remove any filters and sorts they selected and re-fetch data before showing listen.
+            if !selectedFilters.isEmpty && !featureFlags.isAssigned(flag: .listenTagsPlaylists) {
+                selectedFilters.removeAll()
+                applySorting()
+                fetch()
+            }
+            presentedListenViewModel = ListenViewModel.source(savedItems: self.itemsController.fetchedObjects)
+            selectedFilters.remove(.listen)
+            // passin models
         case .search:
             presentedSearch = true
         case .all:

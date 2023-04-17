@@ -10,6 +10,7 @@
             "language": "en",
             "topImageUrl": "http://example.com/slate-1-rec-1/top-image.png",
             "timeToRead": 1,
+            "wordCount": 200,
             "authors": [
                 {
                     "__typename": "Author",

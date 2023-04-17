@@ -28,12 +28,20 @@ class PocketAddTagsViewModel: AddTagsViewModel {
         }
     }
 
+    /// Fetches recent tags to display to the user only if premium and user has more than 3 tags
     var recentTags: [TagType] {
-        recentTagsFactory.recentTags.sorted().compactMap { TagType.recent($0) }
+        guard user.status == .premium && fetchAllTags.count > 3 else { return [] }
+        return recentTagsFactory.recentTags.sorted().compactMap { TagType.recent($0) }
     }
 
-    var itemTagNames: [String]? {
-        item.tags?.compactMap { ($0 as? Tag)?.name }
+    /// Fetches all tags associated with item
+    private var itemTagNames: [String] {
+        item.tags?.compactMap { ($0 as? Tag)?.name }.sorted() ?? []
+    }
+
+    /// Fetches all tags associated with a user
+    private var fetchAllTags: [Tag] {
+        self.source.fetchAllTags() ?? []
     }
 
     @Published var tags: [String] = []
@@ -66,7 +74,7 @@ class PocketAddTagsViewModel: AddTagsViewModel {
 
         self.premiumUpsellView = PremiumUpsellView(viewModel: premiumUpsellViewModel)
 
-        tags = itemTagNames ?? []
+        tags = itemTagNames
         allOtherTags()
 
         userInputListener = $newTagInput
@@ -77,7 +85,7 @@ class PocketAddTagsViewModel: AddTagsViewModel {
                 self?.filterTags(with: text)
             })
 
-        recentTagsFactory.getInitialRecentTags(with: source.retrieveTags(excluding: tags)?.compactMap({ $0.name }))
+        recentTagsFactory.getInitialRecentTags(with: fetchAllTags.compactMap({ $0.name }))
     }
 
     /// Saves tags to an item
@@ -90,8 +98,8 @@ class PocketAddTagsViewModel: AddTagsViewModel {
 
     /// Fetch all tags associated with an item to show user
     func allOtherTags() {
-        let fetchedTags = source.retrieveTags(excluding: tags)?.compactMap({ $0.name }) ?? []
-        otherTags = arrangeTags(with: fetchedTags)
+        // TODO: Remove ! when we have non-null on tagName
+        otherTags = source.retrieveTags(excluding: tags)?.compactMap({ .tag($0.name!) }).sorted() ?? []
         trackAllTagsImpression()
     }
 
@@ -102,7 +110,7 @@ class PocketAddTagsViewModel: AddTagsViewModel {
             allOtherTags()
             return
         }
-        let fetchedTags = source.filterTags(with: text.lowercased(), excluding: tags)?.compactMap { $0.name } ?? []
+        let fetchedTags = source.filterTags(with: text.lowercased(), excluding: tags)?.compactMap { $0.name }.sorted() ?? []
         let tagTypes = fetchedTags.compactMap { TagType.tag($0) }
         if !tagTypes.isEmpty {
             otherTags = tagTypes
@@ -137,5 +145,10 @@ extension PocketAddTagsViewModel {
 
     func trackFilteredTagsImpression() {
         tracker.track(event: Events.Tags.filteredTagsImpression(itemUrl: item.url))
+    }
+
+    func trackRecentTagsTapped(with tag: TagType) {
+        guard case .recent = tag else { return }
+        tracker.track(event: Events.Tags.addTagsRecentTagTapped())
     }
 }

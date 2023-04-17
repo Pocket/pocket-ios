@@ -11,12 +11,14 @@ fragment ItemParts on Item {
   isArticle
   hasImage
   hasVideo
+  wordCount
   authors {
     id
     name
     url
   }
   marticle {
+    __typename
     ...MarticleTextParts
     ...ImageParts
     ...MarticleDividerParts
@@ -30,15 +32,18 @@ fragment ItemParts on Item {
   }
   excerpt
   domainMetadata {
+    __typename
     ...DomainMetadataParts
   }
   images {
+    __typename
     height
     width
     src
     imageId
   }
   syndicatedArticle {
+    __typename
     itemId
   }
 }
@@ -66,6 +71,7 @@ fragment ItemSummary on Item {
   isArticle
   hasImage
   hasVideo
+  wordCount
   authors {
     id
     name

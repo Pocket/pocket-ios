@@ -27,7 +27,7 @@ public class UnfavoriteItemMutation: GraphQLMutation {
 
   public struct Data: PocketGraph.SelectionSet {
     public let __data: DataDict
-    public init(data: DataDict) { __data = data }
+    public init(_dataDict: DataDict) { __data = _dataDict }
 
     public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Mutation }
     public static var __selections: [ApolloAPI.Selection] { [
@@ -42,10 +42,11 @@ public class UnfavoriteItemMutation: GraphQLMutation {
     /// Parent Type: `SavedItem`
     public struct UpdateSavedItemUnFavorite: PocketGraph.SelectionSet {
       public let __data: DataDict
-      public init(data: DataDict) { __data = data }
+      public init(_dataDict: DataDict) { __data = _dataDict }
 
       public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.SavedItem }
       public static var __selections: [ApolloAPI.Selection] { [
+        .field("__typename", String.self),
         .field("id", PocketGraph.ID.self),
       ] }
 

@@ -9,6 +9,7 @@ import AuthenticationServices
 import BackgroundTasks
 import SharedPocketKit
 import Kingfisher
+import Network
 
 struct Services {
     static let shared: Services = { Services() }()
@@ -26,6 +27,7 @@ struct Services {
     let unresolvedSavesRefreshCoordinator: UnresolvedSavesRefreshCoordinator
     let homeRefreshCoordinator: HomeRefreshCoordinator
     let userRefreshCoordinator: UserRefreshCoordinator
+    let featureFlagsRefreshCoordinator: FeatureFlagsRefreshCoordinator
     let refreshCoordinators: [RefreshCoordinator]
     let authClient: AuthorizationClient
     let imageManager: ImageManager
@@ -37,6 +39,8 @@ struct Services {
     let subscriptionStore: SubscriptionStore
     let userManagementService: UserManagementServiceProtocol
     let lastRefresh: LastRefresh
+    let featureFlagService: FeatureFlagService
+    let listen: Listen
 
     private let persistentContainer: PersistentContainer
 
@@ -65,7 +69,7 @@ struct Services {
         source = PocketSource(
             space: persistentContainer.rootSpace,
             user: user,
-            sessionProvider: appSession,
+            appSession: appSession,
             consumerKey: Keys.shared.pocketApiConsumerKey,
             defaults: userDefaults,
             backgroundTaskManager: UIApplication.shared
@@ -122,13 +126,22 @@ struct Services {
             source: source
         )
 
+        featureFlagsRefreshCoordinator = FeatureFlagsRefreshCoordinator(
+            notificationCenter: .default,
+            taskScheduler: BGTaskScheduler.shared,
+            appSession: appSession,
+            source: source,
+            lastRefresh: lastRefresh
+        )
+
         refreshCoordinators = [
             savesRefreshCoordinator,
             archiveRefreshCoordinator,
             tagsRefreshCoordinator,
             unresolvedSavesRefreshCoordinator,
             homeRefreshCoordinator,
-            userRefreshCoordinator
+            userRefreshCoordinator,
+            featureFlagsRefreshCoordinator
         ]
 
         imageManager = ImageManager(
@@ -163,9 +176,19 @@ struct Services {
             userDefaults: userDefaults,
             badgeProvider: UIApplication.shared
         )
-        subscriptionStore = PocketSubscriptionStore(user: user, receiptService: AppStoreReceiptService(client: v3Client))
+        subscriptionStore = PocketSubscriptionStore(user: user, receiptService: AppStoreReceiptService(client: v3Client), loggedIn: appSession.session != nil)
 
         userManagementService = UserManagementService(appSession: appSession, user: user, notificationCenter: .default, source: source)
+
+        featureFlagService = FeatureFlagService(source: source, tracker: tracker)
+
+        listen = Listen(
+            appSession: appSession,
+            consumerKey: Keys.shared.pocketApiConsumerKey,
+            networkPathMonitor: NWPathMonitor(),
+            tracker: tracker,
+            source: source
+        )
     }
 }
 

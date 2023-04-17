@@ -10,12 +10,14 @@ import NIO
 class SavesFiltersTests: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
+    var snowplowMicro = SnowplowMicro()
 
-    override func setUpWithError() throws {
+    override func setUp() async throws {
         continueAfterFailure = false
 
         let uiApp = XCUIApplication()
         app = PocketAppElement(app: uiApp)
+        await snowplowMicro.resetSnowplowEvents()
 
         server = Application()
 
@@ -26,9 +28,11 @@ class SavesFiltersTests: XCTestCase {
         try server.start()
     }
 
-    override func tearDownWithError() throws {
-        try server.stop()
-        app.terminate()
+    @MainActor
+    override func tearDown() async throws {
+       try server.stop()
+       app.terminate()
+       await snowplowMicro.assertBaselineSnowplowExpectation()
     }
 
     func test_savesView_tappingFavoritesPill_showsOnlyFavoritedItems() {
@@ -60,17 +64,14 @@ class SavesFiltersTests: XCTestCase {
         XCTAssertEqual(app.saves.wait().itemCells.count, 2)
     }
 
-    func test_savesView_tappingTaggedPill_showsFilteredItems() {
+    func test_savesView_tappingTaggedPill_withFreeUser_showsFilteredItems() {
         app.launch().tabBar.savesButton.wait().tap()
         app.saves.filterButton(for: "Tagged").tap()
         let tagsFilterView = app.saves.tagsFilterView.wait()
         tagsFilterView.tag(matching: "not tagged").wait()
 
-        tagsFilterView.recentTagCells.element.wait()
-        XCTAssertEqual(tagsFilterView.recentTagCells.count, 3)
-
         scrollTo(element: tagsFilterView.allTagCells(matching: "tag 2"), in: tagsFilterView.element, direction: .up)
-//        XCTAssertEqual(tagsFilterView.allTagSectionCells.count, 6)
+        XCTAssertEqual(tagsFilterView.allTagSectionCells.count, 6)
 
         tagsFilterView.tag(matching: "not tagged").wait().tap()
 

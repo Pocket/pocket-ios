@@ -34,11 +34,7 @@ public protocol Source {
 
     func makeImagesController() -> ImagesController
 
-    func backgroundObject<T: NSManagedObject>(id: NSManagedObjectID) -> T?
-
     func viewObject<T: NSManagedObject>(id: NSManagedObjectID) -> T?
-
-    func backgroundRefresh(_ object: NSManagedObject, mergeChanges: Bool)
 
     func viewRefresh(_ object: NSManagedObject, mergeChanges flag: Bool)
 
@@ -65,8 +61,6 @@ public protocol Source {
     func fetchAllTags() -> [Tag]?
 
     func filterTags(with input: String, excluding tags: [String]) -> [Tag]?
-
-    func fetchTags(isArchived: Bool) -> [Tag]?
 
     func fetchSlateLineup(_ identifier: String) async throws
 
@@ -110,5 +104,9 @@ public protocol Source {
     func refreshTags(completion: (() -> Void)?)
 
     // MARK: -
+
+    func fetchAllFeatureFlags() async throws
+
+    func fetchFeatureFlag(by name: String) -> FeatureFlag?
 
 }

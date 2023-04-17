@@ -228,6 +228,17 @@ public enum Requests {
         request.fetchLimit = 1
         return request
     }
+
+    public static func fetchFeatureFlags() -> NSFetchRequest<FeatureFlag> {
+        FeatureFlag.fetchRequest()
+    }
+
+    public static func fetchFeatureFlag(byName name: String) -> NSFetchRequest<FeatureFlag> {
+        let request = fetchFeatureFlags()
+        request.predicate = NSPredicate(format: "name = %@", name)
+        request.fetchLimit = 1
+        return request
+    }
 }
 
 public enum Predicates {

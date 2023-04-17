@@ -51,7 +51,8 @@ class MainViewModel: ObservableObject {
                     store: Services.shared.subscriptionStore,
                     refreshCoordinator: Services.shared.savesRefreshCoordinator,
                     networkPathMonitor: NWPathMonitor(),
-                    userDefaults: Services.shared.userDefaults
+                    userDefaults: Services.shared.userDefaults,
+                    featureFlags: Services.shared.featureFlagService
                 ),
                 archivedItemsList: SavedItemsListViewModel(
                     source: Services.shared.source,
@@ -63,7 +64,8 @@ class MainViewModel: ObservableObject {
                     store: Services.shared.subscriptionStore,
                     refreshCoordinator: Services.shared.archiveRefreshCoordinator,
                     networkPathMonitor: NWPathMonitor(),
-                    userDefaults: Services.shared.userDefaults
+                    userDefaults: Services.shared.userDefaults,
+                    featureFlags: Services.shared.featureFlagService
                 )
             ),
             home: HomeViewModel(

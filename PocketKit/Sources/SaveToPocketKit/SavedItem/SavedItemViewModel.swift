@@ -12,6 +12,7 @@ class SavedItemViewModel {
     private let tracker: Tracker
     private let consumerKey: String
     private let userDefaults: UserDefaults
+    private let user: User
 
     private var dismissTimerCancellable: AnyCancellable?
 
@@ -23,13 +24,14 @@ class SavedItemViewModel {
 
     let dismissAttributedText = NSAttributedString(string: "Tap to Dismiss", style: .dismiss)
 
-    init(appSession: AppSession, saveService: SaveService, dismissTimer: Timer.TimerPublisher, tracker: Tracker, consumerKey: String, userDefaults: UserDefaults) {
+    init(appSession: AppSession, saveService: SaveService, dismissTimer: Timer.TimerPublisher, tracker: Tracker, consumerKey: String, userDefaults: UserDefaults, user: User) {
         self.appSession = appSession
         self.saveService = saveService
         self.dismissTimer = dismissTimer
         self.tracker = tracker
         self.consumerKey = consumerKey
         self.userDefaults = userDefaults
+        self.user = user
 
         guard let session = appSession.currentSession else { return }
 
@@ -80,6 +82,7 @@ class SavedItemViewModel {
             item: savedItem,
             tracker: tracker,
             userDefaults: userDefaults,
+            user: user,
             retrieveAction: { [weak self] tags in
                 self?.retrieveTags(excluding: tags)
             },
@@ -140,7 +143,7 @@ extension SavedItemViewModel {
 
             if provider.hasItemConformingToTypeIdentifier(plainTextUTI) {
                 guard let string = try? await provider.loadItem(forTypeIdentifier: plainTextUTI, options: nil) as? String,
-                      let url = URL(string: string) else {
+                      let url = retrieveURLFromString(with: string) else {
                     continue
                 }
 
@@ -156,6 +159,24 @@ extension SavedItemViewModel {
             }
         }
 
+        return nil
+    }
+
+    /// Modified from https://www.hackingwithswift.com/example-code/strings/how-to-detect-a-url-in-a-string-using-nsdatadetector
+    /// - Parameter inputString: string input used to search for a URL
+    /// - Returns: URL found within the string
+    private func retrieveURLFromString(with inputString: String) -> URL? {
+        guard let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue) else {
+            Log.capture(message: "Unable to initialize detector")
+            return nil
+        }
+        let matches = detector.matches(in: inputString, options: [], range: NSRange(location: 0, length: inputString.utf16.count))
+
+        for match in matches {
+            guard let range = Range(match.range, in: inputString) else { continue }
+            let string = String(inputString[range])
+            return URL(string: string)
+        }
         return nil
     }
 

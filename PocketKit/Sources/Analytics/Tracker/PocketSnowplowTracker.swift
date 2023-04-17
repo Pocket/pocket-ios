@@ -3,6 +3,8 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import SnowplowTracker
+import SharedPocketKit
+import Foundation
 
 public class PocketSnowplowTracker: SnowplowTracker {
     private let tracker: TrackerController
@@ -33,18 +35,25 @@ public class PocketSnowplowTracker: SnowplowTracker {
         trackerConfiguration.exceptionAutotracking = false
         trackerConfiguration.diagnosticAutotracking = false
 
-        tracker = Snowplow.createTracker(
+        let optionalTracker = Snowplow.createTracker(
             namespace: appID,
             network: networkConfiguration,
             configurations: [trackerConfiguration]
         )
 
+        guard let optionalTracker else {
+            fatalError("snowplow tracker did not inititalize")
+        }
+
+        tracker = optionalTracker
+        _ = Snowplow.setAsDefault(tracker: tracker)
+
         #if DEBUG || DEBUG_ALPHA_NEUE
         // We are using a debug build, emit analytics instantly for testing instead of batches
-        tracker.emitter.bufferOption = .single
+        tracker.emitter?.bufferOption = .single
         #endif
 
-        tracker.globalContexts.add(tag: "persistent-entities", contextGenerator: GlobalContext(generator: {  event in
+        _ = tracker.globalContexts?.add(tag: "persistent-entities", contextGenerator: GlobalContext(generator: {  event in
             return self.persistentEntities.map({ $0.toSelfDescribingJson() })
         }))
 

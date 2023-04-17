@@ -18,7 +18,7 @@ public struct UserEntity: Entity {
     }
 
     public func toSelfDescribingJson() -> SelfDescribingJson {
-        var data: [AnyHashable: Any] = [
+        var data: [String: Any] = [
             "hashed_guid": guid,
             "hashed_user_id": userID
         ]

@@ -5,6 +5,7 @@ import SharedPocketKit
 import Combine
 import SafariServices
 import Textile
+import PKTListen
 
 struct SavesContainerViewControllerSwiftUI: UIViewControllerRepresentable {
     var model: SavesContainerViewModel
@@ -151,12 +152,8 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
         navigationItem.searchController?.view.accessibilityIdentifier = "search-view"
         navigationItem.searchController?.searchBar.accessibilityHint = "Search"
         navigationItem.searchController?.searchBar.scopeButtonTitles = searchViewModel.scopeTitles
-        if #available(iOS 16.0, *) {
-            navigationItem.searchController?.scopeBarActivation = .onSearchActivation
-            navigationItem.preferredSearchBarPlacement = .stacked
-        } else {
-            navigationItem.searchController?.automaticallyShowsScopeBar = true
-        }
+        navigationItem.searchController?.scopeBarActivation = .onSearchActivation
+        navigationItem.preferredSearchBarPlacement = .stacked
         navigationItem.searchController?.showsSearchResultsController = true
 
         searchViewModel.$searchText.dropFirst().sink { searchText in
@@ -230,6 +227,13 @@ extension SavesContainerViewController {
             self?.updateSearchScope()
         }.store(in: &subscriptions)
 
+        model.savedItemsList.$presentedListenViewModel.sink { [weak self] listenViewModel in
+            guard let listenViewModel else {
+                return
+            }
+            self?.showListen(listenViewModel: listenViewModel)
+        }.store(in: &subscriptions)
+
         model.savedItemsList.$presentedAddTags.sink { [weak self] addTagsViewModel in
             self?.present(viewModel: addTagsViewModel)
         }.store(in: &subscriptions)
@@ -259,6 +263,13 @@ extension SavesContainerViewController {
 
         model.archivedItemsList.$presentedSearch.sink { [weak self] alert in
             self?.updateSearchScope()
+        }.store(in: &subscriptions)
+
+        model.archivedItemsList.$presentedListenViewModel.sink { [weak self] listenViewModel in
+            guard let listenViewModel else {
+                return
+            }
+            self?.showListen(listenViewModel: listenViewModel)
         }.store(in: &subscriptions)
 
         model.archivedItemsList.$sharedActivity.sink { [weak self] activity in
@@ -370,7 +381,7 @@ extension SavesContainerViewController {
 
     private func present(tagsFilterViewModel: TagsFilterViewModel?) {
         guard true, let tagsFilterViewModel = tagsFilterViewModel else { return }
-        let hostingController = UIHostingController(rootView: TagsFilterView(viewModel: tagsFilterViewModel))
+        let hostingController = UIHostingController(rootView: TagsFilterView(viewModel: tagsFilterViewModel).environment(\.managedObjectContext, Services.shared.source.viewContext))
         hostingController.configurePocketDefaultDetents()
         self.present(hostingController, animated: true)
     }
@@ -468,5 +479,13 @@ extension SavesContainerViewController: SFSafariViewControllerDelegate {
 
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
         model.clearPresentedWebReaderURL()
+    }
+}
+
+extension SavesContainerViewController {
+    private func showListen(listenViewModel: ListenViewModel) {
+        let appConfig = PKTListenAppConfiguration(source: listenViewModel)
+        let listen = PKTListenDrawerViewController.drawer(with: appConfig)
+        self.present(listen, animated: true)
     }
 }

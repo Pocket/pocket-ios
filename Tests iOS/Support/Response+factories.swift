@@ -144,6 +144,10 @@ extension Response {
         fixture(named: fixtureName)
     }
 
+    static func featureFlags(_ fixtureName: String = "feature-flags") -> Response {
+        fixture(named: fixtureName)
+    }
+
     static func fixture(named fixtureName: String) -> Response {
         Response {
             Status.ok
@@ -198,6 +202,8 @@ extension Response {
             return .searchList(.saves)
         } else if apiRequest.isForSearch(.archive) {
             return .searchList(.archive)
+        } else if apiRequest.isForFeatureFlags {
+            return .featureFlags()
         } else {
             fatalError("Unexpected request")
         }

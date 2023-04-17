@@ -45,7 +45,7 @@ public class GetSlateLineupQuery: GraphQLQuery {
 
   public struct Data: PocketGraph.SelectionSet {
     public let __data: DataDict
-    public init(data: DataDict) { __data = data }
+    public init(_dataDict: DataDict) { __data = _dataDict }
 
     public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Query }
     public static var __selections: [ApolloAPI.Selection] { [
@@ -64,10 +64,11 @@ public class GetSlateLineupQuery: GraphQLQuery {
     /// Parent Type: `SlateLineup`
     public struct GetSlateLineup: PocketGraph.SelectionSet {
       public let __data: DataDict
-      public init(data: DataDict) { __data = data }
+      public init(_dataDict: DataDict) { __data = _dataDict }
 
       public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.SlateLineup }
       public static var __selections: [ApolloAPI.Selection] { [
+        .field("__typename", String.self),
         .field("id", PocketGraph.ID.self),
         .field("requestId", PocketGraph.ID.self),
         .field("experimentId", PocketGraph.ID.self),
@@ -88,10 +89,11 @@ public class GetSlateLineupQuery: GraphQLQuery {
       /// Parent Type: `Slate`
       public struct Slate: PocketGraph.SelectionSet {
         public let __data: DataDict
-        public init(data: DataDict) { __data = data }
+        public init(_dataDict: DataDict) { __data = _dataDict }
 
         public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Slate }
         public static var __selections: [ApolloAPI.Selection] { [
+          .field("__typename", String.self),
           .fragment(SlateParts.self),
         ] }
 
@@ -109,7 +111,7 @@ public class GetSlateLineupQuery: GraphQLQuery {
 
         public struct Fragments: FragmentContainer {
           public let __data: DataDict
-          public init(data: DataDict) { __data = data }
+          public init(_dataDict: DataDict) { __data = _dataDict }
 
           public var slateParts: SlateParts { _toFragment() }
         }

@@ -17,24 +17,38 @@ public struct MarticleNumberedListParts: PocketGraph.SelectionSet, Fragment {
     """ }
 
   public let __data: DataDict
-  public init(data: DataDict) { __data = data }
+  public init(_dataDict: DataDict) { __data = _dataDict }
 
   public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleNumberedList }
   public static var __selections: [ApolloAPI.Selection] { [
+    .field("__typename", String.self),
     .field("rows", [Row].self),
   ] }
 
   public var rows: [Row] { __data["rows"] }
+
+  public init(
+    rows: [Row]
+  ) {
+    self.init(_dataDict: DataDict(data: [
+      "__typename": PocketGraph.Objects.MarticleNumberedList.typename,
+      "rows": rows._fieldData,
+      "__fulfilled": Set([
+        ObjectIdentifier(Self.self)
+      ])
+    ]))
+  }
 
   /// Row
   ///
   /// Parent Type: `NumberedListElement`
   public struct Row: PocketGraph.SelectionSet {
     public let __data: DataDict
-    public init(data: DataDict) { __data = data }
+    public init(_dataDict: DataDict) { __data = _dataDict }
 
     public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.NumberedListElement }
     public static var __selections: [ApolloAPI.Selection] { [
+      .field("__typename", String.self),
       .field("content", PocketGraph.Markdown.self),
       .field("level", Int.self),
       .field("index", Int.self),
@@ -46,5 +60,21 @@ public struct MarticleNumberedListParts: PocketGraph.SelectionSet, Fragment {
     public var level: Int { __data["level"] }
     /// Numeric index. If a nested item, the index is zero-indexed from the first child.
     public var index: Int { __data["index"] }
+
+    public init(
+      content: PocketGraph.Markdown,
+      level: Int,
+      index: Int
+    ) {
+      self.init(_dataDict: DataDict(data: [
+        "__typename": PocketGraph.Objects.NumberedListElement.typename,
+        "content": content,
+        "level": level,
+        "index": index,
+        "__fulfilled": Set([
+          ObjectIdentifier(Self.self)
+        ])
+      ]))
+    }
   }
 }

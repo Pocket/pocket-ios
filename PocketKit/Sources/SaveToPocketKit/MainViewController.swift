@@ -18,8 +18,15 @@ class MainViewController: UIViewController {
         let appSession = services.appSession
         let encryptedStore = PocketEncryptedStore()
         let userDefaults = services.userDefaults
+        let user = services.user
         let child: UIViewController
         let tracker = services.tracker
+
+        SignOutOnFirstLaunch(
+            appSession: appSession,
+            user: user,
+            userDefaults: userDefaults
+        ).signOutOnFirstLaunch()
 
         let legacyUserMigration = LegacyUserMigration(
             userDefaults: userDefaults,
@@ -67,7 +74,8 @@ class MainViewController: UIViewController {
                     dismissTimer: Timer.TimerPublisher(interval: 3.0, runLoop: .main, mode: .default),
                     tracker: Services.shared.tracker.childTracker(hosting: .saveExtension.screen),
                     consumerKey: Keys.shared.pocketApiConsumerKey,
-                    userDefaults: userDefaults
+                    userDefaults: userDefaults,
+                    user: Services.shared.user
                 )
             )
         }

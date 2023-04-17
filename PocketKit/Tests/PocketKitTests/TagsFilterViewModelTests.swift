@@ -1,6 +1,7 @@
 import XCTest
 import Combine
 import Textile
+import SharedPocketKit
 
 @testable import Sync
 @testable import PocketKit
@@ -11,12 +12,14 @@ class TagsFilterViewModelTests: XCTestCase {
     var space: Space!
     private var tracker: MockTracker!
     private var userDefaults: UserDefaults!
+    private var user: MockUser!
 
     override func setUp() {
         space = .testSpace()
         source = MockSource()
         tracker = MockTracker()
         userDefaults = UserDefaults(suiteName: "TagsFilterViewModelTests")
+        user = MockUser()
         subscriptions = []
     }
 
@@ -27,38 +30,50 @@ class TagsFilterViewModelTests: XCTestCase {
         try space.clear()
     }
 
-    private func subject(source: Source? = nil, userDefaults: UserDefaults? = nil, fetchedTags: [Tag]?, selectAllAction: @escaping () -> Void) -> TagsFilterViewModel {
-        TagsFilterViewModel(source: source ?? self.source, tracker: tracker ?? self.tracker, userDefaults: userDefaults ?? self.userDefaults, fetchedTags: fetchedTags, selectAllAction: selectAllAction)
+    private func subject(
+        source: MockSource? = nil,
+        userDefaults: UserDefaults? = nil,
+        user: User? = nil,
+        fetchedTags: [Tag]?,
+        selectAllAction: @escaping () -> Void
+    ) -> TagsFilterViewModel {
+        let source: MockSource = source ?? self.source
+        source.stubFetchAllTags {
+            fetchedTags
+        }
+        return TagsFilterViewModel(source: source, tracker: tracker ?? self.tracker, userDefaults: userDefaults ?? self.userDefaults, user: user ?? self.user, selectAllAction: selectAllAction)
     }
 
-    func test_getAllTags_withThreeTags_returnsSortedRecentTags() {
+    func test_recentTags_withThreeTags_andPremiumUser_returnsNoRecentTags() {
         _ = try? space.createSavedItem(createdAt: Date(), tags: ["tag 1"])
         _ = try? space.createSavedItem(createdAt: Date() + 1, tags: ["tag 2"])
         _ = try? space.createSavedItem(createdAt: Date() + 2, tags: ["tag 3"])
         let savedTags = try? space.fetchTags(isArchived: false)
-        let viewModel = subject(fetchedTags: savedTags) { }
-        XCTAssertEqual(savedTags?.compactMap { $0.name }, ["tag 1", "tag 2", "tag 3"])
-        let tags = viewModel.getAllTags()
+        let viewModel = subject(user: MockUser(status: .premium), fetchedTags: savedTags) { }
 
-        XCTAssertEqual(tags.count, 3)
+        XCTAssertEqual(viewModel.recentTags, [])
+    }
+
+    func test_recentTags_withMoreThanThreeTags_andPremiumUser_returnsRecentTags() {
+        _ = try? space.createSavedItem(createdAt: Date(), tags: ["tag 1"])
+        _ = try? space.createSavedItem(createdAt: Date() + 1, tags: ["tag 2"])
+        _ = try? space.createSavedItem(createdAt: Date() + 2, tags: ["tag 3"])
+        _ = try? space.createSavedItem(createdAt: Date() + 3, tags: ["tag 4"])
+        let savedTags = try? space.fetchTags(isArchived: false)
+        let viewModel = subject(user: MockUser(status: .premium), fetchedTags: savedTags) { }
+
         XCTAssertEqual(viewModel.recentTags, [TagType.recent("tag 1"), TagType.recent("tag 2"), TagType.recent("tag 3")])
     }
 
-    func test_getAllTags_returnsSortedOrder() {
-        _ = try? space.createSavedItem(createdAt: Date(), tags: ["a"])
-        _ = try? space.createSavedItem(createdAt: Date() + 1, tags: ["b"])
-        _ = try? space.createSavedItem(createdAt: Date() + 2, tags: ["c"])
-        _ = try? space.createSavedItem(createdAt: Date() + 3, tags: ["d"])
-        _ = try? space.createSavedItem(createdAt: Date() + 4, tags: ["e"])
-
+    func test_recentTags_withMoreThanThreeTags_andFreeUser_returnsNoRecentTags() {
+        _ = try? space.createSavedItem(createdAt: Date(), tags: ["tag 1"])
+        _ = try? space.createSavedItem(createdAt: Date() + 1, tags: ["tag 2"])
+        _ = try? space.createSavedItem(createdAt: Date() + 2, tags: ["tag 3"])
+        _ = try? space.createSavedItem(createdAt: Date() + 3, tags: ["tag 4"])
         let savedTags = try? space.fetchTags(isArchived: false)
-        XCTAssertEqual(savedTags?.compactMap { $0.name }, ["a", "b", "c", "d", "e"])
-        let viewModel = subject(fetchedTags: savedTags) { }
+        let viewModel = subject(user: MockUser(status: .free), fetchedTags: savedTags) { }
 
-        let tags = viewModel.getAllTags()
-
-        XCTAssertEqual(tags.count, 5)
-        XCTAssertEqual(tags, [TagType.tag("a"), TagType.tag("b"), TagType.tag("c"), TagType.tag("d"), TagType.tag("e")])
+        XCTAssertEqual(viewModel.recentTags, [])
     }
 
     func test_selectedTag_withTagName_sendsPredicate() {

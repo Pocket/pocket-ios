@@ -10,6 +10,7 @@ class SaveToAddTagsViewModel: AddTagsViewModel {
     private let item: SavedItem?
     private let tracker: Tracker
     private let userDefaults: UserDefaults
+    private let user: User
     private let recentTagsFactory: RecentTagsProvider
     private let retrieveAction: ([String]) -> [Tag]?
     private let filterAction: (String, [String]) -> [Tag]?
@@ -18,7 +19,18 @@ class SaveToAddTagsViewModel: AddTagsViewModel {
     var upsellView: AnyView { return AnyView(erasing: EmptyView()) }
 
     var recentTags: [TagType] {
-        recentTagsFactory.recentTags.sorted().compactMap { TagType.recent($0) }
+        guard user.status == .premium && fetchAllTags.count > 3 else { return [] }
+        return recentTagsFactory.recentTags.sorted().compactMap { TagType.recent($0) }
+    }
+
+    /// Fetches all tags associated with item
+    private var itemTagNames: [String] {
+        item?.tags?.compactMap { ($0 as? Tag)?.name } ?? []
+    }
+
+    /// Fetches all tags associated with a user
+    private var fetchAllTags: [Tag] {
+        self.retrieveAction([]) ?? []
     }
 
     @Published var tags: [String] = []
@@ -27,16 +39,17 @@ class SaveToAddTagsViewModel: AddTagsViewModel {
 
     @Published var otherTags: [TagType] = []
 
-    init(item: SavedItem?, tracker: Tracker, userDefaults: UserDefaults, retrieveAction: @escaping ([String]) -> [Tag]?, filterAction: @escaping (String, [String]) -> [Tag]?, saveAction: @escaping ([String]) -> Void) {
+    init(item: SavedItem?, tracker: Tracker, userDefaults: UserDefaults, user: User, retrieveAction: @escaping ([String]) -> [Tag]?, filterAction: @escaping (String, [String]) -> [Tag]?, saveAction: @escaping ([String]) -> Void) {
         self.item = item
         self.tracker = tracker
         self.retrieveAction = retrieveAction
         self.filterAction = filterAction
         self.saveAction = saveAction
         self.userDefaults = userDefaults
+        self.user = user
         self.recentTagsFactory = RecentTagsProvider(userDefaults: userDefaults, key: UserDefaults.Key.recentTags)
 
-        tags = item?.tags?.compactMap { ($0 as? Tag)?.name } ?? []
+        tags = itemTagNames
         allOtherTags()
 
         userInputListener = $newTagInput
@@ -47,20 +60,20 @@ class SaveToAddTagsViewModel: AddTagsViewModel {
                 self?.filterTags(with: text)
         })
 
-        recentTagsFactory.getInitialRecentTags(with: retrieveAction(tags)?.compactMap({ $0.name }))
+        recentTagsFactory.getInitialRecentTags(with: fetchAllTags.compactMap({ $0.name }))
     }
 
     /// Saves tags to an item
     func addTags() {
         trackSaveTagsToItem()
         saveAction(tags)
-        recentTagsFactory.updateRecentTags(with: item?.tags?.compactMap { ($0 as? Tag)?.name }, and: tags)
+        recentTagsFactory.updateRecentTags(with: itemTagNames, and: tags)
     }
 
     /// Fetch all tags associated with an item to show user
     func allOtherTags() {
-        let fetchedTags = retrieveAction(tags)?.compactMap { $0.name } ?? []
-        otherTags = arrangeTags(with: fetchedTags)
+        // TODO: Remove ! when we have non-null on tagName
+        otherTags = retrieveAction(tags)?.map { .tag($0.name!) } ?? []
         trackAllTagsImpression()
     }
 
@@ -130,5 +143,10 @@ extension SaveToAddTagsViewModel {
             return
         }
         tracker.track(event: Events.Tags.filteredTagsImpression(itemUrl: url))
+    }
+
+    func trackRecentTagsTapped(with tag: TagType) {
+        guard case .recent = tag else { return }
+        tracker.track(event: Events.Tags.addTagsRecentTagTapped())
     }
 }

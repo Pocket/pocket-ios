@@ -24,9 +24,7 @@
               "archivedAt": null,
               "isArchived": false,
               "isFavorite": false,
-              "tags": [
-                
-              ],
+              "tags": [],
               "item": {
                 "__typename": "Item",
                 "remoteID": "item-3",
@@ -37,14 +35,11 @@
                 "domain": null,
                 "language": "en",
                 "timeToRead": 6,
-                "marticle": [
-                  
-                ],
+                "wordCount": 500,
+                "marticle": [],
                 "excerpt": "Cursus Aenean Elit",
                 "datePublished": "2021-01-01 12:01:01",
-                "authors": [
-                  
-                ],
+                "authors": [],
                 "domainMetadata": {
                   "__typename": "[type-name-here]",
                   "name": "WIRED",
@@ -78,9 +73,7 @@
               "archivedAt": null,
               "isArchived": false,
               "isFavorite": false,
-              "tags": [
-                
-              ],
+              "tags": [],
               "item": {
                 "__typename": "Item",
                 "remoteID": "item-3",
@@ -91,14 +84,11 @@
                 "domain": null,
                 "language": "en",
                 "timeToRead": 6,
-                "marticle": [
-                  
-                ],
+                "wordCount": 500,
+                "marticle": [],
                 "excerpt": "Cursus Aenean Elit",
                 "datePublished": "2021-01-01 12:01:01",
-                "authors": [
-                  
-                ],
+                "authors": [],
                 "domainMetadata": {
                   "__typename": "[type-name-here]",
                   "name": "WIRED",
@@ -132,9 +122,7 @@
               "archivedAt": null,
               "isArchived": false,
               "isFavorite": false,
-              "tags": [
-                
-              ],
+              "tags": [],
               "item": {
                 "__typename": "Item",
                 "remoteID": "item-3",
@@ -145,14 +133,11 @@
                 "domain": null,
                 "language": "en",
                 "timeToRead": 6,
-                "marticle": [
-                  
-                ],
+                "wordCount": 500,
+                "marticle": [],
                 "excerpt": "Cursus Aenean Elit",
                 "datePublished": "2021-01-01 12:01:01",
-                "authors": [
-                  
-                ],
+                "authors": [],
                 "domainMetadata": {
                   "__typename": "[type-name-here]",
                   "name": "WIRED",
@@ -186,9 +171,7 @@
               "archivedAt": null,
               "isArchived": false,
               "isFavorite": false,
-              "tags": [
-                
-              ],
+              "tags": [],
               "item": {
                 "__typename": "Item",
                 "remoteID": "item-3",
@@ -199,14 +182,11 @@
                 "domain": null,
                 "language": "en",
                 "timeToRead": 6,
-                "marticle": [
-                  
-                ],
+                "wordCount": 500,
+                "marticle": [],
                 "excerpt": "Cursus Aenean Elit",
                 "datePublished": "2021-01-01 12:01:01",
-                "authors": [
-                  
-                ],
+                "authors": [],
                 "domainMetadata": {
                   "__typename": "[type-name-here]",
                   "name": "WIRED",
@@ -240,9 +220,7 @@
               "archivedAt": null,
               "isArchived": false,
               "isFavorite": false,
-              "tags": [
-                
-              ],
+              "tags": [],
               "item": {
                 "__typename": "Item",
                 "remoteID": "item-3",
@@ -253,14 +231,11 @@
                 "domain": null,
                 "language": "en",
                 "timeToRead": 6,
-                "marticle": [
-                  
-                ],
+                "wordCount": 500,
+                "marticle": [],
                 "excerpt": "Cursus Aenean Elit",
                 "datePublished": "2021-01-01 12:01:01",
-                "authors": [
-                  
-                ],
+                "authors": [],
                 "domainMetadata": {
                   "__typename": "[type-name-here]",
                   "name": "WIRED",
@@ -294,9 +269,7 @@
               "archivedAt": null,
               "isArchived": false,
               "isFavorite": false,
-              "tags": [
-                
-              ],
+              "tags": [],
               "item": {
                 "__typename": "Item",
                 "remoteID": "item-3",
@@ -307,14 +280,11 @@
                 "domain": null,
                 "language": "en",
                 "timeToRead": 6,
-                "marticle": [
-                  
-                ],
+                "wordCount": 500,
+                "marticle": [],
                 "excerpt": "Cursus Aenean Elit",
                 "datePublished": "2021-01-01 12:01:01",
-                "authors": [
-                  
-                ],
+                "authors": [],
                 "domainMetadata": {
                   "__typename": "[type-name-here]",
                   "name": "WIRED",
@@ -348,9 +318,7 @@
               "archivedAt": null,
               "isArchived": false,
               "isFavorite": false,
-              "tags": [
-                
-              ],
+              "tags": [],
               "item": {
                 "__typename": "Item",
                 "remoteID": "item-3",
@@ -361,14 +329,11 @@
                 "domain": null,
                 "language": "en",
                 "timeToRead": 6,
-                "marticle": [
-                  
-                ],
+                "wordCount": 500,
+                "marticle": [],
                 "excerpt": "Cursus Aenean Elit",
                 "datePublished": "2021-01-01 12:01:01",
-                "authors": [
-                  
-                ],
+                "authors": [],
                 "domainMetadata": {
                   "__typename": "[type-name-here]",
                   "name": "WIRED",
@@ -402,9 +367,7 @@
               "archivedAt": null,
               "isArchived": false,
               "isFavorite": false,
-              "tags": [
-                
-              ],
+              "tags": [],
               "item": {
                 "__typename": "Item",
                 "remoteID": "item-3",
@@ -415,14 +378,11 @@
                 "domain": null,
                 "language": "en",
                 "timeToRead": 6,
-                "marticle": [
-                  
-                ],
+                "wordCount": 500,
+                "marticle": [],
                 "excerpt": "Cursus Aenean Elit",
                 "datePublished": "2021-01-01 12:01:01",
-                "authors": [
-                  
-                ],
+                "authors": [],
                 "domainMetadata": {
                   "__typename": "[type-name-here]",
                   "name": "WIRED",
@@ -456,9 +416,7 @@
               "archivedAt": null,
               "isArchived": false,
               "isFavorite": false,
-              "tags": [
-                
-              ],
+              "tags": [],
               "item": {
                 "__typename": "Item",
                 "remoteID": "item-3",
@@ -469,14 +427,11 @@
                 "domain": null,
                 "language": "en",
                 "timeToRead": 6,
-                "marticle": [
-                  
-                ],
+                "wordCount": 500,
+                "marticle": [],
                 "excerpt": "Cursus Aenean Elit",
                 "datePublished": "2021-01-01 12:01:01",
-                "authors": [
-                  
-                ],
+                "authors": [],
                 "domainMetadata": {
                   "__typename": "[type-name-here]",
                   "name": "WIRED",
@@ -510,9 +465,7 @@
               "archivedAt": null,
               "isArchived": false,
               "isFavorite": false,
-              "tags": [
-                
-              ],
+              "tags": [],
               "item": {
                 "__typename": "Item",
                 "remoteID": "item-3",
@@ -523,14 +476,11 @@
                 "domain": null,
                 "language": "en",
                 "timeToRead": 6,
-                "marticle": [
-                  
-                ],
+                "wordCount": 500,
+                "marticle": [],
                 "excerpt": "Cursus Aenean Elit",
                 "datePublished": "2021-01-01 12:01:01",
-                "authors": [
-                  
-                ],
+                "authors": [],
                 "domainMetadata": {
                   "__typename": "[type-name-here]",
                   "name": "WIRED",
@@ -564,9 +514,7 @@
               "archivedAt": null,
               "isArchived": false,
               "isFavorite": false,
-              "tags": [
-                
-              ],
+              "tags": [],
               "item": {
                 "__typename": "Item",
                 "remoteID": "item-3",
@@ -577,14 +525,11 @@
                 "domain": null,
                 "language": "en",
                 "timeToRead": 6,
-                "marticle": [
-                  
-                ],
+                "wordCount": 500,
+                "marticle": [],
                 "excerpt": "Cursus Aenean Elit",
                 "datePublished": "2021-01-01 12:01:01",
-                "authors": [
-                  
-                ],
+                "authors": [],
                 "domainMetadata": {
                   "__typename": "[type-name-here]",
                   "name": "WIRED",
@@ -618,9 +563,7 @@
               "archivedAt": null,
               "isArchived": false,
               "isFavorite": false,
-              "tags": [
-                
-              ],
+              "tags": [],
               "item": {
                 "__typename": "Item",
                 "remoteID": "item-3",
@@ -631,14 +574,11 @@
                 "domain": null,
                 "language": "en",
                 "timeToRead": 6,
-                "marticle": [
-                  
-                ],
+                "wordCount": 500,
+                "marticle": [],
                 "excerpt": "Cursus Aenean Elit",
                 "datePublished": "2021-01-01 12:01:01",
-                "authors": [
-                  
-                ],
+                "authors": [],
                 "domainMetadata": {
                   "__typename": "[type-name-here]",
                   "name": "WIRED",
@@ -672,9 +612,7 @@
               "archivedAt": null,
               "isArchived": false,
               "isFavorite": false,
-              "tags": [
-                
-              ],
+              "tags": [],
               "item": {
                 "__typename": "Item",
                 "remoteID": "item-3",
@@ -685,14 +623,11 @@
                 "domain": null,
                 "language": "en",
                 "timeToRead": 6,
-                "marticle": [
-                  
-                ],
+                "wordCount": 500,
+                "marticle": [],
                 "excerpt": "Cursus Aenean Elit",
                 "datePublished": "2021-01-01 12:01:01",
-                "authors": [
-                  
-                ],
+                "authors": [],
                 "domainMetadata": {
                   "__typename": "[type-name-here]",
                   "name": "WIRED",
@@ -726,9 +661,7 @@
               "archivedAt": null,
               "isArchived": false,
               "isFavorite": false,
-              "tags": [
-                
-              ],
+              "tags": [],
               "item": {
                 "__typename": "Item",
                 "remoteID": "item-3",
@@ -739,14 +672,11 @@
                 "domain": null,
                 "language": "en",
                 "timeToRead": 6,
-                "marticle": [
-                  
-                ],
+                "wordCount": 500,
+                "marticle": [],
                 "excerpt": "Cursus Aenean Elit",
                 "datePublished": "2021-01-01 12:01:01",
-                "authors": [
-                  
-                ],
+                "authors": [],
                 "domainMetadata": {
                   "__typename": "[type-name-here]",
                   "name": "WIRED",
@@ -780,9 +710,7 @@
               "archivedAt": null,
               "isArchived": false,
               "isFavorite": false,
-              "tags": [
-                
-              ],
+              "tags": [],
               "item": {
                 "__typename": "Item",
                 "remoteID": "item-3",
@@ -793,14 +721,11 @@
                 "domain": null,
                 "language": "en",
                 "timeToRead": 6,
-                "marticle": [
-                  
-                ],
+                "wordCount": 500,
+                "marticle": [],
                 "excerpt": "Cursus Aenean Elit",
                 "datePublished": "2021-01-01 12:01:01",
-                "authors": [
-                  
-                ],
+                "authors": [],
                 "domainMetadata": {
                   "__typename": "[type-name-here]",
                   "name": "WIRED",
@@ -834,9 +759,7 @@
               "archivedAt": null,
               "isArchived": false,
               "isFavorite": false,
-              "tags": [
-                
-              ],
+              "tags": [],
               "item": {
                 "__typename": "Item",
                 "remoteID": "item-3",
@@ -847,14 +770,11 @@
                 "domain": null,
                 "language": "en",
                 "timeToRead": 6,
-                "marticle": [
-                  
-                ],
+                "wordCount": 500,
+                "marticle": [],
                 "excerpt": "Cursus Aenean Elit",
                 "datePublished": "2021-01-01 12:01:01",
-                "authors": [
-                  
-                ],
+                "authors": [],
                 "domainMetadata": {
                   "__typename": "[type-name-here]",
                   "name": "WIRED",
@@ -888,9 +808,7 @@
               "archivedAt": null,
               "isArchived": false,
               "isFavorite": false,
-              "tags": [
-                
-              ],
+              "tags": [],
               "item": {
                 "__typename": "Item",
                 "remoteID": "item-3",
@@ -901,14 +819,11 @@
                 "domain": null,
                 "language": "en",
                 "timeToRead": 6,
-                "marticle": [
-                  
-                ],
+                "wordCount": 500,
+                "marticle": [],
                 "excerpt": "Cursus Aenean Elit",
                 "datePublished": "2021-01-01 12:01:01",
-                "authors": [
-                  
-                ],
+                "authors": [],
                 "domainMetadata": {
                   "__typename": "[type-name-here]",
                   "name": "WIRED",
@@ -942,9 +857,7 @@
               "archivedAt": null,
               "isArchived": false,
               "isFavorite": false,
-              "tags": [
-                
-              ],
+              "tags": [],
               "item": {
                 "__typename": "Item",
                 "remoteID": "item-3",
@@ -955,14 +868,11 @@
                 "domain": null,
                 "language": "en",
                 "timeToRead": 6,
-                "marticle": [
-                  
-                ],
+                "wordCount": 500,
+                "marticle": [],
                 "excerpt": "Cursus Aenean Elit",
                 "datePublished": "2021-01-01 12:01:01",
-                "authors": [
-                  
-                ],
+                "authors": [],
                 "domainMetadata": {
                   "__typename": "[type-name-here]",
                   "name": "WIRED",
@@ -996,9 +906,7 @@
               "archivedAt": null,
               "isArchived": false,
               "isFavorite": false,
-              "tags": [
-                
-              ],
+              "tags": [],
               "item": {
                 "__typename": "Item",
                 "remoteID": "item-3",
@@ -1009,14 +917,11 @@
                 "domain": null,
                 "language": "en",
                 "timeToRead": 6,
-                "marticle": [
-                  
-                ],
+                "wordCount": 500,
+                "marticle": [],
                 "excerpt": "Cursus Aenean Elit",
                 "datePublished": "2021-01-01 12:01:01",
-                "authors": [
-                  
-                ],
+                "authors": [],
                 "domainMetadata": {
                   "__typename": "[type-name-here]",
                   "name": "WIRED",
@@ -1050,9 +955,7 @@
               "archivedAt": null,
               "isArchived": false,
               "isFavorite": false,
-              "tags": [
-                
-              ],
+              "tags": [],
               "item": {
                 "__typename": "Item",
                 "remoteID": "item-3",
@@ -1063,14 +966,11 @@
                 "domain": null,
                 "language": "en",
                 "timeToRead": 6,
-                "marticle": [
-                  
-                ],
+                "wordCount": 500,
+                "marticle": [],
                 "excerpt": "Cursus Aenean Elit",
                 "datePublished": "2021-01-01 12:01:01",
-                "authors": [
-                  
-                ],
+                "authors": [],
                 "domainMetadata": {
                   "__typename": "[type-name-here]",
                   "name": "WIRED",
@@ -1104,9 +1004,7 @@
               "archivedAt": null,
               "isArchived": false,
               "isFavorite": false,
-              "tags": [
-                
-              ],
+              "tags": [],
               "item": {
                 "__typename": "Item",
                 "remoteID": "item-3",
@@ -1117,14 +1015,11 @@
                 "domain": null,
                 "language": "en",
                 "timeToRead": 6,
-                "marticle": [
-                  
-                ],
+                "wordCount": 500,
+                "marticle": [],
                 "excerpt": "Cursus Aenean Elit",
                 "datePublished": "2021-01-01 12:01:01",
-                "authors": [
-                  
-                ],
+                "authors": [],
                 "domainMetadata": {
                   "__typename": "[type-name-here]",
                   "name": "WIRED",
@@ -1158,9 +1053,7 @@
               "archivedAt": null,
               "isArchived": false,
               "isFavorite": false,
-              "tags": [
-                
-              ],
+              "tags": [],
               "item": {
                 "__typename": "Item",
                 "remoteID": "item-3",
@@ -1171,14 +1064,11 @@
                 "domain": null,
                 "language": "en",
                 "timeToRead": 6,
-                "marticle": [
-                  
-                ],
+                "wordCount": 500,
+                "marticle": [],
                 "excerpt": "Cursus Aenean Elit",
                 "datePublished": "2021-01-01 12:01:01",
-                "authors": [
-                  
-                ],
+                "authors": [],
                 "domainMetadata": {
                   "__typename": "[type-name-here]",
                   "name": "WIRED",
@@ -1212,9 +1102,7 @@
               "archivedAt": null,
               "isArchived": false,
               "isFavorite": false,
-              "tags": [
-                
-              ],
+              "tags": [],
               "item": {
                 "__typename": "Item",
                 "remoteID": "item-3",
@@ -1225,14 +1113,11 @@
                 "domain": null,
                 "language": "en",
                 "timeToRead": 6,
-                "marticle": [
-                  
-                ],
+                "wordCount": 500,
+                "marticle": [],
                 "excerpt": "Cursus Aenean Elit",
                 "datePublished": "2021-01-01 12:01:01",
-                "authors": [
-                  
-                ],
+                "authors": [],
                 "domainMetadata": {
                   "__typename": "[type-name-here]",
                   "name": "WIRED",
@@ -1266,9 +1151,7 @@
               "archivedAt": null,
               "isArchived": false,
               "isFavorite": false,
-              "tags": [
-                
-              ],
+              "tags": [],
               "item": {
                 "__typename": "Item",
                 "remoteID": "item-3",
@@ -1279,14 +1162,11 @@
                 "domain": null,
                 "language": "en",
                 "timeToRead": 6,
-                "marticle": [
-                  
-                ],
+                "wordCount": 500,
+                "marticle": [],
                 "excerpt": "Cursus Aenean Elit",
                 "datePublished": "2021-01-01 12:01:01",
-                "authors": [
-                  
-                ],
+                "authors": [],
                 "domainMetadata": {
                   "__typename": "[type-name-here]",
                   "name": "WIRED",
@@ -1320,9 +1200,7 @@
               "archivedAt": null,
               "isArchived": false,
               "isFavorite": false,
-              "tags": [
-                
-              ],
+              "tags": [],
               "item": {
                 "__typename": "Item",
                 "remoteID": "item-3",
@@ -1333,14 +1211,11 @@
                 "domain": null,
                 "language": "en",
                 "timeToRead": 6,
-                "marticle": [
-                  
-                ],
+                "wordCount": 500,
+                "marticle": [],
                 "excerpt": "Cursus Aenean Elit",
                 "datePublished": "2021-01-01 12:01:01",
-                "authors": [
-                  
-                ],
+                "authors": [],
                 "domainMetadata": {
                   "__typename": "[type-name-here]",
                   "name": "WIRED",
@@ -1374,9 +1249,7 @@
               "archivedAt": null,
               "isArchived": false,
               "isFavorite": false,
-              "tags": [
-                
-              ],
+              "tags": [],
               "item": {
                 "__typename": "Item",
                 "remoteID": "item-3",
@@ -1387,14 +1260,11 @@
                 "domain": null,
                 "language": "en",
                 "timeToRead": 6,
-                "marticle": [
-                  
-                ],
+                "wordCount": 500,
+                "marticle": [],
                 "excerpt": "Cursus Aenean Elit",
                 "datePublished": "2021-01-01 12:01:01",
-                "authors": [
-                  
-                ],
+                "authors": [],
                 "domainMetadata": {
                   "__typename": "[type-name-here]",
                   "name": "WIRED",
@@ -1428,9 +1298,7 @@
               "archivedAt": null,
               "isArchived": false,
               "isFavorite": false,
-              "tags": [
-                
-              ],
+              "tags": [],
               "item": {
                 "__typename": "Item",
                 "remoteID": "item-3",
@@ -1441,14 +1309,11 @@
                 "domain": null,
                 "language": "en",
                 "timeToRead": 6,
-                "marticle": [
-                  
-                ],
+                "wordCount": 500,
+                "marticle": [],
                 "excerpt": "Cursus Aenean Elit",
                 "datePublished": "2021-01-01 12:01:01",
-                "authors": [
-                  
-                ],
+                "authors": [],
                 "domainMetadata": {
                   "__typename": "[type-name-here]",
                   "name": "WIRED",
@@ -1482,9 +1347,7 @@
               "archivedAt": null,
               "isArchived": false,
               "isFavorite": false,
-              "tags": [
-                
-              ],
+              "tags": [],
               "item": {
                 "__typename": "Item",
                 "remoteID": "item-3",
@@ -1495,14 +1358,11 @@
                 "domain": null,
                 "language": "en",
                 "timeToRead": 6,
-                "marticle": [
-                  
-                ],
+                "wordCount": 500,
+                "marticle": [],
                 "excerpt": "Cursus Aenean Elit",
                 "datePublished": "2021-01-01 12:01:01",
-                "authors": [
-                  
-                ],
+                "authors": [],
                 "domainMetadata": {
                   "__typename": "[type-name-here]",
                   "name": "WIRED",
@@ -1536,9 +1396,7 @@
               "archivedAt": null,
               "isArchived": false,
               "isFavorite": false,
-              "tags": [
-                
-              ],
+              "tags": [],
               "item": {
                 "__typename": "Item",
                 "remoteID": "item-3",
@@ -1549,14 +1407,11 @@
                 "domain": null,
                 "language": "en",
                 "timeToRead": 6,
-                "marticle": [
-                  
-                ],
+                "wordCount": 500,
+                "marticle": [],
                 "excerpt": "Cursus Aenean Elit",
                 "datePublished": "2021-01-01 12:01:01",
-                "authors": [
-                  
-                ],
+                "authors": [],
                 "domainMetadata": {
                   "__typename": "[type-name-here]",
                   "name": "WIRED",
@@ -1590,9 +1445,7 @@
               "archivedAt": null,
               "isArchived": false,
               "isFavorite": false,
-              "tags": [
-                
-              ],
+              "tags": [],
               "item": {
                 "__typename": "Item",
                 "remoteID": "item-3",
@@ -1603,14 +1456,11 @@
                 "domain": null,
                 "language": "en",
                 "timeToRead": 6,
-                "marticle": [
-                  
-                ],
+                "wordCount": 500,
+                "marticle": [],
                 "excerpt": "Cursus Aenean Elit",
                 "datePublished": "2021-01-01 12:01:01",
-                "authors": [
-                  
-                ],
+                "authors": [],
                 "domainMetadata": {
                   "__typename": "[type-name-here]",
                   "name": "WIRED",

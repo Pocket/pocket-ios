@@ -25,6 +25,7 @@ class PocketSourceTests: XCTestCase {
     var osNotificationCenter: OSNotificationCenter!
     var subscriptions: [AnyCancellable]!
     var userService: MockUserService!
+    var featureFlagService: MockFeatureFlagService!
 
     override func setUpWithError() throws {
         space = .testSpace()
@@ -40,6 +41,7 @@ class PocketSourceTests: XCTestCase {
         osNotificationCenter = OSNotificationCenter(notifications: CFNotificationCenterGetDarwinNotifyCenter())
         subscriptions = []
         userService = MockUserService()
+        featureFlagService = MockFeatureFlagService()
 
         lastRefresh.stubGetLastRefreshSaves { nil }
         lastRefresh.stubGetLastRefreshArchive { nil }
@@ -64,7 +66,8 @@ class PocketSourceTests: XCTestCase {
         networkMonitor: NetworkPathMonitor? = nil,
         sessionProvider: SessionProvider? = nil,
         osNotificationCenter: OSNotificationCenter? = nil,
-        userService: UserService? = nil
+        userService: UserService? = nil,
+        featureFlagService: FeatureFlagLoadingService? = nil
     ) -> PocketSource {
         PocketSource(
             space: space ?? self.space,
@@ -73,6 +76,7 @@ class PocketSourceTests: XCTestCase {
             operations: operations ?? self.operations,
             lastRefresh: lastRefresh ?? self.lastRefresh,
             slateService: slateService ?? self.slateService,
+            featureFlagService: featureFlagService ?? self.featureFlagService,
             networkMonitor: networkMonitor ?? self.networkMonitor,
             sessionProvider: sessionProvider ?? self.sessionProvider,
             backgroundTaskManager: backgroundTaskManager ?? self.backgroundTaskManager,
@@ -547,37 +551,6 @@ extension PocketSourceTests {
         XCTAssertTrue(tags.compactMap { $0.name }.contains("tag 3"))
     }
 
-    func test_fetchTags_withSaved_returnsSavedTags() throws {
-        let tagNames = ["tag 1", "tag 2", "tag 3"]
-        _ = createItemsWithTags(3)
-        _ = createItemsWithTags(1, isArchived: true)
-        let source = subject()
-        guard let tags = source.fetchTags() else {
-            XCTFail("tags should not be nil")
-            return
-        }
-        let names = tags.compactMap { $0.name }
-        XCTAssertEqual(names.count, 3)
-        XCTAssertTrue(names.contains(tagNames[0]))
-        XCTAssertTrue(names.contains(tagNames[1]))
-        XCTAssertTrue(names.contains(tagNames[2]))
-    }
-
-    func test_fetchTags_withArchive_returnsArchivedTags() throws {
-        let tagNames = ["tag 1", "tag 2"]
-        _ = createItemsWithTags(1)
-        _ = createItemsWithTags(2, isArchived: true)
-        let source = subject()
-        guard let tags = source.fetchTags(isArchived: true) else {
-            XCTFail("tags should not be nil")
-            return
-        }
-        let names = tags.compactMap { $0.name }
-        XCTAssertEqual(names.count, 2)
-        XCTAssertTrue(names.contains(tagNames[0]))
-        XCTAssertTrue(names.contains(tagNames[1]))
-    }
-
     func test_deleteTags_executesDeleteTagMutation() throws {
         let items = createItemsWithTags(1)
         let expectationToRunOperation = expectation(description: "Run operation")
@@ -712,21 +685,19 @@ extension PocketSourceTests {
     }
 
     func test_fetchOrCreateSavedItem_retrievesItem() throws {
-        let itemParts = SavedItemParts(data: DataDict([
-            "__typename": "SavedItem",
-            "remoteID": "saved-item",
-            "url": "http://localhost:8080/hello",
-            "_createdAt": 1,
-            "isArchived": false,
-            "isFavorite": false,
-            "item": [
-                "__typename": "Item",
-                "remoteID": "item-1",
-                "title": "item-title",
-                "givenUrl": "http://localhost:8080/hello",
-                "resolvedUrl": "http://localhost:8080/hello"
-            ]
-        ], variables: nil))
+
+        let itemParts = SavedItemParts(
+            url: "http://localhost:8080/hello",
+            remoteID: "saved-item",
+            isArchived: false,
+            isFavorite: false,
+            _createdAt: 1,
+            item: SavedItemParts.Item.AsItem(
+                remoteID: "item-1",
+                givenUrl: "http://localhost:8080/hello",
+                title: "item-title"
+            ).asRootEntityType
+        )
 
         let source = subject()
         let savedItem = source.fetchOrCreateSavedItem(with: "saved-item", and: itemParts)
