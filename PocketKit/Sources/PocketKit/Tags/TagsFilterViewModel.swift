@@ -35,7 +35,7 @@ class TagsFilterViewModel: ObservableObject {
         self.userDefaults = userDefaults
         self.user = user
         self.recentTagsFactory = RecentTagsProvider(userDefaults: userDefaults, key: UserDefaults.Key.recentTags)
-        recentTagsFactory.getInitialRecentTags(with: self.fetchedTags.map({ $0.name! }))
+        recentTagsFactory.getInitialRecentTags(with: self.fetchedTags.map({ $0.name }))
     }
 
     func trackEditAsOverflowAnalytics() {
