@@ -5,6 +5,7 @@ public enum LegacyUserMigrationError: LoggableError {
     case failedDecryption(Error)
     case missingData
     case failedDeserialization(Error)
+    case emptyData
 
     public var logDescription: String {
         switch self {
@@ -12,6 +13,7 @@ public enum LegacyUserMigrationError: LoggableError {
         case .failedDecryption(let error): return "Failed to decrypt store: \(error)"
         case .missingData: return "Data is missing after decrypting store"
         case .failedDeserialization(let error): return "Failed to deserialize data: \(error)"
+        case .emptyData: return "Data is empty"
         }
     }
 }
@@ -56,6 +58,12 @@ public class LegacyUserMigration {
             // have been attempted if there is no file on disk.
             // It is likely that the user has a fresh install, then.
             throw LegacyUserMigrationError.missingStore
+        } catch LegacyUserMigrationError.emptyData {
+            // Do not attempt to decrypt empty data, as decryption will fail due
+            // to a missing RNCryptor header. This file will be empty if created within Pocket 8,
+            // and if empty, should not attempt to be decrypted. Empty data is different
+            // than missing data, which is another error that can be thrown during the decryption phase.
+            throw LegacyUserMigrationError.emptyData
         } catch {
             throw LegacyUserMigrationError.failedDecryption(error)
         }

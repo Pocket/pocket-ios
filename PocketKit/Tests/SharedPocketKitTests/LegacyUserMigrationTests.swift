@@ -2,40 +2,6 @@ import XCTest
 @testable import SharedPocketKit
 
 // swiftlint:disable force_try
-class BlankKeychain: Keychain {
-    func add(query: CFDictionary, result: UnsafeMutablePointer<CFTypeRef?>?) -> OSStatus {
-        .zero
-    }
-
-    func update(query: CFDictionary, attributes: CFDictionary) -> OSStatus {
-        .zero
-    }
-
-    func delete(query: CFDictionary) -> OSStatus {
-        .zero
-    }
-
-    func copyMatching(query: CFDictionary, result: UnsafeMutablePointer<CFTypeRef?>?) -> OSStatus {
-        .zero
-    }
-}
-
-class MockEncryptedStore: LegacyEncryptedStore {
-    typealias Impl = (String) throws -> Data?
-    private var impl: Impl?
-
-    func stubDecryptStore(_ impl: @escaping Impl) {
-        self.impl = impl
-    }
-
-    func decryptStore(securedBy password: String) throws -> Data? {
-        guard let impl = impl else {
-            fatalError("decryptedStore must be stubbed before use")
-        }
-
-        return try impl(password)
-    }
-}
 
 private enum MockError: Error {
     case someError

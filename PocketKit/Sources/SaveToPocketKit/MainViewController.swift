@@ -19,6 +19,7 @@ class MainViewController: UIViewController {
         let encryptedStore = PocketEncryptedStore()
         let userDefaults = services.userDefaults
         let user = services.user
+        let notificationCenter = services.notificationCenter
         let child: UIViewController
         let tracker = services.tracker
 
@@ -47,6 +48,12 @@ class MainViewController: UIViewController {
                 tracker.track(event: Events.Migration.MigrationTo_v8DidFail(with: nil, source: .saveToPocketKit))
                 Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration not required; skipped.")
             }
+        } catch LegacyUserMigrationError.emptyData {
+            Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration has no data to decrypt, likely due to a fresh install of Pocket 8")
+            // Since there's no initial data, we don't have anything to migrate, and we can skip
+            // any further attempts at running this migration. This is not a true "error" in the sense that
+            // it breaks migration; it's a special case to be handled if data was created (on fresh install).
+            legacyUserMigration.forceSkip()
         } catch LegacyUserMigrationError.missingStore {
             tracker.track(event: Events.Migration.MigrationTo_v8DidFail(with: LegacyUserMigrationError.missingStore, source: .saveToPocketKit))
             Log.breadcrumb(category: "launch", level: .info, message: "No previous store for user migration; skipped.")
@@ -59,6 +66,14 @@ class MainViewController: UIViewController {
             legacyUserMigration.forceSkip()
             Log.capture(error: error)
         }
+
+        // The session backup utility can be started after user migration since
+        // the session can possibly already be backed up, i.e if used for user migration
+        SessionBackupUtility(
+            userDefaults: userDefaults,
+            store: PocketEncryptedStore(),
+            notificationCenter: notificationCenter
+        ).start()
 
         if appSession.currentSession == nil {
             Log.clearUser()
