@@ -189,8 +189,8 @@ class PocketSourceTests: XCTestCase {
         }
 
         let savedItem = try space.createSavedItem(item: space.buildItem())
-        let item = savedItem.item!
-        item.recommendation = space.buildRecommendation()
+        let item = savedItem.item
+        item.recommendation = space.buildRecommendation(item: item)
 
         let remoteItemID = item.remoteID
 
@@ -207,7 +207,7 @@ class PocketSourceTests: XCTestCase {
         }
 
         let savedItem = try space.createSavedItem(item: space.buildItem())
-        let item = savedItem.item!
+        let item = savedItem.item
 
         let remoteItemID = item.remoteID
 
@@ -385,8 +385,8 @@ class PocketSourceTests: XCTestCase {
     }
 
     func test_removeRecommendation_removesRecommendationFromSpace() throws {
-        let recommendation1 = space.buildRecommendation()
-        let recommendation2 = space.buildRecommendation()
+        let recommendation1 = space.buildRecommendation(item: space.buildItem())
+        let recommendation2 = space.buildRecommendation(item: space.buildItem())
 
         let source = subject()
         source.remove(recommendation: recommendation1)
@@ -403,7 +403,6 @@ class PocketSourceTests: XCTestCase {
         )
 
         let savedItem = try space.createSavedItem(remoteID: "a-saved-item")
-        savedItem.item = nil
         try space.save()
 
         let source = subject()
@@ -429,7 +428,7 @@ class PocketSourceTests: XCTestCase {
         try await source.fetchDetails(for: recommendation)
 
         space.backgroundRefresh(recommendation, mergeChanges: true)
-        XCTAssertNotNil(recommendation.item?.article)
+        XCTAssertNotNil(recommendation.item.article)
         XCTAssertFalse(recommendation.hasChanges)
     }
 
@@ -472,7 +471,7 @@ class PocketSourceTests: XCTestCase {
         let savedItems = try space.fetchSavedItems()
         XCTAssertEqual(savedItems.count, 1)
         XCTAssertEqual(savedItems[0].url, url)
-        XCTAssertGreaterThan(savedItems[0].createdAt!, seedDate)
+        XCTAssertGreaterThan(savedItems[0].createdAt, seedDate)
     }
 
     func test_saveURL_withArchivedSavedItem_unarchivesItem_andExecutesSaveItemOperation() throws {
@@ -703,8 +702,8 @@ extension PocketSourceTests {
         let savedItem = source.fetchOrCreateSavedItem(with: "saved-item", and: itemParts)
 
         XCTAssertEqual(savedItem?.remoteID, "saved-item")
-        XCTAssertEqual(savedItem?.item?.title, "item-title")
-        XCTAssertEqual(savedItem?.item?.bestURL?.absoluteString, "http://localhost:8080/hello")
+        XCTAssertEqual(savedItem?.item.title, "item-title")
+        XCTAssertEqual(savedItem?.item.bestURL?.absoluteString, "http://localhost:8080/hello")
     }
 
     private func setupLocalSavesSearch(with url: URL? = nil) throws {

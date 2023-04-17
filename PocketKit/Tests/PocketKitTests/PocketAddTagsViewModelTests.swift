@@ -135,11 +135,11 @@ class PocketAddTagsViewModelTests: XCTestCase {
             let tag2: Tag = Tag(context: self.space.backgroundContext)
             let tag3: Tag = Tag(context: self.space.backgroundContext)
             tag1.name = "tag 1"
-            tag1.remoteID = tag1.name?.uppercased()
+            tag1.remoteID = tag1.name.uppercased()
             tag2.name = "tag 2"
-            tag2.remoteID = tag2.name?.uppercased()
+            tag2.remoteID = tag2.name.uppercased()
             tag3.name = "tag 3"
-            tag3.remoteID = tag3.name?.uppercased()
+            tag3.remoteID = tag3.name.uppercased()
             return [tag1, tag2, tag3]
         }
 
@@ -164,13 +164,13 @@ class PocketAddTagsViewModelTests: XCTestCase {
             let tag3: Tag = Tag(context: self.space.backgroundContext)
             let tag4: Tag = Tag(context: self.space.backgroundContext)
             tag1.name = "tag 1"
-            tag1.remoteID = tag1.name?.uppercased()
+            tag1.remoteID = tag1.name.uppercased()
             tag2.name = "tag 2"
-            tag2.remoteID = tag2.name?.uppercased()
+            tag2.remoteID = tag2.name.uppercased()
             tag3.name = "tag 3"
-            tag3.remoteID = tag3.name?.uppercased()
+            tag3.remoteID = tag3.name.uppercased()
             tag4.name = "tag 4"
-            tag4.remoteID = tag4.name?.uppercased()
+            tag4.remoteID = tag4.name.uppercased()
             return [tag1, tag2, tag3, tag4]
         }
 
@@ -195,13 +195,13 @@ class PocketAddTagsViewModelTests: XCTestCase {
             let tag3: Tag = Tag(context: self.space.backgroundContext)
             let tag4: Tag = Tag(context: self.space.backgroundContext)
             tag1.name = "tag 1"
-            tag1.remoteID = tag1.name?.uppercased()
+            tag1.remoteID = tag1.name.uppercased()
             tag2.name = "tag 2"
-            tag2.remoteID = tag2.name?.uppercased()
+            tag2.remoteID = tag2.name.uppercased()
             tag3.name = "tag 3"
-            tag3.remoteID = tag3.name?.uppercased()
+            tag3.remoteID = tag3.name.uppercased()
             tag4.name = "tag 4"
-            tag4.remoteID = tag4.name?.uppercased()
+            tag4.remoteID = tag4.name.uppercased()
             return [tag1, tag2, tag3, tag4]
         }
 
@@ -219,7 +219,7 @@ class PocketAddTagsViewModelTests: XCTestCase {
             let tag2: Tag = Tag(context: self!.space.backgroundContext)
             let tag3: Tag = Tag(context: self!.space.backgroundContext)
             tag2.name = "tag 2"
-            tag2.remoteID = tag2.name?.uppercased()
+            tag2.remoteID = tag2.name.uppercased()
             tag3.name = "tag 3"
             return [tag2, tag3]
         }
@@ -270,9 +270,9 @@ class PocketAddTagsViewModelTests: XCTestCase {
             let tag2: Tag = Tag(context: self!.space.backgroundContext)
             let tag3: Tag = Tag(context: self!.space.backgroundContext)
             tag2.name = "tag 2"
-            tag2.remoteID = tag2.name?.uppercased()
+            tag2.remoteID = tag2.name.uppercased()
             tag3.name = "tag 3"
-            tag3.remoteID = tag3.name?.uppercased()
+            tag3.remoteID = tag3.name.uppercased()
             return [tag2, tag3]
         }
 
@@ -302,9 +302,9 @@ class PocketAddTagsViewModelTests: XCTestCase {
             let tag2: Tag = Tag(context: self!.space.backgroundContext)
             let tag3: Tag = Tag(context: self!.space.backgroundContext)
             tag2.name = "tag 2"
-            tag2.remoteID = tag2.name?.uppercased()
+            tag2.remoteID = tag2.name.uppercased()
             tag3.name = "tag 3"
-            tag3.remoteID = tag3.name?.uppercased()
+            tag3.remoteID = tag3.name.uppercased()
             return [tag2, tag3]
         }
 

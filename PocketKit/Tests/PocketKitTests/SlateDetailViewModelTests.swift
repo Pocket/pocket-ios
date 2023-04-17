@@ -72,8 +72,8 @@ class SlateDetailViewModelTests: XCTestCase {
 
     func test_fetch_sendsSnapshotWithItemForEachRecommendation() throws {
         let recommendations: [Recommendation] = [
-            space.buildRecommendation(remoteID: "slate-1-recommendation-1"),
-            space.buildRecommendation(remoteID: "slate-1-recommendation-2")
+            space.buildRecommendation(remoteID: "slate-1-recommendation-1", item: space.buildItem()),
+            space.buildRecommendation(remoteID: "slate-1-recommendation-2", item: space.buildItem())
         ]
 
         let slate: Slate = try space.createSlate(
@@ -136,7 +136,7 @@ class SlateDetailViewModelTests: XCTestCase {
     }
 
     func test_selectCell_whenSelectingRecommendation_recommendationIsReadable_updatesSelectedReadable() throws {
-        let recommendation = space.buildRecommendation()
+        let recommendation = space.buildRecommendation(item: space.buildItem())
         let slate = try space.createSlate(recommendations: [recommendation])
         try space.save()
         let viewModel = subject(slate: space.viewObject(with: slate.objectID) as! Slate)

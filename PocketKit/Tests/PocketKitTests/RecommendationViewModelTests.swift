@@ -302,7 +302,7 @@ class RecommendationViewModelTests: XCTestCase {
     func test_externalSave_forwardsToSource() throws {
         source.stubSaveURL { _ in }
 
-        let viewModel = try subject(recommendation: space.createRecommendation())
+        let viewModel = try subject(recommendation: space.createRecommendation(item: space.buildItem()))
         let url = URL(string: "https://getpocket.com")!
         let actions = viewModel.externalActions(for: url)
         viewModel.invokeAction(from: actions, title: "Save")
@@ -310,7 +310,7 @@ class RecommendationViewModelTests: XCTestCase {
     }
 
     func test_externalCopy_copiesToClipboard() throws {
-        let viewModel = try subject(recommendation: space.createRecommendation())
+        let viewModel = try subject(recommendation: space.createRecommendation(item: space.buildItem()))
         let url = URL(string: "https://getpocket.com")!
         let actions = viewModel.externalActions(for: url)
         viewModel.invokeAction(from: actions, title: "Copy link")
@@ -319,7 +319,7 @@ class RecommendationViewModelTests: XCTestCase {
     }
 
     func test_externalShare_updatesSharedActivity() throws {
-        let viewModel = try subject(recommendation: space.createRecommendation())
+        let viewModel = try subject(recommendation: space.createRecommendation(item: space.buildItem()))
         let url = URL(string: "https://getpocket.com")!
         let actions = viewModel.externalActions(for: url)
         viewModel.invokeAction(from: actions, title: "Share")
@@ -327,7 +327,7 @@ class RecommendationViewModelTests: XCTestCase {
     }
 
     func test_externalOpen_updatesPresentedWebReaderURL() throws {
-        let viewModel = try subject(recommendation: space.createRecommendation())
+        let viewModel = try subject(recommendation: space.createRecommendation(item: space.buildItem()))
         let url = URL(string: "https://example.com")!
         let actions = viewModel.externalActions(for: url)
         viewModel.invokeAction(from: actions, title: "Open")
@@ -339,7 +339,7 @@ class RecommendationViewModelTests: XCTestCase {
             item: space.buildItem()
         )
         source.stubFetchDetailsForRecommendation { rec in
-            rec.item?.article = .some(Article(components: []))
+            rec.item.article = .some(Article(components: []))
         }
 
         let viewModel = subject(recommendation: recommendation)
@@ -354,7 +354,7 @@ class RecommendationViewModelTests: XCTestCase {
 
         viewModel.fetchDetailsIfNeeded()
         wait(for: [receivedEvent], timeout: 10)
-        XCTAssertNotNil(recommendation.item?.article)
+        XCTAssertNotNil(recommendation.item.article)
     }
 
     func test_fetchDetailsIfNeeded_whenMarticleIsPresent_immediatelySendsContentUpdatedEvent() {
@@ -389,7 +389,7 @@ class RecommendationViewModelTests: XCTestCase {
             return recommendation.item
         }
 
-        let webViewActivityList = viewModel.webViewActivityItems(url: recommendation.item!.givenURL)
+        let webViewActivityList = viewModel.webViewActivityItems(url: recommendation.item.givenURL)
         XCTAssertEqual(webViewActivityList[0].activityTitle, "Save")
         XCTAssertEqual(webViewActivityList[1].activityTitle, "Report")
 
@@ -411,7 +411,7 @@ class RecommendationViewModelTests: XCTestCase {
             return recommendation.item
         }
 
-        let webViewActivityList = viewModel.webViewActivityItems(url: recommendation.item!.givenURL)
+        let webViewActivityList = viewModel.webViewActivityItems(url: recommendation.item.givenURL)
         XCTAssertEqual(webViewActivityList[0].activityTitle, "Archive")
         XCTAssertEqual(webViewActivityList[1].activityTitle, "Delete")
         XCTAssertEqual(webViewActivityList[2].activityTitle, "Favorite")
