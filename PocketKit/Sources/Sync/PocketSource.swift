@@ -473,12 +473,11 @@ extension PocketSource {
     public func deleteTag(tag: Tag) {
         Log.breadcrumb(category: "sync", level: .debug, message: "Deleting tags")
         space.performAndWait {
-            guard let tag = space.backgroundObject(with: tag.objectID) as? Tag,
-                  let remoteID = tag.remoteID else {
+            guard let tag = space.backgroundObject(with: tag.objectID) as? Tag else {
                 Log.capture(message: "Could not retreive item from background context for mutation")
                 return
             }
-
+            let remoteID = tag.remoteID
             do {
                 try space.deleteTag(byID: remoteID)
                 try space.save()
@@ -499,12 +498,11 @@ extension PocketSource {
     public func renameTag(from oldTag: Tag, to name: String) {
         Log.breadcrumb(category: "sync", level: .debug, message: "Renaming tag")
         space.performAndWait {
-            guard let oldTag = space.backgroundObject(with: oldTag.objectID) as? Tag,
-                  let remoteID = oldTag.remoteID else {
+            guard let oldTag = space.backgroundObject(with: oldTag.objectID) as? Tag else {
                 Log.capture(message: "Could not retreive item from background context for mutation")
                 return
             }
-
+            let remoteID = oldTag.remoteID
             let fetchedTag = try? space.fetchTag(byID: remoteID)
             fetchedTag?.name = name
 
