@@ -22,6 +22,7 @@ public struct TagsCell: View {
                 RecentTag()
             }
         }
+        .id(tag.name)
         .contentShape(Rectangle())
         .onTapGesture {
             tagAction(tag)
