@@ -385,10 +385,10 @@ extension PocketSaveServiceTests {
     func test_retrieveTags_updatesInfoViewModel() {
         let tag: Tag = Tag(context: space.backgroundContext)
         tag.name = "tag 1"
-        tag.remoteID = tag.name?.uppercased()
+        tag.remoteID = tag.name.uppercased()
         let tag2: Tag = Tag(context: space.backgroundContext)
         tag2.name = "tag 2"
-        tag2.remoteID = tag2.name?.uppercased()
+        tag2.remoteID = tag2.name.uppercased()
         let service = subject()
         let tags = service.retrieveTags(excluding: ["tag 1"])
         XCTAssertEqual(tags?.count, 1)
@@ -398,10 +398,10 @@ extension PocketSaveServiceTests {
     func test_filterTags_retrievesFilteredTags() {
         let tag: Tag = Tag(context: space.backgroundContext)
         tag.name = "tag 1"
-        tag.remoteID = tag.name?.uppercased()
+        tag.remoteID = tag.name.uppercased()
         let tag2: Tag = Tag(context: space.backgroundContext)
         tag2.name = "tag 2"
-        tag2.remoteID = tag2.name?.uppercased()
+        tag2.remoteID = tag2.name.uppercased()
         let service = subject()
         let tags = service.filterTags(with: "t", excluding: ["tag 2"])
         XCTAssertEqual(tags?.count, 1)
