@@ -11,7 +11,7 @@
         <attribute name="name" optional="YES" attributeType="String"/>
         <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="domainMetadata" inverseEntity="Item"/>
     </entity>
-    <entity name="FeatureFlag" representedClassName="FeatureFlag" syncable="YES" codeGenerationType="class">
+    <entity name="FeatureFlag" representedClassName="FeatureFlag" syncable="YES">
         <attribute name="assigned" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String"/>
         <attribute name="payloadValue" optional="YES" attributeType="String"/>
@@ -55,7 +55,7 @@
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
-    <entity name="PersistentSyncTask" representedClassName="PersistentSyncTask" syncable="YES" codeGenerationType="class">
+    <entity name="PersistentSyncTask" representedClassName="PersistentSyncTask" syncable="YES">
         <attribute name="createdAt" optional="YES" attributeType="Date" defaultDateTimeInterval="666643260" usesScalarValueType="NO"/>
         <attribute name="currentCursor" optional="YES" attributeType="String"/>
         <attribute name="syncTaskContainer" attributeType="Transformable" valueTransformerName="SyncTaskTransformer" customClassName="SyncTaskContainer"/>
@@ -97,7 +97,7 @@
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
-    <entity name="SavedItemUpdatedNotification" representedClassName="SavedItemUpdatedNotification" syncable="YES" codeGenerationType="class">
+    <entity name="SavedItemUpdatedNotification" representedClassName="SavedItemUpdatedNotification" syncable="YES">
         <relationship name="savedItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SavedItem" inverseName="savedItemUpdatedNotification" inverseEntity="SavedItem"/>
     </entity>
     <entity name="Slate" representedClassName="Slate" syncable="YES">
@@ -140,7 +140,7 @@
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
-    <entity name="UnresolvedSavedItem" representedClassName="UnresolvedSavedItem" syncable="YES" codeGenerationType="class">
+    <entity name="UnresolvedSavedItem" representedClassName="UnresolvedSavedItem" syncable="YES">
         <relationship name="savedItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SavedItem" inverseName="unresolvedSavedItem" inverseEntity="SavedItem"/>
     </entity>
 </model>
