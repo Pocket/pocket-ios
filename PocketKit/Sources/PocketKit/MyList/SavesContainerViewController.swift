@@ -175,8 +175,17 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
         searchViewModel.updateScope(with: searchScope, searchTerm: searchBar.text)
     }
 
-    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+    var timer: Timer?
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         guard let text = searchBar.text, !text.isEmpty else { return }
+        timer?.invalidate()
+        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: false, block: { _ in
+            self.searchViewModel.updateSearchResults(with: text)
+        })
+    }
+
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        guard let text = searchBar.text else { return }
         searchViewModel.updateSearchResults(with: text)
     }
 

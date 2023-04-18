@@ -169,8 +169,7 @@ class SearchViewModel: ObservableObject {
 
         let term = searchTerm.trimmingCharacters(in: .whitespaces).lowercased()
         currentSearchTerm = term
-        guard !term.isEmpty else { return }
-        guard !isOffline || selectedScope == .saves else {
+        guard !isOffline || selectedScope == .saves || term.isEmpty else {
             searchState = .emptyState(searchResultState())
             return
         }
