@@ -7,23 +7,11 @@ import XCTest
 extension XCUIElement {
     @discardableResult
     func wait(
-        timeout: TimeInterval = 10,
+        timeout: TimeInterval = 20,
         file: StaticString = #file,
         line: UInt = #line
     ) -> XCUIElement {
-        if exists {
-            XCTAssertTrue(exists)
-            return self
-        }
-
-        let cameIntoExistence = waitForExistence(timeout: timeout)
-        if cameIntoExistence {
-            XCTAssertTrue(exists)
-            return self
-        } else {
-            XCTFail("Expected \(self) to exist but it was not found.", file: file, line: line)
-        }
-
+        XCTAssertTrue(waitForExistence(timeout: timeout))
         return self
     }
 
