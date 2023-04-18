@@ -61,7 +61,7 @@ public class PersistentContainer: NSPersistentContainer {
 
         loadPersistentStores {storeDescription, error in
             if let error = error as NSError? {
-                fatalError("Unresolved error \(error), \(error.userInfo)")
+                 fatalError("Unresolved error \(error), \(error.userInfo)")
             }
         }
 

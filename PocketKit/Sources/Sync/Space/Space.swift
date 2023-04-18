@@ -388,10 +388,13 @@ extension Space {
         let context = context ?? backgroundContext
         let fetchRequest = Requests.fetchTag(byName: name)
         fetchRequest.fetchLimit = 1
-        let fetchedTag = (try? fetch(fetchRequest, context: context).first) ?? Tag(context: context)
-        guard fetchedTag.name == nil else { return fetchedTag }
-        fetchedTag.name = name
-        return fetchedTag
+        if let fetchedTag = (try? fetch(fetchRequest, context: context).first) {
+            return fetchedTag
+        }
+        let createTag = Tag(context: context)
+        createTag.name = name
+        createTag.remoteID = "remoteID\(name)"
+        return createTag
     }
 
     func fetchTag(byID id: String) throws -> Tag? {

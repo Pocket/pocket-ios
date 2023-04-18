@@ -136,7 +136,8 @@ class SlateDetailViewModelTests: XCTestCase {
     }
 
     func test_selectCell_whenSelectingRecommendation_recommendationIsReadable_updatesSelectedReadable() throws {
-        let recommendation = space.buildRecommendation(item: space.buildItem())
+        let savedItem = try space.createSavedItem(item: space.buildItem())
+        let recommendation = space.buildRecommendation(item: savedItem.item)
         let slate = try space.createSlate(recommendations: [recommendation])
         try space.save()
         let viewModel = subject(slate: space.viewObject(with: slate.objectID) as! Slate)
