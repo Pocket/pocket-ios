@@ -141,8 +141,6 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             switch filter {
             case.listen:
                 return nil
-            case.search:
-                return nil
             case .favorites:
                 return NSPredicate(format: "isFavorite = true")
             case .tagged:
@@ -621,9 +619,6 @@ extension SavedItemsListViewModel {
             }
             presentedListenViewModel = ListenViewModel.source(savedItems: self.itemsController.fetchedObjects)
             selectedFilters.remove(.listen)
-            // passin models
-        case .search:
-            presentedSearch = true
         case .all:
             selectedFilters.removeAll()
             selectedFilters.insert(.all)
