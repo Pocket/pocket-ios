@@ -141,11 +141,12 @@ extension Space {
         givenURL: URL? = URL(string: "https://example.com/items/item-1"),
         resolvedURL: URL? = nil,
         isArticle: Bool = true,
-        syndicatedArticle: SyndicatedArticle? = nil
+        syndicatedArticle: SyndicatedArticle? = nil,
+        num: Int? = nil
     ) -> Item {
         var url = givenURL
         if url == nil {
-            url = URL(string: "https://example.com/items/item-1")
+            url = URL(string: "https://example.com/items/item-1-\(num)")
         }
 
         return backgroundContext.performAndWait {

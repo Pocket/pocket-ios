@@ -71,6 +71,7 @@ extension Space {
         func buildPendingSavedItem() -> SavedItem {
             backgroundContext.performAndWait {
                 let savedItem: SavedItem = SavedItem(context: backgroundContext, url: URL(string: "https://mozilla.com/example")!)
+                savedItem.createdAt = Date()
                 return savedItem
             }
         }
@@ -266,7 +267,6 @@ extension Space {
             recommendation.title = title
             recommendation.excerpt = excerpt
             recommendation.imageURL = imageURL
-
             return recommendation
         }
     }

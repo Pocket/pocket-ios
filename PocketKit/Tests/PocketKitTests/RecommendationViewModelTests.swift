@@ -63,8 +63,9 @@ class RecommendationViewModelTests: XCTestCase {
 
         // not-favorited, not-archived
         do {
-            let item = space.buildItem()
-            let recommendation = space.buildRecommendation(item: item)
+            let item = space.buildItem(remoteID: "item-2", givenURL: URL(string: "https://example.com/items/item-2"))
+            let recommendation = space.buildRecommendation(remoteID: "rec-2", item: item)
+
             try space.createSavedItem(isFavorite: false, isArchived: false, item: item)
 
             let viewModel = subject(recommendation: recommendation)
@@ -76,8 +77,10 @@ class RecommendationViewModelTests: XCTestCase {
 
         // favorited, archived
         do {
-            let item = space.buildItem()
-            let recommendation = space.buildRecommendation(item: item)
+
+            let item = space.buildItem(remoteID: "item-3", givenURL: URL(string: "https://example.com/items/item-2"))
+            let recommendation = space.buildRecommendation(remoteID: "rec-3", item: item)
+
             try space.createSavedItem(isFavorite: true, isArchived: true, item: item)
 
             let viewModel = subject(recommendation: recommendation)
@@ -313,6 +316,7 @@ class RecommendationViewModelTests: XCTestCase {
         let viewModel = try subject(recommendation: space.createRecommendation(item: space.buildItem()))
         let url = URL(string: "https://getpocket.com")!
         let actions = viewModel.externalActions(for: url)
+
         viewModel.invokeAction(from: actions, title: "Copy Link")
 
         XCTAssertEqual(pasteboard.url, url)
