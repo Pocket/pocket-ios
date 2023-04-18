@@ -50,8 +50,8 @@ class RecommendationCell: UICollectionViewCell {
         return button
     }()
 
-    let overflowButton: RecommendationOverflowButton = {
-        let button = RecommendationOverflowButton()
+    let overflowButton: RecommendationButton = {
+        let button = RecommendationButton(asset: .overflow)
         button.accessibilityIdentifier = "overflow-button"
         button.showsMenuAsPrimaryAction = true
         return button

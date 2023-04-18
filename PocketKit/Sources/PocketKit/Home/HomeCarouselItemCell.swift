@@ -20,6 +20,7 @@ class HomeCarouselItemCell: UICollectionViewCell {
         static let maxDetailLines = 2
         static let actionButtonImageSize = CGSize(width: 20, height: 20)
         static let layoutMargins = UIEdgeInsets(top: Margins.normal.rawValue, left: Margins.normal.rawValue, bottom: Margins.normal.rawValue, right: Margins.normal.rawValue)
+        static let stackSpacing: CGFloat = 4
     }
 
     private let titleLabel: UILabel = {
@@ -54,10 +55,7 @@ class HomeCarouselItemCell: UICollectionViewCell {
     }()
 
     private let favoriteButton: UIButton = {
-        var config = UIButton.Configuration.plain()
-        config.contentInsets = .zero
-
-        let button = UIButton(configuration: config, primaryAction: nil)
+        let button = RecommendationButton(asset: .favorite)
         button.accessibilityIdentifier = "favorite"
         return button
     }()
@@ -69,7 +67,7 @@ class HomeCarouselItemCell: UICollectionViewCell {
     }()
 
     private let overflowButton: UIButton = {
-        let button = RecommendationOverflowButton()
+        let button = RecommendationButton(asset: .overflow)
         button.accessibilityIdentifier = "overflow-button"
         button.showsMenuAsPrimaryAction = true
         return button
@@ -89,21 +87,22 @@ class HomeCarouselItemCell: UICollectionViewCell {
     private let bottomStack: UIStackView = {
         let stack = UIStackView()
         stack.distribution = .equalSpacing
+        stack.alignment = .bottom
         stack.axis = .horizontal
         return stack
     }()
 
     private let subtitleStack: UIStackView = {
         let stack = UIStackView()
-        stack.distribution = .fillProportionally
         stack.axis = .vertical
-        stack.spacing = 4
+        stack.spacing = Constants.stackSpacing
         return stack
     }()
 
     private let buttonStack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
+        stack.alignment = .bottom
         stack.spacing = 0
         return stack
     }()
@@ -138,7 +137,7 @@ class HomeCarouselItemCell: UICollectionViewCell {
 
             bottomStack.leadingAnchor.constraint(equalTo: mainContentStack.leadingAnchor),
             bottomStack.trailingAnchor.constraint(equalTo: mainContentStack.trailingAnchor),
-            bottomStack.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor).with(priority: .required),
+            bottomStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).with(priority: .required),
 
             contentView.topAnchor.constraint(equalTo: topAnchor),
             contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -165,8 +164,12 @@ extension HomeCarouselItemCell {
 
         if model.attributedTimeToRead.string.isEmpty {
             timeToReadLabel.isHidden = true
+            subtitleStack.setCustomSpacing(0, after: timeToReadLabel)
+            subtitleStack.setCustomSpacing(Constants.layoutMargins.bottom, after: domainLabel)
         } else {
             timeToReadLabel.isHidden = false
+            subtitleStack.setCustomSpacing(Constants.stackSpacing, after: domainLabel)
+            subtitleStack.setCustomSpacing(Constants.layoutMargins.bottom, after: timeToReadLabel)
         }
 
         favoriteButton.accessibilityLabel = model.favoriteAction?.title
