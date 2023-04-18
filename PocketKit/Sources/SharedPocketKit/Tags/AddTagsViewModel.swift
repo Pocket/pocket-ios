@@ -22,7 +22,7 @@ public protocol AddTagsViewModel: ObservableObject {
     func removeTag(with tag: String)
     func trackAddTag()
     func trackRemoveTag()
-    func trackRecentTagsTapped(with tag: TagType)
+    func trackExistingTagTapped(with tag: TagType)
 }
 
 public extension AddTagsViewModel {
@@ -51,7 +51,7 @@ public extension AddTagsViewModel {
     /// - Parameter tag: tag name user tapped on in the list
     func addExistingTag(with tag: TagType) {
         addTag(with: tag.name)
-        trackRecentTagsTapped(with: tag)
+        trackExistingTagTapped(with: tag)
     }
 
     /// Add tag to the input area and remove from the list

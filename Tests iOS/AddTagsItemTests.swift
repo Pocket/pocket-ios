@@ -86,7 +86,11 @@ class AddTagsItemTests: XCTestCase {
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
 
-        let events = await [snowplowMicro.getFirstEvent(with: "global-nav.addTags.removeInputTag"), snowplowMicro.getFirstEvent(with: "global-nav.addTags.addTag")]
+        let events = await [
+            snowplowMicro.getFirstEvent(with: "global-nav.addTags.removeInputTag"),
+            snowplowMicro.getFirstEvent(with: "global-nav.addTags.addTag"),
+            snowplowMicro.getFirstEvent(with: "global-nav.addTags.selectTag")
+        ]
 
         let removeTagEvent = events[0]!
         removeTagEvent.getUIContext()!.assertHas(type: "button")
@@ -95,6 +99,9 @@ class AddTagsItemTests: XCTestCase {
         let addTagEvent = events[1]!
         addTagEvent.getUIContext()!.assertHas(type: "button")
         addTagEvent.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
+
+        let addExistingTagEvent = events[2]!
+        addExistingTagEvent.getUIContext()!.assertHas(type: "button")
     }
 
     @MainActor
@@ -188,7 +195,7 @@ class AddTagsItemTests: XCTestCase {
         addTagsView.recentTagCells.element(boundBy: 0).tap()
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
-        let tagEvent = await snowplowMicro.getFirstEvent(with: "global-nav.addTags.recentTags")
+        let tagEvent = await snowplowMicro.getFirstEvent(with: "global-nav.addTags.selectRecentTag")
         tagEvent!.getUIContext()!.assertHas(type: "button")
     }
 
