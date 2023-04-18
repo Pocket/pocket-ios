@@ -43,8 +43,6 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
     @Published var presentedSortFilterViewModel: SortMenuViewModel?
 
-    @Published var presentedSearch: Bool?
-
     @Published
     var presentedListenViewModel: ListenViewModel?
 

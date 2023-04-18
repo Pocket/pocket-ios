@@ -223,10 +223,6 @@ extension SavesContainerViewController {
             self?.present(alert: alert)
         }.store(in: &subscriptions)
 
-        model.savedItemsList.$presentedSearch.sink { [weak self] alert in
-            self?.updateSearchScope()
-        }.store(in: &subscriptions)
-
         model.savedItemsList.$presentedListenViewModel.sink { [weak self] listenViewModel in
             guard let listenViewModel else {
                 return
@@ -259,10 +255,6 @@ extension SavesContainerViewController {
         model.archivedItemsList.$selectedItem.sink { [weak self] selectedArchivedItem in
             guard let selectedArchivedItem = selectedArchivedItem else { return }
             self?.navigate(selectedItem: selectedArchivedItem)
-        }.store(in: &subscriptions)
-
-        model.archivedItemsList.$presentedSearch.sink { [weak self] alert in
-            self?.updateSearchScope()
         }.store(in: &subscriptions)
 
         model.archivedItemsList.$presentedListenViewModel.sink { [weak self] listenViewModel in
