@@ -19,6 +19,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     private let appSession: AppSession
     private let user: User
     private let brazeService: BrazeProtocol
+    private let tracker: Tracker
 
     internal let notificationService: PushNotificationService
 
@@ -33,6 +34,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         self.appSession = services.appSession
         self.user = services.user
         self.brazeService = services.braze
+        self.tracker = services.tracker
 
         self.notificationService = services.notificationService
     }
@@ -80,35 +82,8 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
 
         enableAdjust()
 
-        let legacyUserMigration = LegacyUserMigration(
-            userDefaults: userDefaults,
-            encryptedStore: PocketEncryptedStore(),
-            appSession: appSession,
-            groupID: Keys.shared.groupID
-        )
+        migrateLegacyAccount()
 
-        do {
-            let attempted = try legacyUserMigration.perform(migrationWillBegin: { [weak self] in
-                self?.brazeService.signedInUserDidBeginMigration()
-            })
-
-            if attempted {
-                Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration required; running.")
-                // Legacy cleanup
-                LegacyCleanupService().cleanUp()
-            } else {
-                Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration not required; skipped.")
-            }
-        } catch LegacyUserMigrationError.missingStore {
-            Log.breadcrumb(category: "launch", level: .info, message: "No previous store for user migration; skipped.")
-            // Since we don't have a store, we can skip any further attempts at running this migration.
-            legacyUserMigration.forceSkip()
-        } catch {
-            // All errors are something we can't resolve client-side, so we don't want to re-attempt
-            // on further launches.
-            legacyUserMigration.forceSkip()
-            Log.capture(error: error)
-        }
         return true
     }
 
@@ -120,6 +95,43 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     public func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
         guard UIDevice.current.userInterfaceIdiom == .phone else { return .all }
         return PocketAppDelegate.phoneOrientationLock
+    }
+
+    /// Attempt to migrate a legacy (v7) account to v8
+    func migrateLegacyAccount() {
+        let legacyUserMigration = LegacyUserMigration(
+            userDefaults: userDefaults,
+            encryptedStore: PocketEncryptedStore(),
+            appSession: appSession,
+            groupID: Keys.shared.groupID
+        )
+
+        do {
+            let attempted = try legacyUserMigration.attemptMigration(migrationWillBegin: { [weak self] in
+                self?.tracker.track(event: Events.Migration.MigrationTo_v8DidBegin(source: .pocketKit))
+                self?.brazeService.signedInUserDidBeginMigration()
+            })
+
+            if attempted {
+                tracker.track(event: Events.Migration.MigrationTo_v8DidSucceed(source: .pocketKit))
+                Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration required; running.")
+                // Legacy cleanup
+                LegacyCleanupService().cleanUp()
+            } else {
+                Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration not required; skipped.")
+            }
+        } catch LegacyUserMigrationError.missingStore {
+            tracker.track(event: Events.Migration.MigrationTo_v8DidFail(with: LegacyUserMigrationError.missingStore, source: .pocketKit))
+            Log.breadcrumb(category: "launch", level: .info, message: "No previous store for user migration; skipped.")
+            // Since we don't have a store, we can skip any further attempts at running this migration.
+            legacyUserMigration.forceSkip()
+        } catch {
+            // All errors are something we can't resolve client-side, so we don't want to re-attempt
+            // on further launches.
+            tracker.track(event: Events.Migration.MigrationTo_v8DidFail(with: error, source: .pocketKit))
+            legacyUserMigration.forceSkip()
+            Log.capture(error: error)
+        }
     }
 
     func enableAdjust() {
