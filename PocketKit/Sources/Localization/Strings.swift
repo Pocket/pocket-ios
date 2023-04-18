@@ -20,8 +20,6 @@ public enum Localization {
   public static let addCopiedURLToYourSaves = Localization.tr("Localizable", "Add copied URL to your Saves?", fallback: "Add copied URL to your Saves?")
   /// Add Tags
   public static let addTags = Localization.tr("Localizable", "Add Tags", fallback: "Add Tags")
-  /// All
-  public static let all = Localization.tr("Localizable", "All", fallback: "All")
   /// An error occurred
   public static let anErrorOccurred = Localization.tr("Localizable", "An error occurred", fallback: "An error occurred")
   /// Annual
@@ -30,9 +28,6 @@ public enum Localization {
   public static let appCustomization = Localization.tr("Localizable", "App Customization", fallback: "App Customization")
   /// Archive
   public static let archive = Localization.tr("Localizable", "Archive", fallback: "Archive")
-  /// Archive the saves you're finished with
-  ///  using the archive icon.
-  public static let archiveTheSavesYouReFinishedWithUsingTheArchiveIcon = Localization.tr("Localizable", "Archive the saves you're finished with\n using the archive icon.", fallback: "Archive the saves you're finished with\n using the archive icon.")
   /// Are you sure you want to delete the tags and remove it from all items?
   public static let areYouSureYouWantToDeleteTheTagsAndRemoveItFromAllItems = Localization.tr("Localizable", "Are you sure you want to delete the tags and remove it from all items?", fallback: "Are you sure you want to delete the tags and remove it from all items?")
   /// Are you sure you want to delete this item?
@@ -63,28 +58,14 @@ public enum Localization {
   public static let displaySettings = Localization.tr("Localizable", "Display Settings", fallback: "Display Settings")
   /// Enter a new name for this tag
   public static let enterANewNameForThisTag = Localization.tr("Localizable", "Enter a new name for this tag", fallback: "Enter a new name for this tag")
-  /// Favorite
-  public static let favorite = Localization.tr("Localizable", "Favorite", fallback: "Favorite")
-  /// Favorites
-  public static let favorites = Localization.tr("Localizable", "Favorites", fallback: "Favorites")
-  /// Find your favorites here
-  public static let findYourFavoritesHere = Localization.tr("Localizable", "Find your favorites here", fallback: "Find your favorites here")
   /// Font
   public static let font = Localization.tr("Localizable", "Font", fallback: "Font")
   /// Font Size
   public static let fontSize = Localization.tr("Localizable", "Font Size", fallback: "Font Size")
-  /// Hit the star icon to favorite an article and find it faster.
-  public static let hitTheStarIconToFavoriteAnArticleAndFindItFaster = Localization.tr("Localizable", "Hit the star icon to favorite an article and find it faster.", fallback: "Hit the star icon to favorite an article and find it faster.")
   /// Home
   public static let home = Localization.tr("Localizable", "Home", fallback: "Home")
   /// Hooray!
   public static let hooray = Localization.tr("Localizable", "Hooray!", fallback: "Hooray!")
-  /// How to archive
-  public static let howToArchive = Localization.tr("Localizable", "How to archive", fallback: "How to archive")
-  /// How to save
-  public static let howToSave = Localization.tr("Localizable", "How to save", fallback: "How to save")
-  /// How to tag
-  public static let howToTag = Localization.tr("Localizable", "How to tag", fallback: "How to tag")
   /// It contains misinformation
   public static let itContainsMisinformation = Localization.tr("Localizable", "It contains misinformation", fallback: "It contains misinformation")
   /// It's in the wrong category
@@ -93,34 +74,22 @@ public enum Localization {
   public static let itSRudeVulgarOrOffensive = Localization.tr("Localizable", "It's rude, vulgar, or offensive", fallback: "It's rude, vulgar, or offensive")
   /// It's sexually explicit
   public static let itSSexuallyExplicit = Localization.tr("Localizable", "It's sexually explicit", fallback: "It's sexually explicit")
-  /// Keep your list fresh and clean
-  public static let keepYourListFreshAndClean = Localization.tr("Localizable", "Keep your list fresh and clean", fallback: "Keep your list fresh and clean")
   /// Log In
   public static let logIn = Localization.tr("Localizable", "Log In", fallback: "Log In")
-  /// Longest to read
-  public static let longestToRead = Localization.tr("Localizable", "Longest to read", fallback: "Longest to read")
   /// Make the most of any moment
   public static let makeTheMostOfAnyMoment = Localization.tr("Localizable", "Make the most of any moment", fallback: "Make the most of any moment")
   /// month
   public static let month = Localization.tr("Localizable", "month", fallback: "month")
   /// Monthly
   public static let monthly = Localization.tr("Localizable", "Monthly", fallback: "Monthly")
-  /// Move to Saves
-  public static let moveToSaves = Localization.tr("Localizable", "Move to Saves", fallback: "Move to Saves")
-  /// Newest saved
-  public static let newestSaved = Localization.tr("Localizable", "Newest saved", fallback: "Newest saved")
   /// No
   public static let no = Localization.tr("Localizable", "No", fallback: "No")
   /// No Internet Connection
   public static let noInternetConnection = Localization.tr("Localizable", "No Internet Connection", fallback: "No Internet Connection")
-  /// No saves with this tag.
-  public static let noSavesWithThisTag = Localization.tr("Localizable", "No saves with this tag.", fallback: "No saves with this tag.")
   /// not tagged
   public static let notTagged = Localization.tr("Localizable", "not tagged", fallback: "not tagged")
   /// OK
   public static let ok = Localization.tr("Localizable", "OK", fallback: "OK")
-  /// Oldest saved
-  public static let oldestSaved = Localization.tr("Localizable", "Oldest saved", fallback: "Oldest saved")
   /// Open
   public static let `open` = Localization.tr("Localizable", "Open", fallback: "Open")
   /// Open in Web View
@@ -143,30 +112,22 @@ public enum Localization {
   public static let rename = Localization.tr("Localizable", "Rename", fallback: "Rename")
   /// Rename Tag
   public static let renameTag = Localization.tr("Localizable", "Rename Tag", fallback: "Rename Tag")
-  /// Report
-  public static let report = Localization.tr("Localizable", "Report", fallback: "Report")
   /// Report a concern
   public static let reportAConcern = Localization.tr("Localizable", "Report a concern", fallback: "Report a concern")
   /// Reported
   public static let reported = Localization.tr("Localizable", "Reported", fallback: "Reported")
-  /// Save
-  public static let save = Localization.tr("Localizable", "Save", fallback: "Save")
   /// Save what really interests you
   public static let saveWhatReallyInterestsYou = Localization.tr("Localizable", "Save what really interests you", fallback: "Save what really interests you")
   /// Saved
   public static let saved = Localization.tr("Localizable", "Saved", fallback: "Saved")
   /// Saves
   public static let saves = Localization.tr("Localizable", "Saves", fallback: "Saves")
-  /// Search
-  public static let search = Localization.tr("Localizable", "Search", fallback: "Search")
   /// See All
   public static let seeAll = Localization.tr("Localizable", "See All", fallback: "See All")
   /// Settings
   public static let settings = Localization.tr("Localizable", "Settings", fallback: "Settings")
   /// Share
   public static let share = Localization.tr("Localizable", "Share", fallback: "Share")
-  /// Shortest to read
-  public static let shortestToRead = Localization.tr("Localizable", "Shortest to read", fallback: "Shortest to read")
   /// Show App Badge Count
   public static let showAppBadgeCount = Localization.tr("Localizable", "Show App Badge Count", fallback: "Show App Badge Count")
   /// Sign Out
@@ -175,18 +136,8 @@ public enum Localization {
   public static let signUp = Localization.tr("Localizable", "Sign Up", fallback: "Sign Up")
   /// Sign up for Premium
   public static let signUpForPremium = Localization.tr("Localizable", "Sign up for Premium", fallback: "Sign up for Premium")
-  /// Sort by
-  public static let sortBy = Localization.tr("Localizable", "Sort by", fallback: "Sort by")
-  /// Sort/Filter
-  public static let sortFilter = Localization.tr("Localizable", "Sort/Filter", fallback: "Sort/Filter")
-  /// Start building your Pocket list
-  public static let startBuildingYourPocketList = Localization.tr("Localizable", "Start building your Pocket list", fallback: "Start building your Pocket list")
   /// Submit feedback
   public static let submitFeedback = Localization.tr("Localizable", "Submit feedback", fallback: "Submit feedback")
-  /// Tag your saves by topic to find them later.
-  public static let tagYourSavesByTopicToFindThemLater = Localization.tr("Localizable", "Tag your saves by topic to find them later.", fallback: "Tag your saves by topic to find them later.")
-  /// Tagged
-  public static let tagged = Localization.tr("Localizable", "Tagged", fallback: "Tagged")
   /// Tags
   public static let tags = Localization.tr("Localizable", "Tags", fallback: "Tags")
   /// Tell us more
@@ -199,8 +150,6 @@ public enum Localization {
   public static let thisElementIsCurrentlyUnsupported = Localization.tr("Localizable", "This element is currently unsupported.", fallback: "This element is currently unsupported.")
   /// This video could not be loaded.
   public static let thisVideoCouldNotBeLoaded = Localization.tr("Localizable", "This video could not be loaded.", fallback: "This video could not be loaded.")
-  /// Unfavorite
-  public static let unfavorite = Localization.tr("Localizable", "Unfavorite", fallback: "Unfavorite")
   /// year
   public static let year = Localization.tr("Localizable", "year", fallback: "year")
   /// Yes
@@ -222,6 +171,17 @@ public enum Localization {
     /// Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket
     public static let yourArticlesAndVideosWillBeReadyForYouInPocket = Localization.tr("Localizable", "Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket", fallback: "Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket")
   }
+  public enum Archive {
+    public enum Empty {
+      /// How to archive
+      public static let button = Localization.tr("Localizable", "archive.empty.button", fallback: "How to archive")
+      /// Archive the saves you're finished with
+      ///  using the archive icon.
+      public static let detail = Localization.tr("Localizable", "archive.empty.detail", fallback: "Archive the saves you're finished with\n using the archive icon.")
+      /// Keep your list fresh and clean
+      public static let header = Localization.tr("Localizable", "archive.empty.header", fallback: "Keep your list fresh and clean")
+    }
+  }
   public enum Back {
     public enum To {
       /// Back to Pocket
@@ -232,9 +192,25 @@ public enum Localization {
     /// Listen
     public static let listen = Localization.tr("Localizable", "carousel.listen", fallback: "Listen")
   }
+  public enum Favourites {
+    public enum Empty {
+      /// Hit the star icon to favorite an article and find it faster.
+      public static let detail = Localization.tr("Localizable", "favourites.empty.detail", fallback: "Hit the star icon to favorite an article and find it faster.")
+      /// Find your favorites here
+      public static let header = Localization.tr("Localizable", "favourites.empty.header", fallback: "Find your favorites here")
+    }
+  }
   public enum General {
     /// Oops! Try again?
     public static let oops = Localization.tr("Localizable", "general.oops", fallback: "Oops! Try again?")
+  }
+  public enum Home {
+    public enum Recommendation {
+      /// %@ min read
+      public static func readTime(_ p1: Any) -> String {
+        return Localization.tr("Localizable", "home.recommendation.readTime", String(describing: p1), fallback: "%@ min read")
+      }
+    }
   }
   public enum Item {
     public enum List {
@@ -242,6 +218,58 @@ public enum Localization {
       public static func min(_ p1: Any) -> String {
         return Localization.tr("Localizable", "item.list.min", String(describing: p1), fallback: "%@ min")
       }
+    }
+    public enum OverflowMenu {
+      /// Move to Saves
+      public static let moveToSaves = Localization.tr("Localizable", "item.overflowMenu.moveToSaves", fallback: "Move to Saves")
+    }
+  }
+  public enum ItemAction {
+    /// Add Tags
+    public static let addTags = Localization.tr("Localizable", "itemAction.addTags", fallback: "Add Tags")
+    /// Archive
+    public static let archive = Localization.tr("Localizable", "itemAction.archive", fallback: "Archive")
+    /// Copy Link
+    public static let copyLink = Localization.tr("Localizable", "itemAction.copyLink", fallback: "Copy Link")
+    /// Delete
+    public static let delete = Localization.tr("Localizable", "itemAction.delete", fallback: "Delete")
+    /// Display Settings
+    public static let displaySettings = Localization.tr("Localizable", "itemAction.displaySettings", fallback: "Display Settings")
+    /// Favorite
+    public static let favorite = Localization.tr("Localizable", "itemAction.favorite", fallback: "Favorite")
+    /// Move to Saves
+    public static let moveToSaves = Localization.tr("Localizable", "itemAction.moveToSaves", fallback: "Move to Saves")
+    /// Open
+    public static let `open` = Localization.tr("Localizable", "itemAction.open", fallback: "Open")
+    /// Report
+    public static let report = Localization.tr("Localizable", "itemAction.report", fallback: "Report")
+    /// Save
+    public static let save = Localization.tr("Localizable", "itemAction.save", fallback: "Save")
+    /// Share
+    public static let share = Localization.tr("Localizable", "itemAction.share", fallback: "Share")
+    /// Unfavorite
+    public static let unfavorite = Localization.tr("Localizable", "itemAction.unfavorite", fallback: "Unfavorite")
+  }
+  public enum Itemlist {
+    public enum Filter {
+      /// All
+      public static let all = Localization.tr("Localizable", "itemlist.filter.all", fallback: "All")
+      /// Favorites
+      public static let favorites = Localization.tr("Localizable", "itemlist.filter.favorites", fallback: "Favorites")
+      /// Search
+      public static let search = Localization.tr("Localizable", "itemlist.filter.search", fallback: "Search")
+      /// Sort/Filter
+      public static let sortFilter = Localization.tr("Localizable", "itemlist.filter.sortFilter", fallback: "Sort/Filter")
+      /// Tagged
+      public static let tagged = Localization.tr("Localizable", "itemlist.filter.tagged", fallback: "Tagged")
+    }
+  }
+  public enum LoggedOut {
+    public enum Offline {
+      /// Looks like you're offline. Try checking your mobile data or wifi.
+      public static let detail = Localization.tr("Localizable", "loggedOut.offline.detail", fallback: "Looks like you're offline. Try checking your mobile data or wifi.")
+      /// No Internet Connection
+      public static let header = Localization.tr("Localizable", "loggedOut.offline.header", fallback: "No Internet Connection")
     }
   }
   public enum Login {
@@ -257,15 +285,74 @@ public enum Localization {
     }
   }
   public enum Premium {
+    public enum InfoView {
+      public enum Terms {
+        /// Privacy Policy
+        public static let privacyPolicy = Localization.tr("Localizable", "premium.infoView.terms.privacyPolicy", fallback: "Privacy Policy")
+        /// Terms of Service
+        public static let termsOfService = Localization.tr("Localizable", "premium.infoView.terms.TermsOfService", fallback: "Terms of Service")
+      }
+    }
     public enum Success {
       /// You’re officially a Pocket Premium member. Welcome to the new ad-free, customizable, permanent version of your Pocket. We think you’ll like it here.
       public static let message = Localization.tr("Localizable", "premium.success.message", fallback: "You’re officially a Pocket Premium member. Welcome to the new ad-free, customizable, permanent version of your Pocket. We think you’ll like it here.")
     }
-    public enum Upgradeview {
+    public enum UpgradeView {
+      /// Ad-free
+      public static let adFree = Localization.tr("Localizable", "premium.upgradeView.adFree", fallback: "Ad-free")
+      /// Coming Soon!
+      public static let comingSoon = Localization.tr("Localizable", "premium.upgradeView.comingSoon", fallback: "Coming Soon!")
       /// Subscriptions will be charged to your credit card through your iTunes account. Your account will be charged %1$@ (monthly) or %2$@ (yearly) for renewal within 24 hours prior to the end of the current period. Subscriptions will automatically renew unless canceled at least 24 hours before the end of the current period. It will not be possible to immediately cancel a subscription. You can manage subscriptions and turn off auto-renewal by going to your account settings after purchase. Refunds are not available for unused portions of a subscription.
       public static func description(_ p1: Any, _ p2: Any) -> String {
-        return Localization.tr("Localizable", "premium.upgradeview.description", String(describing: p1), String(describing: p2), fallback: "Subscriptions will be charged to your credit card through your iTunes account. Your account will be charged %1$@ (monthly) or %2$@ (yearly) for renewal within 24 hours prior to the end of the current period. Subscriptions will automatically renew unless canceled at least 24 hours before the end of the current period. It will not be possible to immediately cancel a subscription. You can manage subscriptions and turn off auto-renewal by going to your account settings after purchase. Refunds are not available for unused portions of a subscription.")
+        return Localization.tr("Localizable", "premium.upgradeView.description", String(describing: p1), String(describing: p2), fallback: "Subscriptions will be charged to your credit card through your iTunes account. Your account will be charged %1$@ (monthly) or %2$@ (yearly) for renewal within 24 hours prior to the end of the current period. Subscriptions will automatically renew unless canceled at least 24 hours before the end of the current period. It will not be possible to immediately cancel a subscription. You can manage subscriptions and turn off auto-renewal by going to your account settings after purchase. Refunds are not available for unused portions of a subscription.")
       }
+      /// Full-text search
+      public static let fullTextSearch = Localization.tr("Localizable", "premium.upgradeView.fullTextSearch", fallback: "Full-text search")
+      /// Permanent library of everything you've saved
+      public static let permanentLibrary = Localization.tr("Localizable", "premium.upgradeView.permanentLibrary", fallback: "Permanent library of everything you've saved")
+      /// Premium fonts
+      public static let premiumFonts = Localization.tr("Localizable", "premium.upgradeView.premiumFonts", fallback: "Premium fonts")
+      /// Premium
+      /// Membership
+      public static let premiumMembership = Localization.tr("Localizable", "premium.upgradeView.PremiumMembership", fallback: "Premium\nMembership")
+      /// Save
+      public static let save = Localization.tr("Localizable", "premium.upgradeView.save", fallback: "Save")
+      /// Suggested tags
+      public static let suggestedTags = Localization.tr("Localizable", "premium.upgradeView.suggestedTags", fallback: "Suggested tags")
+      /// Unlimited highlights
+      public static let unlimitedHighlights = Localization.tr("Localizable", "premium.upgradeView.unlimitedHighlights", fallback: "Unlimited highlights")
+    }
+  }
+  public enum Reader {
+    public enum Activity {
+      /// Archive
+      public static let archive = Localization.tr("Localizable", "reader.activity.archive", fallback: "Archive")
+      /// Delete
+      public static let delete = Localization.tr("Localizable", "reader.activity.delete", fallback: "Delete")
+      /// Favorite
+      public static let favorite = Localization.tr("Localizable", "reader.activity.favorite", fallback: "Favorite")
+      /// Move to Saves
+      public static let moveToSaves = Localization.tr("Localizable", "reader.activity.moveToSaves", fallback: "Move to Saves")
+      /// Report
+      public static let report = Localization.tr("Localizable", "reader.activity.report", fallback: "Report")
+      /// Save
+      public static let save = Localization.tr("Localizable", "reader.activity.save", fallback: "Save")
+      /// Unfavorite
+      public static let unfavorite = Localization.tr("Localizable", "reader.activity.unfavorite", fallback: "Unfavorite")
+    }
+  }
+  public enum Recommendation {
+    /// Save
+    public static let save = Localization.tr("Localizable", "recommendation.save", fallback: "Save")
+    /// Saved
+    public static let saved = Localization.tr("Localizable", "recommendation.saved", fallback: "Saved")
+  }
+  public enum Saves {
+    public enum Empty {
+      /// How to save
+      public static let button = Localization.tr("Localizable", "saves.empty.button", fallback: "How to save")
+      /// Start building your Pocket list
+      public static let header = Localization.tr("Localizable", "saves.empty.header", fallback: "Start building your Pocket list")
     }
   }
   public enum Search {
@@ -277,14 +364,54 @@ public enum Localization {
     public static let offlineMessage = Localization.tr("Localizable", "search.offlineMessage", fallback: "You can only search titles and URLs while offline. Connect to the internet to use Premium's full-text search.")
     /// Recent Searches
     public static let recent = Localization.tr("Localizable", "search.recent", fallback: "Recent Searches")
+    public enum AllItems {
+      public enum Premium {
+        /// Get Pocket Premium
+        public static let button = Localization.tr("Localizable", "search.allItems.premium.button", fallback: "Get Pocket Premium")
+        /// Search your entire Pocket, including archived items, with Pocket Premium.
+        public static let detail = Localization.tr("Localizable", "search.allItems.premium.detail", fallback: "Search your entire Pocket, including archived items, with Pocket Premium.")
+        /// Unlock more search options
+        public static let header = Localization.tr("Localizable", "search.allItems.premium.header", fallback: "Unlock more search options")
+      }
+    }
     public enum Banner {
       /// We’re experiencing an error and can’t show you full search results. Please try again later.
       public static let errorMessage = Localization.tr("Localizable", "search.banner.errorMessage.", fallback: "We’re experiencing an error and can’t show you full search results. Please try again later.")
+    }
+    public enum Empty {
+      /// Search by title or URL
+      public static let header = Localization.tr("Localizable", "search.empty.header", fallback: "Search by title or URL")
     }
     public enum Error {
       public enum View {
         /// You must have an internet connection to view this item.
         public static let needsInternet = Localization.tr("Localizable", "search.error.view.needsInternet", fallback: "You must have an internet connection to view this item.")
+      }
+    }
+    public enum Recent {
+      /// Recent searches will appear here, so you can easily jump back in.
+      public static let empty = Localization.tr("Localizable", "search.recent.empty", fallback: "Recent searches will appear here, so you can easily jump back in.")
+    }
+    public enum Results {
+      public enum Empty {
+        /// Try using different keywords, checking for typos or changing your filters.
+        public static let detail = Localization.tr("Localizable", "search.results.empty.detail", fallback: "Try using different keywords, checking for typos or changing your filters.")
+        /// No results found
+        public static let header = Localization.tr("Localizable", "search.results.empty.header", fallback: "No results found")
+      }
+      public enum Offline {
+        /// You must be online to search %@ items.
+        public static func detail(_ p1: Any) -> String {
+          return Localization.tr("Localizable", "search.results.offline.detail", String(describing: p1), fallback: "You must be online to search %@ items.")
+        }
+        /// No Internet Connection
+        public static let header = Localization.tr("Localizable", "search.results.offline.header", fallback: "No Internet Connection")
+        public enum Detail {
+          /// all
+          public static let all = Localization.tr("Localizable", "search.results.offline.detail.all", fallback: "all")
+          /// archived
+          public static let archive = Localization.tr("Localizable", "search.results.offline.detail.archive", fallback: "archived")
+        }
       }
     }
     public enum Swipe {
@@ -360,6 +487,8 @@ public enum Localization {
       public static let areYouSureMessage = Localization.tr("Localizable", "settings.logout.areYouSureMessage", fallback: "You will be logged out of your account and any items that have been saved for offline viewing will be removed from your device.")
     }
     public enum NoInternet {
+      /// No Internet Connection
+      public static let header = Localization.tr("Localizable", "settings.noInternet.header", fallback: "No Internet Connection")
       /// You must be online to upgrade to Pocket Premium. Please check your connection and try again.
       public static let youMustBeOnline = Localization.tr("Localizable", "settings.noInternet.youMustBeOnline", fallback: "You must be online to upgrade to Pocket Premium. Please check your connection and try again.")
     }
@@ -396,7 +525,29 @@ public enum Localization {
       public static let credits = Localization.tr("Localizable", "settings.thankyou.credits", fallback: "Thank you for using Pocket")
     }
   }
+  public enum SortingOption {
+    /// Longest to read
+    public static let longestToRead = Localization.tr("Localizable", "sortingOption.longestToRead", fallback: "Longest to read")
+    /// Newest saved
+    public static let newestSaved = Localization.tr("Localizable", "sortingOption.NewestSaved", fallback: "Newest saved")
+    /// Oldest saved
+    public static let oldestSaved = Localization.tr("Localizable", "sortingOption.oldestSaved", fallback: "Oldest saved")
+    /// Shortest to read
+    public static let shortestToRead = Localization.tr("Localizable", "sortingOption.shortestToRead", fallback: "Shortest to read")
+    /// Sort by
+    public static let sortBy = Localization.tr("Localizable", "sortingOption.sortBy", fallback: "Sort by")
+  }
   public enum Tags {
+    /// not tagged
+    public static let notTagged = Localization.tr("Localizable", "tags.notTagged", fallback: "not tagged")
+    public enum Empty {
+      /// How to tag
+      public static let button = Localization.tr("Localizable", "tags.empty.button", fallback: "How to tag")
+      /// Tag your saves by topic to find them later.
+      public static let detail = Localization.tr("Localizable", "tags.empty.detail", fallback: "Tag your saves by topic to find them later.")
+      /// No saves with this tag.
+      public static let header = Localization.tr("Localizable", "tags.empty.header", fallback: "No saves with this tag.")
+    }
     public enum Section {
       /// Recent tags
       public static let recentTags = Localization.tr("Localizable", "tags.section.recentTags", fallback: "Recent tags")
