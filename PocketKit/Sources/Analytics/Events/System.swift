@@ -8,12 +8,12 @@ import Foundation
  * Event created by a background task
  */
 public struct System: Event, CustomStringConvertible {
-    public static let schema = "iglu:com.pocket/system_event/jsonschema/1-0-0"
+    public static let schema = "iglu:com.pocket/system_log/jsonschema/1-0-0"
 
-    let type: System.SystemEventType
+    let type: System.SystemLogType
     let source: MigrationSource
 
-    public init(type: SystemEventType, source: MigrationSource) {
+    public init(type: SystemLogType, source: MigrationSource) {
         self.type = type
         self.source = source
     }
@@ -35,7 +35,7 @@ public struct System: Event, CustomStringConvertible {
 }
 
 extension System {
-    public enum SystemEventType {
+    public enum SystemLogType {
         case userMigration(UserMigrationState)
     }
 
