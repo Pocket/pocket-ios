@@ -69,7 +69,7 @@ extension SavedItem {
         self.url = url
         self.createdAt = Date()
 
-        self.item = item
+        self.item = recommendation.item
     }
 
     public func update(from summary: SavedItemSummary, with space: Space) {
