@@ -148,9 +148,10 @@ class SavedItemsListViewModelTests: XCTestCase {
 
     func test_selectCell_whenItemIsArticle_setsSelectedItemToReaderView() throws {
         let viewModel = subject()
-        let item = space.buildPendingSavedItem()
+        let savedItem = space.buildPendingSavedItem()
+        savedItem.item = space.buildItem()
         try space.save()
-        viewModel.selectCell(with: .item(item.objectID), sender: UIView())
+        viewModel.selectCell(with: .item(savedItem.objectID), sender: UIView())
 
         guard let selectedItem = viewModel.selectedItem else {
             XCTFail("Received nil for selectedItem")
