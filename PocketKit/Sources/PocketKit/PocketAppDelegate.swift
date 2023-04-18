@@ -118,7 +118,6 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
                 // Legacy cleanup
                 LegacyCleanupService().cleanUp()
             } else {
-                tracker.track(event: Events.Migration.MigrationTo_v8DidFail(with: nil, source: .pocketKit))
                 Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration not required; skipped.")
             }
         } catch LegacyUserMigrationError.missingStore {
