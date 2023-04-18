@@ -6,7 +6,7 @@ enum SortSection: String, Hashable, CaseIterable {
     var localized: String {
         switch self {
         case .sortBy:
-            return Localization.sortBy
+            return Localization.SortingOption.sortBy
         }
     }
 }
@@ -20,13 +20,13 @@ enum SortOption: String, Hashable {
     var localized: String {
         switch self {
         case .newest:
-            return Localization.newestSaved
+            return Localization.SortingOption.newestSaved
         case .oldest:
-            return Localization.oldestSaved
+            return Localization.SortingOption.oldestSaved
         case .shortestToRead:
-            return Localization.shortestToRead
+            return Localization.SortingOption.shortestToRead
         case .longestToRead:
-            return Localization.longestToRead
+            return Localization.SortingOption.longestToRead
         }
     }
 }

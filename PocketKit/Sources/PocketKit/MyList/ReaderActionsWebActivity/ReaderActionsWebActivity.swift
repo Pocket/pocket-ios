@@ -33,19 +33,19 @@ enum WebActivityTitle: String {
     var localized: String {
         switch self {
         case .save:
-            return Localization.save
+            return Localization.Reader.Activity.save
         case .report:
-            return Localization.report
+            return Localization.Reader.Activity.report
         case .delete:
-            return Localization.delete
+            return Localization.Reader.Activity.delete
         case .favorite:
-            return Localization.favorite
+            return Localization.Reader.Activity.favorite
         case .unfavorite:
-            return Localization.unfavorite
+            return Localization.Reader.Activity.unfavorite
         case .archive:
-            return Localization.archive
+            return Localization.Reader.Activity.archive
         case .moveToSaves:
-            return Localization.moveToSaves
+            return Localization.Reader.Activity.moveToSaves
         }
     }
 }
