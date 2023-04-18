@@ -121,7 +121,7 @@
         <attribute name="imageURL" optional="YES" attributeType="URI"/>
         <attribute name="itemID" attributeType="String"/>
         <attribute name="publisherName" optional="YES" attributeType="String"/>
-        <attribute name="title" optional="YES" attributeType="String"/>
+        <attribute name="title" attributeType="String"/>
         <relationship name="image" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Image" inverseName="syndicatedArticle" inverseEntity="Image"/>
         <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="syndicatedArticle" inverseEntity="Item"/>
         <uniquenessConstraints>
