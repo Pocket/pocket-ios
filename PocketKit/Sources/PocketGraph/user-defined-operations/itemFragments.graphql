@@ -44,13 +44,23 @@ fragment ItemParts on Item {
   }
   syndicatedArticle {
     __typename
-    itemId
+    ...SyndicatedArticleParts
   }
 }
 
 fragment DomainMetadataParts on DomainMetadata {
   name
   logo
+}
+
+fragment SyndicatedArticleParts on SyndicatedArticle {
+    itemId
+    mainImage
+    title
+    excerpt
+    publisher {
+      name
+    }
 }
 
 fragment PendingItemParts on PendingItem {
@@ -88,12 +98,6 @@ fragment ItemSummary on Item {
     imageId
   }
   syndicatedArticle {
-    itemId
-    mainImage
-    title
-    excerpt
-    publisher {
-      name
-    }
+    ...SyndicatedArticleParts
   }
 }
