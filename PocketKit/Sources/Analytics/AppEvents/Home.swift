@@ -98,7 +98,7 @@ public extension Events.Home {
                 ContentEntity(url: url),
             uiEntity: UiEntity(
                 .card,
-                identifier: "discover.open",
+                identifier: "home.slate.article.open",
                 index: positionInList
             ),
             extraEntities: [
@@ -118,7 +118,7 @@ public extension Events.Home {
             requirement: .viewable,
             uiEntity: UiEntity(
                 .card,
-                identifier: "discover.impression",
+                identifier: "home.slate.article.impression",
                 index: positionInList
             ),
             extraEntities: [
@@ -139,8 +139,8 @@ public extension Events.Home {
                 contentEntity: ContentEntity(url: url)
             ),
             uiEntity: UiEntity(
-                .card,
-                identifier: "discover.save",
+                .button,
+                identifier: "home.slate.article.save",
                 index: positionInList
             ),
             extraEntities: [
@@ -158,8 +158,8 @@ public extension Events.Home {
         return Engagement(
             .general,
             uiEntity: UiEntity(
-                .card,
-                identifier: "discover.unsave",
+                .button,
+                identifier: "home.slate.article.unsave",
                 index: positionInList
             ),
             extraEntities: [
@@ -178,8 +178,8 @@ public extension Events.Home {
         return Engagement(
             .general,
             uiEntity: UiEntity(
-                .card,
-                identifier: "discover.archive",
+                .button,
+                identifier: "home.slate.article.archive",
                 index: positionInList
             ),
             extraEntities: [
@@ -199,7 +199,7 @@ public extension Events.Home {
             .general,
             uiEntity: UiEntity(
                 .button,
-                identifier: "discover.share",
+                identifier: "home.slate.article.share",
                 index: positionInList
             ),
             extraEntities: [
@@ -222,7 +222,7 @@ public extension Events.Home {
             ),
             uiEntity: UiEntity(
                 .dialog,
-                identifier: "discover.report"
+                identifier: "home.slate.article.report"
             )
         )
     }

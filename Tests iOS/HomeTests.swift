@@ -72,10 +72,10 @@ class HomeTests: XCTestCase {
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
 
-        async let slate1Rec1 = snowplowMicro.getFirstEvent(with: "discover.impression", recommendationId: "slate-1-rec-1")
-        async let slate1Rec2 = snowplowMicro.getFirstEvent(with: "discover.impression", recommendationId: "slate-1-rec-2")
-        async let slate2Rec1 = snowplowMicro.getFirstEvent(with: "discover.impression", recommendationId: "slate-2-rec-1")
-        async let slate2Rec2 = snowplowMicro.getFirstEvent(with: "discover.impression", recommendationId: "slate-1-rec-2")
+        async let slate1Rec1 = snowplowMicro.getFirstEvent(with: "home.slate.article.impression", recommendationId: "slate-1-rec-1")
+        async let slate1Rec2 = snowplowMicro.getFirstEvent(with: "home.slate.article.impression", recommendationId: "slate-1-rec-2")
+        async let slate2Rec1 = snowplowMicro.getFirstEvent(with: "home.slate.article.impression", recommendationId: "slate-2-rec-1")
+        async let slate2Rec2 = snowplowMicro.getFirstEvent(with: "home.slate.article.impression", recommendationId: "slate-1-rec-2")
 
         let recs = await [slate1Rec1, slate1Rec2, slate2Rec1, slate2Rec2]
         let loadedSlate1Rec1 = recs[0]!
