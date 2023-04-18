@@ -28,7 +28,6 @@ public struct System: Event, CustomStringConvertible {
     public func toSelfDescribing() -> SelfDescribing {
         let base = SelfDescribing(schema: System.schema, payload: [
             "identifier": NSString(string: self.description),
-            "value": NSString()
         ])
 
         return base
