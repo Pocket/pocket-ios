@@ -15,7 +15,7 @@ public class GetSlateQuery: GraphQLQuery {
         }
       }
       """#,
-      fragments: [SlateParts.self, ItemSummary.self, DomainMetadataParts.self, CuratedInfoParts.self]
+      fragments: [SlateParts.self, ItemSummary.self, DomainMetadataParts.self, SyndicatedArticleParts.self, CuratedInfoParts.self]
     ))
 
   public var slateID: String

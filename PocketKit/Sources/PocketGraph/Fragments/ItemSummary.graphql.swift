@@ -40,14 +40,7 @@ public struct ItemSummary: PocketGraph.SelectionSet, Fragment {
       }
       syndicatedArticle {
         __typename
-        itemId
-        mainImage
-        title
-        excerpt
-        publisher {
-          __typename
-          name
-        }
+        ...SyndicatedArticleParts
       }
     }
     """ }
@@ -95,7 +88,7 @@ public struct ItemSummary: PocketGraph.SelectionSet, Fragment {
   public var topImageUrl: PocketGraph.Url? { __data["topImageUrl"] }
   /// How long it will take to read the article (TODO in what time unit? and by what calculation?)
   public var timeToRead: Int? { __data["timeToRead"] }
-  /// The domain, such as 'getpocket.com' of the {.resolved_url}
+  /// The domain, such as 'getpocket.com' of the resolved_url
   public var domain: String? { __data["domain"] }
   /// The date the article was published
   public var datePublished: PocketGraph.DateString? { __data["datePublished"] }
@@ -267,7 +260,7 @@ public struct ItemSummary: PocketGraph.SelectionSet, Fragment {
     /// Absolute url to the image
     @available(*, deprecated, message: "use url property moving forward")
     public var src: String { __data["src"] }
-    /// The id for placing within an Article View. {articleView.article} will have placeholders of <div id='RIL_IMG_X' /> where X is this id. Apps can download those images as needed and populate them in their article view.
+    /// The id for placing within an Article View. Item.article will have placeholders of <div id='RIL_IMG_X' /> where X is this id. Apps can download those images as needed and populate them in their article view.
     public var imageId: Int { __data["imageId"] }
 
     public init(
@@ -299,11 +292,7 @@ public struct ItemSummary: PocketGraph.SelectionSet, Fragment {
     public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.SyndicatedArticle }
     public static var __selections: [ApolloAPI.Selection] { [
       .field("__typename", String.self),
-      .field("itemId", PocketGraph.ID?.self),
-      .field("mainImage", String?.self),
-      .field("title", String.self),
-      .field("excerpt", String?.self),
-      .field("publisher", Publisher?.self),
+      .fragment(SyndicatedArticleParts.self),
     ] }
 
     /// The item id of this Syndicated Article
@@ -315,14 +304,21 @@ public struct ItemSummary: PocketGraph.SelectionSet, Fragment {
     /// Excerpt 
     public var excerpt: String? { __data["excerpt"] }
     /// The manually set publisher information for this article
-    public var publisher: Publisher? { __data["publisher"] }
+    public var publisher: SyndicatedArticleParts.Publisher? { __data["publisher"] }
+
+    public struct Fragments: FragmentContainer {
+      public let __data: DataDict
+      public init(_dataDict: DataDict) { __data = _dataDict }
+
+      public var syndicatedArticleParts: SyndicatedArticleParts { _toFragment() }
+    }
 
     public init(
       itemId: PocketGraph.ID? = nil,
       mainImage: String? = nil,
       title: String,
       excerpt: String? = nil,
-      publisher: Publisher? = nil
+      publisher: SyndicatedArticleParts.Publisher? = nil
     ) {
       self.init(_dataDict: DataDict(data: [
         "__typename": PocketGraph.Objects.SyndicatedArticle.typename,
@@ -332,38 +328,10 @@ public struct ItemSummary: PocketGraph.SelectionSet, Fragment {
         "excerpt": excerpt,
         "publisher": publisher._fieldData,
         "__fulfilled": Set([
-          ObjectIdentifier(Self.self)
+          ObjectIdentifier(Self.self),
+          ObjectIdentifier(SyndicatedArticleParts.self)
         ])
       ]))
-    }
-
-    /// SyndicatedArticle.Publisher
-    ///
-    /// Parent Type: `Publisher`
-    public struct Publisher: PocketGraph.SelectionSet {
-      public let __data: DataDict
-      public init(_dataDict: DataDict) { __data = _dataDict }
-
-      public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Publisher }
-      public static var __selections: [ApolloAPI.Selection] { [
-        .field("__typename", String.self),
-        .field("name", String?.self),
-      ] }
-
-      /// Name of the publisher of the article
-      public var name: String? { __data["name"] }
-
-      public init(
-        name: String? = nil
-      ) {
-        self.init(_dataDict: DataDict(data: [
-          "__typename": PocketGraph.Objects.Publisher.typename,
-          "name": name,
-          "__fulfilled": Set([
-            ObjectIdentifier(Self.self)
-          ])
-        ]))
-      }
     }
   }
 }

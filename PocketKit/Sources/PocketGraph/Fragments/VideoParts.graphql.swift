@@ -40,7 +40,7 @@ public struct VideoParts: PocketGraph.SelectionSet, Fragment {
   public var type: GraphQLEnum<PocketGraph.VideoType> { __data["type"] }
   /// The video's id within the service defined by type
   public var vid: String? { __data["vid"] }
-  /// The id of the video within Article View. {articleView.article} will have placeholders of <div id='RIL_VID_X' /> where X is this id. Apps can download those images as needed and populate them in their article view.
+  /// The id of the video within Article View. Item.article will have placeholders of <div id='RIL_VID_X' /> where X is this id. Apps can download those images as needed and populate them in their article view.
   public var videoID: Int { __data["videoID"] }
   /// If known, the width of the video in px
   public var width: Int? { __data["width"] }
