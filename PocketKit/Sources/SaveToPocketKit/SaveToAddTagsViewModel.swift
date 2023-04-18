@@ -145,8 +145,14 @@ extension SaveToAddTagsViewModel {
         tracker.track(event: Events.Tags.filteredTagsImpression(itemUrl: url))
     }
 
-    func trackRecentTagsTapped(with tag: TagType) {
-        guard case .recent = tag else { return }
-        tracker.track(event: Events.Tags.addTagsRecentTagTapped())
+    func trackExistingTagTapped(with tagType: TagType) {
+        switch tagType {
+        case .notTagged:
+            return
+        case .recent:
+            tracker.track(event: Events.Tags.selectRecentTagToAddToItem())
+        case .tag:
+            tracker.track(event: Events.Tags.selectTagToAddToItem())
+        }
     }
 }
