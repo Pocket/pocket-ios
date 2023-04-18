@@ -177,7 +177,8 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
 
     var timer: Timer?
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        guard let text = searchBar.text, !text.isEmpty else { return }
+        guard let text = searchBar.text else { return }
+        print(searchBar.text)
         timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: false, block: { _ in
             self.searchViewModel.updateSearchResults(with: text)
