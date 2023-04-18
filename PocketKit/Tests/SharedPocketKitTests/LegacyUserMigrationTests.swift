@@ -106,7 +106,7 @@ extension LegacyUserMigrationTests {
     }
 }
 
-// MARK: - perform (requirements)
+// MARK: - attemptMigration (requirements)
 extension LegacyUserMigrationTests {
     func test_perform_whenNotRequired_doesNotThrowError() {
         let migration = subject()
@@ -123,7 +123,7 @@ extension LegacyUserMigrationTests {
             return try! JSONSerialization.data(withJSONObject: correct)
         }
 
-        XCTAssertNoThrow(try migration.perform {
+        XCTAssertNoThrow(try migration.attemptMigration {
             XCTFail("Migration should not be attempted")
         })
     }
@@ -132,7 +132,7 @@ extension LegacyUserMigrationTests {
         let migration = subject()
 
         do {
-            let result = try migration.perform {
+            let result = try migration.attemptMigration {
                 XCTFail("Migration should not be attempted")
             }
 
@@ -143,7 +143,7 @@ extension LegacyUserMigrationTests {
     }
 }
 
-// MARK: - perform (guid)
+// MARK: - attemptMigration (guid)
 // For these tests to correctly function, implement the same stub
 // for all keys (since guid is checked first)
 extension LegacyUserMigrationTests {
@@ -155,7 +155,7 @@ extension LegacyUserMigrationTests {
         }
 
         do {
-            try migration.perform {
+            try migration.attemptMigration {
                 XCTFail("Migration should not be attempted")
             }
         } catch {
@@ -174,7 +174,7 @@ extension LegacyUserMigrationTests {
         }
 
         do {
-            try migration.perform {
+            try migration.attemptMigration {
                 XCTFail("Migration should not be attempted")
             }
         } catch {
@@ -197,7 +197,7 @@ extension LegacyUserMigrationTests {
         }
 
         do {
-            try migration.perform {
+            try migration.attemptMigration {
                 XCTFail("Migration should not be attempted")
             }
         } catch {
@@ -209,7 +209,7 @@ extension LegacyUserMigrationTests {
     }
 }
 
-// MARK: - perform (passing)
+// MARK: - attemptMigration (passing)
 extension LegacyUserMigrationTests {
     func test_perform_allValid_updatesAppSession() throws {
         // Required to regenerate migration with updated infoDictionary since infoDictionary
@@ -231,7 +231,7 @@ extension LegacyUserMigrationTests {
 
         let expectation = XCTestExpectation(description: "Migration event fired successfully.")
 
-        try migration.perform {
+        try migration.attemptMigration {
             expectation.fulfill()
         }
 
