@@ -313,7 +313,7 @@ class RecommendationViewModelTests: XCTestCase {
         let viewModel = try subject(recommendation: space.createRecommendation())
         let url = URL(string: "https://getpocket.com")!
         let actions = viewModel.externalActions(for: url)
-        viewModel.invokeAction(from: actions, title: "Copy link")
+        viewModel.invokeAction(from: actions, title: "Copy Link")
 
         XCTAssertEqual(pasteboard.url, url)
     }

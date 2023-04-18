@@ -1,5 +1,6 @@
 import SwiftUI
 import Textile
+import Localization
 
 struct LoggedOutOfflineView: View {
     @Binding private var isPresented: Bool
@@ -43,10 +44,10 @@ private struct LoggedOutOfflineInfoView: View {
             Image(asset: .looking)
 
             VStack(spacing: 24) {
-                Text("No Internet Connection")
+                Text(Localization.LoggedOut.Offline.header)
                     .style(.main)
 
-                Text("Looks like you're offline. Try checking your mobile data or wifi.")
+                Text(Localization.LoggedOut.Offline.detail)
                     .style(.detail)
             }
         }

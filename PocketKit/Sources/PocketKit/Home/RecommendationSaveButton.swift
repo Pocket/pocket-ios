@@ -15,9 +15,9 @@ class RecommendationSaveButton: UIButton {
         var title: String {
             switch self {
             case .save:
-                return Localization.save
+                return Localization.Recommendation.save
             case .saved:
-                return Localization.saved
+                return Localization.Recommendation.saved
             }
         }
 

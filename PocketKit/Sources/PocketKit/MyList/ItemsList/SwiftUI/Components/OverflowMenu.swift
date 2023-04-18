@@ -89,7 +89,7 @@ struct MoveToSavesButton: View {
             }
         }) {
             Label {
-                Text(Localization.moveToSaves)
+                Text(Localization.Item.OverflowMenu.moveToSaves)
             } icon: {
                 Image(asset: .save)
             }

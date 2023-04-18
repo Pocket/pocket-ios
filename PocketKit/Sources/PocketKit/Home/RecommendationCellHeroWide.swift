@@ -57,8 +57,8 @@ class RecommendationCellHeroWide: UICollectionViewCell {
         return button
     }()
 
-    private let overflowMenuButton: RecommendationOverflowButton = {
-        let button = RecommendationOverflowButton()
+    private let overflowMenuButton: RecommendationButton = {
+        let button = RecommendationButton(asset: .overflow)
         button.accessibilityIdentifier = "overflow-button"
         button.showsMenuAsPrimaryAction = true
         return button
