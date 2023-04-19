@@ -22,6 +22,7 @@ class MockTracker: Analytics.Tracker {
     private(set) var trackCalls = Calls<TrackCall>()
     private(set) var addPersistentCalls = Calls<AddPersistentCall>()
     private(set) var clearPersistentContextsCalls = Calls<[Entity]>()
+    private(set) var clearPersistentFeatureContextsCalls = Calls<[FeatureFlagEntity]>()
 
     func addPersistentEntity(_ entity: Analytics.Entity) {
         addPersistentCalls.add(AddPersistentCall(entity: entity))
@@ -37,6 +38,10 @@ class MockTracker: Analytics.Tracker {
 
     func resetPersistentEntities(_ entities: [Analytics.Entity]) {
         clearPersistentContextsCalls.add(entities)
+    }
+
+    func resetPersistentFeatureEntities(_ entities: [Analytics.FeatureFlagEntity]) {
+        clearPersistentFeatureContextsCalls.add(entities)
     }
 
     func childTracker(with contexts: [Context]) -> Analytics.Tracker {
@@ -55,6 +60,7 @@ class MockSnowplow: Analytics.SnowplowTracker {
 
     private(set) var trackCalls = Calls<TrackCall>()
     private(set) var clearPersistentContextsCalls = Calls<[Entity]>()
+    private(set) var clearPersistentFeatureContextsCalls = Calls<[FeatureFlagEntity]>()
     private(set) var addPersistentCalls = Calls<AddPersistentCall>()
 
     func track(event: SelfDescribing) {
@@ -67,6 +73,10 @@ class MockSnowplow: Analytics.SnowplowTracker {
 
     func resetPersistentEntities(_ entities: [Entity]) {
         clearPersistentContextsCalls.add(entities)
+    }
+
+    func resetPersistentFeatureEntities(_ entities: [FeatureFlagEntity]) {
+        clearPersistentFeatureContextsCalls.add(entities)
     }
 }
 

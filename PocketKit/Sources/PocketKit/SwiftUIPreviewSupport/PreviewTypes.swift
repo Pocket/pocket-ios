@@ -20,5 +20,6 @@ class PreviewTracker: Tracker {
     func track<T>(event: T, _ contexts: [Analytics.Context]?) where T: Analytics.OldEvent {}
     func addPersistentEntity(_ entity: Analytics.Entity) {}
     func resetPersistentEntities(_ entities: [Analytics.Entity]) {}
+    func resetPersistentFeatureEntities(_ entities: [Analytics.FeatureFlagEntity]) {}
     func track(event: Event, filename: String, line: Int, column: Int, funcName: String) {}
 }

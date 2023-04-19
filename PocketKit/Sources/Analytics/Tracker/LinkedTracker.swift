@@ -32,4 +32,8 @@ class LinkedTracker: Tracker {
     func resetPersistentEntities(_ entities: [Entity]) {
         parent.resetPersistentEntities(entities)
     }
+
+    func resetPersistentFeatureEntities(_ entities: [FeatureFlagEntity]) {
+        parent.resetPersistentFeatureEntities(entities)
+    }
 }

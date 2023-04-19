@@ -592,8 +592,9 @@ extension PocketSource {
 
 extension PocketSource {
 
-    public func fetchAllFeatureFlags() async throws {
+    public func fetchAllFeatureFlags() async throws -> [FeatureFlag] {
         try await featureFlagService.fetchFeatureFlags()
+        return try space.fetchFeatureFlags(in: space.backgroundContext)
     }
 
     public func fetchFeatureFlag(by name: String) -> FeatureFlag? {

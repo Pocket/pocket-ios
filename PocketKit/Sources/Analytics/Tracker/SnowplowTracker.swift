@@ -8,4 +8,5 @@ public protocol SnowplowTracker {
     func track(event: SelfDescribing)
     func addPersistentEntity(_ entity: Entity)
     func resetPersistentEntities(_ entities: [Entity])
+    func resetPersistentFeatureEntities(_ entities: [FeatureFlagEntity])
 }

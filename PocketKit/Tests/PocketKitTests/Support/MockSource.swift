@@ -1371,7 +1371,7 @@ extension MockSource {
 // MARK: - fetchAllFeatureFlags
 extension MockSource {
     private static let fetchAllFeatureFlags = "fetchAllFeatureFlags"
-    typealias FetchAllFeatureFlagsImpl = () -> Void
+    typealias FetchAllFeatureFlagsImpl = () -> [FeatureFlag]
 
     struct FetchAllFeatureFlagsCall {
     }
@@ -1380,7 +1380,7 @@ extension MockSource {
         implementations[Self.fetchAllFeatureFlags] = impl
     }
 
-    func fetchAllFeatureFlags() async throws {
+    func fetchAllFeatureFlags() async throws -> [FeatureFlag] {
         guard let impl = implementations[Self.fetchAllFeatureFlags] as? FetchAllFeatureFlagsImpl else {
             fatalError("\(Self.self)#\(#function) has not been stubbed")
         }
@@ -1389,7 +1389,7 @@ extension MockSource {
             FetchAllFeatureFlagsCall()
         ]
 
-        impl()
+        return impl()
     }
 
     func fetchAllFeatureFlagsCall(at index: Int) -> FetchAllFeatureFlagsCall? {

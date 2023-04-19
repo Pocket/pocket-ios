@@ -12,6 +12,7 @@ public protocol Tracker {
     @available(*, deprecated, message: "No need to longer use a child tracker")
     func childTracker(with contexts: [Context]) -> Tracker
     func resetPersistentEntities(_ entities: [Entity])
+    func resetPersistentFeatureEntities(_ entities: [FeatureFlagEntity])
 }
 
 public extension Tracker {

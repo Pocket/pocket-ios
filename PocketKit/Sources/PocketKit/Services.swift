@@ -135,7 +135,8 @@ struct Services {
             taskScheduler: BGTaskScheduler.shared,
             appSession: appSession,
             source: source,
-            lastRefresh: lastRefresh
+            lastRefresh: lastRefresh,
+            tracker: tracker
         )
 
         refreshCoordinators = [

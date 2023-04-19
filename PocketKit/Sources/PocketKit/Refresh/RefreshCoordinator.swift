@@ -36,6 +36,9 @@ protocol RefreshCoordinator: AnyObject {
     /// - Parameter completion: The callback to execute upon finishing data loading
     /// - Parameter isForced: Whether or not a user manaully triggered the refreshing
     func refresh(isForced: Bool, _ completion: @escaping () -> Void)
+
+    /// Implemented by any coordinator to implement any logout cleanup logic
+    func didLogout()
 }
 
 /// An Abstract extension  that can be used to implement background refreshing and implement some default logic like observing to login/logout and foregorund notifications.
@@ -108,6 +111,12 @@ extension RefreshCoordinator {
     private func tearDownSession() {
         subscriptions = []
         taskScheduler.cancel(taskID)
+        didLogout()
+    }
+
+    /// Implemented by any coordinator to implement any logout cleanup logic
+    func didLogout() {
+        // No-op, but any implementing coordinator can implement.
     }
 
     /// Submit the request to be scheduled anytime after the given interval

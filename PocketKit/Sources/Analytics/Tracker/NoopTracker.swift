@@ -24,4 +24,8 @@ public struct NoopTracker: Tracker {
     public func resetPersistentEntities(_ entities: [Entity]) {
         fatalError("\(Self.self) cannot be used. Please set your environment's tracker to a valid tracker.")
     }
+
+    public func resetPersistentFeatureEntities(_ entities: [FeatureFlagEntity]) {
+        fatalError("\(Self.self) cannot be used. Please set your environment's tracker to a valid tracker.")
+    }
 }

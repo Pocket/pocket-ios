@@ -43,6 +43,10 @@ public class PocketTracker: Tracker {
     public func resetPersistentEntities(_ entities: [Entity]) {
         snowplow.resetPersistentEntities(entities)
     }
+
+    public func resetPersistentFeatureEntities(_ entities: [FeatureFlagEntity]) {
+        snowplow.resetPersistentFeatureEntities(entities)
+    }
 }
 
 extension PocketTracker {

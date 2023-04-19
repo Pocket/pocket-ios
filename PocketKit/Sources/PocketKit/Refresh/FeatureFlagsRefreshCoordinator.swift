@@ -6,6 +6,7 @@ import Foundation
 import Sync
 import SharedPocketKit
 import Combine
+import Analytics
 
 /// Refresh coordinator to handle the refreshing of feature flags
 class FeatureFlagsRefreshCoordinator: RefreshCoordinator {
@@ -24,14 +25,20 @@ class FeatureFlagsRefreshCoordinator: RefreshCoordinator {
     private let lastRefresh: LastRefresh
 
     private let source: Source
+    private let tracker: Tracker
     var isRefreshing: Bool = false
 
-    init(notificationCenter: NotificationCenter, taskScheduler: BGTaskSchedulerProtocol, appSession: AppSession, source: Source, lastRefresh: LastRefresh) {
+    init(notificationCenter: NotificationCenter, taskScheduler: BGTaskSchedulerProtocol, appSession: AppSession, source: Source, lastRefresh: LastRefresh, tracker: Tracker) {
         self.notificationCenter = notificationCenter
         self.taskScheduler = taskScheduler
         self.appSession = appSession
         self.source = source
         self.lastRefresh = lastRefresh
+        self.tracker = tracker
+    }
+
+    func didLogout() {
+        tracker.resetPersistentFeatureEntities([])
     }
 
     func refresh(isForced: Bool = false, _ completion: @escaping () -> Void) {
@@ -46,7 +53,19 @@ class FeatureFlagsRefreshCoordinator: RefreshCoordinator {
                 }
                 do {
                     self.isRefreshing = true
-                    try await self.source.fetchAllFeatureFlags()
+                    let flags = try await self.source.fetchAllFeatureFlags()
+
+                    let flagEntities: [FeatureFlagEntity] = flags.compactMap { flag in
+                        guard let name = flag.name, flag.assigned else {
+                            return nil
+                        }
+                        return FeatureFlagEntity(
+                            name: name,
+                            variant: flag.variant ?? "control"
+                        )
+                    }
+                    self.tracker.resetPersistentFeatureEntities(flagEntities)
+
                     self.lastRefresh.refreshedFeatureFlags()
                     Log.breadcrumb(category: "refresh", level: .info, message: "Feature Flags Refresh Occur")
                 } catch {

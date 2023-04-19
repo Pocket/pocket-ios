@@ -105,7 +105,7 @@ public protocol Source {
 
     // MARK: -
 
-    func fetchAllFeatureFlags() async throws
+    func fetchAllFeatureFlags() async throws -> [FeatureFlag]
 
     func fetchFeatureFlag(by name: String) -> FeatureFlag?
 
