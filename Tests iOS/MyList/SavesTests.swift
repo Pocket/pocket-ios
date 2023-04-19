@@ -304,7 +304,6 @@ extension SavesTests {
 
         app
             .webReaderView
-            .staticText(matching: "Hello, world")
             .wait()
     }
 

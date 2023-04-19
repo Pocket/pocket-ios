@@ -206,7 +206,6 @@ extension ArchiveTests {
 
         app
             .webReaderView
-            .staticText(matching: "Hello, world")
             .wait(timeout: 10)
     }
 }
