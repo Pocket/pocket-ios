@@ -1,6 +1,6 @@
 import UIKit
 
-extension UIImage {
+public extension UIImage {
     func addImagePadding(width: CGFloat, height: CGFloat) -> UIImage? {
         let maxWidth: CGFloat = size.width + width
         let maxHeight: CGFloat = size.height + height
