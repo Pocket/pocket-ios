@@ -3,6 +3,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import CoreData
+import SharedPocketKit
 
 public class PersistentContainer: NSPersistentContainer {
     public lazy var rootSpace = { Space(backgroundContext: backgroundContext, viewContext: modifiedViewContext) }()

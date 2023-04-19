@@ -4,6 +4,7 @@
 
 import Combine
 import CoreData
+import SharedPocketKit
 
 enum SyncOperationResult {
     case retry(Error)

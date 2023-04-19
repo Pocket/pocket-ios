@@ -2,6 +2,7 @@ import Foundation
 import PocketGraph
 import Sync
 import Localization
+import SharedPocketKit
 
 extension SearchSavedItem: ItemsListItem {
     var displayTitle: String {

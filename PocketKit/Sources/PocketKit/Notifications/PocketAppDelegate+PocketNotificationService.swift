@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import Sync
+import SharedPocketKit
 
 /**
  Extend the App Delegate so that we can add in the notification methods

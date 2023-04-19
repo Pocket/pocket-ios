@@ -73,7 +73,8 @@ let package = Package(
             dependencies: [
                 "Textile",
                 "Localization",
-                "RNCryptor"
+                "RNCryptor",
+                .product(name: "Sentry", package: "sentry-cocoa")
             ]
         ),
         .testTarget(
@@ -101,7 +102,6 @@ let package = Package(
             name: "Sync",
             dependencies: [
                 .product(name: "Apollo", package: "apollo-ios"),
-                .product(name: "Sentry", package: "sentry-cocoa"),
                 "PocketGraph",
                 "SharedPocketKit"
             ],

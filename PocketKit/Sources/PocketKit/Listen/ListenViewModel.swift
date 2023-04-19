@@ -5,6 +5,7 @@
 import Foundation
 import Sync
 import PKTListen
+import SharedPocketKit
 
 class ListenViewModel: PKTListenDataSource<PKTListDiffable> {
     static func source(savedItems: [SavedItem]?) -> ListenViewModel {
