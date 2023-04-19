@@ -5,6 +5,7 @@
 import Apollo
 import ApolloAPI
 import Foundation
+import SharedPocketKit
 
 extension ApolloClient {
     static func createDefault(

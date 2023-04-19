@@ -2,6 +2,7 @@ import Foundation
 import Sync
 import UIKit
 import Combine
+import SharedPocketKit
 
 protocol BadgeProvider: AnyObject {
     var applicationIconBadgeNumber: Int { get set }
