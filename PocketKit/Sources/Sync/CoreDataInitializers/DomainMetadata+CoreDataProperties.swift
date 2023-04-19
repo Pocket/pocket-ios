@@ -13,5 +13,5 @@ extension DomainMetadata {
 
     @NSManaged public var logo: URL?
     @NSManaged public var name: String?
-    @NSManaged public var item: Item?
+    @NSManaged public var item: Item
 }
