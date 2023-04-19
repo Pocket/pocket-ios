@@ -52,12 +52,6 @@ public struct MainView: View {
             .accessibilityIdentifier("account-tab-bar-button")
             .tag(MainViewModel.AppSection.account)
         }
-        .overlay(alignment: .bottomLeading, content: {
-            if let banner = model.bannerViewModel {
-                ZStack(alignment: .bottom) {}
-                    .pasteboard(data: banner, show: .constant(true), bottomOffset: tabBarHeightOffset)
-            }
-        })
         .background(Color(.ui.white1))
         .foregroundColor(Color(.ui.grey1))
         .tint(Color(.ui.grey1))
