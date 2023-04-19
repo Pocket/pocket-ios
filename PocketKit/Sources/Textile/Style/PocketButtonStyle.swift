@@ -12,6 +12,7 @@ public struct PocketButtonStyle: ButtonStyle {
         case primary
         case secondary
         case internalInfoLink
+        case destructive
     }
 
     let variation: Variation
@@ -45,6 +46,14 @@ public struct PocketButtonStyle: ButtonStyle {
             static let pressedForegorundColor = Color(.ui.white1)
             static let buttonHeight: CGFloat = 34
             static let style = Style.header.sansSerif.p4
+        }
+
+        struct Destructive {
+            static let tintColor = Color(.ui.grey1)
+            static let backgroundColor = Color(.ui.coral1)
+            static let pressedBackgroundColor = Color(.ui.white)
+            static let foregroundColor = Color(.ui.white)
+            static let pressedForegroundColor = Color(.ui.white)
         }
     }
 
@@ -103,6 +112,15 @@ public struct PocketButtonStyle: ButtonStyle {
                     .tint(Constants.InternalInfoLink.tintColor)
                     .background( configuration.isPressed ? Constants.InternalInfoLink.pressedBackgroundColor : Constants.InternalInfoLink.backgroundColor)
                     .foregroundColor(configuration.isPressed ? Constants.InternalInfoLink.pressedForegorundColor : Constants.InternalInfoLink.foregroundColor)
+                    .cornerRadius(Constants.cornerRadius)
+            }
+            .if(variation == .destructive) { view in
+                view
+                    .font(Font(Constants.style.fontDescriptor))
+                    .frame(height: Constants.buttonHeight)
+                    .tint(Constants.Destructive.tintColor)
+                    .background( configuration.isPressed ? Constants.Destructive.pressedBackgroundColor : Constants.Destructive.backgroundColor)
+                    .foregroundColor(configuration.isPressed ? Constants.Destructive.pressedForegroundColor : Constants.Destructive.foregroundColor)
                     .cornerRadius(Constants.cornerRadius)
             }
         }

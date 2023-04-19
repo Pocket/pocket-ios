@@ -68,7 +68,7 @@ struct DeleteAccountView: View {
                 Button(Localization.Settings.AccountManagement.deleteAccount) {
                     viewModel.deleteAccount()
                 }
-                .buttonStyle(PocketButtonStyle(.primary))
+                .buttonStyle(PocketButtonStyle(.destructive))
                 .disabled(
                     viewModel.isPremium ?
                           !(hasCancelledPremium && understandsPermanentDeletion) :
