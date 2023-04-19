@@ -208,6 +208,16 @@ class RecommendationCellHeroWide: UICollectionViewCell {
             cornerRadius: layer.cornerRadius
         ).cgPath
     }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            // Views get notified of trait collection changes (e.g theme), but layers do not
+            // We can dynamically update the base layer color, then, if there was a theme change
+            layer.backgroundColor = UIColor(.ui.white1).cgColor
+        }
+    }
 }
 
 extension RecommendationCellHeroWide {
