@@ -4,6 +4,7 @@
 
 import Foundation
 import CoreData
+import SharedPocketKit
 
 extension Set where Element: NSManagedObject {
     /// Iterates over the objects and returns the object IDs that matched our observing keyPaths.

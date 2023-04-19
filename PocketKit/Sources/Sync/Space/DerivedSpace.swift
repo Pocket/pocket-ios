@@ -3,6 +3,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import CoreData
+import SharedPocketKit
 
 /// Protocol representing a type that exposes a (read only) task cursor
 protocol Paginated {

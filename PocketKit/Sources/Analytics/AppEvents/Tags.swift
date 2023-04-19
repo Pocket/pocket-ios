@@ -117,22 +117,57 @@ public extension Events.Tags {
         )
     }
 
-    static func addTagsRecentTagTapped() -> Event {
+    /// Fired when a user taps on a general tag from `Add Tags` screen
+    static func selectTagToAddToItem() -> Event {
         return Engagement(
             .general,
             uiEntity: UiEntity(
                 .button,
-                identifier: "global-nav.addTags.recentTags"
+                identifier: "global-nav.addTags.selectTag"
             )
         )
     }
 
-    static func filterTagsRecentTagTapped() -> Event {
+    /// Fired when a user taps on a recent tag from `Add Tags` screen
+    static func selectRecentTagToAddToItem() -> Event {
         return Engagement(
             .general,
             uiEntity: UiEntity(
                 .button,
-                identifier: "global-nav.filterTags.recentTags"
+                identifier: "global-nav.addTags.selectRecentTag"
+            )
+        )
+    }
+
+    /// Fired when a user selects on a general tag using the `Tags` screen after tapping on `Tagged` filter
+    static func selectTagToFilter() -> Event {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "global-nav.filterTags.selectTag"
+            )
+        )
+    }
+
+    /// Fired when a user selects `not tagged` using the `Tags` screen after tapping on `Tagged` filter
+    static func selectNotTaggedToFilter() -> Event {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "global-nav.filterTags.selectNotTagged"
+            )
+        )
+    }
+
+    /// Fired when a user selects on a recent tag using the `Tags` screen after tapping on `Tagged` filter
+    static func selectRecentTagToFilter() -> Event {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "global-nav.filterTags.selectRecentTag"
             )
         )
     }

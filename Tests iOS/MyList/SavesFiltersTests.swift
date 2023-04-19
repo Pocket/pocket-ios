@@ -64,7 +64,8 @@ class SavesFiltersTests: XCTestCase {
         XCTAssertEqual(app.saves.wait().itemCells.count, 2)
     }
 
-    func test_savesView_tappingTaggedPill_withFreeUser_showsFilteredItems() {
+    @MainActor
+    func test_savesView_tappingTaggedPill_withFreeUser_showsFilteredItems() async {
         app.launch().tabBar.savesButton.wait().tap()
         app.saves.filterButton(for: "Tagged").tap()
         let tagsFilterView = app.saves.tagsFilterView.wait()
@@ -81,5 +82,38 @@ class SavesFiltersTests: XCTestCase {
         app.saves.selectedTagChip(for: "not tagged").wait()
         app.saves.selectedTagChip(for: "not tagged").buttons.element(boundBy: 0).tap()
         XCTAssertEqual(app.saves.wait().itemCells.count, 2)
+
+        app.saves.filterButton(for: "Tagged").wait().tap()
+        tagsFilterView.wait().tag(matching: "filter tag 0").wait().tap()
+        XCTAssertEqual(app.saves.wait().itemCells.count, 1)
+
+        let events = await [
+            snowplowMicro.getFirstEvent(with: "global-nav.filterTags.selectNotTagged"),
+            snowplowMicro.getFirstEvent(with: "global-nav.filterTags.selectTag")
+        ]
+
+        let tagEvent = events[0]!
+        tagEvent.getUIContext()!.assertHas(type: "button")
+
+        let tagEvent1 = events[1]!
+        tagEvent1.getUIContext()!.assertHas(type: "button")
+    }
+
+    @MainActor
+    func test_savesView_tappingTaggedPill_withPremiumUser_showsFilteredItems() async {
+        server.routes.post("/graphql") { request, _ -> Response in
+            let apiRequest = ClientAPIRequest(request)
+            if apiRequest.isForUserDetails {
+                return Response.premiumUserDetails()
+            }
+            return .fallbackResponses(apiRequest: ClientAPIRequest(request))
+        }
+        app.launch().tabBar.savesButton.wait().tap()
+        app.saves.filterButton(for: "Tagged").tap()
+        let tagsFilterView = app.saves.tagsFilterView.wait()
+        tagsFilterView.recentTagCells.element(boundBy: 0).wait().tap()
+
+        let tagEvent = await snowplowMicro.getFirstEvent(with: "global-nav.filterTags.selectRecentTag")
+        tagEvent!.getUIContext()!.assertHas(type: "button")
     }
 }

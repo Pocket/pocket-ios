@@ -6,6 +6,7 @@ import Foundation
 import PKTListen
 import Sync
 import Kingfisher
+import SharedPocketKit
 
 /// Older Pocket runtime which configures the legacy pocket app hooks used by Listen
 /// NOT USED FOR NOW.
