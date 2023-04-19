@@ -445,12 +445,24 @@ extension SearchViewModel {
     func archive(_ savedItem: SavedItem, index: Int) {
         tracker.track(event: Events.Search.archiveItem(itemUrl: savedItem.url, positionInList: index, scope: selectedScope))
         source.archive(item: savedItem)
+        updateLocalSearchResults(ByRemoving: savedItem)
     }
 
     /// Triggers action to move an item from archive to saves in a list
     func moveToSaves(_ savedItem: SavedItem, index: Int) {
         tracker.track(event: Events.Search.unarchiveItem(itemUrl: savedItem.url, positionInList: index, scope: selectedScope))
         source.unarchive(item: savedItem)
+        updateLocalSearchResults(ByRemoving: savedItem)
+    }
+
+    private func updateLocalSearchResults(ByRemoving item: SavedItem) {
+        if case let .searchResults(results) = searchState {
+            let updatedResults = results.filter {
+                $0.id != item.id
+            }
+            
+            searchState = .searchResults(updatedResults)
+        }
     }
 
     func fetchSavedItem(_ searchItem: PocketItem) -> SavedItem? {
