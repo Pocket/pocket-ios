@@ -70,7 +70,7 @@ extension Space {
         imageURL: URL? = nil,
         itemID: String,
         publisherName: String? = nil,
-        title: String? = nil,
+        title: String,
         item: Item? = nil
     ) throws -> SyndicatedArticle {
         try backgroundContext.performAndWait {
@@ -94,7 +94,7 @@ extension Space {
         imageURL: URL? = nil,
         itemID: String,
         publisherName: String? = nil,
-        title: String? = nil,
+        title: String,
         item: Item? = nil
     ) -> SyndicatedArticle {
         backgroundContext.performAndWait {
