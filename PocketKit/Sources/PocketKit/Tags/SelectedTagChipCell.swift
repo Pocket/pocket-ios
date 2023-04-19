@@ -37,6 +37,7 @@ class SelectedTagChipCell: UICollectionViewCell {
         config.image = Constants.closeUIImage?
             .resized(to: CGSize(width: 16, height: 16))
             .withTintColor(UIColor(.ui.grey4))
+            .addImagePadding(width: 10, height: 10)
         let button = UIButton(configuration: config, primaryAction: nil)
         button.accessibilityIdentifier = "close-button"
         return button
