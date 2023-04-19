@@ -45,18 +45,8 @@ class TagsFilterViewModel: ObservableObject {
     }
 
     func selectTag(_ tag: TagType) {
-        var tagContext = UIContext.button(identifier: .selectedTag)
-        if case .notTagged = tag {
-            tagContext = UIContext.button(identifier: .notTagged)
-        }
-        sendSelectedTagAnalytics(context: tagContext)
         selectedTag = tag
-        trackRecentTagsTapped(with: tag)
-    }
-
-    private func sendSelectedTagAnalytics(context: Context) {
-        let event = SnowplowEngagement(type: .general, value: nil)
-        tracker.track(event: event, [context])
+        trackSelectedTag(with: tag)
     }
 
     func delete(tags: [String]) {
@@ -81,7 +71,14 @@ class TagsFilterViewModel: ObservableObject {
 
 // MARK: Analytics
 extension TagsFilterViewModel {
-    func trackRecentTagsTapped(with tag: TagType) {
-        tracker.track(event: Events.Tags.filterTagsRecentTagTapped())
+    func trackSelectedTag(with tagType: TagType) {
+        switch tagType {
+        case .notTagged:
+            tracker.track(event: Events.Tags.selectNotTaggedToFilter())
+        case .recent:
+            tracker.track(event: Events.Tags.selectRecentTagToFilter())
+        case .tag:
+            tracker.track(event: Events.Tags.selectTagToFilter())
+        }
     }
 }
