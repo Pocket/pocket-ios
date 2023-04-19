@@ -181,6 +181,9 @@ private extension PocketSubscriptionStore {
     func updateSubscriptionStatus(_ verifiedTransaction: Transaction) async {
         guard let expirationDate = verifiedTransaction.expirationDate, expirationDate > Date() else {
             await verifiedTransaction.finish()
+            // if the subscription is expired, revert to free
+            state = .unsubscribed
+            user.setPremiumStatus(false)
             Log.capture(message: "Subscription was expired")
             return
         }
