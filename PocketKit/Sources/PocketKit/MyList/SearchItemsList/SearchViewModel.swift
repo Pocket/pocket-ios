@@ -460,7 +460,7 @@ extension SearchViewModel {
             let updatedResults = results.filter {
                 $0.id != item.id
             }
-            
+
             searchState = .searchResults(updatedResults)
         }
     }
