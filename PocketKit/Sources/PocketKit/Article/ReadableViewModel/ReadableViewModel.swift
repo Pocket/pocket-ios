@@ -5,6 +5,7 @@ import Textile
 import UIKit
 import Analytics
 import Localization
+import SharedPocketKit
 
 protocol ReadableViewModel: ReadableViewControllerDelegate {
     typealias EventPublisher = AnyPublisher<ReadableEvent, Never>
