@@ -5,6 +5,7 @@
 import Foundation
 import CoreData
 import PocketGraph
+import SharedPocketKit
 
 extension SavedItem {
     typealias SavedItemEdge = FetchSavesQuery.Data.User.SavedItems.Edge

@@ -6,6 +6,7 @@ import Combine
 import Apollo
 import ApolloAPI
 import CoreData
+import SharedPocketKit
 
 class AnyMutation {
     let perform: (ApolloClientProtocol) async throws -> Void

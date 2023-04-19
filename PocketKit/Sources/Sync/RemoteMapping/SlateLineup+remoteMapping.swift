@@ -1,6 +1,7 @@
 import Foundation
 import CoreData
 import PocketGraph
+import SharedPocketKit
 
 extension SlateLineup {
     public typealias RemoteSlateLineup = GetSlateLineupQuery.Data.GetSlateLineup

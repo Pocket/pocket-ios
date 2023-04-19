@@ -251,7 +251,7 @@ extension Log {
     }
 
     public class func setUserID(_ userID: String) {
-        SentrySDK.setUser(User(userId: userID))
+        SentrySDK.setUser(Sentry.User(userId: userID))
     }
 
     /**
