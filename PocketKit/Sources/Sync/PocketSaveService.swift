@@ -1,6 +1,7 @@
 import Foundation
 import Apollo
 import PocketGraph
+import SharedPocketKit
 
 public class PocketSaveService: SaveService {
     private let apollo: ApolloClientProtocol

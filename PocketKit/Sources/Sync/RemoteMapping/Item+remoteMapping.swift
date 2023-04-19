@@ -2,6 +2,7 @@ import Foundation
 import CoreData
 import Apollo
 import PocketGraph
+import SharedPocketKit
 
 extension Item {
     func update(remote: ItemParts, with space: Space) {
