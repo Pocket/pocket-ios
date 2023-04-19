@@ -5,6 +5,7 @@
 import SnowplowTracker
 import Sync
 import Foundation
+import SharedPocketKit
 
 public class PocketTracker: Tracker {
     private let snowplow: SnowplowTracker

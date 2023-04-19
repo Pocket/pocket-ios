@@ -5,6 +5,7 @@
 import Apollo
 import ApolloAPI
 import Foundation
+import SharedPocketKit
 
 public extension ApolloClientProtocol {
     func fetch<Query: GraphQLQuery>(query: Query, queue: DispatchQueue = .global(qos: .utility), resultHandler: GraphQLResultHandler<Query.Data>? = nil) -> Cancellable {

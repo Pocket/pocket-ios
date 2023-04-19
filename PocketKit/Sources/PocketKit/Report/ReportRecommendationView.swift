@@ -3,6 +3,7 @@ import Sync
 import Analytics
 import Textile
 import Localization
+import SharedPocketKit
 
 struct ReportRecommendationView: View {
     private struct Constants {
