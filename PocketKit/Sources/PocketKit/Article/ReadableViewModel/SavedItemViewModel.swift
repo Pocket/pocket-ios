@@ -5,6 +5,7 @@ import Textile
 import Analytics
 import UIKit
 import SharedPocketKit
+import Localization
 
 class SavedItemViewModel: ReadableViewModel {
     let tracker: Tracker
@@ -195,8 +196,8 @@ extension SavedItemViewModel {
     func beginBulkEdit() {
         let bannerData = BannerModifier.BannerData(
             image: .warning,
-            title: "",
-            detail: "Editing your search results is not available in this version of Pocket, but will be returning soon!"
+            title: nil,
+            detail: Localization.Search.Edit.banner
         )
 
         notificationCenter.post(name: .bannerRequested, object: bannerData)
