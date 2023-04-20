@@ -131,6 +131,11 @@
         <attribute name="name" attributeType="String"/>
         <attribute name="remoteID" optional="YES" attributeType="String"/>
         <relationship name="savedItems" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="SavedItem" inverseName="tags" inverseEntity="SavedItem"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="name"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
     </entity>
     <entity name="UnresolvedSavedItem" representedClassName="UnresolvedSavedItem" syncable="YES">
         <relationship name="savedItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SavedItem" inverseName="unresolvedSavedItem" inverseEntity="SavedItem"/>
