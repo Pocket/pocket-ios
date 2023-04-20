@@ -157,7 +157,8 @@ class PremiumTests: XCTestCase {
     /// Load premium upgrade view from Saves > Search > All Items
     @MainActor private func loadPremiumUpgradeViewFromSearch() async {
         app.tabBar.savesButton.wait().tap()
-        app.saves.filterButton(for: "Search").wait().tap()
+        app.saves.element.swipeDown()
+        app.navigationBar.searchFields["Search"].wait().tap()
         app.navigationBar.buttons["All items"].wait().tap()
         XCTAssertTrue(app.searchGetPremiumEmptyView.exists)
 
