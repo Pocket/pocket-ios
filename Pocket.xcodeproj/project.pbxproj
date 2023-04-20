@@ -29,7 +29,6 @@
 		166F8F2726D0488900F898E3 /* XCUIElement+wait.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166F8F2626D0488900F898E3 /* XCUIElement+wait.swift */; };
 		166F8F2926D0494F00F898E3 /* PocketUIElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166F8F2826D0494F00F898E3 /* PocketUIElement.swift */; };
 		1674057726CAC35F0061434E /* DeleteAnItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1674057626CAC35F0061434E /* DeleteAnItemTests.swift */; };
-		167F8084264B011600D8F507 /* Sails in Frameworks */ = {isa = PBXBuildFile; productRef = 167F8083264B011600D8F507 /* Sails */; };
 		168292C826CC64C300830140 /* ShareAnItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 168292C726CC64C300830140 /* ShareAnItemTests.swift */; };
 		16A6807F26EBC71300A64545 /* TabBarElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A6807E26EBC71300A64545 /* TabBarElement.swift */; };
 		16A6808126EBC78800A64545 /* HomeViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A6808026EBC78800A64545 /* HomeViewElement.swift */; };
@@ -57,6 +56,7 @@
 		65167B6F2909904200343FA8 /* BrazeNotificationService in Frameworks */ = {isa = PBXBuildFile; productRef = 65167B6E2909904200343FA8 /* BrazeNotificationService */; };
 		65167B712909904200343FA8 /* BrazePushStory in Frameworks */ = {isa = PBXBuildFile; productRef = 65167B702909904200343FA8 /* BrazePushStory */; };
 		6544202329B1B17C002B12F2 /* DeleteConfirmationViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6544202229B1B17C002B12F2 /* DeleteConfirmationViewElement.swift */; };
+		6547A0FF29F1812E00F6FC6B /* Sails in Frameworks */ = {isa = PBXBuildFile; productRef = 6547A0FE29F1812E00F6FC6B /* Sails */; };
 		656041EE29B18105007E7CD0 /* SettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656041ED29B18105007E7CD0 /* SettingsTests.swift */; };
 		656041F029B182AF007E7CD0 /* AccountManagementViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656041EF29B182AF007E7CD0 /* AccountManagementViewElement.swift */; };
 		658140EA29A5993C00346848 /* SnowplowMicro.swift in Sources */ = {isa = PBXBuildFile; fileRef = 658140E929A5993C00346848 /* SnowplowMicro.swift */; };
@@ -285,8 +285,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				167F8084264B011600D8F507 /* Sails in Frameworks */,
 				8A3B77BD29E0AEEB00AD71D0 /* PocketKit in Frameworks */,
+				6547A0FF29F1812E00F6FC6B /* Sails in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -565,8 +565,8 @@
 			);
 			name = "Tests iOS";
 			packageProductDependencies = (
-				167F8083264B011600D8F507 /* Sails */,
 				8A3B77BC29E0AEEB00AD71D0 /* PocketKit */,
+				6547A0FE29F1812E00F6FC6B /* Sails */,
 			);
 			productName = "Tests iOS";
 			productReference = 166A81C02637406C0015AA1D /* Tests iOS.xctest */;
@@ -686,9 +686,9 @@
 			);
 			mainGroup = 166A81A32637406B0015AA1D;
 			packageReferences = (
-				167F8082264B011600D8F507 /* XCRemoteSwiftPackageReference "Sails" */,
 				65167B6D2909904200343FA8 /* XCRemoteSwiftPackageReference "braze-swift-sdk" */,
 				3859089D29D35B2F00C8C17F /* XCRemoteSwiftPackageReference "ios_sdk" */,
+				6547A0FD29F17AAF00F6FC6B /* XCRemoteSwiftPackageReference "Sails" */,
 			);
 			productRefGroup = 166A81B12637406C0015AA1D /* Products */;
 			projectDirPath = "";
@@ -1832,14 +1832,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		167F8082264B011600D8F507 /* XCRemoteSwiftPackageReference "Sails" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/jacobsimeon/Sails.git";
-			requirement = {
-				branch = master;
-				kind = branch;
-			};
-		};
 		3859089D29D35B2F00C8C17F /* XCRemoteSwiftPackageReference "ios_sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/adjust/ios_sdk";
@@ -1853,17 +1845,20 @@
 			repositoryURL = "https://github.com/braze-inc/braze-swift-sdk.git";
 			requirement = {
 				kind = exactVersion;
-				version = 5.13.0;
+				version = 5.14.0;
+			};
+		};
+		6547A0FD29F17AAF00F6FC6B /* XCRemoteSwiftPackageReference "Sails" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Pocket/Sails.git";
+			requirement = {
+				branch = master;
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		167F8083264B011600D8F507 /* Sails */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 167F8082264B011600D8F507 /* XCRemoteSwiftPackageReference "Sails" */;
-			productName = Sails;
-		};
 		16BA7D6526851579009A17C1 /* PocketKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = PocketKit;
@@ -1902,6 +1897,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 65167B6D2909904200343FA8 /* XCRemoteSwiftPackageReference "braze-swift-sdk" */;
 			productName = BrazePushStory;
+		};
+		6547A0FE29F1812E00F6FC6B /* Sails */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6547A0FD29F17AAF00F6FC6B /* XCRemoteSwiftPackageReference "Sails" */;
+			productName = Sails;
 		};
 		8A3B77BC29E0AEEB00AD71D0 /* PocketKit */ = {
 			isa = XCSwiftPackageProductDependency;
