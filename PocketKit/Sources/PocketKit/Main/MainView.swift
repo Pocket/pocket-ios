@@ -10,6 +10,7 @@ public struct MainView: View {
     public var body: some View {
         TabView(selection: $model.selectedSection) {
             HomeViewControllerSwiftUI(model: model.home)
+                .edgesIgnoringSafeArea(.all) // Allow Home to use the entire screen, including under the status bar
                 .tabBarHeightOffset { offset in tabBarHeightOffset = offset }
                 .tabItem {
                     if model.selectedSection == .home {
@@ -23,6 +24,7 @@ public struct MainView: View {
                 .tag(MainViewModel.AppSection.home)
 
             SavesContainerViewControllerSwiftUI(model: model.saves)
+                .edgesIgnoringSafeArea(.all) // Allow Saves to use the entire screen, including under the status bar
                 .tabBarHeightOffset { offset in tabBarHeightOffset = offset }
                 .tabItem {
                     if model.selectedSection == .saves {
