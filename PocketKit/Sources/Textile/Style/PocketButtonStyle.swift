@@ -138,6 +138,10 @@ struct PocketButton_PreviewProvider: PreviewProvider {
             .padding()
             .buttonStyle(PocketButtonStyle(.secondary))
 
+            Button("Destructive Action") {}
+                .padding()
+                .buttonStyle(PocketButtonStyle(.destructive))
+
             Button("Internal Info Link") {}
             .padding()
             .buttonStyle(PocketButtonStyle(.internalInfoLink))
@@ -156,6 +160,11 @@ struct PocketButton_PreviewProvider: PreviewProvider {
             .padding()
             .buttonStyle(PocketButtonStyle(.secondary))
 
+            Button("Destructive Action") {}
+            .disabled(true)
+            .padding()
+            .buttonStyle(PocketButtonStyle(.destructive))
+
             Button("Internal Info Link") {}
             .disabled(true)
             .padding()
@@ -172,6 +181,10 @@ struct PocketButton_PreviewProvider: PreviewProvider {
             Button("Secondary Action") {}
             .padding()
             .buttonStyle(PocketButtonStyle(.secondary))
+
+            Button("Destructive Action") {}
+            .padding()
+            .buttonStyle(PocketButtonStyle(.destructive))
 
             Button("Internal Info Link") {}
             .padding()
@@ -190,6 +203,11 @@ struct PocketButton_PreviewProvider: PreviewProvider {
             .disabled(true)
             .padding()
             .buttonStyle(PocketButtonStyle(.secondary))
+
+            Button("Destructive Action") {}
+            .disabled(true)
+            .padding()
+            .buttonStyle(PocketButtonStyle(.destructive))
 
             Button("Internal Info Link") {}
             .disabled(true)
