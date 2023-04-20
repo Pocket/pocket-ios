@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apollographql/apollo-ios.git",
       "state" : {
-        "revision" : "6de797f7becb59a93c0a47582ec293ee3853a14f",
-        "version" : "1.1.1"
+        "revision" : "bdeff49547241d917ce670d9b7dfb0c5efca9cde",
+        "version" : "1.1.2"
       }
     },
     {
@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/braze-inc/braze-swift-sdk.git",
       "state" : {
-        "revision" : "2f01b877d1ef9060766bcf868502d3a8bb79e6e2",
-        "version" : "5.13.0"
+        "revision" : "ce7b8080beb9cec79cfa77ba787ce1c8f696c3ed",
+        "version" : "5.14.0"
       }
     },
     {
@@ -84,7 +84,7 @@
     {
       "identity" : "sails",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/jacobsimeon/Sails.git",
+      "location" : "https://github.com/Pocket/Sails.git",
       "state" : {
         "branch" : "master",
         "revision" : "730166aa43b900e71a128e74910b1d9a431b24cf"
@@ -104,8 +104,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/getsentry/sentry-cocoa.git",
       "state" : {
-        "revision" : "2e7899aff930ed3b8d81be1909492f7684bbd481",
-        "version" : "8.3.1"
+        "revision" : "2479b6f7ff69b66bcdea82184d097667e63828ed",
+        "version" : "8.5.0"
       }
     },
     {
