@@ -6,6 +6,7 @@ import Foundation
 import Textile
 import Combine
 import SwiftUI
+import SharedPocketKit
 
 class BannerPresenter: ObservableObject {
     var bannerData: BannerModifier.BannerData?
@@ -19,15 +20,18 @@ class BannerPresenter: ObservableObject {
     }
 
     func listen() {
-        notificationCenter.publisher(for: .bannerRequested).sink { [weak self] notification in
-            guard let data = notification.object as? BannerModifier.BannerData else {
-                // TODO: Log?
-                return
-            }
+        notificationCenter
+            .publisher(for: .bannerRequested)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] notification in
+                guard let data = notification.object as? BannerModifier.BannerData else {
+                    Log.capture(message: "Requesting banner, but no banner data was supplied")
+                    return
+                }
 
-            self?.bannerData = data
-            self?.shouldPresentBanner = true
-        }.store(in: &subscriptions)
+                self?.bannerData = data
+                self?.shouldPresentBanner = true
+            }.store(in: &subscriptions)
 
         $shouldPresentBanner.filter({ $0 == false }).sink { [weak self] value in
             self?.bannerData = nil
