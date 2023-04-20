@@ -15,6 +15,7 @@ class SavedItemViewModelTests: XCTestCase {
     private var subscriptionStore: SubscriptionStore!
     private var networkPathMonitor: MockNetworkPathMonitor!
     private var userDefaults: UserDefaults!
+    private var notificationCenter: NotificationCenter!
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -27,6 +28,7 @@ class SavedItemViewModelTests: XCTestCase {
         networkPathMonitor = MockNetworkPathMonitor()
         subscriptionStore = MockSubscriptionStore()
         userDefaults = .standard
+        notificationCenter = .default
     }
 
     override func tearDown() async throws {
@@ -42,7 +44,8 @@ class SavedItemViewModelTests: XCTestCase {
         tracker: Tracker? = nil,
         pasteboard: UIPasteboard? = nil,
         user: User? = nil,
-        networkPathMonitor: NetworkPathMonitor? = nil
+        networkPathMonitor: NetworkPathMonitor? = nil,
+        notificationCenter: NotificationCenter? = nil
     ) -> SavedItemViewModel {
         SavedItemViewModel(
             item: item,
@@ -52,7 +55,8 @@ class SavedItemViewModelTests: XCTestCase {
             user: user ?? self.user,
             store: subscriptionStore ?? self.subscriptionStore,
             networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor,
-            userDefaults: userDefaults ?? self.userDefaults
+            userDefaults: userDefaults ?? self.userDefaults,
+            notificationCenter: notificationCenter ?? self.notificationCenter
         )
     }
 
