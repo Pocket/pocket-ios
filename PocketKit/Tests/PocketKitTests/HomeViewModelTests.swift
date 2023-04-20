@@ -23,12 +23,14 @@ class HomeViewModelTests: XCTestCase {
     var subscriptionStore: SubscriptionStore!
     var userDefaults: UserDefaults!
     var lastRefresh: UserDefaultsLastRefresh!
+    var notificationCenter: NotificationCenter!
 
     override func setUp() async throws {
         subscriptions = []
         space = .testSpace()
         source = MockSource()
         networkPathMonitor = MockNetworkPathMonitor()
+        notificationCenter = .default
 
         taskScheduler = MockBGTaskScheduler()
         userDefaults = .standard
@@ -77,7 +79,8 @@ class HomeViewModelTests: XCTestCase {
         networkPathMonitor: NetworkPathMonitor? = nil,
         homeRefreshCoordinator: RefreshCoordinator? = nil,
         user: User? = nil,
-        userDefaults: UserDefaults? = nil
+        userDefaults: UserDefaults? = nil,
+        notificationCenter: NotificationCenter? = nil
     ) -> HomeViewModel {
         return HomeViewModel(
             source: source ?? self.source,
@@ -86,7 +89,8 @@ class HomeViewModelTests: XCTestCase {
             homeRefreshCoordinator: homeRefreshCoordinator ?? self.homeRefreshCoordinator,
             user: user ?? self.user,
             store: subscriptionStore ?? self.subscriptionStore,
-            userDefaults: userDefaults ?? self.userDefaults
+            userDefaults: userDefaults ?? self.userDefaults,
+            notificationCenter: notificationCenter ?? self.notificationCenter
         )
     }
 
