@@ -61,11 +61,10 @@ class SpaceTests: XCTestCase {
     func testFetchTagsByID() throws {
         let space = subject()
         let tag1: Tag = Tag(context: space.backgroundContext)
-        tag1.remoteID = "id 1"
         tag1.name = "tag 1"
 
-        let fetchedTag1 = try space.fetchTag(byID: "id 1")
-        let fetchedTag2 = try space.fetchTag(byID: "id 2")
+        let fetchedTag1 = try space.fetchTag(by: "tag 1")
+        let fetchedTag2 = try space.fetchTag(by: "tag 2")
 
         XCTAssertEqual(fetchedTag1?.name, "tag 1")
         XCTAssertNil(fetchedTag2)

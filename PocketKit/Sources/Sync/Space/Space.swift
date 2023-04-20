@@ -393,12 +393,14 @@ extension Space {
         }
         let createTag = Tag(context: context)
         createTag.name = name
-        createTag.remoteID = "remoteID\(name)"
         return createTag
     }
 
-    func fetchTag(byID id: String) throws -> Tag? {
-        try fetch(Requests.fetchTag(byID: id)).first
+    func fetchTag(by name: String, context: NSManagedObjectContext? = nil) throws -> Tag? {
+        let context = context ?? backgroundContext
+        let fetchRequest = Requests.fetchTag(byName: name)
+        fetchRequest.fetchLimit = 1
+        return try fetch(fetchRequest, context: context).first
     }
 
     func retrieveTags(excluding tags: [String]) throws -> [Tag] {
