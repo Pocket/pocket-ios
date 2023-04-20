@@ -275,6 +275,16 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         }
     }
 
+    func beginBulkEdit() {
+        let bannerData = BannerModifier.BannerData(
+            image: .warning,
+            title: "",
+            detail: "Editing your search results is not available in this version of Pocket, but will be returning soon!"
+        )
+
+        notificationCenter.post(name: .bannerRequested, object: bannerData)
+    }
+
     func filterByTagAction() -> UIAction? {
         return UIAction(title: "", handler: { [weak self] action in
             let event = SnowplowEngagement(type: .general, value: nil)
