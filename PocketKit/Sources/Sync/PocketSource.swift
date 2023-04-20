@@ -507,6 +507,11 @@ extension PocketSource {
                 return
             }
 
+            guard (try? space.fetchTag(by: name)) == nil else {
+                Log.capture(message: "A tag with the selected name already exists")
+                return
+            }
+
             let fetchedTag = try? space.fetchTag(by: oldTag.name)
             fetchedTag?.name = name
 
