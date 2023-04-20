@@ -219,7 +219,8 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             user: user,
             store: store,
             networkPathMonitor: networkPathMonitor,
-            userDefaults: userDefaults
+            userDefaults: userDefaults,
+            notificationCenter: notificationCenter
         )
 
         if savedItem.shouldOpenInWebView {
@@ -596,7 +597,8 @@ extension SavedItemsListViewModel {
             user: user,
             store: store,
             networkPathMonitor: networkPathMonitor,
-            userDefaults: userDefaults
+            userDefaults: userDefaults,
+            notificationCenter: notificationCenter
         )
 
         if savedItem.shouldOpenInWebView {
