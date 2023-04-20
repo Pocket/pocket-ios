@@ -240,6 +240,7 @@ workflows:
             - api_key_path: "$BITRISEIO_APP_STORE_CONNECT_API_ID_URL"
             - api_key_id: "$APP_STORE_API_ID"
             - api_key_issuer_id: "$APP_STORE_API_ISSUER_ID"
+      - deploy-to-bitrise-io@2: {}
       - deploy-to-bitrise-io@2:
           inputs:
             - pipeline_intermediate_files: '$BITRISE_IPA_PATH:BITRISE_IPA_PATH'
@@ -283,6 +284,7 @@ workflows:
             - api_key_path: "$BITRISEIO_APP_STORE_CONNECT_API_ID_URL"
             - api_key_id: "$APP_STORE_API_ID"
             - api_key_issuer_id: "$APP_STORE_API_ISSUER_ID"
+      - deploy-to-bitrise-io@2: {}
       - deploy-to-bitrise-io@2:
           inputs:
             - pipeline_intermediate_files: '$BITRISE_IPA_PATH:BITRISE_IPA_PATH'
