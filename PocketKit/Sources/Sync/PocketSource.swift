@@ -507,7 +507,7 @@ extension PocketSource {
                 return
             }
 
-            let fetchedTag = try? space.fetchTag(byID: remoteID)
+            let fetchedTag = try? space.fetchTag(by: oldTag.name)
             fetchedTag?.name = name
 
             do {
