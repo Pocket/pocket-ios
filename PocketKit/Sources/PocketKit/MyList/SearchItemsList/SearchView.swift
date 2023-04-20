@@ -98,7 +98,9 @@ struct ResultsView: View {
             if let (viewModel, showInWebView) = viewModel.readableViewModel(for: item, index: index) {
                 basicRow(for: item, at: index)
                     .contextMenu {
-                        Button("Edit", action: { })
+                        Button("Edit", action: {
+                            viewModel.beginBulkEdit()
+                        })
                     } preview: {
                         if showInWebView {
                             SFSafariView(url: viewModel.url!)

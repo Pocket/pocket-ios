@@ -33,6 +33,7 @@ class SavedItemViewModel: ReadableViewModel {
     private var subscriptions: [AnyCancellable] = []
     private var store: SubscriptionStore
     private var networkPathMonitor: NetworkPathMonitor
+    private let notificationCenter: NotificationCenter
 
     init(
         item: SavedItem,
@@ -42,7 +43,8 @@ class SavedItemViewModel: ReadableViewModel {
         user: User,
         store: SubscriptionStore,
         networkPathMonitor: NetworkPathMonitor,
-        userDefaults: UserDefaults
+        userDefaults: UserDefaults,
+        notificationCenter: NotificationCenter
     ) {
         self.item = item
         self.source = source
@@ -52,6 +54,7 @@ class SavedItemViewModel: ReadableViewModel {
         self.store = store
         self.networkPathMonitor = networkPathMonitor
         self.userDefaults = userDefaults
+        self.notificationCenter = notificationCenter
 
         item.publisher(for: \.isFavorite).sink { [weak self] _ in
             self?.buildActions()
@@ -187,6 +190,16 @@ extension SavedItemViewModel {
         source.archive(item: item)
         trackArchiveButtonTapped(url: item.url)
         _events.send(.archive)
+    }
+
+    func beginBulkEdit() {
+        let bannerData = BannerModifier.BannerData(
+            image: .warning,
+            title: "",
+            detail: "Editing your search results is not available in this version of Pocket, but will be returning soon!"
+        )
+
+        notificationCenter.post(name: .bannerRequested, object: bannerData)
     }
 
     private func showAddTagsView() {

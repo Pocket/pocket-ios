@@ -252,6 +252,10 @@ extension RecommendationViewModel {
         _events.send(.archive)
     }
 
+    func beginBulkEdit() {
+
+    }
+
     private func save() {
         source.save(recommendation: recommendation)
         track(identifier: .itemSave)

@@ -99,6 +99,7 @@ class HomeViewModel: NSObject {
     private let userDefaults: UserDefaults
     private let networkPathMonitor: NetworkPathMonitor
     private let homeRefreshCoordinator: RefreshCoordinator
+    private let notificationCenter: NotificationCenter
     private var subscriptions: [AnyCancellable] = []
     private var recentSavesCount: Int = 0
     private var store: SubscriptionStore
@@ -113,7 +114,8 @@ class HomeViewModel: NSObject {
         homeRefreshCoordinator: RefreshCoordinator,
         user: User,
         store: SubscriptionStore,
-        userDefaults: UserDefaults
+        userDefaults: UserDefaults,
+        notificationCenter: NotificationCenter
     ) {
         self.source = source
         self.tracker = tracker
@@ -123,6 +125,7 @@ class HomeViewModel: NSObject {
         self.user = user
         self.store = store
         self.userDefaults = userDefaults
+        self.notificationCenter = notificationCenter
 
         self.snapshot = {
             return Self.loadingSnapshot()
@@ -304,7 +307,8 @@ extension HomeViewModel {
             user: user,
             store: store,
             networkPathMonitor: networkPathMonitor,
-            userDefaults: userDefaults
+            userDefaults: userDefaults,
+            notificationCenter: notificationCenter
         )
 
         if let item = savedItem.item, item.shouldOpenInWebView {
