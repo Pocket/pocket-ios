@@ -56,6 +56,7 @@
 		65167B6F2909904200343FA8 /* BrazeNotificationService in Frameworks */ = {isa = PBXBuildFile; productRef = 65167B6E2909904200343FA8 /* BrazeNotificationService */; };
 		65167B712909904200343FA8 /* BrazePushStory in Frameworks */ = {isa = PBXBuildFile; productRef = 65167B702909904200343FA8 /* BrazePushStory */; };
 		6544202329B1B17C002B12F2 /* DeleteConfirmationViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6544202229B1B17C002B12F2 /* DeleteConfirmationViewElement.swift */; };
+		6547A0FF29F1812E00F6FC6B /* Sails in Frameworks */ = {isa = PBXBuildFile; productRef = 6547A0FE29F1812E00F6FC6B /* Sails */; };
 		656041EE29B18105007E7CD0 /* SettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656041ED29B18105007E7CD0 /* SettingsTests.swift */; };
 		656041F029B182AF007E7CD0 /* AccountManagementViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656041EF29B182AF007E7CD0 /* AccountManagementViewElement.swift */; };
 		658140EA29A5993C00346848 /* SnowplowMicro.swift in Sources */ = {isa = PBXBuildFile; fileRef = 658140E929A5993C00346848 /* SnowplowMicro.swift */; };
@@ -285,6 +286,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8A3B77BD29E0AEEB00AD71D0 /* PocketKit in Frameworks */,
+				6547A0FF29F1812E00F6FC6B /* Sails in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -564,6 +566,7 @@
 			name = "Tests iOS";
 			packageProductDependencies = (
 				8A3B77BC29E0AEEB00AD71D0 /* PocketKit */,
+				6547A0FE29F1812E00F6FC6B /* Sails */,
 			);
 			productName = "Tests iOS";
 			productReference = 166A81C02637406C0015AA1D /* Tests iOS.xctest */;
@@ -1894,6 +1897,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 65167B6D2909904200343FA8 /* XCRemoteSwiftPackageReference "braze-swift-sdk" */;
 			productName = BrazePushStory;
+		};
+		6547A0FE29F1812E00F6FC6B /* Sails */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6547A0FD29F17AAF00F6FC6B /* XCRemoteSwiftPackageReference "Sails" */;
+			productName = Sails;
 		};
 		8A3B77BC29E0AEEB00AD71D0 /* PocketKit */ = {
 			isa = XCSwiftPackageProductDependency;
