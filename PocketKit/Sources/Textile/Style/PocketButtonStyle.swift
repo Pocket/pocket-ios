@@ -12,6 +12,7 @@ public struct PocketButtonStyle: ButtonStyle {
         case primary
         case secondary
         case internalInfoLink
+        case destructive
     }
 
     let variation: Variation
@@ -45,6 +46,14 @@ public struct PocketButtonStyle: ButtonStyle {
             static let pressedForegorundColor = Color(.ui.white1)
             static let buttonHeight: CGFloat = 34
             static let style = Style.header.sansSerif.p4
+        }
+
+        struct Destructive {
+            static let tintColor = Color(.ui.grey1)
+            static let backgroundColor = Color(.ui.coral1)
+            static let pressedBackgroundColor = Color(.ui.white)
+            static let foregroundColor = Color(.ui.white)
+            static let pressedForegroundColor = Color(.ui.white)
         }
     }
 
@@ -105,6 +114,15 @@ public struct PocketButtonStyle: ButtonStyle {
                     .foregroundColor(configuration.isPressed ? Constants.InternalInfoLink.pressedForegorundColor : Constants.InternalInfoLink.foregroundColor)
                     .cornerRadius(Constants.cornerRadius)
             }
+            .if(variation == .destructive) { view in
+                view
+                    .font(Font(Constants.style.fontDescriptor))
+                    .frame(height: Constants.buttonHeight)
+                    .tint(Constants.Destructive.tintColor)
+                    .background( configuration.isPressed ? Constants.Destructive.pressedBackgroundColor : Constants.Destructive.backgroundColor)
+                    .foregroundColor(configuration.isPressed ? Constants.Destructive.pressedForegroundColor : Constants.Destructive.foregroundColor)
+                    .cornerRadius(Constants.cornerRadius)
+            }
         }
     }
 }
@@ -119,6 +137,10 @@ struct PocketButton_PreviewProvider: PreviewProvider {
             Button("Secondary Action") {}
             .padding()
             .buttonStyle(PocketButtonStyle(.secondary))
+
+            Button("Destructive Action") {}
+                .padding()
+                .buttonStyle(PocketButtonStyle(.destructive))
 
             Button("Internal Info Link") {}
             .padding()
@@ -138,6 +160,11 @@ struct PocketButton_PreviewProvider: PreviewProvider {
             .padding()
             .buttonStyle(PocketButtonStyle(.secondary))
 
+            Button("Destructive Action") {}
+            .disabled(true)
+            .padding()
+            .buttonStyle(PocketButtonStyle(.destructive))
+
             Button("Internal Info Link") {}
             .disabled(true)
             .padding()
@@ -154,6 +181,10 @@ struct PocketButton_PreviewProvider: PreviewProvider {
             Button("Secondary Action") {}
             .padding()
             .buttonStyle(PocketButtonStyle(.secondary))
+
+            Button("Destructive Action") {}
+            .padding()
+            .buttonStyle(PocketButtonStyle(.destructive))
 
             Button("Internal Info Link") {}
             .padding()
@@ -172,6 +203,11 @@ struct PocketButton_PreviewProvider: PreviewProvider {
             .disabled(true)
             .padding()
             .buttonStyle(PocketButtonStyle(.secondary))
+
+            Button("Destructive Action") {}
+            .disabled(true)
+            .padding()
+            .buttonStyle(PocketButtonStyle(.destructive))
 
             Button("Internal Info Link") {}
             .disabled(true)

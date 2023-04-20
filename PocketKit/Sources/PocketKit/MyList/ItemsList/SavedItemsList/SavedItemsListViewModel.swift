@@ -43,8 +43,6 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
     @Published var presentedSortFilterViewModel: SortMenuViewModel?
 
-    @Published var presentedSearch: Bool?
-
     @Published
     var presentedListenViewModel: ListenViewModel?
 
@@ -140,8 +138,6 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         let filters = selectedFilters.compactMap { filter -> NSPredicate? in
             switch filter {
             case.listen:
-                return nil
-            case.search:
                 return nil
             case .favorites:
                 return NSPredicate(format: "isFavorite = true")
@@ -621,9 +617,6 @@ extension SavedItemsListViewModel {
             }
             presentedListenViewModel = ListenViewModel.source(savedItems: self.itemsController.fetchedObjects)
             selectedFilters.remove(.listen)
-            // passin models
-        case .search:
-            presentedSearch = true
         case .all:
             selectedFilters.removeAll()
             selectedFilters.insert(.all)
