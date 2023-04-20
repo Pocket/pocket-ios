@@ -113,6 +113,7 @@ protocol ItemsListViewModel: AnyObject {
     func tagModel(with name: String) -> SelectedTagChipModel
     func shouldSelectCell(with cell: ItemsListCell<ItemIdentifier>) -> Bool
     func selectCell(with: ItemsListCell<ItemIdentifier>, sender: Any?)
+    func beginBulkEdit()
 
     func filterByTagAction() -> UIAction?
     func trackOverflow(for objectID: ItemIdentifier) -> UIAction?

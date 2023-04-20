@@ -332,7 +332,9 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
             }
         } actionProvider: { _ in
             return UIMenu(children: [
-                UIAction(title: "Edit") { _ in }
+                UIAction(title: "Edit") { [weak self] _ in
+                    self?.model.beginBulkEdit()
+                }
             ])
         }
     }

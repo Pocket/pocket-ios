@@ -4,6 +4,7 @@ import Localization
 
 public struct MainView: View {
     @ObservedObject var model: MainViewModel
+    @ObservedObject var bannerPresenter: BannerPresenter
 
     @State var tabBarHeightOffset: CGFloat = 0
 
@@ -57,5 +58,7 @@ public struct MainView: View {
         .background(Color(.ui.white1))
         .foregroundColor(Color(.ui.grey1))
         .tint(Color(.ui.grey1))
+        .zIndex(-1)
+        .banner(data: bannerPresenter.bannerData, show: $bannerPresenter.shouldPresentBanner, bottomOffset: 49)
     }
 }

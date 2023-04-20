@@ -18,7 +18,7 @@ public struct RootView: View {
     }
 
     private func mainView(model: MainViewModel) -> MainView {
-        MainView(model: model)
+        MainView(model: model, bannerPresenter: Services.shared.bannerPresenter)
     }
 
     private func loggedOutView(model: LoggedOutViewModel) -> LoggedOutViewControllerSwiftUI {
