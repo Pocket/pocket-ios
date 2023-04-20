@@ -12,7 +12,7 @@ public struct BannerModifier: ViewModifier {
 
     public struct BannerData {
         var image: ImageAsset
-        var title: String
+        var title: String?
         var detail: String
         var action: BannerAction?
 
@@ -28,7 +28,7 @@ public struct BannerModifier: ViewModifier {
             }
         }
 
-        public init(image: ImageAsset, title: String, detail: String, action: BannerAction? = nil) {
+        public init(image: ImageAsset, title: String?, detail: String, action: BannerAction? = nil) {
             self.image = image
             self.title = title
             self.detail = detail
@@ -54,9 +54,11 @@ public struct BannerModifier: ViewModifier {
                             .accessibilityIdentifier("banner-image")
                             .padding(Constants.imagePadding)
                         VStack(alignment: .leading, spacing: 8) {
-                            Text(data.title)
-                                .style(Constants.titleStyle)
-                                .accessibilityIdentifier("banner-title")
+                            if let title = data.title {
+                                Text(title)
+                                    .style(Constants.titleStyle)
+                                    .accessibilityIdentifier("banner-title")
+                            }
                             Text(data.detail)
                                 .style(Constants.detailStyle)
                                 .accessibilityIdentifier("banner-detail")
