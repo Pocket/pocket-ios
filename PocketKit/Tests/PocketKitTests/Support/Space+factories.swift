@@ -259,14 +259,16 @@ extension Space {
         item: Item,
         imageURL: URL? = nil,
         title: String? = nil,
-        excerpt: String?  = nil
+        excerpt: String?  = nil,
+        analyticsID: String = ""
     ) -> Recommendation {
         backgroundContext.performAndWait {
-            let recommendation: Recommendation = Recommendation(context: backgroundContext, remoteID: remoteID)
+            let recommendation: Recommendation = Recommendation(context: backgroundContext, remoteID: remoteID, analyticsID: analyticsID)
             recommendation.item = item
             recommendation.title = title
             recommendation.excerpt = excerpt
             recommendation.imageURL = imageURL
+            recommendation.analyticsID = analyticsID
             return recommendation
         }
     }
