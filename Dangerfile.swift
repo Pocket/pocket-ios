@@ -46,18 +46,6 @@ func xcodeEnvironmentVariables() {
     }
 }
 
-// func checkSnowplowPostPath(in file: Filze) {
-//    if modifiedXcodeProject.contains(
-//        #"""
-//        key = "SNOWPLOW_POST_PATH"
-//        value = "com.snowplowanalytics.snowplow/tp2"
-//        isEnabled = "YES">
-//        """#
-//    ) {
-//        fail("SNOWPLOW_POST_PATH must be disabled")
-//    }
-// }
-
 extension String {
     // Helper function to escape (iOS) in our file name for xcov.
     func escapeString() -> String {
