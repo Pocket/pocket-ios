@@ -34,7 +34,7 @@ struct TagsFilterView: View {
                     TagsCell(tag: .notTagged, tagAction: tagAction)
                         .disabled(isEditing)
                     TagsSectionView(
-                        showRecentTags: !isEditing && !viewModel.recentTags.isEmpty,
+                        showRecentTags: false,
                         recentTags: viewModel.recentTags,
                         allTags: tags.map { .tag($0.name) },
                         tagAction: tagAction
@@ -43,7 +43,6 @@ struct TagsFilterView: View {
                 .navigationBarTitleDisplayMode(.inline)
                 .tagsHeaderToolBar($isEditing, viewModel: viewModel)
                 .editBottomBar(isEditing: isEditing, selectedItems: selectedItems) {
-                    print(Array(selectedItems.compactMap({ $0.name })))
                     viewModel.delete(tags: Array(selectedItems.compactMap({ $0.name })))
                     selectedItems.removeAll()
                 } onRename: { text in
