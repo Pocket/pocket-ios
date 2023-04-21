@@ -4,6 +4,8 @@
 
 import Sails
 import SharedPocketKit
+import ApolloTestSupport
+import PocketGraphTestMocks
 
 extension Response {
     static func saves(_ fixtureName: String = "initial-list") -> Response {
@@ -51,7 +53,9 @@ extension Response {
         fixture(named: "update-tag")
     }
 
-    static func archive() -> Response {
+    static func archive(apiRequest: ClientAPIRequest) -> Response {
+        let mock = Mock<Mutation>()
+
         fixture(named: "archive")
     }
 
@@ -173,7 +177,7 @@ extension Response {
         } else if apiRequest.isForUserDetails {
             return .userDetails()
         } else if apiRequest.isToArchiveAnItem {
-            return .archive()
+            return .archive(apiRequest: apiRequest)
         } else if apiRequest.isToSaveAnItem {
             return .saveItem()
         } else if apiRequest.isForRecommendationDetail(1) {

@@ -6,15 +6,31 @@ import Foundation
 import Sails
 import SharedPocketKit
 
+struct ApolloBodyRequest: Codable {
+    let operationName: String
+    let query: String
+    let variables: AnyCodable?
+
+    var variableDict: [String: Any?] {
+        variables!.value as! [String: Any?]
+    }
+}
+
 struct ClientAPIRequest {
     private let request: Request
     private let requestBody: String?
+    private let apolloRequestBody: ApolloBodyRequest?
     private let operationName: String?
 
     init(_ request: Request) {
         self.request = request
         self.requestBody = body(of: request)
-        self.operationName = request.head.headers.first(name: "X-APOLLO-OPERATION-NAME")
+        do {
+            self.apolloRequestBody = try JSONDecoder().decode(ApolloBodyRequest.self, from: self.request.body!)
+            self.operationName = self.apolloRequestBody?.operationName
+        } catch {
+            fatalError("could not parse apollo body \(error)")
+        }
     }
 
     var isEmpty: Bool {
@@ -110,5 +126,12 @@ struct ClientAPIRequest {
 
     func contains(_ string: String) -> Bool {
         requestBody?.contains(string) == true
+    }
+}
+
+extension ClientAPIRequest {
+
+    var itemIdVariable: String {
+        self.apolloRequestBody!.variableDict["itemId"] as! String
     }
 }
