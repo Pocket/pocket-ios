@@ -81,6 +81,17 @@ extension Item {
         }
     }
 
+    func update(remote: PendingItemParts, with space: Space) {
+        remoteID = remote.remoteID
+
+        guard let url = URL(string: remote.givenUrl) else {
+            Log.breadcrumb(category: "sync", level: .warning, message: "Skipping updating of Item \(remoteID) because \(givenURL) is not valid url")
+            return
+        }
+
+        givenURL = url
+    }
+
     func update(from summary: ItemSummary, with space: Space) {
         remoteID = summary.remoteID
 
