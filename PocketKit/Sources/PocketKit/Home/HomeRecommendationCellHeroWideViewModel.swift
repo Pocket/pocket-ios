@@ -26,8 +26,8 @@ extension HomeRecommendationCellHeroWideViewModel {
     }
 
     var saveButtonMode: RecommendationSaveButton.Mode {
-        if recommendation.item?.savedItem != nil &&
-            recommendation.item?.savedItem?.isArchived == false {
+        if recommendation.item.savedItem != nil &&
+            recommendation.item.savedItem?.isArchived == false {
             return .saved
         } else {
             return .save
@@ -53,7 +53,7 @@ extension HomeRecommendationCellHeroWideViewModel {
     }
 
     var attributedAuthor: NSAttributedString? {
-        recommendation.item?.authors.flatMap { authorSet in
+        recommendation.item.authors.flatMap { authorSet in
             let names = authorSet.compactMap { ($0 as? Author)?.name }
             let formatted = ListFormatter.localizedString(byJoining: names)
             return NSAttributedString(string: formatted, style: .author)

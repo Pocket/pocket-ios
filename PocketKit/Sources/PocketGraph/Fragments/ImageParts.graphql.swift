@@ -34,7 +34,7 @@ public struct ImageParts: PocketGraph.SelectionSet, Fragment {
   public var caption: String? { __data["caption"] }
   /// A credit for the image, typically who the image belongs to / created by
   public var credit: String? { __data["credit"] }
-  /// The id for placing within an Article View. {articleView.article} will have placeholders of <div id='RIL_IMG_X' /> where X is this id. Apps can download those images as needed and populate them in their article view.
+  /// The id for placing within an Article View. Item.article will have placeholders of <div id='RIL_IMG_X' /> where X is this id. Apps can download those images as needed and populate them in their article view.
   public var imageID: Int { __data["imageID"] }
   /// Absolute url to the image
   @available(*, deprecated, message: "use url property moving forward")

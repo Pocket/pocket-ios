@@ -133,6 +133,7 @@ public class Space {
     func makeChildBackgroundContext() -> NSManagedObjectContext {
         let context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
         context.parent = backgroundContext
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
         context.automaticallyMergesChangesFromParent = true
         return context
     }
@@ -388,14 +389,19 @@ extension Space {
         let context = context ?? backgroundContext
         let fetchRequest = Requests.fetchTag(byName: name)
         fetchRequest.fetchLimit = 1
-        let fetchedTag = (try? fetch(fetchRequest, context: context).first) ?? Tag(context: context)
-        guard fetchedTag.name == nil else { return fetchedTag }
-        fetchedTag.name = name
-        return fetchedTag
+        if let fetchedTag = (try? fetch(fetchRequest, context: context).first) {
+            return fetchedTag
+        }
+        let createTag = Tag(context: context)
+        createTag.name = name
+        return createTag
     }
 
-    func fetchTag(byID id: String) throws -> Tag? {
-        try fetch(Requests.fetchTag(byID: id)).first
+    func fetchTag(by name: String, context: NSManagedObjectContext? = nil) throws -> Tag? {
+        let context = context ?? backgroundContext
+        let fetchRequest = Requests.fetchTag(byName: name)
+        fetchRequest.fetchLimit = 1
+        return try fetch(fetchRequest, context: context).first
     }
 
     func retrieveTags(excluding tags: [String]) throws -> [Tag] {

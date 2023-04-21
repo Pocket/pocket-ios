@@ -101,7 +101,7 @@ class SavedItemViewModelTests: XCTestCase {
         source.stubFetchDetails { _ in }
 
         let savedItem = space.buildSavedItem()
-        savedItem.item?.article = nil
+        savedItem.item.article = nil
         try space.save()
 
         let viewModel = subject(item: savedItem)

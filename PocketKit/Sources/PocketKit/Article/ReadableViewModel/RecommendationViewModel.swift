@@ -41,13 +41,13 @@ class RecommendationViewModel: ReadableViewModel {
         self.user = user
         self.userDefaults = userDefaults
 
-        self.savedItemCancellable = recommendation.item?.publisher(for: \.savedItem).sink { [weak self] savedItem in
+        self.savedItemCancellable = recommendation.item.publisher(for: \.savedItem).sink { [weak self] savedItem in
             self?.update(for: savedItem)
         }
     }
 
     var components: [ArticleComponent]? {
-        recommendation.item?.article?.components
+        recommendation.item.article?.components
     }
 
     var readerSettings: ReaderSettings {
@@ -56,7 +56,7 @@ class RecommendationViewModel: ReadableViewModel {
     }
 
     var textAlignment: Textile.TextAlignment {
-        TextAlignment(language: recommendation.item?.language)
+        TextAlignment(language: recommendation.item.language)
     }
 
     var title: String? {
@@ -64,7 +64,7 @@ class RecommendationViewModel: ReadableViewModel {
     }
 
     var authors: [ReadableAuthor]? {
-        recommendation.item?.authors?.compactMap { $0 as? Author }
+        recommendation.item.authors?.compactMap { $0 as? Author }
     }
 
     var domain: String? {
@@ -72,15 +72,15 @@ class RecommendationViewModel: ReadableViewModel {
     }
 
     var publishDate: Date? {
-        recommendation.item?.datePublished
+        recommendation.item.datePublished
     }
 
     var url: URL? {
-        recommendation.item?.bestURL
+        recommendation.item.bestURL
     }
 
     var isArchived: Bool {
-        return recommendation.item?.savedItem?.isArchived ?? false
+        return recommendation.item.savedItem?.isArchived ?? false
     }
 
     var premiumURL: URL? {
@@ -88,7 +88,7 @@ class RecommendationViewModel: ReadableViewModel {
     }
 
     func moveToSaves() {
-        guard let savedItem = recommendation.item?.savedItem else {
+        guard let savedItem = recommendation.item.savedItem else {
             return
         }
 
@@ -96,7 +96,7 @@ class RecommendationViewModel: ReadableViewModel {
     }
 
     func delete() {
-        guard let savedItem = recommendation.item?.savedItem else {
+        guard let savedItem = recommendation.item.savedItem else {
             return
         }
 
@@ -105,7 +105,7 @@ class RecommendationViewModel: ReadableViewModel {
     }
 
     func fetchDetailsIfNeeded() {
-        guard recommendation.item?.article == nil else {
+        guard recommendation.item.article == nil else {
             _events.send(.contentUpdated)
             return
         }
@@ -156,7 +156,7 @@ class RecommendationViewModel: ReadableViewModel {
 
 extension RecommendationViewModel {
     private func buildActions() {
-        guard let savedItem = recommendation.item?.savedItem else {
+        guard let savedItem = recommendation.item.savedItem else {
             _actions = [
                 .displaySettings { [weak self] _ in self?.displaySettings() },
                 .save { [weak self] _ in self?.save() },
@@ -206,7 +206,7 @@ extension RecommendationViewModel {
     }
 
     func favorite() {
-        guard let savedItem = recommendation.item?.savedItem else {
+        guard let savedItem = recommendation.item.savedItem else {
             return
         }
 
@@ -215,7 +215,7 @@ extension RecommendationViewModel {
     }
 
     func unfavorite() {
-        guard let savedItem = recommendation.item?.savedItem else {
+        guard let savedItem = recommendation.item.savedItem else {
             return
         }
 
@@ -231,7 +231,7 @@ extension RecommendationViewModel {
     }
 
     func moveFromArchiveToSaves(completion: (Bool) -> Void) {
-        guard let savedItem = recommendation.item?.savedItem else {
+        guard let savedItem = recommendation.item.savedItem else {
             Log.capture(message: "Could not get SavedItem so unarchive action not taken")
             completion(false)
             return
@@ -242,7 +242,7 @@ extension RecommendationViewModel {
     }
 
     func archive() {
-        guard let savedItem = recommendation.item?.savedItem else {
+        guard let savedItem = recommendation.item.savedItem else {
             Log.capture(message: "Could not get SavedItem so archive action not taken")
             return
         }
