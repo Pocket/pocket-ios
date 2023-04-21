@@ -34,7 +34,7 @@ class EditTagsTests: XCTestCase {
     override func tearDown() async throws {
         try server.stop()
         app.terminate()
-        await snowplowMicro.assertNoBadEvents()
+        await snowplowMicro.assertBaselineSnowplowExpectation()
     }
 
     @MainActor
@@ -67,7 +67,6 @@ class EditTagsTests: XCTestCase {
         tagsFilterView.tag(matching: "rename tag 1").wait().tap()
         XCTAssertEqual(app.saves.wait().itemCells.count, 1)
 
-        await snowplowMicro.assertBaselineSnowplowExpectation()
         let tagEvent = await snowplowMicro.getFirstEvent(with: "global-nav.filterTags.tagRename")
         tagEvent!.getUIContext()!.assertHas(type: "button")
     }
@@ -108,7 +107,6 @@ class EditTagsTests: XCTestCase {
         waitForDisappearance(of: tagsFilterView.tag(matching: "tag 1"))
         waitForDisappearance(of: tagsFilterView.tag(matching: "tag 2"))
 
-        await snowplowMicro.assertBaselineSnowplowExpectation()
         let tagEvent = await snowplowMicro.getFirstEvent(with: "global-nav.filterTags.tagsDelete")
         tagEvent!.getUIContext()!.assertHas(type: "button")
     }
