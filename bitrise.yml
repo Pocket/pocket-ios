@@ -491,9 +491,11 @@ workflows:
                 #!/usr/bin/env bash
                 set -eo pipefail
 
-                xcrun xcresulttool merge "${BITRISE_UITESTS_1_XCRESULT_PATH}" "${BITRISE_UITESTS_2_XCRESULT_PATH}" "${BITRISE_UITESTS_3_XCRESULT_PATH}" "${BITRISE_UNIT_XCRESULT_PATH}"  --output-path "merged.xcresult"
+                # Re-enable after we fix ui tests.
+                # xcrun xcresulttool merge "${BITRISE_UITESTS_1_XCRESULT_PATH}" "${BITRISE_UITESTS_2_XCRESULT_PATH}" "${BITRISE_UITESTS_3_XCRESULT_PATH}" "${BITRISE_UNIT_XCRESULT_PATH}"  --output-path "merged.xcresult"
+                # envman add --key BITRISE_XCRESULT_PATH --value "$(pwd)/merged.xcresult"
 
-                envman add --key BITRISE_XCRESULT_PATH --value "$(pwd)/merged.xcresult"
+                envman add --key BITRISE_XCRESULT_PATH --value "${BITRISE_UNIT_XCRESULT_PATH}"
       - custom-test-results-export@0:
           inputs:
             - search_pattern: '*'
