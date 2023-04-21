@@ -1,3 +1,197 @@
+//General Messages
+"general.oops" = "Oeps! Opnieuw proberen?";
+
+//Archive
+"archive.empty.header" = "Houd je lijst up-to-date en geordend";
+"archive.empty.detail" = "Archiveer opgeslagen artikelen die je al hebt gelezen via het archief-pictogram.";
+"archive.empty.button" = "Artikelen archiveren";
+
+//Favourites
+"favourites.empty.header" = "Vind hier je favorieten";
+"favourites.empty.detail" = "Klik op het sterretje om een artikel aan je favorieten toe te voegen, zodat je het sneller terug kunt vinden.";
+
+//Home
+"home.recommendation.readTime" = "Leestijd %1$@ min.";
+
+//Item
+"item.overflowMenu.moveToSaves" = "Verplaatsen naar Opgeslagen";
+
+//ItemAction
+"itemAction.addTags" = "Tags toevoegen";
+"itemAction.archive" = "Archief";
+"itemAction.copyLink" = "Kopieer link";
+"itemAction.delete" = "Verwijderen";
+"itemAction.displaySettings" = "Instellingen weergeven";
+"itemAction.favorite" = "Favoriet";
+"itemAction.unfavorite" = "Verwijderen uit Favorieten";
+"itemAction.moveToSaves" = "Verplaatsen naar Opgeslagen";
+"itemAction.open" = "Openen";
+"itemAction.report" = "Rapporteren";
+"itemAction.save" = "Opslaan";
+"itemAction.share" = "Delen";
+
+//ItemList
+"itemlist.filter.search" = "Zoeken";
+"itemlist.filter.all" = "Alle";
+"itemlist.filter.tagged" = "Getagd";
+"itemlist.filter.favorites" = "Favorieten";
+"itemlist.filter.sortFilter" = "Sorteren/filteren";
+
+//List view
+"item.list.min" = "%1$@ min.";
+// Short name of the monthly premium subscription
+"Monthly" = "Maandelijks";
+// Suffix of the monthly premium subscription price description
+"month" = "maand";
+// Suffix of the annual premium subscription price description
+"year" = "jaar";
+// Short name of the annual premium subscription
+"Annual" = "Jaarlijks";
+
+//Log in
+//Shown to the user after they deleted their account
+"login.deletedAccount.banner.title" = "Je hebt je Pocket-account verwijderd";
+//Shown to the user after they deleted their account
+"login.deletedAccount.banner.detail" = "Wat hadden we beter kunnen doen?";
+//Action button for a user to take a survey
+"login.deletedAccount.banner.action" = "Snelle enquête";
+
+//Logged Out
+"loggedOut.offline.header" = "Geen internetverbinding";
+"loggedOut.offline.detail" = "Het lijkt erop dat je offline bent. Controleer je verbinding met het mobiele of wifi-netwerk.";
+
+//Saves
+"saves.empty.header" = "Begin met het samenstellen van je Pocket-lijst";
+"saves.empty.button" = "Opslaan";
+
+// Search
+"search.errorMessage" = "Er is een fout opgetreden waardoor we je tijdelijk niet kunnen leveren wat je nodig hebt. Probeer het later opnieuw.";
+"search.limitedResults" = "Beperkte zoekresultaten";
+"search.offlineMessage" = "Je kunt alleen titels en URL's zoeken als je offline bent. Maak verbinding met het internet om in Premium op basis van volledige tekst te zoeken.";
+"search.banner.errorMessage." = "Er is een fout opgetreden waardoor we je geen volledige zoekresultaten kunnen tonen. Probeer het later opnieuw.";
+"search.error.view.needsInternet" = "Je hebt een internetverbinding nodig om dit item te bekijken.";
+"search.recent" = "Recente zoekopdrachten";
+"search.recent.empty" = "Recente zoekopdrachten worden hier weergegeven, zodat je eenvoudig door kunt gaan waar je gebleven was.";
+"search.swipe.unableToMove" = "Kan niet verplaatsen";
+"search.swipe.archive" = "Archief";
+"search.swipe.moveToSaves" = "Verplaatsen naar Opgeslagen";
+
+"search.empty.header" = "Zoeken op titel of URL";
+
+"search.allItems.premium.header" = "Meer zoekopties ontgrendelen";
+"search.allItems.premium.detail" = "Doorzoek je hele Pocket, inclusief gearchiveerde items, met Pocket Premium.";
+"search.allItems.premium.button" = "Kies Pocket Premium";
+
+"search.results.empty.header" = "Geen resultaten gevonden";
+"search.results.empty.detail" = "Probeer verschillende trefwoorden te gebruiken, controleer op typfouten of wijzig je filters.";
+
+"search.results.offline.header" = "Geen internetverbinding";
+"search.results.offline.detail" = "Je moet online zijn om %1$@ items te doorzoeken.";
+"search.results.offline.detail.archive" = "Gearchiveerd";
+"search.results.offline.detail.all" = "Alle";
+
+// Settings
+"settings.thankyou.credits" = "Bedankt dat je Pocket gebruikt";
+"settings.PocketForiOS %@ (%@)" = "Pocket voor iOS %1$@ (%2$@)";
+"settings.openSourceLicenses" = "Open source-licenties";
+"settings.logout" = "Afmelden";
+"settings.logout.areYouSureMessage" = "Je wordt afgemeld bij je account en alle items die zijn opgeslagen voor offline weergave worden verwijderd van je apparaat.";
+"settings.logout.areyousure" = "Weet je het zeker?";
+"settings.help" = "Hulp en ondersteuning";
+"settings.accountManagement" = "Accountbeheer";
+"settings.accountManagement.deleteAccount" = "Account verwijderen";
+"settings.accountManagement.deleteYourAccount" = "Verwijder je account";
+
+"settings.accountManagement.deleteAccount.warning" = "Waarschuwing: dit kan niet ongedaan worden gemaakt";
+"settings.accountManagement.deleteAccount.premiumConfirmation" = "Als je je account wilt verwijderen, moet je eerst **hier je Premium-abonnement opzeggen.**";
+"settings.accountManagement.deleteAccount.deletionConfirmation" = "Je bent ervan op de hoogte dat je Pocket-account en -gegevens **definitief worden verwijderd.**";
+//Links to a help article on how to cancel your subscription
+"settings.accountManagement.deleteAccount.howToCancel" = "Hoe zeg je je Pocket Premium-abonnement op";
+//Loading screen showing that the account deletion is in progress
+"settings.accountManagement.deleteAccount.deleting" = "Je account verwijderen";
+"settings.accountManagement.deleteAccount.error.body" = "Er is een fout opgetreden en we kunnen je account niet verwijderen. Probeer het later opnieuw.";
+"settings.accountManagement.restoreSubscription" = "Herstel bestaand abonnement";
+"settings.accountManagement.restoreSubscription.restoreSuccessful.title" = "Hersteld";
+"settings.accountManagement.restoreSubscription.restoreSuccessful.message" = "Je Pocket Premium-abonnement is hersteld.";
+"settings.accountManagement.restoreSubscription.restoreNotSuccessful.title" = "Herstel niet succesvol";
+"settings.accountManagement.restoreSubscription.restoreNotSuccessful.message" = "We konden geen abonnement vinden. Als je gelooft dat je er een hebt, stuur dan een e-mail naar support@getpocket.com om ons dit te laten weten.";
+
+"settings.noInternet.header" = "Geen internetverbinding";
+"settings.noInternet.youMustBeOnline" = "Je moet online zijn om te upgraden naar Pocket Premium. Controleer je verbinding en probeer het opnieuw.";
+
+"settings.goPremiumRow" = "Premium";
+"settings.premiumSubscriptionRow" = "Premium-abonnement";
+"settings.premiumRow" = "Premium";
+"settings.premium.settings.thanksForSubscribing" = "Bedankt voor het abonneren op Pocket Premium!";
+"settings.premium.settings.subscriptionStatus" = "Abonnementsstatus";
+"settings.premium.settings.subscription" = "Abonnement";
+"settings.premium.settings.datePurchased" = "Aankoopdatum:";
+"settings.premium.settings.renewalDate" = "Vervaldag";
+"settings.premium.settings.purchaseLocation" = "Aankooplocatie";
+"settings.premium.settings.price" = "Prijs";
+"settings.premium.settings.yourSubscription" = "Jouw abonnement";
+"settings.premium.settings.manageYourSubscription" = "Beheer jouw abonnement";
+"settings.premium.settings.questionOrFeedback" = "Vragen of feedback?";
+"settings.premium.settings.pocketPremiumFAQ" = "Pocket Premium Veelgestelde vragen";
+// this refers to an action to open an email
+"settings.premium.settings.contactPocketSupport" = "Neem contact op met Pocket Support";
+
+//Sorting Options
+"sortingOption.sortBy" = "Gesorteerd op";
+"sortingOption.NewestSaved" = "Als laatste opgeslagen";
+"sortingOption.oldestSaved" = "Als eerste opgeslagen";
+"sortingOption.shortestToRead" = "Kortste leestijd";
+"sortingOption.longestToRead" = "Langste leestijd";
+
+// Tags
+"tags.upsell.tagStoriesFasterThanEver" = "Verhalen sneller taggen dan ooit: krijg de meest recente tags met Pocket Premium.";
+"tags.upsell.getPocketPremium" = "Kies Pocket Premium";
+"tags.section.recentTags" = "Recente tags";
+"tags.section.userTags" = "Mijn tags";
+
+"tags.empty.header" = "Geen opgeslagen artikelen met deze tag.";
+"tags.empty.detail" = "Voeg tags aan opgeslagen artikelen toe zodat je ze later makkelijk kunt vinden.";
+"tags.empty.button" = "Tags gebruiken";
+
+"tags.notTagged" = "Niet getagd";
+
+//Reader 
+"reader.activity.save" = "Opslaan";
+"reader.activity.report" = "Rapporteren";
+"reader.activity.delete" = "Verwijderen";
+"reader.activity.archive" = "Archief";
+"reader.activity.favorite" = "Favoriet";
+"reader.activity.unfavorite" = "Verwijderen uit Favorieten";
+"reader.activity.moveToSaves" = "Verplaatsen naar Opgeslagen";
+
+//Recommendation
+"recommendation.save" = "Opslaan";
+"recommendation.saved" = "Opgeslagen";
+
+//Premium
+"premium.infoView.terms.privacyPolicy" = "Privacybeleid";
+"premium.infoView.terms.TermsOfService" = "Gebruiksvoorwaarden";
+
+"premium.success.message" = "Je bent officieel lid van Pocket Premium. Welkom bij de nieuwe advertentievrije, aanpasbare, permanente versie van je Pocket. We denken dat het je wel zal bevallen.";
+
+//The title of our Premium Membership page spans 2 lines. The '\n' character denotes a newline character and is not shown to the user.
+"premium.upgradeView.PremiumMembership" = "Premium\nLidmaatschap";
+"premium.upgradeView.comingSoon" = "Binnenkort beschikbaar!";
+// Description of the premium uprgade view
+"premium.upgradeView.description" = "Abonnementen worden via je iTunes-account in rekening gebracht op je creditcard. Voor de verlenging van je account wordt er binnen 24 uur voor het aflopen van de huidige termijn %1$@ (maandelijks) of %2$@ (jaarlijks) in rekening gebracht. Je abonnement wordt automatisch verlengd tenzij je het minstens 24 uur voor het einde van de huidige termijn opzegt. Het is niet mogelijk om een abonnement direct te beëindigen. Na de aanschaf van een abonnement beheer je abonnementen in Accountinstellingen. Daar kun je ook automatisch verlengen uitschakelen. Het is niet mogelijk om restituties te krijgen voor ongebruikte delen van een abonnement.";
+"premium.upgradeView.save" = "Opslaan";
+"premium.upgradeView.permanentLibrary" = "Permanente bibliotheek met alles wat je hebt opgeslagen";
+//Ads will not be shown to Premuim users
+"premium.upgradeView.adFree" = "ADVERTENTIEVRIJ";
+"premium.upgradeView.suggestedTags" = "gesuggereerde tags";
+"premium.upgradeView.fullTextSearch" = "Volledige tekst doorzoeken";
+"premium.upgradeView.unlimitedHighlights" = "Onbeperkte markeringen";
+"premium.upgradeView.premiumFonts" = "Premium-lettertypen";
+
+
+//=======================
+//Old format
+
 "Home" = "Homepagina";
 "Archive" = "Archief";
 "Pocket" = "Pocket";
@@ -12,44 +206,12 @@
 "No Internet Connection" = "Geen internetverbinding";
 "Looks like you're offline. Try checking your mobile data or wifi." = "Het lijkt erop dat je offline bent. Controleer je verbinding met het mobiele of wifi-netwerk.";
 
-"Keep your list fresh and clean" = "Houd je lijst up-to-date en geordend";
-"Archive the saves you're finished with\n using the archive icon." = "Archiveer opgeslagen artikelen die je al hebt gelezen via het archief-pictogram.";
-"How to archive" = "Artikelen archiveren";
-
-"Find your favorites here" = "Vind hier je favorieten";
-"Hit the star icon to favorite an article and find it faster." = "Klik op het sterretje om een artikel aan je favorieten toe te voegen, zodat je het sneller terug kunt vinden.";
-
-"Start building your Pocket list" = "Begin met het samenstellen van je Pocket-lijst";
-"How to save" = "Opslaan";
-
-"No saves with this tag." = "Geen opgeslagen artikelen met deze tag.";
-"Tag your saves by topic to find them later." = "Voeg tags aan opgeslagen artikelen toe zodat je ze later makkelijk kunt vinden.";
-"How to tag" = "Tags gebruiken";
-
-"Search" = "Zoeken";
-"All" = "Alle";
-"Tagged" = "Getagd";
-"Favorites" = "Favorieten";
-"Sort/Filter" = "Sorteren/filteren";
-
-"Save" = "Opslaan";
-"Report" = "Rapporteren";
-"Delete" = "Verwijderen";
-"Archive" = "Archief";
-"Favorite" = "Favoriet";
-"Unfavorite" = "Verwijderen uit Favorieten";
-"Move to Saves" = "Verplaatsen naar Opgeslagen";
 "Add Tags" = "Tags toevoegen";
 "Tags" = "Tags";
 "Share" = "Delen";
+"carousel.listen" = "Luisteren";
 
 "Saves" = "Opgeslagen";
-
-"Sort by" = "Gesorteerd op";
-"Newest saved" = "Als laatste opgeslagen";
-"Oldest saved" = "Als eerste opgeslagen";
-"Shortest to read" = "Kortste leestijd";
-"Longest to read" = "Langste leestijd";
 
 "Display Settings" = "Instellingen weergeven";
 "Font" = "Lettertype";
@@ -130,89 +292,6 @@
 "It contains misinformation" = "Het bevat informatie die niet klopt";
 "Other" = "Overige";
 
-//General Messages
-"general.oops" = "Oeps! Opnieuw proberen?";
-
-// Tags
-"tags.upsell.tagStoriesFasterThanEver" = "Verhalen sneller taggen dan ooit: krijg de meest recente tags met Pocket Premium.";
-"tags.upsell.getPocketPremium" = "Kies Pocket Premium";
-"tags.section.recentTags" = "Recente tags";
-"tags.section.userTags" = "Mijn tags";
-
-// Search
-"search.errorMessage" = "Er is een fout opgetreden waardoor we je tijdelijk niet kunnen leveren wat je nodig hebt. Probeer het later opnieuw.";
-"search.limitedResults" = "Beperkte zoekresultaten";
-"search.offlineMessage" = "Je kunt alleen titels en URL's zoeken als je offline bent. Maak verbinding met het internet om in Premium op basis van volledige tekst te zoeken.";
-"search.banner.errorMessage." = "Er is een fout opgetreden waardoor we je geen volledige zoekresultaten kunnen tonen. Probeer het later opnieuw.";
-"search.error.view.needsInternet" = "Je hebt een internetverbinding nodig om dit item te bekijken.";
-"search.recent" = "Recente zoekopdrachten";
-"search.swipe.unableToMove" = "Kan niet verplaatsen";
-"search.swipe.archive" = "Archief";
-"search.swipe.moveToSaves" = "Verplaatsen naar Opgeslagen";
-
-// Settings
-"settings.thankyou.credits" = "Bedankt dat je Pocket gebruikt";
-"settings.PocketForiOS %@ (%@)" = "Pocket voor iOS %1$@ (%2$@)";
-"settings.openSourceLicenses" = "Open source-licenties";
-"settings.logout" = "Afmelden";
-"settings.logout.areYouSureMessage" = "Je wordt afgemeld bij je account en alle items die zijn opgeslagen voor offline weergave worden verwijderd van je apparaat.";
-"settings.logout.areyousure" = "Weet je het zeker?";
-"settings.help" = "Hulp en ondersteuning";
-"settings.accountManagement" = "Accountbeheer";
-"settings.accountManagement.deleteAccount" = "Account verwijderen";
-"settings.accountManagement.deleteYourAccount" = "Verwijder je account";
-
-"settings.accountManagement.deleteAccount.warning" = "Waarschuwing: dit kan niet ongedaan worden gemaakt";
-"settings.accountManagement.deleteAccount.premiumConfirmation" = "Als je je account wilt verwijderen, moet je eerst **hier je Premium-abonnement opzeggen.**";
-"settings.accountManagement.deleteAccount.deletionConfirmation" = "Je bent ervan op de hoogte dat je Pocket-account en -gegevens **definitief worden verwijderd.**";
-//Links to a help article on how to cancel your subscription
-"settings.accountManagement.deleteAccount.howToCancel" = "Hoe zeg je je Pocket Premium-abonnement op";
-//Loading screen showing that the account deletion is in progress
-"settings.accountManagement.deleteAccount.deleting" = "Je account verwijderen";
-"settings.accountManagement.deleteAccount.error.body" = "Er is een fout opgetreden en we kunnen je account niet verwijderen. Probeer het later opnieuw.";
-"settings.accountManagement.restoreSubscription" = "Herstel bestaand abonnement";
-"settings.accountManagement.restoreSubscription.restoreSuccessful.title" = "Hersteld";
-"settings.accountManagement.restoreSubscription.restoreSuccessful.message" = "Je Pocket Premium-abonnement is hersteld.";
-"settings.accountManagement.restoreSubscription.restoreNotSuccessful.title" = "Herstel niet succesvol";
-"settings.accountManagement.restoreSubscription.restoreNotSuccessful.message" = "We konden geen abonnement vinden. Als je gelooft dat je er een hebt, stuur dan een e-mail naar support@getpocket.com om ons dit te laten weten.";
-
-"settings.noInternet.youMustBeOnline" = "Je moet online zijn om te upgraden naar Pocket Premium. Controleer je verbinding en probeer het opnieuw.";
-
-//Shown to the user after they deleted their account
-"login.deletedAccount.banner.title" = "Je hebt je Pocket-account verwijderd";
-//Shown to the user after they deleted their account
-"login.deletedAccount.banner.detail" = "Wat hadden we beter kunnen doen?";
-//Action button for a user to take a survey
-"login.deletedAccount.banner.action" = "Snelle enquête";
-
-//List view
-"item.list.min" = "%1$@ min.";
-// Short name of the monthly premium subscription
-"Monthly" = "Maandelijks";
-// Suffix of the monthly premium subscription price description
-"month" = "maand";
-// Suffix of the annual premium subscription price description
-"year" = "jaar";
-// Short name of the annual premium subscription
-"Annual" = "Jaarlijks";
-// Description of the premium uprgade view
-"premium.upgradeview.description" = "Abonnementen worden via je iTunes-account in rekening gebracht op je creditcard. Voor de verlenging van je account wordt er binnen 24 uur voor het aflopen van de huidige termijn %1$@ (maandelijks) of %2$@ (jaarlijks) in rekening gebracht. Je abonnement wordt automatisch verlengd tenzij je het minstens 24 uur voor het einde van de huidige termijn opzegt. Het is niet mogelijk om een abonnement direct te beëindigen. Na de aanschaf van een abonnement beheer je abonnementen in Accountinstellingen. Daar kun je ook automatisch verlengen uitschakelen. Het is niet mogelijk om restituties te krijgen voor ongebruikte delen van een abonnement.";
-"settings.goPremiumRow" = "Premium";
-"settings.premiumSubscriptionRow" = "Premium-abonnement";
 "Hooray!" = "Hoera!";
-"premium.success.message" = "Je bent officieel lid van Pocket Premium. Welkom bij de nieuwe advertentievrije, aanpasbare, permanente versie van je Pocket. We denken dat het je wel zal bevallen.";
+
 "back.to.pocket" = "Terug naar Pocket";
-"settings.premiumRow" = "Premium";
-"settings.premium.settings.thanksForSubscribing" = "Bedankt voor het abonneren op Pocket Premium!";
-"settings.premium.settings.subscriptionStatus" = "Abonnementsstatus";
-"settings.premium.settings.subscription" = "Abonnement";
-"settings.premium.settings.datePurchased" = "Aankoopdatum:";
-"settings.premium.settings.renewalDate" = "Vervaldag";
-"settings.premium.settings.purchaseLocation" = "Aankooplocatie";
-"settings.premium.settings.price" = "Prijs";
-"settings.premium.settings.yourSubscription" = "Jouw abonnement";
-"settings.premium.settings.manageYourSubscription" = "Beheer jouw abonnement";
-"settings.premium.settings.questionOrFeedback" = "Vragen of feedback?";
-"settings.premium.settings.pocketPremiumFAQ" = "Pocket Premium Veelgestelde vragen";
-// this refers to an action to open an email
-"settings.premium.settings.contactPocketSupport" = "Neem contact op met Pocket Support";
