@@ -30,8 +30,15 @@
       "hasVideo": "HAS_VIDEOS",
       "syndicatedArticle": {
         "__typename": "SyndicatedArticle",
-        "itemId": "recommended-item-4"
-      },
+        "itemId": "recommended-item-4",
+        "title": "Syndicated Article Slate 2, Rec 2",
+        "excerpt": "A better syndicated excerpt",
+        "mainImage": "http://example.com/slate-2-rec-2/top-image.png",
+        "publisher": {
+          "__typename": "Publisher",
+          "name": "Mozilla"
+        }
+      }
       "datePublished": "2021-01-01 12:01:01",
       "marticle": [
         

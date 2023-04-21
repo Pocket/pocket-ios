@@ -29,7 +29,7 @@
                                 "__typename": "Item",
                                 "remoteID": "item-1",
                                 "title": "Item 1",
-                                "givenUrl": "http://localhost:8080/hello/saved-item-1",
+                                "givenUrl": "http://localhost:8080/hello/item-1",
                                 "resolvedUrl": "http://localhost:8080/hello/item-1",
                                 "topImageUrl": "https://example.com/item-1/top-image.jpg",
                                 "domain": null,
