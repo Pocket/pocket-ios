@@ -142,7 +142,7 @@ class TagsFilterViewModelTests: XCTestCase {
         }
         let savedTags = try? space.fetchTags(isArchived: false)
         let viewModel = subject(fetchedTags: savedTags) { }
-        viewModel.rename(from: "tag 1", to: "tag 0") { }
+        viewModel.rename(from: "tag 1", to: "tag 0")
 
         wait(for: [expectRename], timeout: 10)
     }
@@ -156,7 +156,7 @@ class TagsFilterViewModelTests: XCTestCase {
         }
         let savedTags = try? space.fetchTags(isArchived: false)
         let viewModel = subject(fetchedTags: savedTags) { }
-        viewModel.rename(from: nil, to: "tag 0") { }
+        viewModel.rename(from: nil, to: "tag 0")
     }
 
     func test_renameTag_withTagThatDoesNotExist_doesNotRenameTag() {
@@ -168,6 +168,6 @@ class TagsFilterViewModelTests: XCTestCase {
         }
         let savedTags = try? space.fetchTags(isArchived: false)
         let viewModel = subject(fetchedTags: savedTags) { }
-        viewModel.rename(from: "tag does not exist", to: "tag 2") { }
+        viewModel.rename(from: "tag does not exist", to: "tag 2")
     }
 }

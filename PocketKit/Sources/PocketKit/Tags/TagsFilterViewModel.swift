@@ -56,18 +56,21 @@ class TagsFilterViewModel: ObservableObject {
         }
     }
 
-    func rename(from oldName: String?, to newName: String, completion: () -> Void) {
+    func rename(from oldName: String?, to newName: String) {
         guard let oldName else {
-            Log.capture(message: "Unable to rename tag")
-            completion()
+            Log.capture(message: "Unable to rename tag due to oldName being nil")
             return
         }
         let newName = newName.lowercased()
+
+        // TODO: To be updated when working on https://getpocket.atlassian.net/browse/IN-1350
         guard let tag: Tag = fetchedTags.filter({ $0.name == oldName }).first,
-              !fetchedTags.compactMap({ $0.name }).contains(newName) else { return }
+              !fetchedTags.compactMap({ $0.name }).contains(newName) else {
+            Log.capture(message: "Unable to rename tag due to name already existing")
+            return
+        }
         source.renameTag(from: tag, to: newName)
         trackTagRename()
-        completion()
     }
 }
 

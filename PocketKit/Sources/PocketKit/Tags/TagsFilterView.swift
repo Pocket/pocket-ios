@@ -47,10 +47,9 @@ struct TagsFilterView: View {
                     viewModel.delete(tags: Array(selectedItems.compactMap({ $0.name })))
                     selectedItems.removeAll()
                 } onRename: { text in
-                    viewModel.rename(from: selectedItems.first?.name, to: text) {
-                        selectedItems.removeAll()
-                        renameTagText = text
-                    }
+                    viewModel.rename(from: selectedItems.first?.name, to: text)
+                    selectedItems.removeAll()
+                    renameTagText = text
                 }
                 .onChange(of: renameTagText) { _ in
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -64,7 +63,6 @@ struct TagsFilterView: View {
         }
         .navigationViewStyle(.stack)
         .accessibilityIdentifier("filter-tags")
-        .padding(EdgeInsets(top: 0, leading: 30, bottom: 0, trailing: 30))
         .onDisappear {
             guard !didTap else { return }
             viewModel.selectAllAction()
