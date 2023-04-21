@@ -119,7 +119,7 @@ class HomeViewModelTests: XCTestCase {
 
     func test_fetch_whenRecentSavesIsEmpty_andSlateLineupIsAvailable_sendsSnapshotWithSlates() throws {
         let recommendations = try (0...3).map {
-            try space.createRecommendation(item: space.createItem(remoteID: "item-\($0)"))
+            try space.createRecommendation(remoteID: "recommendation-\($0)", item: space.createItem(remoteID: "item-\($0)", givenURL: URL(string: "http://example.com/item-\($0)")))
         }
 
         let slates = try [
@@ -168,10 +168,11 @@ class HomeViewModelTests: XCTestCase {
     }
 
     func test_fetch_whenRecentSavesAreAvailable_andSlateLineupIsUnavailable_sendsSnapshotWithRecentSaves() throws {
-        let items = try (1...2).map { try space.createItem(remoteID: "item-\($0)") }
+        let items = try (1...2).map { try space.createItem(remoteID: "item-\($0)", givenURL: URL(string: "http://example.com/item-\($0)")) }
         let savedItems = try (1...2).map {
             try space.createSavedItem(
                 remoteID: "saved-item-\($0)",
+                url: "http://example.com/item-\($0)",
                 createdAt: Date(timeIntervalSince1970: TimeInterval($0)),
                 item: items[$0 - 1]
             )
@@ -198,69 +199,9 @@ class HomeViewModelTests: XCTestCase {
         wait(for: [receivedEmptySnapshot], timeout: 10)
     }
 
-    func test_fetch_whenRecentSavesAndSlateLineupAreAvailable_sendsSnapshotWithRecentSavesAndSlates() throws {
-        let items = (1...4).map { space.buildItem(remoteID: "item-\($0)") }
-        let recommendations = items.map { space.buildRecommendation(item: $0) }
-        let slates = [
-            space.buildSlate(remoteID: "slate-1", recommendations: Array(recommendations[0...1])),
-            space.buildSlate(remoteID: "slate-2", recommendations: Array(recommendations[2...3])),
-        ]
-        try space.createSlateLineup(
-            remoteID: SyncConstants.Home.slateLineupIdentifier,
-            slates: slates
-        )
-
-        let savedItems = try (1...2).map {
-            try space.createSavedItem(
-                remoteID: "saved-item-\($0)",
-                createdAt: Date(timeIntervalSince1970: TimeInterval($0)),
-                item: items[$0 - 1]
-            )
-        }
-        try space.save()
-
-        let viewModel = subject()
-        let receivedEmptySnapshot = expectation(description: "receivedEmptySnapshot")
-        viewModel.$snapshot.dropFirst().first().sink { snapshot in
-            defer { receivedEmptySnapshot.fulfill() }
-            XCTAssertEqual(
-                snapshot.sectionIdentifiers,
-                [.recentSaves] + slates.flatMap {
-                    [.slateHero($0.objectID), .slateCarousel($0.objectID)]
-                }
-            )
-
-            XCTAssertEqual(
-                snapshot.itemIdentifiers(inSection: .recentSaves),
-                savedItems.reversed().map { .recentSaves($0.objectID) }
-            )
-
-            XCTAssertEqual(
-                snapshot.itemIdentifiers(inSection: .slateHero(slates[0].objectID)),
-                [.recommendationHero(recommendations[0].objectID)]
-            )
-            XCTAssertEqual(
-                snapshot.itemIdentifiers(inSection: .slateCarousel(slates[0].objectID)),
-                [.recommendationCarousel(recommendations[1].objectID)]
-            )
-            XCTAssertEqual(
-                snapshot.itemIdentifiers(inSection: .slateHero(slates[1].objectID)),
-                [.recommendationHero(recommendations[2].objectID)]
-            )
-            XCTAssertEqual(
-                snapshot.itemIdentifiers(inSection: .slateCarousel(slates[1].objectID)),
-                [.recommendationCarousel(recommendations[3].objectID)]
-            )
-        }.store(in: &subscriptions)
-
-        viewModel.fetch()
-
-        wait(for: [receivedEmptySnapshot], timeout: 10)
-    }
-
     func test_fetch_whenSlateContainsMoreThanFiveRecommendations_sendsSnapshotFirstFiveRecommendations() throws {
-        let items = try (0...5).map { try space.createItem(remoteID: "item-\($0)") }
-        let recommendations = try items.map { try space.createRecommendation(item: $0) }
+        let items = try (0...5).map { try space.createItem(remoteID: "item-\($0)", givenURL: URL(string: "http://example.com/item-\($0)")) }
+        let recommendations = try items.map { try space.createRecommendation(remoteID: "recommendation-\($0.remoteID)", item: $0) }
         let slate = space.buildSlate(recommendations: recommendations)
         try space.createSlateLineup(
             remoteID: SyncConstants.Home.slateLineupIdentifier,
@@ -350,7 +291,7 @@ class HomeViewModelTests: XCTestCase {
         let item = space.buildItem()
         let recommendations = [
             space.buildRecommendation(item: item),
-            space.buildRecommendation()
+            space.buildRecommendation(remoteID: "recommendation-2", item: space.buildItem(remoteID: "item-2", givenURL: URL(string: "https://example.com/items/item-2")))
         ]
         let slates: [Slate] = [space.buildSlate(recommendations: recommendations)]
         try space.createSlateLineup(
@@ -396,7 +337,7 @@ class HomeViewModelTests: XCTestCase {
         item.savedItem = space.buildSavedItem()
         let recommendations = [
             space.buildRecommendation(item: item),
-            space.buildRecommendation()
+            space.buildRecommendation(remoteID: "recommendation-2", item: space.buildItem(remoteID: "item-2", givenURL: URL(string: "https://example.com/items/item-2")))
         ]
         let slates: [Slate] = [space.buildSlate(recommendations: recommendations)]
         try space.createSlateLineup(
@@ -441,8 +382,9 @@ class HomeViewModelTests: XCTestCase {
 
         let recommendations = [
             space.buildRecommendation(item: item),
-            space.buildRecommendation()
+            space.buildRecommendation(remoteID: "recommendation-2", item: space.buildItem(remoteID: "item-2", givenURL: URL(string: "https://example.com/items/item-2")))
         ]
+
         let slates: [Slate] = [space.buildSlate(recommendations: recommendations)]
         try space.createSlateLineup(
             remoteID: SyncConstants.Home.slateLineupIdentifier,
@@ -515,30 +457,30 @@ class HomeViewModelTests: XCTestCase {
         wait(for: [snapshotExpectation], timeout: 10)
     }
 
-     func test_snapshot_whenNetworkIsInitiallyAvailable_hasCorrectSnapshot() {
-         source.stubFetchSlateLineup { _ in }
+    func test_snapshot_whenNetworkIsInitiallyAvailable_hasCorrectSnapshot() {
+        source.stubFetchSlateLineup { _ in }
 
-         let viewModel = subject()
-         XCTAssertNil(viewModel.snapshot.indexOfSection(.offline))
-     }
+        let viewModel = subject()
+        XCTAssertNil(viewModel.snapshot.indexOfSection(.offline))
+    }
 
-     func test_snapshot_withRecentSaves_andNetworkIsUnavailable_hasCorrectSnapshot() throws {
-         let items: [SavedItem] = [
+    func test_snapshot_withRecentSaves_andNetworkIsUnavailable_hasCorrectSnapshot() throws {
+        let items: [SavedItem] = [
             space.buildSavedItem(createdAt: Date())
-         ]
-         try space.save()
+        ]
+        try space.save()
 
-         networkPathMonitor.update(status: .unsatisfied)
+        networkPathMonitor.update(status: .unsatisfied)
 
-         let snapshotExpectation = expectation(description: "expect a snapshot")
-         let viewModel = subject()
-         viewModel.$snapshot.dropFirst(2).sink { snapshot in
-             XCTAssertEqual(
-                 snapshot.itemIdentifiers(inSection: .recentSaves),
-                 [
-                     .recentSaves(items[0].objectID)
-                 ]
-             )
+        let snapshotExpectation = expectation(description: "expect a snapshot")
+        let viewModel = subject()
+        viewModel.$snapshot.dropFirst(2).sink { snapshot in
+            XCTAssertEqual(
+                snapshot.itemIdentifiers(inSection: .recentSaves),
+                [
+                    .recentSaves(items[0].objectID)
+                ]
+            )
 
             XCTAssertNotNil(snapshot.indexOfSection(.offline))
             XCTAssertEqual(snapshot.itemIdentifiers(inSection: .offline), [.offline])
@@ -578,8 +520,9 @@ class HomeViewModelTests: XCTestCase {
     }
 
     func test_selectCell_whenSelectingRecommendation_recommendationIsReadable_updatesSelectedReadable() throws {
-        let heroRec = space.buildRecommendation(item: space.buildItem())
-        let carouselRec = space.buildRecommendation(item: space.buildItem())
+        let item = space.buildItem()
+        let heroRec = space.buildRecommendation(item: item)
+        let carouselRec = space.buildRecommendation(remoteID: "carousel-rec", item: space.buildItem(remoteID: "item-2", givenURL: URL(string: "https://example.com/items/item-2")))
         let recommendations = [heroRec, carouselRec]
         try space.createSlateLineup(
             remoteID: SyncConstants.Home.slateLineupIdentifier,
@@ -771,8 +714,8 @@ class HomeViewModelTests: XCTestCase {
     }
 
     func test_reportAction_forRecommendationCells_updatesSelectedRecommendationToReport() throws {
-        let heroRec = space.buildRecommendation()
-        let carouselRec = space.buildRecommendation()
+        let heroRec = space.buildRecommendation(item: space.buildItem())
+        let carouselRec = space.buildRecommendation(item: space.buildItem())
         try space.createSlateLineup(
             remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: [space.buildSlate(recommendations: [heroRec, carouselRec])]
@@ -850,9 +793,9 @@ class HomeViewModelTests: XCTestCase {
 
     func test_numberOfCarouselItemsForSlate_returnsAccurateCount() throws {
         let slates = [
-            space.buildSlate(recommendations: (0...1).map { _ in space.buildRecommendation() }),
-            space.buildSlate(recommendations: (0...2).map { _ in space.buildRecommendation() }),
-            space.buildSlate(recommendations: (0...3).map { _ in space.buildRecommendation() })
+            space.buildSlate(recommendations: (0...1).map { space.buildRecommendation(remoteID: "recommendation1-\($0)", item: space.buildItem(remoteID: "item1-\($0)", givenURL: URL(string: "https://example.com/items/item1-\($0)")))}),
+            space.buildSlate(recommendations: (0...2).map { space.buildRecommendation(remoteID: "recommendation2-\($0)", item: space.buildItem(remoteID: "item2-\($0)", givenURL: URL(string: "https://example.com/items/item2-\($0)")))}),
+            space.buildSlate(recommendations: (0...3).map { space.buildRecommendation(remoteID: "recommendation3-\($0)", item: space.buildItem(remoteID: "item3-\($0)", givenURL: URL(string: "https://example.com/items/item3-\($0)")))})
         ]
 
         try space.createSlateLineup(

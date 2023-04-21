@@ -24,7 +24,7 @@ public class GetSlateLineupQuery: GraphQLQuery {
         }
       }
       """#,
-      fragments: [SlateParts.self, ItemSummary.self, DomainMetadataParts.self, CuratedInfoParts.self]
+      fragments: [SlateParts.self, ItemSummary.self, DomainMetadataParts.self, SyndicatedArticleParts.self, CuratedInfoParts.self]
     ))
 
   public var lineupID: String

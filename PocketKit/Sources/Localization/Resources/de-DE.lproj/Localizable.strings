@@ -1,3 +1,197 @@
+//General Messages
+"general.oops" = "Hoppla! Erneut versuchen?";
+
+//Archive
+"archive.empty.header" = "Sorge dafür, dass deine Liste aktuell und schön ordentlich bleibt";
+"archive.empty.detail" = "Archiviere die gespeicherten Elemente, mit denen du fertig bist, über das Archivierungssymbol.";
+"archive.empty.button" = "So funktioniert das Archivieren";
+
+//Favourites
+"favourites.empty.header" = "Finde hier deine Favoriten";
+"favourites.empty.detail" = "Drücke das Stern-Symbol, um einen Artikel als Favoriten zu markieren und ihn schneller zu finden.";
+
+//Home
+"home.recommendation.readTime" = "%1$@ min gelesen";
+
+//Item
+"item.overflowMenu.moveToSaves" = "Zu „Gespeichert“ verschieben";
+
+//ItemAction
+"itemAction.addTags" = "Tags hinzufügen";
+"itemAction.archive" = "Archiv";
+"itemAction.copyLink" = "Link kopieren";
+"itemAction.delete" = "Löschen";
+"itemAction.displaySettings" = "Anzeigeeinstellungen";
+"itemAction.favorite" = "Als Favorit markieren";
+"itemAction.unfavorite" = "Favorit aufheben";
+"itemAction.moveToSaves" = "Zu „Gespeichert“ verschieben";
+"itemAction.open" = "Öffnen";
+"itemAction.report" = "Melden";
+"itemAction.save" = "Speichern";
+"itemAction.share" = "Teilen";
+
+//ItemList
+"itemlist.filter.search" = "Suche";
+"itemlist.filter.all" = "Alles";
+"itemlist.filter.tagged" = "Getaggt";
+"itemlist.filter.favorites" = "Favoriten";
+"itemlist.filter.sortFilter" = "Sortieren/Filtern";
+
+//List view
+"item.list.min" = "%1$@ Min.";
+// Short name of the monthly premium subscription
+"Monthly" = "Monatlich";
+// Suffix of the monthly premium subscription price description
+"month" = "Monat";
+// Suffix of the annual premium subscription price description
+"year" = "Jahr";
+// Short name of the annual premium subscription
+"Annual" = "Jährlich";
+
+//Log in
+//Shown to the user after they deleted their account
+"login.deletedAccount.banner.title" = "Du hast dein Pocket-Konto gelöscht";
+//Shown to the user after they deleted their account
+"login.deletedAccount.banner.detail" = "Was hätten wir besser machen können?";
+//Action button for a user to take a survey
+"login.deletedAccount.banner.action" = "Kurze Umfrage";
+
+//Logged Out
+"loggedOut.offline.header" = "Keine Internetverbindung";
+"loggedOut.offline.detail" = "Wie's aussieht, bist du offline. Bitte überprüfe deine mobilen Daten oder dein WLAN.";
+
+//Saves
+"saves.empty.header" = "Beginne mit dem Erstellen deiner Pocket-Liste";
+"saves.empty.button" = "Speichern";
+
+// Search
+"search.errorMessage" = "Aufgrund eines Fehlers treten vorübergehend Einschränkungen auf. Bitte versuche es später erneut.";
+"search.limitedResults" = "Eingeschränkte Suchergebnisse";
+"search.offlineMessage" = "Wenn du offline bist, kannst du nur nach Titeln und URLs suchen. Stelle eine Verbindung zum Internet her, um die Volltextsuche von Premium zu verwenden.";
+"search.banner.errorMessage." = "Aufgrund eines Fehlers können wir dir nicht die vollständigen Suchergebnisse anzeigen. Bitte versuche es später erneut.";
+"search.error.view.needsInternet" = "Du musst mit dem Internet verbunden sein, um dieses Element anzeigen zu können.";
+"search.recent" = "Kürzlich durchgeführte Suchen";
+"search.recent.empty" = "Hier werden die letzten Suchanfragen angezeigt, damit du sie leicht wiederfindest.";
+"search.swipe.unableToMove" = "Verschieben nicht möglich";
+"search.swipe.archive" = "Archiv";
+"search.swipe.moveToSaves" = "Zu „Gespeichert“ verschieben";
+
+"search.empty.header" = "Nach Titel oder URL suchen";
+
+"search.allItems.premium.header" = "Weitere Suchoptionen freischalten";
+"search.allItems.premium.detail" = "Mit Pocket Premium kannst du alles, was du in Pocket gespeichert hast, durchsuchen – auch archivierte Elemente.";
+"search.allItems.premium.button" = "Hol dir Pocket Premium";
+
+"search.results.empty.header" = "Keine Ergebnisse gefunden";
+"search.results.empty.detail" = "Versuche es mit verschiedenen Stichwörtern, überprüfe deine Eingabe auf Tippfehler oder ändere deine Filter.";
+
+"search.results.offline.header" = "Keine Internetverbindung";
+"search.results.offline.detail" = "Du musst online sein, um %1$@ Elemente durchsuchen zu können.";
+"search.results.offline.detail.archive" = "Archiviert";
+"search.results.offline.detail.all" = "Alles";
+
+// Settings
+"settings.thankyou.credits" = "Danke, dass du Pocket nutzt";
+"settings.PocketForiOS %@ (%@)" = "Pocket für iOS %1$@ (%2$@)";
+"settings.openSourceLicenses" = "Open-Source-Lizenzen";
+"settings.logout" = "Ausloggen";
+"settings.logout.areYouSureMessage" = "Du wirst aus deinem Konto ausgeloggt und sämtliche Elemente, die du zur Offline-Anzeige gespeichert hast, werden von deinem Gerät entfernt.";
+"settings.logout.areyousure" = "Bist du sicher?";
+"settings.help" = "Hilfe und Support erhalten";
+"settings.accountManagement" = "Kontoverwaltung";
+"settings.accountManagement.deleteAccount" = "Konto löschen";
+"settings.accountManagement.deleteYourAccount" = "Lösche dein Konto";
+
+"settings.accountManagement.deleteAccount.warning" = "Achtung: Dies kann nicht rückgängig gemacht werden";
+"settings.accountManagement.deleteAccount.premiumConfirmation" = "Um dein Konto zu löschen, musst du zuerst **dein Premium-Abonnement hier kündigen.**";
+"settings.accountManagement.deleteAccount.deletionConfirmation" = "Dir ist bekannt, dass dein Pocket-Konto und deine Daten **dauerhaft gelöscht werden.**";
+//Links to a help article on how to cancel your subscription
+"settings.accountManagement.deleteAccount.howToCancel" = "So kündigst du dein Pocket Premium-Abonnement";
+//Loading screen showing that the account deletion is in progress
+"settings.accountManagement.deleteAccount.deleting" = "Löschen deines Konto";
+"settings.accountManagement.deleteAccount.error.body" = "Aufgrund eines Fehlers können wir dein Konto nicht löschen. Bitte versuche es später erneut.";
+"settings.accountManagement.restoreSubscription" = "Bestehendes Abonnement wiederherstellen";
+"settings.accountManagement.restoreSubscription.restoreSuccessful.title" = "Wiederherstellung erfolgreich";
+"settings.accountManagement.restoreSubscription.restoreSuccessful.message" = "Dein Pocket Premium-Abonnement wurde wiederhergestellt.";
+"settings.accountManagement.restoreSubscription.restoreNotSuccessful.title" = "Wiederherstellung nicht erfolgreich";
+"settings.accountManagement.restoreSubscription.restoreNotSuccessful.message" = "Wir konnten kein Abonnement finden. Wenn du meinst, dass du eins hast, dann sende bitte eine E-Mail an support@getpocket.com, um uns darüber in Kenntnis zu setzen.";
+
+"settings.noInternet.header" = "Keine Internetverbindung";
+"settings.noInternet.youMustBeOnline" = "Du musst online sein, um ein Upgrade zu Pocket Premium durchzuführen. Bitte stelle sicher, dass du eine Verbindung zum Internet hast, und versuche es erneut.";
+
+"settings.goPremiumRow" = "Premium";
+"settings.premiumSubscriptionRow" = "Premium-Abonnement";
+"settings.premiumRow" = "Premium";
+"settings.premium.settings.thanksForSubscribing" = "Danke, dass du Pocket Premium abonniert hast!";
+"settings.premium.settings.subscriptionStatus" = "Abonnement-Status";
+"settings.premium.settings.subscription" = "Abonnement";
+"settings.premium.settings.datePurchased" = "Kaufdatum";
+"settings.premium.settings.renewalDate" = "Verlängerungsdatum";
+"settings.premium.settings.purchaseLocation" = "Kaufort";
+"settings.premium.settings.price" = "Preis";
+"settings.premium.settings.yourSubscription" = "Dein Abonnement";
+"settings.premium.settings.manageYourSubscription" = "Abonnement verwalten";
+"settings.premium.settings.questionOrFeedback" = "Fragen oder Feedback?";
+"settings.premium.settings.pocketPremiumFAQ" = "FAQ Pocket Premium";
+// this refers to an action to open an email
+"settings.premium.settings.contactPocketSupport" = "Pocket-Support kontaktieren";
+
+//Sorting Options
+"sortingOption.sortBy" = "Sortieren nach";
+"sortingOption.NewestSaved" = "Zuletzt gespeichert";
+"sortingOption.oldestSaved" = "Zuerst gespeichert";
+"sortingOption.shortestToRead" = "Kürzeste Lesedauer";
+"sortingOption.longestToRead" = "Längste Lesedauer";
+
+// Tags
+"tags.upsell.tagStoriesFasterThanEver" = "Jetzt kannst du Geschichten noch rascher taggen – Pocket Premium schlägt dir deine zuletzt verwendeten Tags vor.";
+"tags.upsell.getPocketPremium" = "Hol dir Pocket Premium";
+"tags.section.recentTags" = "Neueste Tags";
+"tags.section.userTags" = "Meine Tags";
+
+"tags.empty.header" = "Keine gespeicherten Elemente mit diesem Tag.";
+"tags.empty.detail" = "Tagge deine gespeicherten Elemente nach Themen, um sie später wieder zu finden.";
+"tags.empty.button" = "So funktionieren Tags";
+
+"tags.notTagged" = "Nicht getaggt";
+
+//Reader 
+"reader.activity.save" = "Speichern";
+"reader.activity.report" = "Melden";
+"reader.activity.delete" = "Löschen";
+"reader.activity.archive" = "Archiv";
+"reader.activity.favorite" = "Als Favorit markieren";
+"reader.activity.unfavorite" = "Favorit aufheben";
+"reader.activity.moveToSaves" = "Zu „Gespeichert“ verschieben";
+
+//Recommendation
+"recommendation.save" = "Speichern";
+"recommendation.saved" = "Gespeichert";
+
+//Premium
+"premium.infoView.terms.privacyPolicy" = "Datenschutzrichtlinie";
+"premium.infoView.terms.TermsOfService" = "AGB";
+
+"premium.success.message" = "Du bist jetzt offiziell Pocket Premium-Mitglied. Willkommen bei deiner neuen, werbefreien, personalisierbaren, dauerhaften Version von Pocket. Wir glauben, dass es dir hier gefallen wird.";
+
+//The title of our Premium Membership page spans 2 lines. The '\n' character denotes a newline character and is not shown to the user.
+"premium.upgradeView.PremiumMembership" = "Premium-\nMitgliedschaft";
+"premium.upgradeView.comingSoon" = "Demnächst verfügbar!";
+// Description of the premium uprgade view
+"premium.upgradeView.description" = "Abonnementgebühren werden über dein iTunes-Konto von deiner Kreditkarte abgebucht. In den letzten 24 Stunden der jeweils aktuellen Laufzeit wird dein Konto zur Verlängerung mit einem Betrag von %1$@ (Monatsabonnement) oder %2$@ (Jahresabonnement) belastet. Abonnements werden automatisch verlängert, wenn sie nicht mindestens 24 Stunden vor Ende der aktuellen Laufzeit gekündigt werden. Du kannst ein Abonnement nicht mit sofortiger Wirkung kündigen. Du kannst deine Abonnements verwalten und die automatische Verlängerung nach dem Kauf in den Kontoeinstellungen deaktivieren. Rückerstattungen für ungenutzte Aboleistungen sind nicht möglich.";
+"premium.upgradeView.save" = "Speichern";
+"premium.upgradeView.permanentLibrary" = "Permanente Bibliothek mit all deinen Pocket-Inhalten";
+//Ads will not be shown to Premuim users
+"premium.upgradeView.adFree" = "WERBEFREI";
+"premium.upgradeView.suggestedTags" = "vorgeschlagene Tags";
+"premium.upgradeView.fullTextSearch" = "Volltextsuche";
+"premium.upgradeView.unlimitedHighlights" = "Unbegrenzte Markierungen";
+"premium.upgradeView.premiumFonts" = "Premium-Schriftarten";
+
+
+//=======================
+//Old format
+
 "Home" = "Home";
 "Archive" = "Archiv";
 "Pocket" = "Pocket";
@@ -12,44 +206,12 @@
 "No Internet Connection" = "Keine Internetverbindung";
 "Looks like you're offline. Try checking your mobile data or wifi." = "Wie's aussieht, bist du offline. Bitte überprüfe deine mobilen Daten oder dein WLAN.";
 
-"Keep your list fresh and clean" = "Sorge dafür, dass deine Liste aktuell und schön ordentlich bleibt";
-"Archive the saves you're finished with\n using the archive icon." = "Archiviere die gespeicherten Elemente, mit denen du fertig bist, über das Archivierungssymbol.";
-"How to archive" = "So funktioniert das Archivieren";
-
-"Find your favorites here" = "Finde hier deine Favoriten";
-"Hit the star icon to favorite an article and find it faster." = "Drücke das Stern-Symbol, um einen Artikel als Favoriten zu markieren und ihn schneller zu finden.";
-
-"Start building your Pocket list" = "Beginne mit dem Erstellen deiner Pocket-Liste";
-"How to save" = "Speichern";
-
-"No saves with this tag." = "Keine gespeicherten Elemente mit diesem Tag.";
-"Tag your saves by topic to find them later." = "Tagge deine gespeicherten Elemente nach Themen, um sie später wieder zu finden.";
-"How to tag" = "So funktionieren Tags";
-
-"Search" = "Suche";
-"All" = "Alles";
-"Tagged" = "Getaggt";
-"Favorites" = "Favoriten";
-"Sort/Filter" = "Sortieren/Filtern";
-
-"Save" = "Speichern";
-"Report" = "Melden";
-"Delete" = "Löschen";
-"Archive" = "Archiv";
-"Favorite" = "Als Favorit markieren";
-"Unfavorite" = "Favorit aufheben";
-"Move to Saves" = "Zu „Gespeichert“ verschieben";
 "Add Tags" = "Tags hinzufügen";
 "Tags" = "Tags";
 "Share" = "Teilen";
+"carousel.listen" = "Anhören";
 
 "Saves" = "Gespeichert";
-
-"Sort by" = "Sortieren nach";
-"Newest saved" = "Zuletzt gespeichert";
-"Oldest saved" = "Zuerst gespeichert";
-"Shortest to read" = "Kürzeste Lesedauer";
-"Longest to read" = "Längste Lesedauer";
 
 "Display Settings" = "Anzeigeeinstellungen";
 "Font" = "Schriftart";
@@ -130,89 +292,6 @@
 "It contains misinformation" = "Enthält falsche Informationen";
 "Other" = "Sonstiges";
 
-//General Messages
-"general.oops" = "Hoppla! Erneut versuchen?";
-
-// Tags
-"tags.upsell.tagStoriesFasterThanEver" = "Jetzt kannst du Geschichten noch rascher taggen – Pocket Premium schlägt dir deine zuletzt verwendeten Tags vor.";
-"tags.upsell.getPocketPremium" = "Hol dir Pocket Premium";
-"tags.section.recentTags" = "Neueste Tags";
-"tags.section.userTags" = "Meine Tags";
-
-// Search
-"search.errorMessage" = "Aufgrund eines Fehlers treten vorübergehend Einschränkungen auf. Bitte versuche es später erneut.";
-"search.limitedResults" = "Eingeschränkte Suchergebnisse";
-"search.offlineMessage" = "Wenn du offline bist, kannst du nur nach Titeln und URLs suchen. Stelle eine Verbindung zum Internet her, um die Volltextsuche von Premium zu verwenden.";
-"search.banner.errorMessage." = "Aufgrund eines Fehlers können wir dir nicht die vollständigen Suchergebnisse anzeigen. Bitte versuche es später erneut.";
-"search.error.view.needsInternet" = "Du musst mit dem Internet verbunden sein, um dieses Element anzeigen zu können.";
-"search.recent" = "Kürzlich durchgeführte Suchen";
-"search.swipe.unableToMove" = "Verschieben nicht möglich";
-"search.swipe.archive" = "Archiv";
-"search.swipe.moveToSaves" = "Zu „Gespeichert“ verschieben";
-
-// Settings
-"settings.thankyou.credits" = "Danke, dass du Pocket nutzt";
-"settings.PocketForiOS %@ (%@)" = "Pocket für iOS %1$@ (%2$@)";
-"settings.openSourceLicenses" = "Open-Source-Lizenzen";
-"settings.logout" = "Ausloggen";
-"settings.logout.areYouSureMessage" = "Du wirst aus deinem Konto ausgeloggt und sämtliche Elemente, die du zur Offline-Anzeige gespeichert hast, werden von deinem Gerät entfernt.";
-"settings.logout.areyousure" = "Bist du sicher?";
-"settings.help" = "Hilfe und Support erhalten";
-"settings.accountManagement" = "Kontoverwaltung";
-"settings.accountManagement.deleteAccount" = "Konto löschen";
-"settings.accountManagement.deleteYourAccount" = "Lösche dein Konto";
-
-"settings.accountManagement.deleteAccount.warning" = "Achtung: Dies kann nicht rückgängig gemacht werden";
-"settings.accountManagement.deleteAccount.premiumConfirmation" = "Um dein Konto zu löschen, musst du zuerst **dein Premium-Abonnement hier kündigen.**";
-"settings.accountManagement.deleteAccount.deletionConfirmation" = "Dir ist bekannt, dass dein Pocket-Konto und deine Daten **dauerhaft gelöscht werden.**";
-//Links to a help article on how to cancel your subscription
-"settings.accountManagement.deleteAccount.howToCancel" = "So kündigst du dein Pocket Premium-Abonnement";
-//Loading screen showing that the account deletion is in progress
-"settings.accountManagement.deleteAccount.deleting" = "Löschen deines Konto";
-"settings.accountManagement.deleteAccount.error.body" = "Aufgrund eines Fehlers können wir dein Konto nicht löschen. Bitte versuche es später erneut.";
-"settings.accountManagement.restoreSubscription" = "Bestehendes Abonnement wiederherstellen";
-"settings.accountManagement.restoreSubscription.restoreSuccessful.title" = "Wiederherstellung erfolgreich";
-"settings.accountManagement.restoreSubscription.restoreSuccessful.message" = "Dein Pocket Premium-Abonnement wurde wiederhergestellt.";
-"settings.accountManagement.restoreSubscription.restoreNotSuccessful.title" = "Wiederherstellung nicht erfolgreich";
-"settings.accountManagement.restoreSubscription.restoreNotSuccessful.message" = "Wir konnten kein Abonnement finden. Wenn du meinst, dass du eins hast, dann sende bitte eine E-Mail an support@getpocket.com, um uns darüber in Kenntnis zu setzen.";
-
-"settings.noInternet.youMustBeOnline" = "Du musst online sein, um ein Upgrade zu Pocket Premium durchzuführen. Bitte stelle sicher, dass du eine Verbindung zum Internet hast, und versuche es erneut.";
-
-//Shown to the user after they deleted their account
-"login.deletedAccount.banner.title" = "Du hast dein Pocket-Konto gelöscht";
-//Shown to the user after they deleted their account
-"login.deletedAccount.banner.detail" = "Was hätten wir besser machen können?";
-//Action button for a user to take a survey
-"login.deletedAccount.banner.action" = "Kurze Umfrage";
-
-//List view
-"item.list.min" = "%1$@ Min.";
-// Short name of the monthly premium subscription
-"Monthly" = "Monatlich";
-// Suffix of the monthly premium subscription price description
-"month" = "Monat";
-// Suffix of the annual premium subscription price description
-"year" = "Jahr";
-// Short name of the annual premium subscription
-"Annual" = "Jährlich";
-// Description of the premium uprgade view
-"premium.upgradeview.description" = "Abonnementgebühren werden über dein iTunes-Konto von deiner Kreditkarte abgebucht. In den letzten 24 Stunden der jeweils aktuellen Laufzeit wird dein Konto zur Verlängerung mit einem Betrag von %1$@ (Monatsabonnement) oder %2$@ (Jahresabonnement) belastet. Abonnements werden automatisch verlängert, wenn sie nicht mindestens 24 Stunden vor Ende der aktuellen Laufzeit gekündigt werden. Du kannst ein Abonnement nicht mit sofortiger Wirkung kündigen. Du kannst deine Abonnements verwalten und die automatische Verlängerung nach dem Kauf in den Kontoeinstellungen deaktivieren. Rückerstattungen für ungenutzte Aboleistungen sind nicht möglich.";
-"settings.goPremiumRow" = "Premium";
-"settings.premiumSubscriptionRow" = "Premium-Abonnement";
 "Hooray!" = "Hurra!";
-"premium.success.message" = "Du bist jetzt offiziell Pocket Premium-Mitglied. Willkommen bei deiner neuen, werbefreien, personalisierbaren, dauerhaften Version von Pocket. Wir glauben, dass es dir hier gefallen wird.";
+
 "back.to.pocket" = "Zurück zu Pocket";
-"settings.premiumRow" = "Premium";
-"settings.premium.settings.thanksForSubscribing" = "Danke, dass du Pocket Premium abonniert hast!";
-"settings.premium.settings.subscriptionStatus" = "Abonnement-Status";
-"settings.premium.settings.subscription" = "Abonnement";
-"settings.premium.settings.datePurchased" = "Kaufdatum";
-"settings.premium.settings.renewalDate" = "Verlängerungsdatum";
-"settings.premium.settings.purchaseLocation" = "Kaufort";
-"settings.premium.settings.price" = "Preis";
-"settings.premium.settings.yourSubscription" = "Dein Abonnement";
-"settings.premium.settings.manageYourSubscription" = "Abonnement verwalten";
-"settings.premium.settings.questionOrFeedback" = "Fragen oder Feedback?";
-"settings.premium.settings.pocketPremiumFAQ" = "FAQ Pocket Premium";
-// this refers to an action to open an email
-"settings.premium.settings.contactPocketSupport" = "Pocket-Support kontaktieren";

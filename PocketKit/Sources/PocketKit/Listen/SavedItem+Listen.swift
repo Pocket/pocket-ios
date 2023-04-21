@@ -28,16 +28,16 @@ extension SavedItem: PKTListenItem {
     }
 
     public var albumLanguage: String? {
-        self.item?.language
+        self.item.language
     }
 
     public var estimatedAlbumDuration: TimeInterval {
-        if let wordCount = item?.wordCount?.intValue, wordCount > 0 {
+        if let wordCount = item.wordCount?.intValue, wordCount > 0 {
             let wordsPerMinute = 155
             return Double(wordCount/wordsPerMinute * 60).rounded()
         }
 
-        if let timeToRead = item?.timeToRead?.intValue, timeToRead > 0 {
+        if let timeToRead = item.timeToRead?.intValue, timeToRead > 0 {
             return Double(timeToRead * 60)
         }
 
