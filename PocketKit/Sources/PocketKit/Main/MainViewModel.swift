@@ -30,7 +30,8 @@ class MainViewModel: ObservableObject {
                     userDefaults: Services.shared.userDefaults,
                     source: Services.shared.source,
                     tracker: Services.shared.tracker.childTracker(hosting: .saves.search),
-                    store: Services.shared.subscriptionStore
+                    store: Services.shared.subscriptionStore,
+                    notificationCenter: Services.shared.notificationCenter
                 ) { source in
                     PremiumUpgradeViewModel(
                         store: Services.shared.subscriptionStore,
@@ -73,7 +74,8 @@ class MainViewModel: ObservableObject {
                 homeRefreshCoordinator: Services.shared.homeRefreshCoordinator,
                 user: Services.shared.user,
                 store: Services.shared.subscriptionStore,
-                userDefaults: Services.shared.userDefaults
+                userDefaults: Services.shared.userDefaults,
+                notificationCenter: Services.shared.notificationCenter
             ),
             account: AccountViewModel(
                 appSession: Services.shared.appSession,
