@@ -34,7 +34,7 @@ struct TagsFilterView: View {
                     TagsCell(tag: .notTagged, tagAction: tagAction)
                         .disabled(isEditing)
                     TagsSectionView(
-                        showRecentTags: false,
+                        showRecentTags: viewModel.showRecentTags,
                         recentTags: viewModel.recentTags,
                         allTags: tags.map { .tag($0.name) },
                         tagAction: tagAction

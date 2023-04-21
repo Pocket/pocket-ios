@@ -25,6 +25,10 @@ class TagsFilterViewModel: ObservableObject {
         return recentTagsFactory.recentTags.sorted().compactMap { TagType.recent($0) }
     }
 
+    var showRecentTags: Bool {
+        return user.status == .premium
+    }
+
     @Published var selectedTag: TagType?
 
     init(source: Source, tracker: Tracker, userDefaults: UserDefaults, user: User, selectAllAction: @escaping () -> Void?) {
