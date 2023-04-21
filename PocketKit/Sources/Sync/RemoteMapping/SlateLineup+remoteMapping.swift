@@ -31,13 +31,14 @@ extension Slate {
             // concatenate recommendation ID with slate ID to ensure that a unique recommendation entity exists even if an actual recommendation is
             // present in more than one slate
             let remoteID = remote.id + remoteSlate.id
-            guard let recommendation = try? space.fetchRecommendation(byRemoteID: remoteID, context: context) ?? Recommendation(context: context, remoteID: remoteID) else {
+            let analyticsID = remote.id
+            guard let recommendation = try? space.fetchRecommendation(byRemoteID: remoteID, context: context) ?? Recommendation(context: context, remoteID: remoteID, analyticsID: analyticsID) else {
                 return nil
             }
             recommendation.update(from: remote, in: space, context: context)
             recommendation.sortIndex = NSNumber(value: i)
             recommendation.slate = self
-            recommendation.analyticsID = remote.id
+            recommendation.analyticsID = analyticsID
             i = i + 1
             return recommendation
         })
