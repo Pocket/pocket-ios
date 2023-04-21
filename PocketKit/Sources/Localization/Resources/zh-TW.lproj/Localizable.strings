@@ -1,3 +1,197 @@
+//General Messages
+"general.oops" = "哎呀！要再試一次嗎？";
+
+//Archive
+"archive.empty.header" = "及時更新和整理您的清單";
+"archive.empty.detail" = "使用封存圖示封存已讀完的儲存內容。";
+"archive.empty.button" = "如何封存";
+
+//Favourites
+"favourites.empty.header" = "在此處查找您收藏的內容";
+"favourites.empty.detail" = "點擊星號圖示以收藏文章並更快地查找。";
+
+//Home
+"home.recommendation.readTime" = "%1$@ 分鐘閱讀時間";
+
+//Item
+"item.overflowMenu.moveToSaves" = "移至「儲存項目」";
+
+//ItemAction
+"itemAction.addTags" = "新增標籤";
+"itemAction.archive" = "封存";
+"itemAction.copyLink" = "複製連結";
+"itemAction.delete" = "刪除";
+"itemAction.displaySettings" = "顯示設定";
+"itemAction.favorite" = "新增至我的最愛";
+"itemAction.unfavorite" = "移除最愛";
+"itemAction.moveToSaves" = "移至「儲存項目」";
+"itemAction.open" = "開啟";
+"itemAction.report" = "舉報";
+"itemAction.save" = "儲存";
+"itemAction.share" = "分享";
+
+//ItemList
+"itemlist.filter.search" = "搜尋";
+"itemlist.filter.all" = "全部";
+"itemlist.filter.tagged" = "已標記";
+"itemlist.filter.favorites" = "我的最愛";
+"itemlist.filter.sortFilter" = "排序／篩選";
+
+//List view
+"item.list.min" = "%1$@ 分鐘";
+// Short name of the monthly premium subscription
+"Monthly" = "每月";
+// Suffix of the monthly premium subscription price description
+"month" = "月份";
+// Suffix of the annual premium subscription price description
+"year" = "年份";
+// Short name of the annual premium subscription
+"Annual" = "年度";
+
+//Log in
+//Shown to the user after they deleted their account
+"login.deletedAccount.banner.title" = "您已刪除 Pocket 帳號";
+//Shown to the user after they deleted their account
+"login.deletedAccount.banner.detail" = "我們有哪些可以改進的地方？";
+//Action button for a user to take a survey
+"login.deletedAccount.banner.action" = "快速調查";
+
+//Logged Out
+"loggedOut.offline.header" = "暫無網際網路連線";
+"loggedOut.offline.detail" = "您似乎已離線。請嘗試檢查您的行動數據或 WiFi。";
+
+//Saves
+"saves.empty.header" = "開始建立您的 Pocket 清單";
+"saves.empty.button" = "如何儲存";
+
+// Search
+"search.errorMessage" = "我們遇到錯誤，暫時無法為您提供所需資訊。請稍後重試。";
+"search.limitedResults" = "搜尋結果有限";
+"search.offlineMessage" = "您只能在離線時搜尋標題和 URL。連線至網際網路，以使用 Premium 的全文搜尋功能。";
+"search.banner.errorMessage." = "我們遇到錯誤，無法顯示您完整的搜尋結果。請稍後重試。";
+"search.error.view.needsInternet" = "您必須有網際網路連線才能檢視此項目。";
+"search.recent" = "近期搜尋";
+"search.recent.empty" = "此處將顯示近期搜尋，以便您可以輕鬆地再次查閱。";
+"search.swipe.unableToMove" = "無法移動";
+"search.swipe.archive" = "封存";
+"search.swipe.moveToSaves" = "移至「儲存項目」";
+
+"search.empty.header" = "依標題或 URL 搜尋";
+
+"search.allItems.premium.header" = "解鎖更多搜尋選項";
+"search.allItems.premium.detail" = "使用 Pocket Premium 搜尋整個 Pocket，包括封存的項目。";
+"search.allItems.premium.button" = "訂購 Pocket Premium";
+
+"search.results.empty.header" = "找不到結果";
+"search.results.empty.detail" = "嘗試使用其他關鍵字，檢查拼字錯誤或變更篩選條件。";
+
+"search.results.offline.header" = "暫無網際網路連線";
+"search.results.offline.detail" = "您必須連線到網際網路才能搜尋%1$@項目。";
+"search.results.offline.detail.archive" = "已封存";
+"search.results.offline.detail.all" = "全部";
+
+// Settings
+"settings.thankyou.credits" = "感謝您使用 Pocket";
+"settings.PocketForiOS %@ (%@)" = "iOS %1$@ 版 Pocket (%2$@)";
+"settings.openSourceLicenses" = "開放原始碼授權";
+"settings.logout" = "登出";
+"settings.logout.areYouSureMessage" = "您將登出您的帳戶，並且會從您的裝置移除所有已儲存以供離線檢視的項目。";
+"settings.logout.areyousure" = "您確定嗎？";
+"settings.help" = "獲取協助與支援";
+"settings.accountManagement" = "帳戶管理";
+"settings.accountManagement.deleteAccount" = "刪除帳號";
+"settings.accountManagement.deleteYourAccount" = "刪除您的帳號";
+
+"settings.accountManagement.deleteAccount.warning" = "警告：此動作無法復原";
+"settings.accountManagement.deleteAccount.premiumConfirmation" = "必須首先**在此處取消您的 Premium 訂閱**，才能刪除您的帳戶。";
+"settings.accountManagement.deleteAccount.deletionConfirmation" = "您瞭解您的 Pocket 帳戶和資料將被**永久刪除**。";
+//Links to a help article on how to cancel your subscription
+"settings.accountManagement.deleteAccount.howToCancel" = "如何取消您的 Pocket Premium 訂閱";
+//Loading screen showing that the account deletion is in progress
+"settings.accountManagement.deleteAccount.deleting" = "正在刪除您的帳號";
+"settings.accountManagement.deleteAccount.error.body" = "我們遇到了錯誤，無法刪除您的帳戶。請稍後重試。";
+"settings.accountManagement.restoreSubscription" = "還原現有訂購";
+"settings.accountManagement.restoreSubscription.restoreSuccessful.title" = "還原成功";
+"settings.accountManagement.restoreSubscription.restoreSuccessful.message" = "您的 Pocket Premium 訂購已還原。";
+"settings.accountManagement.restoreSubscription.restoreNotSuccessful.title" = "還原未成功";
+"settings.accountManagement.restoreSubscription.restoreNotSuccessful.message" = "找不到訂購。如果確信您有訂購，請傳送電子郵件至 support@getpocket.com 告訴我們。";
+
+"settings.noInternet.header" = "暫無網際網路連線";
+"settings.noInternet.youMustBeOnline" = "必須處於線上才可升級到 Pocket Premium。請檢查您的連線，然後重試。";
+
+"settings.goPremiumRow" = "取得 Premium";
+"settings.premiumSubscriptionRow" = "Premium 訂閱";
+"settings.premiumRow" = "取得 Premium";
+"settings.premium.settings.thanksForSubscribing" = "謝謝訂購 Pocket Premium！";
+"settings.premium.settings.subscriptionStatus" = "訂購狀態";
+"settings.premium.settings.subscription" = "訂購";
+"settings.premium.settings.datePurchased" = "購買日期";
+"settings.premium.settings.renewalDate" = "續訂日期";
+"settings.premium.settings.purchaseLocation" = "購買地點";
+"settings.premium.settings.price" = "價格";
+"settings.premium.settings.yourSubscription" = "您的訂購";
+"settings.premium.settings.manageYourSubscription" = "管理訂購";
+"settings.premium.settings.questionOrFeedback" = "問題或回饋意見？";
+"settings.premium.settings.pocketPremiumFAQ" = "Pocket Premium 常見問題";
+// this refers to an action to open an email
+"settings.premium.settings.contactPocketSupport" = "聯絡 Pocket 支援";
+
+//Sorting Options
+"sortingOption.sortBy" = "排序依據";
+"sortingOption.NewestSaved" = "最新儲存";
+"sortingOption.oldestSaved" = "最舊儲存";
+"sortingOption.shortestToRead" = "最短文章";
+"sortingOption.longestToRead" = "最長文章";
+
+// Tags
+"tags.upsell.tagStoriesFasterThanEver" = "更快速地標記篇章 — 透過 Pocket Premium 獲取最新標籤。";
+"tags.upsell.getPocketPremium" = "訂購 Pocket Premium";
+"tags.section.recentTags" = "近期標籤";
+"tags.section.userTags" = "我的標籤";
+
+"tags.empty.header" = "沒有使用此標籤的儲存內容。";
+"tags.empty.detail" = "按主題標記儲存的內容，以便日後查找。";
+"tags.empty.button" = "如何標記";
+
+"tags.notTagged" = "未標記";
+
+//Reader 
+"reader.activity.save" = "儲存";
+"reader.activity.report" = "舉報";
+"reader.activity.delete" = "刪除";
+"reader.activity.archive" = "封存";
+"reader.activity.favorite" = "新增至我的最愛";
+"reader.activity.unfavorite" = "移除最愛";
+"reader.activity.moveToSaves" = "移至「儲存項目」";
+
+//Recommendation
+"recommendation.save" = "儲存";
+"recommendation.saved" = "已儲存";
+
+//Premium
+"premium.infoView.terms.privacyPolicy" = "隱私政策";
+"premium.infoView.terms.TermsOfService" = "服務條款";
+
+"premium.success.message" = "您已正式成為 Pocket Premium 會員。歡迎使用 Pocket 的無廣告、可自訂的永久新版本。我們認為您會樂於成為其中一員。";
+
+//The title of our Premium Membership page spans 2 lines. The '\n' character denotes a newline character and is not shown to the user.
+"premium.upgradeView.PremiumMembership" = "Premium\n會員資格";
+"premium.upgradeView.comingSoon" = "即將推出！";
+// Description of the premium uprgade view
+"premium.upgradeView.description" = "系統會透過您的 iTunes 帳戶自您的信用卡收取訂閱費。當期結束前 24 小時內會自您的帳戶收取續訂的 %1$@（月費）或 %2$@（年費）。除非在本期結束前至少 24 小時取消訂閱，否則將會自動續約。訂閱無法立即取消。您可在購買後至「帳戶設定」管理訂閱並關閉自動續約。訂閱未用部份無法退款。";
+"premium.upgradeView.save" = "儲存";
+"premium.upgradeView.permanentLibrary" = "所有儲存內容的永久儲存庫";
+//Ads will not be shown to Premuim users
+"premium.upgradeView.adFree" = "無廣告";
+"premium.upgradeView.suggestedTags" = "建議的標籤";
+"premium.upgradeView.fullTextSearch" = "全文檢索搜尋";
+"premium.upgradeView.unlimitedHighlights" = "無限標記";
+"premium.upgradeView.premiumFonts" = "Premium 字型";
+
+
+//=======================
+//Old format
+
 "Home" = "首頁";
 "Archive" = "封存";
 "Pocket" = "Pocket";
@@ -12,44 +206,12 @@
 "No Internet Connection" = "暫無網際網路連線";
 "Looks like you're offline. Try checking your mobile data or wifi." = "您似乎已離線。請嘗試檢查您的行動數據或 WiFi。";
 
-"Keep your list fresh and clean" = "及時更新和整理您的清單";
-"Archive the saves you're finished with\n using the archive icon." = "使用封存圖示封存已讀完的儲存內容。";
-"How to archive" = "如何封存";
-
-"Find your favorites here" = "在此處查找您收藏的內容";
-"Hit the star icon to favorite an article and find it faster." = "點擊星號圖示以收藏文章並更快地查找。";
-
-"Start building your Pocket list" = "開始建立您的 Pocket 清單";
-"How to save" = "如何儲存";
-
-"No saves with this tag." = "沒有使用此標籤的儲存內容。";
-"Tag your saves by topic to find them later." = "按主題標記儲存的內容，以便日後查找。";
-"How to tag" = "如何標記";
-
-"Search" = "搜尋";
-"All" = "全部";
-"Tagged" = "已標記";
-"Favorites" = "我的最愛";
-"Sort/Filter" = "排序／篩選";
-
-"Save" = "儲存";
-"Report" = "舉報";
-"Delete" = "刪除";
-"Archive" = "封存";
-"Favorite" = "新增至我的最愛";
-"Unfavorite" = "移除最愛";
-"Move to Saves" = "移至「儲存項目」";
 "Add Tags" = "新增標籤";
 "Tags" = "標籤";
 "Share" = "分享";
+"carousel.listen" = "朗讀";
 
 "Saves" = "儲存項目";
-
-"Sort by" = "排序依據";
-"Newest saved" = "最新儲存";
-"Oldest saved" = "最舊儲存";
-"Shortest to read" = "最短文章";
-"Longest to read" = "最長文章";
 
 "Display Settings" = "顯示設定";
 "Font" = "字型";
@@ -130,89 +292,6 @@
 "It contains misinformation" = "包含錯誤資訊";
 "Other" = "其他";
 
-//General Messages
-"general.oops" = "哎呀！要再試一次嗎？";
-
-// Tags
-"tags.upsell.tagStoriesFasterThanEver" = "更快速地標記篇章 — 透過 Pocket Premium 獲取最新標籤。";
-"tags.upsell.getPocketPremium" = "訂購 Pocket Premium";
-"tags.section.recentTags" = "近期標籤";
-"tags.section.userTags" = "我的標籤";
-
-// Search
-"search.errorMessage" = "我們遇到錯誤，暫時無法為您提供所需資訊。請稍後重試。";
-"search.limitedResults" = "搜尋結果有限";
-"search.offlineMessage" = "您只能在離線時搜尋標題和 URL。連線至網際網路，以使用 Premium 的全文搜尋功能。";
-"search.banner.errorMessage." = "我們遇到錯誤，無法顯示您完整的搜尋結果。請稍後重試。";
-"search.error.view.needsInternet" = "您必須有網際網路連線才能檢視此項目。";
-"search.recent" = "近期搜尋";
-"search.swipe.unableToMove" = "無法移動";
-"search.swipe.archive" = "封存";
-"search.swipe.moveToSaves" = "移至「儲存項目」";
-
-// Settings
-"settings.thankyou.credits" = "感謝您使用 Pocket";
-"settings.PocketForiOS %@ (%@)" = "iOS %1$@ 版 Pocket (%2$@)";
-"settings.openSourceLicenses" = "開放原始碼授權";
-"settings.logout" = "登出";
-"settings.logout.areYouSureMessage" = "您將登出您的帳戶，並且會從您的裝置移除所有已儲存以供離線檢視的項目。";
-"settings.logout.areyousure" = "您確定嗎？";
-"settings.help" = "獲取協助與支援";
-"settings.accountManagement" = "帳戶管理";
-"settings.accountManagement.deleteAccount" = "刪除帳號";
-"settings.accountManagement.deleteYourAccount" = "刪除您的帳號";
-
-"settings.accountManagement.deleteAccount.warning" = "警告：此動作無法復原";
-"settings.accountManagement.deleteAccount.premiumConfirmation" = "必須首先**在此處取消您的 Premium 訂閱**，才能刪除您的帳戶。";
-"settings.accountManagement.deleteAccount.deletionConfirmation" = "您瞭解您的 Pocket 帳戶和資料將被**永久刪除**。";
-//Links to a help article on how to cancel your subscription
-"settings.accountManagement.deleteAccount.howToCancel" = "如何取消您的 Pocket Premium 訂閱";
-//Loading screen showing that the account deletion is in progress
-"settings.accountManagement.deleteAccount.deleting" = "正在刪除您的帳號";
-"settings.accountManagement.deleteAccount.error.body" = "我們遇到了錯誤，無法刪除您的帳戶。請稍後重試。";
-"settings.accountManagement.restoreSubscription" = "還原現有訂購";
-"settings.accountManagement.restoreSubscription.restoreSuccessful.title" = "還原成功";
-"settings.accountManagement.restoreSubscription.restoreSuccessful.message" = "您的 Pocket Premium 訂購已還原。";
-"settings.accountManagement.restoreSubscription.restoreNotSuccessful.title" = "還原未成功";
-"settings.accountManagement.restoreSubscription.restoreNotSuccessful.message" = "找不到訂購。如果確信您有訂購，請傳送電子郵件至 support@getpocket.com 告訴我們。";
-
-"settings.noInternet.youMustBeOnline" = "必須處於線上才可升級到 Pocket Premium。請檢查您的連線，然後重試。";
-
-//Shown to the user after they deleted their account
-"login.deletedAccount.banner.title" = "您已刪除 Pocket 帳號";
-//Shown to the user after they deleted their account
-"login.deletedAccount.banner.detail" = "我們有哪些可以改進的地方？";
-//Action button for a user to take a survey
-"login.deletedAccount.banner.action" = "快速調查";
-
-//List view
-"item.list.min" = "%1$@ 分鐘";
-// Short name of the monthly premium subscription
-"Monthly" = "每月";
-// Suffix of the monthly premium subscription price description
-"month" = "月份";
-// Suffix of the annual premium subscription price description
-"year" = "年份";
-// Short name of the annual premium subscription
-"Annual" = "年度";
-// Description of the premium uprgade view
-"premium.upgradeview.description" = "系統會透過您的 iTunes 帳戶自您的信用卡收取訂閱費。當期結束前 24 小時內會自您的帳戶收取續訂的 %1$@（月費）或 %2$@（年費）。除非在本期結束前至少 24 小時取消訂閱，否則將會自動續約。訂閱無法立即取消。您可在購買後至「帳戶設定」管理訂閱並關閉自動續約。訂閱未用部份無法退款。";
-"settings.goPremiumRow" = "取得 Premium";
-"settings.premiumSubscriptionRow" = "Premium 訂閱";
 "Hooray!" = "太棒了！";
-"premium.success.message" = "您已正式成為 Pocket Premium 會員。歡迎使用 Pocket 的無廣告、可自訂的永久新版本。我們認為您會樂於成為其中一員。";
+
 "back.to.pocket" = "返回 Pocket";
-"settings.premiumRow" = "取得 Premium";
-"settings.premium.settings.thanksForSubscribing" = "謝謝訂購 Pocket Premium！";
-"settings.premium.settings.subscriptionStatus" = "訂購狀態";
-"settings.premium.settings.subscription" = "訂購";
-"settings.premium.settings.datePurchased" = "購買日期";
-"settings.premium.settings.renewalDate" = "續訂日期";
-"settings.premium.settings.purchaseLocation" = "購買地點";
-"settings.premium.settings.price" = "價格";
-"settings.premium.settings.yourSubscription" = "您的訂購";
-"settings.premium.settings.manageYourSubscription" = "管理訂購";
-"settings.premium.settings.questionOrFeedback" = "問題或回饋意見？";
-"settings.premium.settings.pocketPremiumFAQ" = "Pocket Premium 常見問題";
-// this refers to an action to open an email
-"settings.premium.settings.contactPocketSupport" = "聯絡 Pocket 支援";
