@@ -115,7 +115,7 @@ extension DerivedSpace: ArchivedItemSpace {
             context.performAndWait {
                 let item = (try? space.fetchSavedItem(byRemoteID: node.remoteID, context: context)) ?? SavedItem(context: context, url: url, remoteID: node.remoteID)
                 item.update(from: node.fragments.savedItemSummary, with: space)
-
+                item.cursor = edge.cursor
                 if item.deletedAt != nil {
                     space.delete(item)
                 }

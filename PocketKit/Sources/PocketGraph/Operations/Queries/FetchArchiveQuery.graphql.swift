@@ -31,7 +31,7 @@ public class FetchArchiveQuery: GraphQLQuery {
         }
       }
       """#,
-      fragments: [SavedItemSummary.self, TagParts.self, ItemSummary.self, DomainMetadataParts.self, SyndicatedArticleParts.self]
+      fragments: [SavedItemSummary.self, TagParts.self, ItemSummary.self, DomainMetadataParts.self, SyndicatedArticleParts.self, PendingItemParts.self]
     ))
 
   public var pagination: GraphQLNullable<PaginationInput>
@@ -218,6 +218,7 @@ public class FetchArchiveQuery: GraphQLQuery {
               public static var __parentType: ApolloAPI.ParentType { PocketGraph.Unions.ItemResult }
 
               public var asItem: AsItem? { _asInlineFragment() }
+              public var asPendingItem: AsPendingItem? { _asInlineFragment() }
 
               /// User.SavedItems.Edge.Node.Item.AsItem
               ///
@@ -317,7 +318,7 @@ public class FetchArchiveQuery: GraphQLQuery {
                   public var mainImage: String? { __data["mainImage"] }
                   /// Title of syndicated article
                   public var title: String { __data["title"] }
-                  /// Excerpt
+                  /// Excerpt 
                   public var excerpt: String? { __data["excerpt"] }
                   /// The manually set publisher information for this article
                   public var publisher: SyndicatedArticleParts.Publisher? { __data["publisher"] }
@@ -328,6 +329,34 @@ public class FetchArchiveQuery: GraphQLQuery {
 
                     public var syndicatedArticleParts: SyndicatedArticleParts { _toFragment() }
                   }
+                }
+              }
+
+              /// User.SavedItems.Edge.Node.Item.AsPendingItem
+              ///
+              /// Parent Type: `PendingItem`
+              public struct AsPendingItem: PocketGraph.InlineFragment, ApolloAPI.CompositeInlineFragment {
+                public let __data: DataDict
+                public init(_dataDict: DataDict) { __data = _dataDict }
+
+                public typealias RootEntityType = User.SavedItems.Edge.Node.Item
+                public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.PendingItem }
+                public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
+                  PendingItemParts.self,
+                  SavedItemSummary.Item.AsPendingItem.self
+                ] }
+
+                /// URL of the item that the user gave for the SavedItem
+                /// that is pending processing by parser
+                public var remoteID: String { __data["remoteID"] }
+                public var givenUrl: PocketGraph.Url { __data["givenUrl"] }
+                public var status: GraphQLEnum<PocketGraph.PendingItemStatus>? { __data["status"] }
+
+                public struct Fragments: FragmentContainer {
+                  public let __data: DataDict
+                  public init(_dataDict: DataDict) { __data = _dataDict }
+
+                  public var pendingItemParts: PendingItemParts { _toFragment() }
                 }
               }
             }
