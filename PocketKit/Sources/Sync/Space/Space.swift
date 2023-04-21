@@ -133,6 +133,7 @@ public class Space {
     func makeChildBackgroundContext() -> NSManagedObjectContext {
         let context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
         context.parent = backgroundContext
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
         context.automaticallyMergesChangesFromParent = true
         return context
     }
