@@ -32,11 +32,9 @@ func coverage() {
     )
 }
 
-
 func xcodeEnvironmentVariables() {
     let modifiedXcodeSchemes = danger.git.modifiedFiles.filter { $0.contains(".xcscheme") }
-    for scheme in modifiedXcodeSchemes {
-        if scheme.contains(
+    for scheme in modifiedXcodeSchemes where scheme.contains(
         #"""
         key = "SNOWPLOW_POST_PATH"
         value = "com.snowplowanalytics.snowplow/tp2"
@@ -48,7 +46,7 @@ func xcodeEnvironmentVariables() {
     }
 }
 
-//func checkSnowplowPostPath(in file: Filze) {
+// func checkSnowplowPostPath(in file: Filze) {
 //    if modifiedXcodeProject.contains(
 //        #"""
 //        key = "SNOWPLOW_POST_PATH"
@@ -58,7 +56,7 @@ func xcodeEnvironmentVariables() {
 //    ) {
 //        fail("SNOWPLOW_POST_PATH must be disabled")
 //    }
-//}
+// }
 
 extension String {
     // Helper function to escape (iOS) in our file name for xcov.
