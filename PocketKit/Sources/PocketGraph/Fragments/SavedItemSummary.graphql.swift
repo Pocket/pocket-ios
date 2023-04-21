@@ -21,6 +21,7 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
       item {
         __typename
         ...ItemSummary
+        ...PendingItemParts
       }
     }
     """ }
@@ -141,9 +142,11 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
     public static var __selections: [ApolloAPI.Selection] { [
       .field("__typename", String.self),
       .inlineFragment(AsItem.self),
+      .inlineFragment(AsPendingItem.self),
     ] }
 
     public var asItem: AsItem? { _asInlineFragment() }
+    public var asPendingItem: AsPendingItem? { _asInlineFragment() }
 
     public init(
       __typename: String
@@ -348,6 +351,51 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
             ])
           ]))
         }
+      }
+    }
+
+    /// Item.AsPendingItem
+    ///
+    /// Parent Type: `PendingItem`
+    public struct AsPendingItem: PocketGraph.InlineFragment {
+      public let __data: DataDict
+      public init(_dataDict: DataDict) { __data = _dataDict }
+
+      public typealias RootEntityType = SavedItemSummary.Item
+      public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.PendingItem }
+      public static var __selections: [ApolloAPI.Selection] { [
+        .fragment(PendingItemParts.self),
+      ] }
+
+      /// URL of the item that the user gave for the SavedItem
+      /// that is pending processing by parser
+      public var remoteID: String { __data["remoteID"] }
+      public var givenUrl: PocketGraph.Url { __data["givenUrl"] }
+      public var status: GraphQLEnum<PocketGraph.PendingItemStatus>? { __data["status"] }
+
+      public struct Fragments: FragmentContainer {
+        public let __data: DataDict
+        public init(_dataDict: DataDict) { __data = _dataDict }
+
+        public var pendingItemParts: PendingItemParts { _toFragment() }
+      }
+
+      public init(
+        remoteID: String,
+        givenUrl: PocketGraph.Url,
+        status: GraphQLEnum<PocketGraph.PendingItemStatus>? = nil
+      ) {
+        self.init(_dataDict: DataDict(data: [
+          "__typename": PocketGraph.Objects.PendingItem.typename,
+          "remoteID": remoteID,
+          "givenUrl": givenUrl,
+          "status": status,
+          "__fulfilled": Set([
+            ObjectIdentifier(Self.self),
+            ObjectIdentifier(SavedItemSummary.Item.self),
+            ObjectIdentifier(PendingItemParts.self)
+          ])
+        ]))
       }
     }
   }

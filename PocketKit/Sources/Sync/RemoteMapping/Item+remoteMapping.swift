@@ -85,7 +85,7 @@ extension Item {
         remoteID = remote.remoteID
 
         guard let url = URL(string: remote.givenUrl) else {
-            Log.breadcrumb(category: "sync", level: .warning, message: "Skipping updating of Item \(remoteID) because \(givenURL) is not valid url")
+            Log.breadcrumb(category: "sync", level: .warning, message: "Skipping updating of Pending Item \(remoteID) because \(givenURL) is not valid url")
             return
         }
 
