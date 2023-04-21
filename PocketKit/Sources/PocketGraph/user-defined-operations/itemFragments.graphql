@@ -64,7 +64,8 @@ fragment SyndicatedArticleParts on SyndicatedArticle {
 }
 
 fragment PendingItemParts on PendingItem {
-  url
+  remoteID: itemId
+  givenUrl: url
   status
 }
 

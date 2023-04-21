@@ -527,7 +527,7 @@ public class SavedItemByIDQuery: GraphQLQuery {
               public var mainImage: String? { __data["mainImage"] }
               /// Title of syndicated article
               public var title: String { __data["title"] }
-              /// Excerpt
+              /// Excerpt 
               public var excerpt: String? { __data["excerpt"] }
               /// The manually set publisher information for this article
               public var publisher: SyndicatedArticleParts.Publisher? { __data["publisher"] }
@@ -555,7 +555,10 @@ public class SavedItemByIDQuery: GraphQLQuery {
               SavedItemParts.Item.AsPendingItem.self
             ] }
 
-            public var url: PocketGraph.Url { __data["url"] }
+            /// URL of the item that the user gave for the SavedItem
+            /// that is pending processing by parser
+            public var remoteID: String { __data["remoteID"] }
+            public var givenUrl: PocketGraph.Url { __data["givenUrl"] }
             public var status: GraphQLEnum<PocketGraph.PendingItemStatus>? { __data["status"] }
 
             public struct Fragments: FragmentContainer {

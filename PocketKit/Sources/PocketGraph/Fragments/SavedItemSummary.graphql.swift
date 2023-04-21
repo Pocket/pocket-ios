@@ -316,7 +316,7 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
         public var mainImage: String? { __data["mainImage"] }
         /// Title of syndicated article
         public var title: String { __data["title"] }
-        /// Excerpt
+        /// Excerpt 
         public var excerpt: String? { __data["excerpt"] }
         /// The manually set publisher information for this article
         public var publisher: SyndicatedArticleParts.Publisher? { __data["publisher"] }

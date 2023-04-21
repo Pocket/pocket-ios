@@ -796,7 +796,7 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
         public var mainImage: String? { __data["mainImage"] }
         /// Title of syndicated article
         public var title: String { __data["title"] }
-        /// Excerpt
+        /// Excerpt 
         public var excerpt: String? { __data["excerpt"] }
         /// The manually set publisher information for this article
         public var publisher: SyndicatedArticleParts.Publisher? { __data["publisher"] }
@@ -844,7 +844,10 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
         .fragment(PendingItemParts.self),
       ] }
 
-      public var url: PocketGraph.Url { __data["url"] }
+      /// URL of the item that the user gave for the SavedItem
+      /// that is pending processing by parser
+      public var remoteID: String { __data["remoteID"] }
+      public var givenUrl: PocketGraph.Url { __data["givenUrl"] }
       public var status: GraphQLEnum<PocketGraph.PendingItemStatus>? { __data["status"] }
 
       public struct Fragments: FragmentContainer {
@@ -855,12 +858,14 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
       }
 
       public init(
-        url: PocketGraph.Url,
+        remoteID: String,
+        givenUrl: PocketGraph.Url,
         status: GraphQLEnum<PocketGraph.PendingItemStatus>? = nil
       ) {
         self.init(_dataDict: DataDict(data: [
           "__typename": PocketGraph.Objects.PendingItem.typename,
-          "url": url,
+          "remoteID": remoteID,
+          "givenUrl": givenUrl,
           "status": status,
           "__fulfilled": Set([
             ObjectIdentifier(Self.self),
