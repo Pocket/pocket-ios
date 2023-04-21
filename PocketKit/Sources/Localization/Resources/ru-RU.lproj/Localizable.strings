@@ -1,3 +1,197 @@
+//General Messages
+"general.oops" = "Ой! Попробовать еще раз?";
+
+//Archive
+"archive.empty.header" = "Храните свой список свежим и упорядоченным";
+"archive.empty.detail" = "Архивируйте сохраненные материалы с помощью значка архива.";
+"archive.empty.button" = "Как архивировать";
+
+//Favourites
+"favourites.empty.header" = "Найдите избранные материалы для себя здесь";
+"favourites.empty.detail" = "Нажмите на значок звезды, чтобы добавить статью в избранное и находить ее быстрее.";
+
+//Home
+"home.recommendation.readTime" = "%1$@ минут прочитано";
+
+//Item
+"item.overflowMenu.moveToSaves" = "Перейти к Сохраненному";
+
+//ItemAction
+"itemAction.addTags" = "Добавить теги";
+"itemAction.archive" = "Архив";
+"itemAction.copyLink" = "Скопировать ссылку";
+"itemAction.delete" = "Удалить";
+"itemAction.displaySettings" = "Отобразить настройки";
+"itemAction.favorite" = "Избранное";
+"itemAction.unfavorite" = "Удалить из Избранного";
+"itemAction.moveToSaves" = "Перейти к Сохраненному";
+"itemAction.open" = "Открыть";
+"itemAction.report" = "Пожаловаться";
+"itemAction.save" = "Сохранить";
+"itemAction.share" = "Поделиться";
+
+//ItemList
+"itemlist.filter.search" = "Поиск";
+"itemlist.filter.all" = "Все";
+"itemlist.filter.tagged" = "Обозначено тегом";
+"itemlist.filter.favorites" = "Избранное";
+"itemlist.filter.sortFilter" = "Сортировка/фильтрация";
+
+//List view
+"item.list.min" = "%1$@ мин.";
+// Short name of the monthly premium subscription
+"Monthly" = "Ежемесячно";
+// Suffix of the monthly premium subscription price description
+"month" = "месяц";
+// Suffix of the annual premium subscription price description
+"year" = "год";
+// Short name of the annual premium subscription
+"Annual" = "Годовой";
+
+//Log in
+//Shown to the user after they deleted their account
+"login.deletedAccount.banner.title" = "Вы удалили свою учетную запись Pocket";
+//Shown to the user after they deleted their account
+"login.deletedAccount.banner.detail" = "Что мы могли бы улучшить?";
+//Action button for a user to take a survey
+"login.deletedAccount.banner.action" = "Быстрый опрос";
+
+//Logged Out
+"loggedOut.offline.header" = "Нет подключения к Интернету";
+"loggedOut.offline.detail" = "Похоже, вы не в сети. Проверьте подключение к мобильному интернету или сети wi-fi.";
+
+//Saves
+"saves.empty.header" = "Начните создавать свой список Pocket";
+"saves.empty.button" = "Как сохранять";
+
+// Search
+"search.errorMessage" = "Из-за возникшей ошибки мы временно не можем предоставить вам то, что нужно. Попробуйте позже.";
+"search.limitedResults" = "Ограниченные результаты поиска";
+"search.offlineMessage" = "В автономном режиме возможен только поиск по заголовкам и URL-адресам. Подключитесь к Интернету, чтобы использовать полнотекстовый поиск Premium-подписки.";
+"search.banner.errorMessage." = "Из-за возникшей ошибки мы не можем показать вам полные результаты поиска. Попробуйте позже.";
+"search.error.view.needsInternet" = "Для просмотра этого материала требуется подключение к Интернету.";
+"search.recent" = "Недавно искали";
+"search.recent.empty" = "Здесь отображаются последние поисковые запросы, благодаря чему и можно легко просматривать.";
+"search.swipe.unableToMove" = "Невозможно переместить";
+"search.swipe.archive" = "Архив";
+"search.swipe.moveToSaves" = "Перейти к Сохраненному";
+
+"search.empty.header" = "Поиск по названию или URL";
+
+"search.allItems.premium.header" = "Разблокируйте дополнительные возможности поиска";
+"search.allItems.premium.detail" = "Выполняйте поиск во всех папках Pocket, включая архив, оформив Pocket Premium.";
+"search.allItems.premium.button" = "Приобрести Pocket Premium";
+
+"search.results.empty.header" = "Результатов нет";
+"search.results.empty.detail" = "Попробуйте использовать другие ключевые слова, проверить наличие опечаток или изменить фильтры.";
+
+"search.results.offline.header" = "Нет подключения к Интернету";
+"search.results.offline.detail" = "Для поиска по всем материалам (%1$@) требуется подключение к сети.";
+"search.results.offline.detail.archive" = "В Архиве";
+"search.results.offline.detail.all" = "Все";
+
+// Settings
+"settings.thankyou.credits" = "Спасибо, что пользуетесь Pocket";
+"settings.PocketForiOS %@ (%@)" = "Pocket для iOS %1$@ (%2$@)";
+"settings.openSourceLicenses" = "Лицензии с открытым кодом";
+"settings.logout" = "Выход";
+"settings.logout.areYouSureMessage" = "Будет выполнен выход из учетной записи, и все элементы, сохраненные для офлайн-просмотра, удалятся с вашего устройства.";
+"settings.logout.areyousure" = "Вы уверены?";
+"settings.help" = "Получить помощь и поддержку";
+"settings.accountManagement" = "Управление учетной записью";
+"settings.accountManagement.deleteAccount" = "Удалить аккаунт";
+"settings.accountManagement.deleteYourAccount" = "Удалить ваш аккаунт";
+
+"settings.accountManagement.deleteAccount.warning" = "Предупреждение: это действие нельзя отменить";
+"settings.accountManagement.deleteAccount.premiumConfirmation" = "Чтобы удалить свою учетную запись, вы должны сначала **отменить подписку Premium здесь.**";
+"settings.accountManagement.deleteAccount.deletionConfirmation" = "Вы понимаете, что ваша учетная запись Pocket и данные будут **безвозвратно удалены.**";
+//Links to a help article on how to cancel your subscription
+"settings.accountManagement.deleteAccount.howToCancel" = "Как отменить подписку Pocket Premium";
+//Loading screen showing that the account deletion is in progress
+"settings.accountManagement.deleteAccount.deleting" = "Удаление вашего аккаунта";
+"settings.accountManagement.deleteAccount.error.body" = "Произошла ошибка, и мы не можем удалить вашу учетную запись. Повторите попытку позже.";
+"settings.accountManagement.restoreSubscription" = "Восстановить существующую подписку";
+"settings.accountManagement.restoreSubscription.restoreSuccessful.title" = "Восстановление успешно завершено";
+"settings.accountManagement.restoreSubscription.restoreSuccessful.message" = "Подписка на Pocket Premium восстановлена.";
+"settings.accountManagement.restoreSubscription.restoreNotSuccessful.title" = "Восстановление не удалось";
+"settings.accountManagement.restoreSubscription.restoreNotSuccessful.message" = "Не удалось найти подписку. Если вы считаете, что она у вас есть, сообщите нам по адресу support@getpocket.com.";
+
+"settings.noInternet.header" = "Нет подключения к Интернету";
+"settings.noInternet.youMustBeOnline" = "Для перехода на Premium вы должны быть онлайн. Проверьте подключение и попробуйте еще раз.";
+
+"settings.goPremiumRow" = "Перейти на Premium";
+"settings.premiumSubscriptionRow" = "Премиальная подписка";
+"settings.premiumRow" = "Перейти на Premium";
+"settings.premium.settings.thanksForSubscribing" = "Спасибо за подписку на Pocket Premium!";
+"settings.premium.settings.subscriptionStatus" = "Статус подписки";
+"settings.premium.settings.subscription" = "Подписка";
+"settings.premium.settings.datePurchased" = "Дата покупки";
+"settings.premium.settings.renewalDate" = "Дата обновления";
+"settings.premium.settings.purchaseLocation" = "Расположение покупки";
+"settings.premium.settings.price" = "Цена";
+"settings.premium.settings.yourSubscription" = "Ваша подписка";
+"settings.premium.settings.manageYourSubscription" = "Управление подпиской";
+"settings.premium.settings.questionOrFeedback" = "Вопросы или пожелания?";
+"settings.premium.settings.pocketPremiumFAQ" = "Часто задаваемые вопросы по Pocket Премиум";
+// this refers to an action to open an email
+"settings.premium.settings.contactPocketSupport" = "Связаться со Службой поддержки Pocket";
+
+//Sorting Options
+"sortingOption.sortBy" = "Сортировать по";
+"sortingOption.NewestSaved" = "Новые сохранения";
+"sortingOption.oldestSaved" = "Старые сохранения";
+"sortingOption.shortestToRead" = "Самое короткое для прочтения";
+"sortingOption.longestToRead" = "Самое длинное для прочтения";
+
+// Tags
+"tags.upsell.tagStoriesFasterThanEver" = "Добавляйте теги к историям быстрее, чем когда-либо — недавно использованные теги можно легко найти с помощью Pocket Premium.";
+"tags.upsell.getPocketPremium" = "Приобрести Pocket Premium";
+"tags.section.recentTags" = "Недавний тег";
+"tags.section.userTags" = "Мои теги";
+
+"tags.empty.header" = "Нет сохранений с этим тегом.";
+"tags.empty.detail" = "Отмечайте свои сохранения тегом по темам, чтобы найти их позже.";
+"tags.empty.button" = "Как отметить тегом";
+
+"tags.notTagged" = "Без тегов";
+
+//Reader 
+"reader.activity.save" = "Сохранить";
+"reader.activity.report" = "Пожаловаться";
+"reader.activity.delete" = "Удалить";
+"reader.activity.archive" = "Архив";
+"reader.activity.favorite" = "Избранное";
+"reader.activity.unfavorite" = "Удалить из Избранного";
+"reader.activity.moveToSaves" = "Перейти к Сохраненному";
+
+//Recommendation
+"recommendation.save" = "Сохранить";
+"recommendation.saved" = "Сохранено";
+
+//Premium
+"premium.infoView.terms.privacyPolicy" = "Политика конфиденциальности";
+"premium.infoView.terms.TermsOfService" = "Условия использования";
+
+"premium.success.message" = "Теперь вы официально стали пользователем Pocket Premium. Добро пожаловать в новую настраиваемую и постоянную версию вашего Pocket без рекламы. Мы надеемся, что вам понравится.";
+
+//The title of our Premium Membership page spans 2 lines. The '\n' character denotes a newline character and is not shown to the user.
+"premium.upgradeView.PremiumMembership" = "Премиум \n членство";
+"premium.upgradeView.comingSoon" = "Скоро!";
+// Description of the premium uprgade view
+"premium.upgradeView.description" = "Плата за подписку будет списана с кредитной карты через ваш аккаунт iTunes. С вашего счета будет списываться %1$@ (ежемесячно) или %2$@ (ежегодно) в рамках продления подписки в течение последних 24 часов до окончания текущего периода. Если вы не отмените подписку по крайней мере за 24 часа до окончания текущего периода, она будет автоматически продлена. Отменить подписку мгновенно невозможно. Вы можете управлять подписками и выключить автоматическое продление в настройках аккаунта после покупки. Возмещение за неиспользованный период подписки не предоставляется.";
+"premium.upgradeView.save" = "Сохранить";
+"premium.upgradeView.permanentLibrary" = "Постоянная библиотека для всех ваших материалов";
+//Ads will not be shown to Premuim users
+"premium.upgradeView.adFree" = "БЕЗ РЕКЛАМЫ";
+"premium.upgradeView.suggestedTags" = "Рекомендованные теги";
+"premium.upgradeView.fullTextSearch" = "Полнотекстовый поиск";
+"premium.upgradeView.unlimitedHighlights" = "Неограниченное количество пометок";
+"premium.upgradeView.premiumFonts" = "Premium-шрифты";
+
+
+//=======================
+//Old format
+
 "Home" = "На Главную";
 "Archive" = "Архив";
 "Pocket" = "Pocket";
@@ -12,44 +206,12 @@
 "No Internet Connection" = "Нет подключения к Интернету";
 "Looks like you're offline. Try checking your mobile data or wifi." = "Похоже, вы не в сети. Проверьте подключение к мобильному интернету или сети wi-fi.";
 
-"Keep your list fresh and clean" = "Храните свой список свежим и упорядоченным";
-"Archive the saves you're finished with\n using the archive icon." = "Архивируйте сохраненные материалы с помощью значка архива.";
-"How to archive" = "Как архивировать";
-
-"Find your favorites here" = "Найдите избранные материалы для себя здесь";
-"Hit the star icon to favorite an article and find it faster." = "Нажмите на значок звезды, чтобы добавить статью в избранное и находить ее быстрее.";
-
-"Start building your Pocket list" = "Начните создавать свой список Pocket";
-"How to save" = "Как сохранять";
-
-"No saves with this tag." = "Нет сохранений с этим тегом.";
-"Tag your saves by topic to find them later." = "Отмечайте свои сохранения тегом по темам, чтобы найти их позже.";
-"How to tag" = "Как отметить тегом";
-
-"Search" = "Поиск";
-"All" = "Все";
-"Tagged" = "Обозначено тегом";
-"Favorites" = "Избранное";
-"Sort/Filter" = "Сортировка/фильтрация";
-
-"Save" = "Сохранить";
-"Report" = "Пожаловаться";
-"Delete" = "Удалить";
-"Archive" = "Архив";
-"Favorite" = "Избранное";
-"Unfavorite" = "Удалить из Избранного";
-"Move to Saves" = "Перейти к Сохраненному";
 "Add Tags" = "Добавить теги";
 "Tags" = "Теги";
 "Share" = "Поделиться";
+"carousel.listen" = "Слушать";
 
 "Saves" = "Сохраненное";
-
-"Sort by" = "Сортировать по";
-"Newest saved" = "Новые сохранения";
-"Oldest saved" = "Старые сохранения";
-"Shortest to read" = "Самое короткое для прочтения";
-"Longest to read" = "Самое длинное для прочтения";
 
 "Display Settings" = "Отобразить настройки";
 "Font" = "Шрифт";
@@ -130,89 +292,6 @@
 "It contains misinformation" = "Содержит дезинформацию";
 "Other" = "Другое";
 
-//General Messages
-"general.oops" = "Ой! Попробовать еще раз?";
-
-// Tags
-"tags.upsell.tagStoriesFasterThanEver" = "Добавляйте теги к историям быстрее, чем когда-либо — недавно использованные теги можно легко найти с помощью Pocket Premium.";
-"tags.upsell.getPocketPremium" = "Приобрести Pocket Premium";
-"tags.section.recentTags" = "Недавний тег";
-"tags.section.userTags" = "Мои теги";
-
-// Search
-"search.errorMessage" = "Из-за возникшей ошибки мы временно не можем предоставить вам то, что нужно. Попробуйте позже.";
-"search.limitedResults" = "Ограниченные результаты поиска";
-"search.offlineMessage" = "В автономном режиме возможен только поиск по заголовкам и URL-адресам. Подключитесь к Интернету, чтобы использовать полнотекстовый поиск Premium-подписки.";
-"search.banner.errorMessage." = "Из-за возникшей ошибки мы не можем показать вам полные результаты поиска. Попробуйте позже.";
-"search.error.view.needsInternet" = "Для просмотра этого материала требуется подключение к Интернету.";
-"search.recent" = "Недавно искали";
-"search.swipe.unableToMove" = "Невозможно переместить";
-"search.swipe.archive" = "Архив";
-"search.swipe.moveToSaves" = "Перейти к Сохраненному";
-
-// Settings
-"settings.thankyou.credits" = "Спасибо, что пользуетесь Pocket";
-"settings.PocketForiOS %@ (%@)" = "Pocket для iOS %1$@ (%2$@)";
-"settings.openSourceLicenses" = "Лицензии с открытым кодом";
-"settings.logout" = "Выход";
-"settings.logout.areYouSureMessage" = "Будет выполнен выход из учетной записи, и все элементы, сохраненные для офлайн-просмотра, удалятся с вашего устройства.";
-"settings.logout.areyousure" = "Вы уверены?";
-"settings.help" = "Получить помощь и поддержку";
-"settings.accountManagement" = "Управление учетной записью";
-"settings.accountManagement.deleteAccount" = "Удалить аккаунт";
-"settings.accountManagement.deleteYourAccount" = "Удалить ваш аккаунт";
-
-"settings.accountManagement.deleteAccount.warning" = "Предупреждение: это действие нельзя отменить";
-"settings.accountManagement.deleteAccount.premiumConfirmation" = "Чтобы удалить свою учетную запись, вы должны сначала **отменить подписку Premium здесь.**";
-"settings.accountManagement.deleteAccount.deletionConfirmation" = "Вы понимаете, что ваша учетная запись Pocket и данные будут **безвозвратно удалены.**";
-//Links to a help article on how to cancel your subscription
-"settings.accountManagement.deleteAccount.howToCancel" = "Как отменить подписку Pocket Premium";
-//Loading screen showing that the account deletion is in progress
-"settings.accountManagement.deleteAccount.deleting" = "Удаление вашего аккаунта";
-"settings.accountManagement.deleteAccount.error.body" = "Произошла ошибка, и мы не можем удалить вашу учетную запись. Повторите попытку позже.";
-"settings.accountManagement.restoreSubscription" = "Восстановить существующую подписку";
-"settings.accountManagement.restoreSubscription.restoreSuccessful.title" = "Восстановление успешно завершено";
-"settings.accountManagement.restoreSubscription.restoreSuccessful.message" = "Подписка на Pocket Premium восстановлена.";
-"settings.accountManagement.restoreSubscription.restoreNotSuccessful.title" = "Восстановление не удалось";
-"settings.accountManagement.restoreSubscription.restoreNotSuccessful.message" = "Не удалось найти подписку. Если вы считаете, что она у вас есть, сообщите нам по адресу support@getpocket.com.";
-
-"settings.noInternet.youMustBeOnline" = "Для перехода на Premium вы должны быть онлайн. Проверьте подключение и попробуйте еще раз.";
-
-//Shown to the user after they deleted their account
-"login.deletedAccount.banner.title" = "Вы удалили свою учетную запись Pocket";
-//Shown to the user after they deleted their account
-"login.deletedAccount.banner.detail" = "Что мы могли бы улучшить?";
-//Action button for a user to take a survey
-"login.deletedAccount.banner.action" = "Быстрый опрос";
-
-//List view
-"item.list.min" = "%1$@ мин.";
-// Short name of the monthly premium subscription
-"Monthly" = "Ежемесячно";
-// Suffix of the monthly premium subscription price description
-"month" = "месяц";
-// Suffix of the annual premium subscription price description
-"year" = "год";
-// Short name of the annual premium subscription
-"Annual" = "Годовой";
-// Description of the premium uprgade view
-"premium.upgradeview.description" = "Плата за подписку будет списана с кредитной карты через ваш аккаунт iTunes. С вашего счета будет списываться %1$@ (ежемесячно) или %2$@ (ежегодно) в рамках продления подписки в течение последних 24 часов до окончания текущего периода. Если вы не отмените подписку по крайней мере за 24 часа до окончания текущего периода, она будет автоматически продлена. Отменить подписку мгновенно невозможно. Вы можете управлять подписками и выключить автоматическое продление в настройках аккаунта после покупки. Возмещение за неиспользованный период подписки не предоставляется.";
-"settings.goPremiumRow" = "Перейти на Premium";
-"settings.premiumSubscriptionRow" = "Премиальная подписка";
 "Hooray!" = "Поздравляем!";
-"premium.success.message" = "Теперь вы официально стали пользователем Pocket Premium. Добро пожаловать в новую настраиваемую и постоянную версию вашего Pocket без рекламы. Мы надеемся, что вам понравится.";
+
 "back.to.pocket" = "Назад к Pocket";
-"settings.premiumRow" = "Перейти на Premium";
-"settings.premium.settings.thanksForSubscribing" = "Спасибо за подписку на Pocket Premium!";
-"settings.premium.settings.subscriptionStatus" = "Статус подписки";
-"settings.premium.settings.subscription" = "Подписка";
-"settings.premium.settings.datePurchased" = "Дата покупки";
-"settings.premium.settings.renewalDate" = "Дата обновления";
-"settings.premium.settings.purchaseLocation" = "Расположение покупки";
-"settings.premium.settings.price" = "Цена";
-"settings.premium.settings.yourSubscription" = "Ваша подписка";
-"settings.premium.settings.manageYourSubscription" = "Управление подпиской";
-"settings.premium.settings.questionOrFeedback" = "Вопросы или пожелания?";
-"settings.premium.settings.pocketPremiumFAQ" = "Часто задаваемые вопросы по Pocket Премиум";
-// this refers to an action to open an email
-"settings.premium.settings.contactPocketSupport" = "Связаться со Службой поддержки Pocket";
