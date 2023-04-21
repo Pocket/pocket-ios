@@ -76,7 +76,7 @@ extension APISlateServiceTests {
 
             do {
                 let recommendation = recommendations[0]
-                XCTAssertEqual(recommendation.remoteID, "slate-1-rec-1")
+                XCTAssertEqual(recommendation.remoteID, "slate-1-rec-1slate-1")
 
                 let item = recommendation.item
                 XCTAssertNotNil(item)
@@ -102,7 +102,7 @@ extension APISlateServiceTests {
 
             do {
                 let recommendation = recommendations[1]
-                XCTAssertEqual(recommendation.remoteID, "slate-1-rec-2")
+                XCTAssertEqual(recommendation.remoteID, "slate-1-rec-2slate-1")
                 XCTAssertNotNil(recommendation.item)
             }
         }
@@ -120,7 +120,7 @@ extension APISlateServiceTests {
 
             do {
                 let recommendation = recommendations[0]
-                XCTAssertEqual(recommendation.remoteID, "slate-2-rec-1")
+                XCTAssertEqual(recommendation.remoteID, "slate-2-rec-1slate-2")
             }
         }
     }
