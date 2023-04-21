@@ -18,9 +18,8 @@ public struct EditBottomBar: ViewModifier {
     }
 
     public func body(content: Content) -> some View {
-        VStack(spacing: 0) {
+        ZStack(alignment: .bottom) {
             content
-
             if isEditing {
                 HStack {
                     Button(Localization.rename) {
@@ -53,6 +52,8 @@ public struct EditBottomBar: ViewModifier {
                     .disabled(selectedItems.count == 0)
                     .accessibilityIdentifier("delete-button")
                 }
+                .padding()
+                .background()
             }
         }
     }

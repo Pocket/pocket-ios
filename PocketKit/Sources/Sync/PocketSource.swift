@@ -501,8 +501,7 @@ extension PocketSource {
     public func renameTag(from oldTag: Tag, to name: String) {
         Log.breadcrumb(category: "sync", level: .debug, message: "Renaming tag")
         space.performAndWait {
-            guard let oldTag = space.backgroundObject(with: oldTag.objectID) as? Tag,
-                  let remoteID = oldTag.remoteID else {
+            guard let oldTag = space.backgroundObject(with: oldTag.objectID) as? Tag else {
                 Log.capture(message: "Could not retreive item from background context for mutation")
                 return
             }
@@ -524,10 +523,10 @@ extension PocketSource {
             let operation = operations.savedItemMutationOperation(
                 apollo: apollo,
                 events: _events,
-                mutation: TagUpdateMutation(input: TagUpdateInput(id: remoteID, name: name))
+                mutation: TagUpdateMutation(input: TagUpdateInput(id: oldTag.remoteID ?? "", name: name))
             )
 
-            enqueue(operation: operation, task: .renameTag(remoteID: remoteID, name: name), queue: saveQueue)
+            enqueue(operation: operation, task: .renameTag(remoteID: oldTag.remoteID ?? "", name: name), queue: saveQueue)
         }
     }
 
