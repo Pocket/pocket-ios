@@ -461,7 +461,11 @@ extension SearchViewModel {
                 $0.id != item.id
             }
 
-            searchState = .searchResults(updatedResults)
+            if updatedResults.isEmpty {
+                searchState = defaultState
+            } else {
+                searchState = .searchResults(updatedResults)
+            }
         }
     }
 
