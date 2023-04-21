@@ -40,6 +40,7 @@ struct TagsFilterView: View {
                         tagAction: tagAction
                     ).disabled(isEditing)
                 }
+                .listRowInsets(EdgeInsets())
                 .navigationBarTitleDisplayMode(.inline)
                 .tagsHeaderToolBar($isEditing, viewModel: viewModel)
                 .editBottomBar(isEditing: isEditing, selectedItems: selectedItems) {

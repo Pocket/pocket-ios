@@ -59,6 +59,7 @@ class TagsFilterViewModel: ObservableObject {
     func rename(from oldName: String?, to newName: String, completion: () -> Void) {
         guard let oldName else {
             Log.capture(message: "Unable to rename tag")
+            completion()
             return
         }
         let newName = newName.lowercased()
