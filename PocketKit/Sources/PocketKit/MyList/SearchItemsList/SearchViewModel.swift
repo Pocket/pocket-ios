@@ -41,6 +41,7 @@ class SearchViewModel: ObservableObject {
     private let userDefaults: UserDefaults
     private let source: Source
     private let premiumUpgradeViewModelFactory: PremiumUpgradeViewModelFactory
+    private let notificationCenter: NotificationCenter
 
     private var savesLocalSearch: LocalSavesSearch
     private var savesOnlineSearch: OnlineSearch
@@ -106,6 +107,7 @@ class SearchViewModel: ObservableObject {
          source: Source,
          tracker: Tracker,
          store: SubscriptionStore,
+         notificationCenter: NotificationCenter,
          premiumUpgradeViewModelFactory: @escaping PremiumUpgradeViewModelFactory) {
         self.networkPathMonitor = networkPathMonitor
         self.user = user
@@ -113,6 +115,7 @@ class SearchViewModel: ObservableObject {
         self.source = source
         self.tracker = tracker
         self.store = store
+        self.notificationCenter = notificationCenter
         self.premiumUpgradeViewModelFactory = premiumUpgradeViewModelFactory
         itemsController = source.makeSavesController()
 
@@ -233,6 +236,18 @@ class SearchViewModel: ObservableObject {
             guard !allOnlineSearch.hasFinishedResults else { return }
             allOnlineSearch.search(with: term, and: true)
         }
+    }
+
+    func beginBulkEdit() {
+        // TODO: The context of a bulk edit is within the entire list, not a single search result.
+        // Maybe there's potential for this being lifted from the row _to_ the search results list.
+        let bannerData = BannerModifier.BannerData(
+            image: .warning,
+            title: "",
+            detail: "Editing your search results is not available in this version of Pocket, but will be returning soon!"
+        )
+
+        notificationCenter.post(name: .bannerRequested, object: bannerData)
     }
 
     /// Handles submitting a search for the different scopes
@@ -409,7 +424,8 @@ extension SearchViewModel {
             user: user,
             store: store,
             networkPathMonitor: networkPathMonitor,
-            userDefaults: userDefaults
+            userDefaults: userDefaults,
+            notificationCenter: notificationCenter
         )
 
         trackOpenSearchItem(url: savedItem.url, index: index)
@@ -468,6 +484,37 @@ extension SearchViewModel {
             return nil
         }
         return savedItem
+    }
+
+    func readableViewModel(for item: PocketItem, index: Int) -> (ReadableViewModel, Bool)? {
+        guard
+            let id = item.id,
+            let savedItem = source.fetchOrCreateSavedItem(
+                with: id,
+                and: item.remoteItemParts
+            )
+        else {
+            Log.capture(message: "Saved Item not created")
+            return nil
+        }
+
+        let viewModel = SavedItemViewModel(
+            item: savedItem,
+            source: source,
+            tracker: tracker.childTracker(hosting: .articleView.screen),
+            pasteboard: UIPasteboard.general,
+            user: user,
+            store: store,
+            networkPathMonitor: networkPathMonitor,
+            userDefaults: userDefaults,
+            notificationCenter: notificationCenter
+        )
+
+        if savedItem.shouldOpenInWebView {
+            return (viewModel, true)
+        } else {
+            return (viewModel, false)
+        }
     }
 
     private func trackContentOpen(destination: ContentOpenEvent.Destination, item: SavedItem) {

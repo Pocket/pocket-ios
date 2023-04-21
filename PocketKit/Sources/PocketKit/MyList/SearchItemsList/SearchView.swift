@@ -52,17 +52,7 @@ struct ResultsView: View {
     var body: some View {
         List {
             ForEach(Array(results.enumerated()), id: \.offset) { index, item in
-                HStack {
-                    ListItem(viewModel: viewModel.itemViewModel(item, index: index))
-                    Spacer()
-                }
-                .swipeActions {
-                    Button(viewModel.swipeActionTitle(item)) {
-                        viewModel.handleSwipeAction(item, index: index)
-                    }
-                    .tint(swipeTintColor)
-                }
-                .contentShape(Rectangle())
+                result(for: item, at: index)
                 .onTapGesture {
                     if viewModel.isOffline {
                         showingAlert = true
@@ -84,6 +74,45 @@ struct ResultsView: View {
         .banner(data: viewModel.bannerData, show: $viewModel.showBanner, bottomOffset: 0)
         .alert(isPresented: $showingAlert) {
             Alert(title: Text(Localization.Search.Error.View.needsInternet), dismissButton: .default(Text("OK")))
+        }
+    }
+
+    @ViewBuilder
+    private func basicRow(for item: PocketItem, at index: Int) -> some View {
+        HStack {
+            ListItem(viewModel: viewModel.itemViewModel(item, index: index))
+            Spacer()
+        }
+        .swipeActions {
+            Button(viewModel.swipeActionTitle(item)) {
+                viewModel.handleSwipeAction(item, index: index)
+            }
+            .tint(swipeTintColor)
+        }
+        .contentShape(Rectangle())
+    }
+
+    @ViewBuilder
+    private func result(for item: PocketItem, at index: Int) -> some View {
+        if #available(iOS 16, *) {
+            if let (viewModel, showInWebView) = viewModel.readableViewModel(for: item, index: index) {
+                basicRow(for: item, at: index)
+                    .contextMenu {
+                        Button("Edit", action: {
+                            viewModel.beginBulkEdit()
+                        })
+                    } preview: {
+                        if showInWebView {
+                            SFSafariView(url: viewModel.url!)
+                        } else {
+                            ReadableView(viewModel: viewModel)
+                        }
+                    }
+            } else {
+                basicRow(for: item, at: index)
+            }
+        } else {
+            basicRow(for: item, at: index)
         }
     }
 }
