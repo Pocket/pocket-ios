@@ -66,8 +66,8 @@
               "item": {
                 "__typename": "[some-type-name]",
                 "remoteID": "recommended-item-2",
-                "givenUrl": "https://example.com/item-2",
-                "resolvedUrl": "https://example.com/item-2",
+                "givenUrl": "https://example.com/rec-item-2",
+                "resolvedUrl": "https://example.com/rec-item-2",
                 "title": "Slate 1, Recommendation 2",
                 "language": "en",
                 "topImageUrl": "http://example.com/slate-1-rec-2/top-image.png",
