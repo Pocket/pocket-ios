@@ -5,7 +5,10 @@
 import Sails
 import SharedPocketKit
 import ApolloTestSupport
+import Apollo
 import PocketGraphTestMocks
+import NIOCore
+import Foundation
 
 extension Response {
     static func saves(_ fixtureName: String = "initial-list") -> Response {
@@ -54,9 +57,14 @@ extension Response {
     }
 
     static func archive(apiRequest: ClientAPIRequest) -> Response {
-        let mock = Mock<Mutation>()
-
-        fixture(named: "archive")
+        return Response(
+            status: .ok,
+            content: Mock<Mutation>(
+                updateSavedItemArchive: Mock<SavedItem>(
+                    id: apiRequest.itemIdVariable
+                )
+            )._selectionSetMockData
+        )
     }
 
     static func favorite() -> Response {
@@ -211,5 +219,11 @@ extension Response {
         } else {
             fatalError("Unexpected request")
         }
+    }
+}
+
+extension JSONObject: Content {
+    public func encode(to buffer: inout ByteBuffer) throws -> Int {
+        return try buffer.writeData(JSONSerializationFormat.serialize(value: self))
     }
 }

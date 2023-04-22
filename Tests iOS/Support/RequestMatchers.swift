@@ -80,6 +80,10 @@ struct ClientAPIRequest {
     var isToSaveAnItem: Bool {
         self.operationName == "SaveItem"
     }
+    
+    func isToSaveAnItem(with url: URL) -> Bool {
+        isToSaveAnItem && self.inputURL == url
+    }
 
     var isForItemDetail: Bool {
         self.operationName == "SavedItemByID"
@@ -132,6 +136,14 @@ struct ClientAPIRequest {
 extension ClientAPIRequest {
 
     var itemIdVariable: String {
-        self.apolloRequestBody!.variableDict["itemId"] as! String
+        self.apolloRequestBody!.variableDict["itemID"] as! String
+    }
+    
+    var inputDict: [String: Any?] {
+        self.apolloRequestBody!.variableDict["input"] as! [String: Any?]
+    }
+            
+    var inputURL: URL {
+       URL(string: self.inputDict["url"] as! String)!
     }
 }
