@@ -41,12 +41,12 @@ class FavoriteAnItemTests: XCTestCase {
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isToUnfavoriteAnItem {
                 defer { expectUnfavoriteRequest.fulfill() }
-                XCTAssertTrue(apiRequest.contains("item-2"))
-                return .unfavorite()
+                XCTAssertEqual(apiRequest.itemIdVariable, "saved-item-2")
+                return .unfavorite(apiRequest: apiRequest)
             } else if apiRequest.isToFavoriteAnItem {
                 defer { expectFavoriteRequest.fulfill() }
-                XCTAssertTrue(apiRequest.contains("item-2"))
-                return .favorite()
+                XCTAssertEqual(apiRequest.itemIdVariable, "saved-item-2")
+                return .favorite(apiRequest: apiRequest)
             }
             return .fallbackResponses(apiRequest: apiRequest)
         }
@@ -75,12 +75,12 @@ class FavoriteAnItemTests: XCTestCase {
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isToUnfavoriteAnItem {
                 defer { expectUnfavoriteRequest.fulfill() }
-                XCTAssertTrue(apiRequest.contains("item-2"))
-                return .unfavorite()
+                XCTAssertEqual(apiRequest.itemIdVariable, "saved-item-2")
+                return .unfavorite(apiRequest: apiRequest)
             } else if apiRequest.isToFavoriteAnItem {
                 defer { expectFavoriteRequest.fulfill() }
-                XCTAssertTrue(apiRequest.contains("item-2"))
-                return .favorite()
+                XCTAssertEqual(apiRequest.itemIdVariable, "saved-item-2")
+                return .favorite(apiRequest: apiRequest)
             }
             return .fallbackResponses(apiRequest: apiRequest)
         }
@@ -123,12 +123,12 @@ class FavoriteAnItemTests: XCTestCase {
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isToUnfavoriteAnItem {
                 defer { expectUnfavoriteRequest.fulfill() }
-                XCTAssertTrue(apiRequest.contains("item-1"))
-                return .unfavorite()
+                XCTAssertEqual(apiRequest.itemIdVariable, "archived-item-1")
+                return .unfavorite(apiRequest: apiRequest)
             } else if apiRequest.isToFavoriteAnItem {
                 defer { expectFavoriteRequest.fulfill() }
-                XCTAssertTrue(apiRequest.contains("item-1"))
-                return .favorite()
+                XCTAssertEqual(apiRequest.itemIdVariable, "archived-item-1")
+                return .favorite(apiRequest: apiRequest)
             }
             return .fallbackResponses(apiRequest: apiRequest)
         }

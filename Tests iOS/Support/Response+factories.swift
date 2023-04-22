@@ -44,12 +44,22 @@ extension Response {
         fixture(named: fixtureName)
     }
 
-    static func delete() -> Response {
-        fixture(named: "delete")
+    static func delete(apiRequest: ClientAPIRequest) -> Response {
+        return Response(
+            status: .ok,
+            content: Mock<Mutation>(
+                deleteSavedItem: apiRequest.itemIdVariable
+            )._selectionSetMockData
+        )
     }
 
-    static func deleteTag(_ fixtureName: String = "delete-tag-1") -> Response {
-        fixture(named: fixtureName)
+    static func deleteTag(apiRequest: ClientAPIRequest) -> Response {
+        return Response(
+            status: .ok,
+            content: Mock<Mutation>(
+                deleteTag: apiRequest.idVariable
+            )._selectionSetMockData
+        )
     }
 
     static func updateTag() -> Response {
@@ -67,12 +77,26 @@ extension Response {
         )
     }
 
-    static func favorite() -> Response {
-        fixture(named: "favorite")
+    static func favorite(apiRequest: ClientAPIRequest) -> Response {
+        return Response(
+            status: .ok,
+            content: Mock<Mutation>(
+                updateSavedItemFavorite: Mock<SavedItem>(
+                    id: apiRequest.itemIdVariable
+                )
+            )._selectionSetMockData
+        )
     }
 
-    static func unfavorite() -> Response {
-        fixture(named: "unfavorite")
+    static func unfavorite(apiRequest: ClientAPIRequest) -> Response {
+        return Response(
+            status: .ok,
+            content: Mock<Mutation>(
+                updateSavedItemUnFavorite: Mock<SavedItem>(
+                    id: apiRequest.itemIdVariable
+                )
+            )._selectionSetMockData
+        )
     }
 
     static func saveItemFromExtension() -> Response {
@@ -114,7 +138,12 @@ extension Response {
     }
 
     static func deleteUser() -> Response {
-        fixture(named: "deleteUser")
+        return Response(
+            status: .ok,
+            content: Mock<Mutation>(
+                deleteUser: "fake-user-id"
+            )._selectionSetMockData
+        )
     }
 
     static func deleteUserError() -> Response {
@@ -126,11 +155,29 @@ extension Response {
     }
 
     static func userDetails() -> Response {
-        fixture(named: "user")
+        return Response(
+            status: .ok,
+            content: Mock<Query>(
+                user: Mock<PocketGraphTestMocks.User>(
+                    isPremium: false,
+                    name: "Pocket User",
+                    username: "User Name"
+                )
+            )._selectionSetMockData
+        )
     }
 
     static func premiumUserDetails() -> Response {
-        fixture(named: "premium-user")
+        return Response(
+            status: .ok,
+            content: Mock<Query>(
+                user: Mock<PocketGraphTestMocks.User>(
+                    isPremium: true,
+                    name: "Pocket User",
+                    username: "User Name"
+                )
+            )._selectionSetMockData
+        )
     }
 
     static func searchList(_ type: SearchScope) -> Response {
@@ -203,11 +250,13 @@ extension Response {
         } else if apiRequest.isForReplacingSavedItemTags {
             return .savedItemWithTag()
         } else if apiRequest.isToFavoriteAnItem {
-            return .favorite()
+            return .favorite(apiRequest: apiRequest)
         } else if apiRequest.isToUnfavoriteAnItem {
-            return .unfavorite()
+            return .unfavorite(apiRequest: apiRequest)
         } else if apiRequest.isToDeleteAnItem {
-            return .delete()
+            return .delete(apiRequest: apiRequest)
+        } else if apiRequest.isToDeleteATag {
+            return .deleteTag(apiRequest: apiRequest)
         } else if apiRequest.isForSearch(.all) {
             return .searchList(.all)
         } else if apiRequest.isForSearch(.saves) {

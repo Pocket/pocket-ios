@@ -53,8 +53,8 @@ struct ClientAPIRequest {
         self.operationName == "ArchiveItem"
     }
 
-    func isToDeleteATag(_ number: Int = 1) -> Bool {
-        self.operationName == "DeleteTag" && contains("id-\(number)")
+    var isToDeleteATag: Bool {
+        self.operationName == "DeleteTag"
     }
 
     func isToUpdateTag(_ name: String) -> Bool {
@@ -80,7 +80,7 @@ struct ClientAPIRequest {
     var isToSaveAnItem: Bool {
         self.operationName == "SaveItem"
     }
-    
+
     func isToSaveAnItem(with url: URL) -> Bool {
         isToSaveAnItem && self.inputURL == url
     }
@@ -138,11 +138,15 @@ extension ClientAPIRequest {
     var itemIdVariable: String {
         self.apolloRequestBody!.variableDict["itemID"] as! String
     }
-    
+
+    var idVariable: String {
+        self.apolloRequestBody!.variableDict["id"] as! String
+    }
+
     var inputDict: [String: Any?] {
         self.apolloRequestBody!.variableDict["input"] as! [String: Any?]
     }
-            
+
     var inputURL: URL {
        URL(string: self.inputDict["url"] as! String)!
     }
