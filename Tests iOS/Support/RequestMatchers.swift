@@ -14,6 +14,10 @@ struct ApolloBodyRequest: Codable {
     var variableDict: [String: Any?] {
         variables!.value as! [String: Any?]
     }
+
+    var inputDict: [String: Any?] {
+        variableDict["input"] as! [String: Any?]
+    }
 }
 
 struct ClientAPIRequest {
@@ -57,8 +61,8 @@ struct ClientAPIRequest {
         self.operationName == "DeleteTag"
     }
 
-    func isToUpdateTag(_ name: String) -> Bool {
-        self.operationName == "TagUpdate" && contains("\(name)")
+    var isToUpdateTag: Bool {
+        self.operationName == "TagUpdate"
     }
 
     var isToDeleteAnItem: Bool {
@@ -135,19 +139,23 @@ struct ClientAPIRequest {
 
 extension ClientAPIRequest {
 
-    var itemIdVariable: String {
+    var variableItemId: String {
         self.apolloRequestBody!.variableDict["itemID"] as! String
     }
 
-    var idVariable: String {
+    var variableId: String {
         self.apolloRequestBody!.variableDict["id"] as! String
     }
 
-    var inputDict: [String: Any?] {
-        self.apolloRequestBody!.variableDict["input"] as! [String: Any?]
+    var inputId: String {
+        self.apolloRequestBody!.inputDict["id"] as! String
+    }
+
+    var inputName: String {
+        self.apolloRequestBody!.inputDict["id"] as! String
     }
 
     var inputURL: URL {
-       URL(string: self.inputDict["url"] as! String)!
+        URL(string: self.apolloRequestBody!.inputDict["url"] as! String)!
     }
 }

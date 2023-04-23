@@ -19,12 +19,7 @@ class EditTagsTests: XCTestCase {
         server = Application()
 
         server.routes.post("/graphql") { request, _ -> Response in
-            let apiRequest = ClientAPIRequest(request)
-
-            if apiRequest.isToUpdateTag("rename tag 1") {
-                return .updateTag()
-            }
-            return .fallbackResponses(apiRequest: apiRequest)
+            return .fallbackResponses(apiRequest: ClientAPIRequest(request))
         }
 
         try server.start()

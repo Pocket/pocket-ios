@@ -12,8 +12,9 @@
         "selectionSetInitializers": {
             "operations": false,
             "namedFragments": true,
-            "localCacheMutations": true
-        }
+            "localCacheMutations": true,
+        },
+        "pruneGeneratedFiles": true
     },
     "output": {
         "testMocks": {
