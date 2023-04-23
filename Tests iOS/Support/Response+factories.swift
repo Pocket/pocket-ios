@@ -133,7 +133,22 @@ extension Response {
     }
 
     static func emptyTags() -> Response {
-        fixture(named: "empty-tags")
+        return .init(
+            mock: Mock<Query>(
+                user: Mock<PocketGraphTestMocks.User>(
+                    tags: Mock<TagConnection>(
+                        edges: [],
+                        pageInfo: Mock<PageInfo>(
+                            endCursor: nil,
+                            hasNextPage: false,
+                            hasPreviousPage: false,
+                            startCursor: nil
+                        ),
+                        totalCount: 0
+                    )
+                )
+            )
+        )
     }
 
     static func deleteUser() -> Response {

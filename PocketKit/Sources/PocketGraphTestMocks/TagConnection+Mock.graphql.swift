@@ -19,8 +19,8 @@ public class TagConnection: MockObject {
 public extension Mock where O == TagConnection {
   convenience init(
     edges: [Mock<TagEdge>?]? = nil,
-    pageInfo: Mock<PageInfo>? = nil,
-    totalCount: Int? = nil
+    pageInfo: Mock<PageInfo>,
+    totalCount: Int
   ) {
     self.init()
     self.edges = edges
