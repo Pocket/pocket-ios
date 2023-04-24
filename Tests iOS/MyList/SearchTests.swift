@@ -399,10 +399,10 @@ class SearchTests: XCTestCase {
                 return .premiumUserDetails()
             } else if apiRequest.isToFavoriteAnItem {
                 defer { favoriteExpectation.fulfill() }
-                return .favorite()
+                return .favorite(apiRequest: apiRequest)
             } else if apiRequest.isToUnfavoriteAnItem {
                 defer { unfavoriteExpectation.fulfill() }
-                return .unfavorite()
+                return .unfavorite(apiRequest: apiRequest)
             }
             return .fallbackResponses(apiRequest: apiRequest)
         }

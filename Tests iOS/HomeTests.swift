@@ -253,7 +253,7 @@ class HomeTests: XCTestCase {
                 return .saveItem()
             } else if apiRequest.isToArchiveAnItem {
                 defer { archiveRequestExpectation.fulfill() }
-                return .archive()
+                return .archive(apiRequest: apiRequest)
             }
             return .fallbackResponses(apiRequest: apiRequest)
         }
@@ -290,7 +290,7 @@ class HomeTests: XCTestCase {
                 if apiRequest.contains("slate-1-rec-1-saved-item") {
                     XCTFail("Received archive request for unexpected item")
                 } else {
-                    return Response.archive()
+                    return Response.archive(apiRequest: apiRequest)
                 }
             }
 

@@ -60,7 +60,7 @@ class ReaderTests: XCTestCase {
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isToArchiveAnItem {
                 defer { archiveExpectation.fulfill() }
-                return .archive()
+                return .archive(apiRequest: apiRequest)
             }
             return .fallbackResponses(apiRequest: apiRequest)
         }
