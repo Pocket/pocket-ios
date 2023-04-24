@@ -45,7 +45,6 @@ class MainViewController: UIViewController {
                 // Legacy cleanup
                 LegacyCleanupService().cleanUp()
             } else {
-                tracker.track(event: Events.Migration.MigrationTo_v8DidFail(with: nil, source: .saveToPocketKit))
                 Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration not required; skipped.")
             }
         } catch LegacyUserMigrationError.emptyData {
@@ -53,6 +52,12 @@ class MainViewController: UIViewController {
             // Since there's no initial data, we don't have anything to migrate, and we can skip
             // any further attempts at running this migration. This is not a true "error" in the sense that
             // it breaks migration; it's a special case to be handled if data was created (on fresh install).
+            legacyUserMigration.forceSkip()
+        } catch LegacyUserMigrationError.noSession {
+            // If a user was logged out in Pocket 7, and then launches Pocket 8, there is no session to migrate.
+            // Previously, this would trigger a `failedDeserialization`, which is correct, but not within the context
+            // of a valid user case. If there was nothing to migrate, we can skip any further attempts.
+            Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration has no session to migration; skipping.")
             legacyUserMigration.forceSkip()
         } catch LegacyUserMigrationError.missingStore {
             tracker.track(event: Events.Migration.MigrationTo_v8DidFail(with: LegacyUserMigrationError.missingStore, source: .saveToPocketKit))

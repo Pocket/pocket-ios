@@ -6,6 +6,7 @@ public enum LegacyUserMigrationError: LoggableError {
     case missingData
     case failedDeserialization(Error)
     case emptyData
+    case noSession
 
     public var logDescription: String {
         switch self {
@@ -14,6 +15,7 @@ public enum LegacyUserMigrationError: LoggableError {
         case .missingData: return "Data is missing after decrypting store"
         case .failedDeserialization(let error): return "Failed to deserialize data: \(error)"
         case .emptyData: return "Data is empty"
+        case .noSession: return "No session exists in the legacy store"
         }
     }
 }
@@ -83,6 +85,18 @@ public class LegacyUserMigration {
         }
     }
 
+    func required(for version: String) -> Bool {
+        // On a fresh install, the app will not have a "previous version", and
+        // thus will not be required to run. If the previous version is < 8, then it is required.
+        guard let majorComponent = version.components(separatedBy: ".").first,
+              let previousMajorComponent = Int(majorComponent),
+              previousMajorComponent < 8 else {
+            return false
+        }
+
+        return true
+    }
+
     @discardableResult
     public func attemptMigration(migrationWillBegin: () -> Void) throws -> Bool {
         // If we don't have a password, OR if we've already run the migration, end early.
@@ -100,10 +114,17 @@ public class LegacyUserMigration {
 
         migrationWillBegin()
 
+        guard let guid = legacyStore.guid,
+              let accessToken = legacyStore.accessToken,
+              let userIdentifier = legacyStore.userIdentifier
+        else {
+            throw LegacyUserMigrationError.noSession
+        }
+
         appSession.currentSession = Session(
-            guid: legacyStore.guid,
-            accessToken: legacyStore.accessToken,
-            userIdentifier: legacyStore.userIdentifier
+            guid: guid,
+            accessToken: accessToken,
+            userIdentifier: userIdentifier
         )
 
         updateUserDefaults()
@@ -119,18 +140,6 @@ public class LegacyUserMigration {
 extension LegacyUserMigration {
     private var previouslyRun: Bool {
         userDefaults.bool(forKey: Self.migrationKey)
-    }
-
-    private func required(for version: String) -> Bool {
-        // On a fresh install, the app will not have a "previous version", and
-        // thus will not be required to run. If the previous version is < 8, then it is required.
-        guard let majorComponent = version.components(separatedBy: ".").first,
-              let previousMajorComponent = Int(majorComponent),
-              previousMajorComponent < 8 else {
-            return false
-        }
-
-        return true
     }
 
     private func updateUserDefaults() {
@@ -155,9 +164,9 @@ extension LegacyUserMigration {
 }
 
 private struct LegacyStore: Decodable {
-    let guid: String
-    let accessToken: String
-    let userIdentifier: String
+    let guid: String?
+    let accessToken: String?
+    let userIdentifier: String?
     let version: String
 
     enum CodingKeys: String, CodingKey {
