@@ -30,7 +30,7 @@ class AddTagsItemTests: XCTestCase {
     override func tearDown() async throws {
         try server.stop()
         app.terminate()
-        await snowplowMicro.assertNoBadEvents()
+        await snowplowMicro.assertBaselineSnowplowExpectation()
     }
 
     @MainActor
@@ -60,10 +60,9 @@ class AddTagsItemTests: XCTestCase {
         scrollTo(element: tagsFilterView.allTagCells(matching: "tag 2"), in: tagsFilterView.element, direction: .up)
         XCTAssertEqual(tagsFilterView.allTagSectionCells.count, 7)
 
-        await snowplowMicro.assertBaselineSnowplowExpectation()
         let tagEvent = await snowplowMicro.getFirstEvent(with: "global-nav.addTags.save")
         tagEvent!.getUIContext()!.assertHas(type: "button")
-        tagEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
+        tagEvent!.getContentContext()!.assertHas(url: "http://example.com/saved-item-2")
     }
 
     @MainActor
@@ -84,8 +83,6 @@ class AddTagsItemTests: XCTestCase {
         scrollTo(element: addTagsView.allTagCells(matching: "tag 1"), in: addTagsView.allTagsView, direction: .down)
         addTagsView.allTagCells(matching: "tag 1").wait().tap()
 
-        await snowplowMicro.assertBaselineSnowplowExpectation()
-
         let events = await [
             snowplowMicro.getFirstEvent(with: "global-nav.addTags.removeInputTag"),
             snowplowMicro.getFirstEvent(with: "global-nav.addTags.addTag"),
@@ -94,11 +91,11 @@ class AddTagsItemTests: XCTestCase {
 
         let removeTagEvent = events[0]!
         removeTagEvent.getUIContext()!.assertHas(type: "button")
-        removeTagEvent.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
+        removeTagEvent.getContentContext()!.assertHas(url: "http://example.com/saved-item-1")
 
         let addTagEvent = events[1]!
         addTagEvent.getUIContext()!.assertHas(type: "button")
-        addTagEvent.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
+        addTagEvent.getContentContext()!.assertHas(url: "http://example.com/saved-item-1")
 
         let addExistingTagEvent = events[2]!
         addExistingTagEvent.getUIContext()!.assertHas(type: "button")
@@ -134,8 +131,6 @@ class AddTagsItemTests: XCTestCase {
         app.addTagsButton.wait().tap()
         addTagsView.wait()
 
-        await snowplowMicro.assertBaselineSnowplowExpectation()
-
         let events = await [snowplowMicro.getFirstEvent(with: "global-nav.addTags.allTags"), snowplowMicro.getFirstEvent(with: "global-nav.addTags.userEntersText")]
 
         let tagEvent = events[0]!
@@ -167,10 +162,9 @@ class AddTagsItemTests: XCTestCase {
         app.addTagsView.wait()
         app.addTagsView.allTagSectionCells.element.wait()
 
-        await snowplowMicro.assertBaselineSnowplowExpectation()
         let tagEvent = await snowplowMicro.getFirstEvent(with: "global-nav.addTags.allTags")
         tagEvent!.getUIContext()!.assertHas(type: "screen")
-        tagEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
+        tagEvent!.getContentContext()!.assertHas(url: "http://example.com/saved-item-1")
     }
 
     @MainActor
@@ -194,7 +188,6 @@ class AddTagsItemTests: XCTestCase {
         addTagsView.recentTagCells.element.wait()
         addTagsView.recentTagCells.element(boundBy: 0).tap()
 
-        await snowplowMicro.assertBaselineSnowplowExpectation()
         let tagEvent = await snowplowMicro.getFirstEvent(with: "global-nav.addTags.selectRecentTag")
         tagEvent!.getUIContext()!.assertHas(type: "button")
     }

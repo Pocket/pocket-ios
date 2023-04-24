@@ -10,13 +10,13 @@ public class Video: MockObject {
   public typealias MockValueCollectionType = Array<Mock<Video>>
 
   public struct MockFields {
-    @Field<Int>("height") public var height
-    @Field<Int>("length") public var length
+    @Field<Int?>("height") public var height
+    @Field<Int?>("length") public var length
     @Field<String>("src") public var src
     @Field<GraphQLEnum<PocketGraph.VideoType>>("type") public var type
-    @Field<String>("vid") public var vid
+    @Field<String?>("vid") public var vid
     @Field<Int>("videoID") public var videoID
-    @Field<Int>("width") public var width
+    @Field<Int?>("width") public var width
   }
 }
 
@@ -24,10 +24,10 @@ public extension Mock where O == Video {
   convenience init(
     height: Int? = nil,
     length: Int? = nil,
-    src: String? = nil,
-    type: GraphQLEnum<PocketGraph.VideoType>? = nil,
+    src: String,
+    type: GraphQLEnum<PocketGraph.VideoType>,
     vid: String? = nil,
-    videoID: Int? = nil,
+    videoID: Int,
     width: Int? = nil
   ) {
     self.init()

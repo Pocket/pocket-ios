@@ -33,7 +33,7 @@ class PullToRefreshTests: XCTestCase {
                 defer { savesCall += 1 }
                 switch savesCall {
                 case 0:
-                    return .saves()
+                    return .savesList()
                 default:
                     return .saves("updated-list")
                 }

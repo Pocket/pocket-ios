@@ -30,7 +30,7 @@ class DeleteAnItemTests: XCTestCase {
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isToDeleteAnItem {
                 defer { deletionExpectation.fulfill() }
-                XCTAssertEqual(apiRequest.variableItemId, "saved-item-2")
+                XCTAssertEqual(apiRequest.variableItemId, "aHR0cDovL2V4YW1wbGUuY29tL3NhdmVkLWl0ZW0tMg==")
                 return .delete(apiRequest: apiRequest)
             }
 
@@ -60,7 +60,7 @@ class DeleteAnItemTests: XCTestCase {
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isToDeleteAnItem {
                 defer { deletionExpectation.fulfill() }
-                XCTAssertEqual(apiRequest.variableItemId, "saved-item-2")
+                XCTAssertEqual(apiRequest.variableItemId, "aHR0cDovL2V4YW1wbGUuY29tL3NhdmVkLWl0ZW0tMg==")
                 return .delete(apiRequest: apiRequest)
             }
 

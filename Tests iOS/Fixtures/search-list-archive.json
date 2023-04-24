@@ -12,8 +12,8 @@
               "__typename": "[type-name-here]",
               "savedItem": {
                 "__typename": "[type-name-here]",
-                "remoteID": "saved-item-3",
-                "url": "http://localhost:8080/hello",
+                "remoteID": "search-saved-item-3",
+                "url": "https://example.com/search-saved-item-3",
                 "_createdAt": 1,
                 "_deletedAt": null,
                 "archivedAt": null,
@@ -28,10 +28,10 @@
                 ],
                 "item": {
                   "__typename": "Item",
-                  "remoteID": "item-3",
+                  "remoteID": "search-item-3",
                   "title": "Item 3",
-                  "givenUrl": "http://localhost:8080/hello",
-                  "resolvedUrl": "http://localhost:8080/hello",
+                  "givenUrl": "https://given.example.com/search-item-3",
+                  "resolvedUrl": "https://resolved.example.com/searc-item-3",
                   "topImageUrl": "https://example.com/item-3/top-image.jpg",
                   "domain": null,
                   "language": "en",
@@ -84,7 +84,7 @@
           "hasPreviousPage": false,
           "startCursor": null
         },
-        "totalCount": 2
+        "totalCount": 1
       }
     }
   }

@@ -58,7 +58,7 @@ class SettingsTest: XCTestCase {
         server.routes.post("/graphql") { request, eventLoop -> FutureResponse in
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isForSavesContent {
-                return Response.saves()
+                return Response.savesList()
             } else if apiRequest.isForDeleteUser {
                 deletePromise = eventLoop.makePromise(of: Response.self)
                 return deletePromise!.futureResult
@@ -83,7 +83,7 @@ class SettingsTest: XCTestCase {
         server.routes.post("/graphql") { request, eventLoop -> FutureResponse in
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isForSavesContent {
-                return Response.saves()
+                return Response.savesList()
             } else if apiRequest.isForDeleteUser {
                 deletePromise = eventLoop.makePromise(of: Response.self)
                 return deletePromise!.futureResult
@@ -106,7 +106,7 @@ class SettingsTest: XCTestCase {
         server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isForSavesContent {
-                return .saves()
+                return .savesList()
             } else if apiRequest.isForUserDetails {
                 return .premiumUserDetails()
             }

@@ -100,7 +100,7 @@ class ArchiveFiltersTests: XCTestCase {
         XCTAssertEqual(app.saves.wait().itemCells.count, 1)
 
         app.saves.filterButton(for: "Tagged").wait().tap()
-        tagsFilterView.wait().tag(matching: "filter tag 0").wait().tap()
+        tagsFilterView.wait().tag(matching: "filter tag 1").wait().tap()
         XCTAssertEqual(app.saves.wait().itemCells.count, 0)
 
         let events = await [

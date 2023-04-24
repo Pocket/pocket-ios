@@ -87,7 +87,7 @@ class SavesTests: XCTestCase {
 
             if apiRequest.isToSaveAnItem {
                 defer { saveExpectation.fulfill() }
-                return .saveItemFromExtension()
+                return .saveItemFromExtension(apiRequest: apiRequest)
             }
 
             return .fallbackResponses(apiRequest: apiRequest)
@@ -126,7 +126,7 @@ class SavesTests: XCTestCase {
             .tap()
 
         let expectedContent = [
-            "Item 1",
+            "Item 2",
             "Jacob and David",
             "WIRED",
             "January 1, 2021",
@@ -165,6 +165,15 @@ class SavesTests: XCTestCase {
     }
 
     func test_webReader_displaysWebContent() {
+        server.routes.post("/graphql") { request, _ -> Response in
+            let apiRequest = ClientAPIRequest(request)
+            if apiRequest.isForSavesContent {
+                return .savesListForWeb()
+            }
+            print(apiRequest)
+            return .fallbackResponses(apiRequest: apiRequest)
+        }
+
         app.launch().tabBar.savesButton.wait().tap()
 
         app
@@ -267,22 +276,23 @@ class SavesTests: XCTestCase {
         app.sortMenu.sortOption("Oldest saved").wait().tap()
 
         app.saves.itemView(matching: "Item 1").wait()
-        XCTAssertTrue(app.saves.itemView(at: 0).contains(string: "Item 2"))
-        XCTAssertTrue(app.saves.itemView(at: 1).contains(string: "Item 1"))
+        XCTAssertTrue(app.saves.itemView(at: 0).contains(string: "Item 1"))
+        XCTAssertTrue(app.saves.itemView(at: 1).contains(string: "Item 2"))
 
         app.saves.filterButton(for: "Sort/Filter").wait().tap()
         app.sortMenu.sortOption("Newest saved").wait().tap()
 
-        XCTAssertTrue(app.saves.itemView(at: 0).contains(string: "Item 1"))
-        XCTAssertTrue(app.saves.itemView(at: 1).contains(string: "Item 2"))
+        XCTAssertTrue(app.saves.itemView(at: 0).contains(string: "Item 2"))
+        XCTAssertTrue(app.saves.itemView(at: 1).contains(string: "Item 1"))
     }
 
     func test_tappingTagLabel_showsTagFilter() {
         app.launch().tabBar.savesButton.wait().tap()
+        app.saves.itemView(matching: "Item 1").wait()
 
         let listView = app.saves.wait()
         XCTAssertEqual(listView.itemCount, 2)
-        let item = listView.itemView(at: 1)
+        let item = listView.itemView(at: 0)
         XCTAssertTrue(item.tagButton.firstMatch.label == "filter tag 0")
         XCTAssertTrue(item.contains(string: "+3"))
         item.tagButton.firstMatch.tap()

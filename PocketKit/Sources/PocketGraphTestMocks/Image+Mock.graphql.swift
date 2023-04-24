@@ -10,14 +10,14 @@ public class Image: MockObject {
   public typealias MockValueCollectionType = Array<Mock<Image>>
 
   public struct MockFields {
-    @Field<String>("caption") public var caption
-    @Field<String>("credit") public var credit
-    @Field<Int>("height") public var height
+    @Field<String?>("caption") public var caption
+    @Field<String?>("credit") public var credit
+    @Field<Int?>("height") public var height
     @Field<Int>("imageID") public var imageID
-    @Field<Int>("imageId") public var imageId
+    @Field<Int?>("imageId") public var imageId
     @available(*, deprecated, message: "use url property moving forward")
     @Field<String>("src") public var src
-    @Field<Int>("width") public var width
+    @Field<Int?>("width") public var width
   }
 }
 

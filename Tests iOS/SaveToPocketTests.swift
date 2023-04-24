@@ -51,7 +51,9 @@ class SaveToPocketTests: XCTestCase {
     func test_userAddTags_showsConfirmationView() {
         server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
-            if apiRequest.isToSaveAnItem {
+            if apiRequest.isForSavesContent {
+                return .savesListForWeb()
+            } else if apiRequest.isToSaveAnItem {
                 return .savedItemWithTag()
             }
             return .fallbackResponses(apiRequest: apiRequest)

@@ -13,8 +13,8 @@
             "item": {
                 "__typename": "[some-type-name]",
                 "remoteID": "recommended-item-1",
-                "givenUrl": "https://example.com/item-1",
-                "resolvedUrl": "https://example.com/item-1",
+                "givenUrl": "https://example.com/slate-1-rec-1",
+                "resolvedUrl": "https://example.com/slate-1-rec-1",
                 "title": "Slate 1, Recommendation 1",
                 "language": "en",
                 "topImageUrl": "http://example.com/slate-1-rec-1/top-image.png",

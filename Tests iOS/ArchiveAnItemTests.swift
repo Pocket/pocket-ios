@@ -31,7 +31,7 @@ class ArchiveAnItemTests: XCTestCase {
             if apiRequest.isToArchiveAnItem {
                 defer { expectRequest.fulfill() }
                 XCTAssertTrue(apiRequest.isToArchiveAnItem)
-                XCTAssertTrue(apiRequest.contains("item-2"))
+                XCTAssertTrue(apiRequest.contains("aHR0cDovL2V4YW1wbGUuY29tL3NhdmVkLWl0ZW0tMg"))
             }
             return .fallbackResponses(apiRequest: apiRequest)
         }
@@ -59,7 +59,7 @@ class ArchiveAnItemTests: XCTestCase {
             if apiRequest.isToArchiveAnItem {
                 defer { expectRequest.fulfill() }
                 XCTAssertTrue(apiRequest.isToArchiveAnItem)
-                XCTAssertTrue(apiRequest.contains("item-2"))
+                XCTAssertTrue(apiRequest.contains("aHR0cDovL2V4YW1wbGUuY29tL3NhdmVkLWl0ZW0tMg"))
             }
             return .fallbackResponses(apiRequest: apiRequest)
         }
@@ -89,7 +89,7 @@ class ArchiveAnItemTests: XCTestCase {
             if apiRequest.isToArchiveAnItem {
                 defer { expectRequest.fulfill() }
                 XCTAssertTrue(apiRequest.isToArchiveAnItem)
-                XCTAssertTrue(apiRequest.contains("item-2"))
+                XCTAssertTrue(apiRequest.contains("aHR0cDovL2V4YW1wbGUuY29tL3NhdmVkLWl0ZW0tMg"))
             }
             return .fallbackResponses(apiRequest: apiRequest)
         }
@@ -119,7 +119,7 @@ class ArchiveAnItemTests: XCTestCase {
             if apiRequest.isToArchiveAnItem {
                 defer { expectRequest.fulfill() }
                 XCTAssertTrue(apiRequest.isToArchiveAnItem)
-                XCTAssertTrue(apiRequest.contains("item-2"))
+                XCTAssertTrue(apiRequest.contains("aHR0cDovL2V4YW1wbGUuY29tL3NhdmVkLWl0ZW0tMg"))
             }
             return .fallbackResponses(apiRequest: apiRequest)
         }

@@ -23,7 +23,7 @@ struct ApolloBodyRequest: Codable {
 struct ClientAPIRequest {
     private let request: Request
     private let requestBody: String?
-    private let apolloRequestBody: ApolloBodyRequest?
+    let apolloRequestBody: ApolloBodyRequest?
     private let operationName: String?
 
     init(_ request: Request) {

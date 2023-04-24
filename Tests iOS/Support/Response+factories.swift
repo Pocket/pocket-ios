@@ -21,6 +21,33 @@ extension Response {
         }
     }
 
+    static func savesList(count: Int = 2, edges: [Mock<SavedItemEdge>] = Response.createMockSavedItemEdgesForInitialList()) -> Response {
+        let response: Response = .init(
+            mock: Mock<Query>(
+                user: Mock<PocketGraphTestMocks.User>(
+                    savedItems: Mock<PocketGraphTestMocks.SavedItemConnection>(
+                        edges: edges,
+                        pageInfo: Mock<PageInfo>(
+                            endCursor: "cursor-\(edges.count)",
+                            hasNextPage: false,
+                            hasPreviousPage: false
+                        ),
+                        totalCount: edges.count
+                    )
+                )
+            )
+        )
+        return response
+    }
+
+    static func savesListForWeb() -> Response {
+        savesList(count: 2, edges: Response.createMockSavedItemEdgesForWeb())
+    }
+
+    static func savesListForUpdatedList() -> Response {
+        savesList(count: 2, edges: Response.createMockSavedItemEdgesForWeb())
+    }
+
     static func freeUserSaves(_ fixtureName: String = "initial-list") -> Response {
         saves("initial-list-free-user")
     }
@@ -41,8 +68,22 @@ extension Response {
         fixture(named: "slate-detail-\(number)")
     }
 
+    static func save(_ number: Int = 1) -> Response {
+        fixture(named: "slate-detail-\(number)")
+    }
+
     static func saveItem(_ fixtureName: String = "save-item") -> Response {
         fixture(named: fixtureName)
+    }
+
+    static func saveItem(apiRequest: ClientAPIRequest) -> Response {
+        return .init(
+            mock: Mock<Mutation>(
+                upsertSavedItem: createMockSavedItem(
+                    url: apiRequest.inputURL.absoluteString
+                )
+            )
+        )
     }
 
     static func delete(apiRequest: ClientAPIRequest) -> Response {
@@ -82,6 +123,16 @@ extension Response {
         )
     }
 
+    static func unarchive(apiRequest: ClientAPIRequest) -> Response {
+        return .init(
+            mock: Mock<Mutation>(
+                upsertSavedItem: createMockSavedItem(
+                    url: apiRequest.inputURL.absoluteString
+                )
+            )
+        )
+    }
+
     static func favorite(apiRequest: ClientAPIRequest) -> Response {
         return .init(
             mock: Mock<Mutation>(
@@ -102,8 +153,14 @@ extension Response {
         )
     }
 
-    static func saveItemFromExtension() -> Response {
-        fixture(named: "save-item-from-extension")
+    static func saveItemFromExtension(apiRequest: ClientAPIRequest) -> Response {
+        return .init(
+            mock: Mock<Mutation>(
+                upsertSavedItem: createMockSavedItem(
+                    url: apiRequest.inputURL.absoluteString
+                )
+            )
+        )
     }
 
     static func itemDetail() -> Response {
@@ -191,7 +248,7 @@ extension Response {
         )
     }
 
-    static func searchList(_ type: SearchScope) -> Response {
+    private static func searchList(_ type: SearchScope) -> Response {
         var fixtureName = "search-list"
         switch type {
         case .saves:
@@ -205,7 +262,6 @@ extension Response {
         return Response {
             Status.ok
             Fixture.load(name: fixtureName)
-                .replacing("MARTICLE", withFixtureNamed: "marticle")
                 .data
         }
     }
@@ -263,7 +319,7 @@ extension Response {
         } else if apiRequest.isToUpdateTag {
             return .updateTag(apiRequest: apiRequest)
         } else if apiRequest.isForSavesContent {
-            return .saves()
+            return .savesList()
         } else if apiRequest.isForDeleteUser {
             return .deleteUser()
         } else if apiRequest.isForUserDetails {
@@ -271,7 +327,7 @@ extension Response {
         } else if apiRequest.isToArchiveAnItem {
             return .archive(apiRequest: apiRequest)
         } else if apiRequest.isToSaveAnItem {
-            return .saveItem()
+            return .saveItem(apiRequest: apiRequest)
         } else if apiRequest.isForRecommendationDetail(1) {
             return .recommendationDetail(1)
         } else if apiRequest.isForRecommendationDetail(2) {
@@ -320,5 +376,185 @@ extension Response {
         var data = JSONObject()
         data.updateValue(mock._selectionSetMockData, forKey: "data")
         self.init(status: .ok, content: data)
+    }
+
+    /// Using Apollo mocks to replace our deprecated `initial-list` response data
+    /// - Returns: returns an array of saved items
+    static func createMockSavedItemEdgesForInitialList() -> [Mock<SavedItemEdge>] {
+        let tags1 = [Mock<Tag>(id: "id-0", name: "tag 0")]
+        let saveItem1 = Mock<PocketGraphTestMocks.SavedItemEdge>(
+            cursor: "cursor-1",
+            node: createMockSavedItem(with: 1, and: tags1)
+        )
+
+        let tags2 = [Mock<Tag>(id: "id-0", name: "tag 0"), Mock<Tag>(id: "id-1", name: "tag 1"), Mock<Tag>(id: "id-2", name: "tag 2"), Mock<Tag>(id: "id-3", name: "filter tag 0"), Mock<Tag>(id: "id-3", name: "filter tag 1")]
+        let saveItem2 = Mock<PocketGraphTestMocks.SavedItemEdge>(
+            cursor: "cursor-2",
+            node: createMockSavedItem(with: 2, and: tags2)
+        )
+        return [saveItem1, saveItem2]
+    }
+
+    /// Using Apollo mocks so items can be tested with Safari via localhost:8080
+    /// - Returns: returns an array of saved items
+    static func createMockSavedItemEdgesForWeb() -> [Mock<SavedItemEdge>] {
+        let saveItem1 = Mock<PocketGraphTestMocks.SavedItemEdge>(
+            cursor: "cursor-1",
+            node: createMockSavedItem(
+                url: "http://localhost:8080/hello",
+                createdAt: 0,
+                tags: [],
+                item: createMockItem(
+                    givenUrl: "http://localhost:8080/hello",
+                    resolvedUrl: "http://localhost:8080/hello",
+                    title: "Item 0"
+                )
+            )
+        )
+        return [saveItem1]
+    }
+
+    /// Used to create mock saved item for UI tests
+    /// - Parameter num: num associated with the saved item
+    /// - Returns: mock saved item with proper values
+    static func createMockSavedItem(with num: Int = 1, and tags: [Mock<Tag>]) -> Mock<SavedItem> {
+        return createMockSavedItem(
+            url: "http://example.com/saved-item-\(num)",
+            createdAt: num,
+            tags: tags,
+            item: createMockItem(with: num)
+        )
+    }
+
+    private static func createMockSavedItem(
+        url: String = "http://example.com/item-1",
+        id: String? = nil,
+        isFavorite: Bool = false,
+        isArchived: Bool = false,
+        createdAt: Int = 0,
+        archivedAt: Int? = nil,
+        deletedAt: Int? = nil,
+        tags: [Mock<Tag>]? = nil,
+        item: Mock<Item> = createMockItem()
+    ) -> Mock<SavedItem> {
+        return Mock<SavedItem>(
+            _createdAt: createdAt,
+            _deletedAt: deletedAt,
+            archivedAt: archivedAt,
+            id: id,
+            isArchived: isArchived,
+            isFavorite: isFavorite,
+            item: item,
+            remoteID: Data(url.utf8).base64EncodedString(),
+            tags: tags,
+            url: url
+        )
+    }
+
+    /// Used to create mock item for UI tests
+    /// - Parameter num: num associated with the item
+    /// - Returns: mock item with proper values
+    static func createMockItem(with num: Int = 1) -> Mock<Item> {
+        return createMockItem(
+            givenUrl: "http://given.example.com/item-\(num)",
+            resolvedUrl: "http://resolved.example.com/item-\(num)",
+            title: "Item \(num)",
+            topImageUrl: "https://example.com/item-\(num)/top-image.jpg"
+        )
+    }
+
+    private static func createMockItem(
+        authors: [Mock<Author>?]? = nil,
+        datePublished: PocketGraph.DateString? = "2021-01-01 12:01:01",
+        domain: String? = nil,
+        domainMetadata: Mock<DomainMetadata>? = nil,
+        excerpt: String? = "Cursus Aenean Elit",
+        givenUrl: PocketGraph.Url,
+        hasImage: GraphQLEnum<PocketGraph.Imageness>? = nil,
+        hasVideo: GraphQLEnum<PocketGraph.Videoness>? = nil,
+        images: [Mock<Image>?]? = nil,
+        isArticle: Bool? = true,
+        language: String? = "en",
+        marticle: [AnyMock]? = createMarticleData(),
+        remoteID: String? = nil,
+        resolvedUrl: PocketGraph.Url? = nil,
+        syndicatedArticle: Mock<SyndicatedArticle>? = nil,
+        timeToRead: Int? = Int.random(in: 1..<10),
+        title: String? = nil,
+        topImageUrl: PocketGraph.Url? = nil,
+        wordCount: Int? = Int.random(in: 100..<200)
+    ) -> Mock<Item> {
+        let authors = [
+            Mock<Author>(
+                id: "author-1",
+                name: "Jacob",
+                url: "https://example.com/authors/jacob"
+            ),
+            Mock<Author>(
+                id: "author-2",
+                name: "David",
+                url: "https://example.com/authors/david"
+            )
+        ]
+
+        let domainMetadata = Mock<DomainMetadata>(logo: "http://example.com/domain-logo.jpg", name: "WIRED")
+
+        let images = [
+            Mock<Image>(height: 1, imageId: 1, src: "http://example.com/image.jpg", width: 1)
+        ]
+
+        return Mock<Item>(
+            authors: authors,
+            datePublished: datePublished,
+            domain: domain,
+            domainMetadata: domainMetadata,
+            excerpt: excerpt,
+            givenUrl: givenUrl,
+            hasImage: hasImage,
+            hasVideo: hasVideo,
+            images: images,
+            isArticle: isArticle,
+            language: language,
+            marticle: marticle,
+            remoteID: Data(givenUrl.utf8).base64EncodedString(),
+            resolvedUrl: resolvedUrl,
+            syndicatedArticle: syndicatedArticle,
+            timeToRead: timeToRead,
+            title: title,
+            topImageUrl: topImageUrl,
+            wordCount: wordCount
+        )
+    }
+
+    /// Create marticle data for item
+    /// - Returns: returns array of items that make up marticle components
+    private static func createMarticleData() -> [AnyMock] {
+        [
+            Mock<MarticleText>(content: "**Commodo Consectetur** _Dapibus_"),
+            Mock<Image>(
+                caption: "Nulla vitae elit libero, a pharetra augue. Cras justo odio, dapibus ac facilisis in, egestas eget quam.",
+                credit: "Photo by: Bibendum Vestibulum Mollis",
+                height: 0,
+                imageID: 3,
+                src: "https://placekitten.com/2000/1125",
+                width: 0
+            ),
+            Mock<MarticleDivider>(content: "---"),
+            Mock<MarticleTable>(html: "<table></table>"),
+            Mock<MarticleHeading>(content: "# Purus Vulputate", level: 1),
+            Mock<MarticleCodeBlock>(language: 1, text: "<some></some><code></code>"),
+//            Mock<Video>(height: 1, length: 2, src: "https://www.youtube.com/watch?v=lEBoIEJxylM", type: GraphQLEnum(.youtube), vid: "lEBoIEJxylM", videoID: 1, width: 2),
+            Mock<MarticleBulletedList>(rows: [
+                Mock<BulletedListElement>(content: "Pharetra Dapibus Ultricies", level: 0),
+                Mock<BulletedListElement>(content: "netus et malesuada", level: 1),
+                Mock<BulletedListElement>(content: "quis commodo odio", level: 2),
+                Mock<BulletedListElement>(content: "tincidunt ornare massa", level: 3)
+            ]),
+            Mock<MarticleNumberedList>(rows: [
+                Mock<NumberedListElement>(content: "Amet Commodo Fringilla", index: 0, level: 0),
+                Mock<NumberedListElement>(content: "nunc sed augue", index: 1, level: 1)
+            ]),
+            Mock<MarticleBlockquote>(content: "Pellentesque Ridiculus Porta")
+        ]
     }
 }

@@ -72,7 +72,7 @@ class ReaderTests: XCTestCase {
 
         let archiveEvent = await snowplowMicro.getFirstEvent(with: "reader.archive")
         archiveEvent!.getUIContext()!.assertHas(type: "button")
-        archiveEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
+        archiveEvent!.getContentContext()!.assertHas(url: "http://example.com/saved-item-2")
     }
 
     @MainActor
@@ -82,7 +82,7 @@ class ReaderTests: XCTestCase {
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isToSaveAnItem {
                 defer { saveExpectation.fulfill() }
-                return .saveItem()
+                return .saveItem(apiRequest: apiRequest)
             }
             return .fallbackResponses(apiRequest: apiRequest)
         }
