@@ -230,7 +230,6 @@ class SaveOperation<Mutation: GraphQLMutation>: AsyncOperation {
             guard case .success(let graphQLResult) = result,
                     let data = graphQLResult.data,
                     let savedItemParts = self?.savedItemParts(data) else {
-                print(result)
                 self?.storeUnresolvedSavedItem()
                 self?.finishOperation()
                 return
