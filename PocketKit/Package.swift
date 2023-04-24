@@ -127,6 +127,7 @@ let package = Package(
             name: "PocketGraphTestMocks",
             dependencies: [
                 .product(name: "ApolloAPI", package: "apollo-ios"),
+                .product(name: "ApolloTestSupport", package: "apollo-ios"),
                 "PocketGraph"
             ]
         ),
