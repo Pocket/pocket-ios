@@ -19,12 +19,7 @@ class EditTagsTests: XCTestCase {
         server = Application()
 
         server.routes.post("/graphql") { request, _ -> Response in
-            let apiRequest = ClientAPIRequest(request)
-
-            if apiRequest.isToUpdateTag("rename tag 1") {
-                return .updateTag()
-            }
-            return .fallbackResponses(apiRequest: apiRequest)
+            return .fallbackResponses(apiRequest: ClientAPIRequest(request))
         }
 
         try server.start()
@@ -73,16 +68,12 @@ class EditTagsTests: XCTestCase {
 
     @MainActor
     func test_editTagsView_deletesTag() async {
-        let firstDeleteRequest = expectation(description: "first delete request")
-        let secondDeleteRequest = expectation(description: "second delete request")
+        let deleteRequest = expectation(description: "delete request")
+        deleteRequest.expectedFulfillmentCount = 2
         server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
-            if apiRequest.isToDeleteATag() {
-                firstDeleteRequest.fulfill()
-                return Response.deleteTag()
-            } else if apiRequest.isToDeleteATag(2) {
-                secondDeleteRequest.fulfill()
-                return Response.deleteTag("delete-tag-2")
+            if apiRequest.isToDeleteATag {
+                deleteRequest.fulfill()
             }
             return .fallbackResponses(apiRequest: apiRequest)
         }
@@ -103,7 +94,7 @@ class EditTagsTests: XCTestCase {
         tagsFilterView.deleteButton.wait().tap()
 
         app.alert.delete.wait().tap()
-        wait(for: [firstDeleteRequest, secondDeleteRequest])
+        wait(for: [deleteRequest])
         waitForDisappearance(of: tagsFilterView.tag(matching: "tag 1"))
         waitForDisappearance(of: tagsFilterView.tag(matching: "tag 2"))
 
