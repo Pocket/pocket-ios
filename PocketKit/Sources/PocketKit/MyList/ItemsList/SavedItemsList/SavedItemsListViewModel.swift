@@ -708,9 +708,11 @@ extension SavedItemsListViewModel: SavedItemsControllerDelegate {
         // Build up a snapshot for us to use
         var newSnapshot = buildSnapshot()
 
-        // Grab any ids that have changed, map them to .item and then setup our custom snapshot to reload them
+        // Grab any ids that have changed, filter them based on what newSnapshot contains, map them to .item and then setup our custom snapshot to reload them
         let idsToReload: [ItemsListCell<ItemIdentifier>] =  snapshot.reloadedItemIdentifiers.compactMap({ .item($0 as! NSManagedObjectID) })
+            .filter { newSnapshot.itemIdentifiers.contains($0) }
         let idsToReconfigure: [ItemsListCell<ItemIdentifier>] =  snapshot.reconfiguredItemIdentifiers.compactMap({ .item($0 as! NSManagedObjectID) })
+            .filter { newSnapshot.itemIdentifiers.contains($0) }
         newSnapshot.reloadItems(idsToReload)
         newSnapshot.reconfigureItems(idsToReconfigure)
 
