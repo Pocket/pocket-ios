@@ -216,9 +216,6 @@
             reference = "container:AllTests.xctestplan"
             default = "YES">
          </TestPlanReference>
-         <TestPlanReference
-            reference = "container:UITestsFlaky.xctestplan">
-         </TestPlanReference>
       </TestPlans>
       <Testables>
          <TestableReference
