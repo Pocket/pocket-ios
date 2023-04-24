@@ -442,9 +442,7 @@ extension SearchViewModel {
     }
 
     func swipeActionTitle(_ searchItem: PocketItem) -> String {
-        guard let savedItem = fetchSavedItem(searchItem) else { return Localization.Search.Swipe.unableToMove }
-
-        if savedItem.isArchived {
+        if searchItem.isArchived {
             return Localization.Search.Swipe.moveToSaves
         } else {
             return Localization.Search.Swipe.archive
@@ -484,37 +482,6 @@ extension SearchViewModel {
             return nil
         }
         return savedItem
-    }
-
-    func readableViewModel(for item: PocketItem, index: Int) -> (ReadableViewModel, Bool)? {
-        guard
-            let id = item.id,
-            let savedItem = source.fetchOrCreateSavedItem(
-                with: id,
-                and: item.remoteItemParts
-            )
-        else {
-            Log.capture(message: "Saved Item not created")
-            return nil
-        }
-
-        let viewModel = SavedItemViewModel(
-            item: savedItem,
-            source: source,
-            tracker: tracker.childTracker(hosting: .articleView.screen),
-            pasteboard: UIPasteboard.general,
-            user: user,
-            store: store,
-            networkPathMonitor: networkPathMonitor,
-            userDefaults: userDefaults,
-            notificationCenter: notificationCenter
-        )
-
-        if savedItem.shouldOpenInWebView {
-            return (viewModel, true)
-        } else {
-            return (viewModel, false)
-        }
     }
 
     private func trackContentOpen(destination: ContentOpenEvent.Destination, item: SavedItem) {

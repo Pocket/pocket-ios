@@ -52,7 +52,7 @@ struct ResultsView: View {
     var body: some View {
         List {
             ForEach(Array(results.enumerated()), id: \.offset) { index, item in
-                result(for: item, at: index)
+                basicRow(for: item, at: index)
                 .onTapGesture {
                     if viewModel.isOffline {
                         showingAlert = true
@@ -90,30 +90,6 @@ struct ResultsView: View {
             .tint(swipeTintColor)
         }
         .contentShape(Rectangle())
-    }
-
-    @ViewBuilder
-    private func result(for item: PocketItem, at index: Int) -> some View {
-        if #available(iOS 16, *) {
-            if let (viewModel, showInWebView) = viewModel.readableViewModel(for: item, index: index) {
-                basicRow(for: item, at: index)
-                    .contextMenu {
-                        Button("Edit", action: {
-                            viewModel.beginBulkEdit()
-                        })
-                    } preview: {
-                        if showInWebView {
-                            SFSafariView(url: viewModel.url!)
-                        } else {
-                            ReadableView(viewModel: viewModel)
-                        }
-                    }
-            } else {
-                basicRow(for: item, at: index)
-            }
-        } else {
-            basicRow(for: item, at: index)
-        }
     }
 }
 
