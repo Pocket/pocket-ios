@@ -127,7 +127,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
                 Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration not required; skipped.")
             }
         } catch LegacyUserMigrationError.emptyData {
-            Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration has no data to decrypt, likely due to a fresh install of Pocket 8")
+            Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration has no data to decrypt, likely due to a fresh install of Pocket 8; skipping.")
             // Since there's no initial data, we don't have anything to migrate, and we can skip
             // any further attempts at running this migration. This is not a true "error" in the sense that
             // it breaks migration; it's a special case to be handled if data was created (on fresh install).
