@@ -1,4 +1,5 @@
 import XCTest
+import RNCryptor
 @testable import SharedPocketKit
 
 // swiftlint:disable force_try
@@ -47,28 +48,15 @@ class LegacyUserMigrationTests: XCTestCase {
 extension LegacyUserMigrationTests {
     func test_isRequired_withPreviousVersionLessThan8_andNotRun_returnsTrue() {
         let migration = subject()
-        XCTAssertTrue(migration.isRequired(version: "7.0.0"))
-    }
-
-    func test_isRequired_withPreviousVersionLessThan8_andRun_returnsFalse() {
-        userDefaults.set(true, forKey: LegacyUserMigration.migrationKey)
-        let migration = subject()
-        XCTAssertFalse(migration.isRequired(version: "7.0.0"))
+        XCTAssertTrue(migration.required(for: "7.0.0"))
     }
 
     func test_isRequired_withPreviousVersionGreaterThanOrEqualTo8_andNotRun_returnsFalse() {
         var migration = subject()
-        XCTAssertFalse(migration.isRequired(version: "8.0.0"))
+        XCTAssertFalse(migration.required(for: "8.0.0"))
 
         migration = subject()
-        XCTAssertFalse(migration.isRequired(version: "9.0.0"))
-    }
-
-    func test_isRequired_withPreviousVersionGreaterThanOrEqualTo8_andRun_returnsFalse() {
-        userDefaults.set(true, forKey: LegacyUserMigration.migrationKey)
-
-        let migration = subject()
-        XCTAssertFalse(migration.isRequired(version: "8.0.0"))
+        XCTAssertFalse(migration.required(for: "9.0.0"))
     }
 }
 
@@ -168,6 +156,30 @@ extension LegacyUserMigrationTests {
             }
         } catch {
             guard case LegacyUserMigrationError.failedDeserialization = error else {
+                XCTFail("Incorrect error thrown")
+                return
+            }
+        }
+    }
+
+    func test_perform_storeReturnedMissingSessionData_throwsError() {
+        userDefaults.set("key", forKey: "kPKTCryptoKey")
+
+        let migration = subject()
+        encryptedStore.stubDecryptStore { _ in
+            let incorrect: [String: Any] = [
+                "version": "8.0.0"
+            ]
+
+            return try! JSONSerialization.data(withJSONObject: incorrect)
+        }
+
+        do {
+            try migration.attemptMigration {
+                XCTFail("Migration should not be attempted")
+            }
+        } catch {
+            guard case LegacyUserMigrationError.noSession = error else {
                 XCTFail("Incorrect error thrown")
                 return
             }
