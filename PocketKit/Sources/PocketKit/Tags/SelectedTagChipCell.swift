@@ -111,7 +111,7 @@ extension SelectedTagChipCell {
         iconImageView.image = model.iconImage
         iconImageView.contentMode = .center
         iconImageView.sizeToFit()
-        iconImageView.tintColor = UIColor(.ui.teal1)
+        iconImageView.tintColor = UIColor(.ui.teal2)
     }
 }
 
@@ -131,5 +131,5 @@ extension SelectedTagChipCell {
 }
 
 private extension Style {
-    static let title: Style = .header.sansSerif.h8.with(color: .ui.teal1)
+    static let title: Style = .header.sansSerif.h8.with(color: .ui.teal2)
 }

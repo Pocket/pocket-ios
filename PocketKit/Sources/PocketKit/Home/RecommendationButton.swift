@@ -15,10 +15,10 @@ class RecommendationButton: UIButton {
         )
         configuration?.image = UIImage(asset: asset)
             .resized(to: CGSize(width: 20, height: 20))
-            .withTintColor(UIColor(.ui.grey5), renderingMode: .alwaysOriginal)
+            .withTintColor(UIColor(.ui.grey8), renderingMode: .alwaysOriginal)
 
         configuration?.imageColorTransformer = UIConfigurationColorTransformer { [weak self] _ in
-            self?.imageColor() ?? UIColor(.ui.grey5)
+            self?.imageColor() ?? UIColor(.ui.grey8)
         }
     }
 
@@ -31,7 +31,7 @@ class RecommendationButton: UIButton {
         case .selected, .highlighted:
             return UIColor(.ui.grey1)
         default:
-            return UIColor(.ui.grey5)
+            return UIColor(.ui.grey8)
         }
     }
 }
