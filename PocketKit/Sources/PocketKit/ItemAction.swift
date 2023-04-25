@@ -98,7 +98,7 @@ extension ItemAction {
             identifier: .favoriteItem,
             accessibilityIdentifier: "item-action-favorite",
             image: UIImage(asset: .favorite)
-                .withTintColor(UIColor(.ui.grey5), renderingMode: .alwaysOriginal),
+                .withTintColor(UIColor(.ui.grey8), renderingMode: .alwaysOriginal),
             handler: { sender in
                 Haptics.favoriteTap()
                 handler(sender)
