@@ -69,12 +69,14 @@ struct SettingsForm: View {
     private struct settingsCredits: View {
         let appVersion = Bundle.main.infoDictionary!["CFBundleVersion"] as! String
         let buildNumber = Bundle.main.infoDictionary!["CFBundleShortVersionString"] as! String
+        let gitSha = Bundle.main.infoDictionary!["GitSha"] as? String ?? ""
 
         var body: some View {
+            let shortSha: String = gitSha.isEmpty ? "develop" : String(gitSha.prefix(7))
             HStack {
                 Spacer()
                 VStack(spacing: 0) {
-                    Text(Localization.Settings.pocketForiOS(buildNumber, appVersion))
+                    Text(Localization.Settings.pocketForiOS(buildNumber, appVersion, shortSha))
                         .style(.credits)
                         .padding([.bottom], 6)
                     Text(Localization.Settings.Thankyou.credits)

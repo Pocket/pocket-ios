@@ -93,7 +93,7 @@
 
 // Settings
 "settings.thankyou.credits" = "Thank you for using Pocket";
-"settings.PocketForiOS %@ (%@)" = "Pocket for iOS %@ (%@)";
+"settings.PocketForiOS %@ (%@)" = "Pocket for iOS %@ (%@ - %@)";
 "settings.openSourceLicenses" = "Open Source Licenses";
 "settings.logout" = "Log Out";
 "settings.logout.areYouSureMessage" = "You will be logged out of your account and any items that have been saved for offline viewing will be removed from your device.";

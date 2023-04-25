@@ -53,6 +53,8 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>GitSha</key>
+	<string>$(GIT_SHA)</string>
 	<key>GroupId</key>
 	<string>$(GROUP_ID)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
