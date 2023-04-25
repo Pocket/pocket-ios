@@ -37,8 +37,10 @@ class MainViewController: UIViewController {
         )
 
         do {
-            tracker.track(event: Events.Migration.MigrationTo_v8DidBegin(source: .saveToPocketKit))
-            let attempted = try legacyUserMigration.attemptMigration { }
+            let attempted = try legacyUserMigration.attemptMigration {
+                tracker.track(event: Events.Migration.MigrationTo_v8DidBegin(source: .saveToPocketKit))
+            }
+
             if attempted {
                 tracker.track(event: Events.Migration.MigrationTo_v8DidSucceed(source: .saveToPocketKit))
                 Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration required; running.")
