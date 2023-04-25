@@ -62,7 +62,7 @@ extension Recommendation {
             image = Image(src: imageSrc, context: context)
         }
 
-        let recommendationItem = (try? space.fetchItem(byRemoteID: remote.item.remoteID, context: context)) ?? Item(context: context, givenURL: url, remoteID: remoteID)
+        let recommendationItem = (try? space.fetchItem(byURL: url, context: context)) ?? Item(context: context, givenURL: url, remoteID: remoteID)
         recommendationItem.update(from: remote.item.fragments.itemSummary, with: space)
         item = recommendationItem
     }
