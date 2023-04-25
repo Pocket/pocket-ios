@@ -36,6 +36,7 @@
 "itemlist.filter.tagged" = "Обозначено тегом";
 "itemlist.filter.favorites" = "Избранное";
 "itemlist.filter.sortFilter" = "Сортировка/фильтрация";
+"itemList.edit.banner" = "Редактирование списка недоступно в этой версии Pocket, но это ненадолго!";
 
 //List view
 "item.list.min" = "%1$@ мин.";
@@ -75,7 +76,7 @@
 "search.swipe.unableToMove" = "Невозможно переместить";
 "search.swipe.archive" = "Архив";
 "search.swipe.moveToSaves" = "Перейти к Сохраненному";
-
+"search.edit.banner" = "Редактирование результатов поиска недоступно в этой версии Pocket, но это ненадолго!";
 "search.empty.header" = "Поиск по названию или URL";
 
 "search.allItems.premium.header" = "Разблокируйте дополнительные возможности поиска";
