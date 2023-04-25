@@ -234,7 +234,9 @@ workflows:
             - scheme: '$BITRISE_SCHEME'
             - distribution_method: app-store
             - configuration: Release_AlphaNeue
-            - xcconfig_content: CURRENT_PROJECT_VERSION = $BITRISE_BUILD_NUMBER
+            - xcconfig_content: |-
+                CURRENT_PROJECT_VERSION = $BITRISE_BUILD_NUMBER
+                GIT_SHA = $BITRISE_GIT_COMMIT
             - export_method: app-store
             - automatic_code_signing: api-key
             - api_key_path: "$BITRISEIO_APP_STORE_CONNECT_API_ID_URL"
@@ -278,7 +280,9 @@ workflows:
             - scheme: '$BITRISE_SCHEME'
             - distribution_method: app-store
             - configuration: Release
-            - xcconfig_content: CURRENT_PROJECT_VERSION = $BITRISE_BUILD_NUMBER
+            - xcconfig_content: |-
+                CURRENT_PROJECT_VERSION = $BITRISE_BUILD_NUMBER
+                GIT_SHA = $BITRISE_GIT_COMMIT
             - export_method: app-store
             - automatic_code_signing: api-key
             - api_key_path: "$BITRISEIO_APP_STORE_CONNECT_API_ID_URL"
@@ -324,6 +328,7 @@ workflows:
             - xcconfig_content: |-
                 COMPILER_INDEX_STORE_ENABLE = NO
                 CURRENT_PROJECT_VERSION = $BITRISE_BUILD_NUMBER
+                GIT_SHA = $BITRISE_GIT_COMMIT
             - configuration: Debug_AlphaNeue
             - automatic_code_signing: api-key
             - api_key_path: "$BITRISEIO_APP_STORE_CONNECT_API_ID_URL"
