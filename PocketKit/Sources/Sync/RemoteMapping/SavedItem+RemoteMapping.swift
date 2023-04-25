@@ -58,7 +58,7 @@ extension SavedItem {
                 Log.capture(message: "Item parts not a valid url")
                 return
             }
-            let itemToUpdate = (try? space.fetchItem(byRemoteID: itemParts.remoteID, context: context)) ?? Item(context: context, givenURL: itemUrl, remoteID: itemParts.remoteID)
+            let itemToUpdate = (try? space.fetchItem(byURL: itemUrl, context: context)) ?? Item(context: context, givenURL: itemUrl, remoteID: itemParts.remoteID)
             itemToUpdate.update(remote: itemParts, with: space)
             item = itemToUpdate
         } else if let pendingParts = remote.item.asPendingItem?.fragments.pendingItemParts {
@@ -67,7 +67,7 @@ extension SavedItem {
                 Log.capture(message: "Pending item parts not a valid url")
                 return
             }
-            let itemToUpdate = (try? space.fetchItem(byRemoteID: pendingParts.remoteID, context: context)) ?? Item(context: context, givenURL: itemUrl, remoteID: pendingParts.remoteID)
+            let itemToUpdate = (try? space.fetchItem(byURL: itemUrl, context: context)) ?? Item(context: context, givenURL: itemUrl, remoteID: pendingParts.remoteID)
             itemToUpdate.update(remote: pendingParts, with: space)
             item = itemToUpdate
         }
@@ -120,7 +120,7 @@ extension SavedItem {
                 Log.capture(message: "Item parts not a valid url")
                 return
             }
-            let itemToUpdate = (try? space.fetchItem(byRemoteID: itemSummary.remoteID, context: context)) ?? Item(context: context, givenURL: itemUrl, remoteID: itemSummary.remoteID)
+            let itemToUpdate = (try? space.fetchItem(byURL: itemUrl, context: context)) ?? Item(context: context, givenURL: itemUrl, remoteID: itemSummary.remoteID)
             itemToUpdate.update(from: itemSummary, with: space)
             item = itemToUpdate
         } else if let pendingParts = summary.item.asPendingItem?.fragments.pendingItemParts {
@@ -129,7 +129,7 @@ extension SavedItem {
                 Log.capture(message: "Pending item parts not a valid url")
                 return
             }
-            let itemToUpdate = (try? space.fetchItem(byRemoteID: pendingParts.remoteID, context: context)) ?? Item(context: context, givenURL: itemUrl, remoteID: pendingParts.remoteID)
+            let itemToUpdate = (try? space.fetchItem(byURL: itemUrl, context: context)) ?? Item(context: context, givenURL: itemUrl, remoteID: pendingParts.remoteID)
             itemToUpdate.update(remote: pendingParts, with: space)
             item = itemToUpdate
         }
