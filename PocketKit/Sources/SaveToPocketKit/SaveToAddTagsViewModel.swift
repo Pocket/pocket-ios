@@ -102,7 +102,7 @@ extension SaveToAddTagsViewModel {
             Log.capture(message: "Adding tags to an item without an associated url, not logging analytics for Tags.saveTags")
             return
         }
-        tracker.track(event: Events.Tags.saveTags(itemUrl: url))
+        tracker.track(event: Events.SaveTo.Tags.saveTags(itemUrl: url))
     }
 
     func trackAddTag() {
@@ -110,7 +110,7 @@ extension SaveToAddTagsViewModel {
             Log.capture(message: "Adding tags to an item without an associated url, not logging analytics for Tags.addTag")
             return
         }
-        tracker.track(event: Events.Tags.addTag(itemUrl: url))
+        tracker.track(event: Events.SaveTo.Tags.addTag(itemUrl: url))
     }
 
     func trackRemoveTag() {
@@ -118,7 +118,7 @@ extension SaveToAddTagsViewModel {
             Log.capture(message: "Adding tags to an item without an associated url, not logging analytics for Tags.remoteInputTag")
             return
         }
-        tracker.track(event: Events.Tags.remoteInputTag(itemUrl: url))
+        tracker.track(event: Events.SaveTo.Tags.remoteInputTag(itemUrl: url))
     }
 
     func trackUserEnterText(with text: String) {
@@ -126,7 +126,7 @@ extension SaveToAddTagsViewModel {
             Log.capture(message: "Adding tags to an item without an associated url, not logging analytics for Tags.saveTags")
             return
         }
-        tracker.track(event: Events.Tags.userEntersText(itemUrl: url, text: text))
+        tracker.track(event: Events.SaveTo.Tags.userEntersText(itemUrl: url, text: text))
     }
 
     func trackAllTagsImpression() {
@@ -134,7 +134,7 @@ extension SaveToAddTagsViewModel {
             Log.capture(message: "Adding tags to an item without an associated url, not logging analytics for Tags.saveTags")
             return
         }
-        tracker.track(event: Events.Tags.allTagsImpression(itemUrl: url))
+        tracker.track(event: Events.SaveTo.Tags.allTagsImpression(itemUrl: url))
     }
 
     func trackFilteredTagsImpression() {
@@ -142,7 +142,7 @@ extension SaveToAddTagsViewModel {
             Log.capture(message: "Adding tags to an item without an associated url, not logging analytics for Tags.saveTags")
             return
         }
-        tracker.track(event: Events.Tags.filteredTagsImpression(itemUrl: url))
+        tracker.track(event: Events.SaveTo.Tags.filteredTagsImpression(itemUrl: url))
     }
 
     func trackExistingTagTapped(with tagType: TagType) {
@@ -150,9 +150,9 @@ extension SaveToAddTagsViewModel {
         case .notTagged:
             return
         case .recent:
-            tracker.track(event: Events.Tags.selectRecentTagToAddToItem())
+            tracker.track(event: Events.SaveTo.Tags.selectRecentTagToAddToItem())
         case .tag:
-            tracker.track(event: Events.Tags.selectTagToAddToItem())
+            tracker.track(event: Events.SaveTo.Tags.selectTagToAddToItem())
         }
     }
 }
