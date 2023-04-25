@@ -36,6 +36,7 @@
 "itemlist.filter.tagged" = "已标记";
 "itemlist.filter.favorites" = "收藏夹";
 "itemlist.filter.sortFilter" = "排序/过滤";
+"itemList.edit.banner" = "暂时无法在此 Pocket 版本中编辑您的列表，但很快就会恢复此功能！";
 
 //List view
 "item.list.min" = "%1$@ 分钟";
@@ -75,7 +76,7 @@
 "search.swipe.unableToMove" = "无法移动";
 "search.swipe.archive" = "存档";
 "search.swipe.moveToSaves" = "移至“保存内容”";
-
+"search.edit.banner" = "暂时无法在此 Pocket 版本中编辑您的搜索结果，但很快就会恢复此功能！";
 "search.empty.header" = "按标题或 URL 搜索";
 
 "search.allItems.premium.header" = "解锁更多搜索选项";
@@ -92,7 +93,7 @@
 
 // Settings
 "settings.thankyou.credits" = "感谢您使用 Pocket";
-"settings.PocketForiOS %@ (%@)" = "iOS 版 Pocket %1$@ (%2$@)";
+"settings.PocketForiOS %@ (%@)" = "Pocket for iOS %1$@ (%2$@ - %3$@)";
 "settings.openSourceLicenses" = "开源许可证";
 "settings.logout" = "注销";
 "settings.logout.areYouSureMessage" = "您的帐号将被注销，所有已保存供脱机阅读的项目都将从您的设备中删除。";
