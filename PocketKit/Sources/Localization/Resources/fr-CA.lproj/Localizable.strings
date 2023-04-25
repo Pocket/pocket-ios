@@ -36,6 +36,7 @@
 "itemlist.filter.tagged" = "Balisé";
 "itemlist.filter.favorites" = "Favoris";
 "itemlist.filter.sortFilter" = "Trier/Filtrer";
+"itemList.edit.banner" = "La modification de votre liste n'est pas disponible dans cette version de Pocket, mais elle sera bientôt de retour!";
 
 //List view
 "item.list.min" = "%1$@ min";
@@ -75,7 +76,7 @@
 "search.swipe.unableToMove" = "Déplacement impossible";
 "search.swipe.archive" = "Archives";
 "search.swipe.moveToSaves" = "Déplacer vers les Sauvegardes";
-
+"search.edit.banner" = "La modification de vos résultats de recherche n'est pas disponible dans cette version de Pocket, mais elle sera bientôt de retour!";
 "search.empty.header" = "Rechercher par titre ou par URL";
 
 "search.allItems.premium.header" = "Débloquez plus d'options de recherche";
@@ -92,7 +93,7 @@
 
 // Settings
 "settings.thankyou.credits" = "Merci d'utiliser Pocket";
-"settings.PocketForiOS %@ (%@)" = "Pocket pour iOS %1$@ (%2$@)";
+"settings.PocketForiOS %@ (%@)" = "Pocket for iOS %1$@ (%2$@ - %3$@)";
 "settings.openSourceLicenses" = "Licences Open Source";
 "settings.logout" = "Déconnexion";
 "settings.logout.areYouSureMessage" = "Vous serez déconnecté de votre compte et tous les éléments qui ont été sauvegardés pour être consultés hors ligne seront supprimés de votre appareil.";
