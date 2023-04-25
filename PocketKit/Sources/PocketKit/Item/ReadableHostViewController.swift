@@ -62,6 +62,18 @@ class ReadableHostViewController: UIViewController {
         }.store(in: &subscriptions)
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        // This view is hosted in SwitUI and it seems that hidesBottomBarWhenPushed is not resepected,
+        // but manually hiding the tab bar does
+        self.tabBarController?.tabBar.isHidden = true
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.tabBarController?.tabBar.isHidden = false
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         lockOrientation(.allButUpsideDown)

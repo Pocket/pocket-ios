@@ -22,6 +22,7 @@ struct SavesContainerViewControllerSwiftUI: UIViewControllerRepresentable {
         navigationController.navigationBar.prefersLargeTitles = true
         navigationController.navigationBar.barTintColor = UIColor(.ui.white1)
         navigationController.navigationBar.tintColor = UIColor(.ui.grey1)
+        navigationController.delegate = v
         return navigationController
     }
 
@@ -87,7 +88,6 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
 
         view.accessibilityIdentifier = "saves"
         select(child: viewControllers.first)
-        navigationController?.delegate = self
     }
 
     required init?(coder: NSCoder) {
