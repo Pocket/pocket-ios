@@ -36,6 +36,7 @@
 "itemlist.filter.tagged" = "已标记";
 "itemlist.filter.favorites" = "收藏夹";
 "itemlist.filter.sortFilter" = "排序/过滤";
+"itemList.edit.banner" = "暂时无法在此 Pocket 版本中编辑您的列表，但很快就会恢复此功能！";
 
 //List view
 "item.list.min" = "%1$@ 分钟";
@@ -75,7 +76,7 @@
 "search.swipe.unableToMove" = "无法移动";
 "search.swipe.archive" = "存档";
 "search.swipe.moveToSaves" = "移至“保存内容”";
-
+"search.edit.banner" = "暂时无法在此 Pocket 版本中编辑您的搜索结果，但很快就会恢复此功能！";
 "search.empty.header" = "按标题或 URL 搜索";
 
 "search.allItems.premium.header" = "解锁更多搜索选项";
