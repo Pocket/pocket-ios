@@ -119,7 +119,7 @@ class RecommendationCellHeroWide: UICollectionViewCell {
         layer.shadowOffset = .zero
         layer.shadowOpacity = 1.0
         layer.shadowRadius = 6
-        layer.backgroundColor = UIColor(.ui.white1).cgColor
+        layer.backgroundColor = UIColor(.ui.homeCellBackground).cgColor
 
         headlineExcerptStack.addArrangedSubview(headlineLabel)
         headlineExcerptStack.addArrangedSubview(excerptLabel)
