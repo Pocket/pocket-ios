@@ -444,9 +444,9 @@ public enum Localization {
     public static let logout = Localization.tr("Localizable", "settings.logout", fallback: "Log Out")
     /// Open Source Licenses
     public static let openSourceLicenses = Localization.tr("Localizable", "settings.openSourceLicenses", fallback: "Open Source Licenses")
-    /// Pocket for iOS %@ (%@ - %@)
-    public static func pocketForiOS(_ p1: Any, _ p2: Any, _ p3: Any) -> String {
-      return Localization.tr("Localizable", "settings.PocketForiOS %@ (%@)", String(describing: p1), String(describing: p2), String(describing: p3), fallback: "Pocket for iOS %@ (%@ - %@)")
+    /// Pocket for iOS %@ (%@)
+    public static func pocketForiOS(_ p1: Any, _ p2: Any) -> String {
+      return Localization.tr("Localizable", "settings.PocketForiOS %@ (%@)", String(describing: p1), String(describing: p2), fallback: "Pocket for iOS %@ (%@)")
     }
     /// Go Premium
     public static let premiumRow = Localization.tr("Localizable", "settings.premiumRow", fallback: "Go Premium")
