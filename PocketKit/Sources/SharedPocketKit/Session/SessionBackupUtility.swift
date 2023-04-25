@@ -51,7 +51,6 @@ public class SessionBackupUtility {
 
                 do {
                     try self.save(session: session)
-                    Log.breadcrumb(category: "session", level: .info, message: "Successfully backed up logged in session.")
                 } catch {
                     Log.capture(error: error)
                 }
@@ -67,7 +66,6 @@ public class SessionBackupUtility {
 
                 do {
                     try self.save(session: nil)
-                    Log.breadcrumb(category: "session", level: .info, message: "Successfully backed up logged out session.")
                 } catch {
                     Log.capture(error: error)
                 }
@@ -85,6 +83,7 @@ public class SessionBackupUtility {
             // This assumes that if the file already existed (via Pocket 7), that this won't throw,
             // and will only throw if the file was empty (i.e empty when created by Pocket 8).
             data = try store.decryptStore(securedBy: password) ?? Data()
+            Log.breadcrumb(category: "session", level: .info, message: "Successfully decrypted existing store")
         } catch {
             // TODO: Something better?
             Log.breadcrumb(category: "session", level: .info, message: "Failed decrypting store: \(error); creating empty data")
@@ -95,11 +94,13 @@ public class SessionBackupUtility {
 
         if data.isEmpty { // data will be empty if the store has been created in Pocket 8
             initial = [:]
+            Log.breadcrumb(category: "session", level: .info, message: "No previous session data exists; using empty data")
         } else { // data will not be empty if previously created, either in Pocket 7 or 8
             guard let json = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
                 return
             }
             initial = json
+            Log.breadcrumb(category: "session", level: .info, message: "Previous session data exists; updating data")
         }
 
         let updated = update(initial, with: session)
@@ -107,6 +108,7 @@ public class SessionBackupUtility {
         do {
             let serialized = try JSONSerialization.data(withJSONObject: updated)
             try store.encrypt(store: serialized, securedBy: password)
+            Log.breadcrumb(category: "session", level: .info, message: "Successfully backed up session data")
         } catch {
             Log.capture(error: error)
         }
