@@ -36,6 +36,7 @@
 "itemlist.filter.tagged" = "タグ付けしました";
 "itemlist.filter.favorites" = "お気に入り";
 "itemlist.filter.sortFilter" = "並べ替え/フィルター";
+"itemList.edit.banner" = "このバージョンの Pocket でリストの編集を利用することはできませんが、間もなく利用できるようになります！";
 
 //List view
 "item.list.min" = "%1$@分";
@@ -75,7 +76,7 @@
 "search.swipe.unableToMove" = "移動できません";
 "search.swipe.archive" = "アーカイブ";
 "search.swipe.moveToSaves" = "保存アイテムに移動";
-
+"search.edit.banner" = "このバージョンの Pocket で検索結果を編集することはできませんが、間もなく編集できるようになります！";
 "search.empty.header" = "タイトルまたはURLで検索";
 
 "search.allItems.premium.header" = "その他の検索オプションのロックを解除";
@@ -92,7 +93,7 @@
 
 // Settings
 "settings.thankyou.credits" = "Pocket をご利用いただきありがとうございます";
-"settings.PocketForiOS %@ (%@)" = "iOS 向け Pocket %1$@ (%2$@)";
+"settings.PocketForiOS %@ (%@)" = "Pocket for iOS %1$@ (%2$@ - %3$@)";
 "settings.openSourceLicenses" = "オープンソースライセンス";
 "settings.logout" = "ログアウト";
 "settings.logout.areYouSureMessage" = "アカウントからログアウトされ、オフライン表示用に保存されたアイテムがすべてデバイスから削除されます。";
