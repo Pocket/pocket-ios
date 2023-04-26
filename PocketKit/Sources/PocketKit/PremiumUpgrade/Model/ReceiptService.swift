@@ -28,6 +28,8 @@ class AppStoreReceiptService: NSObject, ReceiptService {
     // using an array of continuations so that each one gets resumed and then removed
     private var storeKit1Continuations = [CheckedContinuation<SKRequest, Error>]()
 
+    private let continuationQueue = DispatchQueue(label: "ContinuationQueue", qos: .background)
+
     init(client: V3ClientProtocol) {
         self.client = client
         self.receiptRequest = SKReceiptRefreshRequest()
@@ -69,13 +71,17 @@ class AppStoreReceiptService: NSObject, ReceiptService {
 // MARK: StoreKit 1 delegate
 extension AppStoreReceiptService: SKRequestDelegate {
     func requestDidFinish(_ request: SKRequest) {
-        storeKit1Continuations.forEach { $0.resume(returning: request) }
-        storeKit1Continuations.removeAll()
+        continuationQueue.async { [unowned self] in
+            self.storeKit1Continuations.forEach { $0.resume(returning: request) }
+            self.storeKit1Continuations.removeAll()
+        }
     }
 
     func request(_ request: SKRequest, didFailWithError error: Error) {
-        storeKit1Continuations.forEach { $0.resume(throwing: error) }
-        storeKit1Continuations.removeAll()
+        continuationQueue.async { [unowned self] in
+            self.storeKit1Continuations.forEach { $0.resume(throwing: error) }
+            self.storeKit1Continuations.removeAll()
+        }
     }
 }
 
