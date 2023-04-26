@@ -185,7 +185,7 @@ extension APISlateServiceTests {
 
         // fetchSlateLineup "cleans" all unsaved items before fetching,
         // so we have to fake a saved item for the item to update
-        let item = space.buildItem(title: "Item 1 Seed")
+        let item = space.buildItem(title: "Item 1 Seed", givenURL: URL(string: "https://given.example.com/slate-1-rec-1")!)
         space.buildSavedItem(item: item)
         try self.space.save()
 
