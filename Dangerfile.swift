@@ -40,7 +40,7 @@ func xcodeEnvironmentVariables() {
         #"""
         key = "SNOWPLOW_POST_PATH"
         value = "com.snowplowanalytics.snowplow/tp2"
-        isEnabled = "YES">
+        isEnabled = "NO">
         """#
         ) {
             fail("TEST == SNOWPLOW_POST_PATH must be disabled")
