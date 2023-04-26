@@ -84,7 +84,7 @@ public protocol Source {
 
     func searchSaves(search: String) -> [SavedItem]?
 
-    func fetchOrCreateSavedItem(with remoteID: String, and remoteParts: SavedItem.RemoteSavedItem?) -> SavedItem?
+    func fetchOrCreateSavedItem(with url: URL, and remoteParts: SavedItem.RemoteSavedItem?) -> SavedItem?
 
     /// Get the count of unread saves
     /// - Returns: Int of unread saves

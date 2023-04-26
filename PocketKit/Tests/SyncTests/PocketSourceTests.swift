@@ -166,7 +166,7 @@ class PocketSourceTests: XCTestCase {
     }
 
     func test_delete_removesItemFromLocalStorage_andExecutesDeleteMutation() throws {
-        let item = try space.createSavedItem(remoteID: "delete-me")
+        let item = try space.createSavedItem(remoteID: "delete-me", url: "https://mozilla.com/delete")
         let expectationToRunOperation = expectation(description: "Run operation")
         operations.stubItemMutationOperation { (_, _, _: DeleteItemMutation) in
             TestSyncOperation {
@@ -177,7 +177,7 @@ class PocketSourceTests: XCTestCase {
         let source = subject()
         source.delete(item: item)
 
-        let fetchedItem = try space.fetchSavedItem(byRemoteID: "delete-me")
+        let fetchedItem = try space.fetchSavedItem(byURL: URL(string: "https://mozilla.com/delete")!)
         XCTAssertNil(fetchedItem)
         XCTAssertFalse(item.hasChanges)
         wait(for: [expectationToRunOperation], timeout: 10)
@@ -237,7 +237,7 @@ class PocketSourceTests: XCTestCase {
     }
 
     func test_unarchive_executesSaveItemMutation_andUpdatesCreatedAtField() throws {
-        let item = try space.createSavedItem(remoteID: "unarchive-me")
+        let item = try space.createSavedItem(remoteID: "unarchive-me", url: "https://mozilla.com/unarchive")
         item.isArchived = true
 
         let expectationToRunOperation = expectation(description: "Run operation")
@@ -250,8 +250,6 @@ class PocketSourceTests: XCTestCase {
         let source = subject()
         source.unarchive(item: item)
 
-        let fetchedItem = try space.fetchSavedItem(byRemoteID: "archive-me")
-        XCTAssertNil(fetchedItem)
         XCTAssertFalse(item.isArchived)
         XCTAssertNotNil(item.createdAt)
         wait(for: [expectationToRunOperation], timeout: 10)
@@ -699,7 +697,7 @@ extension PocketSourceTests {
         )
 
         let source = subject()
-        let savedItem = source.fetchOrCreateSavedItem(with: "saved-item", and: itemParts)
+        let savedItem = source.fetchOrCreateSavedItem(with: URL(string: "http://localhost:8080/hello")!, and: itemParts)
 
         XCTAssertEqual(savedItem?.remoteID, "saved-item")
         XCTAssertEqual(savedItem?.item.title, "item-title")

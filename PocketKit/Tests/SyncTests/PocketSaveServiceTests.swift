@@ -109,7 +109,7 @@ class PocketSaveServiceTests: XCTestCase {
             return MockCancellable()
         }
 
-        let url = URL(string: "https://example.com/a-new-item")!
+        let url = URL(string: "http://example.com/add-me-to-your-list")!
         let service = subject()
         _ = service.save(url: url)
 
@@ -122,7 +122,7 @@ class PocketSaveServiceTests: XCTestCase {
 
         do {
             wait(for: [performMutationCompleted], timeout: 10)
-            let savedItem = try space.fetchSavedItem(byRemoteID: "saved-item-1")
+            let savedItem = try space.fetchSavedItem(byURL: url)
             XCTAssertNotNil(savedItem?.item)
         }
     }

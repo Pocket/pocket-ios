@@ -88,7 +88,7 @@ extension DerivedSpace: SavedItemSpace {
             logItemUpdated(itemID: node.remoteID)
 
             context.performAndWait {
-                let item = (try? space.fetchSavedItem(byRemoteID: node.remoteID, context: context)) ?? SavedItem(context: context, url: url, remoteID: node.remoteID)
+                let item = (try? space.fetchSavedItem(byURL: url, context: context)) ?? SavedItem(context: context, url: url, remoteID: node.remoteID)
                 item.update(from: edge, with: space)
 
                 if item.deletedAt != nil {
@@ -113,7 +113,7 @@ extension DerivedSpace: ArchivedItemSpace {
             logItemUpdated(itemID: node.remoteID)
 
             context.performAndWait {
-                let item = (try? space.fetchSavedItem(byRemoteID: node.remoteID, context: context)) ?? SavedItem(context: context, url: url, remoteID: node.remoteID)
+                let item = (try? space.fetchSavedItem(byURL: url, context: context)) ?? SavedItem(context: context, url: url, remoteID: node.remoteID)
                 item.update(from: node.fragments.savedItemSummary, with: space)
                 item.cursor = edge.cursor
                 if item.deletedAt != nil {

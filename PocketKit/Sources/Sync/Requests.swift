@@ -37,20 +37,6 @@ public enum Requests {
         return request
     }
 
-    public static func fetchSavedItem(byRemoteID remoteID: String) -> NSFetchRequest<SavedItem> {
-        let request = SavedItem.fetchRequest()
-        request.predicate = NSPredicate(format: "remoteID = %@", remoteID)
-        request.fetchLimit = 1
-        return request
-    }
-
-    public static func fetchSavedItem(byRemoteItemID remoteItemID: String) -> NSFetchRequest<SavedItem> {
-        let request = SavedItem.fetchRequest()
-        request.predicate = NSPredicate(format: "item.remoteID = %@", remoteItemID)
-        request.fetchLimit = 1
-        return request
-    }
-
     public static func fetchSavedItem(byURL url: URL) -> NSFetchRequest<SavedItem> {
         let request = SavedItem.fetchRequest()
         request.predicate = NSPredicate(format: "url.absoluteString = %@", url.absoluteString)
@@ -133,13 +119,6 @@ public enum Requests {
 
     public static func fetchItems() -> NSFetchRequest<Item> {
         Item.fetchRequest()
-    }
-
-    public static func fetchItem(byRemoteID id: String) -> NSFetchRequest<Item> {
-        let request = self.fetchItems()
-        request.predicate = NSPredicate(format: "remoteID = %@", id)
-        request.fetchLimit = 1
-        return request
     }
 
     public static func fetchSyndicatedArticles() -> NSFetchRequest<SyndicatedArticle> {
