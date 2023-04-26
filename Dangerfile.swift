@@ -43,10 +43,8 @@ func xcodeEnvironmentVariables() {
 """#
 
     let modifiedXcodeSchemes = danger.git.modifiedFiles.filter { $0.contains(".xcscheme") }
-    for scheme in modifiedXcodeSchemes {
-        if danger.utils.readFile(scheme).contains(snowplowPostPath) {
-            fail("SNOWPLOW_POST_PATH must be disabled")
-        }
+    for scheme in modifiedXcodeSchemes where danger.utils.readFile(scheme).contains(snowplowPostPath) {
+        fail("SNOWPLOW_POST_PATH must be disabled")
     }
 }
 
