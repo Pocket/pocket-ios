@@ -28,7 +28,7 @@ public struct System: Event, CustomStringConvertible {
     public var value: String? {
         switch type {
         case .userMigration(let userMigrationState):
-            return userMigrationState.id(source)
+            return userMigrationState.value(source)
         }
     }
 
@@ -68,7 +68,7 @@ extension System {
                 return "ios.\(source).migration.to8.failedWithError"
             }
         }
-        
+
         func value(_ source: MigrationSource) -> String? {
             switch self {
             case .started, .succeeded:
