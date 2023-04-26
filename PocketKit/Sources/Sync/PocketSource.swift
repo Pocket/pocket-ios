@@ -880,21 +880,21 @@ extension PocketSource {
         try? space.fetchSavedItems(bySearchTerm: search, userPremium: user.status == .premium)
     }
 
-    public func fetchOrCreateSavedItem(with remoteID: String, and remoteParts: SavedItem.RemoteSavedItem?) -> SavedItem? {
-        let savedItem = (try? space.fetchSavedItem(byRemoteID: remoteID))
+    public func fetchOrCreateSavedItem(with url: URL, and remoteParts: SavedItem.RemoteSavedItem?) -> SavedItem? {
+        let savedItem = (try? space.fetchSavedItem(byURL: url))
 
         if let remoteParts {
             savedItem?.update(from: remoteParts, with: space)
         }
 
-        guard savedItem == nil, let remoteParts, let url = URL(string: remoteParts.url) else {
+        guard savedItem == nil, let remoteParts else {
             Log.breadcrumb(category: "sync", level: .debug, message: "SavedItem found and don't need to create one")
             // save the space with the updated item data
             try? space.save()
             return savedItem
         }
 
-        let remoteSavedItem = SavedItem(context: space.backgroundContext, url: url, remoteID: remoteID)
+        let remoteSavedItem = SavedItem(context: space.backgroundContext, url: url, remoteID: remoteParts.remoteID)
         remoteSavedItem.update(from: remoteParts, with: space)
         try? space.save()
 

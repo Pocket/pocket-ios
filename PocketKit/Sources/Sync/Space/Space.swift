@@ -208,12 +208,8 @@ extension Space {
 
 // MARK: SavedItem
 extension Space {
-    func fetchSavedItem(byRemoteID remoteID: String, context: NSManagedObjectContext? = nil) throws -> SavedItem? {
-        return try fetch(Requests.fetchSavedItem(byRemoteID: remoteID), context: context).first
-    }
-
-    func fetchSavedItem(byRemoteItemID remoteItemID: String) throws -> SavedItem? {
-        return try fetch(Requests.fetchSavedItem(byRemoteItemID: remoteItemID)).first
+    func fetchSavedItem(byURL url: URL, context: NSManagedObjectContext? = nil) throws -> SavedItem? {
+        return try fetch(Requests.fetchSavedItem(byURL: url), context: context).first
     }
 
     func fetchSavedItem(byURL url: URL) throws -> SavedItem? {
