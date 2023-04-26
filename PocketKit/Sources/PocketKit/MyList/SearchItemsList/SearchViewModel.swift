@@ -456,6 +456,8 @@ extension SearchViewModel {
     }
 
     private func updateLocalSearchResults(ByRemoving item: SavedItem) {
+        guard selectedScope != .all else { return }
+
         if case let .searchResults(results) = searchState {
             let updatedResults = results.filter {
                 $0.id != item.id
