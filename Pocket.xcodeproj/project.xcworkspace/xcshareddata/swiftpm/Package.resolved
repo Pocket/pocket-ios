@@ -95,8 +95,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SDWebImage/SDWebImage.git",
       "state" : {
-        "revision" : "a812079ae91a7f2e627364c42ea7b98abfa366ed",
-        "version" : "5.15.4"
+        "revision" : "20df851f2ae27efbaeeff73e9babdf4fd839a144",
+        "version" : "5.15.6"
       }
     },
     {
