@@ -35,7 +35,7 @@ func coverage() {
 
 func xcodeEnvironmentVariables() {
     message("Checking XCode Environment Variables")
-    
+
     let snowplowPostPath = #"""
             key = "SNOWPLOW_POST_PATH"
             value = "com.snowplowanalytics.snowplow/tp2"
