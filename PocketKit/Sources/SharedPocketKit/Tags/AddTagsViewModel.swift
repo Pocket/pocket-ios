@@ -20,8 +20,8 @@ public protocol AddTagsViewModel: ObservableObject {
     func addTags()
     func allOtherTags()
     func removeTag(with tag: String)
-    func trackAddTag()
-    func trackRemoveTag()
+    func trackAddTag(_ tag: String)
+    func trackRemoveTag(_ tag: String)
     func trackExistingTagTapped(with tag: TagType)
 }
 
@@ -65,7 +65,7 @@ public extension AddTagsViewModel {
         if otherTags.isEmpty {
             allOtherTags()
         }
-        trackAddTag()
+        trackAddTag(tagName)
     }
 
     /// Removes tag from the `InputTagsView` and adds to list of `OtherTagsView`
@@ -74,7 +74,7 @@ public extension AddTagsViewModel {
         guard let index = tags.firstIndex(of: tag) else { return }
         tags.remove(at: index)
         allOtherTags()
-        trackRemoveTag()
+        trackRemoveTag(tag)
     }
 
     /// Validates user input and formats to proper string

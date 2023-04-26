@@ -49,7 +49,7 @@ class TagsFilterViewModel: ObservableObject {
     }
 
     func delete(tags: [String]) {
-        trackTagsDelete()
+        trackTagsDelete(tags)
         tags.forEach { tag in
             guard let tag: Tag = fetchedTags.filter({ $0.name == tag }).first else { return }
             source.deleteTag(tag: tag)
@@ -70,7 +70,7 @@ class TagsFilterViewModel: ObservableObject {
             return
         }
         source.renameTag(from: tag, to: newName)
-        trackTagRename()
+        trackTagRename(from: oldName, to: newName)
     }
 }
 
@@ -81,17 +81,17 @@ extension TagsFilterViewModel {
         case .notTagged:
             tracker.track(event: Events.Tags.selectNotTaggedToFilter())
         case .recent:
-            tracker.track(event: Events.Tags.selectRecentTagToFilter())
+            tracker.track(event: Events.Tags.selectRecentTagToFilter(tagType.name))
         case .tag:
-            tracker.track(event: Events.Tags.selectTagToFilter())
+            tracker.track(event: Events.Tags.selectTagToFilter(tagType.name))
         }
     }
 
-    func trackTagRename() {
-        tracker.track(event: Events.Tags.renameTag())
+    func trackTagRename(from oldTag: String, to newTag: String) {
+        tracker.track(event: Events.Tags.renameTag(from: oldTag, to: newTag))
     }
 
-    func trackTagsDelete() {
-        tracker.track(event: Events.Tags.deleteTags())
+    func trackTagsDelete(_ tags: [String]) {
+        tracker.track(event: Events.Tags.deleteTags(tags))
     }
 }
