@@ -71,6 +71,7 @@ extension Space {
         func buildPendingSavedItem() -> SavedItem {
             backgroundContext.performAndWait {
                 let savedItem: SavedItem = SavedItem(context: backgroundContext, url: URL(string: "https://mozilla.com/example")!)
+                savedItem.createdAt = Date()
                 return savedItem
             }
         }
@@ -239,7 +240,7 @@ extension Space {
     @discardableResult
     func createRecommendation(
         remoteID: String = "slate-1-rec-1",
-        item: Item? = nil
+        item: Item
     ) throws -> Recommendation {
         try backgroundContext.performAndWait {
             let recommendation = buildRecommendation(
@@ -255,18 +256,19 @@ extension Space {
     @discardableResult
     func buildRecommendation(
         remoteID: String = "slate-1-rec-1",
-        item: Item? = nil,
+        item: Item,
         imageURL: URL? = nil,
         title: String? = nil,
-        excerpt: String?  = nil
+        excerpt: String?  = nil,
+        analyticsID: String = ""
     ) -> Recommendation {
         backgroundContext.performAndWait {
-            let recommendation: Recommendation = Recommendation(context: backgroundContext, remoteID: remoteID)
+            let recommendation: Recommendation = Recommendation(context: backgroundContext, remoteID: remoteID, analyticsID: analyticsID)
             recommendation.item = item
             recommendation.title = title
             recommendation.excerpt = excerpt
             recommendation.imageURL = imageURL
-
+            recommendation.analyticsID = analyticsID
             return recommendation
         }
     }

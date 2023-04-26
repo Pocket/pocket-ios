@@ -3,7 +3,7 @@ import Textile
 import Localization
 
 private extension Style {
-    static let saveTitle: Style = .header.sansSerif.p4.with(color: .ui.grey5).with(weight: .medium).with(maxScaleSize: 17)
+    static let saveTitle: Style = .header.sansSerif.p4.with(weight: .medium).with(maxScaleSize: 17).with(color: .ui.saveButtonText)
     static let saveTitleHighlighted: Style = .header.sansSerif.p4.with(color: .ui.grey1).with(weight: .medium).with(maxScaleSize: 17)
 }
 

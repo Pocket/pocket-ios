@@ -146,4 +146,28 @@ class TagsFilterViewModelTests: XCTestCase {
 
         wait(for: [expectRename], timeout: 10)
     }
+
+    func test_renameTag_withNoOldName_doesNotRenameTag() {
+        _ = try? space.createSavedItem(createdAt: Date(), tags: ["tag 1"])
+        _ = try? space.createSavedItem(createdAt: Date() + 1, tags: ["tag 2"])
+
+        source.stubRenameTag { _, tag in
+            XCTFail("Should not have been called")
+        }
+        let savedTags = try? space.fetchTags(isArchived: false)
+        let viewModel = subject(fetchedTags: savedTags) { }
+        viewModel.rename(from: nil, to: "tag 0")
+    }
+
+    func test_renameTag_withTagThatDoesNotExist_doesNotRenameTag() {
+        _ = try? space.createSavedItem(createdAt: Date(), tags: ["tag 1"])
+        _ = try? space.createSavedItem(createdAt: Date() + 1, tags: ["tag 2"])
+
+        source.stubRenameTag { _, tag in
+            XCTFail("Should not have been called")
+        }
+        let savedTags = try? space.fetchTags(isArchived: false)
+        let viewModel = subject(fetchedTags: savedTags) { }
+        viewModel.rename(from: "tag does not exist", to: "tag 2")
+    }
 }

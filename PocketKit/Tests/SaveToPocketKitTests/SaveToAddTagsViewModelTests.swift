@@ -91,7 +91,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
             for index in 1...2 {
                 let tag: Tag = Tag(context: self.space.backgroundContext)
                 tag.name = "tag \(index)"
-                tag.remoteID = tag.name?.uppercased()
+                tag.remoteID = tag.name.uppercased()
                 tags.append(tag)
             }
             item.tags = NSOrderedSet(array: tags.compactMap { $0 })
@@ -112,7 +112,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
                 for index in 1...3 {
                     let tag: Tag = Tag(context: self.space.viewContext)
                     tag.name = "tag \(index)"
-                    tag.remoteID = tag.name?.uppercased()
+                    tag.remoteID = tag.name.uppercased()
                     tags.append(tag)
                 }
                 return tags
@@ -133,7 +133,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
                 for index in 1...4 {
                     let tag: Tag = Tag(context: self.space.viewContext)
                     tag.name = "tag \(index)"
-                    tag.remoteID = tag.name?.uppercased()
+                    tag.remoteID = tag.name.uppercased()
                     tags.append(tag)
                 }
                 return tags
@@ -154,7 +154,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
                 for index in 1...4 {
                     let tag: Tag = Tag(context: self.space.viewContext)
                     tag.name = "tag \(index)"
-                    tag.remoteID = tag.name?.uppercased()
+                    tag.remoteID = tag.name.uppercased()
                     tags.append(tag)
                 }
                 return tags
@@ -174,7 +174,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
                 for index in 1...3 {
                     let tag: Tag = Tag(context: self.space.viewContext)
                     tag.name = "tag \(index)"
-                    tag.remoteID = tag.name?.uppercased()
+                    tag.remoteID = tag.name.uppercased()
                     tags.append(tag)
                 }
                 return tags
@@ -194,7 +194,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
             for index in 2...3 {
                 let tag: Tag = Tag(context: self.space.viewContext)
                 tag.name = "tag \(index)"
-                tag.remoteID = tag.name?.uppercased()
+                tag.remoteID = tag.name.uppercased()
                 tags.append(tag)
             }
                 return tags
@@ -237,7 +237,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
                 for index in 2...3 {
                     let tag: Tag = Tag(context: self.space.viewContext)
                     tag.name = "tag \(index)"
-                    tag.remoteID = tag.name?.uppercased()
+                    tag.remoteID = tag.name.uppercased()
                     tags.append(tag)
                 }
                 return tags
@@ -268,7 +268,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
                 for index in 2...3 {
                     let tag: Tag = Tag(context: self.space.viewContext)
                     tag.name = "tag \(index)"
-                    tag.remoteID = tag.name?.uppercased()
+                    tag.remoteID = tag.name.uppercased()
                     tags.append(tag)
                 }
                 return tags

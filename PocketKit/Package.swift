@@ -9,6 +9,7 @@ let package = Package(
     platforms: [.iOS("16"), .macOS("11")],
     products: [
         .library(name: "PocketKit", targets: ["PocketKit"]),
+        .library(name: "PocketGraphTestMocks", targets: ["PocketGraphTestMocks"]),
         .library(name: "SaveToPocketKit", targets: ["SaveToPocketKit"]),
         .library(name: "SharedPocketKit", targets: ["SharedPocketKit"]),
         .library(name: "Textile", targets: ["Textile"]),
@@ -18,16 +19,16 @@ let package = Package(
         .library(name: "PKTListen", targets: ["PKTListen"])
     ],
     dependencies: [
-        .package(url: "https://github.com/apollographql/apollo-ios.git", exact: "1.1.1"),
+        .package(url: "https://github.com/apollographql/apollo-ios.git", exact: "1.1.2"),
         .package(url: "https://github.com/onevcat/Kingfisher.git", exact: "7.6.2"),
-        .package(url: "https://github.com/getsentry/sentry-cocoa.git", exact: "8.3.1"),
+        .package(url: "https://github.com/getsentry/sentry-cocoa.git", exact: "8.5.0"),
         .package(url: "https://github.com/snowplow/snowplow-objc-tracker", exact: "5.0.0"),
         .package(url: "https://github.com/airbnb/lottie-ios.git", exact: "4.1.3"),
         .package(url: "https://github.com/johnxnguyen/Down", exact: "0.11.0"),
         .package(url: "https://github.com/SvenTiigi/YouTubePlayerKit.git", exact: "1.4.0"),
-        .package(url: "https://github.com/braze-inc/braze-swift-sdk.git", exact: "5.13.0"),
+        .package(url: "https://github.com/braze-inc/braze-swift-sdk.git", exact: "5.14.0"),
         .package(url: "https://github.com/adjust/ios_sdk", exact: "4.33.4"),
-        .package(url: "https://github.com/RNCryptor/RNCryptor.git", exact: "5.1.0")
+        .package(url: "https://github.com/RNCryptor/RNCryptor.git", exact: "5.1.0"),
     ],
     targets: [
         .binaryTarget(name: "PKTListen", path: "./Frameworks/PKTListen.xcframework"),
@@ -122,7 +123,14 @@ let package = Package(
                 "schema.graphqls"
             ]
         ),
-
+        .target(
+            name: "PocketGraphTestMocks",
+            dependencies: [
+                .product(name: "ApolloAPI", package: "apollo-ios"),
+                .product(name: "ApolloTestSupport", package: "apollo-ios"),
+                "PocketGraph"
+            ]
+        ),
         .target(
             name: "Analytics",
             dependencies: [

@@ -26,8 +26,8 @@ extension HomeRecommendationCellHeroWideViewModel {
     }
 
     var saveButtonMode: RecommendationSaveButton.Mode {
-        if recommendation.item?.savedItem != nil &&
-            recommendation.item?.savedItem?.isArchived == false {
+        if recommendation.item.savedItem != nil &&
+            recommendation.item.savedItem?.isArchived == false {
             return .saved
         } else {
             return .save
@@ -53,7 +53,7 @@ extension HomeRecommendationCellHeroWideViewModel {
     }
 
     var attributedAuthor: NSAttributedString? {
-        recommendation.item?.authors.flatMap { authorSet in
+        recommendation.item.authors.flatMap { authorSet in
             let names = authorSet.compactMap { ($0 as? Author)?.name }
             let formatted = ListFormatter.localizedString(byJoining: names)
             return NSAttributedString(string: formatted, style: .author)
@@ -62,18 +62,19 @@ extension HomeRecommendationCellHeroWideViewModel {
 }
 
 private extension Style {
-    static let headline: Style = .header.sansSerif.h6.with { paragraph in
+    static let headline: Style = .header.sansSerif.h6.with(color: .ui.black1).with { paragraph in
         paragraph
             .with(lineHeight: .multiplier(1.3))
             .with(lineBreakMode: .byTruncatingTail)
     }
 
-    static let excerpt: Style = .header.sansSerif.p4.with { paragraph in
+    static let excerpt: Style = .header.sansSerif.p4.with(color: .ui.grey8)
+.with { paragraph in
         paragraph
             .with(lineHeight: .multiplier(1.4))
             .with(lineBreakMode: .byTruncatingTail)
     }
 
-    static let publisher: Style = .header.sansSerif.p4.with(color: .ui.grey5).with(weight: .medium)
-    static let author: Style = .header.sansSerif.p4.with(color: .ui.grey5)
+    static let publisher: Style = .header.sansSerif.p4.with(color: .ui.grey8).with(weight: .medium)
+    static let author: Style = .header.sansSerif.p4.with(color: .ui.grey8)
 }

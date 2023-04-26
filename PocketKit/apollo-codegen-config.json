@@ -1,48 +1,48 @@
 {
-  "schemaName" : "PocketGraph",
-  "input" : {
-    "operationSearchPaths" : [
-        "Sources/PocketGraph/user-defined-operations/*.graphql"
-    ],
-    "schemaSearchPaths" : [
-        "Sources/PocketGraph/schema.graphqls"
-    ]
-  },
-  "options": {
-      "selectionSetInitializers" : {
-          "operations": false,
-          "namedFragments": true,
-          "localCacheMutations" : true,
-      },
-  },
-  "output" : {
-    "testMocks" : {
-      "none" : {
-      }
+    "schemaName": "PocketGraph",
+    "input": {
+        "operationSearchPaths": [
+            "Sources/PocketGraph/user-defined-operations/*.graphql"
+        ],
+        "schemaSearchPaths": [
+            "Sources/PocketGraph/schema.graphqls"
+        ]
     },
-    "schemaTypes" : {
-      "path" : "./Sources/PocketGraph/",
-      "moduleType": {
-          "other": {}
-      },
+    "options": {
+        "selectionSetInitializers": {
+            "operations": false,
+            "namedFragments": true,
+            "localCacheMutations": true,
+        },
+        "pruneGeneratedFiles": true
     },
-    "operations" : {
-      "inSchemaModule" : {}
+    "output": {
+        "testMocks": {
+            "absolute": { "path": "./Sources/PocketGraphTestMocks/" }
+        },
+        "schemaTypes": {
+            "path": "./Sources/PocketGraph/",
+            "moduleType": {
+                "other": {}
+            }
+        },
+        "operations": {
+            "inSchemaModule": {}
+        }
+    },
+    "schemaDownloadConfiguration": {
+        "downloadMethod": {
+            "introspection": {
+                "endpointURL": "https://client-api.getpocket.com",
+                "httpMethod": {
+                    "POST": {}
+                },
+                "includeDeprecatedInputValues": true,
+                "outputFormat": "SDL"
+            }
+        },
+        "downloadTimeout": 60,
+        "headers": [],
+        "outputPath": "./Sources/PocketGraph/schema.graphqls"
     }
-  },
-  "schemaDownloadConfiguration": {
-      "downloadMethod": {
-          "introspection": {
-              "endpointURL": "https://client-api.getpocket.com",
-              "httpMethod": {
-                  "POST": {}
-              },
-              "includeDeprecatedInputValues": true,
-              "outputFormat": "SDL"
-          }
-      },
-      "downloadTimeout": 60,
-      "headers": [],
-      "outputPath": "./Sources/PocketGraph/schema.graphqls"
-  }
 }

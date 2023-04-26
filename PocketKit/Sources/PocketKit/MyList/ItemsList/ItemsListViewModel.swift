@@ -53,7 +53,6 @@ enum ItemsListCell<ItemIdentifier: Hashable>: Hashable {
 }
 
 enum ItemsListFilter: String, Hashable, CaseIterable {
-    case search = "Search"
     case all = "All"
     case listen = "Listen"
     case tagged = "Tagged"
@@ -62,8 +61,6 @@ enum ItemsListFilter: String, Hashable, CaseIterable {
 
     var image: UIImage? {
         switch self {
-        case .search:
-            return UIImage(asset: .magnifyingGlass)
         case .all:
             return nil
         case .listen:
@@ -87,8 +84,6 @@ enum ItemsListFilter: String, Hashable, CaseIterable {
             return Localization.Itemlist.Filter.favorites
         case .sortAndFilter:
             return Localization.Itemlist.Filter.sortFilter
-        case .search:
-            return Localization.Itemlist.Filter.search
         case .listen:
             return Localization.Carousel.listen
         }
@@ -111,12 +106,14 @@ protocol ItemsListViewModel: AnyObject {
     func fetch()
     func refresh(_ completion: (() -> Void)?)
 
+    func preview(for cell: ItemsListCell<ItemIdentifier>) -> (ReadableViewModel, Bool)?
     func presenter(for cellID: ItemsListCell<ItemIdentifier>) -> ItemsListItemPresenter?
     func presenter(for itemID: ItemIdentifier) -> ItemsListItemPresenter?
     func filterButton(with id: ItemsListFilter) -> TopicChipPresenter
     func tagModel(with name: String) -> SelectedTagChipModel
     func shouldSelectCell(with cell: ItemsListCell<ItemIdentifier>) -> Bool
     func selectCell(with: ItemsListCell<ItemIdentifier>, sender: Any?)
+    func beginBulkEdit()
 
     func filterByTagAction() -> UIAction?
     func trackOverflow(for objectID: ItemIdentifier) -> UIAction?
