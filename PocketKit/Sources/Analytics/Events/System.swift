@@ -25,12 +25,23 @@ public struct System: Event, CustomStringConvertible {
         }
     }
 
-    public func toSelfDescribing() -> SelfDescribing {
-        let base = SelfDescribing(schema: System.schema, payload: [
-            "identifier": NSString(string: self.description),
-        ])
+    public var value: String? {
+        switch type {
+        case .userMigration(let userMigrationState):
+            return userMigrationState.value(source)
+        }
+    }
 
-        return base
+    public func toSelfDescribing() -> SelfDescribing {
+        var payload = [
+            "identifier": NSString(string: self.description),
+        ]
+
+        if let value = value {
+            payload["value"] = NSString(string: value)
+        }
+
+        return SelfDescribing(schema: System.schema, payload: payload)
     }
 }
 
@@ -55,6 +66,15 @@ extension System {
                     return "ios.\(source).migration.to8.failed"
                 }
                 return "ios.\(source).migration.to8.failedWithError"
+            }
+        }
+
+        func value(_ source: MigrationSource) -> String? {
+            switch self {
+            case .started, .succeeded:
+                return nil
+            case UserMigrationState.failed(let error):
+                return error?.localizedDescription
             }
         }
     }
