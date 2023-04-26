@@ -90,7 +90,7 @@ class ArchiveTests: XCTestCase {
             let apiRequest = ClientAPIRequest(request)
 
             if apiRequest.isToSaveAnItem {
-                return Response.saves("unarchive")
+                return Response.unarchive(apiRequest: apiRequest)
             } else if apiRequest.isForSavesContent {
                 defer { savesCall += 1}
                 switch savesCall {
@@ -123,7 +123,7 @@ class ArchiveTests: XCTestCase {
             let apiRequest = ClientAPIRequest(request)
 
             if apiRequest.isToSaveAnItem {
-                return Response.saves("unarchive")
+                return Response.unarchive(apiRequest: apiRequest)
             } else if apiRequest.isForSavesContent {
                 defer { savesCall += 1}
                 switch savesCall {

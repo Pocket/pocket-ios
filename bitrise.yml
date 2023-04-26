@@ -63,9 +63,9 @@ stages:
   run-test-groups:
     workflows:
       - run-tests-unit: {}
-      # - run-tests-ui-1: {}
-      # - run-tests-ui-2: {}
-      # - run-tests-ui-3: {}
+      - run-tests-ui-1: {}
+      - run-tests-ui-2: {}
+#      - run-tests-ui-3: {}
 
   run-test-groups-flakey:
     workflows:
@@ -79,9 +79,9 @@ stages:
   run-test-groups-nightly:
     workflows:
       - run-tests-unit: {}
-      # - run-tests-ui-1: {}
-      # - run-tests-ui-2: {}
-      # - run-tests-ui-3: {}
+      - run-tests-ui-1: {}
+      - run-tests-ui-2: {}
+#      - run-tests-ui-3: {}
       # Turning off until iOS 16 is legacy
       # - run-tests-ui-1-legacy: {}
       # - run-tests-ui-2-legacy: {}
