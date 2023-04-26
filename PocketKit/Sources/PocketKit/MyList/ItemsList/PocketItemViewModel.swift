@@ -145,9 +145,9 @@ class PocketItemViewModel: ObservableObject {
     /// Fetch a SavedItem or create one in order to use actions related to source
     private func fetchSavedItem() -> SavedItem? {
         guard
-            let id = item.id,
+            let url = item.url,
             let savedItem = source.fetchOrCreateSavedItem(
-                with: id,
+                with: url,
                 and: item.remoteItemParts
             )
         else {

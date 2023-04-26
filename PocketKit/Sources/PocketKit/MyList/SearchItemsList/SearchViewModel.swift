@@ -406,9 +406,9 @@ extension SearchViewModel {
 
     func select(_ searchItem: PocketItem, index: Int) {
         guard
-            let id = searchItem.id,
+            let url = searchItem.url,
             let savedItem = source.fetchOrCreateSavedItem(
-                with: id,
+                with: url,
                 and: searchItem.remoteItemParts
             )
         else {
@@ -490,9 +490,9 @@ extension SearchViewModel {
 
     func fetchSavedItem(_ searchItem: PocketItem) -> SavedItem? {
         guard
-            let id = searchItem.id,
+            let url = searchItem.url,
             let savedItem = source.fetchOrCreateSavedItem(
-                with: id,
+                with: url,
                 and: searchItem.remoteItemParts
             )
         else {
