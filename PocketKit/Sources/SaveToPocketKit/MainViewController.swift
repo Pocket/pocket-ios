@@ -53,6 +53,14 @@ class MainViewController: UIViewController {
             }
 
             if attempted {
+                // Migration ran successfully, so lets reset the entities to capture it.
+                // We do a reset in case something else recieves a login notice first and to ensure no duplicates.
+                if let currentSession = appSession.currentSession {
+                    tracker.resetPersistentEntities([
+                        APIUserEntity(consumerKey: Keys.shared.pocketApiConsumerKey),
+                        UserEntity(guid: currentSession.guid, userID: currentSession.userIdentifier, adjustAdId: Adjust.adid())
+                    ])
+                }
                 tracker.track(event: Events.Migration.MigrationTo_v8DidSucceed(source: .saveToPocketKit))
                 Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration required; running.")
                 // Legacy cleanup
