@@ -76,7 +76,7 @@ public extension Events.Reader {
             contentEntity: ContentEntity(url: url),
             uiEntity: UiEntity(
                 .button,
-                identifier: "reader.view_original"
+                identifier: "reader.view-original"
             )
         )
     }
