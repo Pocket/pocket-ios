@@ -159,6 +159,7 @@ class PremiumTests: XCTestCase {
         app.tabBar.savesButton.wait().tap()
         app.saves.element.swipeDown()
         app.navigationBar.searchFields["Search"].wait().tap()
+        app.navigationBar.searchFields["Search"].typeText("\n")
         app.navigationBar.buttons["All items"].wait().tap()
         XCTAssertTrue(app.searchGetPremiumEmptyView.exists)
 

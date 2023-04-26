@@ -82,7 +82,7 @@ class ReaderTests: XCTestCase {
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isToSaveAnItem {
                 defer { saveExpectation.fulfill() }
-                return .saveItem()
+                return .saveItem(apiRequest: apiRequest)
             }
             return .fallbackResponses(apiRequest: apiRequest)
         }
