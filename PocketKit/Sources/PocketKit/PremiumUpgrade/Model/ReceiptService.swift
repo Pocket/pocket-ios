@@ -25,8 +25,10 @@ class AppStoreReceiptService: NSObject, ReceiptService {
     private let client: V3ClientProtocol
 
     private let receiptRequest: SKReceiptRefreshRequest
+    // using an array of continuations so that each one gets resumed and then removed
+    private var storeKit1Continuations = [CheckedContinuation<SKRequest, Error>]()
 
-    private var storeKit1Continuation: CheckedContinuation<SKRequest, Error>?
+    private let continuationQueue = DispatchQueue(label: "ContinuationQueue", qos: .background)
 
     init(client: V3ClientProtocol) {
         self.client = client
@@ -35,12 +37,15 @@ class AppStoreReceiptService: NSObject, ReceiptService {
     }
 
     func send(_ product: Product?) async throws {
-        // First make sure a receipt even exists before we try and get one.
-        _ = try getReceipt()
+        // on simulators, we typically use a local test environment, and don't want
+        // to send the receipt to the backend
+        #if targetEnvironment(simulator)
+        return
+        #endif
 
         // Ensure we have a receipt to work with from StoreKit 1
-        var _: SKRequest = try await withCheckedThrowingContinuation { continuation in
-            storeKit1Continuation = continuation
+        _ = try await withCheckedThrowingContinuation { [unowned self] continuation in
+            storeKit1Continuations.append(continuation)
             self.receiptRequest.delegate = self
             self.receiptRequest.start()
         }
@@ -66,11 +71,17 @@ class AppStoreReceiptService: NSObject, ReceiptService {
 // MARK: StoreKit 1 delegate
 extension AppStoreReceiptService: SKRequestDelegate {
     func requestDidFinish(_ request: SKRequest) {
-        storeKit1Continuation?.resume(returning: request)
+        continuationQueue.async { [unowned self] in
+            self.storeKit1Continuations.forEach { $0.resume(returning: request) }
+            self.storeKit1Continuations.removeAll()
+        }
     }
 
     func request(_ request: SKRequest, didFailWithError error: Error) {
-        storeKit1Continuation?.resume(throwing: error)
+        continuationQueue.async { [unowned self] in
+            self.storeKit1Continuations.forEach { $0.resume(throwing: error) }
+            self.storeKit1Continuations.removeAll()
+        }
     }
 }
 
