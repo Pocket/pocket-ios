@@ -105,20 +105,20 @@ extension SaveToAddTagsViewModel {
         tracker.track(event: Events.SaveTo.Tags.saveTags(itemUrl: url))
     }
 
-    func trackAddTag() {
+    func trackAddTag(_ tag: String) {
         guard let url = item?.url else {
             Log.capture(message: "Adding tags to an item without an associated url, not logging analytics for Tags.addTag")
             return
         }
-        tracker.track(event: Events.SaveTo.Tags.addTag(itemUrl: url))
+        tracker.track(event: Events.SaveTo.Tags.addTag(tag, itemUrl: url))
     }
 
-    func trackRemoveTag() {
+    func trackRemoveTag(_ tag: String) {
         guard let url = item?.url else {
             Log.capture(message: "Adding tags to an item without an associated url, not logging analytics for Tags.remoteInputTag")
             return
         }
-        tracker.track(event: Events.SaveTo.Tags.remoteInputTag(itemUrl: url))
+        tracker.track(event: Events.SaveTo.Tags.removeInputTag(tag, itemUrl: url))
     }
 
     func trackUserEnterText(with text: String) {
@@ -150,9 +150,9 @@ extension SaveToAddTagsViewModel {
         case .notTagged:
             return
         case .recent:
-            tracker.track(event: Events.SaveTo.Tags.selectRecentTagToAddToItem())
+            tracker.track(event: Events.SaveTo.Tags.selectRecentTagToAddToItem(tagType.name))
         case .tag:
-            tracker.track(event: Events.SaveTo.Tags.selectTagToAddToItem())
+            tracker.track(event: Events.SaveTo.Tags.selectTagToAddToItem(tagType.name))
         }
     }
 }
