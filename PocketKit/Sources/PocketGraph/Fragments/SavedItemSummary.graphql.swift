@@ -21,6 +21,7 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
       item {
         __typename
         ...ItemSummary
+        ...PendingItemParts
       }
     }
     """ }
@@ -141,9 +142,11 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
     public static var __selections: [ApolloAPI.Selection] { [
       .field("__typename", String.self),
       .inlineFragment(AsItem.self),
+      .inlineFragment(AsPendingItem.self),
     ] }
 
     public var asItem: AsItem? { _asInlineFragment() }
+    public var asPendingItem: AsPendingItem? { _asInlineFragment() }
 
     public init(
       __typename: String
@@ -186,7 +189,7 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
       public var topImageUrl: PocketGraph.Url? { __data["topImageUrl"] }
       /// How long it will take to read the article (TODO in what time unit? and by what calculation?)
       public var timeToRead: Int? { __data["timeToRead"] }
-      /// The domain, such as 'getpocket.com' of the {.resolved_url}
+      /// The domain, such as 'getpocket.com' of the resolved_url
       public var domain: String? { __data["domain"] }
       /// The date the article was published
       public var datePublished: PocketGraph.DateString? { __data["datePublished"] }
@@ -207,7 +210,7 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
       /// Array of images within an article
       public var images: [ItemSummary.Image?]? { __data["images"] }
       /// If the item has a syndicated counterpart the syndication information
-      public var syndicatedArticle: ItemSummary.SyndicatedArticle? { __data["syndicatedArticle"] }
+      public var syndicatedArticle: SyndicatedArticle? { __data["syndicatedArticle"] }
 
       public struct Fragments: FragmentContainer {
         public let __data: DataDict
@@ -234,7 +237,7 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
         excerpt: String? = nil,
         domainMetadata: DomainMetadata? = nil,
         images: [ItemSummary.Image?]? = nil,
-        syndicatedArticle: ItemSummary.SyndicatedArticle? = nil
+        syndicatedArticle: SyndicatedArticle? = nil
       ) {
         self.init(_dataDict: DataDict(data: [
           "__typename": PocketGraph.Objects.Item.typename,
@@ -299,6 +302,100 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
             ])
           ]))
         }
+      }
+
+      /// Item.AsItem.SyndicatedArticle
+      ///
+      /// Parent Type: `SyndicatedArticle`
+      public struct SyndicatedArticle: PocketGraph.SelectionSet {
+        public let __data: DataDict
+        public init(_dataDict: DataDict) { __data = _dataDict }
+
+        public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.SyndicatedArticle }
+
+        /// The item id of this Syndicated Article
+        public var itemId: PocketGraph.ID? { __data["itemId"] }
+        /// Primary image to use in surfacing this content
+        public var mainImage: String? { __data["mainImage"] }
+        /// Title of syndicated article
+        public var title: String { __data["title"] }
+        /// Excerpt 
+        public var excerpt: String? { __data["excerpt"] }
+        /// The manually set publisher information for this article
+        public var publisher: SyndicatedArticleParts.Publisher? { __data["publisher"] }
+
+        public struct Fragments: FragmentContainer {
+          public let __data: DataDict
+          public init(_dataDict: DataDict) { __data = _dataDict }
+
+          public var syndicatedArticleParts: SyndicatedArticleParts { _toFragment() }
+        }
+
+        public init(
+          itemId: PocketGraph.ID? = nil,
+          mainImage: String? = nil,
+          title: String,
+          excerpt: String? = nil,
+          publisher: SyndicatedArticleParts.Publisher? = nil
+        ) {
+          self.init(_dataDict: DataDict(data: [
+            "__typename": PocketGraph.Objects.SyndicatedArticle.typename,
+            "itemId": itemId,
+            "mainImage": mainImage,
+            "title": title,
+            "excerpt": excerpt,
+            "publisher": publisher._fieldData,
+            "__fulfilled": Set([
+              ObjectIdentifier(Self.self),
+              ObjectIdentifier(SyndicatedArticleParts.self)
+            ])
+          ]))
+        }
+      }
+    }
+
+    /// Item.AsPendingItem
+    ///
+    /// Parent Type: `PendingItem`
+    public struct AsPendingItem: PocketGraph.InlineFragment {
+      public let __data: DataDict
+      public init(_dataDict: DataDict) { __data = _dataDict }
+
+      public typealias RootEntityType = SavedItemSummary.Item
+      public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.PendingItem }
+      public static var __selections: [ApolloAPI.Selection] { [
+        .fragment(PendingItemParts.self),
+      ] }
+
+      /// URL of the item that the user gave for the SavedItem
+      /// that is pending processing by parser
+      public var remoteID: String { __data["remoteID"] }
+      public var givenUrl: PocketGraph.Url { __data["givenUrl"] }
+      public var status: GraphQLEnum<PocketGraph.PendingItemStatus>? { __data["status"] }
+
+      public struct Fragments: FragmentContainer {
+        public let __data: DataDict
+        public init(_dataDict: DataDict) { __data = _dataDict }
+
+        public var pendingItemParts: PendingItemParts { _toFragment() }
+      }
+
+      public init(
+        remoteID: String,
+        givenUrl: PocketGraph.Url,
+        status: GraphQLEnum<PocketGraph.PendingItemStatus>? = nil
+      ) {
+        self.init(_dataDict: DataDict(data: [
+          "__typename": PocketGraph.Objects.PendingItem.typename,
+          "remoteID": remoteID,
+          "givenUrl": givenUrl,
+          "status": status,
+          "__fulfilled": Set([
+            ObjectIdentifier(Self.self),
+            ObjectIdentifier(SavedItemSummary.Item.self),
+            ObjectIdentifier(PendingItemParts.self)
+          ])
+        ]))
       }
     }
   }

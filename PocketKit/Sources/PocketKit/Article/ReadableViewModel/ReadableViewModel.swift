@@ -40,6 +40,7 @@ protocol ReadableViewModel: ReadableViewControllerDelegate {
     func clearPresentedWebReaderURL()
     func unfavorite()
     func favorite()
+    func beginBulkEdit()
 }
 
 // MARK: - ReadableViewControllerDelegate

@@ -34,6 +34,7 @@ public extension UserDefaults {
         var isRemovable: Bool {
             switch self {
             case .hasAppBeenLaunchedPreviously: return false // This must remain in-tact for the "SignOutOnFirstLaunch" to be run exactly one time per app install
+            case .legacyUserMigration: return false // We want to maintain the state of whether the migration has already been run
             default: return true
             }
         }

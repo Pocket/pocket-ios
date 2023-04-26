@@ -21,8 +21,8 @@
               "item": {
                 "__typename": "[some-type-name]",
                 "remoteID": "recommended-item-1",
-                "givenUrl": "http://localhost:8080/item-1",
-                "resolvedUrl": "http://localhost:8080/item-1",
+                "givenUrl": "http://localhost:8080/slate-1-rec-1",
+                "resolvedUrl": "http://localhost:8080/slate-1-rec-1",
                 "title": "Slate 1, Recommendation 1",
                 "language": "en",
                 "topImageUrl": "http://example.com/slate-1-rec-1/top-image.png",
@@ -66,8 +66,8 @@
               "item": {
                 "__typename": "[some-type-name]",
                 "remoteID": "recommended-item-2",
-                "givenUrl": "https://example.com/item-2",
-                "resolvedUrl": "https://example.com/item-2",
+                "givenUrl": "https://example.com/slate-1-rec-2",
+                "resolvedUrl": "https://example.com/slate-1-rec-2",
                 "title": "Slate 1, Recommendation 2",
                 "language": "en",
                 "topImageUrl": "http://example.com/slate-1-rec-2/top-image.png",
@@ -110,8 +110,8 @@
               "item": {
                 "__typename": "[some-type-name]",
                 "remoteID": "recommended-item-3",
-                "givenUrl": "https://example.com/item-1",
-                "resolvedUrl": "https://example.com/item-1",
+                "givenUrl": "https://example.com/recommended-item-3",
+                "resolvedUrl": "https://example.com/recommended-item-3",
                 "title": "Slate 2, Recommendation 1",
                 "language": "en",
                 "topImageUrl": "http://example.com/slate-2-rec-1/top-image.png",

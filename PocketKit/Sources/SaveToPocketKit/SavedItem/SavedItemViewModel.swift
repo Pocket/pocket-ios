@@ -3,7 +3,6 @@ import SharedPocketKit
 import Sync
 import Combine
 import Analytics
-import Adjust
 
 class SavedItemViewModel {
     private let appSession: AppSession
@@ -24,7 +23,14 @@ class SavedItemViewModel {
 
     let dismissAttributedText = NSAttributedString(string: "Tap to Dismiss", style: .dismiss)
 
-    init(appSession: AppSession, saveService: SaveService, dismissTimer: Timer.TimerPublisher, tracker: Tracker, consumerKey: String, userDefaults: UserDefaults, user: User) {
+    init(appSession: AppSession,
+         saveService: SaveService,
+         dismissTimer: Timer.TimerPublisher,
+         tracker: Tracker,
+         consumerKey: String,
+         userDefaults: UserDefaults,
+         user: User
+    ) {
         self.appSession = appSession
         self.saveService = saveService
         self.dismissTimer = dismissTimer
@@ -34,12 +40,6 @@ class SavedItemViewModel {
         self.user = user
 
         guard let session = appSession.currentSession else { return }
-
-        tracker.resetPersistentEntities([
-            APIUserEntity(consumerKey: consumerKey)
-        ])
-
-        tracker.addPersistentEntity(UserEntity(guid: session.guid, userID: session.userIdentifier, adjustAdId: Adjust.adid()))
     }
 
     func save(from context: ExtensionContext?) async {
@@ -56,9 +56,7 @@ class SavedItemViewModel {
                 break
             }
 
-            // TODO: Add this to all track calls not the global call.
-            tracker.addPersistentEntity(ContentEntity(url: url))
-            track(context: .saveExtension.saveDialog)
+            tracker.track(event: Events.SaveTo.saveEngagement(url: url))
 
             let result = saveService.save(url: url)
             switch result {
@@ -78,6 +76,10 @@ class SavedItemViewModel {
     }
 
     func showAddTagsView(from context: ExtensionContext?) {
+        if let url = savedItem?.url {
+            tracker.track(event: Events.SaveTo.addTagsEngagement(url: url))
+        }
+
         presentedAddTags = SaveToAddTagsViewModel(
             item: savedItem,
             tracker: tracker,
@@ -93,7 +95,6 @@ class SavedItemViewModel {
                 self?.addTags(tags: tags, from: context)
             }
         )
-        track(context: .saveExtension.addTagsButton)
     }
 
     func addTags(tags: [String], from context: ExtensionContext?) {
@@ -102,8 +103,6 @@ class SavedItemViewModel {
         if case let .taggedItem(savedItem) = result {
             self.savedItem = savedItem
             infoViewModel = .taggedItem
-
-            track(context: .saveExtension.addTagsDone)
         }
         finish(context: context)
     }
@@ -178,11 +177,6 @@ extension SavedItemViewModel {
             return URL(string: string)
         }
         return nil
-    }
-
-    private func track(context: UIContext) {
-        let event = SnowplowEngagement(type: .general, value: nil)
-        tracker.track(event: event, [context])
     }
 }
 

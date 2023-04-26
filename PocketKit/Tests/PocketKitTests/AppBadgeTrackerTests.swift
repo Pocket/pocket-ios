@@ -59,8 +59,8 @@ final class AppBadgeTrackerTests: XCTestCase {
 
         userDefaults.setValue(true, forKey: AccountViewModel.ToggleAppBadgeKey)
 
-        space.buildSavedItem()
-        space.buildSavedItem(isArchived: true)
+        space.buildSavedItem(item: try space.createItem())
+        space.buildSavedItem(remoteID: "saved-item-2", url: "http://example.com/item-2", isArchived: true, item: try space.createItem(remoteID: "item-2", givenURL: URL(string: "http://example.com/item-2")))
         try space.save()
 
         NotificationCenter.default.post(name: .listUpdated, object: nil)

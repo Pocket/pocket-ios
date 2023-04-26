@@ -20,13 +20,6 @@ class ArchiveTests: XCTestCase {
             return .fallbackResponses(apiRequest: ClientAPIRequest(request))
         }
 
-        server.routes.get("/hello") { _, _ in
-            Response {
-                Status.ok
-                Fixture.data(name: "hello", ext: "html")
-            }
-        }
-
         try server.start()
     }
 
@@ -97,7 +90,7 @@ class ArchiveTests: XCTestCase {
             let apiRequest = ClientAPIRequest(request)
 
             if apiRequest.isToSaveAnItem {
-                return Response.saves("unarchive")
+                return Response.unarchive(apiRequest: apiRequest)
             } else if apiRequest.isForSavesContent {
                 defer { savesCall += 1}
                 switch savesCall {
@@ -130,7 +123,7 @@ class ArchiveTests: XCTestCase {
             let apiRequest = ClientAPIRequest(request)
 
             if apiRequest.isToSaveAnItem {
-                return Response.saves("unarchive")
+                return Response.unarchive(apiRequest: apiRequest)
             } else if apiRequest.isForSavesContent {
                 defer { savesCall += 1}
                 switch savesCall {
@@ -173,14 +166,35 @@ class ArchiveTests: XCTestCase {
 
 extension ArchiveTests {
     func test_archive_showsWebViewWhenItemIsImage() {
+        server.routes.get("/web-archived-item-1") { _, _ in
+            Response {
+                Status.ok
+                Fixture.data(name: "hello", ext: "html")
+            }
+        }
+
         test_archive_showsWebView(at: 0)
     }
 
     func test_archive_showsWebViewWhenItemIsVideo() {
+        server.routes.get("/web-archived-item-2") { _, _ in
+            Response {
+                Status.ok
+                Fixture.data(name: "hello", ext: "html")
+            }
+        }
+
         test_archive_showsWebView(at: 1)
     }
 
     func test_archive_showsWebViewWhenItemIsNotAnArticle() {
+        server.routes.get("/web-archived-item-3") { _, _ in
+            Response {
+                Status.ok
+                Fixture.data(name: "hello", ext: "html")
+            }
+        }
+
         test_archive_showsWebView(at: 2)
     }
 

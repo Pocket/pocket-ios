@@ -36,6 +36,7 @@
 "itemlist.filter.tagged" = "Tagged";
 "itemlist.filter.favorites" = "Favorites";
 "itemlist.filter.sortFilter" = "Sort/Filter";
+"itemList.edit.banner" = "Editing your list is not available in this version of Pocket, but will be returning soon!";
 
 //List view
 "item.list.min" = "%@ min";
@@ -75,7 +76,7 @@
 "search.swipe.unableToMove" = "Unable to Move";
 "search.swipe.archive" = "Archive";
 "search.swipe.moveToSaves" = "Move to Saves";
-
+"search.edit.banner" = "Editing your search results is not available in this version of Pocket, but will be returning soon!";
 "search.empty.header" = "Search by title or URL";
 
 "search.allItems.premium.header" = "Unlock more search options";
@@ -86,9 +87,8 @@
 "search.results.empty.detail" = "Try using different keywords, checking for typos or changing your filters.";
 
 "search.results.offline.header" = "No Internet Connection";
-"search.results.offline.detail" = "You must be online to search %@ items.";
-"search.results.offline.detail.archive" = "archived";
-"search.results.offline.detail.all" = "all";
+"search.results.offline.detail.archive" = "You must be online to search archived items.";
+"search.results.offline.detail.all" = "You must be online to search all items.";
 
 // Settings
 "settings.thankyou.credits" = "Thank you for using Pocket";

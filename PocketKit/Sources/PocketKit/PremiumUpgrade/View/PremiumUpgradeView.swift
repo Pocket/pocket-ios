@@ -28,8 +28,7 @@ struct PremiumUpgradeView: View {
             do {
                 try await viewModel.requestSubscriptions()
             } catch {
-                // TODO: Here we will handle any error providing user feedback if/when needed
-                print(error)
+                Log.capture(error: error)
             }
         }
         .onChange(of: viewModel.shouldDismiss) { shouldDismiss in

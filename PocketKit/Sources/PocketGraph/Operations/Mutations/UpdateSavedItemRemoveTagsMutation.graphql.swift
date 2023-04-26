@@ -15,7 +15,7 @@ public class UpdateSavedItemRemoveTagsMutation: GraphQLMutation {
         }
       }
       """#,
-      fragments: [SavedItemParts.self, TagParts.self, ItemParts.self, MarticleTextParts.self, ImageParts.self, MarticleDividerParts.self, MarticleTableParts.self, MarticleHeadingParts.self, MarticleCodeBlockParts.self, VideoParts.self, MarticleBulletedListParts.self, MarticleNumberedListParts.self, MarticleBlockquoteParts.self, DomainMetadataParts.self, PendingItemParts.self]
+      fragments: [SavedItemParts.self, TagParts.self, ItemParts.self, MarticleTextParts.self, ImageParts.self, MarticleDividerParts.self, MarticleTableParts.self, MarticleHeadingParts.self, MarticleCodeBlockParts.self, VideoParts.self, MarticleBulletedListParts.self, MarticleNumberedListParts.self, MarticleBlockquoteParts.self, DomainMetadataParts.self, SyndicatedArticleParts.self, PendingItemParts.self]
     ))
 
   public var savedItemId: ID
@@ -146,7 +146,7 @@ public class UpdateSavedItemRemoveTagsMutation: GraphQLMutation {
           public var topImageUrl: PocketGraph.Url? { __data["topImageUrl"] }
           /// How long it will take to read the article (TODO in what time unit? and by what calculation?)
           public var timeToRead: Int? { __data["timeToRead"] }
-          /// The domain, such as 'getpocket.com' of the {.resolved_url}
+          /// The domain, such as 'getpocket.com' of the resolved_url
           public var domain: String? { __data["domain"] }
           /// The date the article was published
           public var datePublished: PocketGraph.DateString? { __data["datePublished"] }
@@ -169,7 +169,7 @@ public class UpdateSavedItemRemoveTagsMutation: GraphQLMutation {
           /// Array of images within an article
           public var images: [ItemParts.Image?]? { __data["images"] }
           /// If the item has a syndicated counterpart the syndication information
-          public var syndicatedArticle: ItemParts.SyndicatedArticle? { __data["syndicatedArticle"] }
+          public var syndicatedArticle: SyndicatedArticle? { __data["syndicatedArticle"] }
 
           public struct Fragments: FragmentContainer {
             public let __data: DataDict
@@ -241,7 +241,7 @@ public class UpdateSavedItemRemoveTagsMutation: GraphQLMutation {
               public var caption: String? { __data["caption"] }
               /// A credit for the image, typically who the image belongs to / created by
               public var credit: String? { __data["credit"] }
-              /// The id for placing within an Article View. {articleView.article} will have placeholders of <div id='RIL_IMG_X' /> where X is this id. Apps can download those images as needed and populate them in their article view.
+              /// The id for placing within an Article View. Item.article will have placeholders of <div id='RIL_IMG_X' /> where X is this id. Apps can download those images as needed and populate them in their article view.
               public var imageID: Int { __data["imageID"] }
               /// Absolute url to the image
               @available(*, deprecated, message: "use url property moving forward")
@@ -385,7 +385,7 @@ public class UpdateSavedItemRemoveTagsMutation: GraphQLMutation {
               public var type: GraphQLEnum<PocketGraph.VideoType> { __data["type"] }
               /// The video's id within the service defined by type
               public var vid: String? { __data["vid"] }
-              /// The id of the video within Article View. {articleView.article} will have placeholders of <div id='RIL_VID_X' /> where X is this id. Apps can download those images as needed and populate them in their article view.
+              /// The id of the video within Article View. Item.article will have placeholders of <div id='RIL_VID_X' /> where X is this id. Apps can download those images as needed and populate them in their article view.
               public var videoID: Int { __data["videoID"] }
               /// If known, the width of the video in px
               public var width: Int? { __data["width"] }
@@ -495,6 +495,34 @@ public class UpdateSavedItemRemoveTagsMutation: GraphQLMutation {
               public var domainMetadataParts: DomainMetadataParts { _toFragment() }
             }
           }
+
+          /// UpdateSavedItemRemoveTags.Item.AsItem.SyndicatedArticle
+          ///
+          /// Parent Type: `SyndicatedArticle`
+          public struct SyndicatedArticle: PocketGraph.SelectionSet {
+            public let __data: DataDict
+            public init(_dataDict: DataDict) { __data = _dataDict }
+
+            public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.SyndicatedArticle }
+
+            /// The item id of this Syndicated Article
+            public var itemId: PocketGraph.ID? { __data["itemId"] }
+            /// Primary image to use in surfacing this content
+            public var mainImage: String? { __data["mainImage"] }
+            /// Title of syndicated article
+            public var title: String { __data["title"] }
+            /// Excerpt 
+            public var excerpt: String? { __data["excerpt"] }
+            /// The manually set publisher information for this article
+            public var publisher: SyndicatedArticleParts.Publisher? { __data["publisher"] }
+
+            public struct Fragments: FragmentContainer {
+              public let __data: DataDict
+              public init(_dataDict: DataDict) { __data = _dataDict }
+
+              public var syndicatedArticleParts: SyndicatedArticleParts { _toFragment() }
+            }
+          }
         }
 
         /// UpdateSavedItemRemoveTags.Item.AsPendingItem
@@ -511,7 +539,10 @@ public class UpdateSavedItemRemoveTagsMutation: GraphQLMutation {
             SavedItemParts.Item.AsPendingItem.self
           ] }
 
-          public var url: PocketGraph.Url { __data["url"] }
+          /// URL of the item that the user gave for the SavedItem
+          /// that is pending processing by parser
+          public var remoteID: String { __data["remoteID"] }
+          public var givenUrl: PocketGraph.Url { __data["givenUrl"] }
           public var status: GraphQLEnum<PocketGraph.PendingItemStatus>? { __data["status"] }
 
           public struct Fragments: FragmentContainer {

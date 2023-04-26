@@ -4,6 +4,7 @@ import Textile
 import Apollo
 import SharedPocketKit
 import Sync
+import Adjust
 
 class MainViewController: UIViewController {
     private let childViewController: UIViewController
@@ -19,8 +20,19 @@ class MainViewController: UIViewController {
         let encryptedStore = PocketEncryptedStore()
         let userDefaults = services.userDefaults
         let user = services.user
+        let notificationCenter = services.notificationCenter
         let child: UIViewController
         let tracker = services.tracker
+
+        // Reset and attach at least an api user entity on extension launch
+        tracker.resetPersistentEntities([
+            APIUserEntity(consumerKey: Keys.shared.pocketApiConsumerKey)
+        ])
+
+        if let currentSession = appSession.currentSession {
+            // Attach a user entity at launch if it exists
+            tracker.addPersistentEntity(UserEntity(guid: currentSession.guid, userID: currentSession.userIdentifier, adjustAdId: Adjust.adid()))
+        }
 
         SignOutOnFirstLaunch(
             appSession: appSession,
@@ -36,17 +48,38 @@ class MainViewController: UIViewController {
         )
 
         do {
-            tracker.track(event: Events.Migration.MigrationTo_v8DidBegin(source: .saveToPocketKit))
-            let attempted = try legacyUserMigration.attemptMigration { }
+            let attempted = try legacyUserMigration.attemptMigration {
+                tracker.track(event: Events.Migration.MigrationTo_v8DidBegin(source: .saveToPocketKit))
+            }
+
             if attempted {
+                // Migration ran successfully, so lets reset the entities to capture it.
+                // We do a reset in case something else recieves a login notice first and to ensure no duplicates.
+                if let currentSession = appSession.currentSession {
+                    tracker.resetPersistentEntities([
+                        APIUserEntity(consumerKey: Keys.shared.pocketApiConsumerKey),
+                        UserEntity(guid: currentSession.guid, userID: currentSession.userIdentifier, adjustAdId: Adjust.adid())
+                    ])
+                }
                 tracker.track(event: Events.Migration.MigrationTo_v8DidSucceed(source: .saveToPocketKit))
                 Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration required; running.")
                 // Legacy cleanup
                 LegacyCleanupService().cleanUp()
             } else {
-                tracker.track(event: Events.Migration.MigrationTo_v8DidFail(with: nil, source: .saveToPocketKit))
                 Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration not required; skipped.")
             }
+        } catch LegacyUserMigrationError.emptyData {
+            Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration has no data to decrypt, likely due to a fresh install of Pocket 8; skipping.")
+            // Since there's no initial data, we don't have anything to migrate, and we can skip
+            // any further attempts at running this migration. This is not a true "error" in the sense that
+            // it breaks migration; it's a special case to be handled if data was created (on fresh install).
+            legacyUserMigration.forceSkip()
+        } catch LegacyUserMigrationError.noSession {
+            // If a user was logged out in Pocket 7, and then launches Pocket 8, there is no session to migrate.
+            // Previously, this would trigger a `failedDeserialization`, which is correct, but not within the context
+            // of a valid user case. If there was nothing to migrate, we can skip any further attempts.
+            Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration has no session to migration; skipping.")
+            legacyUserMigration.forceSkip()
         } catch LegacyUserMigrationError.missingStore {
             tracker.track(event: Events.Migration.MigrationTo_v8DidFail(with: LegacyUserMigrationError.missingStore, source: .saveToPocketKit))
             Log.breadcrumb(category: "launch", level: .info, message: "No previous store for user migration; skipped.")
@@ -59,6 +92,14 @@ class MainViewController: UIViewController {
             legacyUserMigration.forceSkip()
             Log.capture(error: error)
         }
+
+        // The session backup utility can be started after user migration since
+        // the session can possibly already be backed up, i.e if used for user migration
+        SessionBackupUtility(
+            userDefaults: userDefaults,
+            store: PocketEncryptedStore(),
+            notificationCenter: notificationCenter
+        ).start()
 
         if appSession.currentSession == nil {
             Log.clearUser()

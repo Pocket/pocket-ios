@@ -1,3 +1,198 @@
+//General Messages
+"general.oops" = "エラーが発生しました。もう一度お試しください。";
+
+//Archive
+"archive.empty.header" = "リストを最新に保ちながら整理";
+"archive.empty.detail" = "アーカイブアイコンを使用すると、読み終えた保存コンテンツをアーカイブできます。";
+"archive.empty.button" = "アーカイブする方法";
+
+//Favourites
+"favourites.empty.header" = "お気に入りはこちらに表示";
+"favourites.empty.detail" = "記事で星型アイコンを押すと、お気に入りに登録でき、後で見つけやすくなります。";
+
+//Home
+"home.recommendation.readTime" = "読了まで%1$@分";
+
+//Item
+"item.overflowMenu.moveToSaves" = "保存アイテムに移動";
+
+//ItemAction
+"itemAction.addTags" = "タグを追加";
+"itemAction.archive" = "アーカイブ";
+"itemAction.copyLink" = "リンクをコピー";
+"itemAction.delete" = "削除";
+"itemAction.displaySettings" = "表示設定";
+"itemAction.favorite" = "お気に入り";
+"itemAction.unfavorite" = "お気に入り解除";
+"itemAction.moveToSaves" = "保存アイテムに移動";
+"itemAction.open" = "開く";
+"itemAction.report" = "報告する";
+"itemAction.save" = "保存";
+"itemAction.share" = "共有";
+
+//ItemList
+"itemlist.filter.search" = "検索";
+"itemlist.filter.all" = "すべて";
+"itemlist.filter.tagged" = "タグ付けしました";
+"itemlist.filter.favorites" = "お気に入り";
+"itemlist.filter.sortFilter" = "並べ替え/フィルター";
+"itemList.edit.banner" = "このバージョンの Pocket でリストの編集を利用することはできませんが、間もなく利用できるようになります！";
+
+//List view
+"item.list.min" = "%1$@分";
+// Short name of the monthly premium subscription
+"Monthly" = "月次";
+// Suffix of the monthly premium subscription price description
+"month" = "月";
+// Suffix of the annual premium subscription price description
+"year" = "年";
+// Short name of the annual premium subscription
+"Annual" = "年次";
+
+//Log in
+//Shown to the user after they deleted their account
+"login.deletedAccount.banner.title" = "Pocket アカウントを削除しました";
+//Shown to the user after they deleted their account
+"login.deletedAccount.banner.detail" = "どのような点を改善してほしいですか？";
+//Action button for a user to take a survey
+"login.deletedAccount.banner.action" = "短いアンケートに回答する";
+
+//Logged Out
+"loggedOut.offline.header" = "インターネット接続がありません";
+"loggedOut.offline.detail" = "オフラインのようです。モバイルデータまたは Wi-Fi の接続を確認してください。";
+
+//Saves
+"saves.empty.header" = "Pocket リストを作成する";
+"saves.empty.button" = "保存方法";
+
+// Search
+"search.errorMessage" = "エラーが発生したため、必要なデータを表示できません。後ほどもう一度お試しください。";
+"search.limitedResults" = "検索結果が制限されています";
+"search.offlineMessage" = "オフラインの状態では、タイトルと URL の検索のみ可能です。Premium の全文検索を使用するには、インターネットに接続してください。";
+"search.banner.errorMessage." = "エラーが発生し、完全な検索結果を表示することができません。後ほどもう一度お試しください。";
+"search.error.view.needsInternet" = "このアイテムを見るには、インターネット接続が必要です。";
+"search.recent" = "最近の検索";
+"search.recent.empty" = "最近検索した内容がここに表示されるので、簡単に戻ることができます。";
+"search.swipe.unableToMove" = "移動できません";
+"search.swipe.archive" = "アーカイブ";
+"search.swipe.moveToSaves" = "保存アイテムに移動";
+"search.edit.banner" = "このバージョンの Pocket で検索結果を編集することはできませんが、間もなく編集できるようになります！";
+"search.empty.header" = "タイトルまたはURLで検索";
+
+"search.allItems.premium.header" = "その他の検索オプションのロックを解除";
+"search.allItems.premium.detail" = "Pocket Premium を使用すると、アーカイブされたアイテムを含む Pocket 全体を検索できます。";
+"search.allItems.premium.button" = "Pocket Premium に登録";
+
+"search.results.empty.header" = "検索結果なし";
+"search.results.empty.detail" = "別のキーワードを使用するか、入力ミスがないか確認するか、フィルタを変更してください。";
+
+"search.results.offline.header" = "インターネット接続がありません";
+"search.results.offline.detail" = "%1$@のアイテムを検索するにはオンラインである必要があります。";
+"search.results.offline.detail.archive" = "アーカイブしました";
+"search.results.offline.detail.all" = "すべて";
+
+// Settings
+"settings.thankyou.credits" = "Pocket をご利用いただきありがとうございます";
+"settings.PocketForiOS %@ (%@)" = "iOS 向け Pocket %1$@ (%2$@)";
+"settings.openSourceLicenses" = "オープンソースライセンス";
+"settings.logout" = "ログアウト";
+"settings.logout.areYouSureMessage" = "アカウントからログアウトされ、オフライン表示用に保存されたアイテムがすべてデバイスから削除されます。";
+"settings.logout.areyousure" = "よろしいですか？";
+"settings.help" = "サポートに問い合わせる";
+"settings.accountManagement" = "アカウント管理";
+"settings.accountManagement.deleteAccount" = "アカウントを削除";
+"settings.accountManagement.deleteYourAccount" = "アカウントを削除";
+
+"settings.accountManagement.deleteAccount.warning" = "警告: この操作は取り消せません";
+"settings.accountManagement.deleteAccount.premiumConfirmation" = "アカウントを削除するには、**こちらから Premium の購読をキャンセルする**必要があります。";
+"settings.accountManagement.deleteAccount.deletionConfirmation" = "Pocket のアカウントとデータが**完全に削除**されることを理解したことになります。";
+//Links to a help article on how to cancel your subscription
+"settings.accountManagement.deleteAccount.howToCancel" = "Pocket Premium の購読をキャンセルする方法";
+//Loading screen showing that the account deletion is in progress
+"settings.accountManagement.deleteAccount.deleting" = "アカウントを削除中";
+"settings.accountManagement.deleteAccount.error.body" = "エラーが発生したため、お客様のアカウントを削除することができません。後ほどもう一度お試しください。";
+"settings.accountManagement.restoreSubscription" = "既存の購読を復元";
+"settings.accountManagement.restoreSubscription.restoreSuccessful.title" = "復元しました";
+"settings.accountManagement.restoreSubscription.restoreSuccessful.message" = "Pocket Premium の購読が復元されました。";
+"settings.accountManagement.restoreSubscription.restoreNotSuccessful.title" = "復元できませんでした";
+"settings.accountManagement.restoreSubscription.restoreNotSuccessful.message" = "購読が見つかりませんでした。既に購読済みであると確信している場合は、support@getpocket.com までメールにてお問い合わせください。";
+
+"settings.noInternet.header" = "インターネット接続がありません";
+"settings.noInternet.youMustBeOnline" = "Pocket Premium にアップグレードするにはオンラインである必要があります。接続をご確認のうえ、もう一度お試しください。";
+
+"settings.goPremiumRow" = "Premium に登録";
+"settings.premiumSubscriptionRow" = "Premium 購読";
+"settings.premiumRow" = "Premium に登録";
+"settings.premium.settings.thanksForSubscribing" = "Pocket Premium のご購読ありがとうございます！";
+"settings.premium.settings.subscriptionStatus" = "購読状況";
+"settings.premium.settings.subscription" = "購読";
+"settings.premium.settings.datePurchased" = "購入日";
+"settings.premium.settings.renewalDate" = "更新日";
+"settings.premium.settings.purchaseLocation" = "購入場所";
+"settings.premium.settings.price" = "価格";
+"settings.premium.settings.yourSubscription" = "あなたの購読";
+"settings.premium.settings.manageYourSubscription" = "購読を管理";
+"settings.premium.settings.questionOrFeedback" = "ご意見やご感想がありますか？";
+"settings.premium.settings.pocketPremiumFAQ" = "Pocket Premium FAQ（よくある質問）";
+// this refers to an action to open an email
+"settings.premium.settings.contactPocketSupport" = "Pocket サポートに問い合わせ";
+
+//Sorting Options
+"sortingOption.sortBy" = "並び替え：";
+"sortingOption.NewestSaved" = "新しい保存コンテンツ";
+"sortingOption.oldestSaved" = "古い保存コンテンツ";
+"sortingOption.shortestToRead" = "短いコンテンツ";
+"sortingOption.longestToRead" = "長いコンテンツ";
+
+// Tags
+"tags.upsell.tagStoriesFasterThanEver" = "ストーリーのタグ付けを高速化—Pocket Premium が最近使用したタグを提案します。";
+"tags.upsell.getPocketPremium" = "Pocket Premium に登録";
+"tags.section.recentTags" = "最近のタグ";
+"tags.section.userTags" = "マイタグ";
+
+"tags.empty.header" = "このタグで保存されているコンテンツはありません。";
+"tags.empty.detail" = "保存内容にトピック別のタグをつければ、後で見つけやすくなります。";
+"tags.empty.button" = "タグを付ける方法";
+
+"tags.notTagged" = "タグ付けされていません";
+
+//Reader 
+"reader.activity.save" = "保存";
+"reader.activity.report" = "報告する";
+"reader.activity.delete" = "削除";
+"reader.activity.archive" = "アーカイブ";
+"reader.activity.favorite" = "お気に入り";
+"reader.activity.unfavorite" = "お気に入り解除";
+"reader.activity.moveToSaves" = "保存アイテムに移動";
+
+//Recommendation
+"recommendation.save" = "保存";
+"recommendation.saved" = "保存しました";
+
+//Premium
+"premium.infoView.terms.privacyPolicy" = "プライバシーポリシー";
+"premium.infoView.terms.TermsOfService" = "サービス利用規約";
+
+"premium.success.message" = "正式にPocket Premiumメンバーになりました。広告なし、カスタマイズ可能な、永久版のPocketにようこそ。きっと気に入っていただけるはず！思う存分お楽しみください。";
+
+//The title of our Premium Membership page spans 2 lines. The '\n' character denotes a newline character and is not shown to the user.
+"premium.upgradeView.PremiumMembership" = "Premium\nメンバーシップ";
+"premium.upgradeView.comingSoon" = "近日公開！";
+// Description of the premium uprgade view
+"premium.upgradeView.description" = "購読料は iTunes のアカウントを通してクレジットカードに請求されます。購読は購読期間が終了する24時間前までにキャンセルしない限り自動的に更新され、アカウントごとに %1$@（月額）または %2$@（年額）が請求されます。購読は購読期間が終了する24時間前までにキャンセルしない限り、自動的に更新されます。購読をその場で中止することはできません。購読の管理および自動更新の無効化は、購読契約後にアカウント設定から行うことができます。残った購読期間の購読料の払い戻しはできません。";
+"premium.upgradeView.save" = "保存";
+"premium.upgradeView.permanentLibrary" = "コンテンツを永久に保存できるライブラリ";
+//Ads will not be shown to Premuim users
+"premium.upgradeView.adFree" = "広告なし";
+"premium.upgradeView.suggestedTags" = "おすすめタグ";
+"premium.upgradeView.fullTextSearch" = "全文検索";
+"premium.upgradeView.unlimitedHighlights" = "何度でもハイライト";
+"premium.upgradeView.premiumFonts" = "Premium 専用フォント";
+
+
+//=======================
+//Old format
+
 "Home" = "ホーム";
 "Archive" = "アーカイブ";
 "Pocket" = "Pocket";
@@ -12,44 +207,12 @@
 "No Internet Connection" = "インターネット接続がありません";
 "Looks like you're offline. Try checking your mobile data or wifi." = "オフラインのようです。モバイルデータまたは Wi-Fi の接続を確認してください。";
 
-"Keep your list fresh and clean" = "リストを最新に保ちながら整理";
-"Archive the saves you're finished with\n using the archive icon." = "アーカイブアイコンを使用すると、読み終えた保存コンテンツをアーカイブできます。";
-"How to archive" = "アーカイブする方法";
-
-"Find your favorites here" = "お気に入りはこちらに表示";
-"Hit the star icon to favorite an article and find it faster." = "記事で星型アイコンを押すと、お気に入りに登録でき、後で見つけやすくなります。";
-
-"Start building your Pocket list" = "Pocket リストを作成する";
-"How to save" = "保存方法";
-
-"No saves with this tag." = "このタグで保存されているコンテンツはありません。";
-"Tag your saves by topic to find them later." = "保存内容にトピック別のタグをつければ、後で見つけやすくなります。";
-"How to tag" = "タグを付ける方法";
-
-"Search" = "検索";
-"All" = "すべて";
-"Tagged" = "タグ付けしました";
-"Favorites" = "お気に入り";
-"Sort/Filter" = "並べ替え/フィルター";
-
-"Save" = "保存";
-"Report" = "報告する";
-"Delete" = "削除";
-"Archive" = "アーカイブ";
-"Favorite" = "お気に入り";
-"Unfavorite" = "お気に入り解除";
-"Move to Saves" = "保存アイテムに移動";
 "Add Tags" = "タグを追加";
 "Tags" = "タグ";
 "Share" = "共有";
+"carousel.listen" = "聴く";
 
 "Saves" = "保存アイテム";
-
-"Sort by" = "並び替え：";
-"Newest saved" = "新しい保存コンテンツ";
-"Oldest saved" = "古い保存コンテンツ";
-"Shortest to read" = "短いコンテンツ";
-"Longest to read" = "長いコンテンツ";
 
 "Display Settings" = "表示設定";
 "Font" = "フォント";
@@ -130,89 +293,6 @@
 "It contains misinformation" = "誤った情報が含まれています";
 "Other" = "その他";
 
-//General Messages
-"general.oops" = "エラーが発生しました。もう一度お試しください。";
-
-// Tags
-"tags.upsell.tagStoriesFasterThanEver" = "ストーリーのタグ付けを高速化—Pocket Premium が最近使用したタグを提案します。";
-"tags.upsell.getPocketPremium" = "Pocket Premium に登録";
-"tags.section.recentTags" = "最近のタグ";
-"tags.section.userTags" = "マイタグ";
-
-// Search
-"search.errorMessage" = "エラーが発生したため、必要なデータを表示できません。後ほどもう一度お試しください。";
-"search.limitedResults" = "検索結果が制限されています";
-"search.offlineMessage" = "オフラインの状態では、タイトルと URL の検索のみ可能です。Premium の全文検索を使用するには、インターネットに接続してください。";
-"search.banner.errorMessage." = "エラーが発生し、完全な検索結果を表示することができません。後ほどもう一度お試しください。";
-"search.error.view.needsInternet" = "このアイテムを見るには、インターネット接続が必要です。";
-"search.recent" = "最近の検索";
-"search.swipe.unableToMove" = "移動できません";
-"search.swipe.archive" = "アーカイブ";
-"search.swipe.moveToSaves" = "保存アイテムに移動";
-
-// Settings
-"settings.thankyou.credits" = "Pocket をご利用いただきありがとうございます";
-"settings.PocketForiOS %@ (%@)" = "iOS 向け Pocket %1$@ (%2$@)";
-"settings.openSourceLicenses" = "オープンソースライセンス";
-"settings.logout" = "ログアウト";
-"settings.logout.areYouSureMessage" = "アカウントからログアウトされ、オフライン表示用に保存されたアイテムがすべてデバイスから削除されます。";
-"settings.logout.areyousure" = "よろしいですか？";
-"settings.help" = "サポートに問い合わせる";
-"settings.accountManagement" = "アカウント管理";
-"settings.accountManagement.deleteAccount" = "アカウントを削除";
-"settings.accountManagement.deleteYourAccount" = "アカウントを削除";
-
-"settings.accountManagement.deleteAccount.warning" = "警告: この操作は取り消せません";
-"settings.accountManagement.deleteAccount.premiumConfirmation" = "アカウントを削除するには、**こちらから Premium の購読をキャンセルする**必要があります。";
-"settings.accountManagement.deleteAccount.deletionConfirmation" = "Pocket のアカウントとデータが**完全に削除**されることを理解したことになります。";
-//Links to a help article on how to cancel your subscription
-"settings.accountManagement.deleteAccount.howToCancel" = "Pocket Premium の購読をキャンセルする方法";
-//Loading screen showing that the account deletion is in progress
-"settings.accountManagement.deleteAccount.deleting" = "アカウントを削除中";
-"settings.accountManagement.deleteAccount.error.body" = "エラーが発生したため、お客様のアカウントを削除することができません。後ほどもう一度お試しください。";
-"settings.accountManagement.restoreSubscription" = "既存の購読を復元";
-"settings.accountManagement.restoreSubscription.restoreSuccessful.title" = "復元しました";
-"settings.accountManagement.restoreSubscription.restoreSuccessful.message" = "Pocket Premium の購読が復元されました。";
-"settings.accountManagement.restoreSubscription.restoreNotSuccessful.title" = "復元できませんでした";
-"settings.accountManagement.restoreSubscription.restoreNotSuccessful.message" = "購読が見つかりませんでした。既に購読済みであると確信している場合は、support@getpocket.com までメールにてお問い合わせください。";
-
-"settings.noInternet.youMustBeOnline" = "Pocket Premium にアップグレードするにはオンラインである必要があります。接続をご確認のうえ、もう一度お試しください。";
-
-//Shown to the user after they deleted their account
-"login.deletedAccount.banner.title" = "Pocket アカウントを削除しました";
-//Shown to the user after they deleted their account
-"login.deletedAccount.banner.detail" = "どのような点を改善してほしいですか？";
-//Action button for a user to take a survey
-"login.deletedAccount.banner.action" = "短いアンケートに回答する";
-
-//List view
-"item.list.min" = "%1$@分";
-// Short name of the monthly premium subscription
-"Monthly" = "月次";
-// Suffix of the monthly premium subscription price description
-"month" = "月";
-// Suffix of the annual premium subscription price description
-"year" = "年";
-// Short name of the annual premium subscription
-"Annual" = "年次";
-// Description of the premium uprgade view
-"premium.upgradeview.description" = "購読料は iTunes のアカウントを通してクレジットカードに請求されます。購読は購読期間が終了する24時間前までにキャンセルしない限り自動的に更新され、アカウントごとに %1$@（月額）または %2$@（年額）が請求されます。購読は購読期間が終了する24時間前までにキャンセルしない限り、自動的に更新されます。購読をその場で中止することはできません。購読の管理および自動更新の無効化は、購読契約後にアカウント設定から行うことができます。残った購読期間の購読料の払い戻しはできません。";
-"settings.goPremiumRow" = "Premium に登録";
-"settings.premiumSubscriptionRow" = "Premium 購読";
 "Hooray!" = "やった～！";
-"premium.success.message" = "正式にPocket Premiumメンバーになりました。広告なし、カスタマイズ可能な、永久版のPocketにようこそ。きっと気に入っていただけるはず！思う存分お楽しみください。";
+
 "back.to.pocket" = "Pocket に戻る";
-"settings.premiumRow" = "Premium に登録";
-"settings.premium.settings.thanksForSubscribing" = "Pocket Premium のご購読ありがとうございます！";
-"settings.premium.settings.subscriptionStatus" = "購読状況";
-"settings.premium.settings.subscription" = "購読";
-"settings.premium.settings.datePurchased" = "購入日";
-"settings.premium.settings.renewalDate" = "更新日";
-"settings.premium.settings.purchaseLocation" = "購入場所";
-"settings.premium.settings.price" = "価格";
-"settings.premium.settings.yourSubscription" = "あなたの購読";
-"settings.premium.settings.manageYourSubscription" = "購読を管理";
-"settings.premium.settings.questionOrFeedback" = "ご意見やご感想がありますか？";
-"settings.premium.settings.pocketPremiumFAQ" = "Pocket Premium FAQ（よくある質問）";
-// this refers to an action to open an email
-"settings.premium.settings.contactPocketSupport" = "Pocket サポートに問い合わせ";

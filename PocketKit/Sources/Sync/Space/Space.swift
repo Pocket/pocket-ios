@@ -133,6 +133,7 @@ public class Space {
     func makeChildBackgroundContext() -> NSManagedObjectContext {
         let context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
         context.parent = backgroundContext
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
         context.automaticallyMergesChangesFromParent = true
         return context
     }
@@ -158,12 +159,8 @@ extension Space {
         return try fetch(Requests.fetchItems())
     }
 
-    func fetchItem(byRemoteID id: String, context: NSManagedObjectContext? = nil) throws -> Item? {
-        return try fetch(Requests.fetchItem(byRemoteID: id), context: context).first
-    }
-
-    func fetchItem(byURL url: URL) throws -> Item? {
-        return try fetch(Requests.fetchItem(byURL: url)).first
+    func fetchItem(byURL url: URL, context: NSManagedObjectContext? = nil) throws -> Item? {
+        return try fetch(Requests.fetchItem(byURL: url), context: context).first
     }
 
     func deleteUnsavedItems() throws {
@@ -211,12 +208,8 @@ extension Space {
 
 // MARK: SavedItem
 extension Space {
-    func fetchSavedItem(byRemoteID remoteID: String, context: NSManagedObjectContext? = nil) throws -> SavedItem? {
-        return try fetch(Requests.fetchSavedItem(byRemoteID: remoteID), context: context).first
-    }
-
-    func fetchSavedItem(byRemoteItemID remoteItemID: String) throws -> SavedItem? {
-        return try fetch(Requests.fetchSavedItem(byRemoteItemID: remoteItemID)).first
+    func fetchSavedItem(byURL url: URL, context: NSManagedObjectContext? = nil) throws -> SavedItem? {
+        return try fetch(Requests.fetchSavedItem(byURL: url), context: context).first
     }
 
     func fetchSavedItem(byURL url: URL) throws -> SavedItem? {
@@ -388,14 +381,19 @@ extension Space {
         let context = context ?? backgroundContext
         let fetchRequest = Requests.fetchTag(byName: name)
         fetchRequest.fetchLimit = 1
-        let fetchedTag = (try? fetch(fetchRequest, context: context).first) ?? Tag(context: context)
-        guard fetchedTag.name == nil else { return fetchedTag }
-        fetchedTag.name = name
-        return fetchedTag
+        if let fetchedTag = (try? fetch(fetchRequest, context: context).first) {
+            return fetchedTag
+        }
+        let createTag = Tag(context: context)
+        createTag.name = name
+        return createTag
     }
 
-    func fetchTag(byID id: String) throws -> Tag? {
-        try fetch(Requests.fetchTag(byID: id)).first
+    func fetchTag(by name: String, context: NSManagedObjectContext? = nil) throws -> Tag? {
+        let context = context ?? backgroundContext
+        let fetchRequest = Requests.fetchTag(byName: name)
+        fetchRequest.fetchLimit = 1
+        return try fetch(fetchRequest, context: context).first
     }
 
     func retrieveTags(excluding tags: [String]) throws -> [Tag] {

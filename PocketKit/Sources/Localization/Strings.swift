@@ -250,6 +250,12 @@ public enum Localization {
     /// Unfavorite
     public static let unfavorite = Localization.tr("Localizable", "itemAction.unfavorite", fallback: "Unfavorite")
   }
+  public enum ItemList {
+    public enum Edit {
+      /// Editing your list is not available in this version of Pocket, but will be returning soon!
+      public static let banner = Localization.tr("Localizable", "itemList.edit.banner", fallback: "Editing your list is not available in this version of Pocket, but will be returning soon!")
+    }
+  }
   public enum Itemlist {
     public enum Filter {
       /// All
@@ -378,6 +384,10 @@ public enum Localization {
       /// We’re experiencing an error and can’t show you full search results. Please try again later.
       public static let errorMessage = Localization.tr("Localizable", "search.banner.errorMessage.", fallback: "We’re experiencing an error and can’t show you full search results. Please try again later.")
     }
+    public enum Edit {
+      /// Editing your search results is not available in this version of Pocket, but will be returning soon!
+      public static let banner = Localization.tr("Localizable", "search.edit.banner", fallback: "Editing your search results is not available in this version of Pocket, but will be returning soon!")
+    }
     public enum Empty {
       /// Search by title or URL
       public static let header = Localization.tr("Localizable", "search.empty.header", fallback: "Search by title or URL")
@@ -400,17 +410,13 @@ public enum Localization {
         public static let header = Localization.tr("Localizable", "search.results.empty.header", fallback: "No results found")
       }
       public enum Offline {
-        /// You must be online to search %@ items.
-        public static func detail(_ p1: Any) -> String {
-          return Localization.tr("Localizable", "search.results.offline.detail", String(describing: p1), fallback: "You must be online to search %@ items.")
-        }
         /// No Internet Connection
         public static let header = Localization.tr("Localizable", "search.results.offline.header", fallback: "No Internet Connection")
         public enum Detail {
-          /// all
-          public static let all = Localization.tr("Localizable", "search.results.offline.detail.all", fallback: "all")
-          /// archived
-          public static let archive = Localization.tr("Localizable", "search.results.offline.detail.archive", fallback: "archived")
+          /// You must be online to search all items.
+          public static let all = Localization.tr("Localizable", "search.results.offline.detail.all", fallback: "You must be online to search all items.")
+          /// You must be online to search archived items.
+          public static let archive = Localization.tr("Localizable", "search.results.offline.detail.archive", fallback: "You must be online to search archived items.")
         }
       }
     }

@@ -22,6 +22,7 @@ class SearchViewModelTests: XCTestCase {
     private var subscriptions: [AnyCancellable] = []
     private var subscriptionStore: SubscriptionStore!
     private var itemsController: MockSavedItemsController!
+    private var notificationCenter: NotificationCenter!
 
     override func setUpWithError() throws {
         networkPathMonitor = MockNetworkPathMonitor()
@@ -29,6 +30,7 @@ class SearchViewModelTests: XCTestCase {
         tracker = MockTracker()
         userDefaults = UserDefaults(suiteName: "SearchViewModelTests")
         space = .testSpace()
+        notificationCenter = .default
         searchService = MockSearchService()
         source.stubMakeSearchService { self.searchService }
 
@@ -58,9 +60,15 @@ class SearchViewModelTests: XCTestCase {
         user: User,
         userDefaults: UserDefaults? = nil,
         source: Source? = nil,
-        tracker: Tracker? = nil
+        tracker: Tracker? = nil,
+        notificationCenter: NotificationCenter? = nil
     ) async -> SearchViewModel {
-        let premiumViewModel = await PremiumUpgradeViewModel(store: subscriptionStore, tracker: MockTracker(), source: .search, networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor)
+        let premiumViewModel = await PremiumUpgradeViewModel(
+            store: subscriptionStore,
+            tracker: MockTracker(),
+            source: .search,
+            networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor
+        )
         return SearchViewModel(
             networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor,
             user: user,
@@ -68,6 +76,7 @@ class SearchViewModelTests: XCTestCase {
             source: source ?? self.source,
             tracker: tracker ?? self.tracker,
             store: subscriptionStore ?? self.subscriptionStore,
+            notificationCenter: notificationCenter ?? self.notificationCenter,
             premiumUpgradeViewModelFactory: {_ in
                 premiumViewModel
             }

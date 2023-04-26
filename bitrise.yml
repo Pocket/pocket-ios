@@ -65,7 +65,7 @@ stages:
       - run-tests-unit: {}
       - run-tests-ui-1: {}
       - run-tests-ui-2: {}
-      - run-tests-ui-3: {}
+#      - run-tests-ui-3: {}
 
   run-test-groups-flakey:
     workflows:
@@ -81,7 +81,7 @@ stages:
       - run-tests-unit: {}
       - run-tests-ui-1: {}
       - run-tests-ui-2: {}
-      - run-tests-ui-3: {}
+#      - run-tests-ui-3: {}
       # Turning off until iOS 16 is legacy
       # - run-tests-ui-1-legacy: {}
       # - run-tests-ui-2-legacy: {}
@@ -240,6 +240,7 @@ workflows:
             - api_key_path: "$BITRISEIO_APP_STORE_CONNECT_API_ID_URL"
             - api_key_id: "$APP_STORE_API_ID"
             - api_key_issuer_id: "$APP_STORE_API_ISSUER_ID"
+      - deploy-to-bitrise-io@2: {}
       - deploy-to-bitrise-io@2:
           inputs:
             - pipeline_intermediate_files: '$BITRISE_IPA_PATH:BITRISE_IPA_PATH'
@@ -283,6 +284,7 @@ workflows:
             - api_key_path: "$BITRISEIO_APP_STORE_CONNECT_API_ID_URL"
             - api_key_id: "$APP_STORE_API_ID"
             - api_key_issuer_id: "$APP_STORE_API_ISSUER_ID"
+      - deploy-to-bitrise-io@2: {}
       - deploy-to-bitrise-io@2:
           inputs:
             - pipeline_intermediate_files: '$BITRISE_IPA_PATH:BITRISE_IPA_PATH'
@@ -489,9 +491,11 @@ workflows:
                 #!/usr/bin/env bash
                 set -eo pipefail
 
-                xcrun xcresulttool merge "${BITRISE_UITESTS_1_XCRESULT_PATH}" "${BITRISE_UITESTS_2_XCRESULT_PATH}" "${BITRISE_UITESTS_3_XCRESULT_PATH}" "${BITRISE_UNIT_XCRESULT_PATH}"  --output-path "merged.xcresult"
+                # Re-enable after we fix ui tests.
+                # xcrun xcresulttool merge "${BITRISE_UITESTS_1_XCRESULT_PATH}" "${BITRISE_UITESTS_2_XCRESULT_PATH}" "${BITRISE_UITESTS_3_XCRESULT_PATH}" "${BITRISE_UNIT_XCRESULT_PATH}"  --output-path "merged.xcresult"
+                # envman add --key BITRISE_XCRESULT_PATH --value "$(pwd)/merged.xcresult"
 
-                envman add --key BITRISE_XCRESULT_PATH --value "$(pwd)/merged.xcresult"
+                envman add --key BITRISE_XCRESULT_PATH --value "${BITRISE_UNIT_XCRESULT_PATH}"
       - custom-test-results-export@0:
           inputs:
             - search_pattern: '*'

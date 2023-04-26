@@ -29,20 +29,6 @@ class HomeTests: XCTestCase {
             return .fallbackResponses(apiRequest: apiRequest)
         }
 
-        server.routes.get("/hello") { _, _ in
-            Response {
-                Status.ok
-                Fixture.data(name: "hello", ext: "html")
-            }
-        }
-
-        server.routes.get("/item-1") { _, _ in
-            Response {
-                Status.ok
-                Fixture.data(name: "hello", ext: "html")
-            }
-        }
-
         try server.start()
     }
 
@@ -75,7 +61,7 @@ class HomeTests: XCTestCase {
         async let slate1Rec1 = snowplowMicro.getFirstEvent(with: "home.slate.article.impression", recommendationId: "slate-1-rec-1")
         async let slate1Rec2 = snowplowMicro.getFirstEvent(with: "home.slate.article.impression", recommendationId: "slate-1-rec-2")
         async let slate2Rec1 = snowplowMicro.getFirstEvent(with: "home.slate.article.impression", recommendationId: "slate-2-rec-1")
-        async let slate2Rec2 = snowplowMicro.getFirstEvent(with: "home.slate.article.impression", recommendationId: "slate-1-rec-2")
+        async let slate2Rec2 = snowplowMicro.getFirstEvent(with: "home.slate.article.impression", recommendationId: "slate-2-rec-2")
 
         let recs = await [slate1Rec1, slate1Rec2, slate2Rec1, slate2Rec2]
         let loadedSlate1Rec1 = recs[0]!
@@ -83,10 +69,10 @@ class HomeTests: XCTestCase {
         let loadedSlate2Rec1 = recs[2]!
         let loadedSlate2Rec2 = recs[3]!
 
-        snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate1Rec1, url: "http://localhost:8080/item-1")
-        snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate1Rec2, url: "https://example.com/item-2")
-        snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate2Rec1, url: "https://example.com/item-1")
-        snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate2Rec2, url: "https://example.com/item-2")
+        snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate1Rec1, url: "http://localhost:8080/slate-1-rec-1")
+        snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate1Rec2, url: "https://example.com/slate-1-rec-2")
+        snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate2Rec1, url: "https://example.com/recommended-item-3")
+        snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate2Rec2, url: "https://getpocket.com/explore/item/article-4")
     }
 
     @MainActor
@@ -110,14 +96,32 @@ class HomeTests: XCTestCase {
     }
 
     func test_tappingRecentSavesItem_showsWebViewWhenItemIsImage() {
+        server.routes.get("/item-1") { _, _ in
+            Response {
+                Status.ok
+                Fixture.data(name: "hello", ext: "html")
+            }
+        }
         test_tappingRecentSavesItem_showsWebView("Item 1")
     }
 
     func test_tappingRecentSavesItem_showsWebViewWhenItemIsVideo() {
+        server.routes.get("/item-2") { _, _ in
+             Response {
+                 Status.ok
+                 Fixture.data(name: "hello", ext: "html")
+             }
+         }
         test_tappingRecentSavesItem_showsWebView("Item 2")
     }
 
     func test_tappingRecentSavesItem_showsWebViewWhenItemIsNotAnArticle() {
+        server.routes.get("/item-3") { _, _ in
+             Response {
+                 Status.ok
+                 Fixture.data(name: "hello", ext: "html")
+             }
+         }
         test_tappingRecentSavesItem_showsWebView("Item 3")
     }
 
@@ -209,6 +213,13 @@ class HomeTests: XCTestCase {
     }
 
     func test_tappingRecommendationCell_whenItemIsNotSaved_andItemIsNotSyndicated_opensItemInWebView() {
+        server.routes.get("/slate-1-rec-1") { _, _ in
+            Response {
+                Status.ok
+                Fixture.data(name: "hello", ext: "html")
+            }
+        }
+
         app.launch().homeView.recommendationCell("Slate 1, Recommendation 1").wait().tap()
         app.webReaderView
             .staticText(matching: "Hello, world")
@@ -249,11 +260,11 @@ class HomeTests: XCTestCase {
 
             if apiRequest.isToSaveAnItem {
                 defer { saveRequestExpectation.fulfill() }
-                XCTAssertTrue(apiRequest.contains("http:\\/\\/localhost:8080\\/item-1"))
-                return .saveItem()
+                XCTAssertTrue(apiRequest.contains("http:\\/\\/localhost:8080\\/slate-1-rec-1"))
+                return .saveItem("save-item")
             } else if apiRequest.isToArchiveAnItem {
                 defer { archiveRequestExpectation.fulfill() }
-                return .archive()
+                return .archive(apiRequest: apiRequest)
             }
             return .fallbackResponses(apiRequest: apiRequest)
         }
@@ -281,16 +292,16 @@ class HomeTests: XCTestCase {
         server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isToSaveAnItem {
-                if apiRequest.contains("http:\\/\\/localhost:8080\\/item-1") {
+                if apiRequest.contains("http:\\/\\/localhost:8080\\/slate-1-rec-1") {
                     return Response.saveItem("save-recommendation-1")
-                } else if apiRequest.contains("https:\\/\\/example.com\\/item-2") {
+                } else if apiRequest.contains("https:\\/\\/example.com\\/slate-1-rec-2") {
                     return Response.saveItem("save-recommendation-2")
                 }
             } else if apiRequest.isToArchiveAnItem {
                 if apiRequest.contains("slate-1-rec-1-saved-item") {
                     XCTFail("Received archive request for unexpected item")
                 } else {
-                    return Response.archive()
+                    return Response.archive(apiRequest: apiRequest)
                 }
             }
 
@@ -394,7 +405,7 @@ extension HomeTests {
         home.recommendationCell("Slate 1, Recommendation 1").wait()
 
         home.pullToRefresh()
-        home.recommendationCell("Updated Slate 1, Recommendation 1").wait()
+        scrollTo(element: home.recommendationCell("Updated Slate 1, Recommendation 1").element, in: home.element, direction: .up)
     }
 
     // Disabled
