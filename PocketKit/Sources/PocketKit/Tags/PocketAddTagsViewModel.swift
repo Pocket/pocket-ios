@@ -127,12 +127,12 @@ extension PocketAddTagsViewModel {
         tracker.track(event: Events.Tags.saveTags(itemUrl: item.url))
     }
 
-    func trackAddTag() {
-        tracker.track(event: Events.Tags.addTag(itemUrl: item.url))
+    func trackAddTag(_ tag: String) {
+        tracker.track(event: Events.Tags.addTag(tag, itemUrl: item.url))
     }
 
-    func trackRemoveTag() {
-        tracker.track(event: Events.Tags.remoteInputTag(itemUrl: item.url))
+    func trackRemoveTag(_ tag: String) {
+        tracker.track(event: Events.Tags.removeInputTag(tag, itemUrl: item.url))
     }
 
     func trackUserEnterText(with text: String) {
@@ -152,9 +152,9 @@ extension PocketAddTagsViewModel {
         case .notTagged:
             return
         case .recent:
-            tracker.track(event: Events.Tags.selectRecentTagToAddToItem())
+            tracker.track(event: Events.Tags.selectRecentTagToAddToItem(tagType.name))
         case .tag:
-            tracker.track(event: Events.Tags.selectTagToAddToItem())
+            tracker.track(event: Events.Tags.selectTagToAddToItem(tagType.name))
         }
     }
 }
