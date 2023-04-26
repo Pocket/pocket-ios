@@ -10,6 +10,7 @@ import NIO
 class SavesTests: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
+    var snowplowMicro = SnowplowMicro()
 
     override func setUpWithError() throws {
         continueAfterFailure = false
@@ -75,8 +76,10 @@ class SavesTests: XCTestCase {
         try server.start()
     }
 
-    override func tearDownWithError() throws {
+    @MainActor
+    override func tearDown() async throws {
         try server.stop()
+        await snowplowMicro.assertBaselineSnowplowExpectation()
         app.terminate()
     }
 
@@ -116,7 +119,7 @@ class SavesTests: XCTestCase {
         app.saves.itemView(matching: "Item 3").wait()
     }
 
-    func test_tappingItem_displaysNativeReaderView() {
+    func test_tappingItem_displaysNativeReaderView() async {
         app.launch().tabBar.savesButton.wait().tap()
 
         app
@@ -162,6 +165,10 @@ class SavesTests: XCTestCase {
                 return
             }
         }
+
+        let contentOpenEvent = await snowplowMicro.getFirstEvent(with: "saves.card.open")
+        contentOpenEvent!.getUIContext()!.assertHas(type: "card")
+        contentOpenEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
     }
 
     func test_webReader_displaysWebContent() {
@@ -293,19 +300,32 @@ class SavesTests: XCTestCase {
 // MARK: - Web View
 
 extension SavesTests {
-    func test_list_showsWebViewWhenItemIsImage() {
-        test_list_showsWebView(at: 0)
+    func test_list_showsWebViewWhenItemIsImage() async {
+        await test_list_showsWebView(at: 0)
+
+        let contentOpenEvent = await snowplowMicro.getFirstEvent(with: "saves.card.open")
+        contentOpenEvent!.getUIContext()!.assertHas(type: "card")
+        contentOpenEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/item-1")
     }
 
-    func test_list_showsWebViewWhenItemIsVideo() {
-        test_list_showsWebView(at: 1)
+    func test_list_showsWebViewWhenItemIsVideo() async {
+        await test_list_showsWebView(at: 1)
+
+        let contentOpenEvent = await snowplowMicro.getFirstEvent(with: "saves.card.open")
+        contentOpenEvent!.getUIContext()!.assertHas(type: "card")
+        contentOpenEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/item-2")
     }
 
-    func test_list_showsWebViewWhenItemIsNotAnArticle() {
-        test_list_showsWebView(at: 2)
+    func test_list_showsWebViewWhenItemIsNotAnArticle() async {
+        await test_list_showsWebView(at: 2)
+
+        let contentOpenEvent = await snowplowMicro.getFirstEvent(with: "saves.card.open")
+        contentOpenEvent!.getUIContext()!.assertHas(type: "card")
+        contentOpenEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/item-3")
     }
 
-    func test_list_showsWebView(at index: Int) {
+    @MainActor
+    func test_list_showsWebView(at index: Int) async {
         server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
 
@@ -370,8 +390,8 @@ extension SavesTests {
             .wait()
     }
 
-    func test_webview_validateCustomItemActions_whenNavigateToAnotherPage() {
-        test_list_showsWebView(at: 0)
+    func test_webview_validateCustomItemActions_whenNavigateToAnotherPage() async {
+        await test_list_showsWebView(at: 0)
 
         app
             .webReaderView
