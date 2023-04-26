@@ -3,7 +3,7 @@
     "upsertSavedItem": {
       "__typename": "[type-name-here]",
       "remoteID": "saved-item-1",
-      "url": "https://example.com/item-1",
+      "url": "http://example.com/add-me-to-your-list",
       "_createdAt": 0,
       "_deletedAt": null,
       "archivedAt": null,
