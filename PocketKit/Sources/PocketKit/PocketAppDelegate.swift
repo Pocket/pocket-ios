@@ -21,6 +21,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     private let brazeService: BrazeProtocol
     private let tracker: Tracker
     private let sessionBackupUtility: SessionBackupUtility
+    private let consumerKey: String
 
     let notificationService: PushNotificationService
 
@@ -39,6 +40,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         self.sessionBackupUtility = services.sessionBackupUtility
 
         self.notificationService = services.notificationService
+        self.consumerKey = Keys.shared.pocketApiConsumerKey
     }
 
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
@@ -76,13 +78,24 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
             )
         }
 
+        // Setup adjust early on because we attach the ad id to the UserEntity.
+        enableAdjust()
+
+        // Reset and attach at least an api user entity on app launch
+        self.tracker.resetPersistentEntities([
+            APIUserEntity(consumerKey: self.consumerKey)
+        ])
+
+        if let currentSession = appSession.currentSession {
+            // Attach a user entity at launch if it exists
+            tracker.addPersistentEntity(UserEntity(guid: currentSession.guid, userID: currentSession.userIdentifier, adjustAdId: Adjust.adid()))
+        }
+
         self.refreshCoordinators.forEach({$0.initialize()})
         DispatchQueue.global(qos: .background).async { [weak self] in
             self?.source.restore()
         }
         Textiles.initialize()
-
-        enableAdjust()
 
         migrateLegacyAccount()
 

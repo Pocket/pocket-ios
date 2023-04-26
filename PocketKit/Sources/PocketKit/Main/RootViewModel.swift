@@ -73,9 +73,9 @@ public class RootViewModel: ObservableObject {
 
     private func setUpSession(_ session: SharedPocketKit.Session) {
         tracker.resetPersistentEntities([
-            APIUserEntity(consumerKey: Keys.shared.pocketApiConsumerKey)
+            APIUserEntity(consumerKey: Keys.shared.pocketApiConsumerKey),
+            UserEntity(guid: session.guid, userID: session.userIdentifier, adjustAdId: Adjust.adid())
         ])
-        tracker.addPersistentEntity(UserEntity(guid: session.guid, userID: session.userIdentifier, adjustAdId: Adjust.adid()))
         Log.setUserID(session.userIdentifier)
     }
 
