@@ -119,6 +119,7 @@ class SavesTests: XCTestCase {
         app.saves.itemView(matching: "Item 3").wait()
     }
 
+    @MainActor
     func test_tappingItem_displaysNativeReaderView() async {
         app.launch().tabBar.savesButton.wait().tap()
 
@@ -301,7 +302,7 @@ class SavesTests: XCTestCase {
 
 extension SavesTests {
     func test_list_showsWebViewWhenItemIsImage() async {
-        await test_list_showsWebView(at: 0)
+        await test_list_showsWebView(for: "Item 1")
 
         let contentOpenEvent = await snowplowMicro.getFirstEvent(with: "saves.card.open")
         contentOpenEvent!.getUIContext()!.assertHas(type: "card")
@@ -309,7 +310,7 @@ extension SavesTests {
     }
 
     func test_list_showsWebViewWhenItemIsVideo() async {
-        await test_list_showsWebView(at: 1)
+        await test_list_showsWebView(for: "Item 2")
 
         let contentOpenEvent = await snowplowMicro.getFirstEvent(with: "saves.card.open")
         contentOpenEvent!.getUIContext()!.assertHas(type: "card")
@@ -317,11 +318,36 @@ extension SavesTests {
     }
 
     func test_list_showsWebViewWhenItemIsNotAnArticle() async {
-        await test_list_showsWebView(at: 2)
+        await test_list_showsWebView(for: "Item 3")
 
         let contentOpenEvent = await snowplowMicro.getFirstEvent(with: "saves.card.open")
         contentOpenEvent!.getUIContext()!.assertHas(type: "card")
         contentOpenEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/item-3")
+    }
+
+    @MainActor
+    func test_list_showsWebView(for title: String) async {
+        server.routes.post("/graphql") { request, _ -> Response in
+            let apiRequest = ClientAPIRequest(request)
+
+            if apiRequest.isForSavesContent {
+                return .saves("list-for-web-view")
+            }
+            return .fallbackResponses(apiRequest: apiRequest)
+        }
+
+        app.launch().tabBar.savesButton.wait().tap()
+
+        app
+            .saves
+            .itemView(matching: title)
+            .wait()
+            .tap()
+
+        app
+            .webReaderView
+            .staticText(matching: "Hello, world")
+            .wait()
     }
 
     @MainActor
@@ -390,6 +416,7 @@ extension SavesTests {
             .wait()
     }
 
+    @MainActor
     func test_webview_validateCustomItemActions_whenNavigateToAnotherPage() async {
         await test_list_showsWebView(at: 0)
 
