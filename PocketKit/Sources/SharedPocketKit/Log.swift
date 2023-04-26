@@ -168,7 +168,7 @@ public class Log {
      */
     public class func capture(error: Error, filename: String = #file, line: Int = #line, column: Int = #column, funcName: String = #function) {
         Log.sentryCapture(error: error)
-        Log.error("\(error.localizedDescription)", filename: filename, line: line, column: column, funcName: funcName)
+        Log.error("\(error)", filename: filename, line: line, column: column, funcName: funcName)
     }
 
     /**
