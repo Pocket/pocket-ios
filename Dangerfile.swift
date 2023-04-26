@@ -34,6 +34,8 @@ func coverage() {
 }
 
 func xcodeEnvironmentVariables() {
+    message("Checking XCode Environment Variables")
+    
     let snowplowPostPath = #"""
             key = "SNOWPLOW_POST_PATH"
             value = "com.snowplowanalytics.snowplow/tp2"
@@ -42,8 +44,6 @@ func xcodeEnvironmentVariables() {
 
     let modifiedXcodeSchemes = danger.git.modifiedFiles.filter { $0.contains(".xcscheme") }
     for scheme in modifiedXcodeSchemes {
-        message("Checking \(scheme)")
-
         if danger.utils.readFile(scheme).contains(snowplowPostPath) {
             fail("SNOWPLOW_POST_PATH must be disabled")
         }
