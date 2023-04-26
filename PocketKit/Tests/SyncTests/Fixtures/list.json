@@ -75,7 +75,14 @@
                                 "hasVideo": "HAS_VIDEOS",
                                 "syndicatedArticle": {
                                     "__typename": "SyndicatedArticle",
-                                    "itemId": "syndicated-article-item-id"
+                                    "itemId": "syndicated-article-item-id",
+                                    "title": "syndicated-article-title",
+                                    "mainImage": "https://example.com/syndicated-article-image.jpg",
+                                    "excerpt": "syndicated-article-excerpt",
+                                    "publisher": {
+                                        "__typename": "[type-name-here]",
+                                        "name": "syndicated-article-publisher"
+                                    }
                                 }
                             }
                         }

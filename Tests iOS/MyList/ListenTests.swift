@@ -4,6 +4,10 @@
 
 import XCTest
 import Sails
+import Apollo
+import ApolloAPI
+import ApolloTestSupport
+import PocketGraphTestMocks
 
 class ListenTests: XCTestCase {
     var server: Sails.Application!
@@ -39,10 +43,19 @@ class ListenTests: XCTestCase {
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isForFeatureFlags {
                 defer { flagsLoaded.fulfill() }
-                return .featureFlags("feature-flags-listen")
+                return .init(mock: Mock<Query>(
+                    assignments: Mock<UnleashAssignmentList>(
+                        assignments: [
+                            Mock<UnleashAssignment>(
+                                assigned: true,
+                                name: "temp.ios.listen"
+                            ),
+                        ]
+                    )
+                ))
             }
 
-            return .fallbackResponses(apiRequest: apiRequest)
+            return Response.fallbackResponses(apiRequest: apiRequest)
         }
 
         app.launch().tabBar.savesButton.wait().tap()
@@ -71,7 +84,18 @@ class ListenTests: XCTestCase {
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isForFeatureFlags {
                 defer { flagsLoaded.fulfill() }
-                return .featureFlags("feature-flags-listen")
+                return .init(
+                    mock: Mock<Query>(
+                        assignments: Mock<UnleashAssignmentList>(
+                            assignments: [
+                                Mock<UnleashAssignment>(
+                                    assigned: true,
+                                    name: "temp.ios.listen"
+                                )
+                            ]
+                        )
+                    )
+                )
             }
 
             return .fallbackResponses(apiRequest: apiRequest)
@@ -96,7 +120,22 @@ class ListenTests: XCTestCase {
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isForFeatureFlags {
                 defer { flagsLoaded.fulfill() }
-                return .featureFlags("feature-flags-listen-playlists")
+                return .init(
+                    mock: Mock<Query>(
+                        assignments: Mock<UnleashAssignmentList>(
+                            assignments: [
+                                Mock<UnleashAssignment>(
+                                    assigned: true,
+                                    name: "temp.ios.listen"
+                                ),
+                                Mock<UnleashAssignment>(
+                                    assigned: true,
+                                    name: "temp.ios.listen.tag_playlists"
+                                ),
+                            ]
+                        )
+                    )
+                )
             }
 
             return .fallbackResponses(apiRequest: apiRequest)

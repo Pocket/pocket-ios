@@ -12,6 +12,7 @@ struct Services {
     let user: User
     let tracker: Tracker
     let userDefaults: UserDefaults
+    let notificationCenter: NotificationCenter
 
     private let persistentContainer: PersistentContainer
 
@@ -22,6 +23,8 @@ struct Services {
             fatalError("UserDefaults with suite name \(Keys.shared.groupdId) must exist.")
         }
         userDefaults = sharedUserDefaults
+
+        notificationCenter = .default
 
         persistentContainer = .init(storage: .shared, groupID: Keys.shared.groupdId)
 

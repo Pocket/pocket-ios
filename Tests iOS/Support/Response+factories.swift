@@ -4,6 +4,12 @@
 
 import Sails
 import SharedPocketKit
+import ApolloTestSupport
+import Apollo
+import PocketGraphTestMocks
+import PocketGraph
+import NIOCore
+import Foundation
 
 extension Response {
     static func saves(_ fixtureName: String = "initial-list") -> Response {
@@ -39,36 +45,65 @@ extension Response {
         fixture(named: fixtureName)
     }
 
-    static func delete() -> Response {
-        fixture(named: "delete")
+    static func delete(apiRequest: ClientAPIRequest) -> Response {
+        return .init(
+            mock: Mock<Mutation>(
+                deleteSavedItem: apiRequest.variableItemId
+            )
+        )
     }
 
-    static func deleteTag(_ fixtureName: String = "delete-tag-1") -> Response {
-        fixture(named: fixtureName)
+    static func deleteTag(apiRequest: ClientAPIRequest) -> Response {
+        return .init(
+            mock: Mock<Mutation>(
+                deleteTag: apiRequest.variableId
+            )
+        )
     }
 
-    static func updateTag() -> Response {
-        fixture(named: "update-tag")
+    static func updateTag(apiRequest: ClientAPIRequest) -> Response {
+        return .init(
+            mock: Mock<Mutation>(
+                updateTag: Mock<Tag>(
+                    id: apiRequest.inputId,
+                    name: apiRequest.inputName
+                )
+            )
+        )
     }
 
-    static func archive() -> Response {
-        fixture(named: "archive")
+    static func archive(apiRequest: ClientAPIRequest) -> Response {
+        return .init(
+            mock: Mock<Mutation>(
+                updateSavedItemArchive: Mock<SavedItem>(
+                    id: apiRequest.variableItemId
+                )
+            )
+        )
     }
 
-    static func favorite() -> Response {
-        fixture(named: "favorite")
+    static func favorite(apiRequest: ClientAPIRequest) -> Response {
+        return .init(
+            mock: Mock<Mutation>(
+                updateSavedItemFavorite: Mock<SavedItem>(
+                    id: apiRequest.variableItemId
+                )
+            )
+        )
     }
 
-    static func unfavorite() -> Response {
-        fixture(named: "unfavorite")
+    static func unfavorite(apiRequest: ClientAPIRequest) -> Response {
+        return .init(
+            mock: Mock<Mutation>(
+                updateSavedItemUnFavorite: Mock<SavedItem>(
+                    id: apiRequest.variableItemId
+                )
+            )
+        )
     }
 
     static func saveItemFromExtension() -> Response {
         fixture(named: "save-item-from-extension")
-    }
-
-    static func emptyList() -> Response {
-        fixture(named: "empty-list")
     }
 
     static func itemDetail() -> Response {
@@ -98,11 +133,30 @@ extension Response {
     }
 
     static func emptyTags() -> Response {
-        fixture(named: "empty-tags")
+        return .init(
+            mock: Mock<Query>(
+                user: Mock<PocketGraphTestMocks.User>(
+                    tags: Mock<TagConnection>(
+                        edges: [],
+                        pageInfo: Mock<PageInfo>(
+                            endCursor: nil,
+                            hasNextPage: false,
+                            hasPreviousPage: false,
+                            startCursor: nil
+                        ),
+                        totalCount: 0
+                    )
+                )
+            )
+        )
     }
 
     static func deleteUser() -> Response {
-        fixture(named: "deleteUser")
+        return .init(
+            mock: Mock<Mutation>(
+                deleteUser: "fake-user-id"
+            )
+        )
     }
 
     static func deleteUserError() -> Response {
@@ -114,11 +168,27 @@ extension Response {
     }
 
     static func userDetails() -> Response {
-        fixture(named: "user")
+        return .init(
+            mock: Mock<Query>(
+                user: Mock<PocketGraphTestMocks.User>(
+                    isPremium: false,
+                    name: "Pocket User",
+                    username: "User Name"
+                )
+            )
+        )
     }
 
     static func premiumUserDetails() -> Response {
-        fixture(named: "premium-user")
+        return .init(
+            mock: Mock<Query>(
+                user: Mock<PocketGraphTestMocks.User>(
+                    isPremium: true,
+                    name: "Pocket User",
+                    username: "User Name"
+                )
+            )
+        )
     }
 
     static func searchList(_ type: SearchScope) -> Response {
@@ -144,8 +214,32 @@ extension Response {
         fixture(named: fixtureName)
     }
 
-    static func featureFlags(_ fixtureName: String = "feature-flags") -> Response {
-        fixture(named: fixtureName)
+    static func featureFlags() -> Response {
+        return .init(
+            mock: Mock<Query>(
+                assignments: Mock<UnleashAssignmentList>(
+                    assignments: [
+                        Mock<UnleashAssignment>(
+                            assigned: true,
+                            name: "temp.rick.roll"
+                        ),
+                        Mock<UnleashAssignment>(
+                            assigned: true,
+                            name: "perm.feature.on"
+                        ),
+                        Mock<UnleashAssignment>(
+                            assigned: false,
+                            name: "temp.feature.off"
+                        ),
+                        Mock<UnleashAssignment>(
+                            assigned: true,
+                            name: "temp.feature.variant",
+                            variant: "theVariant"
+                        )
+                    ]
+                )
+            )
+        )
     }
 
     static func fixture(named fixtureName: String) -> Response {
@@ -166,6 +260,8 @@ extension Response {
             return .archivedContent()
         } else if apiRequest.isForTags {
             return .emptyTags()
+        } else if apiRequest.isToUpdateTag {
+            return .updateTag(apiRequest: apiRequest)
         } else if apiRequest.isForSavesContent {
             return .saves()
         } else if apiRequest.isForDeleteUser {
@@ -173,7 +269,7 @@ extension Response {
         } else if apiRequest.isForUserDetails {
             return .userDetails()
         } else if apiRequest.isToArchiveAnItem {
-            return .archive()
+            return .archive(apiRequest: apiRequest)
         } else if apiRequest.isToSaveAnItem {
             return .saveItem()
         } else if apiRequest.isForRecommendationDetail(1) {
@@ -191,11 +287,13 @@ extension Response {
         } else if apiRequest.isForReplacingSavedItemTags {
             return .savedItemWithTag()
         } else if apiRequest.isToFavoriteAnItem {
-            return .favorite()
+            return .favorite(apiRequest: apiRequest)
         } else if apiRequest.isToUnfavoriteAnItem {
-            return .unfavorite()
+            return .unfavorite(apiRequest: apiRequest)
         } else if apiRequest.isToDeleteAnItem {
-            return .delete()
+            return .delete(apiRequest: apiRequest)
+        } else if apiRequest.isToDeleteATag {
+            return .deleteTag(apiRequest: apiRequest)
         } else if apiRequest.isForSearch(.all) {
             return .searchList(.all)
         } else if apiRequest.isForSearch(.saves) {
@@ -207,5 +305,20 @@ extension Response {
         } else {
             fatalError("Unexpected request")
         }
+    }
+}
+
+extension JSONObject: Content {
+    public func encode(to buffer: inout ByteBuffer) throws -> Int {
+        return try buffer.writeData(JSONSerializationFormat.serialize(value: self))
+    }
+}
+
+extension Response {
+    init(mock: AnyMock) {
+        // Wrap the selection data in the general "data" key that the json always has
+        var data = JSONObject()
+        data.updateValue(mock._selectionSetMockData, forKey: "data")
+        self.init(status: .ok, content: data)
     }
 }

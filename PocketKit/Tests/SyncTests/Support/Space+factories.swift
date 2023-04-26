@@ -68,9 +68,9 @@ extension Space {
     func createSyndicatedArticle(
         excerpt: String? = nil,
         imageURL: URL? = nil,
-        itemID: String? = nil,
+        itemID: String,
         publisherName: String? = nil,
-        title: String? = nil,
+        title: String,
         item: Item? = nil
     ) throws -> SyndicatedArticle {
         try backgroundContext.performAndWait {
@@ -92,9 +92,9 @@ extension Space {
     func buildSyndicatedArticle(
         excerpt: String? = nil,
         imageURL: URL? = nil,
-        itemID: String? = nil,
+        itemID: String,
         publisherName: String? = nil,
-        title: String? = nil,
+        title: String,
         item: Item? = nil
     ) -> SyndicatedArticle {
         backgroundContext.performAndWait {
@@ -141,11 +141,12 @@ extension Space {
         givenURL: URL? = URL(string: "https://example.com/items/item-1"),
         resolvedURL: URL? = nil,
         isArticle: Bool = true,
-        syndicatedArticle: SyndicatedArticle? = nil
+        syndicatedArticle: SyndicatedArticle? = nil,
+        num: Int? = nil
     ) -> Item {
         var url = givenURL
         if url == nil {
-            url = URL(string: "https://example.com/items/item-1")
+            url = URL(string: "https://example.com/items/item-1-\(num)")
         }
 
         return backgroundContext.performAndWait {
@@ -249,7 +250,7 @@ extension Space {
     @discardableResult
     func createRecommendation(
         remoteID: String = "slate-1-rec-1",
-        item: Item? = nil
+        item: Item
     ) throws -> Recommendation {
         try backgroundContext.performAndWait {
             let recommendation = buildRecommendation(
@@ -265,10 +266,10 @@ extension Space {
     @discardableResult
     func buildRecommendation(
         remoteID: String = "slate-1-rec-1",
-        item: Item? = nil
+        item: Item
     ) -> Recommendation {
         backgroundContext.performAndWait {
-            let recommendation: Recommendation = Recommendation(context: backgroundContext, remoteID: remoteID)
+            let recommendation: Recommendation = Recommendation(context: backgroundContext, remoteID: remoteID, analyticsID: "")
             recommendation.item = item
 
             return recommendation

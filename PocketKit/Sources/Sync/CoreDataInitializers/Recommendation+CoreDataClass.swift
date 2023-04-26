@@ -24,10 +24,12 @@ public class Recommendation: NSManagedObject {
 
     public init(
         context: NSManagedObjectContext,
-        remoteID: String
+        remoteID: String,
+        analyticsID: String
     ) {
         let entity = NSEntityDescription.entity(forEntityName: "Recommendation", in: context)!
         super.init(entity: entity, insertInto: context)
         self.remoteID = remoteID
+        self.analyticsID = analyticsID
     }
 }

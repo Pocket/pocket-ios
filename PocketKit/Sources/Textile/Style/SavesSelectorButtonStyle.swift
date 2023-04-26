@@ -48,7 +48,7 @@ public struct SavesSelectorButtonStyle: ButtonStyle {
                         .style(isSelected ? Constants.selected : Constants.title)
                 }
             }
-            .foregroundColor(isSelected ? Color(.ui.teal1) : Color(.ui.grey1))
+            .foregroundColor(isSelected ? Color(.ui.teal2) : Color(.ui.grey1))
             .padding(Constants.padding)
             .background(isSelected ? Constants.selectedBackground : .clear)
             .cornerRadius(Constants.cornerRadius)

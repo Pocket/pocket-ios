@@ -171,4 +171,26 @@ public extension Events.Tags {
             )
         )
     }
+
+    /// Fired when a user adds tag to an input list in the `Add Tags` screen for an item
+    static func renameTag() -> Event {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "global-nav.filterTags.tagRename"
+            )
+        )
+    }
+
+    /// Fired when a user confirms to delete tags from 'Tags' screen after tapping on `Tagged` filter
+    static func deleteTags() -> Event {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "global-nav.filterTags.tagsDelete"
+            )
+        )
+    }
 }

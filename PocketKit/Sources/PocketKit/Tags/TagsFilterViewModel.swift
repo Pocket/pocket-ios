@@ -26,7 +26,6 @@ class TagsFilterViewModel: ObservableObject {
     }
 
     @Published var selectedTag: TagType?
-    @Published var refreshView: Bool? = false
 
     init(source: Source, tracker: Tracker, userDefaults: UserDefaults, user: User, selectAllAction: @escaping () -> Void?) {
         self.source = source
@@ -35,7 +34,7 @@ class TagsFilterViewModel: ObservableObject {
         self.userDefaults = userDefaults
         self.user = user
         self.recentTagsFactory = RecentTagsProvider(userDefaults: userDefaults, key: UserDefaults.Key.recentTags)
-        recentTagsFactory.getInitialRecentTags(with: self.fetchedTags.map({ $0.name! }))
+        recentTagsFactory.getInitialRecentTags(with: self.fetchedTags.map({ $0.name }))
     }
 
     func trackEditAsOverflowAnalytics() {
@@ -50,22 +49,28 @@ class TagsFilterViewModel: ObservableObject {
     }
 
     func delete(tags: [String]) {
-        let event = SnowplowEngagement(type: .general, value: nil)
-        let contexts: Context = UIContext.button(identifier: .tagsDelete)
-        tracker.track(event: event, [contexts])
+        trackTagsDelete()
         tags.forEach { tag in
             guard let tag: Tag = fetchedTags.filter({ $0.name == tag }).first else { return }
             source.deleteTag(tag: tag)
         }
     }
 
-    func rename(from oldName: String, to newName: String) {
-        let event = SnowplowEngagement(type: .general, value: nil)
-        let contexts: Context = UIContext.button(identifier: .tagsSaveChanges)
-        tracker.track(event: event, [contexts])
-        guard let tag: Tag = fetchedTags.filter({ $0.name == oldName }).first else { return }
+    func rename(from oldName: String?, to newName: String) {
+        guard let oldName else {
+            Log.capture(message: "Unable to rename tag due to oldName being nil")
+            return
+        }
+        let newName = newName.lowercased()
+
+        // TODO: To be updated when working on https://getpocket.atlassian.net/browse/IN-1350
+        guard let tag: Tag = fetchedTags.filter({ $0.name == oldName }).first,
+              !fetchedTags.compactMap({ $0.name }).contains(newName) else {
+            Log.capture(message: "Unable to rename tag due to name already existing")
+            return
+        }
         source.renameTag(from: tag, to: newName)
-        refreshView = true
+        trackTagRename()
     }
 }
 
@@ -80,5 +85,13 @@ extension TagsFilterViewModel {
         case .tag:
             tracker.track(event: Events.Tags.selectTagToFilter())
         }
+    }
+
+    func trackTagRename() {
+        tracker.track(event: Events.Tags.renameTag())
+    }
+
+    func trackTagsDelete() {
+        tracker.track(event: Events.Tags.deleteTags())
     }
 }

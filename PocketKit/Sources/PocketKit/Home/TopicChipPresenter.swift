@@ -5,7 +5,7 @@ import UIKit
 
 private extension Style {
     static let title: Style = .header.sansSerif.h8
-    static let toggled: Style = .title.with(color: .ui.teal1)
+    static let toggled: Style = .title.with(color: .ui.teal2)
 }
 
 struct TopicChipPresenter {

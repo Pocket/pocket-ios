@@ -9,6 +9,7 @@ let package = Package(
     platforms: [.iOS("16"), .macOS("11")],
     products: [
         .library(name: "PocketKit", targets: ["PocketKit"]),
+        .library(name: "PocketGraphTestMocks", targets: ["PocketGraphTestMocks"]),
         .library(name: "SaveToPocketKit", targets: ["SaveToPocketKit"]),
         .library(name: "SharedPocketKit", targets: ["SharedPocketKit"]),
         .library(name: "Textile", targets: ["Textile"]),
@@ -122,7 +123,14 @@ let package = Package(
                 "schema.graphqls"
             ]
         ),
-
+        .target(
+            name: "PocketGraphTestMocks",
+            dependencies: [
+                .product(name: "ApolloAPI", package: "apollo-ios"),
+                .product(name: "ApolloTestSupport", package: "apollo-ios"),
+                "PocketGraph"
+            ]
+        ),
         .target(
             name: "Analytics",
             dependencies: [

@@ -11,8 +11,8 @@ class HomeRecommendationCellViewModel {
     let primaryAction: ItemAction?
 
     var isSaved: Bool {
-        recommendation.item?.savedItem != nil &&
-        recommendation.item?.savedItem?.isArchived == false
+        recommendation.item.savedItem != nil &&
+        recommendation.item.savedItem?.isArchived == false
     }
 
     init(
@@ -56,7 +56,7 @@ extension HomeRecommendationCellViewModel: RecommendationCellViewModel {
     }
 
     var timeToRead: String? {
-        guard let timeToRead = recommendation.item?.timeToRead,
+        guard let timeToRead = recommendation.item.timeToRead,
               timeToRead.intValue > 0 else {
             return nil
         }
@@ -66,15 +66,15 @@ extension HomeRecommendationCellViewModel: RecommendationCellViewModel {
 }
 
 private extension Style {
-    static let title: Style = .header.sansSerif.h6.with { paragraph in
+    static let title: Style = .header.sansSerif.h6.with(color: .ui.black1).with { paragraph in
         paragraph.with(lineBreakMode: .byTruncatingTail).with(lineSpacing: 4)
     }
 
-    static let domain: Style = .header.sansSerif.p4.with(color: .ui.grey5).with(weight: .medium).with { paragraph in
+    static let domain: Style = .header.sansSerif.p4.with(color: .ui.grey8).with(weight: .medium).with { paragraph in
         paragraph.with(lineBreakMode: .byTruncatingTail)
     }
 
-    static let timeToRead: Style = .header.sansSerif.p4.with(color: .ui.grey5).with { paragraph in
+    static let timeToRead: Style = .header.sansSerif.p4.with(color: .ui.grey8).with { paragraph in
         paragraph.with(lineBreakMode: .byTruncatingTail)
     }.with(maxScaleSize: 22)
 }

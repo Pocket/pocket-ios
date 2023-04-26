@@ -202,6 +202,34 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         source.retryImmediately()
     }
 
+    func preview(for cell: ItemsListCell<NSManagedObjectID>) -> (ReadableViewModel, Bool)? {
+        guard case .item(let itemID) = cell else {
+            return nil
+        }
+
+        guard let savedItem = bareItem(with: itemID) else {
+            return nil
+        }
+
+        let readable = SavedItemViewModel(
+            item: savedItem,
+            source: source,
+            tracker: tracker.childTracker(hosting: .articleView.screen),
+            pasteboard: UIPasteboard.general,
+            user: user,
+            store: store,
+            networkPathMonitor: networkPathMonitor,
+            userDefaults: userDefaults,
+            notificationCenter: notificationCenter
+        )
+
+        if savedItem.shouldOpenInWebView {
+            return (readable, true)
+        } else {
+            return (readable, false)
+        }
+    }
+
     func presenter(for cellID: ItemsListCell<ItemIdentifier>) -> ItemsListItemPresenter? {
         guard case .item(let objectID) = cellID else {
             return nil
@@ -246,6 +274,16 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         case .offline, .emptyState, .placeholder, .tag:
             return
         }
+    }
+
+    func beginBulkEdit() {
+        let bannerData = BannerModifier.BannerData(
+            image: .warning,
+            title: nil,
+            detail: Localization.ItemList.Edit.banner
+        )
+
+        notificationCenter.post(name: .bannerRequested, object: bannerData)
     }
 
     func filterByTagAction() -> UIAction? {
@@ -559,7 +597,8 @@ extension SavedItemsListViewModel {
             user: user,
             store: store,
             networkPathMonitor: networkPathMonitor,
-            userDefaults: userDefaults
+            userDefaults: userDefaults,
+            notificationCenter: notificationCenter
         )
 
         if savedItem.shouldOpenInWebView {
@@ -584,7 +623,7 @@ extension SavedItemsListViewModel {
 
         switch listOptions.selectedSortOption {
         case .longestToRead, .shortestToRead:
-            sortDescriptorTemp = NSSortDescriptor(keyPath: \SavedItem.item?.timeToRead, ascending: (listOptions.selectedSortOption == .shortestToRead))
+            sortDescriptorTemp = NSSortDescriptor(keyPath: \SavedItem.item.timeToRead, ascending: (listOptions.selectedSortOption == .shortestToRead))
         case .newest, .oldest:
 
             switch self.viewType {
@@ -669,9 +708,11 @@ extension SavedItemsListViewModel: SavedItemsControllerDelegate {
         // Build up a snapshot for us to use
         var newSnapshot = buildSnapshot()
 
-        // Grab any ids that have changed, map them to .item and then setup our custom snapshot to reload them
+        // Grab any ids that have changed, filter them based on what newSnapshot contains, map them to .item and then setup our custom snapshot to reload them
         let idsToReload: [ItemsListCell<ItemIdentifier>] =  snapshot.reloadedItemIdentifiers.compactMap({ .item($0 as! NSManagedObjectID) })
+            .filter { newSnapshot.itemIdentifiers.contains($0) }
         let idsToReconfigure: [ItemsListCell<ItemIdentifier>] =  snapshot.reconfiguredItemIdentifiers.compactMap({ .item($0 as! NSManagedObjectID) })
+            .filter { newSnapshot.itemIdentifiers.contains($0) }
         newSnapshot.reloadItems(idsToReload)
         newSnapshot.reconfigureItems(idsToReconfigure)
 

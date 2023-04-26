@@ -18,7 +18,7 @@
                         "node": {
                             "__typename": "[type-name-here]",
                             "remoteID": "saved-item-1",
-                            "url": "http://localhost:8080/hello",
+                            "url": "https://example.com/saved-item-1",
                             "_createdAt": 0,
                             "_deletedAt": null,
                             "archivedAt": null,
@@ -27,10 +27,10 @@
                             "tags": [],
                             "item": {
                                 "__typename": "Item",
-                                "remoteID": "item-1",
+                                "remoteID": "web-item-1",
                                 "title": "Item 1",
-                                "givenUrl": "http://localhost:8080/hello",
-                                "resolvedUrl": "http://localhost:8080/hello",
+                                "givenUrl": "https://given.example.com/item-1",
+                                "resolvedUrl": "http://localhost:8080/item-1",
                                 "topImageUrl": "https://example.com/item-1/top-image.jpg",
                                 "domain": null,
                                 "language": "en",
@@ -80,7 +80,7 @@
                         "node": {
                             "__typename": "[type-name-here]",
                             "remoteID": "saved-item-2",
-                            "url": "http://localhost:8080/hello",
+                            "url": "https://example.com/saved-item-2",
                             "_createdAt": 0,
                             "_deletedAt": null,
                             "archivedAt": null,
@@ -90,8 +90,8 @@
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "item-2",
-                                "givenUrl": "http://localhost:8080/hello",
-                                "resolvedUrl": "http://localhost:8080/hello",
+                                "givenUrl": "https://given.example.com/item-2",
+                                "resolvedUrl": "http://localhost:8080/item-2",
                                 "title": "Item 2",
                                 "topImageUrl": "https://example.com/item-2/top-image.jpg",
                                 "domain": "wired.com",
@@ -125,7 +125,7 @@
                         "node": {
                             "__typename": "[type-name-here]",
                             "remoteID": "saved-item-3",
-                            "url": "http://localhost:8080/hello",
+                            "url": "https://example.com/saved-item-3",
                             "_createdAt": 0,
                             "_deletedAt": null,
                             "archivedAt": null,
@@ -135,8 +135,8 @@
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "item-3",
-                                "givenUrl": "http://localhost:8080/hello",
-                                "resolvedUrl": "http://localhost:8080/hello",
+                                "givenUrl": "https://given.example.com/item-3",
+                                "resolvedUrl": "http://localhost:8080/item-3",
                                 "title": "Item 3",
                                 "topImageUrl": "https://example.com/item-3/top-image.jpg",
                                 "domain": "wired.com",

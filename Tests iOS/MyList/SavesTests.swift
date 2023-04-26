@@ -51,6 +51,27 @@ class SavesTests: XCTestCase {
             }
         }
 
+        server.routes.get("/item-1") { _, _ in
+            Response {
+                Status.ok
+                Fixture.data(name: "hello", ext: "html")
+            }
+        }
+
+        server.routes.get("/item-2") { _, _ in
+            Response {
+                Status.ok
+                Fixture.data(name: "hello", ext: "html")
+            }
+        }
+
+        server.routes.get("/item-3") { _, _ in
+            Response {
+                Status.ok
+                Fixture.data(name: "hello", ext: "html")
+            }
+        }
+
         try server.start()
     }
 

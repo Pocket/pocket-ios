@@ -38,6 +38,7 @@ fragment SavedItemSummary on SavedItem {
   }
   item {
     ...ItemSummary
+    ...PendingItemParts
   }
 }
 
