@@ -159,12 +159,8 @@ extension Space {
         return try fetch(Requests.fetchItems())
     }
 
-    func fetchItem(byRemoteID id: String, context: NSManagedObjectContext? = nil) throws -> Item? {
-        return try fetch(Requests.fetchItem(byRemoteID: id), context: context).first
-    }
-
-    func fetchItem(byURL url: URL) throws -> Item? {
-        return try fetch(Requests.fetchItem(byURL: url)).first
+    func fetchItem(byURL url: URL, context: NSManagedObjectContext? = nil) throws -> Item? {
+        return try fetch(Requests.fetchItem(byURL: url), context: context).first
     }
 
     func deleteUnsavedItems() throws {
