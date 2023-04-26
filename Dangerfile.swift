@@ -41,7 +41,6 @@ func xcodeEnvironmentVariables() {
 """#
 
     let modifiedXcodeSchemes = danger.git.modifiedFiles.filter { $0.contains(".xcscheme") }
-    message("Modified Schemes: \(modifiedXcodeSchemes)")
     for scheme in modifiedXcodeSchemes {
         message("Checking \(scheme)")
 
