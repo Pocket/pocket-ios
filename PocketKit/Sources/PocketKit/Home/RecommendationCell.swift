@@ -177,7 +177,7 @@ class RecommendationCell: UICollectionViewCell {
         layer.shadowOpacity = 1.0
         layer.shadowRadius = 6
         layer.shadowPath = UIBezierPath(roundedRect: layer.bounds, cornerRadius: layer.cornerRadius).cgPath
-        layer.backgroundColor = UIColor(.ui.white1).cgColor
+        layer.backgroundColor = UIColor(.ui.homeCellBackground).cgColor
     }
 }
 

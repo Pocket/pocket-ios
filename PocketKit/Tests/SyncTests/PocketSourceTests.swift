@@ -192,12 +192,12 @@ class PocketSourceTests: XCTestCase {
         let item = savedItem.item
         item.recommendation = space.buildRecommendation(item: item)
 
-        let remoteItemID = item.remoteID
+        let remoteItemURL = item.givenURL
 
         let source = subject()
         source.delete(item: savedItem)
 
-        let fetchedItem = try space.fetchItem(byRemoteID: remoteItemID)
+        let fetchedItem = try space.fetchItem(byURL: remoteItemURL)
         XCTAssertNotNil(fetchedItem)
     }
 
@@ -209,12 +209,12 @@ class PocketSourceTests: XCTestCase {
         let savedItem = try space.createSavedItem(item: space.buildItem())
         let item = savedItem.item
 
-        let remoteItemID = item.remoteID
+        let remoteItemURL = item.givenURL
 
         let source = subject()
         source.delete(item: savedItem)
 
-        let fetchedItem = try space.fetchItem(byRemoteID: remoteItemID)
+        let fetchedItem = try space.fetchItem(byURL: remoteItemURL)
         XCTAssertNil(fetchedItem)
     }
 

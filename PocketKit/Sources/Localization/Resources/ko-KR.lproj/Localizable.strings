@@ -36,6 +36,7 @@
 "itemlist.filter.tagged" = "태그 지정됨";
 "itemlist.filter.favorites" = "즐겨찾기";
 "itemlist.filter.sortFilter" = "정렬/필터";
+"itemList.edit.banner" = "이 Pocket 버전에서는 목록을 편집할 수 없지만 곧 다시 제공될 예정입니다!";
 
 //List view
 "item.list.min" = "%1$@분";
@@ -75,7 +76,7 @@
 "search.swipe.unableToMove" = "이동할 수 없음";
 "search.swipe.archive" = "보관소";
 "search.swipe.moveToSaves" = "저장소로 이동";
-
+"search.edit.banner" = "이 Pocket 버전에서는 검색 결과를 편집할 수 없지만 곧 다시 제공될 예정입니다!";
 "search.empty.header" = "제목별 또는 URL별 검색";
 
 "search.allItems.premium.header" = "더 많은 검색 옵션 활용";

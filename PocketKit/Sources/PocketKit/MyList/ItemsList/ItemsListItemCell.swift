@@ -72,7 +72,7 @@ class ItemsListItemCell: UICollectionViewListCell {
         config.contentInsets = .zero
         config.image = UIImage(asset: .share)
             .resized(to: Constants.actionButtonImageSize)
-            .withTintColor(UIColor(.ui.grey5), renderingMode: .alwaysOriginal)
+            .withTintColor(UIColor(.ui.grey8), renderingMode: .alwaysOriginal)
 
         let button = UIButton(configuration: config, primaryAction: nil)
         button.accessibilityIdentifier = "item-action-share"
@@ -84,7 +84,7 @@ class ItemsListItemCell: UICollectionViewListCell {
         config.contentInsets = .zero
         config.image = UIImage(asset: .overflow)
             .resized(to: Constants.actionButtonImageSize)
-            .withTintColor(UIColor(.ui.grey5), renderingMode: .alwaysOriginal)
+            .withTintColor(UIColor(.ui.grey8), renderingMode: .alwaysOriginal)
 
         let button = UIButton(configuration: config, primaryAction: nil)
         button.accessibilityIdentifier = "item-actions"

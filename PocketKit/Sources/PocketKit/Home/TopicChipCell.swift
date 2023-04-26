@@ -86,7 +86,7 @@ class TopicChipCell: UICollectionViewCell {
 
         toggledBackground.isHidden = !model.isSelected
 
-        iconImageView.tintColor = model.isSelected ? UIColor(.ui.teal1) : UIColor(.ui.grey1)
+        iconImageView.tintColor = model.isSelected ? UIColor(.ui.teal2) : UIColor(.ui.grey1)
     }
 }
 

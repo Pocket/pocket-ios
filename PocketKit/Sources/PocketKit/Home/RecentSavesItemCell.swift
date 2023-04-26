@@ -57,15 +57,15 @@ class RecentSavesItemCell: HomeCarouselItemCell {
 }
 
 private extension Style {
-    static let title: Style = .header.sansSerif.h8.with { paragraph in
+    static let title: Style = .header.sansSerif.h8.with(color: .ui.black1).with { paragraph in
         paragraph.with(lineSpacing: 4).with(lineBreakMode: .byTruncatingTail)
     }
 
-    static let domain: Style = .header.sansSerif.p4.with(color: .ui.grey5).with(weight: .medium).with { paragraph in
+    static let domain: Style = .header.sansSerif.p4.with(color: .ui.grey8).with(weight: .medium).with { paragraph in
         paragraph.with(lineBreakMode: .byTruncatingTail)
     }
 
-    static let timeToRead: Style = .header.sansSerif.p4.with(color: .ui.grey5).with { paragraph in
+    static let timeToRead: Style = .header.sansSerif.p4.with(color: .ui.grey8).with { paragraph in
         paragraph.with(lineBreakMode: .byTruncatingTail)
     }.with(maxScaleSize: 22)
 }

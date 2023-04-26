@@ -50,9 +50,6 @@
             <uniquenessConstraint>
                 <constraint value="givenURL"/>
             </uniquenessConstraint>
-            <uniquenessConstraint>
-                <constraint value="remoteID"/>
-            </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
     <entity name="PersistentSyncTask" representedClassName="PersistentSyncTask" syncable="YES">
