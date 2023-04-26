@@ -36,6 +36,7 @@
 "itemlist.filter.tagged" = "Com tag ";
 "itemlist.filter.favorites" = "Favoritos";
 "itemlist.filter.sortFilter" = "Ordenar/Filtrar";
+"itemList.edit.banner" = "Não é possível editar a sua lista nesta versão do Pocket, mas em breve será!";
 
 //List view
 "item.list.min" = "%1$@ min";
@@ -75,7 +76,7 @@
 "search.swipe.unableToMove" = "Não foi possível mover";
 "search.swipe.archive" = "Arquivar";
 "search.swipe.moveToSaves" = "Mover para Salvos";
-
+"search.edit.banner" = "Não é possível editar os resultados de sua pesquisa nesta versão do Pocket, mas em breve será!";
 "search.empty.header" = "Buscar por título ou URL";
 
 "search.allItems.premium.header" = "Desbloqueie mais opções de pesquisa";
