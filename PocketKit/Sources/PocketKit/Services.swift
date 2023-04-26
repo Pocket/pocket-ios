@@ -43,6 +43,7 @@ struct Services {
     let listen: Listen
     let bannerPresenter: BannerPresenter
     let notificationCenter: NotificationCenter
+    let sessionBackupUtility: SessionBackupUtility
 
     private let persistentContainer: PersistentContainer
 
@@ -201,6 +202,12 @@ struct Services {
 
         bannerPresenter = BannerPresenter(notificationCenter: notificationCenter)
         bannerPresenter.listen()
+
+        sessionBackupUtility = SessionBackupUtility(
+            userDefaults: userDefaults,
+            store: PocketEncryptedStore(),
+            notificationCenter: notificationCenter
+        )
     }
 }
 

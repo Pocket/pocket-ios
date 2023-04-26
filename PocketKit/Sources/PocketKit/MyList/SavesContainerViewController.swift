@@ -22,6 +22,7 @@ struct SavesContainerViewControllerSwiftUI: UIViewControllerRepresentable {
         navigationController.navigationBar.prefersLargeTitles = true
         navigationController.navigationBar.barTintColor = UIColor(.ui.white1)
         navigationController.navigationBar.tintColor = UIColor(.ui.grey1)
+        navigationController.delegate = v
         return navigationController
     }
 
@@ -87,7 +88,6 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
 
         view.accessibilityIdentifier = "saves"
         select(child: viewControllers.first)
-        navigationController?.delegate = self
     }
 
     required init?(coder: NSCoder) {
@@ -178,7 +178,6 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
     var timer: Timer?
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         guard let text = searchBar.text else { return }
-        print(searchBar.text)
         timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: false, block: { _ in
             self.searchViewModel.updateSearchResults(with: text)

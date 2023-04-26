@@ -85,7 +85,6 @@ public extension Events.Premium {
     /// Premium Upgrade View dismissed by the user
     /// - Parameter action: "button" or "swipe"
     static func premiumUpgradeViewDismissed(reason: DismissReason) -> Event {
-        print("Dismiss called with \(reason.rawValue)")
         return Engagement(
             .general,
             uiEntity: UiEntity(

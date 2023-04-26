@@ -19,6 +19,10 @@ public struct UIPalette {
     public let grey5 = ColorAsset.ui("grey5")
     public let grey6 = ColorAsset.ui("grey6")
     public let grey7 = ColorAsset.ui("grey7")
+    public let grey8 = ColorAsset.ui("grey8")
+
+    public let homeCellBackground = ColorAsset.ui("homeCellBackground")
+    public let saveButtonText = ColorAsset.ui("saveButtonText")
 
     public let lapis1 = ColorAsset.ui("lapis1")
 
