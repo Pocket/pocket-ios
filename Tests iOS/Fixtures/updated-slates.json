@@ -21,8 +21,8 @@
                             "item": {
                                 "__typename": "[some-type-name]",
                                 "remoteID": "recommended-item-1",
-                                "givenUrl": "https://given.example.com/recommended-item-1",
-                                "resolvedUrl": "https://resolved.example.com/recommended-item-1",
+                                "givenUrl": "http://localhost:8080/slate-1-rec-1",
+                                "resolvedUrl": "http://localhost:8080/slate-1-rec-1",
                                 "title": "Updated Slate 1, Recommendation 1",
                                 "language": "en",
                                 "topImageUrl": "http://example.com/slate-1-rec-1/top-image.png",
@@ -52,8 +52,8 @@
                             "item": {
                                 "__typename": "[some-type-name]",
                                 "remoteID": "recommended-item-2",
-                                "givenUrl": "https://given.example.com/recommended-item-2",
-                                "resolvedUrl": "https://resolved.example.com/recommended-item-2",
+                                "givenUrl": "https://example.com/slate-1-rec-2",
+                                "resolvedUrl": "https://example.com/slate-1-rec-2",
                                 "title": "Updated Slate 1, Recommendation 2",
                                 "language": "en",
                                 "topImageUrl": "http://example.com/slate-1-rec-2/top-image.png",
