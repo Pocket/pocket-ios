@@ -32,7 +32,8 @@ protocol ReadableViewModel: ReadableViewControllerDelegate {
     var premiumURL: URL? { get }
 
     func delete()
-    func openExternally(url: URL?)
+    func openInWebView(url: URL?)
+    func openExternalLink(url: URL)
     func archive()
     func moveFromArchiveToSaves(completion: (Bool) -> Void)
     func fetchDetailsIfNeeded()
@@ -47,7 +48,7 @@ protocol ReadableViewModel: ReadableViewControllerDelegate {
 
 extension ReadableViewModel {
     func readableViewController(_ controller: ReadableViewController, openURL url: URL) {
-        openExternally(url: url)
+        openExternalLink(url: url)
     }
 
     func readableViewController(_ controller: ReadableViewController, shareWithAdditionalText text: String?) {
@@ -64,7 +65,7 @@ extension ReadableViewModel {
     }
 
     func showWebReader() {
-        openExternally(url: url)
+        openInWebView(url: url)
     }
 
     func share(additionalText: String? = nil) {
@@ -181,5 +182,9 @@ extension ReadableViewModel {
             return
         }
         tracker.track(event: Events.Reader.openInWebView(url: url))
+    }
+
+    func trackExternalLinkOpen(url: URL) {
+        tracker.track(event: Events.Reader.openExternalLink(url: url))
     }
 }

@@ -80,4 +80,14 @@ public extension Events.Reader {
             )
         )
     }
+
+    static func openExternalLink(url: URL) -> ContentOpen {
+        return ContentOpen(
+            contentEntity: ContentEntity(url: url),
+            uiEntity: UiEntity(
+                .button,
+                identifier: "reader.external-link"
+            )
+        )
+    }
 }

@@ -131,7 +131,7 @@ class SavedItemViewModel: ReadableViewModel {
     func externalActions(for url: URL) -> [ItemAction] {
         [
             .save { [weak self] _ in self?.saveExternalURL(url) },
-            .open { [weak self] _ in self?.openExternalURL(url) },
+            .open { [weak self] _ in self?.openExternalLink(url: url) },
             .copyLink { [weak self] _ in self?.copyExternalURL(url) },
             .share { [weak self] _ in self?.shareExternalURL(url) }
         ]
@@ -180,11 +180,18 @@ extension SavedItemViewModel {
         completion(true)
     }
 
-    func openExternally(url: URL?) {
+    func openInWebView(url: URL?) {
         let updatedURL = pocketPremiumURL(url, user: user)
         presentedWebReaderURL = updatedURL
 
         trackWebViewOpen()
+    }
+
+    func openExternalLink(url: URL) {
+        let updatedURL = pocketPremiumURL(url, user: user)
+        presentedWebReaderURL = updatedURL
+
+        trackExternalLinkOpen(url: url)
     }
 
     func archive() {
@@ -230,10 +237,6 @@ extension SavedItemViewModel {
     private func shareExternalURL(_ url: URL) {
         // This view model is used within the context of a view that is presented within the reader
         sharedActivity = PocketItemActivity.fromReader(url: url)
-    }
-
-    private func openExternalURL(_ url: URL) {
-        presentedWebReaderURL = url
     }
 }
 
