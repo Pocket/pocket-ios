@@ -410,17 +410,13 @@ public enum Localization {
         public static let header = Localization.tr("Localizable", "search.results.empty.header", fallback: "No results found")
       }
       public enum Offline {
-        /// You must be online to search %@ items.
-        public static func detail(_ p1: Any) -> String {
-          return Localization.tr("Localizable", "search.results.offline.detail", String(describing: p1), fallback: "You must be online to search %@ items.")
-        }
         /// No Internet Connection
         public static let header = Localization.tr("Localizable", "search.results.offline.header", fallback: "No Internet Connection")
         public enum Detail {
-          /// all
-          public static let all = Localization.tr("Localizable", "search.results.offline.detail.all", fallback: "all")
-          /// archived
-          public static let archive = Localization.tr("Localizable", "search.results.offline.detail.archive", fallback: "archived")
+          /// You must be online to search all items.
+          public static let all = Localization.tr("Localizable", "search.results.offline.detail.all", fallback: "You must be online to search all items.")
+          /// You must be online to search archived items.
+          public static let archive = Localization.tr("Localizable", "search.results.offline.detail.archive", fallback: "You must be online to search archived items.")
         }
       }
     }

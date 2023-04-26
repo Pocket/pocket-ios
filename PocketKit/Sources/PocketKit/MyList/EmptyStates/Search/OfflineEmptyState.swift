@@ -15,10 +15,13 @@ struct OfflineEmptyState: EmptyStateViewModel {
     let icon: ImageAsset? = nil
     let headline: String? = Localization.Search.Results.Offline.header
     var detailText: String? {
-        let localizationDetail = Localization.Search.Results.Offline.Detail.self
-        let searchScopeText = type == .archive ? localizationDetail.archive : localizationDetail.all
+        let detail = Localization.Search.Results.Offline.Detail.self
 
-        return Localization.Search.Results.Offline.detail(searchScopeText)
+        if type == .all {
+            return detail.all
+        } else {
+            return detail.archive
+        }
     }
     let buttonText: String? = nil
     let webURL: URL? = nil
