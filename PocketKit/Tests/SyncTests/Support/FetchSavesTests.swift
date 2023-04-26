@@ -149,13 +149,14 @@ class FetchSavesTests: XCTestCase {
         apollo.setupFetchSavesSyncResponse(listFixtureName: "updated-item")
         try space.createSavedItem(
             remoteID: "saved-item-1",
+            url: "http://example.com/item-1",
             item: space.buildItem(title: "Item 1")
         )
 
         let service = subject()
         _ = await service.execute(syncTaskId: task.objectID)
 
-        let item = try space.fetchSavedItem(byRemoteID: "saved-item-1")
+        let item = try space.fetchSavedItem(byURL: URL(string: "http://example.com/item-1")!)
         XCTAssertEqual(item?.item.title, "Updated Item 1")
     }
 

@@ -4,6 +4,7 @@ import Textile
 import Apollo
 import SharedPocketKit
 import Sync
+import Adjust
 
 class MainViewController: UIViewController {
     private let childViewController: UIViewController
@@ -22,6 +23,16 @@ class MainViewController: UIViewController {
         let notificationCenter = services.notificationCenter
         let child: UIViewController
         let tracker = services.tracker
+
+        // Reset and attach at least an api user entity on extension launch
+        tracker.resetPersistentEntities([
+            APIUserEntity(consumerKey: Keys.shared.pocketApiConsumerKey)
+        ])
+
+        if let currentSession = appSession.currentSession {
+            // Attach a user entity at launch if it exists
+            tracker.addPersistentEntity(UserEntity(guid: currentSession.guid, userID: currentSession.userIdentifier, adjustAdId: Adjust.adid()))
+        }
 
         SignOutOnFirstLaunch(
             appSession: appSession,
@@ -42,6 +53,14 @@ class MainViewController: UIViewController {
             }
 
             if attempted {
+                // Migration ran successfully, so lets reset the entities to capture it.
+                // We do a reset in case something else recieves a login notice first and to ensure no duplicates.
+                if let currentSession = appSession.currentSession {
+                    tracker.resetPersistentEntities([
+                        APIUserEntity(consumerKey: Keys.shared.pocketApiConsumerKey),
+                        UserEntity(guid: currentSession.guid, userID: currentSession.userIdentifier, adjustAdId: Adjust.adid())
+                    ])
+                }
                 tracker.track(event: Events.Migration.MigrationTo_v8DidSucceed(source: .saveToPocketKit))
                 Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration required; running.")
                 // Legacy cleanup
