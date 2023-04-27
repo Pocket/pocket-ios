@@ -701,7 +701,7 @@ extension PocketSourceTests {
 
         XCTAssertEqual(savedItem?.remoteID, "saved-item")
         XCTAssertEqual(savedItem?.item.title, "item-title")
-        XCTAssertEqual(savedItem?.item.bestURL?.absoluteString, "http://localhost:8080/hello")
+        XCTAssertEqual(savedItem?.item.bestURL.absoluteString, "http://localhost:8080/hello")
     }
 
     private func setupLocalSavesSearch(with urlString: String? = nil) throws {
