@@ -20,7 +20,7 @@
               "curatedInfo": null,
               "item": {
                 "__typename": "[some-type-name]",
-                "remoteID": "recommended-item-1",
+                "remoteID": "slate-1-rec-1",
                 "givenUrl": "http://localhost:8080/slate-1-rec-1",
                 "resolvedUrl": "http://localhost:8080/slate-1-rec-1",
                 "title": "Slate 1, Recommendation 1",
@@ -65,7 +65,7 @@
               "curatedInfo": null,
               "item": {
                 "__typename": "[some-type-name]",
-                "remoteID": "recommended-item-2",
+                "remoteID": "slate-1-rec-2",
                 "givenUrl": "https://example.com/slate-1-rec-2",
                 "resolvedUrl": "https://example.com/slate-1-rec-2",
                 "title": "Slate 1, Recommendation 2",

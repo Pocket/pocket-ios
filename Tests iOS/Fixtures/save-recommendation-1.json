@@ -1,9 +1,9 @@
 {
     "data": {
         "upsertSavedItem": {
-            "__typename": "[type-name-here]",
-            "remoteID": "slate-1-rec-1-saved-item",
-            "url": "https://example.com/item-1",
+            "__typename": "SavedItem",
+            "remoteID": "slate-1-rec-1",
+            "url": "http://localhost:8080/slate-1-rec-1",
             "_createdAt": 1,
             "_deletedAt": null,
             "archivedAt": null,
@@ -11,14 +11,15 @@
             "isFavorite": false,
             "tags": [],
             "item": {
-                "__typename": "[some-type-name]",
-                "remoteID": "recommended-item-1",
-                "givenUrl": "https://example.com/item-1",
-                "resolvedUrl": "https://example.com/item-1",
+                "__typename": "Item",
+                "remoteID": "slate-1-rec-1",
+                "givenUrl": "http://localhost:8080/slate-1-rec-1",
+                "resolvedUrl": "http://localhost:8080/slate-1-rec-1",
                 "title": "Slate 1, Recommendation 1",
                 "language": "en",
                 "topImageUrl": "http://example.com/slate-1-rec-1/top-image.png",
                 "timeToRead": 1,
+                "wordCount": 200,
                 "marticle": [],
                 "authors": [
                     {

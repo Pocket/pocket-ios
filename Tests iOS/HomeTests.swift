@@ -255,7 +255,7 @@ class HomeTests: XCTestCase {
 
             if apiRequest.isToSaveAnItem {
                 defer { saveRequestExpectation.fulfill() }
-                XCTAssertTrue(apiRequest.contains("http:\\/\\/localhost:8080\\/slate-1-rec-1"))
+                XCTAssertEqual(apiRequest.inputURL, URL(string: "http://localhost:8080/slate-1-rec-1"))
                 return .saveItem("save-recommendation-1")
             } else if apiRequest.isToArchiveAnItem {
                 defer { archiveRequestExpectation.fulfill() }
@@ -288,13 +288,13 @@ class HomeTests: XCTestCase {
         server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isToSaveAnItem {
-                if apiRequest.contains("http:\\/\\/localhost:8080\\/slate-1-rec-1") {
+                if apiRequest.inputURL == URL(string: "http://localhost:8080/slate-1-rec-1") {
                     return Response.saveItem("save-recommendation-1")
-                } else if apiRequest.contains("https:\\/\\/example.com\\/slate-1-rec-2") {
+                } else if apiRequest.inputURL == URL(string: "https://example.com/slate-1-rec-2") {
                     return Response.saveItem("save-recommendation-2")
                 }
             } else if apiRequest.isToArchiveAnItem {
-                if apiRequest.contains("slate-1-rec-1-saved-item") {
+                if apiRequest.contains("slate-1-rec-1") {
                     XCTFail("Received archive request for unexpected item")
                 } else {
                     return Response.archive(apiRequest: apiRequest)
