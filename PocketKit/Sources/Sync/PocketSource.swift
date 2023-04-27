@@ -818,7 +818,7 @@ extension PocketSource {
                 return
             }
 
-            if let savedItem = recommendation.item.savedItem {
+            if let savedItem = try? space.fetchSavedItem(byURL: recommendation.item.givenURL) {
                 unarchive(item: savedItem)
             } else {
                 let savedItem: SavedItem = SavedItem(context: space.backgroundContext, url: recommendation.item.givenURL)
