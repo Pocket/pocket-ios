@@ -47,7 +47,7 @@ struct HomeViewElement: PocketUIElement {
     }
 
     func pullToRefresh() {
-        let firstCell = element.cells.element(boundBy: 0)
+        let firstCell = savedItemCell(at: 0).wait()
         let start = firstCell.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0))
         let finish = firstCell.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 6))
         start.press(forDuration: 0, thenDragTo: finish)

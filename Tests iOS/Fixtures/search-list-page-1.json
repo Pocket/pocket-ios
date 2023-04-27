@@ -367,7 +367,7 @@
               "__typename": "[type-name-here]",
               "savedItem": {
                 "__typename": "[type-name-here]",
-                "remoteID": "saved-item-6,
+                "remoteID": "saved-item-6",
                 "url": "https://example.com/saved-item-6/",
                 "_createdAt": 1,
                 "_deletedAt": null,
@@ -387,7 +387,7 @@
                   "title": "Item 6",
                   "givenUrl": "https://example.com/item-6/",
                   "resolvedUrl": "https://example.com/item-6/",
-                  "topImageUrl": "https://example.com/item-2/top-image.jpg",
+                  "topImageUrl": "https://example.com/item-6/top-image.jpg",
                   "domain": null,
                   "language": "en",
                   "timeToRead": 6,

@@ -32,13 +32,11 @@ class HomeTests: XCTestCase {
         try server.start()
     }
 
+    @MainActor
     override func tearDown() async throws {
-       await snowplowMicro.assertNoBadEvents()
-    }
-
-    override func tearDownWithError() throws {
-        try server.stop()
         app.terminate()
+        try server.stop()
+        await snowplowMicro.assertBaselineSnowplowExpectation()
     }
 
     @MainActor
@@ -55,8 +53,6 @@ class HomeTests: XCTestCase {
 
         home.sectionHeader("Slate 2").verify()
         home.recommendationCell("Slate 2, Recommendation 1").verify()
-
-        await snowplowMicro.assertBaselineSnowplowExpectation()
 
         async let slate1Rec1 = snowplowMicro.getFirstEvent(with: "home.slate.article.impression", recommendationId: "slate-1-rec-1")
         async let slate1Rec2 = snowplowMicro.getFirstEvent(with: "home.slate.article.impression", recommendationId: "slate-1-rec-2")
@@ -83,7 +79,6 @@ class HomeTests: XCTestCase {
         home.savedItemCell("Item 1").swipeLeft(velocity: .fast)
         home.savedItemCell("Item 3").swipeLeft(velocity: .fast)
         waitForDisappearance(of: home.savedItemCell("Item 3"))
-        await snowplowMicro.assertBaselineSnowplowExpectation()
     }
 
     @MainActor
@@ -92,7 +87,6 @@ class HomeTests: XCTestCase {
         home.savedItemCell("Item 1").wait().tap()
         app.readerView.wait()
         app.readerView.cell(containing: "Commodo Consectetur Dapibus").wait()
-        await snowplowMicro.assertBaselineSnowplowExpectation()
     }
 
     func test_tappingRecentSavesItem_showsWebViewWhenItemIsImage() {
@@ -255,13 +249,14 @@ class HomeTests: XCTestCase {
     func test_tappingSaveButtonInRecommendationCell_savesItemToList() {
         let saveRequestExpectation = expectation(description: "A save mutation request")
         let archiveRequestExpectation = expectation(description: "An archive mutation request")
+
         server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
 
             if apiRequest.isToSaveAnItem {
                 defer { saveRequestExpectation.fulfill() }
                 XCTAssertTrue(apiRequest.contains("http:\\/\\/localhost:8080\\/slate-1-rec-1"))
-                return .saveItem("save-item")
+                return .saveItem("save-recommendation-1")
             } else if apiRequest.isToArchiveAnItem {
                 defer { archiveRequestExpectation.fulfill() }
                 return .archive(apiRequest: apiRequest)
@@ -281,6 +276,7 @@ class HomeTests: XCTestCase {
         app.saves.itemView(matching: "Slate 1, Recommendation 1").wait()
 
         app.tabBar.homeButton.tap()
+
         cell.savedButton.tap()
         cell.saveButton.wait()
 
@@ -388,6 +384,7 @@ class HomeTests: XCTestCase {
 extension HomeTests {
     func test_pullToRefresh_fetchesUpdatedContent() {
         var slateLineupCalls = 0
+        let slateUpdateExpectation = expectation(description: "expected to update slate lineup")
         server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isForSlateLineup {
@@ -396,6 +393,7 @@ extension HomeTests {
                 case 0:
                     return .slateLineup()
                 default:
+                    defer { slateUpdateExpectation.fulfill() }
                     return .slateLineup("updated-slates")
                 }
             }
@@ -405,7 +403,9 @@ extension HomeTests {
         home.recommendationCell("Slate 1, Recommendation 1").wait()
 
         home.pullToRefresh()
-        scrollTo(element: home.recommendationCell("Updated Slate 1, Recommendation 1").element, in: home.element, direction: .up)
+
+        wait(for: [slateUpdateExpectation])
+        home.recommendationCell("Updated Slate 1, Recommendation 1").wait()
     }
 
     // Disabled
