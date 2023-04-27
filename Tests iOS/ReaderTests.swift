@@ -170,7 +170,7 @@ class ReaderTests: XCTestCase {
         tapSafariButton()
         validateSafariOpens()
 
-        let engagementEvent = await snowplowMicro.getFirstEvent(with: "reader.view_original")
+        let engagementEvent = await snowplowMicro.getFirstEvent(with: "reader.view-original")
         engagementEvent!.getUIContext()!.assertHas(type: "button")
         engagementEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
     }

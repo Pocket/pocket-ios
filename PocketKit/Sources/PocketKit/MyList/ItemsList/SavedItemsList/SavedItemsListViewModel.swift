@@ -529,17 +529,12 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         tracker.track(event: event, contexts)
     }
 
-    private func trackContentOpen(destination: ContentOpenEvent.Destination, item: SavedItem) {
+    private func trackContentOpen(destination: ContentOpen.Destination, item: SavedItem) {
         guard let url = item.bestURL else {
             return
         }
 
-        let contexts: [Context] = [
-            ContentContext(url: url)
-        ]
-
-        let event = ContentOpenEvent(destination: destination, trigger: .click)
-        tracker.track(event: event, contexts)
+        tracker.track(event: Events.Saves.contentOpen(destination: destination, url: url))
     }
 
     private func trackButton(item: SavedItem, identifier: UIContext.Identifier) {

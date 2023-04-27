@@ -76,7 +76,17 @@ public extension Events.Reader {
             contentEntity: ContentEntity(url: url),
             uiEntity: UiEntity(
                 .button,
-                identifier: "reader.view_original"
+                identifier: "reader.view-original"
+            )
+        )
+    }
+
+    static func openExternalLink(url: URL) -> ContentOpen {
+        return ContentOpen(
+            contentEntity: ContentEntity(url: url),
+            uiEntity: UiEntity(
+                .button,
+                identifier: "reader.external-link"
             )
         )
     }
