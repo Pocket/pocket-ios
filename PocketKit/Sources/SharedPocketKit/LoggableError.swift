@@ -5,7 +5,10 @@
 import Foundation
 
 /// Defines a type that can be logged with `Log`
-public protocol LoggableError: CustomNSError {
+/// - Note: This protocol provides a default implementation for `errorDescription`,
+/// which is used to generate the `localizedDescription` for an error. The default
+/// implementation returns the log description as the error description.
+public protocol LoggableError: LocalizedError, CustomNSError {
     /// The description of the error that occurred.
     var logDescription: String { get }
 
@@ -20,5 +23,11 @@ public extension LoggableError {
         return [
             NSDebugDescriptionErrorKey: logDescription
         ]
+    }
+
+    /// Default implementation that returns the log description as the error description.
+    /// This will then be returned when accessing `localizedDescription`.
+    var errorDescription: String? {
+        return logDescription
     }
 }
