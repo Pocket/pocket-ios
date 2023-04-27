@@ -60,7 +60,8 @@ let package = Package(
                 "Textile",
                 "Sync",
                 "Analytics",
-                .product(name: "Adjust", package: "ios_sdk")
+                .product(name: "Adjust", package: "ios_sdk"),
+                .product(name: "BrazeKit", package: "braze-swift-sdk")
             ]
         ),
         .testTarget(

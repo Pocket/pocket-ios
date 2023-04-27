@@ -23,6 +23,7 @@ class MainViewController: UIViewController {
         let notificationCenter = services.notificationCenter
         let child: UIViewController
         let tracker = services.tracker
+        let braze = services.braze
 
         // Reset and attach at least an api user entity on extension launch
         tracker.resetPersistentEntities([
@@ -44,12 +45,13 @@ class MainViewController: UIViewController {
             userDefaults: userDefaults,
             encryptedStore: encryptedStore,
             appSession: appSession,
-            groupID: Keys.shared.groupdId
+            groupID: Keys.shared.groupID
         )
 
         do {
             let attempted = try legacyUserMigration.attemptMigration {
                 tracker.track(event: Events.Migration.MigrationTo_v8DidBegin(source: .saveToPocketKit))
+                braze.signedInUserDidBeginMigration()
             }
 
             if attempted {
