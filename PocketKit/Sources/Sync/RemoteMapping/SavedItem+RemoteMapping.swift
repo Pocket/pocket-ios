@@ -74,7 +74,7 @@ extension SavedItem {
     }
 
     public func update(from recommendation: Recommendation) {
-        let url = recommendation.item.bestURL
+        let url = recommendation.item.givenURL
         self.url = url
         self.createdAt = Date()
 
