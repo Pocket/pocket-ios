@@ -814,8 +814,7 @@ extension PocketSource {
 extension PocketSource {
     public func save(recommendation: Recommendation) {
         space.performAndWait {
-            guard let recommendation = space.backgroundObject(with: recommendation.objectID) as? Recommendation,
-                  recommendation.item.bestURL != nil else {
+            guard let recommendation = space.backgroundObject(with: recommendation.objectID) as? Recommendation else {
                 return
             }
 
