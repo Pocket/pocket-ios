@@ -11,7 +11,7 @@ extension Recommendation {
     }
 
     var bestDomain: String? {
-        item.syndicatedArticle?.publisherName ?? item.domainMetadata?.name ?? item.domain ?? item.bestURL?.host
+        item.syndicatedArticle?.publisherName ?? item.domainMetadata?.name ?? item.domain ?? item.bestURL.host
     }
 
     var bestTitle: String? {
