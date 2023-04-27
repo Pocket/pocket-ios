@@ -74,11 +74,7 @@ extension SavedItem {
     }
 
     public func update(from recommendation: Recommendation) {
-        guard let url = recommendation.item.bestURL else {
-            Log.breadcrumb(category: "sync", level: .warning, message: "Skipping updating of Recommendation \(recommendation.remoteID) from SavedItem \(self.remoteID). Reason: item and/or url is invalid.")
-            return
-        }
-
+        let url = recommendation.item.bestURL
         self.url = url
         self.createdAt = Date()
 

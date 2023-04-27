@@ -190,10 +190,7 @@ extension SlateDetailViewModel {
     }
 
     private func contexts(for recommendation: Recommendation, at indexPath: IndexPath) -> [Context] {
-        guard let recommendationURL = recommendation.item.bestURL else {
-            return []
-        }
-
+        let recommendationURL = recommendation.item.bestURL
         var contexts: [Context] = []
 
         let slateContext = SlateContext(
