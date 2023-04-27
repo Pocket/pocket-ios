@@ -315,8 +315,9 @@ class PocketSourceTests: XCTestCase {
             }
         }
 
-        let seededItem = space.buildItem(resolvedURL: URL(string: "https://getpocket.com")!)
+        let seededItem = space.buildItem(givenURL: URL(string: "https://getpocket.com")!)
         let recommendation = space.buildRecommendation(item: seededItem)
+        try? space.save()
 
         let source = subject()
         source.save(recommendation: recommendation)
@@ -339,10 +340,10 @@ class PocketSourceTests: XCTestCase {
             }
         }
 
-        let seededItem = space.buildItem()
-        let seededSavedItem = space.buildSavedItem(isArchived: true)
-        seededItem.savedItem = seededSavedItem
+        let seededItem = space.buildItem(givenURL: URL(string: "https://example.com/item-rec")!)
+        let seededSavedItem = space.buildSavedItem(url: "https://example.com/item-rec", isArchived: true, item: seededItem)
         let recommendation = space.buildRecommendation(item: seededItem)
+        try? space.save()
 
         let source = subject()
         source.save(recommendation: recommendation)
@@ -352,8 +353,8 @@ class PocketSourceTests: XCTestCase {
         XCTAssertEqual(savedItems.count, 1)
 
         let savedItem = savedItems[0]
-        XCTAssertEqual(savedItem, seededSavedItem)
-        XCTAssertEqual(savedItem.item, seededItem)
+        XCTAssertEqual(savedItem.objectID, seededSavedItem.objectID)
+        XCTAssertEqual(savedItem.item.objectID, seededItem.objectID)
         XCTAssertFalse(savedItem.isArchived)
     }
 
