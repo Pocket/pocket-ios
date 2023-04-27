@@ -52,7 +52,7 @@ extension Response {
         return .init(
             mock: Mock<Mutation>(
                 upsertSavedItem: Mock<SavedItem>(
-                    item: createMockItem(givenUrl: "https://given.example.com/recommended-item-1"),
+                    item: createMockItem(givenUrl: "https://given.example.com/saved-item-1"),
                     url: apiRequest.inputURL.absoluteString
                 )
             )
@@ -343,123 +343,127 @@ extension Response {
         self.init(status: .ok, content: data)
     }
 
-     private static func createMockSavedItem(
-         url: String = "http://example.com/item-1",
-         id: String? = nil,
-         isFavorite: Bool = false,
-         isArchived: Bool = false,
-         createdAt: Int = 0,
-         archivedAt: Int? = nil,
-         deletedAt: Int? = nil,
-         tags: [Mock<Tag>]? = nil,
-         item: Mock<Item>
-     ) -> Mock<SavedItem> {
-         return Mock<SavedItem>(
-             _createdAt: createdAt,
-             _deletedAt: deletedAt,
-             archivedAt: archivedAt,
-             id: id,
-             isArchived: isArchived,
-             isFavorite: isFavorite,
-             item: item,
-             remoteID: Data(url.utf8).base64EncodedString(),
-             tags: tags,
-             url: url
-         )
-     }
+    /// Create mock saved item to be used in UI tets
+    /// - Returns: `Mock<SavedItem>` with default values
+    private static func createMockSavedItem(
+        url: String = "http://example.com/item-1",
+        id: String? = nil,
+        isFavorite: Bool = false,
+        isArchived: Bool = false,
+        createdAt: Int = 0,
+        archivedAt: Int? = nil,
+        deletedAt: Int? = nil,
+        tags: [Mock<Tag>]? = nil,
+        item: Mock<Item>
+    ) -> Mock<SavedItem> {
+        return Mock<SavedItem>(
+            _createdAt: createdAt,
+            _deletedAt: deletedAt,
+            archivedAt: archivedAt,
+            id: id,
+            isArchived: isArchived,
+            isFavorite: isFavorite,
+            item: item,
+            remoteID: Data(url.utf8).base64EncodedString(),
+            tags: tags,
+            url: url
+        )
+    }
 
-     private static func createMockItem(
-         authors: [Mock<Author>?]? = nil,
-         datePublished: PocketGraph.DateString? = "2021-01-01 12:01:01",
-         domain: String? = nil,
-         domainMetadata: Mock<DomainMetadata>? = nil,
-         excerpt: String? = "Cursus Aenean Elit",
-         givenUrl: PocketGraph.Url,
-         hasImage: GraphQLEnum<PocketGraph.Imageness>? = nil,
-         hasVideo: GraphQLEnum<PocketGraph.Videoness>? = nil,
-         images: [Mock<Image>?]? = nil,
-         isArticle: Bool? = true,
-         language: String? = "en",
-         marticle: [AnyMock]? = createMarticleData(),
-         remoteID: String? = nil,
-         resolvedUrl: PocketGraph.Url? = nil,
-         syndicatedArticle: Mock<SyndicatedArticle>? = nil,
-         timeToRead: Int? = Int.random(in: 1..<10),
-         title: String? = nil,
-         topImageUrl: PocketGraph.Url? = nil,
-         wordCount: Int? = Int.random(in: 100..<200)
-     ) -> Mock<Item> {
-         let authors = [
-             Mock<Author>(
-                 id: "author-1",
-                 name: "Jacob",
-                 url: "https://example.com/authors/jacob"
-             ),
-             Mock<Author>(
-                 id: "author-2",
-                 name: "David",
-                 url: "https://example.com/authors/david"
-             )
-         ]
+    /// Create mock item to be used in UI tests
+    /// - Returns: `Mock<Item>` with default values
+    private static func createMockItem(
+        authors: [Mock<Author>?]? = nil,
+        datePublished: PocketGraph.DateString? = "2021-01-01 12:01:01",
+        domain: String? = nil,
+        domainMetadata: Mock<DomainMetadata>? = nil,
+        excerpt: String? = "Cursus Aenean Elit",
+        givenUrl: PocketGraph.Url,
+        hasImage: GraphQLEnum<PocketGraph.Imageness>? = nil,
+        hasVideo: GraphQLEnum<PocketGraph.Videoness>? = nil,
+        images: [Mock<Image>?]? = nil,
+        isArticle: Bool? = true,
+        language: String? = "en",
+        marticle: [AnyMock]? = createMarticleData(),
+        remoteID: String? = nil,
+        resolvedUrl: PocketGraph.Url? = nil,
+        syndicatedArticle: Mock<SyndicatedArticle>? = nil,
+        timeToRead: Int? = Int.random(in: 1..<10),
+        title: String? = nil,
+        topImageUrl: PocketGraph.Url? = nil,
+        wordCount: Int? = Int.random(in: 100..<200)
+    ) -> Mock<Item> {
+        let authors = [
+            Mock<Author>(
+                id: "author-1",
+                name: "Jacob",
+                url: "https://example.com/authors/jacob"
+            ),
+            Mock<Author>(
+                id: "author-2",
+                name: "David",
+                url: "https://example.com/authors/david"
+            )
+        ]
 
-         let domainMetadata = Mock<DomainMetadata>(logo: "http://example.com/domain-logo.jpg", name: "WIRED")
+        let domainMetadata = Mock<DomainMetadata>(logo: "http://example.com/domain-logo.jpg", name: "WIRED")
 
-         let images = [
-             Mock<Image>(height: 1, imageId: 1, src: "http://example.com/image.jpg", width: 1)
-         ]
+        let images = [
+            Mock<Image>(height: 1, imageId: 1, src: "http://example.com/image.jpg", width: 1)
+        ]
 
-         return Mock<Item>(
-             authors: authors,
-             datePublished: datePublished,
-             domain: domain,
-             domainMetadata: domainMetadata,
-             excerpt: excerpt,
-             givenUrl: givenUrl,
-             hasImage: hasImage,
-             hasVideo: hasVideo,
-             images: images,
-             isArticle: isArticle,
-             language: language,
-             marticle: marticle,
-             remoteID: Data(givenUrl.utf8).base64EncodedString(),
-             resolvedUrl: resolvedUrl,
-             syndicatedArticle: syndicatedArticle,
-             timeToRead: timeToRead,
-             title: title,
-             topImageUrl: topImageUrl,
-             wordCount: wordCount
-         )
-     }
+        return Mock<Item>(
+            authors: authors,
+            datePublished: datePublished,
+            domain: domain,
+            domainMetadata: domainMetadata,
+            excerpt: excerpt,
+            givenUrl: givenUrl,
+            hasImage: hasImage,
+            hasVideo: hasVideo,
+            images: images,
+            isArticle: isArticle,
+            language: language,
+            marticle: marticle,
+            remoteID: Data(givenUrl.utf8).base64EncodedString(),
+            resolvedUrl: resolvedUrl,
+            syndicatedArticle: syndicatedArticle,
+            timeToRead: timeToRead,
+            title: title,
+            topImageUrl: topImageUrl,
+            wordCount: wordCount
+        )
+    }
 
-     /// Create marticle data for item
-     /// - Returns: returns array of items that make up marticle components
-     private static func createMarticleData() -> [AnyMock] {
-         [
-             Mock<MarticleText>(content: "**Commodo Consectetur** _Dapibus_"),
-             Mock<Image>(
-                 caption: "Nulla vitae elit libero, a pharetra augue. Cras justo odio, dapibus ac facilisis in, egestas eget quam.",
-                 credit: "Photo by: Bibendum Vestibulum Mollis",
-                 height: 0,
-                 imageID: 3,
-                 src: "https://placekitten.com/2000/1125",
-                 width: 0
-             ),
-             Mock<MarticleDivider>(content: "---"),
-             Mock<MarticleTable>(html: "<table></table>"),
-             Mock<MarticleHeading>(content: "# Purus Vulputate", level: 1),
-             Mock<MarticleCodeBlock>(language: 1, text: "<some></some><code></code>"),
- //            Mock<Video>(height: 1, length: 2, src: "https://www.youtube.com/watch?v=lEBoIEJxylM", type: GraphQLEnum(.youtube), vid: "lEBoIEJxylM", videoID: 1, width: 2),
-             Mock<MarticleBulletedList>(rows: [
-                 Mock<BulletedListElement>(content: "Pharetra Dapibus Ultricies", level: 0),
-                 Mock<BulletedListElement>(content: "netus et malesuada", level: 1),
-                 Mock<BulletedListElement>(content: "quis commodo odio", level: 2),
-                 Mock<BulletedListElement>(content: "tincidunt ornare massa", level: 3)
-             ]),
-             Mock<MarticleNumberedList>(rows: [
-                 Mock<NumberedListElement>(content: "Amet Commodo Fringilla", index: 0, level: 0),
-                 Mock<NumberedListElement>(content: "nunc sed augue", index: 1, level: 1)
-             ]),
-             Mock<MarticleBlockquote>(content: "Pellentesque Ridiculus Porta")
-         ]
-     }
+    /// Create marticle data for item
+    /// - Returns: returns array of items that make up marticle components
+    private static func createMarticleData() -> [AnyMock] {
+        [
+            Mock<MarticleText>(content: "**Commodo Consectetur** _Dapibus_"),
+            Mock<Image>(
+                caption: "Nulla vitae elit libero, a pharetra augue. Cras justo odio, dapibus ac facilisis in, egestas eget quam.",
+                credit: "Photo by: Bibendum Vestibulum Mollis",
+                height: 0,
+                imageID: 3,
+                src: "https://placekitten.com/2000/1125",
+                width: 0
+            ),
+            Mock<MarticleDivider>(content: "---"),
+            Mock<MarticleTable>(html: "<table></table>"),
+            Mock<MarticleHeading>(content: "# Purus Vulputate", level: 1),
+            Mock<MarticleCodeBlock>(language: 1, text: "<some></some><code></code>"),
+//            Mock<Video>(height: 1, length: 2, src: "https://www.youtube.com/watch?v=lEBoIEJxylM", type: GraphQLEnum(.youtube), vid: "lEBoIEJxylM", videoID: 1, width: 2),
+            Mock<MarticleBulletedList>(rows: [
+                Mock<BulletedListElement>(content: "Pharetra Dapibus Ultricies", level: 0),
+                Mock<BulletedListElement>(content: "netus et malesuada", level: 1),
+                Mock<BulletedListElement>(content: "quis commodo odio", level: 2),
+                Mock<BulletedListElement>(content: "tincidunt ornare massa", level: 3)
+            ]),
+            Mock<MarticleNumberedList>(rows: [
+                Mock<NumberedListElement>(content: "Amet Commodo Fringilla", index: 0, level: 0),
+                Mock<NumberedListElement>(content: "nunc sed augue", index: 1, level: 1)
+            ]),
+            Mock<MarticleBlockquote>(content: "Pellentesque Ridiculus Porta")
+        ]
+    }
 }
