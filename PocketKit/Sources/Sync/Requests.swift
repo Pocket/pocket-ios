@@ -89,7 +89,7 @@ public enum Requests {
 
     public static func fetchRecomendations(by lineupIdentifier: String) -> RichFetchRequest<Recommendation> {
         let request = RichFetchRequest<Recommendation>(entityName: "Recommendation")
-        request.predicate = NSPredicate(format: "slate.slateLineup.remoteID = %@", lineupIdentifier)
+        request.predicate = NSPredicate(format: "slate.slateLineup.remoteID = %@ AND item != NULL", lineupIdentifier)
         request.sortDescriptors = [
             NSSortDescriptor(keyPath: \Recommendation.slate?.sortIndex, ascending: true),
             NSSortDescriptor(keyPath: \Recommendation.sortIndex, ascending: true),
