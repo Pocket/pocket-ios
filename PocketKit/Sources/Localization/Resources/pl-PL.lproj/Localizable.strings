@@ -87,9 +87,8 @@
 "search.results.empty.detail" = "Spróbuj użyć innych słów kluczowych, sprawdzić, czy nie ma literówek, lub zmienić filtry.";
 
 "search.results.offline.header" = "Brak połączenia z Internetem";
-"search.results.offline.detail" = "Aby wyszukać %1$@ elementy, musisz być w trybie online.";
-"search.results.offline.detail.archive" = "Zarchiwizowano";
-"search.results.offline.detail.all" = "Wszystkie";
+"search.results.offline.detail.archive" = "Aby przeszukać zarchiwizowane elementy, wymagany jest tryb online.";
+"search.results.offline.detail.all" = "Aby przeszukać Wszystkie elementy, wymagany jest tryb online.";
 
 // Settings
 "settings.thankyou.credits" = "Dziękujemy za korzystanie z Pocket";
