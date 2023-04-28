@@ -87,9 +87,8 @@
 "search.results.empty.detail" = "Попробуйте использовать другие ключевые слова, проверить наличие опечаток или изменить фильтры.";
 
 "search.results.offline.header" = "Нет подключения к Интернету";
-"search.results.offline.detail" = "Для поиска по всем материалам (%1$@) требуется подключение к сети.";
-"search.results.offline.detail.archive" = "В Архиве";
-"search.results.offline.detail.all" = "Все";
+"search.results.offline.detail.archive" = "Для поиска архивных элементов необходимо подключение к Интернету.";
+"search.results.offline.detail.all" = "Для поиска по всем материалам требуется подключение к сети.";
 
 // Settings
 "settings.thankyou.credits" = "Спасибо, что пользуетесь Pocket";
