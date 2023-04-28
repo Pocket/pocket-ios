@@ -87,9 +87,8 @@
 "search.results.empty.detail" = "嘗試使用其他關鍵字，檢查拼字錯誤或變更篩選條件。";
 
 "search.results.offline.header" = "暫無網際網路連線";
-"search.results.offline.detail" = "您必須連線到網際網路才能搜尋%1$@項目。";
-"search.results.offline.detail.archive" = "已封存";
-"search.results.offline.detail.all" = "全部";
+"search.results.offline.detail.archive" = "您必須在線上才能搜尋已封存項目。";
+"search.results.offline.detail.all" = "您必須在線上才能搜尋所有項目。";
 
 // Settings
 "settings.thankyou.credits" = "感謝您使用 Pocket";
