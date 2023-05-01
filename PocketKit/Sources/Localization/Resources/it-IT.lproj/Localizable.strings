@@ -87,9 +87,8 @@
 "search.results.empty.detail" = "Prova a utilizzare parole chiave diverse, correggere gli errori di battitura o modificare i filtri.";
 
 "search.results.offline.header" = "Nessuna connessione a Internet";
-"search.results.offline.detail" = "Devi essere online per cercare contenuti %1$@.";
-"search.results.offline.detail.archive" = "Archiviato";
-"search.results.offline.detail.all" = "Tutti";
+"search.results.offline.detail.archive" = "Devi essere online per cercare i contenuti archiviati.";
+"search.results.offline.detail.all" = "Devi essere online per cercare tutti i contenuti.";
 
 // Settings
 "settings.thankyou.credits" = "Grazie per aver scelto Pocket";

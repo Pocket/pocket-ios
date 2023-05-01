@@ -87,9 +87,8 @@
 "search.results.empty.detail" = "別のキーワードを使用するか、入力ミスがないか確認するか、フィルタを変更してください。";
 
 "search.results.offline.header" = "インターネット接続がありません";
-"search.results.offline.detail" = "%1$@のアイテムを検索するにはオンラインである必要があります。";
-"search.results.offline.detail.archive" = "アーカイブしました";
-"search.results.offline.detail.all" = "すべて";
+"search.results.offline.detail.archive" = "アーカイブされたアイテムを検索するには、オンラインである必要があります。";
+"search.results.offline.detail.all" = "「すべてのアイテム」を検索するにはオンラインである必要があります。";
 
 // Settings
 "settings.thankyou.credits" = "Pocket をご利用いただきありがとうございます";

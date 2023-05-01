@@ -87,9 +87,8 @@
 "search.results.empty.detail" = "尝试使用不同的关键字、检查拼写错误或更改筛选条件。";
 
 "search.results.offline.header" = "无互联网连接";
-"search.results.offline.detail" = "必须上线才可搜索 %1$@ 个项目。";
-"search.results.offline.detail.archive" = "已存档";
-"search.results.offline.detail.all" = "全部";
+"search.results.offline.detail.archive" = "必须在线才能搜索已存档的项目。";
+"search.results.offline.detail.all" = "必须上线才可搜索所有项目。";
 
 // Settings
 "settings.thankyou.credits" = "感谢您使用 Pocket";
