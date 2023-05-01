@@ -25,15 +25,11 @@ final class PocketSubscriptionStore: SubscriptionStore, ObservableObject {
 
     private let subscriptionMap: [String: PremiumSubscriptionType]
 
-    init(user: User, receiptService: ReceiptService, loggedIn: Bool, subscriptionMap: [String: PremiumSubscriptionType]? = nil) {
+    init(user: User, receiptService: ReceiptService, subscriptionMap: [String: PremiumSubscriptionType]? = nil) {
         self.user = user
         self.receiptService = receiptService
         self.subscriptionMap = subscriptionMap ?? [Keys.shared.pocketPremiumMonthly: .monthly, Keys.shared.pocketPremiumAnnual: .annual]
         makeUserSessionListener()
-        guard loggedIn else {
-            return
-        }
-        start()
     }
 
     deinit {
@@ -60,10 +56,7 @@ final class PocketSubscriptionStore: SubscriptionStore, ObservableObject {
         try await AppStore.sync()
         await fetchActiveSubscription()
     }
-}
 
-// MARK: private methods
-private extension PocketSubscriptionStore {
     /// Start the transaction listener, fetch purchaseable subscriptions,
     /// and look for purchased subscriptions on the App Store
     func start() {
@@ -81,7 +74,10 @@ private extension PocketSubscriptionStore {
             await self.fetchActiveSubscription()
         }
     }
+}
 
+// MARK: private methods
+private extension PocketSubscriptionStore {
     /// Reset user status and cancel the transaction listener
     func stop() {
         state = .unsubscribed
