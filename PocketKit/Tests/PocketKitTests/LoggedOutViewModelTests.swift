@@ -78,7 +78,7 @@ extension LoggedOutViewModelTests {
         let viewModel = subject()
         await viewModel.logIn()
 
-        wait(for: [startExpectation], timeout: 10)
+        await fulfillment(of: [startExpectation], timeout: 10)
     }
 
     @MainActor
@@ -139,7 +139,7 @@ extension LoggedOutViewModelTests {
         let viewModel = subject()
         await viewModel.signUp()
 
-        wait(for: [startExpectation], timeout: 10)
+        await fulfillment(of: [startExpectation], timeout: 10)
     }
 
     @MainActor
@@ -198,7 +198,7 @@ extension LoggedOutViewModelTests {
 
         await viewModel.logIn()
 
-        wait(for: [offlineExpectation], timeout: 10)
+        await fulfillment(of: [offlineExpectation], timeout: 10)
     }
 
     func test_logIn_whenOffline_thenReconnects_setsPresentOfflineViewToFalse() async {
@@ -222,7 +222,7 @@ extension LoggedOutViewModelTests {
         await viewModel.logIn()
         networkPathMonitor.update(status: .satisfied)
 
-        wait(for: [offlineExpectation, onlineExpectation], timeout: 10, enforceOrder: true)
+        await fulfillment(of: [offlineExpectation, onlineExpectation], timeout: 10, enforceOrder: true)
     }
 
     func test_signUp_whenOffline_setsPresentOfflineViewToTrue() async {
@@ -237,7 +237,7 @@ extension LoggedOutViewModelTests {
 
         await viewModel.signUp()
 
-        wait(for: [offlineExpectation], timeout: 10)
+        await fulfillment(of: [offlineExpectation], timeout: 10)
     }
 
     func test_signUp_whenOffline_thenReconnects_setsPresentOfflineViewToFalse() async {
@@ -261,7 +261,7 @@ extension LoggedOutViewModelTests {
         await viewModel.signUp()
         networkPathMonitor.update(status: .satisfied)
 
-        wait(for: [offlineExpectation, onlineExpectation], timeout: 10, enforceOrder: true)
+        await fulfillment(of: [offlineExpectation, onlineExpectation], timeout: 10, enforceOrder: true)
     }
 }
 
