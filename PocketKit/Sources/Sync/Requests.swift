@@ -39,7 +39,7 @@ public enum Requests {
 
     public static func fetchSavedItem(byURL url: URL) -> NSFetchRequest<SavedItem> {
         let request = SavedItem.fetchRequest()
-        request.predicate = NSPredicate(format: "url.absoluteString = %@", url.absoluteString)
+        request.predicate = NSPredicate(format: "url = %@", url as CVarArg)
         request.fetchLimit = 1
         return request
     }
@@ -89,7 +89,7 @@ public enum Requests {
 
     public static func fetchRecomendations(by lineupIdentifier: String) -> RichFetchRequest<Recommendation> {
         let request = RichFetchRequest<Recommendation>(entityName: "Recommendation")
-        request.predicate = NSPredicate(format: "slate.slateLineup.remoteID = %@", lineupIdentifier)
+        request.predicate = NSPredicate(format: "slate.slateLineup.remoteID = %@ AND item != NULL", lineupIdentifier)
         request.sortDescriptors = [
             NSSortDescriptor(keyPath: \Recommendation.slate?.sortIndex, ascending: true),
             NSSortDescriptor(keyPath: \Recommendation.sortIndex, ascending: true),
@@ -201,9 +201,7 @@ public enum Requests {
 
     public static func fetchItem(byURL url: URL) -> NSFetchRequest<Item> {
         let request = fetchItems()
-        let resolvedUrlPredicate = NSPredicate(format: "resolvedURL = %@", url.absoluteString)
-        let givenUrlPredicate = NSPredicate(format: "givenURL = %@", url.absoluteString)
-        request.predicate = NSCompoundPredicate(orPredicateWithSubpredicates: [resolvedUrlPredicate, givenUrlPredicate])
+        request.predicate = NSPredicate(format: "givenURL = %@", url as CVarArg)
         request.fetchLimit = 1
         return request
     }

@@ -20,7 +20,7 @@ extension SavedItem: ItemsListItem {
     }
 
     var displayTitle: String {
-        item.title ?? item.bestURL?.absoluteString ?? ""
+        item.title ?? item.bestURL.absoluteString
     }
 
     var displayDomain: String? {

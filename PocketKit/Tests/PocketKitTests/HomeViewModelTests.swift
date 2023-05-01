@@ -275,7 +275,7 @@ class HomeViewModelTests: XCTestCase {
         space.delete(lineup)
         rec = space.buildRecommendation(
             remoteID: "rec-2",
-            item: space.buildItem(remoteID: "item-2")
+            item: space.buildItem(remoteID: "item-2", givenURL: URL(string: "https://example.com/items/item-123")!)
         )
         slate = space.buildSlate(
             remoteID: "slate-2",

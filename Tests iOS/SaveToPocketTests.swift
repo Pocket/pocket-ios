@@ -18,6 +18,11 @@ class SaveToPocketTests: XCTestCase {
             }
         }
 
+        server.routes.get("/graphql") { request, _ -> Response in
+            let apiRequest = ClientAPIRequest(request)
+            return Response.fallbackResponses(apiRequest: apiRequest)
+        }
+
         try server.start()
     }
 
