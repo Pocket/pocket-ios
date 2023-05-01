@@ -194,7 +194,7 @@ class SearchViewModelTests: XCTestCase {
 
         await setupOnlineSearch(with: term)
 
-        wait(for: [searchExpectation], timeout: 10)
+        await fulfillment(of: [searchExpectation], timeout: 10)
     }
 
     func test_updateScope_forFreeUser_withAllAndTerm_showsGetPremiumEmptyState() async {
