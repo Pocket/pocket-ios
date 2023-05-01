@@ -114,14 +114,17 @@ public extension Events.Tags {
     }
 
     /// "Go Premium" button viewed
-    static func premiumUpsellViewed() -> Event {
+    static func premiumUpsellViewed(itemURL: URL) -> Event {
         return Impression(
             component: .button,
             requirement: .viewable,
             uiEntity: UiEntity(
                 .button,
                 identifier: "global-nav.addTags.upsell"
-            )
+            ),
+            extraEntities: [
+                ContentEntity(url: itemURL)
+            ]
         )
     }
 
