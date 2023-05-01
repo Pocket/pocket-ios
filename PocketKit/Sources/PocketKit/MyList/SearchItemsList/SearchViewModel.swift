@@ -29,6 +29,11 @@ enum SearchViewState {
     }
 }
 
+protocol SearchResultActionDelegate: AnyObject {
+    func archive(item: PocketItem)
+    func unarchive(item: PocketItem)
+}
+
 /// View model that holds business logic for the SearchView
 class SearchViewModel: ObservableObject {
     static let recentSearchesKey = UserDefaults.Key.recentSearches
@@ -399,9 +404,9 @@ class SearchViewModel: ObservableObject {
     }
 }
 
-extension SearchViewModel {
+extension SearchViewModel: SearchResultActionDelegate {
     func itemViewModel(_ searchItem: PocketItem, index: Int) -> PocketItemViewModel {
-        return PocketItemViewModel(item: searchItem, index: index, source: source, tracker: tracker, userDefaults: userDefaults, scope: selectedScope, user: user, store: store, networkPathMonitor: networkPathMonitor)
+        return PocketItemViewModel(item: searchItem, index: index, source: source, tracker: tracker, userDefaults: userDefaults, scope: selectedScope, user: user, store: store, networkPathMonitor: networkPathMonitor, searchActionDelegate: self)
     }
 
     func select(_ searchItem: PocketItem, index: Int) {
@@ -456,6 +461,16 @@ extension SearchViewModel {
         } else {
             archive(savedItem, index: index)
         }
+    }
+
+    func archive(item: PocketItem) {
+        guard let savedItem = fetchSavedItem(item) else { return }
+        updateLocalSearchResults(ByRemoving: savedItem)
+    }
+
+    func unarchive(item: PocketItem) {
+        guard let savedItem = fetchSavedItem(item) else { return }
+        updateLocalSearchResults(ByRemoving: savedItem)
     }
 
     /// Triggers action to archive an item in a list
