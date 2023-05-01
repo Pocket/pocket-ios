@@ -87,9 +87,8 @@
 "search.results.empty.detail" = "Probeer verschillende trefwoorden te gebruiken, controleer op typfouten of wijzig je filters.";
 
 "search.results.offline.header" = "Geen internetverbinding";
-"search.results.offline.detail" = "Je moet online zijn om %1$@ items te doorzoeken.";
-"search.results.offline.detail.archive" = "Gearchiveerd";
-"search.results.offline.detail.all" = "Alle";
+"search.results.offline.detail.archive" = "Je moet online zijn om gearchiveerde items te kunnen doorzoeken.";
+"search.results.offline.detail.all" = "Je moet online zijn om Alle items te doorzoeken.";
 
 // Settings
 "settings.thankyou.credits" = "Bedankt dat je Pocket gebruikt";

@@ -87,9 +87,8 @@
 "search.results.empty.detail" = "다른 키워드를 사용하거나 오타가 있는지 확인하거나 필터를 변경해 보세요.";
 
 "search.results.offline.header" = "인터넷 연결 없음";
-"search.results.offline.detail" = "%1$@ 항목을 검색하려면 온라인 상태여야 합니다.";
-"search.results.offline.detail.archive" = "보관됨";
-"search.results.offline.detail.all" = "전체";
+"search.results.offline.detail.archive" = "보관된 항목을 검색하려면 온라인 상태여야 합니다.";
+"search.results.offline.detail.all" = "모든 항목을 검색하려면 온라인 상태여야 합니다.";
 
 // Settings
 "settings.thankyou.credits" = "Pocket을 이용해 주셔서 감사합니다";
