@@ -36,6 +36,8 @@ public protocol Source {
 
     func viewObject<T: NSManagedObject>(id: NSManagedObjectID) -> T?
 
+    func backgroundObject<T: NSManagedObject>(id: NSManagedObjectID) -> T?
+
     func viewRefresh(_ object: NSManagedObject, mergeChanges flag: Bool)
 
     func retryImmediately()

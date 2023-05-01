@@ -201,6 +201,10 @@ public class PocketSource: Source {
         space.viewObject(with: id)
     }
 
+    public func backgroundObject<T: NSManagedObject>(id: NSManagedObjectID) -> T? {
+        space.backgroundObject(with: id)
+    }
+
     public func viewRefresh(_ object: NSManagedObject, mergeChanges flag: Bool) {
         space.viewContext.refresh(object, mergeChanges: flag)
     }

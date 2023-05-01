@@ -366,7 +366,7 @@ extension HomeViewModel {
         for objectID: NSManagedObjectID,
         at indexPath: IndexPath
     ) -> RecentSavesItemCell.Model? {
-        guard let savedItem = source.viewObject(id: objectID) as? SavedItem else {
+        guard let savedItem = source.backgroundObject(id: objectID) as? SavedItem else {
             return nil
         }
 
