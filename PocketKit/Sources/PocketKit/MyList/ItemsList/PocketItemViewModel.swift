@@ -17,6 +17,7 @@ class PocketItemViewModel: ObservableObject {
     private let user: User
     private let store: SubscriptionStore
     private let networkPathMontor: NetworkPathMonitor
+    private weak var searchActionDelegate: SearchResultActionDelegate?
 
     let item: PocketItem
 
@@ -50,7 +51,7 @@ class PocketItemViewModel: ObservableObject {
         return addTagsViewModel
     }
 
-    init(item: PocketItem, index: Int, source: Source, tracker: Tracker, userDefaults: UserDefaults, scope: SearchScope, user: User, store: SubscriptionStore, networkPathMonitor: NetworkPathMonitor) {
+    init(item: PocketItem, index: Int, source: Source, tracker: Tracker, userDefaults: UserDefaults, scope: SearchScope, user: User, store: SubscriptionStore, networkPathMonitor: NetworkPathMonitor, searchActionDelegate: SearchResultActionDelegate? = nil) {
         self.item = item
         self.index = index
         self.source = source
@@ -61,6 +62,7 @@ class PocketItemViewModel: ObservableObject {
         self.user = user
         self.store = store
         self.networkPathMontor = networkPathMonitor
+        self.searchActionDelegate = searchActionDelegate
     }
 
     /// Triggers action to favorite or unfavorite an item in a list
@@ -124,6 +126,7 @@ class PocketItemViewModel: ObservableObject {
 
     /// Triggers action to archive an item in a list
     func archive() {
+        searchActionDelegate?.archive(item: item)
         guard let savedItem = fetchSavedItem() else { return }
         tracker.track(event: Events.Search.archiveItem(itemUrl: savedItem.url, positionInList: index, scope: scope))
         source.archive(item: savedItem)
@@ -131,6 +134,7 @@ class PocketItemViewModel: ObservableObject {
 
     /// Triggers action to move an item from archive to saves in a list
     func moveToSaves() {
+        searchActionDelegate?.unarchive(item: item)
         guard let savedItem = fetchSavedItem() else { return }
         tracker.track(event: Events.Search.unarchiveItem(itemUrl: savedItem.url, positionInList: index, scope: scope))
         source.unarchive(item: savedItem)
