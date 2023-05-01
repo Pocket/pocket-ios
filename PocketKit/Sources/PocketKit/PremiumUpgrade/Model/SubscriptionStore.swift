@@ -37,4 +37,5 @@ public protocol SubscriptionStore {
     func requestSubscriptions() async throws
     func purchase(_ subscription: PremiumSubscription) async
     func restoreSubscription() async throws
+    func start()
 }
