@@ -72,7 +72,7 @@ class PocketAddTagsViewModel: AddTagsViewModel {
             PremiumUpgradeViewModel(store: store, tracker: tracker, source: .tags, networkPathMonitor: networkPathMonitor)
         })
 
-        self.premiumUpsellView = PremiumUpsellView(viewModel: premiumUpsellViewModel)
+        self.premiumUpsellView = PremiumUpsellView(viewModel: premiumUpsellViewModel, itemURL: item.url)
 
         tags = itemTagNames
         allOtherTags()

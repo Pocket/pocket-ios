@@ -5,6 +5,7 @@ import Localization
 struct PremiumUpsellView: View {
     @ObservedObject
     var viewModel: PremiumUpsellViewModel
+    let itemURL: URL
 
     @State var dismissReason: DismissReason = .swipe
     var body: some View {
@@ -31,7 +32,7 @@ struct PremiumUpsellView: View {
                         PremiumUpgradeView(dismissReason: self.$dismissReason, viewModel: viewModel.makePremiumUpgradeViewModel())
                     }
                     .task {
-                        viewModel.trackPremiumUpsellViewed()
+                        viewModel.trackPremiumUpsellViewed(with: itemURL)
                     }
                     .accessibilityIdentifier("get-pocket-premium-button")
             }
