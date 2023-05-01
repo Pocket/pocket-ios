@@ -13,4 +13,5 @@ class MockSubscriptionStore: SubscriptionStore {
     var statePublisher: Published<PurchaseState>.Publisher { $state }
     func requestSubscriptions() async throws {}
     func purchase(_ subscription: PocketKit.PremiumSubscription) async {}
+    func start() { }
 }

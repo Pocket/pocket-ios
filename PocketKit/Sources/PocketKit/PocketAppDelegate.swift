@@ -22,6 +22,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     private let tracker: Tracker
     private let sessionBackupUtility: SessionBackupUtility
     private let consumerKey: String
+    private let subscriptionStore: SubscriptionStore
 
     let notificationService: PushNotificationService
 
@@ -38,6 +39,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         self.brazeService = services.braze
         self.tracker = services.tracker
         self.sessionBackupUtility = services.sessionBackupUtility
+        self.subscriptionStore = services.subscriptionStore
 
         self.notificationService = services.notificationService
         self.consumerKey = Keys.shared.pocketApiConsumerKey
@@ -102,6 +104,13 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         // The session backup utility can be started after user migration since
         // the session can possibly already be backed up, i.e if used for user migration
         sessionBackupUtility.start()
+
+        if appSession.currentSession != nil {
+            // If the user is not logged in, we can start the subscription
+            // in preparation for in-app purchases. Otherwise, the store
+            // listens for log in / out events to appropriately start / stop.
+            subscriptionStore.start()
+        }
 
         return true
     }
