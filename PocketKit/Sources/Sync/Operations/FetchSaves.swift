@@ -49,11 +49,13 @@ class FetchSaves: SyncOperation {
                 }
             }
 
+            var firstSync = false
             if lastRefresh.lastRefreshSaves == nil {
                 initialDownloadState.send(.started)
+                firstSync = true
             }
 
-            try await fetchSaves()
+            try await fetchSaves(firstSync: firstSync)
             lastRefresh.refreshedSaves()
             return .success
         } catch {
@@ -85,7 +87,7 @@ class FetchSaves: SyncOperation {
         }
     }
 
-    private func fetchSaves() async throws {
+    private func fetchSaves(firstSync: Bool) async throws {
         var pagination = PaginationSpec(maxItems: SyncConstants.Saves.firstLoadMaxCount, pageSize: SyncConstants.Saves.initalPageSize)
         if let cursor = safeSpace.currentCursor {
             pagination = PaginationSpec(maxItems: SyncConstants.Saves.firstLoadMaxCount, pageSize: SyncConstants.Saves.initalPageSize, cursor: cursor)
@@ -96,10 +98,12 @@ class FetchSaves: SyncOperation {
             Log.breadcrumb(category: "sync.saves", level: .debug, message: "Loading page \(i)")
             let result = try await fetchPage(pagination)
 
-            if case .started = initialDownloadState.value,
-               let totalCount = result.data?.user?.savedItems?.totalCount,
-               pagination.cursor == nil {
-                initialDownloadState.send(.paginating(totalCount: min(totalCount, pagination.maxItems)))
+            if let totalCount = result.data?.user?.savedItems?.totalCount,
+               firstSync {
+                let totalDownloadingCount = Float(min(totalCount, pagination.maxItems))
+                let totalPages = Float(totalDownloadingCount/Float(pagination.pageSize))
+                let progress = (Float(i) / totalPages)
+                initialDownloadState.send(.paginating(totalCount: Int(totalDownloadingCount), currentPercentProgress: progress))
             }
 
             try updateLocalStorage(result: result)

@@ -10,6 +10,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
     private let model: ViewModel
     private var subscriptions: [AnyCancellable] = []
     private var collectionView: UICollectionView!
+    private var progressView: UIProgressView!
     private var dataSource: UICollectionViewDiffableDataSource<ItemsListSection, ItemsListCell<ViewModel.ItemIdentifier>>!
 
     init(model: ViewModel) {
@@ -144,6 +145,11 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
             })
         )
 
+        progressView = UIProgressView(progressViewStyle: .bar)
+        progressView.progressTintColor = UIColor(.ui.teal2)
+        progressView.trackTintColor = UIColor(.ui.teal6)
+        progressView.isHidden = false
+
         let filterButtonRegistration: UICollectionView.CellRegistration<TopicChipCell, ItemsListFilter> = .init { [weak self] cell, indexPath, filterID in
             self?.configure(cell: cell, indexPath: indexPath, filterID: filterID)
         }
@@ -192,6 +198,10 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
             self?.dataSource.apply(snapshot, animatingDifferences: true)
         }.store(in: &subscriptions)
 
+        model.initialDownloadState.receive(on: DispatchQueue.main).sink { [weak self] initialDownloadState in
+            self?.updateProgressBar(downloadState: initialDownloadState)
+        }.store(in: &subscriptions)
+
         collectionView.prefetchDataSource = self
     }
 
@@ -207,6 +217,33 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
         super.viewDidLoad()
         view.backgroundColor = UIColor(.ui.white1)
         model.fetch()
+        view.addSubview(progressView)
+        progressView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            progressView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            progressView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            progressView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            progressView.heightAnchor.constraint(equalToConstant: 1.0 / UIScreen.main.scale)
+        ])
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+    }
+
+    func updateProgressBar(downloadState: InitialDownloadState) {
+        switch downloadState {
+        case .unknown:
+            progressView.isHidden = true
+        case .started:
+            progressView.isHidden = false
+            progressView.setProgress(0, animated: true)
+        case .paginating(totalCount: _, currentPercentProgress: let progess):
+            progressView.setProgress(progess, animated: true)
+        case .completed:
+            progressView.setProgress(100, animated: true)
+            progressView.isHidden = true
+        }
     }
 
     private func handleRefresh() {

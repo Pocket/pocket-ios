@@ -48,11 +48,13 @@ class FetchArchive: SyncOperation {
                 }
             }
 
+            var firstSync = false
             if lastRefresh.lastRefreshArchive == nil {
                 initialDownloadState.send(.started)
+                firstSync = true
             }
 
-            try await fetchArchive()
+            try await fetchArchive(firstSync: firstSync)
 
             lastRefresh.refreshedArchive()
             return .success
@@ -85,7 +87,7 @@ class FetchArchive: SyncOperation {
         }
     }
 
-    private func fetchArchive() async throws {
+    private func fetchArchive(firstSync: Bool) async throws {
         var pagination = PaginationSpec(maxItems: SyncConstants.Archive.firstLoadMaxCount, pageSize: SyncConstants.Archive.initalPageSize)
         if let cursor = safeSpace.currentCursor {
             pagination = PaginationSpec(maxItems: SyncConstants.Archive.firstLoadMaxCount, pageSize: SyncConstants.Archive.initalPageSize, cursor: cursor)
@@ -96,10 +98,12 @@ class FetchArchive: SyncOperation {
             Log.breadcrumb(category: "sync.archive", level: .debug, message: "Loading page \(pageNumber)")
             let result = try await fetchPage(pagination)
 
-            if case .started = initialDownloadState.value,
-               let totalCount = result.data?.user?.savedItems?.totalCount,
-               pagination.cursor == nil {
-                initialDownloadState.send(.paginating(totalCount: min(totalCount, pagination.maxItems)))
+            if let totalCount = result.data?.user?.savedItems?.totalCount,
+               firstSync {
+                let totalDownloadingCount = Float(min(totalCount, pagination.maxItems))
+                let totalPages = Float(totalDownloadingCount/Float(pagination.pageSize))
+                let progress = (Float(pageNumber) / totalPages)
+                initialDownloadState.send(.paginating(totalCount: Int(totalDownloadingCount), currentPercentProgress: progress))
             }
             try updateLocalStorage(result: result)
             pagination = pagination.nextPage(result: result, pageSize: SyncConstants.Archive.pageSize)
