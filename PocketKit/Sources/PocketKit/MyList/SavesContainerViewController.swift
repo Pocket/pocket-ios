@@ -487,6 +487,7 @@ extension SavesContainerViewController {
     private func showListen(listenViewModel: ListenViewModel) {
         let appConfig = PKTListenAppConfiguration(source: listenViewModel)
         let listen = PKTListenQueueViewController(audibleQueue: PKTListen.queue(with: appConfig))
+        listen.title = listenViewModel.title
         self.present(listen, animated: true)
     }
 }

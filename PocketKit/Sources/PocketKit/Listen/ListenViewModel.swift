@@ -8,15 +8,19 @@ import PKTListen
 import SharedPocketKit
 
 class ListenViewModel: PKTListenDataSource<PKTListDiffable> {
-    static func source(savedItems: [SavedItem]?) -> ListenViewModel {
+    public var title: String = "Unknown"
+
+    static func source(savedItems: [SavedItem]?, title: String) -> ListenViewModel {
         let config = PKTListenAppKusariConfiguration()
 
         guard let languages = PKTListen.supportedLanguages else {
-            return ListenViewModel(context: ["index": NSNumber(value: 0)], loader: { source, context, complete in
+            let viewModel = ListenViewModel(context: ["index": NSNumber(value: 0)], loader: { source, context, complete in
                 source.hasMore = false
                 Log.debug("Loaded Listen with no items")
                 complete(nil, ["index": NSNumber(value: 0)], [])
             })
+            viewModel.title = title
+            return viewModel
         }
 
         let allItems: [PKTKusari<PKTListenItem>] = savedItems?.compactMap { $0 }.filter({savedItem in
@@ -45,10 +49,12 @@ class ListenViewModel: PKTListenDataSource<PKTListDiffable> {
             })
         }
 
-        return ListenViewModel(context: ["index": NSNumber(value: 0)], loader: { source, context, complete in
+        let viewModel = ListenViewModel(context: ["index": NSNumber(value: 0)], loader: { source, context, complete in
             source.hasMore = false
             Log.debug("Loaded Listen with \(allItems.count) articles")
             complete(nil, ["index": NSNumber(value: allItems.count)], allItems)
         })
+        viewModel.title = title
+        return viewModel
     }
 }
