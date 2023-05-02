@@ -339,7 +339,7 @@ class FetchSavesTests: XCTestCase {
         let service = subject()
         _ = await service.execute(syncTaskId: task.objectID)
 
-        wait(for: [receivedEvent], timeout: 10)
+        await fulfillment(of: [receivedEvent], timeout: 10)
     }
 
     func test_refresh_whenUpdatedSinceIsNotPresent_onlyFetchesUnreadItems() async {
@@ -411,7 +411,7 @@ class FetchSavesTests: XCTestCase {
         let service = subject()
         _ = await service.execute(syncTaskId: task.objectID)
 
-        wait(for: [receivedFirstPageEvent, receivedCompletedEvent], timeout: 10)
+        await fulfillment(of: [receivedFirstPageEvent, receivedCompletedEvent], timeout: 10)
     }
 
     func test_refresh_whenResultsAreEmpty_finishesOperationSuccessfully() async {

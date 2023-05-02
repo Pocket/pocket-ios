@@ -39,7 +39,7 @@ class SavedItemViewModel {
         self.userDefaults = userDefaults
         self.user = user
 
-        guard let session = appSession.currentSession else { return }
+        guard appSession.currentSession != nil else { return }
     }
 
     func save(from context: ExtensionContext?) async {
