@@ -49,11 +49,13 @@ class FetchSaves: SyncOperation {
                 }
             }
 
+            var firstSync = false
             if lastRefresh.lastRefreshSaves == nil {
                 initialDownloadState.send(.started)
+                firstSync = true
             }
 
-            try await fetchSaves()
+            try await fetchSaves(firstSync: firstSync)
             lastRefresh.refreshedSaves()
             return .success
         } catch {
@@ -85,21 +87,26 @@ class FetchSaves: SyncOperation {
         }
     }
 
-    private func fetchSaves() async throws {
+    private func fetchSaves(firstSync: Bool) async throws {
         var pagination = PaginationSpec(maxItems: SyncConstants.Saves.firstLoadMaxCount, pageSize: SyncConstants.Saves.initalPageSize)
         if let cursor = safeSpace.currentCursor {
             pagination = PaginationSpec(maxItems: SyncConstants.Saves.firstLoadMaxCount, pageSize: SyncConstants.Saves.initalPageSize, cursor: cursor)
         }
 
         var i = 1
+        var totalToDownload = SyncConstants.Saves.firstLoadMaxCount
         repeat {
-            Log.breadcrumb(category: "sync.saves", level: .debug, message: "Loading page \(i)")
             let result = try await fetchPage(pagination)
 
-            if case .started = initialDownloadState.value,
-               let totalCount = result.data?.user?.savedItems?.totalCount,
-               pagination.cursor == nil {
-                initialDownloadState.send(.paginating(totalCount: min(totalCount, pagination.maxItems)))
+            if let totalCount = result.data?.user?.savedItems?.totalCount,
+               firstSync {
+                if i == 1 {
+                    totalToDownload = min(totalCount, totalToDownload)
+                }
+                let totalReaminingToDownload = min(totalToDownload, pagination.maxRemainingItemsAllowedToDownload)
+                let progress = Float(totalToDownload - totalReaminingToDownload) / Float(totalToDownload)
+                Log.breadcrumb(category: "sync.saves", level: .debug, message: "Download Progress: \(progress) - Remaining Downloading: \(totalReaminingToDownload)")
+                initialDownloadState.send(.paginating(totalCount: totalReaminingToDownload, currentPercentProgress: progress))
             }
 
             try updateLocalStorage(result: result)
@@ -140,21 +147,21 @@ class FetchSaves: SyncOperation {
     struct PaginationSpec {
         let cursor: String?
         let shouldFetchNextPage: Bool
-        let maxItems: Int
+        let maxRemainingItemsAllowedToDownload: Int
         let pageSize: Int
 
         init(maxItems: Int, pageSize: Int) {
-            self.init(cursor: nil, shouldFetchNextPage: false, maxItems: maxItems, pageSize: pageSize)
+            self.init(cursor: nil, shouldFetchNextPage: false, maxRemainingItemsAllowedToDownload: maxItems, pageSize: pageSize)
         }
 
         init(maxItems: Int, pageSize: Int, cursor: String) {
-            self.init(cursor: cursor, shouldFetchNextPage: false, maxItems: maxItems, pageSize: pageSize)
+            self.init(cursor: cursor, shouldFetchNextPage: false, maxRemainingItemsAllowedToDownload: maxItems, pageSize: pageSize)
         }
 
-        private init(cursor: String?, shouldFetchNextPage: Bool, maxItems: Int, pageSize: Int) {
+        private init(cursor: String?, shouldFetchNextPage: Bool, maxRemainingItemsAllowedToDownload: Int, pageSize: Int) {
             self.cursor = cursor
             self.shouldFetchNextPage = shouldFetchNextPage
-            self.maxItems = maxItems
+            self.maxRemainingItemsAllowedToDownload = maxRemainingItemsAllowedToDownload
             self.pageSize = pageSize
         }
 
@@ -162,13 +169,13 @@ class FetchSaves: SyncOperation {
             guard let savedItems = result.data?.user?.savedItems,
                   let itemCount = savedItems.edges?.count,
                   let endCursor = savedItems.pageInfo.endCursor else {
-                      return PaginationSpec(cursor: nil, shouldFetchNextPage: false, maxItems: maxItems, pageSize: pageSize)
-                  }
+                return PaginationSpec(cursor: nil, shouldFetchNextPage: false, maxRemainingItemsAllowedToDownload: maxRemainingItemsAllowedToDownload, pageSize: pageSize)
+            }
 
             return PaginationSpec(
                 cursor: endCursor,
-                shouldFetchNextPage: savedItems.pageInfo.hasNextPage && itemCount < maxItems,
-                maxItems: maxItems - itemCount,
+                shouldFetchNextPage: savedItems.pageInfo.hasNextPage && itemCount < maxRemainingItemsAllowedToDownload,
+                maxRemainingItemsAllowedToDownload: min((maxRemainingItemsAllowedToDownload - itemCount), savedItems.totalCount),
                 pageSize: pageSize
             )
         }

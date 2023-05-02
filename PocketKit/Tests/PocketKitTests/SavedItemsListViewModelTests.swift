@@ -391,7 +391,7 @@ class SavedItemsListViewModelTests: XCTestCase {
             )
         }.store(in: &subscriptions)
 
-        source.initialSavesDownloadState.send(.paginating(totalCount: 2))
+        source.initialSavesDownloadState.send(.paginating(totalCount: 2, currentPercentProgress: 0))
         try? itemsController.performFetch()
 
         wait(for: [receivedSnapshot], timeout: 10)

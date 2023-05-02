@@ -400,7 +400,7 @@ class FetchSavesTests: XCTestCase {
             switch state {
             case .unknown, .started:
                 break
-            case .paginating(let totalCount):
+            case .paginating(let totalCount, _):
                 XCTAssertEqual(2, totalCount)
                 receivedFirstPageEvent.fulfill()
             case .completed:

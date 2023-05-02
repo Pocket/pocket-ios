@@ -48,11 +48,13 @@ class FetchArchive: SyncOperation {
                 }
             }
 
+            var firstSync = false
             if lastRefresh.lastRefreshArchive == nil {
                 initialDownloadState.send(.started)
+                firstSync = true
             }
 
-            try await fetchArchive()
+            try await fetchArchive(firstSync: firstSync)
 
             lastRefresh.refreshedArchive()
             return .success
@@ -85,21 +87,26 @@ class FetchArchive: SyncOperation {
         }
     }
 
-    private func fetchArchive() async throws {
-        var pagination = PaginationSpec(maxItems: SyncConstants.Archive.firstLoadMaxCount, pageSize: SyncConstants.Archive.initalPageSize)
+    private func fetchArchive(firstSync: Bool) async throws {
+        var pagination = PaginationSpec(maxRemainingItemsAllowedToDownload: SyncConstants.Archive.firstLoadMaxCount, pageSize: SyncConstants.Archive.initalPageSize)
         if let cursor = safeSpace.currentCursor {
-            pagination = PaginationSpec(maxItems: SyncConstants.Archive.firstLoadMaxCount, pageSize: SyncConstants.Archive.initalPageSize, cursor: cursor)
+            pagination = PaginationSpec(maxRemainingItemsAllowedToDownload: SyncConstants.Archive.firstLoadMaxCount, pageSize: SyncConstants.Archive.initalPageSize, cursor: cursor)
         }
 
         var pageNumber = 1
+        var totalToDownload = SyncConstants.Archive.firstLoadMaxCount
         repeat {
-            Log.breadcrumb(category: "sync.archive", level: .debug, message: "Loading page \(pageNumber)")
             let result = try await fetchPage(pagination)
 
-            if case .started = initialDownloadState.value,
-               let totalCount = result.data?.user?.savedItems?.totalCount,
-               pagination.cursor == nil {
-                initialDownloadState.send(.paginating(totalCount: min(totalCount, pagination.maxItems)))
+            if let totalCount = result.data?.user?.savedItems?.totalCount,
+               firstSync {
+                if pageNumber == 1 {
+                    totalToDownload = min(totalCount, totalToDownload)
+                }
+                let totalReaminingToDownload = min(totalToDownload, pagination.maxRemainingItemsAllowedToDownload)
+                let progress = Float(totalToDownload - totalReaminingToDownload) / Float(totalToDownload)
+                Log.breadcrumb(category: "sync.archive", level: .debug, message: "Download Progress: \(progress) - Remaining Downloading: \(totalReaminingToDownload)")
+                initialDownloadState.send(.paginating(totalCount: totalReaminingToDownload, currentPercentProgress: progress))
             }
             try updateLocalStorage(result: result)
             pagination = pagination.nextPage(result: result, pageSize: SyncConstants.Archive.pageSize)
@@ -141,21 +148,21 @@ class FetchArchive: SyncOperation {
     struct PaginationSpec {
         let cursor: String?
         let shouldFetchNextPage: Bool
-        let maxItems: Int
+        let maxRemainingItemsAllowedToDownload: Int
         let pageSize: Int
 
-        init(maxItems: Int, pageSize: Int) {
-            self.init(cursor: nil, shouldFetchNextPage: false, maxItems: maxItems, pageSize: pageSize)
+        init(maxRemainingItemsAllowedToDownload: Int, pageSize: Int) {
+            self.init(cursor: nil, shouldFetchNextPage: false, maxRemainingItemsAllowedToDownload: maxRemainingItemsAllowedToDownload, pageSize: pageSize)
         }
 
-        init(maxItems: Int, pageSize: Int, cursor: String) {
-            self.init(cursor: cursor, shouldFetchNextPage: false, maxItems: maxItems, pageSize: pageSize)
+        init(maxRemainingItemsAllowedToDownload: Int, pageSize: Int, cursor: String) {
+            self.init(cursor: cursor, shouldFetchNextPage: false, maxRemainingItemsAllowedToDownload: maxRemainingItemsAllowedToDownload, pageSize: pageSize)
         }
 
-        private init(cursor: String?, shouldFetchNextPage: Bool, maxItems: Int, pageSize: Int) {
+        private init(cursor: String?, shouldFetchNextPage: Bool, maxRemainingItemsAllowedToDownload: Int, pageSize: Int) {
             self.cursor = cursor
             self.shouldFetchNextPage = shouldFetchNextPage
-            self.maxItems = maxItems
+            self.maxRemainingItemsAllowedToDownload = maxRemainingItemsAllowedToDownload
             self.pageSize = pageSize
         }
 
@@ -163,13 +170,13 @@ class FetchArchive: SyncOperation {
             guard let savedItems = result.data?.user?.savedItems,
                   let itemCount = savedItems.edges?.count,
                   let endCursor = savedItems.pageInfo.endCursor else {
-                      return PaginationSpec(cursor: nil, shouldFetchNextPage: false, maxItems: maxItems, pageSize: pageSize)
+                      return PaginationSpec(cursor: nil, shouldFetchNextPage: false, maxRemainingItemsAllowedToDownload: maxRemainingItemsAllowedToDownload, pageSize: pageSize)
                   }
 
             return PaginationSpec(
                 cursor: endCursor,
-                shouldFetchNextPage: savedItems.pageInfo.hasNextPage && itemCount < maxItems,
-                maxItems: maxItems - itemCount,
+                shouldFetchNextPage: savedItems.pageInfo.hasNextPage && itemCount < maxRemainingItemsAllowedToDownload,
+                maxRemainingItemsAllowedToDownload: min((maxRemainingItemsAllowedToDownload - itemCount), savedItems.totalCount),
                 pageSize: pageSize
             )
         }

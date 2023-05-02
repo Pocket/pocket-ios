@@ -486,7 +486,8 @@ extension SavesContainerViewController: SFSafariViewControllerDelegate {
 extension SavesContainerViewController {
     private func showListen(listenViewModel: ListenViewModel) {
         let appConfig = PKTListenAppConfiguration(source: listenViewModel)
-        let listen = PKTListenDrawerViewController.drawer(with: appConfig)
+        let listen = PKTListenQueueViewController(audibleQueue: PKTListen.queue(with: appConfig))
+        listen.title = listenViewModel.title
         self.present(listen, animated: true)
     }
 }
