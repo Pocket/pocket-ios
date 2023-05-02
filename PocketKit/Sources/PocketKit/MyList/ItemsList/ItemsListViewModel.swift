@@ -102,6 +102,7 @@ protocol ItemsListViewModel: AnyObject {
     var selectionItem: SelectionItem { get }
     var emptyState: EmptyStateViewModel? { get }
     var snapshot: Published<Snapshot>.Publisher { get }
+    var initialDownloadState: Published<InitialDownloadState>.Publisher { get }
 
     func fetch()
     func refresh(_ completion: (() -> Void)?)

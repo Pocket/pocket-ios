@@ -46,6 +46,9 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     @Published
     var presentedListenViewModel: ListenViewModel?
 
+    @Published private var _initialDownloadState: InitialDownloadState
+    var initialDownloadState: Published<InitialDownloadState>.Publisher { $_initialDownloadState }
+
     private let listOptions: ListOptions
 
     var emptyState: EmptyStateViewModel? {
@@ -101,13 +104,30 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         switch self.viewType {
         case .saves:
             self.itemsController = source.makeSavesController()
+            self._initialDownloadState = source.initialSavesDownloadState.value
         case .archive:
             self.itemsController = source.makeArchiveController()
+            self._initialDownloadState = source.initialArchiveDownloadState.value
         }
 
         self.notificationCenter = notificationCenter
 
         super.init()
+
+        switch self.viewType {
+        case .saves:
+            source.initialSavesDownloadState.receive(on: DispatchQueue.global(qos: .userInteractive))
+                .sink { [weak self] initialDownloadState in
+                    self?._initialDownloadState = initialDownloadState
+                }
+                .store(in: &subscriptions)
+        case .archive:
+            source.initialArchiveDownloadState.receive(on: DispatchQueue.global(qos: .userInteractive))
+                .sink { [weak self] initialDownloadState in
+                    self?._initialDownloadState = initialDownloadState
+                }
+                .store(in: &subscriptions)
+        }
 
         itemsController.delegate = self
 
@@ -132,6 +152,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
                 self?.handle(syncEvent: event)
             }
             .store(in: &subscriptions)
+
     }
 
     func fetch() {
@@ -456,15 +477,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         snapshot.reloadItems(filters)
         let itemCellIDs: [ItemsListCell<ItemIdentifier>]
 
-        var stateValue: InitialDownloadState
-        switch self.viewType {
-        case .saves:
-            stateValue = source.initialSavesDownloadState.value
-        case .archive:
-            stateValue = source.initialArchiveDownloadState.value
-        }
-
-        switch stateValue {
+        switch self._initialDownloadState {
         case .unknown, .completed:
             itemCellIDs = itemsController
                 .fetchedObjects?
@@ -479,7 +492,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             } else {
                 itemCellIDs = (0..<4).map { .placeholder($0) }
             }
-        case .paginating(let totalCount):
+        case .paginating(let totalCount, _):
             itemCellIDs = (0..<totalCount).compactMap { index in
                 guard let fetchedObjects = itemsController.fetchedObjects,
                       fetchedObjects.count > index else {

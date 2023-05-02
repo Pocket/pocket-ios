@@ -5,7 +5,7 @@ import Foundation
 public enum InitialDownloadState {
     case unknown
     case started
-    case paginating(totalCount: Int)
+    case paginating(totalCount: Int, currentPercentProgress: Float)
     case completed
 }
 
