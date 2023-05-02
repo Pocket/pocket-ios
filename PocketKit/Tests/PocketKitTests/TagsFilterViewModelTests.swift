@@ -121,7 +121,7 @@ class TagsFilterViewModelTests: XCTestCase {
         expectDelete.assertForOverFulfill = false
         source.stubDeleteTag { tag in
             defer { expectDelete.fulfill() }
-            deletedTags.append(tag.name ?? "")
+            deletedTags.append(tag.name)
         }
         let savedTags = try? space.fetchTags(isArchived: false)
         let viewModel = subject(fetchedTags: savedTags) { }
