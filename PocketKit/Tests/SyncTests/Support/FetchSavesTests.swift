@@ -104,33 +104,33 @@ class FetchSavesTests: XCTestCase {
         XCTAssertEqual(tags?[0].name, "tag-1")
 
         let item = savedItem.item
-        XCTAssertEqual(item.remoteID, "item-1")
-        XCTAssertEqual(item.givenURL, URL(string: "https://given.example.com/item-1")!)
-        XCTAssertEqual(item.resolvedURL, URL(string: "https://resolved.example.com/item-1")!)
-        XCTAssertEqual(item.title, "Item 1")
-        XCTAssertEqual(item.topImageURL, URL(string: "https://example.com/item-1/top-image.jpg")!)
-        XCTAssertEqual(item.domain, "example.com")
-        XCTAssertEqual(item.language, "en")
-        XCTAssertEqual(item.timeToRead, 6)
-        XCTAssertEqual(item.excerpt, "Cursus Aenean Elit")
-        XCTAssertEqual(item.datePublished, Date(timeIntervalSinceReferenceDate: 631195261))
+        XCTAssertEqual(item?.remoteID, "item-1")
+        XCTAssertEqual(item?.givenURL, URL(string: "https://given.example.com/item-1")!)
+        XCTAssertEqual(item?.resolvedURL, URL(string: "https://resolved.example.com/item-1")!)
+        XCTAssertEqual(item?.title, "Item 1")
+        XCTAssertEqual(item?.topImageURL, URL(string: "https://example.com/item-1/top-image.jpg")!)
+        XCTAssertEqual(item?.domain, "example.com")
+        XCTAssertEqual(item?.language, "en")
+        XCTAssertEqual(item?.timeToRead, 6)
+        XCTAssertEqual(item?.excerpt, "Cursus Aenean Elit")
+        XCTAssertEqual(item?.datePublished, Date(timeIntervalSinceReferenceDate: 631195261))
 
         let expected: [ArticleComponent] = Fixture.load(name: "marticle").decode()
-        XCTAssertEqual(item.article?.components, expected)
+        XCTAssertEqual(item?.article?.components, expected)
 
-        let authors = item.authors?.compactMap { $0 as? Author }
+        let authors = item?.authors?.compactMap { $0 as? Author }
         XCTAssertEqual(authors?[0].id, "author-1")
         XCTAssertEqual(authors?[0].name, "Eleanor")
         XCTAssertEqual(authors?[0].url, URL(string: "https://example.com/authors/eleanor")!)
 
-        let domain = item.domainMetadata
+        let domain = item?.domainMetadata
         XCTAssertEqual(domain?.name, "WIRED")
         XCTAssertEqual(domain?.logo, URL(string: "http://example.com/item-1/domain-logo.jpg")!)
 
-        let images = item.images?.compactMap { $0 as? Image } ?? []
+        let images = item?.images?.compactMap { $0 as? Image } ?? []
         XCTAssertEqual(images[0].source, URL(string: "http://example.com/item-1/image-1.jpg"))
 
-        XCTAssertEqual(item.syndicatedArticle?.itemID, "syndicated-article-item-id")
+        XCTAssertEqual(item?.syndicatedArticle?.itemID, "syndicated-article-item-id")
     }
 
     func test_refresh_whenFetchSucceeds_andResultContainsDuplicateItems_createsSingleItem() async throws {
@@ -157,7 +157,7 @@ class FetchSavesTests: XCTestCase {
         _ = await service.execute(syncTaskId: task.objectID)
 
         let item = try space.fetchSavedItem(byURL: URL(string: "http://example.com/item-1")!)
-        XCTAssertEqual(item?.item.title, "Updated Item 1")
+        XCTAssertEqual(item?.item?.title, "Updated Item 1")
     }
 
     func test_refresh_whenFetchFails_sendsErrorOverGivenSubject() async throws {
