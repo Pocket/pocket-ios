@@ -642,14 +642,29 @@ extension SavedItemsListViewModel {
 
         switch filter {
         case .listen:
+            var title: String = ""
+            switch viewType {
+            case .saves:
+                title = Localization.saves
+            case .archive:
+                title = Localization.archive
+            }
+
             // If the user selected a filter, and the user is not in the Listen tags playlist feature flag
             // Remove any filters and sorts they selected and re-fetch data before showing listen.
             if !selectedFilters.isEmpty && !featureFlags.isAssigned(flag: .listenTagsPlaylists) {
+                if let tag = self.presentedTagsFilter?.selectedTag {
+                    switch tag {
+                    case .recent(let tagName), .tag(let tagName):
+                        title = tagName
+                    case .notTagged: break
+                    }
+                }
                 selectedFilters.removeAll()
                 applySorting()
                 fetch()
             }
-            presentedListenViewModel = ListenViewModel.source(savedItems: self.itemsController.fetchedObjects)
+            presentedListenViewModel = ListenViewModel.source(savedItems: self.itemsController.fetchedObjects, title: title)
             selectedFilters.remove(.listen)
         case .all:
             selectedFilters.removeAll()
