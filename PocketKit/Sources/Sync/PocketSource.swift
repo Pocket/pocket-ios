@@ -354,7 +354,7 @@ extension PocketSource {
 
             space.delete(savedItem)
 
-            if item.recommendation == nil {
+            if let item = item, item.recommendation == nil {
                 space.delete(item)
             }
 

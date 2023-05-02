@@ -307,7 +307,7 @@ extension HomeViewModel {
             notificationCenter: notificationCenter
         )
 
-        if savedItem.item.shouldOpenInWebView {
+        if let item = savedItem.item, item.shouldOpenInWebView {
             selectedReadableType = .webViewSavedItem(viewModel)
         } else {
             selectedReadableType = .savedItem(viewModel)

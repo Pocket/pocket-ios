@@ -8,23 +8,23 @@ extension SavedItem: ItemsListItem {
     }
 
     var domain: String? {
-        item.domain
+        item?.domain
     }
 
     var topImageURL: URL? {
-        item.topImageURL
+        item?.topImageURL
     }
 
     var timeToRead: Int? {
-        item.timeToRead?.intValue
+        item?.timeToRead?.intValue
     }
 
     var displayTitle: String {
-        item.title ?? item.bestURL.absoluteString
+        item?.title ?? item?.bestURL.absoluteString ?? url.absoluteString
     }
 
     var displayDomain: String? {
-        item.domainMetadata?.name ?? item.domain ?? host
+        item?.domainMetadata?.name ?? item?.domain ?? host
     }
 
     var displayDetail: String {
@@ -40,7 +40,7 @@ extension SavedItem: ItemsListItem {
     }
 
     var displayAuthors: String? {
-        let authors: [String]? = item.authors?.compactMap { ($0 as? Author)?.name }
+        let authors: [String]? = item?.authors?.compactMap { ($0 as? Author)?.name }
         return authors?.joined(separator: ", ")
     }
 
@@ -53,7 +53,7 @@ extension SavedItem: ItemsListItem {
     }
 
     var cursor: String? {
-        item.savedItem?.cursor
+        item?.savedItem?.cursor
     }
 }
 
