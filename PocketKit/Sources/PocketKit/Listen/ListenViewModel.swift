@@ -24,6 +24,10 @@ class ListenViewModel: PKTListenDataSource<PKTListDiffable> {
         }
 
         let allItems: [PKTKusari<PKTListenItem>] = savedItems?.compactMap { $0 }.filter({savedItem in
+            if savedItem.remoteID == nil {
+                return false
+            }
+
             if savedItem.estimatedAlbumDuration <= 60 {
                 return false
             }
@@ -36,7 +40,7 @@ class ListenViewModel: PKTListenDataSource<PKTListDiffable> {
                 return false
             }
 
-            return savedItem.item.isArticle ?? false
+            return savedItem.item.isArticle
         }).compactMap({item in
             let v = PKTListenKusariCreate(item.albumID!, PKTListenQueueSectionType.item.rawValue, item, config)
             return v
