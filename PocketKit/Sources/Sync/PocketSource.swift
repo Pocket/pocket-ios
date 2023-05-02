@@ -842,16 +842,27 @@ extension PocketSource {
     }
 
     public func remove(recommendation: Recommendation) {
-        space.delete(recommendation)
-        try? space.save()
+        space.performAndWait {
+            guard let recommendation = space.backgroundObject(with: recommendation.objectID) as? Recommendation else {
+                return
+            }
+
+            space.delete(recommendation)
+            try? space.save()
+        }
     }
 }
 
 // MARK: - Image
 extension PocketSource {
     public func delete(images: [Image]) {
-        space.delete(images)
-        try? space.save()
+        space.performAndWait {
+            let images = images.compactMap { image in
+               return space.backgroundObject(with: image.objectID) as? Image
+            }
+            space.delete(images)
+            try? space.save()
+        }
     }
 }
 
