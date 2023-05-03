@@ -11,25 +11,25 @@ public class Item: MockObject {
 
   public struct MockFields {
     @Field<[Author?]>("authors") public var authors
-    @Field<PocketGraph.DateString?>("datePublished") public var datePublished
-    @Field<String?>("domain") public var domain
-    @Field<DomainMetadata?>("domainMetadata") public var domainMetadata
-    @Field<String?>("excerpt") public var excerpt
+    @Field<PocketGraph.DateString>("datePublished") public var datePublished
+    @Field<String>("domain") public var domain
+    @Field<DomainMetadata>("domainMetadata") public var domainMetadata
+    @Field<String>("excerpt") public var excerpt
     @Field<PocketGraph.Url>("givenUrl") public var givenUrl
-    @Field<GraphQLEnum<PocketGraph.Imageness>?>("hasImage") public var hasImage
-    @Field<GraphQLEnum<PocketGraph.Videoness>?>("hasVideo") public var hasVideo
+    @Field<GraphQLEnum<PocketGraph.Imageness>>("hasImage") public var hasImage
+    @Field<GraphQLEnum<PocketGraph.Videoness>>("hasVideo") public var hasVideo
     @Field<[Image?]>("images") public var images
-    @Field<Bool?>("isArticle") public var isArticle
-    @Field<String?>("language") public var language
-    @Field<[MarticleComponent]?>("marticle") public var marticle
+    @Field<Bool>("isArticle") public var isArticle
+    @Field<String>("language") public var language
+    @Field<[MarticleComponent]>("marticle") public var marticle
     @Field<String>("remoteID") public var remoteID
-    @Field<PocketGraph.Url?>("resolvedUrl") public var resolvedUrl
-    @Field<SyndicatedArticle?>("syndicatedArticle") public var syndicatedArticle
-    @Field<Int?>("timeToRead") public var timeToRead
-    @Field<String?>("title") public var title
+    @Field<PocketGraph.Url>("resolvedUrl") public var resolvedUrl
+    @Field<SyndicatedArticle>("syndicatedArticle") public var syndicatedArticle
+    @Field<Int>("timeToRead") public var timeToRead
+    @Field<String>("title") public var title
     @available(*, deprecated, message: "use the topImage object")
-    @Field<PocketGraph.Url?>("topImageUrl") public var topImageUrl
-    @Field<Int?>("wordCount") public var wordCount
+    @Field<PocketGraph.Url>("topImageUrl") public var topImageUrl
+    @Field<Int>("wordCount") public var wordCount
   }
 }
 
@@ -56,24 +56,24 @@ public extension Mock where O == Item {
     wordCount: Int? = nil
   ) {
     self.init()
-    self.authors = authors
-    self.datePublished = datePublished
-    self.domain = domain
-    self.domainMetadata = domainMetadata
-    self.excerpt = excerpt
-    self.givenUrl = givenUrl
-    self.hasImage = hasImage
-    self.hasVideo = hasVideo
-    self.images = images
-    self.isArticle = isArticle
-    self.language = language
-    self.marticle = marticle
-    self.remoteID = remoteID
-    self.resolvedUrl = resolvedUrl
-    self.syndicatedArticle = syndicatedArticle
-    self.timeToRead = timeToRead
-    self.title = title
-    self.topImageUrl = topImageUrl
-    self.wordCount = wordCount
+    _set(authors, for: \.authors)
+    _set(datePublished, for: \.datePublished)
+    _set(domain, for: \.domain)
+    _set(domainMetadata, for: \.domainMetadata)
+    _set(excerpt, for: \.excerpt)
+    _set(givenUrl, for: \.givenUrl)
+    _set(hasImage, for: \.hasImage)
+    _set(hasVideo, for: \.hasVideo)
+    _set(images, for: \.images)
+    _set(isArticle, for: \.isArticle)
+    _set(language, for: \.language)
+    _set(marticle, for: \.marticle)
+    _set(remoteID, for: \.remoteID)
+    _set(resolvedUrl, for: \.resolvedUrl)
+    _set(syndicatedArticle, for: \.syndicatedArticle)
+    _set(timeToRead, for: \.timeToRead)
+    _set(title, for: \.title)
+    _set(topImageUrl, for: \.topImageUrl)
+    _set(wordCount, for: \.wordCount)
   }
 }

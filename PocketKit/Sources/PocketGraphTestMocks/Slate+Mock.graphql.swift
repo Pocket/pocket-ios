@@ -29,11 +29,11 @@ public extension Mock where O == Slate {
     requestId: PocketGraph.ID? = nil
   ) {
     self.init()
-    self.description = description
-    self.displayName = displayName
-    self.experimentId = experimentId
-    self.id = id
-    self.recommendations = recommendations
-    self.requestId = requestId
+    _set(description, for: \.description)
+    _set(displayName, for: \.displayName)
+    _set(experimentId, for: \.experimentId)
+    _set(id, for: \.id)
+    _set(recommendations, for: \.recommendations)
+    _set(requestId, for: \.requestId)
   }
 }
