@@ -165,13 +165,6 @@ private extension PocketSubscriptionStore {
                 Log.capture(message: "Unable to verify the transaction associated to a current entitlement. Error: \(error)")
             }
         }
-        do {
-            // in case no subscription was found,
-            // still send the App Store receipt to the backend
-            try await receiptService.send(nil)
-        } catch {
-            Log.capture(message: "Failed to send a restore receipt to the backend: \(error)")
-        }
     }
 
     /// Process a verified transaction and update app status if necessary
