@@ -5,7 +5,7 @@ import SharedPocketKit
 
 /// Generic type to send subscription receipt to a server
 public protocol ReceiptService {
-    func send(_ product: Product?) async throws
+    func send(_ product: Product) async throws
 }
 
 public enum ReceiptError: LoggableError {
@@ -36,7 +36,7 @@ class AppStoreReceiptService: NSObject, ReceiptService {
         super.init()
     }
 
-    func send(_ product: Product?) async throws {
+    func send(_ product: Product) async throws {
         // on simulators, we typically use a local test environment, and don't want
         // to send the receipt to the backend
         #if targetEnvironment(simulator)
@@ -52,10 +52,10 @@ class AppStoreReceiptService: NSObject, ReceiptService {
 
         let transactionInfo = try getReceipt()
         let source = "itunes"
-        let productId = product?.id ?? ""
-        let amount = product?.price != nil ? "\(product!.price)" : ""
-        let transactionType = product != nil ? "purchase" : "restore"
-        let currency = product?.priceFormatStyle.currencyCode ?? ""
+        let productId = product.id
+        let amount = "\(product.price)"
+        let transactionType = "purchase"
+        let currency = product.priceFormatStyle.currencyCode
 
         try await client.sendAppstoreReceipt(
             source: source,
