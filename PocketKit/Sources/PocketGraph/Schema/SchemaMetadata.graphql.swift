@@ -55,6 +55,9 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "UnMarseable": return PocketGraph.Objects.UnMarseable
     case "BulletedListElement": return PocketGraph.Objects.BulletedListElement
     case "NumberedListElement": return PocketGraph.Objects.NumberedListElement
+    case "ItemHighlights": return PocketGraph.Objects.ItemHighlights
+    case "SavedItemAnnotations": return PocketGraph.Objects.SavedItemAnnotations
+    case "Highlight": return PocketGraph.Objects.Highlight
     case "TagConnection": return PocketGraph.Objects.TagConnection
     case "TagEdge": return PocketGraph.Objects.TagEdge
     case "SavedItemSearchResultConnection": return PocketGraph.Objects.SavedItemSearchResultConnection

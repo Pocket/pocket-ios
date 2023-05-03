@@ -23,6 +23,15 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
         ...ItemParts
         ...PendingItemParts
       }
+      annotations {
+        __typename
+        highlights {
+          __typename
+          id
+          patch
+          quote
+        }
+      }
     }
     """ }
 
@@ -41,6 +50,7 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
     .field("archivedAt", Int?.self),
     .field("tags", [Tag]?.self),
     .field("item", Item.self),
+    .field("annotations", Annotations?.self),
   ] }
 
   /// The url the user saved to their list
@@ -61,6 +71,8 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
   public var tags: [Tag]? { __data["tags"] }
   /// Link to the underlying Pocket Item for the URL
   public var item: Item { __data["item"] }
+  /// Annotations associated to this SavedItem
+  public var annotations: Annotations? { __data["annotations"] }
 
   public init(
     url: String,
@@ -71,7 +83,8 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
     _createdAt: Int,
     archivedAt: Int? = nil,
     tags: [Tag]? = nil,
-    item: Item
+    item: Item,
+    annotations: Annotations? = nil
   ) {
     self.init(_dataDict: DataDict(data: [
       "__typename": PocketGraph.Objects.SavedItem.typename,
@@ -84,6 +97,7 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
       "archivedAt": archivedAt,
       "tags": tags._fieldData,
       "item": item._fieldData,
+      "annotations": annotations._fieldData,
       "__fulfilled": Set([
         ObjectIdentifier(Self.self)
       ])
@@ -213,6 +227,8 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
       public var images: [ItemParts.Image?]? { __data["images"] }
       /// If the item has a syndicated counterpart the syndication information
       public var syndicatedArticle: SyndicatedArticle? { __data["syndicatedArticle"] }
+      /// Keyword highlights from search
+      public var highlights: ItemParts.Highlights? { __data["highlights"] }
 
       public struct Fragments: FragmentContainer {
         public let __data: DataDict
@@ -240,7 +256,8 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
         excerpt: String? = nil,
         domainMetadata: DomainMetadata? = nil,
         images: [ItemParts.Image?]? = nil,
-        syndicatedArticle: SyndicatedArticle? = nil
+        syndicatedArticle: SyndicatedArticle? = nil,
+        highlights: ItemParts.Highlights? = nil
       ) {
         self.init(_dataDict: DataDict(data: [
           "__typename": PocketGraph.Objects.Item.typename,
@@ -263,6 +280,7 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
           "domainMetadata": domainMetadata._fieldData,
           "images": images._fieldData,
           "syndicatedArticle": syndicatedArticle._fieldData,
+          "highlights": highlights._fieldData,
           "__fulfilled": Set([
             ObjectIdentifier(Self.self),
             ObjectIdentifier(SavedItemParts.Item.self),
@@ -871,6 +889,82 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
             ObjectIdentifier(Self.self),
             ObjectIdentifier(SavedItemParts.Item.self),
             ObjectIdentifier(PendingItemParts.self)
+          ])
+        ]))
+      }
+    }
+  }
+
+  /// Annotations
+  ///
+  /// Parent Type: `SavedItemAnnotations`
+  public struct Annotations: PocketGraph.SelectionSet {
+    public let __data: DataDict
+    public init(_dataDict: DataDict) { __data = _dataDict }
+
+    public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.SavedItemAnnotations }
+    public static var __selections: [ApolloAPI.Selection] { [
+      .field("__typename", String.self),
+      .field("highlights", [Highlight?]?.self),
+    ] }
+
+    /// User-highlighted passages on a SavedItem
+    public var highlights: [Highlight?]? { __data["highlights"] }
+
+    public init(
+      highlights: [Highlight?]? = nil
+    ) {
+      self.init(_dataDict: DataDict(data: [
+        "__typename": PocketGraph.Objects.SavedItemAnnotations.typename,
+        "highlights": highlights._fieldData,
+        "__fulfilled": Set([
+          ObjectIdentifier(Self.self)
+        ])
+      ]))
+    }
+
+    /// Annotations.Highlight
+    ///
+    /// Parent Type: `Highlight`
+    public struct Highlight: PocketGraph.SelectionSet {
+      public let __data: DataDict
+      public init(_dataDict: DataDict) { __data = _dataDict }
+
+      public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Highlight }
+      public static var __selections: [ApolloAPI.Selection] { [
+        .field("__typename", String.self),
+        .field("id", PocketGraph.ID.self),
+        .field("patch", String.self),
+        .field("quote", String.self),
+      ] }
+
+      /// The ID for this Highlight annotation
+      public var id: PocketGraph.ID { __data["id"] }
+      /// Patch string generated by 'DiffMatchPatch' library, serialized
+      /// into text via `patch_toText` method. Use `patch_fromText` to
+      /// deserialize into an object that can be used by the DiffMatchPatch
+      /// library. Format is similar to UniDiff but is character-based.
+      /// The patched text depends on version. For example, the version 2
+      /// patch surrounds the highlighted text portion with a pair of
+      /// sentinel tags: '<pkt_tag_annotation></pkt_tag_annotation>'
+      /// Reference: https://github.com/google/diff-match-patch
+      public var patch: String { __data["patch"] }
+      /// The full text of the highlighted passage. Used as a fallback for
+      /// rendering highlight if the patch fails.
+      public var quote: String { __data["quote"] }
+
+      public init(
+        id: PocketGraph.ID,
+        patch: String,
+        quote: String
+      ) {
+        self.init(_dataDict: DataDict(data: [
+          "__typename": PocketGraph.Objects.Highlight.typename,
+          "id": id,
+          "patch": patch,
+          "quote": quote,
+          "__fulfilled": Set([
+            ObjectIdentifier(Self.self)
           ])
         ]))
       }

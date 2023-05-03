@@ -55,6 +55,13 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
         __typename
         ...SyndicatedArticleParts
       }
+      highlights {
+        __typename
+        full_text
+        tags
+        title
+        url
+      }
     }
     """ }
 
@@ -83,6 +90,7 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
     .field("domainMetadata", DomainMetadata?.self),
     .field("images", [Image?]?.self),
     .field("syndicatedArticle", SyndicatedArticle?.self),
+    .field("highlights", Highlights?.self),
   ] }
 
   /// The Item entity is owned by the Parser service.
@@ -126,6 +134,8 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
   public var images: [Image?]? { __data["images"] }
   /// If the item has a syndicated counterpart the syndication information
   public var syndicatedArticle: SyndicatedArticle? { __data["syndicatedArticle"] }
+  /// Keyword highlights from search
+  public var highlights: Highlights? { __data["highlights"] }
 
   public init(
     remoteID: String,
@@ -146,7 +156,8 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
     excerpt: String? = nil,
     domainMetadata: DomainMetadata? = nil,
     images: [Image?]? = nil,
-    syndicatedArticle: SyndicatedArticle? = nil
+    syndicatedArticle: SyndicatedArticle? = nil,
+    highlights: Highlights? = nil
   ) {
     self.init(_dataDict: DataDict(data: [
       "__typename": PocketGraph.Objects.Item.typename,
@@ -169,6 +180,7 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
       "domainMetadata": domainMetadata._fieldData,
       "images": images._fieldData,
       "syndicatedArticle": syndicatedArticle._fieldData,
+      "highlights": highlights._fieldData,
       "__fulfilled": Set([
         ObjectIdentifier(Self.self)
       ])
@@ -824,6 +836,46 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
         "__fulfilled": Set([
           ObjectIdentifier(Self.self),
           ObjectIdentifier(SyndicatedArticleParts.self)
+        ])
+      ]))
+    }
+  }
+
+  /// Highlights
+  ///
+  /// Parent Type: `ItemHighlights`
+  public struct Highlights: PocketGraph.SelectionSet {
+    public let __data: DataDict
+    public init(_dataDict: DataDict) { __data = _dataDict }
+
+    public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.ItemHighlights }
+    public static var __selections: [ApolloAPI.Selection] { [
+      .field("__typename", String.self),
+      .field("full_text", [String?]?.self),
+      .field("tags", [String?]?.self),
+      .field("title", [String?]?.self),
+      .field("url", [String?]?.self),
+    ] }
+
+    public var full_text: [String?]? { __data["full_text"] }
+    public var tags: [String?]? { __data["tags"] }
+    public var title: [String?]? { __data["title"] }
+    public var url: [String?]? { __data["url"] }
+
+    public init(
+      full_text: [String?]? = nil,
+      tags: [String?]? = nil,
+      title: [String?]? = nil,
+      url: [String?]? = nil
+    ) {
+      self.init(_dataDict: DataDict(data: [
+        "__typename": PocketGraph.Objects.ItemHighlights.typename,
+        "full_text": full_text,
+        "tags": tags,
+        "title": title,
+        "url": url,
+        "__fulfilled": Set([
+          ObjectIdentifier(Self.self)
         ])
       ]))
     }

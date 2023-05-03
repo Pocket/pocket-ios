@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21754" systemVersion="22E261" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Annotations" representedClassName="Annotations" syncable="YES" codeGenerationType="class">
+        <relationship name="highlights" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Highlight" inverseName="annotations" inverseEntity="Highlight"/>
+        <relationship name="savedItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SavedItem" inverseName="annotations" inverseEntity="SavedItem"/>
+    </entity>
     <entity name="Author" representedClassName="Author" syncable="YES">
         <attribute name="id" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
@@ -16,6 +20,12 @@
         <attribute name="name" attributeType="String"/>
         <attribute name="payloadValue" optional="YES" attributeType="String"/>
         <attribute name="variant" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="Highlight" representedClassName="Highlight" syncable="YES" codeGenerationType="class">
+        <attribute name="patch" optional="YES" attributeType="String"/>
+        <attribute name="quote" optional="YES" attributeType="String"/>
+        <attribute name="remoteID" optional="YES" attributeType="String"/>
+        <relationship name="annotations" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Annotations" inverseName="highlights" inverseEntity="Annotations"/>
     </entity>
     <entity name="Image" representedClassName="Image" syncable="YES">
         <attribute name="isDownloaded" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
@@ -82,6 +92,7 @@
         <attribute name="isFavorite" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" spotlightIndexingEnabled="YES"/>
         <attribute name="remoteID" optional="YES" attributeType="String" spotlightIndexingEnabled="YES"/>
         <attribute name="url" attributeType="URI"/>
+        <relationship name="annotations" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Annotations" inverseName="savedItem" inverseEntity="Annotations"/>
         <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="savedItem" inverseEntity="Item" spotlightIndexingEnabled="YES"/>
         <relationship name="savedItemUpdatedNotification" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SavedItemUpdatedNotification" inverseName="savedItem" inverseEntity="SavedItemUpdatedNotification"/>
         <relationship name="tags" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Tag" inverseName="savedItems" inverseEntity="Tag"/>

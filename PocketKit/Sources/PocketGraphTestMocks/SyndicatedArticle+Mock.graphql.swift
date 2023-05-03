@@ -27,10 +27,10 @@ public extension Mock where O == SyndicatedArticle {
     title: String? = nil
   ) {
     self.init()
-    self.excerpt = excerpt
-    self.itemId = itemId
-    self.mainImage = mainImage
-    self.publisher = publisher
-    self.title = title
+    _set(excerpt, for: \.excerpt)
+    _set(itemId, for: \.itemId)
+    _set(mainImage, for: \.mainImage)
+    _set(publisher, for: \.publisher)
+    _set(title, for: \.title)
   }
 }

@@ -46,6 +46,12 @@ fragment ItemParts on Item {
     __typename
     ...SyndicatedArticleParts
   }
+  highlights {
+    full_text
+    tags
+    title
+    url
+  }
 }
 
 fragment DomainMetadataParts on DomainMetadata {
