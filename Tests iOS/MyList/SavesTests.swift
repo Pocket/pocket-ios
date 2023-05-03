@@ -271,14 +271,14 @@ class SavesTests: XCTestCase {
         app.saves.itemView(matching: "Item 1").wait()
 
         app.saves.filterButton(for: "All").swipeLeft()
-        app.saves.filterButton(for: "Sort/Filter").wait().tap()
+        app.saves.filterButton(for: "Sort").wait().tap()
         app.sortMenu.sortOption("Oldest saved").wait().tap()
 
         app.saves.itemView(matching: "Item 1").wait()
         XCTAssertTrue(app.saves.itemView(at: 0).contains(string: "Item 2"))
         XCTAssertTrue(app.saves.itemView(at: 1).contains(string: "Item 1"))
 
-        app.saves.filterButton(for: "Sort/Filter").wait().tap()
+        app.saves.filterButton(for: "Sort").wait().tap()
         app.sortMenu.sortOption("Newest saved").wait().tap()
 
         XCTAssertTrue(app.saves.itemView(at: 0).contains(string: "Item 1"))
