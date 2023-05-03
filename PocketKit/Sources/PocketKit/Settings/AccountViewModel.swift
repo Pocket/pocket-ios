@@ -145,6 +145,7 @@ extension AccountViewModel {
                 try await self.restoreSubscription()
                 isPresentingRestoreSuccessful = true
             } catch {
+                Log.capture(message: "Manual purchase restore failed: \(error)")
                 isPresentingRestoreNotSuccessful = true
             }
         }
