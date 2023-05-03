@@ -404,19 +404,26 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             return []
         }
 
+        // In the following swipe actions, we do not call a completion handler.
+        // The usage of saves and archive will both delete a cell as soon as the action
+        // is performed, since the action is client-side first. This will result in a deletion animation.
+        // However, calling `completion` will attempt to reset the cell back into a non-swiped state,
+        // which is a second animation that the UI then battles with. If we do not call completion,
+        // we get the single deletion animation, and the completion call is unnecessary, here.
+        // Possibly related link: https://stackoverflow.com/questions/47106002/uicontextualaction-with-destructive-style-seems-to-delete-row-by-default/55894960#55894960
         switch self.viewType {
         case .saves:
             return [
                 .archive { [weak self] completion in
                     self?._archive(item: item)
-                    completion(true)
+                    // completion(true)
                 }
             ]
         case .archive:
             return [
                 .moveToSaves { [weak self] completion in
                     self?._moveToSaves(item: item)
-                    completion(true)
+                    // completion(true)
                 }
             ]
         }
