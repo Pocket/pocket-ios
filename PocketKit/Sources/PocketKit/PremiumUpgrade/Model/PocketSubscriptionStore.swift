@@ -120,8 +120,8 @@ private extension PocketSubscriptionStore {
     func verify(_ transaction: VerificationResult<Transaction>) throws -> Transaction {
         switch transaction {
         case .unverified:
-            throw SubscriptionStoreError.unverifiedPurchase
             Log.capture(message: "Transaction verification failed: App Store returned an unverified transaction")
+            throw SubscriptionStoreError.unverifiedPurchase
         case .verified(let verifiedTransaction):
             return verifiedTransaction
         }
@@ -164,13 +164,6 @@ private extension PocketSubscriptionStore {
             } catch {
                 Log.capture(message: "Unable to verify the transaction associated to a current entitlement. Error: \(error)")
             }
-        }
-        do {
-            // in case no subscription was found,
-            // still send the App Store receipt to the backend
-            try await receiptService.send(nil)
-        } catch {
-            Log.capture(message: "Failed to send a restore receipt to the backend: \(error)")
         }
     }
 
