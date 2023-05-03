@@ -433,16 +433,12 @@ extension SearchViewModel: SearchResultActionDelegate {
             notificationCenter: notificationCenter
         )
 
-        trackOpenSearchItem(url: savedItem.url, index: index)
-
         if savedItem.shouldOpenInWebView {
+            trackOpenSearchItem(url: savedItem.url, index: index, destination: .internal)
             selectedItem = .webView(readable)
-
-            trackContentOpen(destination: .external, item: savedItem)
         } else {
+            trackOpenSearchItem(url: savedItem.url, index: index, destination: .external)
             selectedItem = .readable(readable)
-
-            trackContentOpen(destination: .internal, item: savedItem)
         }
     }
 
@@ -516,19 +512,6 @@ extension SearchViewModel: SearchResultActionDelegate {
         }
         return savedItem
     }
-
-    private func trackContentOpen(destination: ContentOpenEvent.Destination, item: SavedItem) {
-        guard let url = item.bestURL else {
-            return
-        }
-
-        let contexts: [Context] = [
-            ContentContext(url: url)
-        ]
-
-        let event = ContentOpenEvent(destination: destination, trigger: .click)
-        tracker.track(event: event, contexts)
-    }
 }
 
 // MARK: Analytics
@@ -565,8 +548,8 @@ extension SearchViewModel {
     /// - Parameters:
     ///   - url: url associated with the item
     ///   - index: position index of item in the list
-    func trackOpenSearchItem(url: URL, index: Int) {
-        tracker.track(event: Events.Search.searchCardContentOpen(url: url, positionInList: index, scope: selectedScope))
+    func trackOpenSearchItem(url: URL, index: Int, destination: ContentOpen.Destination) {
+        tracker.track(event: Events.Search.searchCardContentOpen(url: url, positionInList: index, scope: selectedScope, destination: destination))
     }
 
     /// Track when user triggers a search page call
