@@ -120,8 +120,8 @@ private extension PocketSubscriptionStore {
     func verify(_ transaction: VerificationResult<Transaction>) throws -> Transaction {
         switch transaction {
         case .unverified:
-            throw SubscriptionStoreError.unverifiedPurchase
             Log.capture(message: "Transaction verification failed: App Store returned an unverified transaction")
+            throw SubscriptionStoreError.unverifiedPurchase
         case .verified(let verifiedTransaction):
             return verifiedTransaction
         }
