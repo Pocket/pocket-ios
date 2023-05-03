@@ -14,7 +14,7 @@ class ArticleComponentUnavailableView: UIView {
 
     private lazy var button: UIButton = {
         var config = UIButton.Configuration.filled()
-        config.baseBackgroundColor = UIColor(.ui.teal2)
+        config.baseBackgroundColor = UIColor(.ui.teal2).resolvedColor(with: UITraitCollection(userInterfaceStyle: .light))
         config.attributedTitle = AttributedString(
             NSAttributedString(
                 string: Localization.openInWebView,
