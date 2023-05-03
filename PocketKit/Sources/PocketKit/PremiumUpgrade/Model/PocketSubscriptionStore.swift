@@ -171,7 +171,6 @@ private extension PocketSubscriptionStore {
             try await receiptService.send(nil)
         } catch {
             Log.capture(message: "Failed to send a restore receipt to the backend: \(error)")
-            Log.capture(error: error)
         }
     }
 
