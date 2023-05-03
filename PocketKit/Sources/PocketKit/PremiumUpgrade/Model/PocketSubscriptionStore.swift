@@ -47,7 +47,7 @@ final class PocketSubscriptionStore: SubscriptionStore, ObservableObject {
         do {
             try await purchase(product: subscription.product)
         } catch {
-            Log.capture(error: error)
+            Log.capture(message: "Failed to purchase a subscription: \(error)")
         }
     }
 
@@ -68,7 +68,7 @@ final class PocketSubscriptionStore: SubscriptionStore, ObservableObject {
                 try await requestSubscriptions()
             } catch {
                 state = .failed
-                Log.capture(error: error)
+                Log.capture(message: "Failed to fetch purchaseable subscriptions from the App Store: \(error)")
             }
             // Restore a purchased subscription, if any
             await self.fetchActiveSubscription()
@@ -91,7 +91,7 @@ private extension PocketSubscriptionStore {
                 do {
                     try await self.processTransaction(transaction)
                 } catch {
-                    Log.capture(error: error)
+                    Log.capture(message: "Transaction listener received an error while processing an incoming transaction: \(error)")
                 }
             }
         }
@@ -121,6 +121,7 @@ private extension PocketSubscriptionStore {
         switch transaction {
         case .unverified:
             throw SubscriptionStoreError.unverifiedPurchase
+            Log.capture(message: "Transaction verification failed: App Store returned an unverified transaction")
         case .verified(let verifiedTransaction):
             return verifiedTransaction
         }
@@ -161,7 +162,7 @@ private extension PocketSubscriptionStore {
                 try await processTransaction(transaction)
                 return
             } catch {
-                Log.capture(error: error)
+                Log.capture(message: "Unable to verify the transaction associated to a current entitlement. Error: \(error)")
             }
         }
         do {
@@ -169,7 +170,7 @@ private extension PocketSubscriptionStore {
             // still send the App Store receipt to the backend
             try await receiptService.send(nil)
         } catch {
-            Log.capture(error: error)
+            Log.capture(message: "Failed to send a restore receipt to the backend: \(error)")
         }
     }
 
@@ -193,7 +194,7 @@ private extension PocketSubscriptionStore {
                 do {
                     try await receiptService.send(subscription.product)
                 } catch {
-                    Log.capture(error: error)
+                    Log.capture(message: "Error while sending a receipt for a verified subscription: \(error)")
                 }
             }
         default:
