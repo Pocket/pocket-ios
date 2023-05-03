@@ -4,10 +4,6 @@ import Textile
 import Localization
 
 struct PremiumUpgradeView: View {
-    // TODO: remove this property and the two @State properties once we are ready to ship premium upgrades to beta users
-    static let shouldAllowUpgrade = true
-    @State private var showingMonthlyAlert = false
-    @State private var showingAnnualAlert = false
     @Binding var dismissReason: DismissReason
     @Environment(\.dismiss) private var dismiss
     @StateObject var viewModel: PremiumUpgradeViewModel
@@ -78,17 +74,10 @@ struct PremiumUpgradeView: View {
                             ) {
                                 Task {
                                     viewModel.trackMonthlyButtonTapped()
-                                    if Self.shouldAllowUpgrade {
-                                        await viewModel.purchaseMonthlySubscription()
-                                    } else {
-                                        showingMonthlyAlert = true
-                                    }
+                                    await viewModel.purchaseMonthlySubscription()
                                 }
                             }
                             .accessibilityIdentifier("premium-upgrade-view-monthly-button")
-                            .alert(Localization.Premium.UpgradeView.comingSoon, isPresented: $showingMonthlyAlert) {
-                                Button("OK", role: .cancel) { }
-                            }
                         }
                         Spacer().frame(width: 28)
                         ZStack(alignment: .topTrailing) {
@@ -103,17 +92,10 @@ struct PremiumUpgradeView: View {
                                 ) {
                                     Task {
                                         viewModel.trackAnnualButtonTapped()
-                                        if Self.shouldAllowUpgrade {
-                                            await viewModel.purchaseAnnualSubscription()
-                                        } else {
-                                            showingAnnualAlert = true
-                                        }
+                                        await viewModel.purchaseAnnualSubscription()
                                     }
                                 }
                                 .accessibilityIdentifier("premium-upgrade-view-annual-button")
-                                .alert(Localization.Premium.UpgradeView.comingSoon, isPresented: $showingAnnualAlert) {
-                                    Button("OK", role: .cancel) { }
-                                }
                                 PremiumYearlyPercent()
                                     .offset(x: OffsetConstant.offsetX, y: OffsetConstant.offsetY)
                             }
