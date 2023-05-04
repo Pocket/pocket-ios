@@ -5,5 +5,4 @@ public extension Notification.Name {
     static let userLoggedOut = Notification.Name("com.mozilla.pocket.userLoggedOut")
     static let listUpdated = Notification.Name("com.mozilla.pocket.listUpdated")
     static let bannerRequested = Notification.Name("com.mozilla.pocket.bannerRequested")
-    static let serverThrottleDetected = Notification.Name("com.mozilla.pocket.throttleDetected")
 }
