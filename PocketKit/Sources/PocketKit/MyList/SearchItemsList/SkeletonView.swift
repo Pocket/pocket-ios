@@ -25,10 +25,12 @@ struct SkeletonView: View {
                         Image(asset: .itemSkeletonThumbnail)
                         Image(asset: .itemSkeletonActions)
                     }
-                }.foregroundColor(Color(.ui.skeletonCellImageBackground))
+                }
+                .foregroundColor(Color(.ui.skeletonCellImageBackground))
             }
         }
         .listStyle(.plain)
         .accessibilityIdentifier("skeleton-view")
+        .background(Color(.ui.white1))
     }
 }

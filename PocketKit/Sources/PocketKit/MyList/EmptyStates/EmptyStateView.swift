@@ -88,7 +88,7 @@ struct EmptyStateView<Content: View>: View {
 }
 
 private extension Style {
-    static let main: Self = .header.sansSerif.h2.with(weight: .bold).with { $0.with(alignment: .center).with(lineSpacing: 6) }
+    static let main: Self = .header.sansSerif.h2.with(weight: .semibold).with { $0.with(alignment: .center).with(lineSpacing: 6) }
     static let detail: Self = .header.sansSerif.p2.with { $0.with(alignment: .center).with(lineSpacing: 6) }
     static let buttonLabel: Self = .header.sansSerif.h7.with(color: .ui.white)
 }
