@@ -6,6 +6,7 @@ import Apollo
 import ApolloAPI
 import Foundation
 import SharedPocketKit
+import Services
 
 public extension ApolloClientProtocol {
     func fetch<Query: GraphQLQuery>(query: Query, queue: DispatchQueue = .global(qos: .utility), resultHandler: GraphQLResultHandler<Query.Data>? = nil) -> Cancellable {
@@ -25,6 +26,7 @@ public extension ApolloClientProtocol {
                 switch result {
                 case .failure(let error):
                     Log.capture(error: error, filename: filename, line: line, column: column, funcName: funcName)
+                    Self.checkForServerThrottle(error)
                     continuation.resume(throwing: error)
                 case .success(let data):
                     guard let errors = data.errors,
@@ -65,6 +67,13 @@ public extension ApolloClientProtocol {
                     continuation.resume(returning: data)
                 }
             }
+        }
+    }
+
+    private static func checkForServerThrottle(_ error: Error) {
+        if case let URLSessionClient.URLSessionClientError.networkError(_, response, _) = error, response?.statusCode == 429 {
+            // Throttle! Light the Beacons!
+            Services.shared.notificationCenter.post(name: .serve, object: <#T##Any?#>)
         }
     }
 }
