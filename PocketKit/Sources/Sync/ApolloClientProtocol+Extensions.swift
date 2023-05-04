@@ -73,7 +73,8 @@ public extension ApolloClientProtocol {
     private static func checkForServerThrottle(_ error: Error) {
         if case let URLSessionClient.URLSessionClientError.networkError(_, response, _) = error, response?.statusCode == 429 {
             // Throttle! Light the Beacons!
-            Services.shared.notificationCenter.post(name: .serve, object: <#T##Any?#>)
+            // Cannot see Services from here :(
+            Services.shared.notificationCenter.post(name: .serverThrottleDetected, object: nil)
         }
     }
 }
