@@ -6,7 +6,6 @@ import Apollo
 import ApolloAPI
 import Foundation
 import SharedPocketKit
-import Services
 
 public extension ApolloClientProtocol {
     func fetch<Query: GraphQLQuery>(query: Query, queue: DispatchQueue = .global(qos: .utility), resultHandler: GraphQLResultHandler<Query.Data>? = nil) -> Cancellable {
@@ -54,6 +53,7 @@ public extension ApolloClientProtocol {
                 switch result {
                 case .failure(let error):
                     Log.capture(error: error, filename: filename, line: line, column: column, funcName: funcName)
+                    Self.checkForServerThrottle(error)
                     continuation.resume(throwing: error)
                 case .success(let data):
                     guard let errors = data.errors,
@@ -72,9 +72,13 @@ public extension ApolloClientProtocol {
 
     private static func checkForServerThrottle(_ error: Error) {
         if case let URLSessionClient.URLSessionClientError.networkError(_, response, _) = error, response?.statusCode == 429 {
-            // Throttle! Light the Beacons!
-            // Cannot see Services from here :(
-            Services.shared.notificationCenter.post(name: .serverThrottleDetected, object: nil)
+            let bannerData = BannerModifier.BannerData(
+                image: .warning,
+                title: nil,
+                detail: Localization.General.Error.serverThrottle
+            )
+            NotificationCenter.default.post(name: .bannerRequested, object: bannerData)
+            Log.warning("HTTP 429 Detected")
         }
     }
 }

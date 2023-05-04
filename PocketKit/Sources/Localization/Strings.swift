@@ -203,6 +203,10 @@ public enum Localization {
   public enum General {
     /// Oops! Try again?
     public static let oops = Localization.tr("Localizable", "general.oops", fallback: "Oops! Try again?")
+    public enum Error {
+      /// Our server is not responding right now. Please bear with us. It should be available within an hour.
+      public static let serverThrottle = Localization.tr("Localizable", "general.error.serverThrottle", fallback: "Our server is not responding right now. Please bear with us. It should be available within an hour.")
+    }
   }
   public enum Home {
     public enum Recommendation {
