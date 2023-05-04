@@ -133,7 +133,7 @@
 "settings.premium.settings.questionOrFeedback" = "Questions or feedback?";
 "settings.premium.settings.pocketPremiumFAQ" = "Pocket Premium FAQ";
 // this refers to an action to open an email
-"settings.premium.settings.contactPocketSupport" = "Contact pocket support";
+"settings.premium.settings.contactPocketSupport" = "Contact Pocket support";
 
 //Sorting Options
 "sortingOption.sortBy" = "Sort by";
