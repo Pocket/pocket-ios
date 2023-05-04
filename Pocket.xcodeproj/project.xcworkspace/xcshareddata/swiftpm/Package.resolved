@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/braze-inc/braze-swift-sdk.git",
       "state" : {
-        "revision" : "ce7b8080beb9cec79cfa77ba787ce1c8f696c3ed",
-        "version" : "5.14.0"
+        "revision" : "4d2d441de844a4559f413a95c9dd752f52bc0ebb",
+        "version" : "6.0.0"
       }
     },
     {
@@ -68,8 +68,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/airbnb/lottie-ios.git",
       "state" : {
-        "revision" : "4e51b71c6ef1b645c9a83de112d627c919143137",
-        "version" : "4.1.3"
+        "revision" : "d6feea26a370019b4d3a85f5984cb95a2734776f",
+        "version" : "4.2.0"
       }
     },
     {
@@ -104,8 +104,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/getsentry/sentry-cocoa.git",
       "state" : {
-        "revision" : "2479b6f7ff69b66bcdea82184d097667e63828ed",
-        "version" : "8.5.0"
+        "revision" : "e6dcfba32f2861438b82c7ad34e058b23c83daf6",
+        "version" : "8.6.0"
       }
     },
     {
@@ -113,8 +113,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/snowplow/snowplow-objc-tracker",
       "state" : {
-        "revision" : "a148c3128fbe0fa6ee5e61227035e76b707e258d",
-        "version" : "5.0.0"
+        "revision" : "45902de9182313909ec59d88a14ce759a0a2ab9d",
+        "version" : "5.0.1"
       }
     },
     {
