@@ -35,7 +35,7 @@
 "itemlist.filter.all" = "Alle";
 "itemlist.filter.tagged" = "Getagd";
 "itemlist.filter.favorites" = "Favorieten";
-"itemlist.filter.sortFilter" = "Sorteren/filteren";
+"itemlist.filter.sortFilter" = "Sorteren";
 "itemList.edit.banner" = "Het bewerken van je lijst is niet beschikbaar in deze versie van Pocket, maar komt binnenkort terug!";
 
 //List view
@@ -73,7 +73,6 @@
 "search.error.view.needsInternet" = "Je hebt een internetverbinding nodig om dit item te bekijken.";
 "search.recent" = "Recente zoekopdrachten";
 "search.recent.empty" = "Recente zoekopdrachten worden hier weergegeven, zodat je eenvoudig door kunt gaan waar je gebleven was.";
-"search.swipe.unableToMove" = "Kan niet verplaatsen";
 "search.swipe.archive" = "Archief";
 "search.swipe.moveToSaves" = "Verplaatsen naar Opgeslagen";
 "search.edit.banner" = "Het bewerken van je zoekresultaten is niet beschikbaar in deze versie van Pocket, maar komt binnenkort terug!";
@@ -130,7 +129,7 @@
 "settings.premium.settings.purchaseLocation" = "Aankooplocatie";
 "settings.premium.settings.price" = "Prijs";
 "settings.premium.settings.yourSubscription" = "Jouw abonnement";
-"settings.premium.settings.manageYourSubscription" = "Beheer jouw abonnement";
+"settings.premium.settings.manageYourSubscription" = "Beheer je abonnement";
 "settings.premium.settings.questionOrFeedback" = "Vragen of feedback?";
 "settings.premium.settings.pocketPremiumFAQ" = "Pocket Premium Veelgestelde vragen";
 // this refers to an action to open an email
@@ -149,11 +148,16 @@
 "tags.section.recentTags" = "Recente tags";
 "tags.section.userTags" = "Mijn tags";
 
-"tags.empty.header" = "Geen opgeslagen artikelen met deze tag.";
+"tags.empty.header" = "Geen opgeslagen artikelen met deze tag";
 "tags.empty.detail" = "Voeg tags aan opgeslagen artikelen toe zodat je ze later makkelijk kunt vinden.";
 "tags.empty.button" = "Tags gebruiken";
 
 "tags.notTagged" = "Niet getagd";
+"tags.deleteTag" = "Tag verwijderen?";
+"tags.deleteTag.message" = "Als je deze tag verwijdert, wordt deze uit alle items verwijderd.";
+
+"tags.renameTag" = "Hernoem tag";
+"tags.renameTag.message" = "Voer een nieuwe naam voor deze tag in";
 
 //Reader 
 "reader.activity.save" = "Opslaan";
@@ -176,7 +180,7 @@
 
 //The title of our Premium Membership page spans 2 lines. The '\n' character denotes a newline character and is not shown to the user.
 "premium.upgradeView.PremiumMembership" = "Premium\nLidmaatschap";
-"premium.upgradeView.comingSoon" = "Binnenkort beschikbaar!";
+
 // Description of the premium uprgade view
 "premium.upgradeView.description" = "Abonnementen worden via je iTunes-account in rekening gebracht op je creditcard. Voor de verlenging van je account wordt er binnen 24 uur voor het aflopen van de huidige termijn %1$@ (maandelijks) of %2$@ (jaarlijks) in rekening gebracht. Je abonnement wordt automatisch verlengd tenzij je het minstens 24 uur voor het einde van de huidige termijn opzegt. Het is niet mogelijk om een abonnement direct te beëindigen. Na de aanschaf van een abonnement beheer je abonnementen in Accountinstellingen. Daar kun je ook automatisch verlengen uitschakelen. Het is niet mogelijk om restituties te krijgen voor ongebruikte delen van een abonnement.";
 "premium.upgradeView.save" = "Opslaan";
@@ -246,14 +250,12 @@
 "Your quiet corner of the Internet" = "Je eigen rustige stukje internet";
 "Pocket saves articles in a clean layout designed for reading—no interruptions, no popups—so you can sidestep the Internet's noise." = "Pocket slaat artikelen op in een strakke lay-out, ontworpen voor leesgemak, zonder onderbrekingen of pop-ups.";
 
-"Log In" = "Inloggen";
+"Log In" = "inloggen";
 "Sign Up" = "Aanmelden";
 
 "Tell us more" = "Licht het toe";
 "Report a concern" = "Een probleem rapporteren";
 "Add copied URL to your Saves?" = "Gekopieerde URL toevoegen aan je opgeslagen items?";
-
-"Premium Status:" = "Premium-status:";
 
 "Your Account" = "Jouw account";
 "Sign Out" = "Afmelden";
@@ -265,14 +267,9 @@
 "Terms of Service" = "Gebruiksvoorwaarden";
 "Privacy Policy" = "Privacybeleid";
 
-"not tagged" = "Niet getagd";
-"Delete Tag?" = "Tag verwijderen?";
-"Are you sure you want to delete the tags and remove it from all items?" = "Weet je zeker dat je de tags wilt verwijderen en dat je deze van alle items wilt verwijderen?";
 "Delete" = "Verwijderen";
 "Cancel" = "Annuleren";
-"Rename Tag" = "Hernoem tag";
 "Rename" = "Naam wijzigen";
-"Enter a new name for this tag" = "Voer een nieuwe naam voor deze tag in";
 "Close" = "Sluiten";
 
 "not tagged" = "Niet getagd";
@@ -281,9 +278,6 @@
 
 "Reported" = "Gerapporteerd";
 "Submit feedback" = "Feedback verzenden";
-
-"Sign up for Premium" = "Voor Premium aanmelden";
-"Premium Subscriber" = "Premium-abonnee";
 
 "The title, link, or image is broken" = "De titel, link of afbeelding is beschadigd";
 "It's in the wrong category" = "Het is verkeerd gecategoriseerd";
