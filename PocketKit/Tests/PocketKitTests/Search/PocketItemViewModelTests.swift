@@ -1,6 +1,7 @@
 import XCTest
 import Analytics
 import SharedPocketKit
+import PocketGraph
 
 @testable import PocketKit
 @testable import Sync
@@ -191,5 +192,42 @@ class PocketItemViewModelTests: XCTestCase {
         viewModel.delete()
 
         wait(for: [expectDelete, expectFetchSavedItemCall], timeout: 10)
+    }
+
+    func test_fetchSavedItem_withURLandRemoteParts_shouldMatch() {
+        let item = space.buildSavedItem()
+        let searchItem = setupSearchItem()
+
+        let expectFetchSavedItemCall = expectation(description: "expect source.fetchOrCreateSavedItem(_:)")
+
+        source.stubFetchSavedItem { _ in
+            defer { expectFetchSavedItemCall.fulfill() }
+            return item
+        }
+
+        let pocketItem = PocketItem(item: searchItem)
+        let viewModel = subject(item: pocketItem)
+
+        viewModel.trackOverflowMenu()
+
+        wait(for: [expectFetchSavedItemCall], timeout: 10)
+
+        XCTAssertEqual(viewModel.item.remoteItemParts?.url, pocketItem.savedItemURL?.absoluteString)
+    }
+
+    private func setupSearchItem() -> SearchSavedItem {
+        let itemParts = SavedItemParts(
+            url: "http://example.com/item-1",
+            remoteID: "saved-item-1",
+            isArchived: false,
+            isFavorite: false,
+            _createdAt: 1,
+            item: SavedItemParts.Item.AsItem(
+                remoteID: "item-1",
+                givenUrl: "http://localhost:8080/hello",
+                title: "Item 1"
+            ).asRootEntityType
+        )
+        return SearchSavedItem(remoteItem: itemParts)
     }
 }
