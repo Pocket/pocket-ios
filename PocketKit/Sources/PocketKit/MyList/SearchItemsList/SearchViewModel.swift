@@ -411,7 +411,7 @@ extension SearchViewModel: SearchResultActionDelegate {
 
     func select(_ searchItem: PocketItem, index: Int) {
         guard
-            let url = searchItem.url,
+            let url = searchItem.savedItemURL,
             let savedItem = source.fetchOrCreateSavedItem(
                 with: url,
                 and: searchItem.remoteItemParts
@@ -501,7 +501,7 @@ extension SearchViewModel: SearchResultActionDelegate {
 
     func fetchSavedItem(_ searchItem: PocketItem) -> SavedItem? {
         guard
-            let url = searchItem.url,
+            let url = searchItem.savedItemURL,
             let savedItem = source.fetchOrCreateSavedItem(
                 with: url,
                 and: searchItem.remoteItemParts

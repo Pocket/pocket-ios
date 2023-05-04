@@ -17,6 +17,7 @@ protocol ItemsListItem {
     var host: String? { get }
     var tagNames: [String]? { get }
     var remoteItemParts: SavedItemParts? { get }
+    var savedItemURL: URL? { get }
     var cursor: String? { get }
 }
 

@@ -50,8 +50,12 @@ struct PocketItem {
         item.remoteItemParts
     }
 
-    var url: URL? {
+    var bestURL: URL? {
         item.bestURL
+    }
+
+    var savedItemURL: URL? {
+        item.savedItemURL
     }
 
     var cursor: String? {

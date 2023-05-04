@@ -64,7 +64,7 @@ struct ResultsView: View {
                     if triggerNextPage {
                         viewModel.loadMoreSearchResults(with: item, at: index)
                     }
-                    viewModel.trackViewResults(url: item.url, index: index)
+                    viewModel.trackViewResults(url: item.savedItemURL, index: index)
                 }
             }
         }
