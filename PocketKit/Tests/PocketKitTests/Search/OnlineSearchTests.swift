@@ -34,7 +34,7 @@ class OnlineSearchTests: XCTestCase {
 
         let expectation = setupOnlineSearch(with: "search-term")
         sut.search(with: "search-term")
-        wait(for: [expectation], timeout: 5.0)
+        await fulfillment(of: [expectation], timeout: 5.0)
 
         guard case .success(let items) = sut.results else {
             XCTFail("should not have failed")
@@ -60,7 +60,7 @@ class OnlineSearchTests: XCTestCase {
         let sut = subject(scope: .archive)
         let expectation = setupOnlineSearch(with: "search-term")
         sut.search(with: "search-term")
-        wait(for: [expectation], timeout: 5.0)
+        await fulfillment(of: [expectation], timeout: 5.0)
 
         guard case .success(let items) = sut.results else {
             XCTFail("should not have failed")
@@ -85,7 +85,7 @@ class OnlineSearchTests: XCTestCase {
         let sut = subject(scope: .all)
         let expectation = setupOnlineSearch(with: "search-term")
         sut.search(with: "search-term")
-        wait(for: [expectation], timeout: 5.0)
+        await fulfillment(of: [expectation], timeout: 5.0)
 
         guard case .success(let items) = sut.results else {
             XCTFail("should not have failed")
@@ -111,7 +111,7 @@ class OnlineSearchTests: XCTestCase {
         let term = "search-term"
         let expectation = setupOnlineSearch(with: "search-term")
         sut.search(with: term)
-        wait(for: [expectation], timeout: 5.0)
+        await fulfillment(of: [expectation], timeout: 5.0)
 
         XCTAssertTrue(sut.hasCache(with: term))
     }
@@ -126,7 +126,7 @@ class OnlineSearchTests: XCTestCase {
         let sut = subject(scope: .archive)
         let expectation = setupOnlineSearch(with: "search-term")
         sut.search(with: "search-term")
-        wait(for: [expectation], timeout: 5.0)
+        await fulfillment(of: [expectation], timeout: 5.0)
 
         guard case .success(let pageOneItems) = sut.results else {
             XCTFail("should not have failed")
@@ -139,7 +139,7 @@ class OnlineSearchTests: XCTestCase {
 
         let expectation2 = setupOnlineSearchPage2(with: "search-term")
         sut.search(with: "search-term", and: true)
-        wait(for: [expectation2], timeout: 5.0)
+        await fulfillment(of: [expectation2], timeout: 5.0)
         guard case .success(let pageTwoItems) = sut.results else {
             XCTFail("should not have failed")
             return
@@ -160,7 +160,7 @@ class OnlineSearchTests: XCTestCase {
             throw TestError.anError
         }
         sut.search(with: term)
-        wait(for: [expectation], timeout: 5.0)
+        await fulfillment(of: [expectation], timeout: 5.0)
 
         guard case .failure(let error) = sut.results else {
             XCTFail("should not have failed")
@@ -171,15 +171,18 @@ class OnlineSearchTests: XCTestCase {
     }
 
     private func setupOnlineSearch(with term: String) -> XCTestExpectation {
-        let itemParts = SavedItemParts(data: DataDict([
-            "__typename": "SavedItem",
-            "item": [
-                "__typename": "Item",
-                "title": term,
-                "givenUrl": "http://localhost:8080/hello",
-                "resolvedUrl": "http://localhost:8080/hello"
-            ]
-        ], variables: nil))
+        let itemParts = SavedItemParts(
+            url: "http://localhost:8080/hello",
+            remoteID: "saved-item-1",
+            isArchived: false,
+            isFavorite: false,
+            _createdAt: 1,
+            item: SavedItemParts.Item.AsItem(
+                remoteID: "item-1",
+                givenUrl: "http://localhost:8080/hello",
+                title: term
+            ).asRootEntityType
+        )
 
         let item = SearchSavedItem(remoteItem: itemParts)
         let expectation = expectation(description: "search called")
@@ -191,15 +194,18 @@ class OnlineSearchTests: XCTestCase {
     }
 
     private func setupOnlineSearchPage2(with term: String) -> XCTestExpectation {
-        let itemParts = SavedItemParts(data: DataDict([
-            "__typename": "SavedItem",
-            "item": [
-                "__typename": "Item",
-                "title": term,
-                "givenUrl": "http://localhost:8080/hello",
-                "resolvedUrl": "http://localhost:8080/hello"
-            ]
-        ], variables: nil))
+        let itemParts = SavedItemParts(
+            url: "http://localhost:8080/hello",
+            remoteID: "saved-item-1",
+            isArchived: false,
+            isFavorite: false,
+            _createdAt: 1,
+            item: SavedItemParts.Item.AsItem(
+                remoteID: "item-1",
+                givenUrl: "http://localhost:8080/hello",
+                title: term
+            ).asRootEntityType
+        )
 
         let item = SearchSavedItem(remoteItem: itemParts)
         let expectation = expectation(description: "search called")

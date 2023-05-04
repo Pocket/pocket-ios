@@ -29,7 +29,21 @@ class HomeWebViewTests: XCTestCase {
             return .fallbackResponses(apiRequest: apiRequest)
         }
 
-        server.routes.get("/hello") { _, _ in
+        server.routes.get("/recommended-item-1") { _, _ in
+            Response {
+                Status.ok
+                Fixture.data(name: "hello", ext: "html")
+            }
+        }
+
+        server.routes.get("/recommended-item-2") { _, _ in
+            Response {
+                Status.ok
+                Fixture.data(name: "hello", ext: "html")
+            }
+        }
+
+        server.routes.get("/recommended-item-3") { _, _ in
             Response {
                 Status.ok
                 Fixture.data(name: "hello", ext: "html")

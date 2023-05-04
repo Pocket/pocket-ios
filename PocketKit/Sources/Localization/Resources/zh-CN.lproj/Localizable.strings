@@ -1,3 +1,201 @@
+//General Messages
+"general.oops" = "糟糕！再试一次？";
+
+//Archive
+"archive.empty.header" = "保持您的列表清新整齐";
+"archive.empty.detail" = "使用存档图标将您完成的已保存内容存档。";
+"archive.empty.button" = "如何存档";
+
+//Favourites
+"favourites.empty.header" = "在此查找您的收藏夹";
+"favourites.empty.detail" = "点击星星图标来收藏文章并更快地进行查找。";
+
+//Home
+"home.recommendation.readTime" = "读完需要 %1$@ 分钟";
+
+//Item
+"item.overflowMenu.moveToSaves" = "移至“保存内容”";
+
+//ItemAction
+"itemAction.addTags" = "添加标记";
+"itemAction.archive" = "存档";
+"itemAction.copyLink" = "复制链接";
+"itemAction.delete" = "删除";
+"itemAction.displaySettings" = "显示设置";
+"itemAction.favorite" = "添加到收藏夹";
+"itemAction.unfavorite" = "取消收藏";
+"itemAction.moveToSaves" = "移至“保存内容”";
+"itemAction.open" = "打开";
+"itemAction.report" = "报告";
+"itemAction.save" = "保存";
+"itemAction.share" = "分享";
+
+//ItemList
+"itemlist.filter.search" = "搜索";
+"itemlist.filter.all" = "全部";
+"itemlist.filter.tagged" = "已标记";
+"itemlist.filter.favorites" = "收藏夹";
+"itemlist.filter.sortFilter" = "排序";
+"itemList.edit.banner" = "暂时无法在此 Pocket 版本中编辑您的列表，但很快就会恢复此功能！";
+
+//List view
+"item.list.min" = "%1$@ 分钟";
+// Short name of the monthly premium subscription
+"Monthly" = "每月";
+// Suffix of the monthly premium subscription price description
+"month" = "月份";
+// Suffix of the annual premium subscription price description
+"year" = "年份";
+// Short name of the annual premium subscription
+"Annual" = "年度";
+
+//Log in
+//Shown to the user after they deleted their account
+"login.deletedAccount.banner.title" = "您已删除 Pocket 帐户";
+//Shown to the user after they deleted their account
+"login.deletedAccount.banner.detail" = "我们还可以在哪些方面做得更好？";
+//Action button for a user to take a survey
+"login.deletedAccount.banner.action" = "快速调查";
+
+//Logged Out
+"loggedOut.offline.header" = "无互联网连接";
+"loggedOut.offline.detail" = "您可能处于离线状态。尝试检查您的移动数据或 wifi。";
+
+//Saves
+"saves.empty.header" = "开始建立您的 Pocket 列表";
+"saves.empty.button" = "如何保存";
+
+// Search
+"search.errorMessage" = "我们遇到了错误，暂时无法为您提供所需的信息。请稍后重试。";
+"search.limitedResults" = "有限搜索结果";
+"search.offlineMessage" = "您只能在脱机时搜索标题和 URL。连接到互联网即可使用 Premium 的全文搜索。";
+"search.banner.errorMessage." = "我们遇到了错误，无法显示完整的搜索结果。请稍后重试。";
+"search.error.view.needsInternet" = "您必须有互联网连接才能查看此项目。";
+"search.recent" = "最近的搜索";
+"search.recent.empty" = "最近的搜索将显示在此处，因此您可以轻松返回。";
+"search.swipe.archive" = "存档";
+"search.swipe.moveToSaves" = "移至“保存内容”";
+"search.edit.banner" = "暂时无法在此 Pocket 版本中编辑您的搜索结果，但很快就会恢复此功能！";
+"search.empty.header" = "按标题或 URL 搜索";
+
+"search.allItems.premium.header" = "解锁更多搜索选项";
+"search.allItems.premium.detail" = "使用 Pocket Premium 搜索您的整个 Pocket，包括存档的项目。";
+"search.allItems.premium.button" = "获取 Pocket Premium";
+
+"search.results.empty.header" = "未找到结果";
+"search.results.empty.detail" = "尝试使用不同的关键字、检查拼写错误或更改筛选条件。";
+
+"search.results.offline.header" = "无互联网连接";
+"search.results.offline.detail.archive" = "必须在线才能搜索已存档的项目。";
+"search.results.offline.detail.all" = "必须上线才可搜索所有项目。";
+
+// Settings
+"settings.thankyou.credits" = "感谢您使用 Pocket";
+"settings.PocketForiOS %@ (%@)" = "iOS 版 Pocket %1$@ (%2$@)";
+"settings.openSourceLicenses" = "开源许可证";
+"settings.logout" = "注销";
+"settings.logout.areYouSureMessage" = "您的帐号将被注销，所有已保存供脱机阅读的项目都将从您的设备中删除。";
+"settings.logout.areyousure" = "您确定吗？";
+"settings.help" = "获取帮助和支持";
+"settings.accountManagement" = "帐号管理";
+"settings.accountManagement.deleteAccount" = "删除帐号";
+"settings.accountManagement.deleteYourAccount" = "删除帐号";
+
+"settings.accountManagement.deleteAccount.warning" = "警告：此操作无法恢复";
+"settings.accountManagement.deleteAccount.premiumConfirmation" = "要删除您的帐号，您必须先**在此处取消您的 Premium 订购。**";
+"settings.accountManagement.deleteAccount.deletionConfirmation" = "您了解您的 Pocket 帐号和数据将被**永久删除。**";
+//Links to a help article on how to cancel your subscription
+"settings.accountManagement.deleteAccount.howToCancel" = "如何取消您的 Pocket Premium 订购";
+//Loading screen showing that the account deletion is in progress
+"settings.accountManagement.deleteAccount.deleting" = "删除帐号";
+"settings.accountManagement.deleteAccount.error.body" = "我们遇到了错误，无法删除您的帐号。请稍后重试。";
+"settings.accountManagement.restoreSubscription" = "恢复现有订购";
+"settings.accountManagement.restoreSubscription.restoreSuccessful.title" = "恢复成功";
+"settings.accountManagement.restoreSubscription.restoreSuccessful.message" = "您的 Pocket Premium 订购已恢复。";
+"settings.accountManagement.restoreSubscription.restoreNotSuccessful.title" = "恢复未成功";
+"settings.accountManagement.restoreSubscription.restoreNotSuccessful.message" = "找不到订购。如果您认为有订购，请发送电子邮件至 support@getpocket.com 并告知我们。";
+
+"settings.noInternet.header" = "无互联网连接";
+"settings.noInternet.youMustBeOnline" = "必须在线才可升级到 Pocket Premium。请检查您的连接，然后重试。";
+
+"settings.goPremiumRow" = "获取 Premium";
+"settings.premiumSubscriptionRow" = "Premium 订购";
+"settings.premiumRow" = "获取 Premium";
+"settings.premium.settings.thanksForSubscribing" = "谢谢订购 Pocket Premium！";
+"settings.premium.settings.subscriptionStatus" = "订购状态";
+"settings.premium.settings.subscription" = "订购";
+"settings.premium.settings.datePurchased" = "购买日期";
+"settings.premium.settings.renewalDate" = "续订日期";
+"settings.premium.settings.purchaseLocation" = "购买地点";
+"settings.premium.settings.price" = "价格";
+"settings.premium.settings.yourSubscription" = "您的订购";
+"settings.premium.settings.manageYourSubscription" = "管理订购";
+"settings.premium.settings.questionOrFeedback" = "问题或反馈？";
+"settings.premium.settings.pocketPremiumFAQ" = "Pocket Premium 常见问题";
+// this refers to an action to open an email
+"settings.premium.settings.contactPocketSupport" = "联系 Pocket 支持";
+
+//Sorting Options
+"sortingOption.sortBy" = "排序方式";
+"sortingOption.NewestSaved" = "最新保存";
+"sortingOption.oldestSaved" = "最旧保存";
+"sortingOption.shortestToRead" = "最短阅读";
+"sortingOption.longestToRead" = "最长阅读";
+
+// Tags
+"tags.upsell.tagStoriesFasterThanEver" = "以更快的速度标记故事—使用 Pocket Premium 获取最新的标记。";
+"tags.upsell.getPocketPremium" = "获取 Pocket Premium";
+"tags.section.recentTags" = "最近的标记";
+"tags.section.userTags" = "我的标记";
+
+"tags.empty.header" = "No Saves with this tag";
+"tags.empty.detail" = "按主题标记您的已保存内容，以便稍后进行查找。";
+"tags.empty.button" = "如何标记";
+
+"tags.notTagged" = "未标记";
+"tags.deleteTag" = "删除标记？";
+"tags.deleteTag.message" = "Deleting this tag removes it from all items.";
+
+"tags.renameTag" = "重命名标记";
+"tags.renameTag.message" = "为此标记输入新名称";
+
+//Reader 
+"reader.activity.save" = "保存";
+"reader.activity.report" = "报告";
+"reader.activity.delete" = "删除";
+"reader.activity.archive" = "存档";
+"reader.activity.favorite" = "添加到收藏夹";
+"reader.activity.unfavorite" = "取消收藏";
+"reader.activity.moveToSaves" = "移至“保存内容”";
+
+//Recommendation
+"recommendation.save" = "保存";
+"recommendation.saved" = "已保存";
+
+//Premium
+"premium.infoView.terms.privacyPolicy" = "隐私政策";
+"premium.infoView.terms.TermsOfService" = "服务条款";
+
+"premium.success.message" = "您现在已正式成为 Pocket Premium 会员。欢迎使用全新无广告、可自定义的永久版本 Pocket。您会喜欢上 Pocket 的。";
+
+//The title of our Premium Membership page spans 2 lines. The '\n' character denotes a newline character and is not shown to the user.
+"premium.upgradeView.PremiumMembership" = "Premium\n会员";
+
+// Description of the premium uprgade view
+"premium.upgradeView.description" = "我们将通过您的 iTunes 帐号向您的信用卡收取订购费用。我们将在您的当前订购期限结束前 24 小时内向您的帐号收取续订费用 %1$@（月度）或 %2$@（年度）。除非您在当前订购期限结束前，提前至少 24 小时取消订购，否则将会自动续订。无法立即取消订购。您可以在购买后前往“帐号设置”管理订购并关闭自动续订。订购未使用部分不予退款。";
+"premium.upgradeView.save" = "保存";
+"premium.upgradeView.permanentLibrary" = "存放所有已保存内容的永久存储库";
+//Ads will not be shown to Premuim users
+"premium.upgradeView.adFree" = "无广告";
+"premium.upgradeView.suggestedTags" = "建议的标记";
+"premium.upgradeView.fullTextSearch" = "全文搜索";
+"premium.upgradeView.unlimitedHighlights" = "无限突出显示";
+"premium.upgradeView.premiumFonts" = "Premium 字体";
+
+
+//=======================
+//Old format
+
 "Home" = "主页";
 "Archive" = "存档";
 "Pocket" = "Pocket";
@@ -12,44 +210,12 @@
 "No Internet Connection" = "无互联网连接";
 "Looks like you're offline. Try checking your mobile data or wifi." = "您可能处于离线状态。尝试检查您的移动数据或 wifi。";
 
-"Keep your list fresh and clean" = "保持您的列表清新整齐";
-"Archive the saves you're finished with\n using the archive icon." = "使用存档图标将您完成的已保存内容存档。";
-"How to archive" = "如何存档";
-
-"Find your favorites here" = "在此查找您的收藏夹";
-"Hit the star icon to favorite an article and find it faster." = "点击星星图标来收藏文章并更快地进行查找。";
-
-"Start building your Pocket list" = "开始建立您的 Pocket 列表";
-"How to save" = "如何保存";
-
-"No saves with this tag." = "没有使用此标记的已保存内容。";
-"Tag your saves by topic to find them later." = "按主题标记您的已保存内容，以便稍后进行查找。";
-"How to tag" = "如何标记";
-
-"Search" = "搜索";
-"All" = "全部";
-"Tagged" = "已标记";
-"Favorites" = "收藏夹";
-"Sort/Filter" = "排序/过滤";
-
-"Save" = "保存";
-"Report" = "报告";
-"Delete" = "删除";
-"Archive" = "存档";
-"Favorite" = "添加到收藏夹";
-"Unfavorite" = "取消收藏";
-"Move to Saves" = "移至“保存内容”";
 "Add Tags" = "添加标记";
 "Tags" = "标记";
 "Share" = "分享";
+"carousel.listen" = "朗读";
 
 "Saves" = "保存内容";
-
-"Sort by" = "排序方式";
-"Newest saved" = "最新保存";
-"Oldest saved" = "最旧保存";
-"Shortest to read" = "最短阅读";
-"Longest to read" = "最长阅读";
 
 "Display Settings" = "显示设置";
 "Font" = "字体";
@@ -91,8 +257,6 @@
 "Report a concern" = "报告问题";
 "Add copied URL to your Saves?" = "将复制的 URL 添加到您的保存内容？";
 
-"Premium Status:" = "Premium 状态：";
-
 "Your Account" = "您的帐户";
 "Sign Out" = "退出";
 "Are you sure?" = "您确定吗？";
@@ -103,14 +267,9 @@
 "Terms of Service" = "服务条款";
 "Privacy Policy" = "隐私政策";
 
-"not tagged" = "未标记";
-"Delete Tag?" = "删除标记？";
-"Are you sure you want to delete the tags and remove it from all items?" = "是否确定要删除标记并将其从所有项目中删除？";
 "Delete" = "删除";
 "Cancel" = "取消";
-"Rename Tag" = "重命名标记";
 "Rename" = "重命名";
-"Enter a new name for this tag" = "为此标记输入新名称";
 "Close" = "关闭";
 
 "not tagged" = "未标记";
@@ -120,9 +279,6 @@
 "Reported" = "已报告";
 "Submit feedback" = "提交反馈";
 
-"Sign up for Premium" = "注册 Premium";
-"Premium Subscriber" = "Premium 订户";
-
 "The title, link, or image is broken" = "标题、链接或图像损坏";
 "It's in the wrong category" = "类别错误";
 "It's sexually explicit" = "色情内容";
@@ -130,84 +286,6 @@
 "It contains misinformation" = "包含错误信息";
 "Other" = "其他";
 
-//General Messages
-"general.oops" = "糟糕！再试一次？";
-
-
-// Search
-"search.errorMessage" = "我们遇到了错误，暂时无法为您提供所需的信息。请稍后重试。";
-"search.limitedResults" = "有限搜索结果";
-"search.offlineMessage" = "您只能在脱机时搜索标题和 URL。连接到互联网即可使用 Premium 的全文搜索。";
-"search.banner.errorMessage." = "我们遇到了错误，无法显示完整的搜索结果。请稍后重试。";
-"search.error.view.needsInternet" = "您必须有互联网连接才能查看此项目。";
-"search.recent" = "最近的搜索";
-"search.swipe.unableToMove" = "无法移动";
-"search.swipe.archive" = "存档";
-"search.swipe.moveToSaves" = "移至“保存内容”";
-
-// Settings
-"settings.thankyou.credits" = "感谢您使用 Pocket";
-"settings.PocketForiOS %@ (%@)" = "iOS 版 Pocket %1$@ (%2$@)";
-"settings.openSourceLicenses" = "开源许可证";
-"settings.logout" = "注销";
-"settings.logout.areYouSureMessage" = "您的帐号将被注销，所有已保存供脱机阅读的项目都将从您的设备中删除。";
-"settings.logout.areyousure" = "您确定吗？";
-"settings.help" = "获取帮助和支持";
-"settings.accountManagement" = "帐号管理";
-"settings.accountManagement.deleteAccount" = "删除帐号";
-"settings.accountManagement.deleteYourAccount" = "删除帐号";
-
-"settings.accountManagement.deleteAccount.warning" = "警告：此操作无法恢复";
-"settings.accountManagement.deleteAccount.premiumConfirmation" = "要删除您的帐号，您必须先**在此处取消您的 Premium 订购。**";
-"settings.accountManagement.deleteAccount.deletionConfirmation" = "您了解您的 Pocket 帐号和数据将被**永久删除。**";
-//Links to a help article on how to cancel your subscription
-"settings.accountManagement.deleteAccount.howToCancel" = "如何取消您的 Pocket Premium 订购";
-//Loading screen showing that the account deletion is in progress
-"settings.accountManagement.deleteAccount.deleting" = "删除帐号";
-"settings.accountManagement.deleteAccount.error.body" = "我们遇到了错误，无法删除您的帐号。请稍后重试。";
-"settings.accountManagement.restoreSubscription" = "恢复现有订购";
-"settings.accountManagement.restoreSubscription.restoreSuccessful.title" = "恢复成功";
-"settings.accountManagement.restoreSubscription.restoreSuccessful.message" = "您的 Pocket Premium 订购已恢复。";
-"settings.accountManagement.restoreSubscription.restoreNotSuccessful.title" = "恢复未成功";
-"settings.accountManagement.restoreSubscription.restoreNotSuccessful.message" = "找不到订购。如果您认为有订购，请发送电子邮件至 support@getpocket.com 并告知我们。";
-
-"settings.noInternet.youMustBeOnline" = "必须在线才可升级到 Pocket Premium。请检查您的连接，然后重试。";
-
-//Shown to the user after they deleted their account
-"login.deletedAccount.banner.title" = "您已删除 Pocket 帐户";
-//Shown to the user after they deleted their account
-"login.deletedAccount.banner.detail" = "我们还可以在哪些方面做得更好？";
-//Action button for a user to take a survey
-"login.deletedAccount.banner.action" = "快速调查";
-
-//List view
-"item.list.min" = "%1$@ 分钟";
-// Short name of the monthly premium subscription
-"Monthly" = "每月";
-// Suffix of the monthly premium subscription price description
-"month" = "月份";
-// Suffix of the annual premium subscription price description
-"year" = "年份";
-// Short name of the annual premium subscription
-"Annual" = "年度";
-// Description of the premium uprgade view
-"premium.upgradeview.description" = "我们将通过您的 iTunes 帐号向您的信用卡收取订购费用。我们将在您的当前订购期限结束前 24 小时内向您的帐号收取续订费用 %1$@（月度）或 %2$@（年度）。除非您在当前订购期限结束前，提前至少 24 小时取消订购，否则将会自动续订。无法立即取消订购。您可以在购买后前往“帐号设置”管理订购并关闭自动续订。订购未使用部分不予退款。";
-"settings.goPremiumRow" = "获取 Premium";
-"settings.premiumSubscriptionRow" = "Premium 订购";
 "Hooray!" = "好消息！";
-"premium.success.message" = "您现在已正式成为 Pocket Premium 会员。欢迎使用全新无广告、可自定义的永久版本 Pocket。您会喜欢上 Pocket 的。";
+
 "back.to.pocket" = "返回 Pocket";
-"settings.premiumRow" = "获取 Premium";
-"settings.premium.settings.thanksForSubscribing" = "谢谢订购 Pocket Premium！";
-"settings.premium.settings.subscriptionStatus" = "订购状态";
-"settings.premium.settings.subscription" = "订购";
-"settings.premium.settings.datePurchased" = "购买日期";
-"settings.premium.settings.renewalDate" = "续订日期";
-"settings.premium.settings.purchaseLocation" = "购买地点";
-"settings.premium.settings.price" = "价格";
-"settings.premium.settings.yourSubscription" = "您的订购";
-"settings.premium.settings.manageYourSubscription" = "管理订购";
-"settings.premium.settings.questionOrFeedback" = "问题或反馈？";
-"settings.premium.settings.pocketPremiumFAQ" = "Pocket Premium 常见问题";
-// this refers to an action to open an email
-"settings.premium.settings.contactPocketSupport" = "联系 Pocket 支持";

@@ -37,9 +37,7 @@ public class Space {
     func delete(_ object: NSManagedObject, in context: NSManagedObjectContext? = nil) {
         let context = context ?? backgroundContext
         context.performAndWait {
-            guard let object = backgroundObject(with: object.objectID) else {
-                return
-            }
+            let object = context.object(with: object.objectID)
             context.delete(object)
         }
     }
@@ -79,7 +77,7 @@ public class Space {
         return try context.performAndWait(block)
     }
 
-    /// Calls `perform` on the specified context, passing the specified closure. If context is nil, `backgroundContext` is used
+    /// Calls `attemptMigration` on the specified context, passing the specified closure. If context is nil, `backgroundContext` is used
     /// - Parameters:
     ///   - schedule: schedule type, defaunts to `.immediate`
     ///   - block: the specified closure
@@ -135,6 +133,7 @@ public class Space {
     func makeChildBackgroundContext() -> NSManagedObjectContext {
         let context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
         context.parent = backgroundContext
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
         context.automaticallyMergesChangesFromParent = true
         return context
     }
@@ -160,12 +159,8 @@ extension Space {
         return try fetch(Requests.fetchItems())
     }
 
-    func fetchItem(byRemoteID id: String, context: NSManagedObjectContext? = nil) throws -> Item? {
-        return try fetch(Requests.fetchItem(byRemoteID: id), context: context).first
-    }
-
-    func fetchItem(byURL url: URL) throws -> Item? {
-        return try fetch(Requests.fetchItem(byURL: url)).first
+    func fetchItem(byURL url: URL, context: NSManagedObjectContext? = nil) throws -> Item? {
+        return try fetch(Requests.fetchItem(byURL: url), context: context).first
     }
 
     func deleteUnsavedItems() throws {
@@ -213,12 +208,8 @@ extension Space {
 
 // MARK: SavedItem
 extension Space {
-    func fetchSavedItem(byRemoteID remoteID: String, context: NSManagedObjectContext? = nil) throws -> SavedItem? {
-        return try fetch(Requests.fetchSavedItem(byRemoteID: remoteID), context: context).first
-    }
-
-    func fetchSavedItem(byRemoteItemID remoteItemID: String) throws -> SavedItem? {
-        return try fetch(Requests.fetchSavedItem(byRemoteItemID: remoteItemID)).first
+    func fetchSavedItem(byURL url: URL, context: NSManagedObjectContext? = nil) throws -> SavedItem? {
+        return try fetch(Requests.fetchSavedItem(byURL: url), context: context).first
     }
 
     func fetchSavedItem(byURL url: URL) throws -> SavedItem? {
@@ -390,14 +381,19 @@ extension Space {
         let context = context ?? backgroundContext
         let fetchRequest = Requests.fetchTag(byName: name)
         fetchRequest.fetchLimit = 1
-        let fetchedTag = (try? fetch(fetchRequest, context: context).first) ?? Tag(context: context)
-        guard fetchedTag.name == nil else { return fetchedTag }
-        fetchedTag.name = name
-        return fetchedTag
+        if let fetchedTag = (try? fetch(fetchRequest, context: context).first) {
+            return fetchedTag
+        }
+        let createTag = Tag(context: context)
+        createTag.name = name
+        return createTag
     }
 
-    func fetchTag(byID id: String) throws -> Tag? {
-        try fetch(Requests.fetchTag(byID: id)).first
+    func fetchTag(by name: String, context: NSManagedObjectContext? = nil) throws -> Tag? {
+        let context = context ?? backgroundContext
+        let fetchRequest = Requests.fetchTag(byName: name)
+        fetchRequest.fetchLimit = 1
+        return try fetch(fetchRequest, context: context).first
     }
 
     func retrieveTags(excluding tags: [String]) throws -> [Tag] {
@@ -413,5 +409,26 @@ extension Space {
         fetchRequest.fetchLimit = 1
         let tag = try fetch(fetchRequest)
         delete(tag)
+    }
+}
+
+// MARK: FeatureFlags
+extension Space {
+    /// Gets a feature flag by name, you should interact with this at an App level via FeatureFlagsService
+    /// - Parameter name: Name of the flag in the database
+    /// - Parameter context: Context to operate in
+    /// - Returns: A feature flag if it exists
+    func fetchFeatureFlag(by name: String, in context: NSManagedObjectContext?) throws -> FeatureFlag? {
+        let request = Requests.fetchFeatureFlags()
+        request.predicate = NSPredicate(format: "name = %@", name)
+        request.fetchLimit = 1
+        return try fetch(request, context: context).first
+    }
+
+    /// Gets all feature flags in CoreData
+    /// - Parameter context: Context to operate in
+    /// - Returns: The set of feature flags
+    func fetchFeatureFlags(in context: NSManagedObjectContext?) throws -> [FeatureFlag] {
+        return try fetch(Requests.fetchFeatureFlags(), context: context)
     }
 }

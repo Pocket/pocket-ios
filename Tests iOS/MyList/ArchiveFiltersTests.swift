@@ -10,12 +10,14 @@ import NIO
 class ArchiveFiltersTests: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
+    var snowplowMicro = SnowplowMicro()
 
-    override func setUpWithError() throws {
+    override func setUp() async throws {
         continueAfterFailure = false
 
         let uiApp = XCUIApplication()
         app = PocketAppElement(app: uiApp)
+        await snowplowMicro.resetSnowplowEvents()
 
         server = Application()
 
@@ -26,9 +28,11 @@ class ArchiveFiltersTests: XCTestCase {
         try server.start()
     }
 
-    override func tearDownWithError() throws {
+    @MainActor
+    override func tearDown() async throws {
         try server.stop()
         app.terminate()
+        await snowplowMicro.assertBaselineSnowplowExpectation()
     }
 
     func test_archiveView_tappingFavoritesPill_togglesDisplayingFavoritedArchivedContent() {
@@ -75,30 +79,59 @@ class ArchiveFiltersTests: XCTestCase {
         app.saves.filterButton(for: "Tagged").wait().tap()
         let tagsFilterView = app.saves.tagsFilterView.wait()
 
-        XCTAssertEqual(tagsFilterView.tagCells.count, 6)
-
         tagsFilterView.tag(matching: "tag 0").wait().tap()
-
         waitForDisappearance(of: tagsFilterView)
 
         app.saves.selectedTagChip(for: "tag 0").wait()
         XCTAssertEqual(app.saves.wait().itemCells.count, 1)
     }
 
-    func test_archiveView_sortingNoTagFilter_showFilteredItems() {
+    @MainActor
+    func test_archiveView_usingTagFilter_withFreeUser_showFilteredItems() async {
         app.launch().tabBar.savesButton.wait().tap()
-        let saves = app.saves.wait()
-
-        saves.selectionSwitcher.archiveButton.wait().tap()
+        app.saves.selectionSwitcher.archiveButton.wait().tap()
 
         app.saves.filterButton(for: "Tagged").wait().tap()
         let tagsFilterView = app.saves.tagsFilterView.wait()
-
-        XCTAssertEqual(tagsFilterView.tagCells.count, 6)
 
         tagsFilterView.tag(matching: "not tagged").wait().tap()
         waitForDisappearance(of: tagsFilterView)
 
         XCTAssertEqual(app.saves.wait().itemCells.count, 1)
+
+        app.saves.filterButton(for: "Tagged").wait().tap()
+        tagsFilterView.wait().tag(matching: "filter tag 0").wait().tap()
+        XCTAssertEqual(app.saves.wait().itemCells.count, 0)
+
+        let events = await [
+            snowplowMicro.getFirstEvent(with: "global-nav.filterTags.selectNotTagged"),
+            snowplowMicro.getFirstEvent(with: "global-nav.filterTags.selectTag")
+        ]
+
+        let tagEvent = events[0]!
+        tagEvent.getUIContext()!.assertHas(type: "button")
+
+        let tagEvent1 = events[1]!
+        tagEvent1.getUIContext()!.assertHas(type: "button")
+    }
+
+    @MainActor
+    func test_archiveView_usingRecentTagFilter_withPremiumUser_showFilteredItems() async {
+        server.routes.post("/graphql") { request, _ -> Response in
+            let apiRequest = ClientAPIRequest(request)
+            if apiRequest.isForUserDetails {
+                return Response.premiumUserDetails()
+            }
+            return .fallbackResponses(apiRequest: ClientAPIRequest(request))
+        }
+        app.launch().tabBar.savesButton.wait().tap()
+        app.saves.selectionSwitcher.archiveButton.wait().tap()
+
+        app.saves.filterButton(for: "Tagged").wait().tap()
+        let tagsFilterView = app.saves.tagsFilterView.wait()
+        tagsFilterView.recentTagCells.element(boundBy: 0).wait().tap()
+
+        let tagEvent = await snowplowMicro.getFirstEvent(with: "global-nav.filterTags.selectRecentTag")
+        tagEvent!.getUIContext()!.assertHas(type: "button")
     }
 }

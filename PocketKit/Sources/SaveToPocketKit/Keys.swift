@@ -2,14 +2,16 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import Foundation
+import UIKit
 
 struct Keys {
     static let shared = Keys()
 
     let pocketApiConsumerKey: String
     let sentryDSN: String
-    let groupdId: String
+    let groupID: String
+    let brazeAPIEndpoint: String
+    let brazeAPIKey: String
 
     private init() {
         guard let info = Bundle.main.infoDictionary else {
@@ -20,6 +22,10 @@ struct Keys {
             fatalError("Unable to extract PocketApiConsumerKey from main bundle")
         }
 
+        guard let pocketApiConsumerKeyPad = info["PocketAPIConsumerKeyPad"] as? String else {
+            fatalError("Unable to extract PocketApiConsumerKeyPad from main bundle")
+        }
+
         guard let sentryDSN = info["SentryDSN"] as? String else {
             fatalError("Unable to extract SentryDSN from main bundle")
         }
@@ -28,8 +34,18 @@ struct Keys {
             fatalError("Unable to extract GroupId from main bundle")
         }
 
-        self.pocketApiConsumerKey = pocketApiConsumerKey
+        guard let brazeAPIEndpoint = info["BrazeAPIEndpoint"] as? String else {
+            fatalError("Unable to extract BrazeAPIEndpoint from main bundle")
+        }
+
+        guard let brazeAPIKey = info["BrazeAPIKey"] as? String else {
+            fatalError("Unable to extract BrazeAPIKey from main bundle")
+        }
+
+        self.pocketApiConsumerKey = UIDevice.current.userInterfaceIdiom == .pad ? pocketApiConsumerKeyPad : pocketApiConsumerKey
         self.sentryDSN = sentryDSN
-        self.groupdId = groupID
+        self.groupID = groupID
+        self.brazeAPIEndpoint = brazeAPIEndpoint
+        self.brazeAPIKey = brazeAPIKey
     }
 }

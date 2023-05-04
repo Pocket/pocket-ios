@@ -5,6 +5,7 @@
 import Apollo
 import ApolloAPI
 import Foundation
+import SharedPocketKit
 
 extension ApolloClient {
     static func createDefault(
@@ -13,7 +14,7 @@ extension ApolloClient {
     ) -> ApolloClient {
         let urlStringFromEnvironment = ProcessInfo.processInfo.environment["POCKET_CLIENT_API_URL"]
         let urlStringFromBundle = Bundle.main.infoDictionary?["PocketAPIBaseURL"] as? String
-        let urlString = urlStringFromEnvironment ?? urlStringFromBundle ?? "https://getpocket.com/graphql"
+        let urlString = urlStringFromEnvironment ?? urlStringFromBundle ?? "https://api.getpocket.com/graphql"
         let url = URL(string: urlString)!
 
         let store = ApolloStore()

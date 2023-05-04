@@ -13,7 +13,7 @@ extension SavedItem {
     }
 
     @NSManaged public var archivedAt: Date?
-    @NSManaged public var createdAt: Date?
+    @NSManaged public var createdAt: Date
     @NSManaged public var cursor: String?
     @NSManaged public var deletedAt: Date?
     @NSManaged public var isArchived: Bool

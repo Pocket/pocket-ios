@@ -127,12 +127,12 @@ private class SavesSelectionButton: UIButton {
         )
 
         configuration?.imageColorTransformer = UIConfigurationColorTransformer { _ in
-            UIColor(.ui.teal1)
+            UIColor(.ui.teal2)
         }
     }
 }
 
 private extension Style {
     static let title: Style = .header.sansSerif.h8
-    static let selected: Style = .title.with(color: .ui.teal1)
+    static let selected: Style = .title.with(color: .ui.teal2)
 }

@@ -1209,23 +1209,23 @@ extension MockSource {
 // MARK: - Fetch SavedItem by Remote ID
 extension MockSource {
     private static let fetchSavedItem = "fetchSavedItem"
-    typealias FetchSavedItemImpl = (String) -> SavedItem?
+    typealias FetchSavedItemImpl = (URL) -> SavedItem?
 
     struct FetchSavedItemCall {
-        let remoteID: String
+        let url: URL
     }
 
     func stubFetchSavedItem(impl: @escaping FetchSavedItemImpl) {
         implementations[Self.fetchSavedItem] = impl
     }
 
-    func fetchOrCreateSavedItem(with remoteID: String, and remoteParts: SavedItem.RemoteSavedItem?) -> SavedItem? {
+    func fetchOrCreateSavedItem(with url: URL, and remoteParts: SavedItem.RemoteSavedItem?) -> SavedItem? {
         guard let impl = implementations[Self.fetchSavedItem] as? FetchSavedItemImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
 
-        calls[Self.fetchSavedItem] = (calls[Self.fetchSavedItem] ?? []) + [FetchSavedItemCall(remoteID: remoteID)]
-        return impl(remoteID)
+        calls[Self.fetchSavedItem] = (calls[Self.fetchSavedItem] ?? []) + [FetchSavedItemCall(url: url)]
+        return impl(url)
     }
 
     func fetchSavedItemCall(at index: Int) -> FetchSavedItemCall? {
@@ -1365,5 +1365,72 @@ extension MockSource {
         }
 
         return calls[index] as? RefreshTagsCall
+    }
+}
+
+// MARK: - fetchAllFeatureFlags
+extension MockSource {
+    private static let fetchAllFeatureFlags = "fetchAllFeatureFlags"
+    typealias FetchAllFeatureFlagsImpl = () -> Void
+
+    struct FetchAllFeatureFlagsCall {
+    }
+
+    func stubAllFeatureFlags(impl: @escaping FetchAllFeatureFlagsImpl) {
+        implementations[Self.fetchAllFeatureFlags] = impl
+    }
+
+    func fetchAllFeatureFlags() async throws {
+        guard let impl = implementations[Self.fetchAllFeatureFlags] as? FetchAllFeatureFlagsImpl else {
+            fatalError("\(Self.self)#\(#function) has not been stubbed")
+        }
+
+        calls[Self.fetchUserData] = (calls[Self.fetchAllFeatureFlags] ?? []) + [
+            FetchAllFeatureFlagsCall()
+        ]
+
+        impl()
+    }
+
+    func fetchAllFeatureFlagsCall(at index: Int) -> FetchAllFeatureFlagsCall? {
+        guard let calls = calls[Self.refreshTags], calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? FetchAllFeatureFlagsCall
+    }
+}
+
+// MARK: - fetchAllFeatureFlags
+extension MockSource {
+    private static let fetchFeatureFlag = "fetchFeatureFlag"
+    typealias FetchFeatureFlagImpl = (String) -> Sync.FeatureFlag?
+
+    struct FetchFeatureFlagCall {
+        let name: String
+    }
+
+    func stubFetchFeatureFlag(impl: @escaping FetchAllFeatureFlagsImpl) {
+        implementations[Self.fetchFeatureFlag] = impl
+    }
+
+    func fetchFeatureFlag(by name: String) -> Sync.FeatureFlag? {
+        guard let impl = implementations[Self.fetchFeatureFlag] as? FetchFeatureFlagImpl else {
+            fatalError("\(Self.self)#\(#function) has not been stubbed")
+        }
+
+        calls[Self.fetchFeatureFlag] = (calls[Self.fetchAllFeatureFlags] ?? []) + [
+            FetchFeatureFlagCall(name: name)
+        ]
+
+        return impl(name)
+    }
+
+    func fetchFeatureFlagCall(at index: Int) -> FetchFeatureFlagCall? {
+        guard let calls = calls[Self.fetchFeatureFlag], calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? FetchFeatureFlagCall
     }
 }

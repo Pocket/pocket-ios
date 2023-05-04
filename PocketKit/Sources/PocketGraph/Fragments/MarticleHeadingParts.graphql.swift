@@ -13,10 +13,11 @@ public struct MarticleHeadingParts: PocketGraph.SelectionSet, Fragment {
     """ }
 
   public let __data: DataDict
-  public init(data: DataDict) { __data = data }
+  public init(_dataDict: DataDict) { __data = _dataDict }
 
   public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleHeading }
   public static var __selections: [ApolloAPI.Selection] { [
+    .field("__typename", String.self),
     .field("content", PocketGraph.Markdown.self),
     .field("level", Int.self),
   ] }
@@ -25,4 +26,18 @@ public struct MarticleHeadingParts: PocketGraph.SelectionSet, Fragment {
   public var content: PocketGraph.Markdown { __data["content"] }
   /// Heading level. Restricted to values 1-6.
   public var level: Int { __data["level"] }
+
+  public init(
+    content: PocketGraph.Markdown,
+    level: Int
+  ) {
+    self.init(_dataDict: DataDict(data: [
+      "__typename": PocketGraph.Objects.MarticleHeading.typename,
+      "content": content,
+      "level": level,
+      "__fulfilled": Set([
+        ObjectIdentifier(Self.self)
+      ])
+    ]))
+  }
 }

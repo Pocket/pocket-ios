@@ -14,12 +14,14 @@ public struct SavedItemUpsertInput: InputObject {
   public init(
     url: String,
     isFavorite: GraphQLNullable<Bool> = nil,
-    timestamp: GraphQLNullable<Int> = nil
+    timestamp: GraphQLNullable<Int> = nil,
+    title: GraphQLNullable<String> = nil
   ) {
     __data = InputDict([
       "url": url,
       "isFavorite": isFavorite,
-      "timestamp": timestamp
+      "timestamp": timestamp,
+      "title": title
     ])
   }
 
@@ -39,5 +41,11 @@ public struct SavedItemUpsertInput: InputObject {
   public var timestamp: GraphQLNullable<Int> {
     get { __data["timestamp"] }
     set { __data["timestamp"] = newValue }
+  }
+
+  /// Optional, title of the SavedItem
+  public var title: GraphQLNullable<String> {
+    get { __data["title"] }
+    set { __data["title"] = newValue }
   }
 }

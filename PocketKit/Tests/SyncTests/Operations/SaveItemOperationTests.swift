@@ -70,7 +70,7 @@ class SaveItemOperationTests: XCTestCase {
         XCTAssertNotNil(performCall)
         XCTAssertEqual(performCall?.mutation.input.url, url.absoluteString)
 
-        let item = try space.fetchSavedItem(byRemoteID: "saved-item-1")
+        let item = try space.fetchSavedItem(byURL: url)
         XCTAssertEqual(savedItem.item?.resolvedURL, URL(string: "https://resolved.example.com/item-1")!)
         XCTAssertNotNil(item)
     }

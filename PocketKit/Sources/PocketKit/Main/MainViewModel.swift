@@ -16,8 +16,6 @@ class MainViewModel: ObservableObject {
 
     @Published var selectedSection: AppSection = .home
 
-    @Published var bannerViewModel: PasteBoardModifier.PasteBoardData?
-
     @Published var showBanner: Bool = false
 
     private var subscriptions: Set<AnyCancellable> = []
@@ -32,7 +30,8 @@ class MainViewModel: ObservableObject {
                     userDefaults: Services.shared.userDefaults,
                     source: Services.shared.source,
                     tracker: Services.shared.tracker.childTracker(hosting: .saves.search),
-                    store: Services.shared.subscriptionStore
+                    store: Services.shared.subscriptionStore,
+                    notificationCenter: Services.shared.notificationCenter
                 ) { source in
                     PremiumUpgradeViewModel(
                         store: Services.shared.subscriptionStore,
@@ -51,7 +50,8 @@ class MainViewModel: ObservableObject {
                     store: Services.shared.subscriptionStore,
                     refreshCoordinator: Services.shared.savesRefreshCoordinator,
                     networkPathMonitor: NWPathMonitor(),
-                    userDefaults: Services.shared.userDefaults
+                    userDefaults: Services.shared.userDefaults,
+                    featureFlags: Services.shared.featureFlagService
                 ),
                 archivedItemsList: SavedItemsListViewModel(
                     source: Services.shared.source,
@@ -63,7 +63,8 @@ class MainViewModel: ObservableObject {
                     store: Services.shared.subscriptionStore,
                     refreshCoordinator: Services.shared.archiveRefreshCoordinator,
                     networkPathMonitor: NWPathMonitor(),
-                    userDefaults: Services.shared.userDefaults
+                    userDefaults: Services.shared.userDefaults,
+                    featureFlags: Services.shared.featureFlagService
                 )
             ),
             home: HomeViewModel(
@@ -73,7 +74,8 @@ class MainViewModel: ObservableObject {
                 homeRefreshCoordinator: Services.shared.homeRefreshCoordinator,
                 user: Services.shared.user,
                 store: Services.shared.subscriptionStore,
-                userDefaults: Services.shared.userDefaults
+                userDefaults: Services.shared.userDefaults,
+                notificationCenter: Services.shared.notificationCenter
             ),
             account: AccountViewModel(
                 appSession: Services.shared.appSession,
@@ -119,12 +121,7 @@ class MainViewModel: ObservableObject {
         self.loadStartingAppSection()
         self.clearStartingAppSection()
 
-        NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification).delay(for: 0.5, scheduler: RunLoop.main).sink { [weak self] _ in
-            self?.showSaveFromClipboardBanner()
-        }.store(in: &subscriptions)
-
         NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification).sink { [weak self] _ in
-            self?.bannerViewModel = nil
             self?.saveStartingAppSection()
         }.store(in: &subscriptions)
     }
@@ -182,33 +179,6 @@ class MainViewModel: ObservableObject {
 
     func selectSavesTab() {
         self.selectedSection = .saves
-    }
-
-    func showSaveFromClipboardBanner() {
-        if UIPasteboard.general.hasURLs {
-            bannerViewModel = PasteBoardModifier.PasteBoardData(
-                title: Localization.addCopiedURLToYourSaves,
-                action: PasteBoardModifier.PasteBoardData.PasteBoardAction(
-                    text: Localization.saves,
-                    action: { [weak self] url in
-                        self?.handleBannerPrimaryAction(url: url)
-                    }, dismiss: { [weak self] in
-                        DispatchQueue.main.async { [weak self] in
-                            self?.bannerViewModel = nil
-                        }
-                    }
-                )
-            )
-        }
-    }
-
-    private func handleBannerPrimaryAction(url: URL?) {
-        DispatchQueue.main.async { [weak self] in
-            self?.bannerViewModel = nil
-        }
-
-        guard let url = url else { return }
-        source.save(url: url)
     }
 
     // MARK: Tab Restoration

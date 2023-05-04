@@ -15,6 +15,7 @@ class SavedItemViewModelTests: XCTestCase {
     private var subscriptionStore: SubscriptionStore!
     private var networkPathMonitor: MockNetworkPathMonitor!
     private var userDefaults: UserDefaults!
+    private var notificationCenter: NotificationCenter!
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -27,6 +28,7 @@ class SavedItemViewModelTests: XCTestCase {
         networkPathMonitor = MockNetworkPathMonitor()
         subscriptionStore = MockSubscriptionStore()
         userDefaults = .standard
+        notificationCenter = .default
     }
 
     override func tearDown() async throws {
@@ -42,7 +44,8 @@ class SavedItemViewModelTests: XCTestCase {
         tracker: Tracker? = nil,
         pasteboard: UIPasteboard? = nil,
         user: User? = nil,
-        networkPathMonitor: NetworkPathMonitor? = nil
+        networkPathMonitor: NetworkPathMonitor? = nil,
+        notificationCenter: NotificationCenter? = nil
     ) -> SavedItemViewModel {
         SavedItemViewModel(
             item: item,
@@ -52,7 +55,8 @@ class SavedItemViewModelTests: XCTestCase {
             user: user ?? self.user,
             store: subscriptionStore ?? self.subscriptionStore,
             networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor,
-            userDefaults: userDefaults ?? self.userDefaults
+            userDefaults: userDefaults ?? self.userDefaults,
+            notificationCenter: notificationCenter ?? self.notificationCenter
         )
     }
 
@@ -62,7 +66,7 @@ class SavedItemViewModelTests: XCTestCase {
             let viewModel = subject(item: space.buildSavedItem(isFavorite: false, isArchived: false))
             XCTAssertEqual(
                 viewModel._actions.map(\.title),
-                ["Display Settings", "Favorite", "Add Tags", "Delete", "Share"]
+                ["Display settings", "Favorite", "Add tags", "Delete", "Share"]
             )
         }
 
@@ -71,7 +75,7 @@ class SavedItemViewModelTests: XCTestCase {
             let viewModel = subject(item: space.buildSavedItem(isFavorite: true, isArchived: true))
             XCTAssertEqual(
                 viewModel._actions.map(\.title),
-                ["Display Settings", "Unfavorite", "Add Tags", "Delete", "Share"]
+                ["Display settings", "Unfavorite", "Add tags", "Delete", "Share"]
             )
         }
     }
@@ -83,13 +87,13 @@ class SavedItemViewModelTests: XCTestCase {
         item.isFavorite = true
         XCTAssertEqual(
             viewModel._actions.map(\.title),
-            ["Display Settings", "Unfavorite", "Add Tags", "Delete", "Share"]
+            ["Display settings", "Unfavorite", "Add tags", "Delete", "Share"]
         )
 
         item.isArchived = false
         XCTAssertEqual(
             viewModel._actions.map(\.title),
-            ["Display Settings", "Unfavorite", "Add Tags", "Delete", "Share"]
+            ["Display settings", "Unfavorite", "Add tags", "Delete", "Share"]
         )
     }
 
@@ -147,7 +151,7 @@ class SavedItemViewModelTests: XCTestCase {
 
     func test_displaySettings_updatesIsPresentingReaderSettings() {
         let viewModel = subject(item: space.buildSavedItem())
-        viewModel.invokeAction(title: "Display Settings")
+        viewModel.invokeAction(title: "Display settings")
 
         XCTAssertEqual(viewModel.isPresentingReaderSettings, true)
     }
@@ -185,13 +189,14 @@ class SavedItemViewModelTests: XCTestCase {
     func test_addTagsAction_sendsAddTagsViewModel() {
         let viewModel = subject(item: space.buildSavedItem(tags: ["tag 1"]))
         source.stubRetrieveTags { _ in return nil }
+        source.stubFetchAllTags { return [] }
         let expectAddTags = expectation(description: "expect add tags to present")
         viewModel.$presentedAddTags.dropFirst().sink { viewModel in
             expectAddTags.fulfill()
             XCTAssertEqual(viewModel?.tags, ["tag 1"])
         }.store(in: &subscriptions)
 
-        viewModel.invokeAction(title: "Add Tags")
+        viewModel.invokeAction(title: "Add tags")
 
         wait(for: [expectAddTags], timeout: 10)
     }

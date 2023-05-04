@@ -2,7 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import Foundation
+import Combine
 import SharedPocketKit
 
 /// Subscription store error(s)
@@ -37,4 +37,5 @@ public protocol SubscriptionStore {
     func requestSubscriptions() async throws
     func purchase(_ subscription: PremiumSubscription) async
     func restoreSubscription() async throws
+    func start()
 }

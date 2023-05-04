@@ -50,6 +50,7 @@ extension Space {
             let tags: [Tag]? = tags?.map { tag -> Tag in
                 let newTag: Tag = Tag(context: backgroundContext)
                 newTag.name = tag
+                newTag.remoteID = tag.uppercased()
                 return newTag
             }
             savedItem.remoteID = remoteID
@@ -202,7 +203,7 @@ extension Space {
     @discardableResult
     func createRecommendation(
         remoteID: String = "slate-1-rec-1",
-        item: Item? = nil
+        item: Item
     ) throws -> Recommendation {
         try backgroundContext.performAndWait {
             let recommendation = buildRecommendation(
@@ -218,10 +219,10 @@ extension Space {
     @discardableResult
     func buildRecommendation(
         remoteID: String = "slate-1-rec-1",
-        item: Item? = nil
+        item: Item
     ) -> Recommendation {
         backgroundContext.performAndWait {
-            let recommendation: Recommendation = Recommendation(context: backgroundContext, remoteID: remoteID)
+            let recommendation: Recommendation = Recommendation(context: backgroundContext, remoteID: remoteID, analyticsID: "")
             recommendation.item = item
 
             return recommendation

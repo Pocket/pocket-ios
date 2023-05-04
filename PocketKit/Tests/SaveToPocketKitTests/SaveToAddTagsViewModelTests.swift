@@ -2,6 +2,7 @@ import XCTest
 import Combine
 import Analytics
 import Textile
+import SharedPocketKit
 
 @testable import Sync
 @testable import SaveToPocketKit
@@ -9,6 +10,8 @@ import Textile
 class SaveToAddTagsViewModelTests: XCTestCase {
     private var space: Space!
     private var tracker: MockTracker!
+    private var userDefaults: UserDefaults!
+    private var user: MockUser!
     private var subscriptions: [AnyCancellable] = []
     private let retrieveAction: ([String]) -> [Tag]? = { _ in
         return nil
@@ -19,17 +22,30 @@ class SaveToAddTagsViewModelTests: XCTestCase {
 
     override func setUp() {
         tracker = MockTracker()
+        user = MockUser()
+        userDefaults = UserDefaults(suiteName: "SaveToAddTagsViewModelTests")
         space = .testSpace()
     }
 
     override func tearDown() async throws {
+        UserDefaults.standard.removePersistentDomain(forName: "SaveToAddTagsViewModelTests")
         try space.clear()
     }
 
-    private func subject(item: SavedItem, tracker: Tracker? = nil, retrieveAction: (([String]) -> [Tag]?)? = nil, filterAction: ((String, [String]) -> [Tag]?)? = nil, saveAction: @escaping ([String]) -> Void) -> SaveToAddTagsViewModel {
+    private func subject(
+        item: SavedItem,
+        tracker: Tracker? = nil,
+        userDefaults: UserDefaults? = nil,
+        user: User? = nil,
+        retrieveAction: (([String]) -> [Tag]?)? = nil,
+        filterAction: ((String, [String]) -> [Tag]?)? = nil,
+        saveAction: @escaping ([String]) -> Void
+    ) -> SaveToAddTagsViewModel {
         SaveToAddTagsViewModel(
             item: item,
             tracker: tracker ?? self.tracker,
+            userDefaults: userDefaults ?? self.userDefaults,
+            user: user ?? self.user,
             retrieveAction: retrieveAction ?? self.retrieveAction,
             filterAction: filterAction ?? self.filterAction,
             saveAction: saveAction
@@ -75,6 +91,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
             for index in 1...2 {
                 let tag: Tag = Tag(context: self.space.backgroundContext)
                 tag.name = "tag \(index)"
+                tag.remoteID = tag.name.uppercased()
                 tags.append(tag)
             }
             item.tags = NSOrderedSet(array: tags.compactMap { $0 })
@@ -82,6 +99,89 @@ class SaveToAddTagsViewModelTests: XCTestCase {
 
         viewModel.addTags()
         XCTAssertEqual(item.tags?.compactMap { ($0 as? Tag)?.name }, ["tag 1", "tag 2"])
+    }
+
+    func test_recentTags_withThreeTags_andPremiumUser_returnsNoRecentTags() throws {
+        let item = space.buildSavedItem(tags: [])
+        try space.save()
+        let viewModel = subject(
+            item: space.viewObject(with: item.objectID) as! SavedItem,
+            user: MockUser(status: .premium),
+            retrieveAction: { _ in
+                var tags: [Tag] = []
+                for index in 1...3 {
+                    let tag: Tag = Tag(context: self.space.viewContext)
+                    tag.name = "tag \(index)"
+                    tag.remoteID = tag.name.uppercased()
+                    tags.append(tag)
+                }
+                return tags
+            }
+        ) { _ in
+        }
+        XCTAssertEqual(viewModel.recentTags, [])
+    }
+
+    func test_recentTags_withMoreThanThreeTags_andPremiumUser_returnsRecentTags() throws {
+        let item = space.buildSavedItem(tags: [])
+        try space.save()
+        let viewModel = subject(
+            item: space.viewObject(with: item.objectID) as! SavedItem,
+            user: MockUser(status: .premium),
+            retrieveAction: { _ in
+                var tags: [Tag] = []
+                for index in 1...4 {
+                    let tag: Tag = Tag(context: self.space.viewContext)
+                    tag.name = "tag \(index)"
+                    tag.remoteID = tag.name.uppercased()
+                    tags.append(tag)
+                }
+                return tags
+            }
+        ) { _ in
+        }
+        XCTAssertEqual(viewModel.recentTags, [TagType.recent("tag 1"), TagType.recent("tag 2"), TagType.recent("tag 3")])
+    }
+
+    func test_recentTags_withMoreThanThreeTags_andFreeUser_returnsNoRecentTags() throws {
+        let item = space.buildSavedItem(tags: [])
+        try space.save()
+        let viewModel = subject(
+            item: space.viewObject(with: item.objectID) as! SavedItem,
+            user: MockUser(status: .free),
+            retrieveAction: { _ in
+                var tags: [Tag] = []
+                for index in 1...4 {
+                    let tag: Tag = Tag(context: self.space.viewContext)
+                    tag.name = "tag \(index)"
+                    tag.remoteID = tag.name.uppercased()
+                    tags.append(tag)
+                }
+                return tags
+            }
+        ) { _ in
+        }
+        XCTAssertEqual(viewModel.recentTags, [])
+    }
+
+    func test_recentTags_withTags_returnsRecentTags() throws {
+        let item = space.buildSavedItem(tags: [])
+        try space.save()
+        let viewModel = subject(
+            item: space.viewObject(with: item.objectID) as! SavedItem,
+            retrieveAction: { _ in
+                var tags: [Tag] = []
+                for index in 1...3 {
+                    let tag: Tag = Tag(context: self.space.viewContext)
+                    tag.name = "tag \(index)"
+                    tag.remoteID = tag.name.uppercased()
+                    tags.append(tag)
+                }
+                return tags
+            }
+        ) { _ in
+        }
+        XCTAssertEqual(viewModel.recentTags, [])
     }
 
     func test_allOtherTags_retrievesValidTagNames() throws {
@@ -94,6 +194,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
             for index in 2...3 {
                 let tag: Tag = Tag(context: self.space.viewContext)
                 tag.name = "tag \(index)"
+                tag.remoteID = tag.name.uppercased()
                 tags.append(tag)
             }
                 return tags
@@ -103,7 +204,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
 
         viewModel.allOtherTags()
 
-        XCTAssertEqual(viewModel.otherTags, [TagType.tag("tag 3"), TagType.tag("tag 2")])
+        XCTAssertEqual(viewModel.otherTags, [TagType.tag("tag 2"), TagType.tag("tag 3")])
     }
 
     func test_removeTag_withValidName_updatesTags() throws {
@@ -114,7 +215,6 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         viewModel.removeTag(with: "tag 2")
 
         XCTAssertEqual(viewModel.tags, ["tag 1", "tag 3"])
-        XCTAssertEqual(viewModel.otherTags, [TagType.tag("tag 2")])
     }
 
     func test_removeTag_withNotExistingName_updatesTags() throws {
@@ -137,6 +237,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
                 for index in 2...3 {
                     let tag: Tag = Tag(context: self.space.viewContext)
                     tag.name = "tag \(index)"
+                    tag.remoteID = tag.name.uppercased()
                     tags.append(tag)
                 }
                 return tags
@@ -167,6 +268,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
                 for index in 2...3 {
                     let tag: Tag = Tag(context: self.space.viewContext)
                     tag.name = "tag \(index)"
+                    tag.remoteID = tag.name.uppercased()
                     tags.append(tag)
                 }
                 return tags

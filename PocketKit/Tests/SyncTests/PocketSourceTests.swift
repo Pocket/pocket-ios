@@ -25,6 +25,7 @@ class PocketSourceTests: XCTestCase {
     var osNotificationCenter: OSNotificationCenter!
     var subscriptions: [AnyCancellable]!
     var userService: MockUserService!
+    var featureFlagService: MockFeatureFlagService!
 
     override func setUpWithError() throws {
         space = .testSpace()
@@ -40,6 +41,7 @@ class PocketSourceTests: XCTestCase {
         osNotificationCenter = OSNotificationCenter(notifications: CFNotificationCenterGetDarwinNotifyCenter())
         subscriptions = []
         userService = MockUserService()
+        featureFlagService = MockFeatureFlagService()
 
         lastRefresh.stubGetLastRefreshSaves { nil }
         lastRefresh.stubGetLastRefreshArchive { nil }
@@ -64,7 +66,8 @@ class PocketSourceTests: XCTestCase {
         networkMonitor: NetworkPathMonitor? = nil,
         sessionProvider: SessionProvider? = nil,
         osNotificationCenter: OSNotificationCenter? = nil,
-        userService: UserService? = nil
+        userService: UserService? = nil,
+        featureFlagService: FeatureFlagLoadingService? = nil
     ) -> PocketSource {
         PocketSource(
             space: space ?? self.space,
@@ -73,6 +76,7 @@ class PocketSourceTests: XCTestCase {
             operations: operations ?? self.operations,
             lastRefresh: lastRefresh ?? self.lastRefresh,
             slateService: slateService ?? self.slateService,
+            featureFlagService: featureFlagService ?? self.featureFlagService,
             networkMonitor: networkMonitor ?? self.networkMonitor,
             sessionProvider: sessionProvider ?? self.sessionProvider,
             backgroundTaskManager: backgroundTaskManager ?? self.backgroundTaskManager,
@@ -162,7 +166,7 @@ class PocketSourceTests: XCTestCase {
     }
 
     func test_delete_removesItemFromLocalStorage_andExecutesDeleteMutation() throws {
-        let item = try space.createSavedItem(remoteID: "delete-me")
+        let item = try space.createSavedItem(remoteID: "delete-me", url: "https://mozilla.com/delete")
         let expectationToRunOperation = expectation(description: "Run operation")
         operations.stubItemMutationOperation { (_, _, _: DeleteItemMutation) in
             TestSyncOperation {
@@ -173,7 +177,7 @@ class PocketSourceTests: XCTestCase {
         let source = subject()
         source.delete(item: item)
 
-        let fetchedItem = try space.fetchSavedItem(byRemoteID: "delete-me")
+        let fetchedItem = try space.fetchSavedItem(byURL: URL(string: "https://mozilla.com/delete")!)
         XCTAssertNil(fetchedItem)
         XCTAssertFalse(item.hasChanges)
         wait(for: [expectationToRunOperation], timeout: 10)
@@ -186,14 +190,14 @@ class PocketSourceTests: XCTestCase {
 
         let savedItem = try space.createSavedItem(item: space.buildItem())
         let item = savedItem.item!
-        item.recommendation = space.buildRecommendation()
+        item.recommendation = space.buildRecommendation(item: item)
 
-        let remoteItemID = item.remoteID
+        let remoteItemURL = item.givenURL
 
         let source = subject()
         source.delete(item: savedItem)
 
-        let fetchedItem = try space.fetchItem(byRemoteID: remoteItemID)
+        let fetchedItem = try space.fetchItem(byURL: remoteItemURL)
         XCTAssertNotNil(fetchedItem)
     }
 
@@ -205,12 +209,12 @@ class PocketSourceTests: XCTestCase {
         let savedItem = try space.createSavedItem(item: space.buildItem())
         let item = savedItem.item!
 
-        let remoteItemID = item.remoteID
+        let remoteItemURL = item.givenURL
 
         let source = subject()
         source.delete(item: savedItem)
 
-        let fetchedItem = try space.fetchItem(byRemoteID: remoteItemID)
+        let fetchedItem = try space.fetchItem(byURL: remoteItemURL)
         XCTAssertNil(fetchedItem)
     }
 
@@ -233,7 +237,7 @@ class PocketSourceTests: XCTestCase {
     }
 
     func test_unarchive_executesSaveItemMutation_andUpdatesCreatedAtField() throws {
-        let item = try space.createSavedItem(remoteID: "unarchive-me")
+        let item = try space.createSavedItem(remoteID: "unarchive-me", url: "https://mozilla.com/unarchive")
         item.isArchived = true
 
         let expectationToRunOperation = expectation(description: "Run operation")
@@ -246,8 +250,6 @@ class PocketSourceTests: XCTestCase {
         let source = subject()
         source.unarchive(item: item)
 
-        let fetchedItem = try space.fetchSavedItem(byRemoteID: "archive-me")
-        XCTAssertNil(fetchedItem)
         XCTAssertFalse(item.isArchived)
         XCTAssertNotNil(item.createdAt)
         wait(for: [expectationToRunOperation], timeout: 10)
@@ -276,7 +278,7 @@ class PocketSourceTests: XCTestCase {
         }
         savesResultsController.delegate = delegate
 
-        let item2 = try space.createSavedItem(createdAt: .init(timeIntervalSince1970: TimeInterval(0)), item: space.buildItem(title: "Item 2"))
+        let item2 = try space.createSavedItem(remoteID: "saved-item-2", url: "http://example.com/item-2", createdAt: .init(timeIntervalSince1970: TimeInterval(0)), item: space.buildItem(remoteID: "item-2", title: "Item 2", givenURL: URL(string: "https://example.com/items/item-2")))
         try space.save()
         try savesResultsController.performFetch()
 
@@ -313,8 +315,9 @@ class PocketSourceTests: XCTestCase {
             }
         }
 
-        let seededItem = space.buildItem(resolvedURL: URL(string: "https://getpocket.com")!)
+        let seededItem = space.buildItem(givenURL: URL(string: "https://getpocket.com")!)
         let recommendation = space.buildRecommendation(item: seededItem)
+        try? space.save()
 
         let source = subject()
         source.save(recommendation: recommendation)
@@ -337,10 +340,10 @@ class PocketSourceTests: XCTestCase {
             }
         }
 
-        let seededItem = space.buildItem()
-        let seededSavedItem = space.buildSavedItem(isArchived: true)
-        seededItem.savedItem = seededSavedItem
+        let seededItem = space.buildItem(givenURL: URL(string: "https://example.com/item-rec")!)
+        let seededSavedItem = space.buildSavedItem(url: "https://example.com/item-rec", isArchived: true, item: seededItem)
         let recommendation = space.buildRecommendation(item: seededItem)
+        try? space.save()
 
         let source = subject()
         source.save(recommendation: recommendation)
@@ -350,8 +353,8 @@ class PocketSourceTests: XCTestCase {
         XCTAssertEqual(savedItems.count, 1)
 
         let savedItem = savedItems[0]
-        XCTAssertEqual(savedItem, seededSavedItem)
-        XCTAssertEqual(savedItem.item, seededItem)
+        XCTAssertEqual(savedItem.objectID, seededSavedItem.objectID)
+        XCTAssertEqual(savedItem.item?.objectID, seededItem.objectID)
         XCTAssertFalse(savedItem.isArchived)
     }
 
@@ -381,8 +384,8 @@ class PocketSourceTests: XCTestCase {
     }
 
     func test_removeRecommendation_removesRecommendationFromSpace() throws {
-        let recommendation1 = space.buildRecommendation()
-        let recommendation2 = space.buildRecommendation()
+        let recommendation1 = space.buildRecommendation(item: space.buildItem())
+        let recommendation2 = space.buildRecommendation(item: space.buildItem())
 
         let source = subject()
         source.remove(recommendation: recommendation1)
@@ -399,7 +402,6 @@ class PocketSourceTests: XCTestCase {
         )
 
         let savedItem = try space.createSavedItem(remoteID: "a-saved-item")
-        savedItem.item = nil
         try space.save()
 
         let source = subject()
@@ -425,7 +427,7 @@ class PocketSourceTests: XCTestCase {
         try await source.fetchDetails(for: recommendation)
 
         space.backgroundRefresh(recommendation, mergeChanges: true)
-        XCTAssertNotNil(recommendation.item?.article)
+        XCTAssertNotNil(recommendation.item.article)
         XCTAssertFalse(recommendation.hasChanges)
     }
 
@@ -468,7 +470,7 @@ class PocketSourceTests: XCTestCase {
         let savedItems = try space.fetchSavedItems()
         XCTAssertEqual(savedItems.count, 1)
         XCTAssertEqual(savedItems[0].url, url)
-        XCTAssertGreaterThan(savedItems[0].createdAt!, seedDate)
+        XCTAssertGreaterThan(savedItems[0].createdAt, seedDate)
     }
 
     func test_saveURL_withArchivedSavedItem_unarchivesItem_andExecutesSaveItemOperation() throws {
@@ -547,37 +549,6 @@ extension PocketSourceTests {
         XCTAssertTrue(tags.compactMap { $0.name }.contains("tag 3"))
     }
 
-    func test_fetchTags_withSaved_returnsSavedTags() throws {
-        let tagNames = ["tag 1", "tag 2", "tag 3"]
-        _ = createItemsWithTags(3)
-        _ = createItemsWithTags(1, isArchived: true)
-        let source = subject()
-        guard let tags = source.fetchTags() else {
-            XCTFail("tags should not be nil")
-            return
-        }
-        let names = tags.compactMap { $0.name }
-        XCTAssertEqual(names.count, 3)
-        XCTAssertTrue(names.contains(tagNames[0]))
-        XCTAssertTrue(names.contains(tagNames[1]))
-        XCTAssertTrue(names.contains(tagNames[2]))
-    }
-
-    func test_fetchTags_withArchive_returnsArchivedTags() throws {
-        let tagNames = ["tag 1", "tag 2"]
-        _ = createItemsWithTags(1)
-        _ = createItemsWithTags(2, isArchived: true)
-        let source = subject()
-        guard let tags = source.fetchTags(isArchived: true) else {
-            XCTFail("tags should not be nil")
-            return
-        }
-        let names = tags.compactMap { $0.name }
-        XCTAssertEqual(names.count, 2)
-        XCTAssertTrue(names.contains(tagNames[0]))
-        XCTAssertTrue(names.contains(tagNames[1]))
-    }
-
     func test_deleteTags_executesDeleteTagMutation() throws {
         let items = createItemsWithTags(1)
         let expectationToRunOperation = expectation(description: "Run operation")
@@ -624,7 +595,7 @@ extension PocketSourceTests {
             let tag: Tag = Tag(context: space.backgroundContext)
             tag.remoteID = "id \(num)"
             tag.name = "tag \(num)"
-            return space.buildSavedItem(isArchived: isArchived, tags: [tag])
+            return space.buildSavedItem(remoteID: "saved-item-\(num)", url: "http://example.com/item-\(num)", isArchived: isArchived, tags: [tag])
         }
     }
 }
@@ -656,8 +627,8 @@ extension PocketSourceTests {
 
     func test_savesSearches_withFreeUser_showSearchResults_searchUrl() throws {
         user.setPremiumStatus(false)
-        let url = URL(string: "testUrl.saved")
-        try setupLocalSavesSearch(with: url)
+        let urlString = "testUrl.saved"
+        try setupLocalSavesSearch(with: urlString)
 
         let source = subject()
         let results = source.searchSaves(search: "saved")
@@ -670,8 +641,8 @@ extension PocketSourceTests {
     func test_savesSearches_withPremiumUser_showSearchResults_searchUrl() throws {
         user.setPremiumStatus(true)
 
-        let url = URL(string: "testUrl.saved")
-        try setupLocalSavesSearch(with: url)
+        let urlString = "testUrl.saved"
+        try setupLocalSavesSearch(with: urlString)
 
         let source = subject()
         let results = source.searchSaves(search: "saved")
@@ -712,36 +683,39 @@ extension PocketSourceTests {
     }
 
     func test_fetchOrCreateSavedItem_retrievesItem() throws {
-        let itemParts = SavedItemParts(data: DataDict([
-            "__typename": "SavedItem",
-            "remoteID": "saved-item",
-            "url": "http://localhost:8080/hello",
-            "_createdAt": 1,
-            "isArchived": false,
-            "isFavorite": false,
-            "item": [
-                "__typename": "Item",
-                "remoteID": "item-1",
-                "title": "item-title",
-                "givenUrl": "http://localhost:8080/hello",
-                "resolvedUrl": "http://localhost:8080/hello"
-            ]
-        ], variables: nil))
+
+        let itemParts = SavedItemParts(
+            url: "http://localhost:8080/hello",
+            remoteID: "saved-item",
+            isArchived: false,
+            isFavorite: false,
+            _createdAt: 1,
+            item: SavedItemParts.Item.AsItem(
+                remoteID: "item-1",
+                givenUrl: "http://localhost:8080/hello",
+                title: "item-title"
+            ).asRootEntityType
+        )
 
         let source = subject()
-        let savedItem = source.fetchOrCreateSavedItem(with: "saved-item", and: itemParts)
+        let savedItem = source.fetchOrCreateSavedItem(with: URL(string: "http://localhost:8080/hello")!, and: itemParts)
 
         XCTAssertEqual(savedItem?.remoteID, "saved-item")
         XCTAssertEqual(savedItem?.item?.title, "item-title")
-        XCTAssertEqual(savedItem?.item?.bestURL?.absoluteString, "http://localhost:8080/hello")
+        XCTAssertEqual(savedItem?.item?.bestURL.absoluteString, "http://localhost:8080/hello")
     }
 
-    private func setupLocalSavesSearch(with url: URL? = nil) throws {
+    private func setupLocalSavesSearch(with urlString: String? = nil) throws {
+        var url: URL?
         _ = (1...2).map {
+            if let urlString {
+                url = URL(string: urlString + "-\($0)")
+            }
             space.buildSavedItem(
                 remoteID: "saved-item-\($0)",
+                url: "http://example.com/item-\($0)",
                 createdAt: Date(timeIntervalSince1970: TimeInterval($0)),
-                item: space.buildItem(title: "saved-item-\($0)", givenURL: url)
+                item: space.buildItem(remoteID: "saved-item-\($0)", title: "saved-item-\($0)", givenURL: url, num: $0)
             )
         }
         try space.save()

@@ -12,13 +12,26 @@ public struct MarticleTableParts: PocketGraph.SelectionSet, Fragment {
     """ }
 
   public let __data: DataDict
-  public init(data: DataDict) { __data = data }
+  public init(_dataDict: DataDict) { __data = _dataDict }
 
   public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleTable }
   public static var __selections: [ApolloAPI.Selection] { [
+    .field("__typename", String.self),
     .field("html", String.self),
   ] }
 
   /// Raw HTML representation of the table.
   public var html: String { __data["html"] }
+
+  public init(
+    html: String
+  ) {
+    self.init(_dataDict: DataDict(data: [
+      "__typename": PocketGraph.Objects.MarticleTable.typename,
+      "html": html,
+      "__fulfilled": Set([
+        ObjectIdentifier(Self.self)
+      ])
+    ]))
+  }
 }

@@ -8,6 +8,7 @@ import BackgroundTasks
 import Lottie
 import SafariServices
 import Localization
+import SharedPocketKit
 
 struct HomeViewControllerSwiftUI: UIViewControllerRepresentable {
     var model: HomeViewModel

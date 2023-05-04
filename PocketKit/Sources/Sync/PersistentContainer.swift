@@ -3,14 +3,19 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import CoreData
+import SharedPocketKit
 
 public class PersistentContainer: NSPersistentContainer {
     public lazy var rootSpace = { Space(backgroundContext: backgroundContext, viewContext: modifiedViewContext) }()
 
     private lazy var backgroundContext = {
         let context = newBackgroundContext()
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
         return context
     }()
+
+    private (set) var spotlightIndexer: CoreDataSpotlightDelegate?
+    private (set) var storeDescription: NSPersistentStoreDescription?
 
     private lazy var modifiedViewContext: NSManagedObjectContext = {
         viewContext.automaticallyMergesChangesFromParent = true
@@ -33,24 +38,35 @@ public class PersistentContainer: NSPersistentContainer {
 
         switch storage {
         case .inMemory:
-            persistentStoreDescriptions = [
-                NSPersistentStoreDescription(url: URL(fileURLWithPath: "/dev/null"))
-            ]
+            storeDescription = NSPersistentStoreDescription(url: URL(fileURLWithPath: "/dev/null"))
         case .shared:
             let sharedContainerURL = FileManager.default
                 .containerURL(forSecurityApplicationGroupIdentifier: groupID)!
                 .appendingPathComponent("PocketModel.sqlite")
 
             Log.debug("Store URL: \(sharedContainerURL)")
-            persistentStoreDescriptions = [
-                NSPersistentStoreDescription(url: sharedContainerURL)
-            ]
+            storeDescription = NSPersistentStoreDescription(url: sharedContainerURL)
         }
+
+        guard let storeDescription else {
+            fatalError("no store description")
+        }
+
+        persistentStoreDescriptions = [
+            storeDescription
+        ]
+
+        storeDescription.type = NSSQLiteStoreType
+        storeDescription.setOption(true as NSNumber, forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)
+        storeDescription.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
 
         loadPersistentStores {storeDescription, error in
             if let error = error as NSError? {
                 fatalError("Unresolved error \(error), \(error.userInfo)")
             }
         }
+
+        spotlightIndexer = CoreDataSpotlightDelegate(forStoreWith: storeDescription, coordinator: self.persistentStoreCoordinator)
+        spotlightIndexer?.startSpotlightIndexing()
     }
 }

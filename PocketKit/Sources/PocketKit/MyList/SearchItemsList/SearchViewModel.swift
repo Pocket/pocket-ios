@@ -29,6 +29,11 @@ enum SearchViewState {
     }
 }
 
+protocol SearchResultActionDelegate: AnyObject {
+    func archive(item: PocketItem)
+    func unarchive(item: PocketItem)
+}
+
 /// View model that holds business logic for the SearchView
 class SearchViewModel: ObservableObject {
     static let recentSearchesKey = UserDefaults.Key.recentSearches
@@ -41,6 +46,7 @@ class SearchViewModel: ObservableObject {
     private let userDefaults: UserDefaults
     private let source: Source
     private let premiumUpgradeViewModelFactory: PremiumUpgradeViewModelFactory
+    private let notificationCenter: NotificationCenter
 
     private var savesLocalSearch: LocalSavesSearch
     private var savesOnlineSearch: OnlineSearch
@@ -106,6 +112,7 @@ class SearchViewModel: ObservableObject {
          source: Source,
          tracker: Tracker,
          store: SubscriptionStore,
+         notificationCenter: NotificationCenter,
          premiumUpgradeViewModelFactory: @escaping PremiumUpgradeViewModelFactory) {
         self.networkPathMonitor = networkPathMonitor
         self.user = user
@@ -113,6 +120,7 @@ class SearchViewModel: ObservableObject {
         self.source = source
         self.tracker = tracker
         self.store = store
+        self.notificationCenter = notificationCenter
         self.premiumUpgradeViewModelFactory = premiumUpgradeViewModelFactory
         itemsController = source.makeSavesController()
 
@@ -169,8 +177,11 @@ class SearchViewModel: ObservableObject {
 
         let term = searchTerm.trimmingCharacters(in: .whitespaces).lowercased()
         currentSearchTerm = term
-        guard !term.isEmpty else { return }
         guard !isOffline || selectedScope == .saves else {
+            searchState = .emptyState(searchResultState())
+            return
+        }
+        guard !term.isEmpty else {
             searchState = .emptyState(searchResultState())
             return
         }
@@ -230,6 +241,18 @@ class SearchViewModel: ObservableObject {
             guard !allOnlineSearch.hasFinishedResults else { return }
             allOnlineSearch.search(with: term, and: true)
         }
+    }
+
+    func beginBulkEdit() {
+        // TODO: The context of a bulk edit is within the entire list, not a single search result.
+        // Maybe there's potential for this being lifted from the row _to_ the search results list.
+        let bannerData = BannerModifier.BannerData(
+            image: .warning,
+            title: "",
+            detail: "Editing your search results is not available in this version of Pocket, but will be returning soon!"
+        )
+
+        notificationCenter.post(name: .bannerRequested, object: bannerData)
     }
 
     /// Handles submitting a search for the different scopes
@@ -381,16 +404,16 @@ class SearchViewModel: ObservableObject {
     }
 }
 
-extension SearchViewModel {
+extension SearchViewModel: SearchResultActionDelegate {
     func itemViewModel(_ searchItem: PocketItem, index: Int) -> PocketItemViewModel {
-        return PocketItemViewModel(item: searchItem, index: index, source: source, tracker: tracker, scope: selectedScope, user: user, store: store, networkPathMonitor: networkPathMonitor)
+        return PocketItemViewModel(item: searchItem, index: index, source: source, tracker: tracker, userDefaults: userDefaults, scope: selectedScope, user: user, store: store, networkPathMonitor: networkPathMonitor, searchActionDelegate: self)
     }
 
     func select(_ searchItem: PocketItem, index: Int) {
         guard
-            let id = searchItem.id,
+            let url = searchItem.savedItemURL,
             let savedItem = source.fetchOrCreateSavedItem(
-                with: id,
+                with: url,
                 and: searchItem.remoteItemParts
             )
         else {
@@ -406,26 +429,21 @@ extension SearchViewModel {
             user: user,
             store: store,
             networkPathMonitor: networkPathMonitor,
-            userDefaults: userDefaults
+            userDefaults: userDefaults,
+            notificationCenter: notificationCenter
         )
 
-        trackOpenSearchItem(url: savedItem.url, index: index)
-
         if savedItem.shouldOpenInWebView {
+            trackOpenSearchItem(url: savedItem.url, index: index, destination: .internal)
             selectedItem = .webView(readable)
-
-            trackContentOpen(destination: .external, item: savedItem)
         } else {
+            trackOpenSearchItem(url: savedItem.url, index: index, destination: .external)
             selectedItem = .readable(readable)
-
-            trackContentOpen(destination: .internal, item: savedItem)
         }
     }
 
     func swipeActionTitle(_ searchItem: PocketItem) -> String {
-        guard let savedItem = fetchSavedItem(searchItem) else { return Localization.Search.Swipe.unableToMove }
-
-        if savedItem.isArchived {
+        if searchItem.isArchived {
             return Localization.Search.Swipe.moveToSaves
         } else {
             return Localization.Search.Swipe.archive
@@ -441,23 +459,51 @@ extension SearchViewModel {
         }
     }
 
+    func archive(item: PocketItem) {
+        guard let savedItem = fetchSavedItem(item) else { return }
+        updateLocalSearchResults(ByRemoving: savedItem)
+    }
+
+    func unarchive(item: PocketItem) {
+        guard let savedItem = fetchSavedItem(item) else { return }
+        updateLocalSearchResults(ByRemoving: savedItem)
+    }
+
     /// Triggers action to archive an item in a list
     func archive(_ savedItem: SavedItem, index: Int) {
         tracker.track(event: Events.Search.archiveItem(itemUrl: savedItem.url, positionInList: index, scope: selectedScope))
         source.archive(item: savedItem)
+        updateLocalSearchResults(ByRemoving: savedItem)
     }
 
     /// Triggers action to move an item from archive to saves in a list
     func moveToSaves(_ savedItem: SavedItem, index: Int) {
         tracker.track(event: Events.Search.unarchiveItem(itemUrl: savedItem.url, positionInList: index, scope: selectedScope))
         source.unarchive(item: savedItem)
+        updateLocalSearchResults(ByRemoving: savedItem)
+    }
+
+    private func updateLocalSearchResults(ByRemoving item: SavedItem) {
+        guard selectedScope != .all else { return }
+
+        if case let .searchResults(results) = searchState {
+            let updatedResults = results.filter {
+                $0.id != item.id
+            }
+
+            if updatedResults.isEmpty {
+                searchState = defaultState
+            } else {
+                searchState = .searchResults(updatedResults)
+            }
+        }
     }
 
     func fetchSavedItem(_ searchItem: PocketItem) -> SavedItem? {
         guard
-            let id = searchItem.id,
+            let url = searchItem.savedItemURL,
             let savedItem = source.fetchOrCreateSavedItem(
-                with: id,
+                with: url,
                 and: searchItem.remoteItemParts
             )
         else {
@@ -465,19 +511,6 @@ extension SearchViewModel {
             return nil
         }
         return savedItem
-    }
-
-    private func trackContentOpen(destination: ContentOpenEvent.Destination, item: SavedItem) {
-        guard let url = item.bestURL else {
-            return
-        }
-
-        let contexts: [Context] = [
-            ContentContext(url: url)
-        ]
-
-        let event = ContentOpenEvent(destination: destination, trigger: .click)
-        tracker.track(event: event, contexts)
     }
 }
 
@@ -515,8 +548,8 @@ extension SearchViewModel {
     /// - Parameters:
     ///   - url: url associated with the item
     ///   - index: position index of item in the list
-    func trackOpenSearchItem(url: URL, index: Int) {
-        tracker.track(event: Events.Search.searchCardContentOpen(url: url, positionInList: index, scope: selectedScope))
+    func trackOpenSearchItem(url: URL, index: Int, destination: ContentOpen.Destination) {
+        tracker.track(event: Events.Search.searchCardContentOpen(url: url, positionInList: index, scope: selectedScope, destination: destination))
     }
 
     /// Track when user triggers a search page call
@@ -578,7 +611,7 @@ extension SearchViewModel: SavedItemsControllerDelegate {
     private func removeItemFromView(_ savedItem: SavedItem, and items: [PocketItem], at index: Int) {
         var items = items
         items.remove(at: index)
-        Log.debug("Search item removed \(String(describing: savedItem.title))")
+        Log.debug("Search item removed \(String(describing: savedItem.displayTitle))")
         // Animations seen to work better when we don't wrap this around main thread
         self.searchState = .searchResults(items)
     }
@@ -591,7 +624,7 @@ extension SearchViewModel: SavedItemsControllerDelegate {
         var items = items
         items.remove(at: index)
         items.insert(PocketItem(item: savedItem), at: index)
-        Log.debug("Search item updated \(String(describing: savedItem.title))")
+        Log.debug("Search item updated \(String(describing: savedItem.displayTitle))")
         // Animations seen to work better when we don't wrap this around main thread
         self.searchState = .searchResults(items)
     }

@@ -5,6 +5,7 @@ import SharedPocketKit
 import Combine
 import SafariServices
 import Textile
+import PKTListen
 
 struct SavesContainerViewControllerSwiftUI: UIViewControllerRepresentable {
     var model: SavesContainerViewModel
@@ -21,6 +22,7 @@ struct SavesContainerViewControllerSwiftUI: UIViewControllerRepresentable {
         navigationController.navigationBar.prefersLargeTitles = true
         navigationController.navigationBar.barTintColor = UIColor(.ui.white1)
         navigationController.navigationBar.tintColor = UIColor(.ui.grey1)
+        navigationController.delegate = v
         return navigationController
     }
 
@@ -86,7 +88,6 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
 
         view.accessibilityIdentifier = "saves"
         select(child: viewControllers.first)
-        navigationController?.delegate = self
     }
 
     required init?(coder: NSCoder) {
@@ -151,12 +152,8 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
         navigationItem.searchController?.view.accessibilityIdentifier = "search-view"
         navigationItem.searchController?.searchBar.accessibilityHint = "Search"
         navigationItem.searchController?.searchBar.scopeButtonTitles = searchViewModel.scopeTitles
-        if #available(iOS 16.0, *) {
-            navigationItem.searchController?.scopeBarActivation = .onSearchActivation
-            navigationItem.preferredSearchBarPlacement = .stacked
-        } else {
-            navigationItem.searchController?.automaticallyShowsScopeBar = true
-        }
+        navigationItem.searchController?.scopeBarActivation = .onSearchActivation
+        navigationItem.preferredSearchBarPlacement = .stacked
         navigationItem.searchController?.showsSearchResultsController = true
 
         searchViewModel.$searchText.dropFirst().sink { searchText in
@@ -178,8 +175,17 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
         searchViewModel.updateScope(with: searchScope, searchTerm: searchBar.text)
     }
 
+    var timer: Timer?
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        guard let text = searchBar.text else { return }
+        timer?.invalidate()
+        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: false, block: { _ in
+            self.searchViewModel.updateSearchResults(with: text)
+        })
+    }
+
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
-        guard let text = searchBar.text, !text.isEmpty else { return }
+        guard let text = searchBar.text else { return }
         searchViewModel.updateSearchResults(with: text)
     }
 
@@ -226,8 +232,11 @@ extension SavesContainerViewController {
             self?.present(alert: alert)
         }.store(in: &subscriptions)
 
-        model.savedItemsList.$presentedSearch.sink { [weak self] alert in
-            self?.updateSearchScope()
+        model.savedItemsList.$presentedListenViewModel.sink { [weak self] listenViewModel in
+            guard let listenViewModel else {
+                return
+            }
+            self?.showListen(listenViewModel: listenViewModel)
         }.store(in: &subscriptions)
 
         model.savedItemsList.$presentedAddTags.sink { [weak self] addTagsViewModel in
@@ -257,8 +266,11 @@ extension SavesContainerViewController {
             self?.navigate(selectedItem: selectedArchivedItem)
         }.store(in: &subscriptions)
 
-        model.archivedItemsList.$presentedSearch.sink { [weak self] alert in
-            self?.updateSearchScope()
+        model.archivedItemsList.$presentedListenViewModel.sink { [weak self] listenViewModel in
+            guard let listenViewModel else {
+                return
+            }
+            self?.showListen(listenViewModel: listenViewModel)
         }.store(in: &subscriptions)
 
         model.archivedItemsList.$sharedActivity.sink { [weak self] activity in
@@ -370,7 +382,7 @@ extension SavesContainerViewController {
 
     private func present(tagsFilterViewModel: TagsFilterViewModel?) {
         guard true, let tagsFilterViewModel = tagsFilterViewModel else { return }
-        let hostingController = UIHostingController(rootView: TagsFilterView(viewModel: tagsFilterViewModel))
+        let hostingController = UIHostingController(rootView: TagsFilterView(viewModel: tagsFilterViewModel).environment(\.managedObjectContext, Services.shared.source.viewContext))
         hostingController.configurePocketDefaultDetents()
         self.present(hostingController, animated: true)
     }
@@ -468,5 +480,14 @@ extension SavesContainerViewController: SFSafariViewControllerDelegate {
 
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
         model.clearPresentedWebReaderURL()
+    }
+}
+
+extension SavesContainerViewController {
+    private func showListen(listenViewModel: ListenViewModel) {
+        let appConfig = PKTListenAppConfiguration(source: listenViewModel)
+        let listen =  PKTListenContainerViewController(configuration: appConfig)
+        listen.title = listenViewModel.title
+        self.present(listen, animated: true)
     }
 }

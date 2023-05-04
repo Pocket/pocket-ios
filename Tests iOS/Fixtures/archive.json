@@ -1,8 +1,0 @@
-{
-    "data": {
-        "updateSavedItemArchive": {
-            "__typename": "[type-name-here]",
-            "id": "item-id-2"
-        }
-    }
-}

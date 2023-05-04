@@ -52,17 +52,7 @@ struct ResultsView: View {
     var body: some View {
         List {
             ForEach(Array(results.enumerated()), id: \.offset) { index, item in
-                HStack {
-                    ListItem(viewModel: viewModel.itemViewModel(item, index: index))
-                    Spacer()
-                }
-                .swipeActions {
-                    Button(viewModel.swipeActionTitle(item)) {
-                        viewModel.handleSwipeAction(item, index: index)
-                    }
-                    .tint(swipeTintColor)
-                }
-                .contentShape(Rectangle())
+                basicRow(for: item, at: index)
                 .onTapGesture {
                     if viewModel.isOffline {
                         showingAlert = true
@@ -74,7 +64,7 @@ struct ResultsView: View {
                     if triggerNextPage {
                         viewModel.loadMoreSearchResults(with: item, at: index)
                     }
-                    viewModel.trackViewResults(url: item.url, index: index)
+                    viewModel.trackViewResults(url: item.savedItemURL, index: index)
                 }
             }
         }
@@ -85,6 +75,21 @@ struct ResultsView: View {
         .alert(isPresented: $showingAlert) {
             Alert(title: Text(Localization.Search.Error.View.needsInternet), dismissButton: .default(Text("OK")))
         }
+    }
+
+    @ViewBuilder
+    private func basicRow(for item: PocketItem, at index: Int) -> some View {
+        HStack {
+            ListItem(viewModel: viewModel.itemViewModel(item, index: index))
+            Spacer()
+        }
+        .swipeActions {
+            Button(viewModel.swipeActionTitle(item)) {
+                viewModel.handleSwipeAction(item, index: index)
+            }
+            .tint(swipeTintColor)
+        }
+        .contentShape(Rectangle())
     }
 }
 

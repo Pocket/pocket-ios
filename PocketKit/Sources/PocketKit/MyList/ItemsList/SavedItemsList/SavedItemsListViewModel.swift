@@ -43,7 +43,11 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
     @Published var presentedSortFilterViewModel: SortMenuViewModel?
 
-    @Published var presentedSearch: Bool?
+    @Published
+    var presentedListenViewModel: ListenViewModel?
+
+    @Published private var _initialDownloadState: InitialDownloadState
+    var initialDownloadState: Published<InitialDownloadState>.Publisher { $_initialDownloadState }
 
     private let listOptions: ListOptions
 
@@ -76,13 +80,14 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     private var subscriptions: [AnyCancellable] = []
     private var store: SubscriptionStore
     private var networkPathMonitor: NetworkPathMonitor
+    private var featureFlags: FeatureFlagServiceProtocol
 
     private var selectedFilters: Set<ItemsListFilter>
     private let availableFilters: [ItemsListFilter]
     private let notificationCenter: NotificationCenter
     private let viewType: SavesViewType
 
-    init(source: Source, tracker: Tracker, viewType: SavesViewType, listOptions: ListOptions, notificationCenter: NotificationCenter, user: User, store: SubscriptionStore, refreshCoordinator: RefreshCoordinator, networkPathMonitor: NetworkPathMonitor, userDefaults: UserDefaults) {
+    init(source: Source, tracker: Tracker, viewType: SavesViewType, listOptions: ListOptions, notificationCenter: NotificationCenter, user: User, store: SubscriptionStore, refreshCoordinator: RefreshCoordinator, networkPathMonitor: NetworkPathMonitor, userDefaults: UserDefaults, featureFlags: FeatureFlagServiceProtocol) {
         self.source = source
         self.refreshCoordinator = refreshCoordinator
         self.tracker = tracker
@@ -94,17 +99,35 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         self.store = store
         self.networkPathMonitor = networkPathMonitor
         self.userDefaults = userDefaults
+        self.featureFlags = featureFlags
 
         switch self.viewType {
         case .saves:
             self.itemsController = source.makeSavesController()
+            self._initialDownloadState = source.initialSavesDownloadState.value
         case .archive:
             self.itemsController = source.makeArchiveController()
+            self._initialDownloadState = source.initialArchiveDownloadState.value
         }
 
         self.notificationCenter = notificationCenter
 
         super.init()
+
+        switch self.viewType {
+        case .saves:
+            source.initialSavesDownloadState.receive(on: DispatchQueue.global(qos: .userInteractive))
+                .sink { [weak self] initialDownloadState in
+                    self?._initialDownloadState = initialDownloadState
+                }
+                .store(in: &subscriptions)
+        case .archive:
+            source.initialArchiveDownloadState.receive(on: DispatchQueue.global(qos: .userInteractive))
+                .sink { [weak self] initialDownloadState in
+                    self?._initialDownloadState = initialDownloadState
+                }
+                .store(in: &subscriptions)
+        }
 
         itemsController.delegate = self
 
@@ -129,12 +152,13 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
                 self?.handle(syncEvent: event)
             }
             .store(in: &subscriptions)
+
     }
 
     func fetch() {
         let filters = selectedFilters.compactMap { filter -> NSPredicate? in
             switch filter {
-            case.search:
+            case.listen:
                 return nil
             case .favorites:
                 return NSPredicate(format: "isFavorite = true")
@@ -142,9 +166,8 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
                 presentedTagsFilter = TagsFilterViewModel(
                     source: source,
                     tracker: tracker,
-                    fetchedTags: { [weak self] in
-                        self?.source.fetchAllTags()
-                    }(),
+                    userDefaults: userDefaults,
+                    user: user,
                     selectAllAction: { [weak self] in
                         self?.selectCell(with: .filterButton(.all))
                     }
@@ -155,7 +178,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
                     switch selectedTag {
                     case .notTagged:
                         predicate = NSPredicate(format: "tags.@count = 0")
-                    case .tag(let name):
+                    case .tag(let name), .recent(let name):
                         predicate = NSPredicate(format: "%@ IN tags.name", name)
                     }
                     self?.fetchItems(with: [predicate])
@@ -198,6 +221,34 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         }
 
         source.retryImmediately()
+    }
+
+    func preview(for cell: ItemsListCell<NSManagedObjectID>) -> (ReadableViewModel, Bool)? {
+        guard case .item(let itemID) = cell else {
+            return nil
+        }
+
+        guard let savedItem = bareItem(with: itemID) else {
+            return nil
+        }
+
+        let readable = SavedItemViewModel(
+            item: savedItem,
+            source: source,
+            tracker: tracker.childTracker(hosting: .articleView.screen),
+            pasteboard: UIPasteboard.general,
+            user: user,
+            store: store,
+            networkPathMonitor: networkPathMonitor,
+            userDefaults: userDefaults,
+            notificationCenter: notificationCenter
+        )
+
+        if savedItem.shouldOpenInWebView {
+            return (readable, true)
+        } else {
+            return (readable, false)
+        }
     }
 
     func presenter(for cellID: ItemsListCell<ItemIdentifier>) -> ItemsListItemPresenter? {
@@ -244,6 +295,16 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         case .offline, .emptyState, .placeholder, .tag:
             return
         }
+    }
+
+    func beginBulkEdit() {
+        let bannerData = BannerModifier.BannerData(
+            image: .warning,
+            title: nil,
+            detail: Localization.ItemList.Edit.banner
+        )
+
+        notificationCenter.post(name: .bannerRequested, object: bannerData)
     }
 
     func filterByTagAction() -> UIAction? {
@@ -343,19 +404,26 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             return []
         }
 
+        // In the following swipe actions, we do not call a completion handler.
+        // The usage of saves and archive will both delete a cell as soon as the action
+        // is performed, since the action is client-side first. This will result in a deletion animation.
+        // However, calling `completion` will attempt to reset the cell back into a non-swiped state,
+        // which is a second animation that the UI then battles with. If we do not call completion,
+        // we get the single deletion animation, and the completion call is unnecessary, here.
+        // Possibly related link: https://stackoverflow.com/questions/47106002/uicontextualaction-with-destructive-style-seems-to-delete-row-by-default/55894960#55894960
         switch self.viewType {
         case .saves:
             return [
                 .archive { [weak self] completion in
                     self?._archive(item: item)
-                    completion(true)
+                    // completion(true)
                 }
             ]
         case .archive:
             return [
                 .moveToSaves { [weak self] completion in
                     self?._moveToSaves(item: item)
-                    completion(true)
+                    // completion(true)
                 }
             ]
         }
@@ -403,8 +471,12 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         let sections: [ItemsListSection] = [.filters]
         snapshot.appendSections(sections)
 
+        var cases = ItemsListFilter.allCases
+        if !self.featureFlags.isAssigned(flag: .listen) {
+            cases.removeAll(where: {$0 == .listen})
+        }
         snapshot.appendItems(
-            ItemsListFilter.allCases.map { ItemsListCell<ItemIdentifier>.filterButton($0) },
+            cases.map { ItemsListCell<ItemIdentifier>.filterButton($0) },
             toSection: .filters
         )
 
@@ -412,22 +484,22 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         snapshot.reloadItems(filters)
         let itemCellIDs: [ItemsListCell<ItemIdentifier>]
 
-        var stateValue: InitialDownloadState
-        switch self.viewType {
-        case .saves:
-            stateValue = source.initialSavesDownloadState.value
-        case .archive:
-            stateValue = source.initialArchiveDownloadState.value
-        }
-
-        switch stateValue {
+        switch self._initialDownloadState {
         case .unknown, .completed:
             itemCellIDs = itemsController
                 .fetchedObjects?
                 .map { .item($0.objectID) } ?? []
         case .started:
-            itemCellIDs = (0..<4).map { .placeholder($0) }
-        case .paginating(let totalCount):
+            // If you background the app, and reopen the Fetch operations can override the sent staus,
+            // so instead we will first make sure we have no objects before switching to placeholders.
+            if let fetchedObjects = itemsController.fetchedObjects, fetchedObjects.count > 0 {
+                itemCellIDs = (0..<fetchedObjects.count).compactMap { index in
+                    .item(fetchedObjects[index].objectID)
+                }
+            } else {
+                itemCellIDs = (0..<4).map { .placeholder($0) }
+            }
+        case .paginating(let totalCount, _):
             itemCellIDs = (0..<totalCount).compactMap { index in
                 guard let fetchedObjects = itemsController.fetchedObjects,
                       fetchedObjects.count > index else {
@@ -477,17 +549,12 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         tracker.track(event: event, contexts)
     }
 
-    private func trackContentOpen(destination: ContentOpenEvent.Destination, item: SavedItem) {
+    private func trackContentOpen(destination: ContentOpen.Destination, item: SavedItem) {
         guard let url = item.bestURL else {
             return
         }
 
-        let contexts: [Context] = [
-            ContentContext(url: url)
-        ]
-
-        let event = ContentOpenEvent(destination: destination, trigger: .click)
-        tracker.track(event: event, contexts)
+        tracker.track(event: Events.Saves.contentOpen(destination: destination, url: url))
     }
 
     private func trackButton(item: SavedItem, identifier: UIContext.Identifier) {
@@ -545,7 +612,8 @@ extension SavedItemsListViewModel {
             user: user,
             store: store,
             networkPathMonitor: networkPathMonitor,
-            userDefaults: userDefaults
+            userDefaults: userDefaults,
+            notificationCenter: notificationCenter
         )
 
         if savedItem.shouldOpenInWebView {
@@ -593,8 +661,32 @@ extension SavedItemsListViewModel {
         guard !reTappedTagFilter else { return }
 
         switch filter {
-        case .search:
-            presentedSearch = true
+        case .listen:
+            var title: String = ""
+            switch viewType {
+            case .saves:
+                title = Localization.saves
+            case .archive:
+                title = Localization.archive
+            }
+
+            // If the user selected a filter, and the user is not in the Listen tags playlist feature flag
+            // Remove any filters and sorts they selected and re-fetch data before showing listen.
+            if !selectedFilters.isEmpty && !featureFlags.isAssigned(flag: .listenTagsPlaylists) {
+                selectedFilters.removeAll()
+                presentedTagsFilter = nil
+                applySorting()
+                fetch()
+            }
+            if let tag = self.presentedTagsFilter?.selectedTag {
+                switch tag {
+                case .recent(let tagName), .tag(let tagName):
+                    title = tagName
+                case .notTagged: break
+                }
+            }
+            presentedListenViewModel = ListenViewModel.source(savedItems: self.itemsController.fetchedObjects, title: title)
+            selectedFilters.remove(.listen)
         case .all:
             selectedFilters.removeAll()
             selectedFilters.insert(.all)
@@ -647,9 +739,11 @@ extension SavedItemsListViewModel: SavedItemsControllerDelegate {
         // Build up a snapshot for us to use
         var newSnapshot = buildSnapshot()
 
-        // Grab any ids that have changed, map them to .item and then setup our custom snapshot to reload them
+        // Grab any ids that have changed, filter them based on what newSnapshot contains, map them to .item and then setup our custom snapshot to reload them
         let idsToReload: [ItemsListCell<ItemIdentifier>] =  snapshot.reloadedItemIdentifiers.compactMap({ .item($0 as! NSManagedObjectID) })
+            .filter { newSnapshot.itemIdentifiers.contains($0) }
         let idsToReconfigure: [ItemsListCell<ItemIdentifier>] =  snapshot.reconfiguredItemIdentifiers.compactMap({ .item($0 as! NSManagedObjectID) })
+            .filter { newSnapshot.itemIdentifiers.contains($0) }
         newSnapshot.reloadItems(idsToReload)
         newSnapshot.reconfigureItems(idsToReconfigure)
 
@@ -666,6 +760,7 @@ extension SavedItemsListViewModel {
             item: item,
             source: source,
             tracker: tracker,
+            userDefaults: userDefaults,
             user: user,
             store: store,
             networkPathMonitor: networkPathMonitor,

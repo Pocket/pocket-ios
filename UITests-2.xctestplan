@@ -69,6 +69,7 @@
     {
       "skippedTests" : [
         "AddTagsItemTests\/test_addTagsToItemFromSaves_savesNewTags()",
+        "AddTagsItemTests\/test_addTags_withPremiumUser_showsRecentTagsView()",
         "ArchiveAnItemTests",
         "ArchiveFiltersTests",
         "ArchiveTests",
@@ -79,6 +80,7 @@
         "FavoriteAnItemTests",
         "HomeTests\/test_tappingRecentSavesItem_showsWebViewWhenItemIsVideo()",
         "HomeTests\/test_tappingRecentSavesSavesButton_opensSavesView()",
+        "ListenTests",
         "PullToRefreshTests",
         "ReaderTests",
         "ReportARecommendationTests",

@@ -5,9 +5,11 @@
 import Foundation
 import CoreData
 import PocketGraph
+import SharedPocketKit
 
 extension SavedItem {
     typealias SavedItemEdge = FetchSavesQuery.Data.User.SavedItems.Edge
+    typealias ArchivedItemEdge = FetchArchiveQuery.Data.User.SavedItems.Edge
     public typealias RemoteSavedItem = SavedItemParts
     typealias RemoteItem = ItemParts
 
@@ -23,7 +25,6 @@ extension SavedItem {
 
     public func update(from remote: RemoteSavedItem, with space: Space) {
         remoteID = remote.remoteID
-
         guard let url = URL(string: remote.url) else {
             Log.breadcrumb(category: "sync", level: .warning, message: "Skipping updating of SavedItem \(remoteID) because \(remote.url) is not valid url")
             return
@@ -36,10 +37,8 @@ extension SavedItem {
         isArchived = remote.isArchived
         isFavorite = remote.isFavorite
 
-        guard let context = managedObjectContext,
-              let itemParts = remote.item.asItem?.fragments.itemParts,
-              let itemUrl = URL(string: itemParts.givenUrl)
-        else {
+        guard let context = managedObjectContext else {
+            Log.capture(message: "Managed context was nil")
             return
         }
 
@@ -53,21 +52,33 @@ extension SavedItem {
             return fetchedTag
         } ?? [])
 
-        let itemToUpdate = try? space.fetchItem(byRemoteID: itemParts.remoteID, context: context) ?? Item(context: context, givenURL: itemUrl, remoteID: itemParts.remoteID)
-        itemToUpdate?.update(remote: itemParts, with: space)
-        item = itemToUpdate
+        if let itemParts = remote.item.asItem?.fragments.itemParts {
+            Log.breadcrumb(category: "sync", level: .debug, message: "Updating item parts for \(itemParts.remoteID)")
+            guard let itemUrl = URL(string: itemParts.givenUrl) else {
+                Log.capture(message: "Item parts not a valid url")
+                return
+            }
+            let itemToUpdate = (try? space.fetchItem(byURL: itemUrl, context: context)) ?? Item(context: context, givenURL: itemUrl, remoteID: itemParts.remoteID)
+            itemToUpdate.update(remote: itemParts, with: space)
+            item = itemToUpdate
+        } else if let pendingParts = remote.item.asPendingItem?.fragments.pendingItemParts {
+            Log.breadcrumb(category: "sync", level: .debug, message: "Updating pending parts for \(pendingParts.remoteID)")
+            guard let itemUrl = URL(string: pendingParts.givenUrl) else {
+                Log.capture(message: "Pending item parts not a valid url")
+                return
+            }
+            let itemToUpdate = (try? space.fetchItem(byURL: itemUrl, context: context)) ?? Item(context: context, givenURL: itemUrl, remoteID: pendingParts.remoteID)
+            itemToUpdate.update(remote: pendingParts, with: space)
+            item = itemToUpdate
+        }
     }
 
     public func update(from recommendation: Recommendation) {
-        guard let url = recommendation.item?.bestURL else {
-            Log.breadcrumb(category: "sync", level: .warning, message: "Skipping updating of Recommendation \(recommendation.remoteID) from SavedItem \(self.remoteID) because \(recommendation.item?.bestURL) is not valid url")
-            return
-        }
-
+        let url = recommendation.item.givenURL
         self.url = url
         self.createdAt = Date()
 
-        item = recommendation.item
+        self.item = recommendation.item
     }
 
     public func update(from summary: SavedItemSummary, with space: Space) {
@@ -84,10 +95,8 @@ extension SavedItem {
         isArchived = summary.isArchived
         isFavorite = summary.isFavorite
 
-        guard let context = managedObjectContext,
-              let itemSummary = summary.item.asItem?.fragments.itemSummary,
-              let itemUrl =  URL(string: itemSummary.givenUrl)
-        else {
+        guard let context = managedObjectContext else {
+            Log.capture(message: "Managed context was nil")
             return
         }
 
@@ -96,11 +105,30 @@ extension SavedItem {
         }
 
         tags = NSOrderedSet(array: summary.tags?.compactMap { $0 }.map { summaryTag in
-            space.fetchOrCreateTag(byName: summaryTag.name)
+            let tag = space.fetchOrCreateTag(byName: summaryTag.name, context: context)
+            tag.update(remote: summaryTag.fragments.tagParts)
+            return tag
         } ?? [])
 
-        let itemToUpdate = try? space.fetchItem(byRemoteID: itemSummary.remoteID) ?? Item(context: context, givenURL: itemUrl, remoteID: itemSummary.remoteID)
-        itemToUpdate?.update(from: itemSummary, with: space)
-        item = itemToUpdate
+        if let itemSummary = summary.item.asItem?.fragments.itemSummary {
+            Log.breadcrumb(category: "sync", level: .debug, message: "Updating item parts from summary for \(itemSummary.remoteID)")
+            guard let itemUrl = URL(string: itemSummary.givenUrl) else {
+                Log.capture(message: "Item parts not a valid url")
+                return
+            }
+            let itemToUpdate = (try? space.fetchItem(byURL: itemUrl, context: context)) ?? Item(context: context, givenURL: itemUrl, remoteID: itemSummary.remoteID)
+            itemToUpdate.update(from: itemSummary, with: space)
+            item = itemToUpdate
+        } else if let pendingParts = summary.item.asPendingItem?.fragments.pendingItemParts {
+            Log.breadcrumb(category: "sync", level: .debug, message: "Updating pending parts from summary for \(pendingParts.remoteID)")
+            guard let itemUrl = URL(string: pendingParts.givenUrl) else {
+                Log.capture(message: "Pending item parts not a valid url")
+                return
+            }
+            let itemToUpdate = (try? space.fetchItem(byURL: itemUrl, context: context)) ?? Item(context: context, givenURL: itemUrl, remoteID: pendingParts.remoteID)
+            itemToUpdate.update(remote: pendingParts, with: space)
+            item = itemToUpdate
+        }
+
     }
 }

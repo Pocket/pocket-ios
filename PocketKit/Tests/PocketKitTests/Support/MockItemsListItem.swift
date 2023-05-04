@@ -1,7 +1,32 @@
 import Foundation
+import Localization
 @testable import PocketKit
 
 struct MockItemsListItem: ItemsListItem {
+    var displayTitle: String {
+        title ?? bestURL?.absoluteString ?? ""
+    }
+
+    var displayDomain: String? {
+        domainMetadata?.name ?? domain ?? host
+    }
+
+    var displayDetail: String {
+        [displayDomain, displayTimeToRead]
+            .compactMap { $0 }
+            .joined(separator: " • ")
+    }
+
+    var displayTimeToRead: String? {
+        timeToRead
+            .flatMap { $0 > 0 ? $0 : nil }
+            .flatMap { Localization.Item.List.min($0) }
+    }
+
+    var displayAuthors: String? {
+        return ""
+    }
+
     let id: String?
     let title: String?
     let isFavorite: Bool
@@ -15,6 +40,7 @@ struct MockItemsListItem: ItemsListItem {
     let host: String?
     let tagNames: [String]?
     let cursor: String?
+    let savedItemURL: URL?
 
     static func build(
         id: String? = nil,
@@ -29,7 +55,8 @@ struct MockItemsListItem: ItemsListItem {
         isPending: Bool = false,
         host: String? = nil,
         tagNames: [String]? = nil,
-        cursor: String? = nil
+        cursor: String? = nil,
+        savedItemURL: URL? = nil
     ) -> MockItemsListItem {
         MockItemsListItem(
             id: id,
@@ -44,7 +71,8 @@ struct MockItemsListItem: ItemsListItem {
             isPending: isPending,
             host: host,
             tagNames: tagNames,
-            cursor: cursor
+            cursor: cursor,
+            savedItemURL: savedItemURL
         )
     }
 }

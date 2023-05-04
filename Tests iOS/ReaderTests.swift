@@ -60,7 +60,7 @@ class ReaderTests: XCTestCase {
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isToArchiveAnItem {
                 defer { archiveExpectation.fulfill() }
-                return .archive()
+                return .archive(apiRequest: apiRequest)
             }
             return .fallbackResponses(apiRequest: apiRequest)
         }
@@ -82,7 +82,7 @@ class ReaderTests: XCTestCase {
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isToSaveAnItem {
                 defer { saveExpectation.fulfill() }
-                return .saveItem()
+                return .saveItem(apiRequest: apiRequest)
             }
             return .fallbackResponses(apiRequest: apiRequest)
         }
@@ -170,7 +170,7 @@ class ReaderTests: XCTestCase {
         tapSafariButton()
         validateSafariOpens()
 
-        let engagementEvent = await snowplowMicro.getFirstEvent(with: "reader.view_original")
+        let engagementEvent = await snowplowMicro.getFirstEvent(with: "reader.view-original")
         engagementEvent!.getUIContext()!.assertHas(type: "button")
         engagementEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
     }

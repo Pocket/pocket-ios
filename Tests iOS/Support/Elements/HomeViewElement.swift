@@ -47,18 +47,10 @@ struct HomeViewElement: PocketUIElement {
     }
 
     func pullToRefresh() {
-        let topCenter = CGVector(dx: 0.5, dy: 0.1)
-        let centerCenter = CGVector(dx: 0.5, dy: 2)
-
-        element.cells
-            .element(boundBy: 0)
-            .coordinate(withNormalizedOffset: topCenter)
-            .press(
-                forDuration: 0.1,
-                thenDragTo: element.coordinate(
-                    withNormalizedOffset: centerCenter
-                )
-            )
+        let firstCell = savedItemCell(at: 0).wait()
+        let start = firstCell.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0))
+        let finish = firstCell.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 6))
+        start.press(forDuration: 0, thenDragTo: finish)
     }
 
     func overscroll() {
@@ -83,7 +75,7 @@ struct HomeViewElement: PocketUIElement {
     }
 
     var seeAllCollectionButton: XCUIElement {
-        element.staticTexts["See All"]
+        element.staticTexts["See all"]
     }
 
     var returnToHomeButton: XCUIElement {

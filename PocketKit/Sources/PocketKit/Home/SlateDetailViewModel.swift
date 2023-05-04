@@ -95,8 +95,8 @@ extension SlateDetailViewModel {
             event: SnowplowEngagement(type: .general, value: nil),
             contexts(for: recommendation, at: indexPath)
         )
-
-        if let item = recommendation.item, item.shouldOpenInWebView {
+        let item = recommendation.item
+        if item.shouldOpenInWebView {
             let url = pocketPremiumURL(item.bestURL, user: user)
             presentedWebReaderURL = url
 
@@ -141,15 +141,15 @@ extension SlateDetailViewModel {
             overflowActions: [
                 .share { [weak self] sender in
                     // This view model is used within the context of a view that is presented within Home
-                    self?.sharedActivity = PocketItemActivity.fromHome(url: recommendation.item?.bestURL, sender: sender)
+                    self?.sharedActivity = PocketItemActivity.fromHome(url: recommendation.item.bestURL, sender: sender)
                 },
                 .report { [weak self] _ in
                     self?.report(recommendation, at: indexPath)
                 }
             ],
             primaryAction: .recommendationPrimary { [weak self] _ in
-                let isSaved = recommendation.item?.savedItem != nil
-                && recommendation.item?.savedItem?.isArchived == false
+                let isSaved = recommendation.item.savedItem != nil
+                && recommendation.item.savedItem?.isArchived == false
 
                 if isSaved {
                     self?.archive(recommendation, at: indexPath)
@@ -190,10 +190,7 @@ extension SlateDetailViewModel {
     }
 
     private func contexts(for recommendation: Recommendation, at indexPath: IndexPath) -> [Context] {
-        guard let recommendationURL = recommendation.item?.bestURL else {
-            return []
-        }
-
+        let recommendationURL = recommendation.item.bestURL
         var contexts: [Context] = []
 
         let slateContext = SlateContext(

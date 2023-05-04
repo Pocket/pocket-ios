@@ -32,17 +32,12 @@ class APIUserService: UserService {
     }
 
     private func fetchRemoteUser(remote: GetUserDataQuery.Data.User) throws {
-            guard let remoteIsPremium = remote.isPremium, let remoteUserName = remote.name else {
-                return
-            }
+        guard let remoteIsPremium = remote.isPremium else {
+            return
+        }
 
-            user.setPremiumStatus(remoteIsPremium)
-            user.setUserName(remoteUserName)
-
-            if let remoteDisplayName = remote.username {
-                user.setDisplayName(remoteDisplayName)
-            } else {
-                Log.capture(message: "No display name data")
-            }
+        user.setPremiumStatus(remoteIsPremium)
+        user.setUserName(remote.username ?? "")
+        user.setDisplayName(remote.name ?? "")
     }
 }

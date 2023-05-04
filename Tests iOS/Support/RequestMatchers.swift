@@ -6,15 +6,35 @@ import Foundation
 import Sails
 import SharedPocketKit
 
+struct ApolloBodyRequest: Codable {
+    let operationName: String
+    let query: String
+    let variables: AnyCodable?
+
+    var variableDict: [String: Any?] {
+        variables!.value as! [String: Any?]
+    }
+
+    var inputDict: [String: Any?] {
+        variableDict["input"] as! [String: Any?]
+    }
+}
+
 struct ClientAPIRequest {
     private let request: Request
     private let requestBody: String?
+    private let apolloRequestBody: ApolloBodyRequest?
     private let operationName: String?
 
     init(_ request: Request) {
         self.request = request
         self.requestBody = body(of: request)
-        self.operationName = request.head.headers.first(name: "X-APOLLO-OPERATION-NAME")
+        do {
+            self.apolloRequestBody = try JSONDecoder().decode(ApolloBodyRequest.self, from: self.request.body!)
+            self.operationName = self.apolloRequestBody?.operationName
+        } catch {
+            fatalError("could not parse apollo body \(error)")
+        }
     }
 
     var isEmpty: Bool {
@@ -37,12 +57,12 @@ struct ClientAPIRequest {
         self.operationName == "ArchiveItem"
     }
 
-    func isToDeleteATag(_ number: Int = 1) -> Bool {
-        self.operationName == "DeleteTag" && contains("id-\(number)")
+    var isToDeleteATag: Bool {
+        self.operationName == "DeleteTag"
     }
 
-    func isToUpdateTag(_ name: String) -> Bool {
-        self.operationName == "TagUpdate" && contains("\(name)")
+    var isToUpdateTag: Bool {
+        self.operationName == "TagUpdate"
     }
 
     var isToDeleteAnItem: Bool {
@@ -63,6 +83,10 @@ struct ClientAPIRequest {
 
     var isToSaveAnItem: Bool {
         self.operationName == "SaveItem"
+    }
+
+    func isToSaveAnItem(with url: URL) -> Bool {
+        isToSaveAnItem && self.inputURL == url
     }
 
     var isForItemDetail: Bool {
@@ -104,7 +128,34 @@ struct ClientAPIRequest {
         }
     }
 
+    var isForFeatureFlags: Bool {
+        self.operationName == "FeatureFlags"
+    }
+
     func contains(_ string: String) -> Bool {
         requestBody?.contains(string) == true
+    }
+}
+
+extension ClientAPIRequest {
+
+    var variableItemId: String {
+        self.apolloRequestBody!.variableDict["itemID"] as! String
+    }
+
+    var variableId: String {
+        self.apolloRequestBody!.variableDict["id"] as! String
+    }
+
+    var inputId: String {
+        self.apolloRequestBody!.inputDict["id"] as! String
+    }
+
+    var inputName: String {
+        self.apolloRequestBody!.inputDict["id"] as! String
+    }
+
+    var inputURL: URL {
+        URL(string: self.apolloRequestBody!.inputDict["url"] as! String)!
     }
 }

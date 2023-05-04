@@ -5,6 +5,7 @@ import Textile
 import Analytics
 import UIKit
 import SharedPocketKit
+import Localization
 
 class SavedItemViewModel: ReadableViewModel {
     let tracker: Tracker
@@ -33,6 +34,7 @@ class SavedItemViewModel: ReadableViewModel {
     private var subscriptions: [AnyCancellable] = []
     private var store: SubscriptionStore
     private var networkPathMonitor: NetworkPathMonitor
+    private let notificationCenter: NotificationCenter
 
     init(
         item: SavedItem,
@@ -42,7 +44,8 @@ class SavedItemViewModel: ReadableViewModel {
         user: User,
         store: SubscriptionStore,
         networkPathMonitor: NetworkPathMonitor,
-        userDefaults: UserDefaults
+        userDefaults: UserDefaults,
+        notificationCenter: NotificationCenter
     ) {
         self.item = item
         self.source = source
@@ -52,6 +55,7 @@ class SavedItemViewModel: ReadableViewModel {
         self.store = store
         self.networkPathMonitor = networkPathMonitor
         self.userDefaults = userDefaults
+        self.notificationCenter = notificationCenter
 
         item.publisher(for: \.isFavorite).sink { [weak self] _ in
             self?.buildActions()
@@ -127,7 +131,7 @@ class SavedItemViewModel: ReadableViewModel {
     func externalActions(for url: URL) -> [ItemAction] {
         [
             .save { [weak self] _ in self?.saveExternalURL(url) },
-            .open { [weak self] _ in self?.openExternalURL(url) },
+            .open { [weak self] _ in self?.openExternalLink(url: url) },
             .copyLink { [weak self] _ in self?.copyExternalURL(url) },
             .share { [weak self] _ in self?.shareExternalURL(url) }
         ]
@@ -176,11 +180,18 @@ extension SavedItemViewModel {
         completion(true)
     }
 
-    func openExternally(url: URL?) {
+    func openInWebView(url: URL?) {
         let updatedURL = pocketPremiumURL(url, user: user)
         presentedWebReaderURL = updatedURL
 
         trackWebViewOpen()
+    }
+
+    func openExternalLink(url: URL) {
+        let updatedURL = pocketPremiumURL(url, user: user)
+        presentedWebReaderURL = updatedURL
+
+        trackExternalLinkOpen(url: url)
     }
 
     func archive() {
@@ -189,11 +200,22 @@ extension SavedItemViewModel {
         _events.send(.archive)
     }
 
+    func beginBulkEdit() {
+        let bannerData = BannerModifier.BannerData(
+            image: .warning,
+            title: nil,
+            detail: Localization.Search.Edit.banner
+        )
+
+        notificationCenter.post(name: .bannerRequested, object: bannerData)
+    }
+
     private func showAddTagsView() {
         presentedAddTags = PocketAddTagsViewModel(
             item: item,
             source: source,
             tracker: tracker,
+            userDefaults: userDefaults,
             user: user,
             store: store,
             networkPathMonitor: networkPathMonitor,
@@ -215,10 +237,6 @@ extension SavedItemViewModel {
     private func shareExternalURL(_ url: URL) {
         // This view model is used within the context of a view that is presented within the reader
         sharedActivity = PocketItemActivity.fromReader(url: url)
-    }
-
-    private func openExternalURL(_ url: URL) {
-        presentedWebReaderURL = url
     }
 }
 

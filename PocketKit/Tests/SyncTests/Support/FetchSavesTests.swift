@@ -94,7 +94,7 @@ class FetchSavesTests: XCTestCase {
         XCTAssertEqual(savedItem.cursor, "cursor-1")
         XCTAssertEqual(savedItem.remoteID, "saved-item-1")
         XCTAssertEqual(savedItem.url, URL(string: "https://example.com/item-1")!)
-        XCTAssertEqual(savedItem.createdAt?.timeIntervalSince1970, 0)
+        XCTAssertEqual(savedItem.createdAt.timeIntervalSince1970, 0)
         XCTAssertEqual(savedItem.deletedAt?.timeIntervalSince1970, nil)
         XCTAssertEqual(savedItem.isArchived, false)
         XCTAssertTrue(savedItem.isFavorite)
@@ -149,13 +149,14 @@ class FetchSavesTests: XCTestCase {
         apollo.setupFetchSavesSyncResponse(listFixtureName: "updated-item")
         try space.createSavedItem(
             remoteID: "saved-item-1",
+            url: "http://example.com/item-1",
             item: space.buildItem(title: "Item 1")
         )
 
         let service = subject()
         _ = await service.execute(syncTaskId: task.objectID)
 
-        let item = try space.fetchSavedItem(byRemoteID: "saved-item-1")
+        let item = try space.fetchSavedItem(byURL: URL(string: "http://example.com/item-1")!)
         XCTAssertEqual(item?.item?.title, "Updated Item 1")
     }
 
@@ -319,6 +320,9 @@ class FetchSavesTests: XCTestCase {
         user.stubSetStatus { _ in }
         initialDownloadState.send(.completed)
         apollo.setupFetchSavesSyncResponse()
+        lastRefresh.stubGetLastRefreshSaves {
+            return Date().timeIntervalSince1970
+        }
 
         let receivedEvent = expectation(description: "receivedEvent")
         receivedEvent.isInverted = true
@@ -335,7 +339,7 @@ class FetchSavesTests: XCTestCase {
         let service = subject()
         _ = await service.execute(syncTaskId: task.objectID)
 
-        wait(for: [receivedEvent], timeout: 10)
+        await fulfillment(of: [receivedEvent], timeout: 10)
     }
 
     func test_refresh_whenUpdatedSinceIsNotPresent_onlyFetchesUnreadItems() async {
@@ -396,7 +400,7 @@ class FetchSavesTests: XCTestCase {
             switch state {
             case .unknown, .started:
                 break
-            case .paginating(let totalCount):
+            case .paginating(let totalCount, _):
                 XCTAssertEqual(2, totalCount)
                 receivedFirstPageEvent.fulfill()
             case .completed:
@@ -407,7 +411,7 @@ class FetchSavesTests: XCTestCase {
         let service = subject()
         _ = await service.execute(syncTaskId: task.objectID)
 
-        wait(for: [receivedFirstPageEvent, receivedCompletedEvent], timeout: 10)
+        await fulfillment(of: [receivedFirstPageEvent, receivedCompletedEvent], timeout: 10)
     }
 
     func test_refresh_whenResultsAreEmpty_finishesOperationSuccessfully() async {

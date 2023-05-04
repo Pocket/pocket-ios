@@ -89,7 +89,7 @@ extension SectionHeaderView {
         )
         config?.image = model.buttonImage?
             .resized(to: Self.buttonImageSize)
-            .withTintColor(UIColor(.ui.lapis1), renderingMode: .alwaysOriginal)
+            .withTintColor(UIColor(.ui.teal2), renderingMode: .alwaysOriginal)
         seeAllButton.configuration = config
 
         let buttonAction = UIAction(title: "", identifier: .seeAllPrimary) { _ in
@@ -102,5 +102,5 @@ extension SectionHeaderView {
 
 private extension Style {
     static let sectionHeader: Style = .header.sansSerif.h6.with(weight: .semibold)
-    static let buttonText: Style = .header.sansSerif.p4.with(color: .ui.lapis1).with(maxScaleSize: 22)
+    static let buttonText: Style = .header.sansSerif.p4.with(color: .ui.teal2).with(maxScaleSize: 22)
 }

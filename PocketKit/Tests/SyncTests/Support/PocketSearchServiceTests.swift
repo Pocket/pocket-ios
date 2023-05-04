@@ -37,7 +37,7 @@ class PocketSearchServiceTests: XCTestCase {
 
         try await service.search(for: "search-term", scope: .saves)
 
-        wait(for: [searchExpectation], timeout: 10)
+        await fulfillment(of: [searchExpectation], timeout: 10)
 
         let call: MockApolloClient.FetchCall<SearchSavedItemsQuery>? = self.apollo.fetchCall(at: 0)
         XCTAssertEqual(call?.query.term, "search-term")

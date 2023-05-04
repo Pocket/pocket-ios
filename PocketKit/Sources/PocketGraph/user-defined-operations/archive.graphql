@@ -17,6 +17,7 @@ query FetchArchive(
       edges {
         cursor
         node {
+          __typename
           ...SavedItemSummary
         }
       }
@@ -33,10 +34,11 @@ fragment SavedItemSummary on SavedItem {
   _createdAt
   archivedAt
   tags {
-    name
+    ...TagParts
   }
   item {
     ...ItemSummary
+    ...PendingItemParts
   }
 }
 

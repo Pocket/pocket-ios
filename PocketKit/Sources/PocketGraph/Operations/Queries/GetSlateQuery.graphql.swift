@@ -15,7 +15,7 @@ public class GetSlateQuery: GraphQLQuery {
         }
       }
       """#,
-      fragments: [SlateParts.self, ItemSummary.self, DomainMetadataParts.self, CuratedInfoParts.self]
+      fragments: [SlateParts.self, ItemSummary.self, DomainMetadataParts.self, SyndicatedArticleParts.self, CuratedInfoParts.self]
     ))
 
   public var slateID: String
@@ -36,7 +36,7 @@ public class GetSlateQuery: GraphQLQuery {
 
   public struct Data: PocketGraph.SelectionSet {
     public let __data: DataDict
-    public init(data: DataDict) { __data = data }
+    public init(_dataDict: DataDict) { __data = _dataDict }
 
     public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Query }
     public static var __selections: [ApolloAPI.Selection] { [
@@ -55,10 +55,11 @@ public class GetSlateQuery: GraphQLQuery {
     /// Parent Type: `Slate`
     public struct GetSlate: PocketGraph.SelectionSet {
       public let __data: DataDict
-      public init(data: DataDict) { __data = data }
+      public init(_dataDict: DataDict) { __data = _dataDict }
 
       public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Slate }
       public static var __selections: [ApolloAPI.Selection] { [
+        .field("__typename", String.self),
         .fragment(SlateParts.self),
       ] }
 
@@ -76,7 +77,7 @@ public class GetSlateQuery: GraphQLQuery {
 
       public struct Fragments: FragmentContainer {
         public let __data: DataDict
-        public init(data: DataDict) { __data = data }
+        public init(_dataDict: DataDict) { __data = _dataDict }
 
         public var slateParts: SlateParts { _toFragment() }
       }

@@ -7,6 +7,7 @@ import SharedPocketKit
 import Sync
 import Combine
 import Analytics
+import Foundation
 
 class PremiumUpsellViewModel: ObservableObject {
     private let premiumUpgradeViewModelFactory: PremiumUpgradeViewModelFactory
@@ -58,7 +59,7 @@ extension PremiumUpsellViewModel {
         }
     }
 
-    func trackPremiumUpsellViewed() {
-        tracker.track(event: Events.Tags.premiumUpsellViewed())
+    func trackPremiumUpsellViewed(with itemURL: URL) {
+        tracker.track(event: Events.Tags.premiumUpsellViewed(itemURL: itemURL))
     }
 }

@@ -24,15 +24,19 @@ struct TagsFilterViewElement: PocketUIElement {
     }
 
     func tag(matching string: String) -> XCUIElement {
-        return element.staticTexts[string].self
+        return element.staticTexts[string].firstMatch.self
     }
 
-    var tagCells: XCUIElementQuery {
-        element.cells.staticTexts.matching(identifier: "all-tags")
+    var allTagSectionCells: XCUIElementQuery {
+        element.cells.staticTexts.matching(identifier: "all-tags-section")
     }
 
-    func tagCells(matching string: String) -> XCUIElement {
-        return tagCells.containing(
+    var recentTagCells: XCUIElementQuery {
+        element.cells.staticTexts.matching(identifier: "recent-tags")
+    }
+
+    func allTagCells(matching string: String) -> XCUIElement {
+        return allTagSectionCells.containing(
             .staticText,
             identifier: string
         ).element(boundBy: 0)

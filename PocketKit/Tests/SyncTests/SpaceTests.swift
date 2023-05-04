@@ -36,6 +36,7 @@ class SpaceTests: XCTestCase {
         let space = subject()
         let tag: Tag = Tag(context: space.backgroundContext)
         tag.name = "tag 0"
+        tag.remoteID = tag.name.uppercased()
         _ = space.buildSavedItem(tags: [tag])
         _ = createItemsWithTags(2, isArchived: true)
 
@@ -47,6 +48,7 @@ class SpaceTests: XCTestCase {
         let space = subject()
         let tag1: Tag = Tag(context: space.backgroundContext)
         tag1.name = "tag 1"
+        tag1.remoteID = tag1.name.uppercased()
 
         let fetchedTag1 = space.fetchOrCreateTag(byName: "tag 1")
         let fetchedTag2 = space.fetchOrCreateTag(byName: "tag 2")
@@ -59,11 +61,10 @@ class SpaceTests: XCTestCase {
     func testFetchTagsByID() throws {
         let space = subject()
         let tag1: Tag = Tag(context: space.backgroundContext)
-        tag1.remoteID = "id 1"
         tag1.name = "tag 1"
 
-        let fetchedTag1 = try space.fetchTag(byID: "id 1")
-        let fetchedTag2 = try space.fetchTag(byID: "id 2")
+        let fetchedTag1 = try space.fetchTag(by: "tag 1")
+        let fetchedTag2 = try space.fetchTag(by: "tag 2")
 
         XCTAssertEqual(fetchedTag1?.name, "tag 1")
         XCTAssertNil(fetchedTag2)

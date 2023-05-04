@@ -9,6 +9,7 @@ import AuthenticationServices
 import BackgroundTasks
 import SharedPocketKit
 import Kingfisher
+import Network
 
 struct Services {
     static let shared: Services = { Services() }()
@@ -26,6 +27,7 @@ struct Services {
     let unresolvedSavesRefreshCoordinator: UnresolvedSavesRefreshCoordinator
     let homeRefreshCoordinator: HomeRefreshCoordinator
     let userRefreshCoordinator: UserRefreshCoordinator
+    let featureFlagsRefreshCoordinator: FeatureFlagsRefreshCoordinator
     let refreshCoordinators: [RefreshCoordinator]
     let authClient: AuthorizationClient
     let imageManager: ImageManager
@@ -37,6 +39,11 @@ struct Services {
     let subscriptionStore: SubscriptionStore
     let userManagementService: UserManagementServiceProtocol
     let lastRefresh: LastRefresh
+    let featureFlagService: FeatureFlagService
+    let listen: Listen
+    let bannerPresenter: BannerPresenter
+    let notificationCenter: NotificationCenter
+    let sessionBackupUtility: SessionBackupUtility
 
     private let persistentContainer: PersistentContainer
 
@@ -45,6 +52,8 @@ struct Services {
             fatalError("UserDefaults with suite name \(Keys.shared.groupID) must exist.")
         }
         userDefaults = sharedUserDefaults
+
+        notificationCenter = .default
 
         persistentContainer = .init(storage: .shared, groupID: Keys.shared.groupID)
 
@@ -65,7 +74,7 @@ struct Services {
         source = PocketSource(
             space: persistentContainer.rootSpace,
             user: user,
-            sessionProvider: appSession,
+            appSession: appSession,
             consumerKey: Keys.shared.pocketApiConsumerKey,
             defaults: userDefaults,
             backgroundTaskManager: UIApplication.shared
@@ -79,21 +88,21 @@ struct Services {
         sceneTracker = SceneTracker(tracker: tracker, userDefaults: userDefaults)
 
         savesRefreshCoordinator = SavesRefreshCoordinator(
-            notificationCenter: .default,
+            notificationCenter: notificationCenter,
             taskScheduler: BGTaskScheduler.shared,
             appSession: appSession,
             source: source
         )
 
         archiveRefreshCoordinator = ArchiveRefreshCoordinator(
-            notificationCenter: .default,
+            notificationCenter: notificationCenter,
             taskScheduler: BGTaskScheduler.shared,
             appSession: appSession,
             source: source
         )
 
         tagsRefreshCoordinator = TagsRefreshCoordinator(
-            notificationCenter: .default,
+            notificationCenter: notificationCenter,
             taskScheduler: BGTaskScheduler.shared,
             appSession: appSession,
             source: source,
@@ -101,14 +110,14 @@ struct Services {
         )
 
         unresolvedSavesRefreshCoordinator = UnresolvedSavesRefreshCoordinator(
-            notificationCenter: .default,
+            notificationCenter: notificationCenter,
             taskScheduler: BGTaskScheduler.shared,
             appSession: appSession,
             source: source
         )
 
         homeRefreshCoordinator = HomeRefreshCoordinator(
-            notificationCenter: .default,
+            notificationCenter: notificationCenter,
             taskScheduler: BGTaskScheduler.shared,
             appSession: appSession,
             source: source,
@@ -116,10 +125,18 @@ struct Services {
         )
 
         userRefreshCoordinator = UserRefreshCoordinator(
-            notificationCenter: .default,
+            notificationCenter: notificationCenter,
             taskScheduler: BGTaskScheduler.shared,
             appSession: appSession,
             source: source
+        )
+
+        featureFlagsRefreshCoordinator = FeatureFlagsRefreshCoordinator(
+            notificationCenter: notificationCenter,
+            taskScheduler: BGTaskScheduler.shared,
+            appSession: appSession,
+            source: source,
+            lastRefresh: lastRefresh
         )
 
         refreshCoordinators = [
@@ -128,7 +145,8 @@ struct Services {
             tagsRefreshCoordinator,
             unresolvedSavesRefreshCoordinator,
             homeRefreshCoordinator,
-            userRefreshCoordinator
+            userRefreshCoordinator,
+            featureFlagsRefreshCoordinator
         ]
 
         imageManager = ImageManager(
@@ -165,7 +183,31 @@ struct Services {
         )
         subscriptionStore = PocketSubscriptionStore(user: user, receiptService: AppStoreReceiptService(client: v3Client))
 
-        userManagementService = UserManagementService(appSession: appSession, user: user, notificationCenter: .default, source: source)
+        userManagementService = UserManagementService(
+            appSession: appSession,
+            user: user,
+            notificationCenter: notificationCenter,
+            source: source
+        )
+
+        featureFlagService = FeatureFlagService(source: source, tracker: tracker)
+
+        listen = Listen(
+            appSession: appSession,
+            consumerKey: Keys.shared.pocketApiConsumerKey,
+            networkPathMonitor: NWPathMonitor(),
+            tracker: tracker,
+            source: source
+        )
+
+        bannerPresenter = BannerPresenter(notificationCenter: notificationCenter)
+        bannerPresenter.listen()
+
+        sessionBackupUtility = SessionBackupUtility(
+            userDefaults: userDefaults,
+            store: PocketEncryptedStore(),
+            notificationCenter: notificationCenter
+        )
     }
 }
 

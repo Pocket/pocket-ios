@@ -57,33 +57,36 @@ class RecommendationViewModelTests: XCTestCase {
             let viewModel = subject(recommendation: recommendation)
             XCTAssertEqual(
                 viewModel._actions.map(\.title),
-                ["Display Settings", "Save", "Share", "Report"]
+                ["Display settings", "Save", "Share", "Report"]
             )
         }
 
         // not-favorited, not-archived
         do {
-            let item = space.buildItem()
-            let recommendation = space.buildRecommendation(item: item)
+            let item = space.buildItem(remoteID: "item-2", givenURL: URL(string: "https://example.com/items/item-2"))
+            let recommendation = space.buildRecommendation(remoteID: "rec-2", item: item)
+
             try space.createSavedItem(isFavorite: false, isArchived: false, item: item)
 
             let viewModel = subject(recommendation: recommendation)
             XCTAssertEqual(
                 viewModel._actions.map(\.title),
-                ["Display Settings", "Favorite", "Delete", "Share"]
+                ["Display settings", "Favorite", "Delete", "Share"]
             )
         }
 
         // favorited, archived
         do {
-            let item = space.buildItem()
-            let recommendation = space.buildRecommendation(item: item)
+
+            let item = space.buildItem(remoteID: "item-3", givenURL: URL(string: "https://example.com/items/item-2"))
+            let recommendation = space.buildRecommendation(remoteID: "rec-3", item: item)
+
             try space.createSavedItem(isFavorite: true, isArchived: true, item: item)
 
             let viewModel = subject(recommendation: recommendation)
             XCTAssertEqual(
                 viewModel._actions.map(\.title),
-                ["Display Settings", "Unfavorite", "Delete", "Share"]
+                ["Display settings", "Unfavorite", "Delete", "Share"]
             )
         }
     }
@@ -97,31 +100,31 @@ class RecommendationViewModelTests: XCTestCase {
 
         XCTAssertEqual(
             viewModel._actions.map(\.title),
-            ["Display Settings", "Favorite", "Delete", "Share"]
+            ["Display settings", "Favorite", "Delete", "Share"]
         )
 
         savedItem.isFavorite = true
         XCTAssertEqual(
             viewModel._actions.map(\.title),
-            ["Display Settings", "Unfavorite", "Delete", "Share"]
+            ["Display settings", "Unfavorite", "Delete", "Share"]
         )
 
         savedItem.isArchived = false
         XCTAssertEqual(
             viewModel._actions.map(\.title),
-            ["Display Settings", "Unfavorite", "Delete", "Share"]
+            ["Display settings", "Unfavorite", "Delete", "Share"]
         )
 
         item.savedItem = nil
         XCTAssertEqual(
             viewModel._actions.map(\.title),
-            ["Display Settings", "Save", "Share", "Report"]
+            ["Display settings", "Save", "Share", "Report"]
         )
 
         item.savedItem = savedItem
         XCTAssertEqual(
             viewModel._actions.map(\.title),
-            ["Display Settings", "Unfavorite", "Delete", "Share"]
+            ["Display settings", "Unfavorite", "Delete", "Share"]
         )
     }
 
@@ -132,7 +135,7 @@ class RecommendationViewModelTests: XCTestCase {
         let recommendation = space.buildRecommendation(item: space.buildItem())
         let viewModel = subject(recommendation: recommendation)
 
-        viewModel.invokeAction(title: "Display Settings")
+        viewModel.invokeAction(title: "Display settings")
 
         XCTAssertEqual(viewModel.isPresentingReaderSettings, true)
     }
@@ -302,7 +305,7 @@ class RecommendationViewModelTests: XCTestCase {
     func test_externalSave_forwardsToSource() throws {
         source.stubSaveURL { _ in }
 
-        let viewModel = try subject(recommendation: space.createRecommendation())
+        let viewModel = try subject(recommendation: space.createRecommendation(item: space.buildItem()))
         let url = URL(string: "https://getpocket.com")!
         let actions = viewModel.externalActions(for: url)
         viewModel.invokeAction(from: actions, title: "Save")
@@ -310,16 +313,17 @@ class RecommendationViewModelTests: XCTestCase {
     }
 
     func test_externalCopy_copiesToClipboard() throws {
-        let viewModel = try subject(recommendation: space.createRecommendation())
+        let viewModel = try subject(recommendation: space.createRecommendation(item: space.buildItem()))
         let url = URL(string: "https://getpocket.com")!
         let actions = viewModel.externalActions(for: url)
+
         viewModel.invokeAction(from: actions, title: "Copy link")
 
         XCTAssertEqual(pasteboard.url, url)
     }
 
     func test_externalShare_updatesSharedActivity() throws {
-        let viewModel = try subject(recommendation: space.createRecommendation())
+        let viewModel = try subject(recommendation: space.createRecommendation(item: space.buildItem()))
         let url = URL(string: "https://getpocket.com")!
         let actions = viewModel.externalActions(for: url)
         viewModel.invokeAction(from: actions, title: "Share")
@@ -327,7 +331,7 @@ class RecommendationViewModelTests: XCTestCase {
     }
 
     func test_externalOpen_updatesPresentedWebReaderURL() throws {
-        let viewModel = try subject(recommendation: space.createRecommendation())
+        let viewModel = try subject(recommendation: space.createRecommendation(item: space.buildItem()))
         let url = URL(string: "https://example.com")!
         let actions = viewModel.externalActions(for: url)
         viewModel.invokeAction(from: actions, title: "Open")
@@ -339,7 +343,7 @@ class RecommendationViewModelTests: XCTestCase {
             item: space.buildItem()
         )
         source.stubFetchDetailsForRecommendation { rec in
-            rec.item?.article = .some(Article(components: []))
+            rec.item.article = .some(Article(components: []))
         }
 
         let viewModel = subject(recommendation: recommendation)
@@ -354,7 +358,7 @@ class RecommendationViewModelTests: XCTestCase {
 
         viewModel.fetchDetailsIfNeeded()
         wait(for: [receivedEvent], timeout: 10)
-        XCTAssertNotNil(recommendation.item?.article)
+        XCTAssertNotNil(recommendation.item.article)
     }
 
     func test_fetchDetailsIfNeeded_whenMarticleIsPresent_immediatelySendsContentUpdatedEvent() {
@@ -389,7 +393,7 @@ class RecommendationViewModelTests: XCTestCase {
             return recommendation.item
         }
 
-        let webViewActivityList = viewModel.webViewActivityItems(url: recommendation.item!.givenURL)
+        let webViewActivityList = viewModel.webViewActivityItems(url: recommendation.item.givenURL)
         XCTAssertEqual(webViewActivityList[0].activityTitle, "Save")
         XCTAssertEqual(webViewActivityList[1].activityTitle, "Report")
 
@@ -411,7 +415,7 @@ class RecommendationViewModelTests: XCTestCase {
             return recommendation.item
         }
 
-        let webViewActivityList = viewModel.webViewActivityItems(url: recommendation.item!.givenURL)
+        let webViewActivityList = viewModel.webViewActivityItems(url: recommendation.item.givenURL)
         XCTAssertEqual(webViewActivityList[0].activityTitle, "Archive")
         XCTAssertEqual(webViewActivityList[1].activityTitle, "Delete")
         XCTAssertEqual(webViewActivityList[2].activityTitle, "Favorite")

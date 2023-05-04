@@ -10,12 +10,14 @@ fragment SavedItemParts on SavedItem {
     ...TagParts
   }
   item {
+    __typename
     ...ItemParts
     ...PendingItemParts
   }
 }
 
 fragment TagParts on Tag {
+  __typename
   name
   id
 }
@@ -31,6 +33,7 @@ query FetchSaves($pagination: PaginationInput, $savedItemsFilter: SavedItemsFilt
       edges {
         cursor
         node {
+          __typename
           ...SavedItemParts
         }
       }
@@ -40,6 +43,7 @@ query FetchSaves($pagination: PaginationInput, $savedItemsFilter: SavedItemsFilt
 
 mutation SaveItem($input: SavedItemUpsertInput!) {
   upsertSavedItem(input: $input) {
+    __typename
     ...SavedItemParts
   }
 }
@@ -72,19 +76,20 @@ mutation DeleteTag($id: ID!) {
 
 mutation TagUpdate($input: TagUpdateInput!) {
   updateTag(input: $input) {
-    name
-    id
+     ...TagParts
   }
 }
 
 mutation ReplaceSavedItemTags($input: [SavedItemTagsInput!]!) {
   replaceSavedItemTags(input: $input) {
+    __typename
     ...SavedItemParts
   }
 }
 
 mutation UpdateSavedItemRemoveTags($savedItemId: ID!) {
   updateSavedItemRemoveTags(savedItemId: $savedItemId) {
+    __typename
     ...SavedItemParts
   }
 }
@@ -92,6 +97,7 @@ mutation UpdateSavedItemRemoveTags($savedItemId: ID!) {
 query SavedItemByID($id: ID!) {
   user {
     savedItemById(id: $id) {
+      __typename
       ...SavedItemParts
     }
   }
@@ -108,6 +114,7 @@ query Tags($pagination: PaginationInput) {
     tags(pagination: $pagination) {
       edges {
         node {
+          __typename
           ...TagParts
         }
         cursor
@@ -129,6 +136,7 @@ query SearchSavedItems($term: String!, $pagination: PaginationInput, $filter: Se
       edges {
         node {
             savedItem {
+                __typename
                 ...SavedItemParts
             }
         }

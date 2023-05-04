@@ -5,6 +5,7 @@
 import SwiftUI
 import Textile
 import Localization
+import Sync
 
 struct TagsFilterView: View {
     @ObservedObject var viewModel: TagsFilterViewModel
@@ -12,21 +13,19 @@ struct TagsFilterView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State var didTap = false
-
-    @State private var selection = Set<TagType>()
-
+    @State private var selectedItems = Set<TagType>()
     @State private var isEditing = false
+    @State private var renameTagText = ""
 
-    @State private var showDeleteAlert = false
-
-    @State private var showRenameAlert: Bool = false
-
-    @State private var tagsSelected = Set<TagType>()
+    @FetchRequest(sortDescriptors: [
+        NSSortDescriptor( keyPath: \Tag.name, ascending: true)
+    ], animation: .default)
+    private var tags: FetchedResults<Tag>
 
     var body: some View {
         NavigationView {
-            VStack {
-                List(selection: $selection) {
+            ScrollViewReader { scrollView in
+                List(selection: $selectedItems) {
                     let tagAction = { (tag: TagType) in
                         didTap = true
                         viewModel.selectTag(tag)
@@ -34,51 +33,41 @@ struct TagsFilterView: View {
                     }
                     TagsCell(tag: .notTagged, tagAction: tagAction)
                         .disabled(isEditing)
-                    ForEach(viewModel.getAllTags(), id: \.self) { tag in
-                        TagsCell(tag: tag, tagAction: tagAction)
-                            .disabled(isEditing)
+                    TagsSectionView(
+                        showRecentTags: !isEditing && !viewModel.recentTags.isEmpty,
+                        recentTags: viewModel.recentTags,
+                        allTags: tags.map { .tag($0.name) },
+                        tagAction: tagAction
+                    ).disabled(isEditing)
+                }
+                .listRowInsets(EdgeInsets())
+                .navigationBarTitleDisplayMode(.inline)
+                .tagsHeaderToolBar($isEditing, viewModel: viewModel)
+                .editBottomBar(isEditing: isEditing, selectedItems: selectedItems) {
+                    viewModel.delete(tags: Array(selectedItems.compactMap({ $0.name })))
+                    selectedItems.removeAll()
+                } onRename: { text in
+                    viewModel.rename(from: selectedItems.first?.name, to: text)
+                    selectedItems.removeAll()
+                    renameTagText = text
+                }
+                .onChange(of: renameTagText) { _ in
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        withAnimation {
+                            scrollView.scrollTo(renameTagText, anchor: .top)
+                        }
                     }
                 }
                 .listStyle(.plain)
-                .navigationBarTitleDisplayMode(.inline)
-                .tagsHeaderToolBar($isEditing, viewModel: viewModel)
-                Spacer()
-                if isEditing {
-                    EditBottomBar(selection: $selection, tagsSelected: $tagsSelected, showRenameAlert: $showRenameAlert, showDeleteAlert: $showDeleteAlert)
-                }
             }
         }
         .navigationViewStyle(.stack)
-        .alert(isPresented: $showDeleteAlert) {
-            Alert(
-                title: Text(Localization.deleteTag),
-                message: Text(Localization.areYouSureYouWantToDeleteTheTagsAndRemoveItFromAllItems),
-                primaryButton: .destructive(Text(Localization.delete), action: {
-                    viewModel.delete(tags: Array(tagsSelected.compactMap({ $0.name })))
-                    tagsSelected = Set<TagType>()
-                }),
-                secondaryButton: .cancel(Text(Localization.cancel), action: {
-                })
-            )
-        }
-        .alert(
-            isPresented: $showRenameAlert,
-            TextAlert(
-                title: Localization.renameTag,
-                message: Localization.enterANewNameForThisTag
-            ) { result in
-                if let text = result, let oldName = tagsSelected.first?.name {
-                    viewModel.rename(from: oldName, to: text)
-                    tagsSelected = Set<TagType>()
-                }
-            }
-        )
         .accessibilityIdentifier("filter-tags")
-        .padding(EdgeInsets(top: 0, leading: 30, bottom: 0, trailing: 30))
         .onDisappear {
             guard !didTap else { return }
             viewModel.selectAllAction()
         }
+        .environment(\.editMode, isEditing ? .constant(.active) : .constant(.inactive))
     }
 }
 
@@ -97,31 +86,6 @@ struct EditModeView: View {
     }
 }
 
-struct EditBottomBar: View {
-    @Binding var selection: Set<TagType>
-    @Binding var tagsSelected: Set<TagType>
-    @Binding var showRenameAlert: Bool
-    @Binding var showDeleteAlert: Bool
-
-    var body: some View {
-        HStack {
-            Button(Localization.rename) {
-                tagsSelected = selection
-                showRenameAlert = true
-            }
-            .disabled(selection.count != 1)
-            .accessibilityIdentifier("rename-button")
-            Spacer()
-            Button(Localization.delete) {
-                tagsSelected = selection
-                showDeleteAlert = true
-            }
-            .disabled(selection.isEmpty)
-            .accessibilityIdentifier("delete-button")
-        }
-    }
-}
-
 struct TagsHeaderToolBar: ViewModifier {
     @Binding var isEditing: Bool
     @ObservedObject var viewModel: TagsFilterViewModel
@@ -129,9 +93,7 @@ struct TagsHeaderToolBar: ViewModifier {
         content
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    VStack {
-                        Text(Localization.tags).style(.tags.sectionHeader)
-                    }
+                    Text(Localization.tags).style(.tags.sectionHeader)
                 }
                 ToolbarItem(placement: .navigationBarLeading) {
                     Image(asset: .tag).foregroundColor(Color(.ui.grey5))
@@ -140,15 +102,12 @@ struct TagsHeaderToolBar: ViewModifier {
                     EditModeView(isEditing: $isEditing, viewModel: viewModel)
                 }
             }
+            .toolbarBackground(Color(.ui.white1))
     }
 }
 
 extension View {
     func tagsHeaderToolBar(_ isEditing: Binding<Bool>, viewModel: TagsFilterViewModel) -> some View {
         modifier(TagsHeaderToolBar(isEditing: isEditing, viewModel: viewModel))
-    }
-
-    public func alert(isPresented: Binding<Bool>, _ alert: TextAlert) -> some View {
-        AlertWrapper(isPresented: isPresented, alert: alert, content: self)
     }
 }

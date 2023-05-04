@@ -1,8 +1,35 @@
 import Foundation
 import PocketGraph
 import Sync
+import Localization
+import SharedPocketKit
 
 extension SearchSavedItem: ItemsListItem {
+    var displayTitle: String {
+        title ?? ""
+    }
+
+    var displayDetail: String {
+        [displayDomain, displayTimeToRead]
+            .compactMap { $0 }
+            .joined(separator: " • ")
+    }
+
+    var displayDomain: String? {
+        item.asItem?.domainMetadata?.name ?? item.asItem?.domain ?? host
+    }
+
+    var displayAuthors: String? {
+        let authors = item.asItem?.authors?.compactMap { $0?.name }
+        return authors?.joined(separator: ", ")
+    }
+
+    var displayTimeToRead: String? {
+        timeToRead
+            .flatMap { $0 > 0 ? $0 : nil }
+            .flatMap { Localization.Item.List.min($0) }
+    }
+
     var remoteItemParts: PocketGraph.SavedItemParts? {
         return remoteItem
     }
@@ -60,7 +87,11 @@ extension SearchSavedItem: ItemsListItem {
     }
 
     var tagNames: [String]? {
-        remoteItem.tags?.compactMap { $0.name }
+        remoteItem.tags?.compactMap { $0.name }.sorted()
+    }
+
+    var savedItemURL: URL? {
+        URL(string: remoteItem.url)
     }
 }
 

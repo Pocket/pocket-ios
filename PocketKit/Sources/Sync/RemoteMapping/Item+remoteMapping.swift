@@ -2,6 +2,7 @@ import Foundation
 import CoreData
 import Apollo
 import PocketGraph
+import SharedPocketKit
 
 extension Item {
     func update(remote: ItemParts, with space: Space) {
@@ -23,6 +24,12 @@ extension Item {
             timeToRead = NSNumber(value: readTime)
         } else {
             timeToRead = 0
+        }
+
+        if let words = remote.wordCount {
+            wordCount = NSNumber(value: words)
+        } else {
+            wordCount = 0
         }
 
         excerpt = remote.excerpt
@@ -70,7 +77,19 @@ extension Item {
         if let syndicatedArticle = remote.syndicatedArticle, let itemId = syndicatedArticle.itemId {
             self.syndicatedArticle = (try? space.fetchSyndicatedArticle(byItemId: itemId, context: context)) ?? SyndicatedArticle(context: context)
             self.syndicatedArticle?.itemID = itemId
+            self.syndicatedArticle?.title = syndicatedArticle.title
         }
+    }
+
+    func update(remote: PendingItemParts, with space: Space) {
+        remoteID = remote.remoteID
+
+        guard let url = URL(string: remote.givenUrl) else {
+            Log.breadcrumb(category: "sync", level: .warning, message: "Skipping updating of Pending Item \(remoteID) because \(givenURL) is not valid url")
+            return
+        }
+
+        givenURL = url
     }
 
     func update(from summary: ItemSummary, with space: Space) {
@@ -91,6 +110,11 @@ extension Item {
             timeToRead = NSNumber(value: readTime)
         } else {
             timeToRead = 0
+        }
+        if let words = summary.wordCount {
+            wordCount = NSNumber(value: words)
+        } else {
+            wordCount = 0
         }
         excerpt = summary.excerpt
         datePublished = summary.datePublished.flatMap { DateFormatter.clientAPI.date(from: $0) }

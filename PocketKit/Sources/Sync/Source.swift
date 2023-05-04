@@ -5,7 +5,7 @@ import Foundation
 public enum InitialDownloadState {
     case unknown
     case started
-    case paginating(totalCount: Int)
+    case paginating(totalCount: Int, currentPercentProgress: Float)
     case completed
 }
 
@@ -34,11 +34,7 @@ public protocol Source {
 
     func makeImagesController() -> ImagesController
 
-    func backgroundObject<T: NSManagedObject>(id: NSManagedObjectID) -> T?
-
     func viewObject<T: NSManagedObject>(id: NSManagedObjectID) -> T?
-
-    func backgroundRefresh(_ object: NSManagedObject, mergeChanges: Bool)
 
     func viewRefresh(_ object: NSManagedObject, mergeChanges flag: Bool)
 
@@ -66,8 +62,6 @@ public protocol Source {
 
     func filterTags(with input: String, excluding tags: [String]) -> [Tag]?
 
-    func fetchTags(isArchived: Bool) -> [Tag]?
-
     func fetchSlateLineup(_ identifier: String) async throws
 
     func restore()
@@ -90,7 +84,7 @@ public protocol Source {
 
     func searchSaves(search: String) -> [SavedItem]?
 
-    func fetchOrCreateSavedItem(with remoteID: String, and remoteParts: SavedItem.RemoteSavedItem?) -> SavedItem?
+    func fetchOrCreateSavedItem(with url: URL, and remoteParts: SavedItem.RemoteSavedItem?) -> SavedItem?
 
     /// Get the count of unread saves
     /// - Returns: Int of unread saves
@@ -110,5 +104,9 @@ public protocol Source {
     func refreshTags(completion: (() -> Void)?)
 
     // MARK: -
+
+    func fetchAllFeatureFlags() async throws
+
+    func fetchFeatureFlag(by name: String) -> FeatureFlag?
 
 }

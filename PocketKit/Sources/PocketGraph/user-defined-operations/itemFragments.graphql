@@ -11,12 +11,14 @@ fragment ItemParts on Item {
   isArticle
   hasImage
   hasVideo
+  wordCount
   authors {
     id
     name
     url
   }
   marticle {
+    __typename
     ...MarticleTextParts
     ...ImageParts
     ...MarticleDividerParts
@@ -30,16 +32,19 @@ fragment ItemParts on Item {
   }
   excerpt
   domainMetadata {
+    __typename
     ...DomainMetadataParts
   }
   images {
+    __typename
     height
     width
     src
     imageId
   }
   syndicatedArticle {
-    itemId
+    __typename
+    ...SyndicatedArticleParts
   }
 }
 
@@ -48,8 +53,19 @@ fragment DomainMetadataParts on DomainMetadata {
   logo
 }
 
+fragment SyndicatedArticleParts on SyndicatedArticle {
+    itemId
+    mainImage
+    title
+    excerpt
+    publisher {
+      name
+    }
+}
+
 fragment PendingItemParts on PendingItem {
-  url
+  remoteID: itemId
+  givenUrl: url
   status
 }
 
@@ -66,6 +82,7 @@ fragment ItemSummary on Item {
   isArticle
   hasImage
   hasVideo
+  wordCount
   authors {
     id
     name
@@ -82,12 +99,6 @@ fragment ItemSummary on Item {
     imageId
   }
   syndicatedArticle {
-    itemId
-    mainImage
-    title
-    excerpt
-    publisher {
-      name
-    }
+    ...SyndicatedArticleParts
   }
 }

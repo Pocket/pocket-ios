@@ -3,6 +3,7 @@ import Sync
 import Analytics
 import Textile
 import Localization
+import SharedPocketKit
 
 struct ReportRecommendationView: View {
     private struct Constants {
@@ -89,13 +90,8 @@ struct ReportRecommendationView: View {
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
             dismiss()
         }
+        let item = recommendation.item
 
-        guard
-            let item = recommendation.item
-        else {
-            Log.capture(message: "Reported recommendation without an associated item, not logging analytics")
-            return
-        }
         // NOTE: As of 2/17/2023 The report view can only be called from the Home screen, so we assume that the SlateArticleReport event is the correct one.
         tracker.track(event: Events.Home.SlateArticleReport(url: item.givenURL, reason: reason, comment: comment))
     }

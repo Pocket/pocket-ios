@@ -37,23 +37,9 @@ public enum Requests {
         return request
     }
 
-    public static func fetchSavedItem(byRemoteID remoteID: String) -> NSFetchRequest<SavedItem> {
-        let request = SavedItem.fetchRequest()
-        request.predicate = NSPredicate(format: "remoteID = %@", remoteID)
-        request.fetchLimit = 1
-        return request
-    }
-
-    public static func fetchSavedItem(byRemoteItemID remoteItemID: String) -> NSFetchRequest<SavedItem> {
-        let request = SavedItem.fetchRequest()
-        request.predicate = NSPredicate(format: "item.remoteID = %@", remoteItemID)
-        request.fetchLimit = 1
-        return request
-    }
-
     public static func fetchSavedItem(byURL url: URL) -> NSFetchRequest<SavedItem> {
         let request = SavedItem.fetchRequest()
-        request.predicate = NSPredicate(format: "url.absoluteString = %@", url.absoluteString)
+        request.predicate = NSPredicate(format: "url = %@", url as CVarArg)
         request.fetchLimit = 1
         return request
     }
@@ -103,7 +89,7 @@ public enum Requests {
 
     public static func fetchRecomendations(by lineupIdentifier: String) -> RichFetchRequest<Recommendation> {
         let request = RichFetchRequest<Recommendation>(entityName: "Recommendation")
-        request.predicate = NSPredicate(format: "slate.slateLineup.remoteID = %@", lineupIdentifier)
+        request.predicate = NSPredicate(format: "slate.slateLineup.remoteID = %@ AND item != NULL", lineupIdentifier)
         request.sortDescriptors = [
             NSSortDescriptor(keyPath: \Recommendation.slate?.sortIndex, ascending: true),
             NSSortDescriptor(keyPath: \Recommendation.sortIndex, ascending: true),
@@ -135,13 +121,6 @@ public enum Requests {
         Item.fetchRequest()
     }
 
-    public static func fetchItem(byRemoteID id: String) -> NSFetchRequest<Item> {
-        let request = self.fetchItems()
-        request.predicate = NSPredicate(format: "remoteID = %@", id)
-        request.fetchLimit = 1
-        return request
-    }
-
     public static func fetchSyndicatedArticles() -> NSFetchRequest<SyndicatedArticle> {
         SyndicatedArticle.fetchRequest()
     }
@@ -154,7 +133,7 @@ public enum Requests {
     }
 
     public static func fetchTags() -> NSFetchRequest<Tag> {
-        Tag.fetchRequest()
+        return Tag.fetchRequest()
     }
 
     public static func fetchSavedTags() -> NSFetchRequest<Tag> {
@@ -222,9 +201,18 @@ public enum Requests {
 
     public static func fetchItem(byURL url: URL) -> NSFetchRequest<Item> {
         let request = fetchItems()
-        let resolvedUrlPredicate = NSPredicate(format: "resolvedURL = %@", url.absoluteString)
-        let givenUrlPredicate = NSPredicate(format: "givenURL = %@", url.absoluteString)
-        request.predicate = NSCompoundPredicate(orPredicateWithSubpredicates: [resolvedUrlPredicate, givenUrlPredicate])
+        request.predicate = NSPredicate(format: "givenURL = %@", url as CVarArg)
+        request.fetchLimit = 1
+        return request
+    }
+
+    public static func fetchFeatureFlags() -> NSFetchRequest<FeatureFlag> {
+        FeatureFlag.fetchRequest()
+    }
+
+    public static func fetchFeatureFlag(byName name: String) -> NSFetchRequest<FeatureFlag> {
+        let request = fetchFeatureFlags()
+        request.predicate = NSPredicate(format: "name = %@", name)
         request.fetchLimit = 1
         return request
     }

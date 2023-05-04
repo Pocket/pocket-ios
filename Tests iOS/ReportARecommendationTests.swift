@@ -51,9 +51,9 @@ class ReportARecommendationTests: XCTestCase {
         report.submitButton.wait().tap()
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
-        let event = await snowplowMicro.getFirstEvent(with: "discover.report")
+        let event = await snowplowMicro.getFirstEvent(with: "home.slate.article.report")
         event!.getReportContext()!.assertHas(reason: "other")
-        event!.getContentContext()!.assertHas(url: "http://localhost:8080/item-1")
+        event!.getContentContext()!.assertHas(url: "http://localhost:8080/slate-1-rec-1")
     }
 
     @MainActor
@@ -88,9 +88,9 @@ class ReportARecommendationTests: XCTestCase {
         report.submitButton.wait().tap()
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
-        let event = await snowplowMicro.getFirstEvent(with: "discover.report")
+        let event = await snowplowMicro.getFirstEvent(with: "home.slate.article.report")
         event!.getReportContext()!.assertHas(reason: "other")
-        event!.getContentContext()!.assertHas(url: "https://example.com/item-2")
+        event!.getContentContext()!.assertHas(url: "https://example.com/slate-1-rec-2")
     }
 
     @MainActor

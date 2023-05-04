@@ -17,10 +17,11 @@ public struct ImageParts: PocketGraph.SelectionSet, Fragment {
     """ }
 
   public let __data: DataDict
-  public init(data: DataDict) { __data = data }
+  public init(_dataDict: DataDict) { __data = _dataDict }
 
   public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Image }
   public static var __selections: [ApolloAPI.Selection] { [
+    .field("__typename", String.self),
     .field("caption", String?.self),
     .field("credit", String?.self),
     .field("imageId", alias: "imageID", Int.self),
@@ -33,7 +34,7 @@ public struct ImageParts: PocketGraph.SelectionSet, Fragment {
   public var caption: String? { __data["caption"] }
   /// A credit for the image, typically who the image belongs to / created by
   public var credit: String? { __data["credit"] }
-  /// The id for placing within an Article View. {articleView.article} will have placeholders of <div id='RIL_IMG_X' /> where X is this id. Apps can download those images as needed and populate them in their article view.
+  /// The id for placing within an Article View. Item.article will have placeholders of <div id='RIL_IMG_X' /> where X is this id. Apps can download those images as needed and populate them in their article view.
   public var imageID: Int { __data["imageID"] }
   /// Absolute url to the image
   @available(*, deprecated, message: "use url property moving forward")
@@ -42,4 +43,26 @@ public struct ImageParts: PocketGraph.SelectionSet, Fragment {
   public var height: Int? { __data["height"] }
   /// The determined width of the image at the url
   public var width: Int? { __data["width"] }
+
+  public init(
+    caption: String? = nil,
+    credit: String? = nil,
+    imageID: Int,
+    src: String,
+    height: Int? = nil,
+    width: Int? = nil
+  ) {
+    self.init(_dataDict: DataDict(data: [
+      "__typename": PocketGraph.Objects.Image.typename,
+      "caption": caption,
+      "credit": credit,
+      "imageID": imageID,
+      "src": src,
+      "height": height,
+      "width": width,
+      "__fulfilled": Set([
+        ObjectIdentifier(Self.self)
+      ])
+    ]))
+  }
 }

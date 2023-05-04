@@ -20,13 +20,6 @@ class ArchiveTests: XCTestCase {
             return .fallbackResponses(apiRequest: ClientAPIRequest(request))
         }
 
-        server.routes.get("/hello") { _, _ in
-            Response {
-                Status.ok
-                Fixture.data(name: "hello", ext: "html")
-            }
-        }
-
         try server.start()
     }
 
@@ -58,14 +51,14 @@ class ArchiveTests: XCTestCase {
 
         // Sort by Oldest saved
         app.saves.filterButton(for: "All").swipeLeft()
-        saves.filterButton(for: "Sort/Filter").wait().tap()
+        saves.filterButton(for: "Sort").wait().tap()
         app.sortMenu.sortOption("Oldest saved").wait().tap()
 
         XCTAssertTrue(saves.itemView(at: 0).contains(string: "Archived Item 2"))
         XCTAssertTrue(saves.itemView(at: 1).contains(string: "Archived Item 1"))
 
         // Sort by Newest saved
-        saves.filterButton(for: "Sort/Filter").wait().tap()
+        saves.filterButton(for: "Sort").wait().tap()
         app.sortMenu.sortOption("Newest saved").wait().tap()
 
         XCTAssertTrue(saves.itemView(at: 0).contains(string: "Archived Item 1"))
@@ -97,7 +90,7 @@ class ArchiveTests: XCTestCase {
             let apiRequest = ClientAPIRequest(request)
 
             if apiRequest.isToSaveAnItem {
-                return Response.saves("unarchive")
+                return Response.unarchive(apiRequest: apiRequest)
             } else if apiRequest.isForSavesContent {
                 defer { savesCall += 1}
                 switch savesCall {
@@ -130,7 +123,7 @@ class ArchiveTests: XCTestCase {
             let apiRequest = ClientAPIRequest(request)
 
             if apiRequest.isToSaveAnItem {
-                return Response.saves("unarchive")
+                return Response.unarchive(apiRequest: apiRequest)
             } else if apiRequest.isForSavesContent {
                 defer { savesCall += 1}
                 switch savesCall {
@@ -173,14 +166,35 @@ class ArchiveTests: XCTestCase {
 
 extension ArchiveTests {
     func test_archive_showsWebViewWhenItemIsImage() {
+        server.routes.get("/web-archived-item-1") { _, _ in
+            Response {
+                Status.ok
+                Fixture.data(name: "hello", ext: "html")
+            }
+        }
+
         test_archive_showsWebView(at: 0)
     }
 
     func test_archive_showsWebViewWhenItemIsVideo() {
+        server.routes.get("/web-archived-item-2") { _, _ in
+            Response {
+                Status.ok
+                Fixture.data(name: "hello", ext: "html")
+            }
+        }
+
         test_archive_showsWebView(at: 1)
     }
 
     func test_archive_showsWebViewWhenItemIsNotAnArticle() {
+        server.routes.get("/web-archived-item-3") { _, _ in
+            Response {
+                Status.ok
+                Fixture.data(name: "hello", ext: "html")
+            }
+        }
+
         test_archive_showsWebView(at: 2)
     }
 

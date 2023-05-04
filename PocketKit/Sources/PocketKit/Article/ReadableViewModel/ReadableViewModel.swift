@@ -5,6 +5,7 @@ import Textile
 import UIKit
 import Analytics
 import Localization
+import SharedPocketKit
 
 protocol ReadableViewModel: ReadableViewControllerDelegate {
     typealias EventPublisher = AnyPublisher<ReadableEvent, Never>
@@ -31,7 +32,17 @@ protocol ReadableViewModel: ReadableViewControllerDelegate {
     var premiumURL: URL? { get }
 
     func delete()
-    func openExternally(url: URL?)
+    /// Opens an item presented in the reader in a web view instead
+    /// - Parameters:
+    ///     - url: The URL of the item to open in a web view
+    /// - Note: A typical callee of this function will be the handler for when the Safari icon in the navigation bar is tapped
+    func openInWebView(url: URL?)
+    /// Opens a link that was tapped within an item opened in the reader
+    /// - Parameters:
+    ///     - url: The URL of the link that was tapped within the reader
+    /// - Note: A typical callee of this function will be the handler for when a link in the reader is tapped,
+    /// or when a link is long-pressed, and "Open" is selected beneath the preview
+    func openExternalLink(url: URL)
     func archive()
     func moveFromArchiveToSaves(completion: (Bool) -> Void)
     func fetchDetailsIfNeeded()
@@ -39,13 +50,14 @@ protocol ReadableViewModel: ReadableViewControllerDelegate {
     func clearPresentedWebReaderURL()
     func unfavorite()
     func favorite()
+    func beginBulkEdit()
 }
 
 // MARK: - ReadableViewControllerDelegate
 
 extension ReadableViewModel {
     func readableViewController(_ controller: ReadableViewController, openURL url: URL) {
-        openExternally(url: url)
+        openExternalLink(url: url)
     }
 
     func readableViewController(_ controller: ReadableViewController, shareWithAdditionalText text: String?) {
@@ -62,7 +74,7 @@ extension ReadableViewModel {
     }
 
     func showWebReader() {
-        openExternally(url: url)
+        openInWebView(url: url)
     }
 
     func share(additionalText: String? = nil) {
@@ -179,5 +191,9 @@ extension ReadableViewModel {
             return
         }
         tracker.track(event: Events.Reader.openInWebView(url: url))
+    }
+
+    func trackExternalLinkOpen(url: URL) {
+        tracker.track(event: Events.Reader.openExternalLink(url: url))
     }
 }

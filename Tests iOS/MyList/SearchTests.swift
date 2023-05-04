@@ -34,18 +34,6 @@ class SearchTests: XCTestCase {
 
     // MARK: - Saves: Search
     @MainActor
-    func test_enterSavesSearch_fromCarouselGoIntoSearch() async {
-        app.launch()
-        tapSearch()
-
-        XCTAssertTrue(app.navigationBar.buttons["Saves"].isSelected)
-
-        let searchEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search")
-        searchEvent!.getUIContext()!.assertHas(type: "button")
-        searchEvent!.getUIContext()!.assertHas(componentDetail: "saves")
-    }
-
-    @MainActor
     func test_enterSavesSearch_fromSwipeDownSearch() async {
         app.launch().tabBar.savesButton.wait().tap()
         app.saves.element.swipeDown()
@@ -87,11 +75,6 @@ class SearchTests: XCTestCase {
     }
 
     // MARK: - Archives: Search
-    func test_enterArchiveSearch_fromCarouselGoIntoSearch() {
-        app.launch()
-        tapSearch(fromArchive: true)
-        XCTAssertTrue(app.navigationBar.buttons["Archive"].isSelected)
-    }
 
     func test_enterArchiveSearch_fromSwipeDownSearch() {
         app.launch().tabBar.savesButton.wait().tap()
@@ -315,6 +298,8 @@ class SearchTests: XCTestCase {
         continueAfterFailure = true
         var savesPromise: EventLoopPromise<Response>?
         let searchSavesExpectation = expectation(description: "did search saves")
+
+        searchSavesExpectation.assertForOverFulfill = false
         server.routes.post("/graphql") { request, eventLoop -> FutureResponse in
             let apiRequest = ClientAPIRequest(request)
 
@@ -399,10 +384,10 @@ class SearchTests: XCTestCase {
                 return .premiumUserDetails()
             } else if apiRequest.isToFavoriteAnItem {
                 defer { favoriteExpectation.fulfill() }
-                return .favorite()
+                return .favorite(apiRequest: apiRequest)
             } else if apiRequest.isToUnfavoriteAnItem {
                 defer { unfavoriteExpectation.fulfill() }
-                return .unfavorite()
+                return .unfavorite(apiRequest: apiRequest)
             }
             return .fallbackResponses(apiRequest: apiRequest)
         }
@@ -627,7 +612,7 @@ class SearchTests: XCTestCase {
         if fromArchive {
             app.saves.selectionSwitcher.archiveButton.wait().tap()
         }
-        app.saves.filterButton(for: "Search").wait().tap()
+        app.navigationBar.searchFields["Search"].wait().tap()
     }
 }
 

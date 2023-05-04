@@ -18,10 +18,11 @@ public struct VideoParts: PocketGraph.SelectionSet, Fragment {
     """ }
 
   public let __data: DataDict
-  public init(data: DataDict) { __data = data }
+  public init(_dataDict: DataDict) { __data = _dataDict }
 
   public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Video }
   public static var __selections: [ApolloAPI.Selection] { [
+    .field("__typename", String.self),
     .field("height", Int?.self),
     .field("src", String.self),
     .field("type", GraphQLEnum<PocketGraph.VideoType>.self),
@@ -39,10 +40,34 @@ public struct VideoParts: PocketGraph.SelectionSet, Fragment {
   public var type: GraphQLEnum<PocketGraph.VideoType> { __data["type"] }
   /// The video's id within the service defined by type
   public var vid: String? { __data["vid"] }
-  /// The id of the video within Article View. {articleView.article} will have placeholders of <div id='RIL_VID_X' /> where X is this id. Apps can download those images as needed and populate them in their article view.
+  /// The id of the video within Article View. Item.article will have placeholders of <div id='RIL_VID_X' /> where X is this id. Apps can download those images as needed and populate them in their article view.
   public var videoID: Int { __data["videoID"] }
   /// If known, the width of the video in px
   public var width: Int? { __data["width"] }
   /// If known, the length of the video in seconds
   public var length: Int? { __data["length"] }
+
+  public init(
+    height: Int? = nil,
+    src: String,
+    type: GraphQLEnum<PocketGraph.VideoType>,
+    vid: String? = nil,
+    videoID: Int,
+    width: Int? = nil,
+    length: Int? = nil
+  ) {
+    self.init(_dataDict: DataDict(data: [
+      "__typename": PocketGraph.Objects.Video.typename,
+      "height": height,
+      "src": src,
+      "type": type,
+      "vid": vid,
+      "videoID": videoID,
+      "width": width,
+      "length": length,
+      "__fulfilled": Set([
+        ObjectIdentifier(Self.self)
+      ])
+    ]))
+  }
 }

@@ -83,11 +83,7 @@ struct PocketAppElement {
 
     var reportView: ReportViewElement {
         let query: XCUIElementQuery
-        if #available(iOS 16, *) {
-            query = app.collectionViews
-        } else {
-            query = app.tables
-        }
+        query = app.collectionViews
 
         return ReportViewElement(query["report-recommendation"])
     }
@@ -176,4 +172,19 @@ struct PocketAppElement {
     func activate() {
         app.activate()
     }
+}
+
+/// Listen
+/// Hacky helper extenstion until we add accessibility identifier helpers to Listen
+extension PocketAppElement {
+
+    var listenPlay: XCUIElement {
+        app.buttons["Play"]
+    }
+
+    /// Once listen is visible. its the first collection view that has articles
+    var listenList: XCUIElement {
+        app.collectionViews.element(boundBy: 0)
+    }
+
 }

@@ -11,11 +11,13 @@ import SharedPocketKit
 class PocketItemViewModel: ObservableObject {
     private let tracker: Tracker
     private let source: Source
+    private let userDefaults: UserDefaults
     private let index: Int
     private let scope: SearchScope
     private let user: User
     private let store: SubscriptionStore
     private let networkPathMontor: NetworkPathMonitor
+    private weak var searchActionDelegate: SearchResultActionDelegate?
 
     let item: PocketItem
 
@@ -39,6 +41,7 @@ class PocketItemViewModel: ObservableObject {
             item: savedItem,
             source: source,
             tracker: tracker,
+            userDefaults: userDefaults,
             user: user,
             store: store,
             networkPathMonitor: networkPathMontor,
@@ -48,16 +51,18 @@ class PocketItemViewModel: ObservableObject {
         return addTagsViewModel
     }
 
-    init(item: PocketItem, index: Int, source: Source, tracker: Tracker, scope: SearchScope, user: User, store: SubscriptionStore, networkPathMonitor: NetworkPathMonitor) {
+    init(item: PocketItem, index: Int, source: Source, tracker: Tracker, userDefaults: UserDefaults, scope: SearchScope, user: User, store: SubscriptionStore, networkPathMonitor: NetworkPathMonitor, searchActionDelegate: SearchResultActionDelegate? = nil) {
         self.item = item
         self.index = index
         self.source = source
         self.tracker = tracker
+        self.userDefaults = userDefaults
         self.scope = scope
         self.isFavorite = item.isFavorite
         self.user = user
         self.store = store
         self.networkPathMontor = networkPathMonitor
+        self.searchActionDelegate = searchActionDelegate
     }
 
     /// Triggers action to favorite or unfavorite an item in a list
@@ -104,7 +109,7 @@ class PocketItemViewModel: ObservableObject {
     }
 
     private func _share() {
-        if let url = item.url {
+        if let url = item.savedItemURL {
             tracker.track(event: Events.Search.shareItem(itemUrl: url, positionInList: index, scope: scope))
         } else {
             Log.capture(message: "Selected search item without an associated url, not logging analytics for shareItem")
@@ -121,6 +126,7 @@ class PocketItemViewModel: ObservableObject {
 
     /// Triggers action to archive an item in a list
     func archive() {
+        searchActionDelegate?.archive(item: item)
         guard let savedItem = fetchSavedItem() else { return }
         tracker.track(event: Events.Search.archiveItem(itemUrl: savedItem.url, positionInList: index, scope: scope))
         source.archive(item: savedItem)
@@ -128,6 +134,7 @@ class PocketItemViewModel: ObservableObject {
 
     /// Triggers action to move an item from archive to saves in a list
     func moveToSaves() {
+        searchActionDelegate?.unarchive(item: item)
         guard let savedItem = fetchSavedItem() else { return }
         tracker.track(event: Events.Search.unarchiveItem(itemUrl: savedItem.url, positionInList: index, scope: scope))
         source.unarchive(item: savedItem)
@@ -142,9 +149,9 @@ class PocketItemViewModel: ObservableObject {
     /// Fetch a SavedItem or create one in order to use actions related to source
     private func fetchSavedItem() -> SavedItem? {
         guard
-            let id = item.id,
+            let url = item.savedItemURL,
             let savedItem = source.fetchOrCreateSavedItem(
-                with: id,
+                with: url,
                 and: item.remoteItemParts
             )
         else {

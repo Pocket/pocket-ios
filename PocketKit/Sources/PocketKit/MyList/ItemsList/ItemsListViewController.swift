@@ -4,11 +4,13 @@ import CoreData
 import Combine
 import Kingfisher
 import Textile
+import SafariServices
 
 class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, UICollectionViewDelegate, UICollectionViewDataSourcePrefetching {
     private let model: ViewModel
     private var subscriptions: [AnyCancellable] = []
     private var collectionView: UICollectionView!
+    private var progressView: UIProgressView!
     private var dataSource: UICollectionViewDiffableDataSource<ItemsListSection, ItemsListCell<ViewModel.ItemIdentifier>>!
 
     init(model: ViewModel) {
@@ -146,6 +148,11 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
         )
 #endif
 
+        progressView = UIProgressView(progressViewStyle: .bar)
+        progressView.progressTintColor = UIColor(.ui.teal2)
+        progressView.trackTintColor = UIColor(.ui.teal6)
+        progressView.isHidden = false
+
         let filterButtonRegistration: UICollectionView.CellRegistration<TopicChipCell, ItemsListFilter> = .init { [weak self] cell, indexPath, filterID in
             self?.configure(cell: cell, indexPath: indexPath, filterID: filterID)
         }
@@ -194,6 +201,10 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
             self?.dataSource.apply(snapshot, animatingDifferences: true)
         }.store(in: &subscriptions)
 
+        model.initialDownloadState.receive(on: DispatchQueue.main).sink { [weak self] initialDownloadState in
+            self?.updateProgressBar(downloadState: initialDownloadState)
+        }.store(in: &subscriptions)
+
         collectionView.prefetchDataSource = self
     }
 
@@ -209,6 +220,51 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
         super.viewDidLoad()
         view.backgroundColor = UIColor(.ui.white1)
         model.fetch()
+
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+    }
+
+    /// Whether or not we should show the progress bar.
+    /// We specifically add or remove it instead of hide/show it because our tests will not execute actions on the list when the progress bar is there, but hidden.
+    /// - Parameter shouldShow: Whether or not to show the progress barå
+    func shouldShowProgressBar(shouldShow: Bool) {
+        if shouldShow {
+            guard !self.view.subviews.contains(progressView) else {
+                // Progress bar is already in the view, so return
+                return
+            }
+            view.addSubview(progressView)
+            progressView.isHidden = false
+            progressView.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                progressView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+                progressView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+                progressView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+                progressView.heightAnchor.constraint(equalToConstant: 1.0 / UIScreen.main.scale)
+            ])
+        } else {
+            progressView.isHidden = true
+            progressView.removeFromSuperview()
+        }
+    }
+
+    func updateProgressBar(downloadState: InitialDownloadState) {
+        switch downloadState {
+        case .unknown:
+            shouldShowProgressBar(shouldShow: false)
+        case .started:
+            progressView.setProgress(0, animated: true)
+            shouldShowProgressBar(shouldShow: true)
+        case .paginating(totalCount: _, currentPercentProgress: let progess):
+            progressView.setProgress(progess, animated: true)
+            shouldShowProgressBar(shouldShow: true)
+        case .completed:
+            progressView.setProgress(100, animated: true)
+            shouldShowProgressBar(shouldShow: false)
+        }
     }
 
     private func handleRefresh() {
@@ -318,6 +374,27 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
 
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
         model.prefetch(itemsAt: indexPaths)
+    }
+
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+
+        guard let item = dataSource.itemIdentifier(for: indexPath), let (viewModel, showInWebView) = model.preview(for: item) else {
+            return nil
+        }
+
+        return UIContextMenuConfiguration {
+            if showInWebView {
+                return SFSafariViewController(url: viewModel.url!)
+            } else {
+                return ReadableViewController(readable: viewModel, readerSettings: ReaderSettings(userDefaults: .standard))
+            }
+        } actionProvider: { _ in
+            return UIMenu(children: [
+                UIAction(title: "Edit") { [weak self] _ in
+                    self?.model.beginBulkEdit()
+                }
+            ])
+        }
     }
 }
 

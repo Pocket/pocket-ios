@@ -36,12 +36,12 @@ public struct Impression: Event, CustomStringConvertible {
         let componentValue = component.toComponent()
 
         let base = SelfDescribing(schema: Impression.schema, payload: [
-            "component": NSString(string: componentValue.value),
-            "requirement": NSString(string: requirement.rawValue),
+            "component": componentValue.value,
+            "requirement": requirement.rawValue,
         ])
-        base.contexts.add(uiEntity.toSelfDescribingJson())
-        extraEntities.forEach { base.contexts.add($0.toSelfDescribingJson()) }
-        componentValue.requiredEntities.forEach { base.contexts.add($0.toSelfDescribingJson()) }
+        base.entities.append(uiEntity.toSelfDescribingJson())
+        extraEntities.forEach { base.entities.append($0.toSelfDescribingJson()) }
+        componentValue.requiredEntities.forEach { base.entities.append($0.toSelfDescribingJson()) }
 
         return base
     }

@@ -53,18 +53,18 @@ enum ItemsListCell<ItemIdentifier: Hashable>: Hashable {
 }
 
 enum ItemsListFilter: String, Hashable, CaseIterable {
-    case search = "Search"
     case all = "All"
+    case listen = "Listen"
     case tagged = "Tagged"
     case favorites = "Favorites"
     case sortAndFilter = "Sort/Filter"
 
     var image: UIImage? {
         switch self {
-        case .search:
-            return UIImage(asset: .magnifyingGlass)
         case .all:
             return nil
+        case .listen:
+            return UIImage(asset: .listen)
         case .tagged:
             return UIImage(asset: .tag)
         case .favorites:
@@ -77,15 +77,15 @@ enum ItemsListFilter: String, Hashable, CaseIterable {
     var localized: String {
         switch self {
         case .all:
-            return Localization.all
+            return Localization.Itemlist.Filter.all
         case .tagged:
-            return Localization.tagged
+            return Localization.Itemlist.Filter.tagged
         case .favorites:
-            return Localization.favorites
+            return Localization.Itemlist.Filter.favorites
         case .sortAndFilter:
-            return Localization.sortFilter
-        case .search:
-            return Localization.search
+            return Localization.Itemlist.Filter.sortFilter
+        case .listen:
+            return Localization.Carousel.listen
         }
     }
 }
@@ -102,16 +102,19 @@ protocol ItemsListViewModel: AnyObject {
     var selectionItem: SelectionItem { get }
     var emptyState: EmptyStateViewModel? { get }
     var snapshot: Published<Snapshot>.Publisher { get }
+    var initialDownloadState: Published<InitialDownloadState>.Publisher { get }
 
     func fetch()
     func refresh(_ completion: (() -> Void)?)
 
+    func preview(for cell: ItemsListCell<ItemIdentifier>) -> (ReadableViewModel, Bool)?
     func presenter(for cellID: ItemsListCell<ItemIdentifier>) -> ItemsListItemPresenter?
     func presenter(for itemID: ItemIdentifier) -> ItemsListItemPresenter?
     func filterButton(with id: ItemsListFilter) -> TopicChipPresenter
     func tagModel(with name: String) -> SelectedTagChipModel
     func shouldSelectCell(with cell: ItemsListCell<ItemIdentifier>) -> Bool
     func selectCell(with: ItemsListCell<ItemIdentifier>, sender: Any?)
+    func beginBulkEdit()
 
     func filterByTagAction() -> UIAction?
     func trackOverflow(for objectID: ItemIdentifier) -> UIAction?

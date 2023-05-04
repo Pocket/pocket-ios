@@ -289,9 +289,11 @@ public extension Events.Search {
     static func searchCardContentOpen(
         url: URL,
         positionInList: Int,
-        scope: SearchScope
+        scope: SearchScope,
+        destination: ContentOpen.Destination
     ) -> ContentOpen {
         return ContentOpen(
+            destination: destination,
             contentEntity:
                 ContentEntity(url: url),
             uiEntity: UiEntity(

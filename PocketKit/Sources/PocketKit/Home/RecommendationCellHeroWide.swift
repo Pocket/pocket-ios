@@ -57,8 +57,8 @@ class RecommendationCellHeroWide: UICollectionViewCell {
         return button
     }()
 
-    private let overflowMenuButton: RecommendationOverflowButton = {
-        let button = RecommendationOverflowButton()
+    private let overflowMenuButton: RecommendationButton = {
+        let button = RecommendationButton(asset: .overflow)
         button.accessibilityIdentifier = "overflow-button"
         button.showsMenuAsPrimaryAction = true
         return button
@@ -119,7 +119,7 @@ class RecommendationCellHeroWide: UICollectionViewCell {
         layer.shadowOffset = .zero
         layer.shadowOpacity = 1.0
         layer.shadowRadius = 6
-        layer.backgroundColor = UIColor(.ui.white1).cgColor
+        layer.backgroundColor = UIColor(.ui.homeCellBackground).cgColor
 
         headlineExcerptStack.addArrangedSubview(headlineLabel)
         headlineExcerptStack.addArrangedSubview(excerptLabel)
@@ -207,6 +207,16 @@ class RecommendationCellHeroWide: UICollectionViewCell {
             roundedRect: layer.bounds,
             cornerRadius: layer.cornerRadius
         ).cgPath
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            // Views get notified of trait collection changes (e.g theme), but layers do not
+            // We can dynamically update the base layer color, then, if there was a theme change
+            layer.backgroundColor = UIColor(.ui.white1).cgColor
+        }
     }
 }
 

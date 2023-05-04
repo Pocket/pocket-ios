@@ -1,187 +1,42 @@
-"Home" = "Home";
-"Archive" = "Archive";
-"Pocket" = "Pocket";
-"Settings" = "Settings";
-
-// Alert
-"Are you sure you want to delete this item?" = "Are you sure you want to delete this item?";
-"Yes" = "Yes";
-"No" = "No";
-
-// No internet
-"No Internet Connection" = "No Internet Connection";
-"Looks like you're offline. Try checking your mobile data or wifi." = "Looks like you're offline. Try checking your mobile data or wifi.";
-
-"Keep your list fresh and clean" = "Keep your list fresh and clean";
-"Archive the saves you're finished with\n using the archive icon." = "Archive the saves you're finished with\n using the archive icon.";
-"How to archive" = "How to archive";
-
-"Find your favorites here" = "Find your favorites here";
-"Hit the star icon to favorite an article and find it faster." = "Hit the star icon to favorite an article and find it faster.";
-
-"Start building your Pocket list" = "Start building your Pocket list";
-"How to save" = "How to save";
-
-"No saves with this tag." = "No saves with this tag.";
-"Tag your saves by topic to find them later." = "Tag your saves by topic to find them later.";
-"How to tag" = "How to tag";
-
-"Search" = "Search";
-"All" = "All";
-"Tagged" = "Tagged";
-"Favorites" = "Favorites";
-"Sort/Filter" = "Sort/Filter";
-
-"Save" = "Save";
-"Report" = "Report";
-"Delete" = "Delete";
-"Archive" = "Archive";
-"Favorite" = "Favorite";
-"Unfavorite" = "Unfavorite";
-"Move to Saves" = "Move to Saves";
-"Add Tags" = "Add Tags";
-"Tags" = "Tags";
-"Share" = "Share";
-
-"Saves" = "Saves";
-
-"Sort by" = "Sort by";
-"Newest saved" = "Newest saved";
-"Oldest saved" = "Oldest saved";
-"Shortest to read" = "Shortest to read";
-"Longest to read" = "Longest to read";
-
-"Display Settings" = "Display Settings";
-"Font" = "Font";
-"Font Size" = "Font Size";
-
-"Copy link" = "Copy link";
-"Copy link with selection" = "Copy link with selection";
-"Open" = "Open";
-
-"This element is currently unsupported." = "This element is currently unsupported.";
-"This video could not be loaded." = "This video could not be loaded.";
-
-"Open in Web View" = "Open in Web View";
-
-"Could not successfully handle the server redirect." = "Could not successfully handle the server redirect.";
-"Could not generate correct URL for authentication." = "Could not generate correct URL for authentication.";
-"AuthorizationClient is already authenticating" = "AuthorizationClient is already authenticating";
-
-"You're all caught up!\nCheck back later for more." = "You're all caught up!\nCheck back later for more.";
-"Recent Saves" = "Recent Saves";
-"See All" = "See All";
-
-"%@ min read" = "%@ min read";
-"Saved" = "Saved";
-
-"Save what really interests you" = "Save what really interests you";
-"Collect articles, videos or any online content you like." = "Collect articles, videos or any online content you like.";
-
-"Make the most of any moment" = "Make the most of any moment";
-"Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket" = "Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket";
-
-"Your quiet corner of the Internet" = "Your quiet corner of the Internet";
-"Pocket saves articles in a clean layout designed for reading—no interruptions, no popups—so you can sidestep the Internet's noise." = "Pocket saves articles in a clean layout designed for reading—no interruptions, no popups—so you can sidestep the Internet's noise.";
-
-"Log In" = "Log In";
-"Sign Up" = "Sign Up";
-
-"Tell us more" = "Tell us more";
-"Report a concern" = "Report a concern";
-"Add copied URL to your Saves?" = "Add copied URL to your Saves?";
-
-"Premium Status:" = "Premium Status:";
-
-"Your Account" = "Your Account";
-"Sign Out" = "Sign Out";
-"Are you sure?" = "Are you sure?";
-"You will be signed out of your account and any files that have been saved for offline viewing will be deleted." = "You will be signed out of your account and any files that have been saved for offline viewing will be deleted.";
-"App Customization" = "App Customization";
-"Show App Badge Count" = "Show App Badge Count";
-"About & Support" = "About & Support";
-"Terms of Service" = "Terms of Service";
-"Privacy Policy" = "Privacy Policy";
-
-"not tagged" = "not tagged";
-"Delete Tag?" = "Delete Tag?";
-"Are you sure you want to delete the tags and remove it from all items?" = "Are you sure you want to delete the tags and remove it from all items?";
-"Delete" = "Delete";
-"Cancel" = "Cancel";
-"Rename Tag" = "Rename Tag";
-"Rename" = "Rename";
-"Enter a new name for this tag" = "Enter a new name for this tag";
-"Close" = "Close";
-
-"not tagged" = "not tagged";
-"OK" = "OK";
-"An error occurred" = "An error occurred";
-
-"Reported" = "Reported";
-"Submit feedback" = "Submit feedback";
-
-"Sign up for Premium" = "Sign up for Premium";
-"Premium Subscriber" = "Premium Subscriber";
-
-"The title, link, or image is broken" = "The title, link, or image is broken";
-"It's in the wrong category" = "It's in the wrong category";
-"It's sexually explicit" = "It's sexually explicit";
-"It's rude, vulgar, or offensive" = "It's rude, vulgar, or offensive";
-"It contains misinformation" = "It contains misinformation";
-"Other" = "Other";
-
 //General Messages
 "general.oops" = "Oops! Try again?";
 
-// Tags
-"tags.upsell.tagStoriesFasterThanEver" = "Tag stories faster than ever—get your most recent tags with Pocket Premium.";
-"tags.upsell.getPocketPremium" = "Get Pocket Premium";
+//Archive
+"archive.empty.header" = "Keep your list fresh and clean";
+"archive.empty.detail" = "Archive the Saves you're finished with\n using the archive icon.";
+"archive.empty.button" = "How to archive";
 
-// Search
-"search.errorMessage" = "We’re experiencing an error and temporarily can’t get you what you need. Please try again later.";
-"search.limitedResults" = "Limited search results";
-"search.offlineMessage" = "You can only search titles and URLs while offline. Connect to the internet to use Premium's full-text search.";
-"search.banner.errorMessage." = "We’re experiencing an error and can’t show you full search results. Please try again later.";
-"search.error.view.needsInternet" = "You must have an internet connection to view this item.";
-"search.recent" = "Recent Searches";
-"search.swipe.unableToMove" = "Unable to Move";
-"search.swipe.archive" = "Archive";
-"search.swipe.moveToSaves" = "Move to Saves";
+//Favourites
+"favourites.empty.header" = "Find your favorites here";
+"favourites.empty.detail" = "Hit the star icon to favorite an article and find it faster.";
 
-// Settings
-"settings.thankyou.credits" = "Thank you for using Pocket";
-"settings.PocketForiOS %@ (%@)" = "Pocket for iOS %@ (%@)";
-"settings.openSourceLicenses" = "Open Source Licenses";
-"settings.logout" = "Log Out";
-"settings.logout.areYouSureMessage" = "You will be logged out of your account and any items that have been saved for offline viewing will be removed from your device.";
-"settings.logout.areyousure" = "Are you sure?";
-"settings.help" = "Get Help and Support";
-"settings.accountManagement" = "Account Management";
-"settings.accountManagement.deleteAccount" = "Delete Account";
-"settings.accountManagement.deleteYourAccount" = "Delete your account";
+//Home
+"home.recommendation.readTime" = "%@ min read";
 
-"settings.accountManagement.deleteAccount.warning" = "Warning: this can't be undone";
-"settings.accountManagement.deleteAccount.premiumConfirmation" = "To delete your account, you must first **cancel your Premium subscription here.**";
-"settings.accountManagement.deleteAccount.deletionConfirmation" = "You understand your Pocket account and data will be **permanently deleted.**";
-//Links to a help article on how to cancel your subscription
-"settings.accountManagement.deleteAccount.howToCancel" = "How to cancel your Pocket Premium subscription";
-//Loading screen showing that the account deletion is in progress
-"settings.accountManagement.deleteAccount.deleting" = "Deleting your account";
-"settings.accountManagement.deleteAccount.error.body" = "We’re experiencing an error and can't delete your account. Please try again later.";
-"settings.accountManagement.restoreSubscription" = "Restore Existing Subscription";
-"settings.accountManagement.restoreSubscription.restoreSuccessful.title" = "Restore successful";
-"settings.accountManagement.restoreSubscription.restoreSuccessful.message" = "Your Pocket Premium subscription has been restored.";
-"settings.accountManagement.restoreSubscription.restoreNotSuccessful.title" = "Restore not successful";
-"settings.accountManagement.restoreSubscription.restoreNotSuccessful.message" = "We were unable to find a subscription. If you believe you have one, please send an email to support@getpocket.com and let us know.";
+//Item
+"item.overflowMenu.moveToSaves" = "Move to Saves";
 
-"settings.noInternet.youMustBeOnline" = "You must be online to upgrade to Pocket Premium. Please check your connection and try again.";
+//ItemAction
+"itemAction.addTags" = "Add tags";
+"itemAction.archive" = "Archive";
+"itemAction.copyLink" = "Copy link";
+"itemAction.delete" = "Delete";
+"itemAction.displaySettings" = "Display settings";
+"itemAction.favorite" = "Favorite";
+"itemAction.unfavorite" = "Unfavorite";
+"itemAction.moveToSaves" = "Move to Saves";
+"itemAction.open" = "Open";
+"itemAction.report" = "Report";
+"itemAction.save" = "Save";
+"itemAction.share" = "Share";
 
-//Shown to the user after they deleted their account
-"login.deletedAccount.banner.title" = "You’ve deleted your Pocket account";
-//Shown to the user after they deleted their account
-"login.deletedAccount.banner.detail" = "What could we have done better?";
-//Action button for a user to take a survey
-"login.deletedAccount.banner.action" = "Quick survey";
+//ItemList
+"itemlist.filter.search" = "Search";
+"itemlist.filter.all" = "All";
+"itemlist.filter.tagged" = "Tagged";
+"itemlist.filter.favorites" = "Favorites";
+"itemlist.filter.sortFilter" = "Sort";
+"itemList.edit.banner" = "Editing your list is not available in this version of Pocket, but will be returning soon!";
 
 //List view
 "item.list.min" = "%@ min";
@@ -193,24 +48,244 @@
 "year" = "year";
 // Short name of the annual premium subscription
 "Annual" = "Annual";
-// Description of the premium uprgade view
-"premium.upgradeview.description" = "Subscriptions will be charged to your credit card through your iTunes account. Your account will be charged %1$@ (monthly) or %2$@ (yearly) for renewal within 24 hours prior to the end of the current period. Subscriptions will automatically renew unless canceled at least 24 hours before the end of the current period. It will not be possible to immediately cancel a subscription. You can manage subscriptions and turn off auto-renewal by going to your account settings after purchase. Refunds are not available for unused portions of a subscription.";
+
+//Log in
+//Shown to the user after they deleted their account
+"login.deletedAccount.banner.title" = "You’ve deleted your Pocket account";
+//Shown to the user after they deleted their account
+"login.deletedAccount.banner.detail" = "What could we have done better?";
+//Action button for a user to take a survey
+"login.deletedAccount.banner.action" = "Quick survey";
+
+//Logged Out
+"loggedOut.offline.header" = "No internet connection";
+"loggedOut.offline.detail" = "Looks like you're offline. Try checking your mobile data or wifi.";
+
+//Saves
+"saves.empty.header" = "Start building your Pocket list";
+"saves.empty.button" = "How to save";
+
+// Search
+"search.errorMessage" = "We’re experiencing an error and temporarily can’t get you what you need. Please try again later.";
+"search.limitedResults" = "Limited search results";
+"search.offlineMessage" = "You can only search titles and URLs while offline. Connect to the internet to use Premium's full-text search.";
+"search.banner.errorMessage." = "We’re experiencing an error and can’t show you full search results. Please try again later.";
+"search.error.view.needsInternet" = "You must have an internet connection to view this item.";
+"search.recent" = "Recent searches";
+"search.recent.empty" = "Recent searches will appear here, so you can easily jump back in.";
+"search.swipe.archive" = "Archive";
+"search.swipe.moveToSaves" = "Move to Saves";
+"search.edit.banner" = "Editing your search results is not available in this version of Pocket, but will be returning soon!";
+"search.empty.header" = "Search by title or URL";
+
+"search.allItems.premium.header" = "Unlock more search options";
+"search.allItems.premium.detail" = "Search your entire Pocket, including archived items, with Pocket Premium.";
+"search.allItems.premium.button" = "Get Pocket Premium";
+
+"search.results.empty.header" = "No results found";
+"search.results.empty.detail" = "Try using different keywords, checking for typos or changing your filters.";
+
+"search.results.offline.header" = "No internet connection";
+"search.results.offline.detail.archive" = "You must be online to search archived items.";
+"search.results.offline.detail.all" = "You must be online to search all items.";
+
+// Settings
+"settings.thankyou.credits" = "Thank you for using Pocket";
+"settings.PocketForiOS %@ (%@)" = "Pocket for iOS %@ (%@)";
+"settings.openSourceLicenses" = "Open source licenses";
+"settings.logout" = "Log out";
+"settings.logout.areYouSureMessage" = "You will be logged out of your account and any items that have been saved for offline viewing will be removed from your device.";
+"settings.logout.areyousure" = "Are you sure?";
+"settings.help" = "Get help and support";
+"settings.accountManagement" = "Account management";
+"settings.accountManagement.deleteAccount" = "Delete account";
+"settings.accountManagement.deleteYourAccount" = "Delete your account";
+
+"settings.accountManagement.deleteAccount.warning" = "Warning: this can't be undone";
+"settings.accountManagement.deleteAccount.premiumConfirmation" = "To delete your account, you must first **cancel your Premium subscription here.**";
+"settings.accountManagement.deleteAccount.deletionConfirmation" = "You understand your Pocket account and data will be **permanently deleted.**";
+//Links to a help article on how to cancel your subscription
+"settings.accountManagement.deleteAccount.howToCancel" = "How to cancel your Pocket Premium subscription";
+//Loading screen showing that the account deletion is in progress
+"settings.accountManagement.deleteAccount.deleting" = "Deleting your account";
+"settings.accountManagement.deleteAccount.error.body" = "We’re experiencing an error and can't delete your account. Please try again later.";
+"settings.accountManagement.restoreSubscription" = "Restore existing subscription";
+"settings.accountManagement.restoreSubscription.restoreSuccessful.title" = "Restore successful";
+"settings.accountManagement.restoreSubscription.restoreSuccessful.message" = "Your Pocket Premium subscription has been restored.";
+"settings.accountManagement.restoreSubscription.restoreNotSuccessful.title" = "Restore not successful";
+"settings.accountManagement.restoreSubscription.restoreNotSuccessful.message" = "We were unable to find a subscription. If you believe you have one, please send an email to support@getpocket.com and let us know.";
+
+"settings.noInternet.header" = "No internet connection";
+"settings.noInternet.youMustBeOnline" = "You must be online to upgrade to Pocket Premium. Please check your connection and try again.";
+
 "settings.goPremiumRow" = "Go Premium";
-"settings.premiumSubscriptionRow" = "Premium Subscription";
-"Hooray!" = "Hooray!";
-"premium.success.message" = "You’re officially a Pocket Premium member. Welcome to the new ad-free, customizable, permanent version of your Pocket. We think you’ll like it here.";
-"back.to.pocket" = "Back to Pocket";
+"settings.premiumSubscriptionRow" = "Premium subscription";
 "settings.premiumRow" = "Go Premium";
 "settings.premium.settings.thanksForSubscribing" = "Thanks for subscribing to Pocket Premium!";
-"settings.premium.settings.subscriptionStatus" = "Subscription Status";
+"settings.premium.settings.subscriptionStatus" = "Subscription status";
 "settings.premium.settings.subscription" = "Subscription";
-"settings.premium.settings.datePurchased" = "Date Purchased";
-"settings.premium.settings.renewalDate" = "Renewal Date";
-"settings.premium.settings.purchaseLocation" = "Purchase Location";
+"settings.premium.settings.datePurchased" = "Date purchased";
+"settings.premium.settings.renewalDate" = "Renewal date";
+"settings.premium.settings.purchaseLocation" = "Purchase location";
 "settings.premium.settings.price" = "Price";
-"settings.premium.settings.yourSubscription" = "Your Subscription";
-"settings.premium.settings.manageYourSubscription" = "Manage your Subscription";
-"settings.premium.settings.questionOrFeedback" = "Questions or Feedback?";
+"settings.premium.settings.yourSubscription" = "Your subscription";
+"settings.premium.settings.manageYourSubscription" = "Manage your subscription";
+"settings.premium.settings.questionOrFeedback" = "Questions or feedback?";
 "settings.premium.settings.pocketPremiumFAQ" = "Pocket Premium FAQ";
 // this refers to an action to open an email
-"settings.premium.settings.contactPocketSupport" = "Contact Pocket Support";
+"settings.premium.settings.contactPocketSupport" = "Contact Pocket support";
+
+//Sorting Options
+"sortingOption.sortBy" = "Sort by";
+"sortingOption.NewestSaved" = "Newest saved";
+"sortingOption.oldestSaved" = "Oldest saved";
+"sortingOption.shortestToRead" = "Shortest to read";
+"sortingOption.longestToRead" = "Longest to read";
+
+// Tags
+"tags.upsell.tagStoriesFasterThanEver" = "Tag stories faster than ever—get your most recent tags with Pocket Premium.";
+"tags.upsell.getPocketPremium" = "Get Pocket Premium";
+"tags.section.recentTags" = "Recent tags";
+"tags.section.userTags" = "My tags";
+
+"tags.empty.header" = "No Saves with this tag";
+"tags.empty.detail" = "Tag your Saves by topic to find them later.";
+"tags.empty.button" = "How to tag";
+
+"tags.notTagged" = "not tagged";
+"tags.deleteTag" = "Delete tag?";
+"tags.deleteTag.message" = "Deleting this tag removes it from all items.";
+
+"tags.renameTag" = "Rename tag";
+"tags.renameTag.message" = "Enter a new name for this tag";
+
+//Reader 
+"reader.activity.save" = "Save";
+"reader.activity.report" = "Report";
+"reader.activity.delete" = "Delete";
+"reader.activity.archive" = "Archive";
+"reader.activity.favorite" = "Favorite";
+"reader.activity.unfavorite" = "Unfavorite";
+"reader.activity.moveToSaves" = "Move to Saves";
+
+//Recommendation
+"recommendation.save" = "Save";
+"recommendation.saved" = "Saved";
+
+//Premium
+"premium.infoView.terms.privacyPolicy" = "Privacy Policy";
+"premium.infoView.terms.TermsOfService" = "Terms of Service";
+
+"premium.success.message" = "You’re officially a Pocket Premium member. Welcome to the new ad-free, customizable, permanent version of your Pocket. We think you’ll like it here.";
+
+//The title of our Premium Membership page spans 2 lines. The '\n' character denotes a newline character and is not shown to the user.
+"premium.upgradeView.PremiumMembership" = "Premium\nmembership";
+
+// Description of the premium uprgade view
+"premium.upgradeView.description" = "Subscriptions will be charged to your credit card through your iTunes account. Your account will be charged %1$@ (monthly) or %2$@ (yearly) for renewal within 24 hours prior to the end of the current period. Subscriptions will automatically renew unless canceled at least 24 hours before the end of the current period. It will not be possible to immediately cancel a subscription. You can manage subscriptions and turn off auto-renewal by going to your account settings after purchase. Refunds are not available for unused portions of a subscription.";
+"premium.upgradeView.save" = "Save";
+"premium.upgradeView.permanentLibrary" = "Permanent library of everything you've saved";
+//Ads will not be shown to Premuim users
+"premium.upgradeView.adFree" = "Ad-free";
+"premium.upgradeView.suggestedTags" = "Suggested tags";
+"premium.upgradeView.fullTextSearch" = "Full-text search";
+"premium.upgradeView.unlimitedHighlights" = "Unlimited highlights";
+"premium.upgradeView.premiumFonts" = "Premium fonts";
+
+
+//=======================
+//Old format
+
+"Home" = "Home";
+"Archive" = "Archive";
+"Pocket" = "Pocket";
+"Settings" = "Settings";
+
+// Alert
+"Are you sure you want to delete this item?" = "Are you sure you want to delete this item?";
+"Yes" = "Yes";
+"No" = "No";
+
+// No internet
+"No Internet Connection" = "No internet connection";
+"Looks like you're offline. Try checking your mobile data or wifi." = "Looks like you're offline. Try checking your mobile data or wifi.";
+
+"Add Tags" = "Add tags";
+"Tags" = "Tags";
+"Share" = "Share";
+"carousel.listen" = "Listen";
+
+"Saves" = "Saves";
+
+"Display Settings" = "Display settings";
+"Font" = "Font";
+"Font Size" = "Font size";
+
+"Copy link" = "Copy link";
+"Copy link with selection" = "Copy link with selection";
+"Open" = "Open";
+
+"This element is currently unsupported." = "This element is currently unsupported.";
+"This video could not be loaded." = "This video could not be loaded.";
+
+"Open in Web View" = "Open in web view";
+
+"Could not successfully handle the server redirect." = "Could not successfully handle the server redirect.";
+"Could not generate correct URL for authentication." = "Could not generate correct URL for authentication.";
+"AuthorizationClient is already authenticating" = "AuthorizationClient is already authenticating";
+
+"You're all caught up!\nCheck back later for more." = "You're all caught up!\nCheck back later for more.";
+"Recent Saves" = "Recent Saves";
+"See All" = "See all";
+
+"%@ min read" = "%@ min read";
+"Saved" = "Saved";
+
+"Save what really interests you" = "Save what really interests you";
+"Collect articles, videos or any online content you like." = "Collect articles, videos or any online content you like.";
+
+"Make the most of any moment" = "Make the most of any moment";
+"Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket" = "Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket";
+
+"Your quiet corner of the Internet" = "Your quiet corner of the internet";
+"Pocket saves articles in a clean layout designed for reading—no interruptions, no popups—so you can sidestep the Internet's noise." = "Pocket saves articles in a clean layout designed for reading—no interruptions, no popups—so you can sidestep the internet's noise.";
+
+"Log In" = "Log in";
+"Sign Up" = "Sign up";
+
+"Tell us more" = "Tell us more";
+"Report a concern" = "Report a concern";
+"Add copied URL to your Saves?" = "Add copied URL to your Saves?";
+
+"Your Account" = "Your account";
+"Sign Out" = "Sign out";
+"Are you sure?" = "Are you sure?";
+"You will be signed out of your account and any files that have been saved for offline viewing will be deleted." = "You will be signed out of your account and any files that have been saved for offline viewing will be deleted.";
+"App Customization" = "App customization";
+"Show App Badge Count" = "Show app badge count";
+"About & Support" = "About & support";
+"Terms of Service" = "Terms of service";
+"Privacy Policy" = "Privacy policy";
+
+"Delete" = "Delete";
+"Cancel" = "Cancel";
+"Rename" = "Rename";
+"Close" = "Close";
+
+"not tagged" = "not tagged";
+"OK" = "OK";
+"An error occurred" = "An error occurred";
+
+"Reported" = "Reported";
+"Submit feedback" = "Submit feedback";
+
+"The title, link, or image is broken" = "The title, link, or image is broken";
+"It's in the wrong category" = "It's in the wrong category";
+"It's sexually explicit" = "It's sexually explicit";
+"It's rude, vulgar, or offensive" = "It's rude, vulgar, or offensive";
+"It contains misinformation" = "It contains misinformation";
+"Other" = "Other";
+
+"Hooray!" = "Hooray!";
+
+"back.to.pocket" = "Back to Pocket";

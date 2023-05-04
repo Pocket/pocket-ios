@@ -22,10 +22,12 @@ class SavedItemsListViewModelTests: XCTestCase {
     var subscriptionStore: SubscriptionStore!
     var networkPathMonitor: NetworkPathMonitor!
     var userDefaults: UserDefaults!
+    var featureFlags: MockFeatureFlagService!
 
     override func setUp() {
         source = MockSource()
         tracker = MockTracker()
+        featureFlags = MockFeatureFlagService()
         space = .testSpace()
         appSession = AppSession(keychain: MockKeychain(), groupID: "groupId")
         appSession.currentSession = SharedPocketKit.Session(guid: "test-guid", accessToken: "test-access-token", userIdentifier: "test-id")
@@ -62,6 +64,10 @@ class SavedItemsListViewModelTests: XCTestCase {
         source.stubBackgroundObject { identifier in
             self.space.backgroundObject(with: identifier)
         }
+
+        featureFlags.stubIsAssigned { _, _ in
+            false
+        }
     }
 
     override func tearDownWithError() throws {
@@ -79,7 +85,8 @@ class SavedItemsListViewModelTests: XCTestCase {
         viewType: SavesViewType? = nil,
         user: User? = nil,
         networkPathMonitor: NetworkPathMonitor? = nil,
-        userDefaults: UserDefaults? = nil
+        userDefaults: UserDefaults? = nil,
+        featureFlags: FeatureFlagServiceProtocol? = nil
     ) -> SavedItemsListViewModel {
         SavedItemsListViewModel(
             source: source ?? self.source,
@@ -91,7 +98,8 @@ class SavedItemsListViewModelTests: XCTestCase {
             store: subscriptionStore ?? self.subscriptionStore,
             refreshCoordinator: refreshCoordinator,
             networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor,
-            userDefaults: userDefaults ?? self.userDefaults
+            userDefaults: userDefaults ?? self.userDefaults,
+            featureFlags: featureFlags ?? self.featureFlags
         )
     }
 
@@ -140,9 +148,10 @@ class SavedItemsListViewModelTests: XCTestCase {
 
     func test_selectCell_whenItemIsArticle_setsSelectedItemToReaderView() throws {
         let viewModel = subject()
-        let item = space.buildPendingSavedItem()
+        let savedItem = space.buildPendingSavedItem()
+        savedItem.item = space.buildItem()
         try space.save()
-        viewModel.selectCell(with: .item(item.objectID), sender: UIView())
+        viewModel.selectCell(with: .item(savedItem.objectID), sender: UIView())
 
         guard let selectedItem = viewModel.selectedItem else {
             XCTFail("Received nil for selectedItem")
@@ -247,7 +256,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         let viewModel = subject()
 
         let snapshotSent = expectation(description: "snapshotSent")
-        viewModel.snapshot.dropFirst().sink { [unowned self] snapshot in
+        viewModel.snapshot.dropFirst().sink { snapshot in
             XCTAssertEqual(snapshot.itemIdentifiers(inSection: .items).first, .item(savedItem.objectID))
             snapshotSent.fulfill()
         }.store(in: &subscriptions)
@@ -382,7 +391,7 @@ class SavedItemsListViewModelTests: XCTestCase {
             )
         }.store(in: &subscriptions)
 
-        source.initialSavesDownloadState.send(.paginating(totalCount: 2))
+        source.initialSavesDownloadState.send(.paginating(totalCount: 2, currentPercentProgress: 0))
         try? itemsController.performFetch()
 
         wait(for: [receivedSnapshot], timeout: 10)
@@ -425,6 +434,64 @@ class SavedItemsListViewModelTests: XCTestCase {
 
         wait(for: [receivedSnapshot], timeout: 10)
     }
+
+    func test_snapshotContainsListen_WhenInFlag() throws {
+        _ = (1...2).map {
+            space.buildSavedItem(
+                remoteID: "saved-item-\($0)",
+                createdAt: Date(timeIntervalSince1970: TimeInterval($0))
+            )
+        }
+        try space.save()
+        featureFlags.stubIsAssigned { flag, variant in
+            if flag == .listen {
+                return true
+            }
+            XCTFail("Unknown feature flag")
+            return false
+        }
+
+        let viewModel = subject()
+
+        let receivedSnapshot = expectation(description: "receivedSnapshot")
+        viewModel.snapshot.dropFirst().sink { snapshot in
+            XCTAssertTrue(snapshot.itemIdentifiers(inSection: .filters).contains(.filterButton(.listen)))
+            receivedSnapshot.fulfill()
+        }.store(in: &subscriptions)
+
+        viewModel.fetch()
+
+        wait(for: [receivedSnapshot], timeout: 10)
+    }
+
+    func test_snapshotContainsListen_WhenNotInFlag() throws {
+        _ = (1...2).map {
+            space.buildSavedItem(
+                remoteID: "saved-item-\($0)",
+                createdAt: Date(timeIntervalSince1970: TimeInterval($0))
+            )
+        }
+        try space.save()
+        featureFlags.stubIsAssigned { flag, variant in
+            if flag == .listen {
+                return false
+            }
+            XCTFail("Unknown feature flag")
+            return false
+        }
+
+        let viewModel = subject()
+
+        let receivedSnapshot = expectation(description: "receivedSnapshot")
+        viewModel.snapshot.dropFirst().sink { snapshot in
+            XCTAssertTrue(!snapshot.itemIdentifiers(inSection: .filters).contains(.filterButton(.listen)))
+            receivedSnapshot.fulfill()
+        }.store(in: &subscriptions)
+
+        viewModel.fetch()
+
+        wait(for: [receivedSnapshot], timeout: 10)
+    }
 }
 
 // MARK: - Tags
@@ -434,6 +501,7 @@ extension SavedItemsListViewModelTests {
         try space.save()
 
         source.stubRetrieveTags { _ in return nil }
+        source.stubFetchAllTags { return [] }
         let viewModel = subject()
 
         let expectAddTags = expectation(description: "expect add tags to present")
@@ -443,7 +511,7 @@ extension SavedItemsListViewModelTests {
         }.store(in: &subscriptions)
 
         viewModel.overflowActions(for: item.objectID)
-            .first { $0.title == "Add Tags" }?
+            .first { $0.title == "Add tags" }?
             .handler?(nil)
 
         wait(for: [expectAddTags], timeout: 10)

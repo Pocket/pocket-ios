@@ -56,7 +56,7 @@ public struct UiEntity: Entity {
     }
 
     public func toSelfDescribingJson() -> SelfDescribingJson {
-        var data: [AnyHashable: Any] = [
+        var data: [String: Any] = [
             "type": type.rawValue,
             "identifier": identifier,
             "hierarchy": 0

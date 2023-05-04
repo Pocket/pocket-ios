@@ -19,7 +19,7 @@ class FetchTags: SyncOperation {
     private let events: SyncEvents
     private let lastRefresh: LastRefresh
     // Force unwrapping, because the entry point, execute, will ensure that this exists with a guard
-    private var persistentTask: PersistentSyncTask!
+    private var tagSpace: TagSpace!
 
     init(
         apollo: ApolloClientProtocol,
@@ -34,10 +34,10 @@ class FetchTags: SyncOperation {
     }
 
     func execute(syncTaskId: NSManagedObjectID) async -> SyncOperationResult {
-        guard let persistentTask = space.backgroundObject(with: syncTaskId) as? PersistentSyncTask else {
+        guard let tagSpace = DerivedSpace(space: space, taskID: syncTaskId) else {
             return .retry(NoPersistentTaskOperationError())
         }
-        self.persistentTask = persistentTask
+        self.tagSpace = tagSpace
 
         do {
             try await fetchTags()
@@ -80,17 +80,15 @@ class FetchTags: SyncOperation {
             Log.breadcrumb(category: "sync.tags", level: .debug, message: "Loading page \(pageNumber)")
             let query = TagsQuery(pagination: .init(pagination))
             let result = try await apollo.fetch(query: query)
-            if let pageInfo = result.data?.user?.tags?.pageInfo {
-                pagination.after = pageInfo.endCursor ?? .none
-                shouldFetchNextPage = pageInfo.hasNextPage
-                space.backgroundContext.performAndWait {
-                    persistentTask.currentCursor = pageInfo.endCursor
-                }
+
+            if let edges = result.data?.user?.tags?.edges {
+                pagination.after = result.data?.user?.tags?.pageInfo.endCursor ?? .none
+                shouldFetchNextPage = result.data?.user?.tags?.pageInfo.hasNextPage ?? false
+                let endCursor = result.data?.user?.tags?.pageInfo.endCursor
+                try tagSpace.updateTags(edges: edges, cursor: endCursor)
             } else {
                 shouldFetchNextPage = false
             }
-            try updateLocalTags(result)
-            try space.save()
 
             Log.breadcrumb(category: "sync.tags", level: .debug, message: "Finsihed loading page \(pageNumber)")
             pageNumber += 1

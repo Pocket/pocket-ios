@@ -1,41 +1,8 @@
 import XCTest
+import RNCryptor
 @testable import SharedPocketKit
 
 // swiftlint:disable force_try
-class BlankKeychain: Keychain {
-    func add(query: CFDictionary, result: UnsafeMutablePointer<CFTypeRef?>?) -> OSStatus {
-        .zero
-    }
-
-    func update(query: CFDictionary, attributes: CFDictionary) -> OSStatus {
-        .zero
-    }
-
-    func delete(query: CFDictionary) -> OSStatus {
-        .zero
-    }
-
-    func copyMatching(query: CFDictionary, result: UnsafeMutablePointer<CFTypeRef?>?) -> OSStatus {
-        .zero
-    }
-}
-
-class MockEncryptedStore: LegacyEncryptedStore {
-    typealias Impl = (String) throws -> Data?
-    private var impl: Impl?
-
-    func stubDecryptStore(_ impl: @escaping Impl) {
-        self.impl = impl
-    }
-
-    func decryptStore(securedBy password: String) throws -> Data? {
-        guard let impl = impl else {
-            fatalError("decryptedStore must be stubbed before use")
-        }
-
-        return try impl(password)
-    }
-}
 
 private enum MockError: Error {
     case someError
@@ -81,32 +48,19 @@ class LegacyUserMigrationTests: XCTestCase {
 extension LegacyUserMigrationTests {
     func test_isRequired_withPreviousVersionLessThan8_andNotRun_returnsTrue() {
         let migration = subject()
-        XCTAssertTrue(migration.isRequired(version: "7.0.0"))
-    }
-
-    func test_isRequired_withPreviousVersionLessThan8_andRun_returnsFalse() {
-        userDefaults.set(true, forKey: LegacyUserMigration.migrationKey)
-        let migration = subject()
-        XCTAssertFalse(migration.isRequired(version: "7.0.0"))
+        XCTAssertTrue(migration.required(for: "7.0.0"))
     }
 
     func test_isRequired_withPreviousVersionGreaterThanOrEqualTo8_andNotRun_returnsFalse() {
         var migration = subject()
-        XCTAssertFalse(migration.isRequired(version: "8.0.0"))
+        XCTAssertFalse(migration.required(for: "8.0.0"))
 
         migration = subject()
-        XCTAssertFalse(migration.isRequired(version: "9.0.0"))
-    }
-
-    func test_isRequired_withPreviousVersionGreaterThanOrEqualTo8_andRun_returnsFalse() {
-        userDefaults.set(true, forKey: LegacyUserMigration.migrationKey)
-
-        let migration = subject()
-        XCTAssertFalse(migration.isRequired(version: "8.0.0"))
+        XCTAssertFalse(migration.required(for: "9.0.0"))
     }
 }
 
-// MARK: - perform (requirements)
+// MARK: - attemptMigration (requirements)
 extension LegacyUserMigrationTests {
     func test_perform_whenNotRequired_doesNotThrowError() {
         let migration = subject()
@@ -123,45 +77,27 @@ extension LegacyUserMigrationTests {
             return try! JSONSerialization.data(withJSONObject: correct)
         }
 
-        XCTAssertNoThrow(try migration.perform {
+        XCTAssertNoThrow(try migration.attemptMigration {
             XCTFail("Migration should not be attempted")
         })
     }
 
-    func test_perform_withMissingKeyInKeychainAndDefaults_throwsError() {
+    func test_perform_withMissingKeyInKeychainAndDefaults() {
         let migration = subject()
 
         do {
-            try migration.perform {
+            let result = try migration.attemptMigration {
                 XCTFail("Migration should not be attempted")
             }
+
+            XCTAssertFalse(result, "Migration should not be attempted")
         } catch {
-            guard case LegacyUserMigrationError.missingKey = error else {
-                XCTFail("Incorrect error thrown")
-                return
-            }
-        }
-    }
-
-    func test_perform_withKeyNotInKeychainAndInUserDefaults_doesNotThrowError() {
-        userDefaults.set("password", forKey: LegacyUserMigration.decryptionKey)
-
-        let migration = subject()
-        encryptedStore.stubDecryptStore { _ in return nil }
-
-        do {
-            try migration.perform {
-                XCTFail("Migration should not be attempted")
-            }
-        } catch {
-            if case LegacyUserMigrationError.missingKey = error {
-                XCTFail("Key should exist; error should not be thrown")
-            }
+            XCTFail("Error should not be thrown")
         }
     }
 }
 
-// MARK: - perform (guid)
+// MARK: - attemptMigration (guid)
 // For these tests to correctly function, implement the same stub
 // for all keys (since guid is checked first)
 extension LegacyUserMigrationTests {
@@ -173,7 +109,7 @@ extension LegacyUserMigrationTests {
         }
 
         do {
-            try migration.perform {
+            try migration.attemptMigration {
                 XCTFail("Migration should not be attempted")
             }
         } catch {
@@ -192,7 +128,7 @@ extension LegacyUserMigrationTests {
         }
 
         do {
-            try migration.perform {
+            try migration.attemptMigration {
                 XCTFail("Migration should not be attempted")
             }
         } catch {
@@ -215,7 +151,7 @@ extension LegacyUserMigrationTests {
         }
 
         do {
-            try migration.perform {
+            try migration.attemptMigration {
                 XCTFail("Migration should not be attempted")
             }
         } catch {
@@ -225,9 +161,33 @@ extension LegacyUserMigrationTests {
             }
         }
     }
+
+    func test_perform_storeReturnedMissingSessionData_throwsError() {
+        userDefaults.set("key", forKey: "kPKTCryptoKey")
+
+        let migration = subject()
+        encryptedStore.stubDecryptStore { _ in
+            let incorrect: [String: Any] = [
+                "version": "8.0.0"
+            ]
+
+            return try! JSONSerialization.data(withJSONObject: incorrect)
+        }
+
+        do {
+            try migration.attemptMigration {
+                XCTFail("Migration should not be attempted")
+            }
+        } catch {
+            guard case LegacyUserMigrationError.noSession = error else {
+                XCTFail("Incorrect error thrown")
+                return
+            }
+        }
+    }
 }
 
-// MARK: - perform (passing)
+// MARK: - attemptMigration (passing)
 extension LegacyUserMigrationTests {
     func test_perform_allValid_updatesAppSession() throws {
         // Required to regenerate migration with updated infoDictionary since infoDictionary
@@ -249,7 +209,7 @@ extension LegacyUserMigrationTests {
 
         let expectation = XCTestExpectation(description: "Migration event fired successfully.")
 
-        try migration.perform {
+        try migration.attemptMigration {
             expectation.fulfill()
         }
 
