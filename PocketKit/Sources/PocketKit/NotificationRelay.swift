@@ -28,6 +28,6 @@ class NotificationRelay {
             detail: Localization.General.Error.serverThrottle
         )
 
-        NotificationCenter.default.post(name: .bannerRequested, object: bannerData)
+        broadcastNotificationCentre.post(name: .bannerRequested, object: bannerData)
     }
 }
