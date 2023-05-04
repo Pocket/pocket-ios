@@ -22,6 +22,7 @@ struct SearchView: View {
                 ResultsView(viewModel: viewModel, results: results)
             case .loading:
                 SkeletonView()
+                    .background(Color(.ui.white1))
             default:
                 EmptyView()
             }
