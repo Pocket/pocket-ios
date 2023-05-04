@@ -71,14 +71,15 @@ public extension ApolloClientProtocol {
     }
 
     private static func checkForServerThrottle(_ error: Error) {
-        if case let URLSessionClient.URLSessionClientError.networkError(_, response, _) = error, response?.statusCode == 429 {
-            let bannerData = BannerModifier.BannerData(
-                image: .warning,
-                title: nil,
-                detail: Localization.General.Error.serverThrottle
-            )
-            NotificationCenter.default.post(name: .bannerRequested, object: bannerData)
-            Log.warning("HTTP 429 Detected")
-        }
+
+        // Codes we wish to notify the user about
+        let serverErrorCodes = [429]
+
+        guard let responseError = error as? ResponseCodeInterceptor.ResponseCodeError,
+              case .invalidResponseCode(let response, _) = responseError,
+              let code = response?.statusCode,
+              serverErrorCodes.contains(code) else { return }
+
+        NotificationCenter.default.post(name: .serverError, object: code)
     }
 }

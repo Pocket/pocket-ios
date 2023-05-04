@@ -23,6 +23,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     private let sessionBackupUtility: SessionBackupUtility
     private let consumerKey: String
     private let subscriptionStore: SubscriptionStore
+    private let notificationRelay: NotificationRelay
 
     let notificationService: PushNotificationService
 
@@ -40,6 +41,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         self.tracker = services.tracker
         self.sessionBackupUtility = services.sessionBackupUtility
         self.subscriptionStore = services.subscriptionStore
+        self.notificationRelay = NotificationRelay(services.notificationCenter)
 
         self.notificationService = services.notificationService
         self.consumerKey = Keys.shared.pocketApiConsumerKey
