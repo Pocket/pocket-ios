@@ -25,7 +25,7 @@ public extension ApolloClientProtocol {
                 switch result {
                 case .failure(let error):
                     Log.capture(error: error, filename: filename, line: line, column: column, funcName: funcName)
-                    Self.checkForServerThrottle(error)
+                    Self.checkForServerError(error)
                     continuation.resume(throwing: error)
                 case .success(let data):
                     guard let errors = data.errors,
@@ -53,7 +53,7 @@ public extension ApolloClientProtocol {
                 switch result {
                 case .failure(let error):
                     Log.capture(error: error, filename: filename, line: line, column: column, funcName: funcName)
-                    Self.checkForServerThrottle(error)
+                    Self.checkForServerError(error)
                     continuation.resume(throwing: error)
                 case .success(let data):
                     guard let errors = data.errors,
@@ -70,7 +70,7 @@ public extension ApolloClientProtocol {
         }
     }
 
-    private static func checkForServerThrottle(_ error: Error) {
+    private static func checkForServerError(_ error: Error) {
 
         // Codes we wish to notify the user about
         let serverErrorCodes = [429]
