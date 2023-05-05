@@ -376,7 +376,6 @@ class HomeTests: XCTestCase {
         validateBottomMessage()
     }
 
-
     func test_serverError_banner_for_throttled_user() {
         configureThrottledUser()
         app.launch()
