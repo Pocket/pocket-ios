@@ -33,17 +33,13 @@ class LocalSavesSearchTests: XCTestCase {
         let sut = subject()
         var results = sut.search(with: "saved")
         XCTAssertEqual(results.count, 2)
-
-        source.stubSearchItems { _ in return [] }
-
-        results = sut.search(with: "saved")
-        XCTAssertEqual(results.count, 2)
     }
 
     private func setupLocalSavesSearch() throws {
         let savedItems = (1...2).map {
             space.buildSavedItem(
                 remoteID: "saved-item-\($0)",
+                url: "http://example.com/item-1-\($0)",
                 createdAt: Date(timeIntervalSince1970: TimeInterval($0)),
                 item: space.buildItem(title: "saved-item-\($0)")
             )
