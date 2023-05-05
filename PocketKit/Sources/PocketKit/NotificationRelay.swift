@@ -34,12 +34,12 @@ class NotificationRelay {
 
     private func serverError(_ notification: Notification) {
         guard let HTTPError = notification.object as? Int else {
-            // Not an Error Code
+            Log.warning("ServerError did not recieve a valid HTTP Error code")
             return
         }
 
         guard let action = serverErrorActions[HTTPError] else {
-            // Unanticipated Error Code
+            Log.warning("Unanticipated HTTP Error code")
             return
         }
 
