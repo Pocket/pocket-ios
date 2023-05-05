@@ -482,8 +482,8 @@ public enum Localization {
     }
     public enum Premium {
       public enum Settings {
-        /// Contact pocket support
-        public static let contactPocketSupport = Localization.tr("Localizable", "settings.premium.settings.contactPocketSupport", fallback: "Contact pocket support")
+        /// Contact Pocket support
+        public static let contactPocketSupport = Localization.tr("Localizable", "settings.premium.settings.contactPocketSupport", fallback: "Contact Pocket support")
         /// Date purchased
         public static let datePurchased = Localization.tr("Localizable", "settings.premium.settings.datePurchased", fallback: "Date purchased")
         /// Manage your subscription
