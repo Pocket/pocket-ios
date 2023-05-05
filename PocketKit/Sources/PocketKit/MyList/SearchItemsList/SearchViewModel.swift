@@ -593,7 +593,6 @@ extension SearchViewModel: SavedItemsControllerDelegate {
         let currentObjectIDs = savedItems.map { $0.objectID }
         let snapshotIDs = snapshot.itemIdentifiers as! [NSManagedObjectID]
         let deletedIDs = currentObjectIDs.filter { snapshotIDs.contains($0) == false }
-        let updatedIDs = snapshot.reloadedItemIdentifiers
         let updatedItems = savedItems
             .filter { deletedIDs.contains($0.objectID) == false }
             .filter { outOfScope($0) }
@@ -604,31 +603,6 @@ extension SearchViewModel: SavedItemsControllerDelegate {
     /// Checks if a saved item should be moved to archive or vice versa
     private func outOfScope(_ savedItem: SavedItem) -> Bool {
         (savedItem.isArchived && selectedScope == .saves) || (!savedItem.isArchived && selectedScope == .archive)
-    }
-
-    /// Remove item from list of items in `SearchView`
-    /// - Parameters:
-    ///   - savedItem: savedItem that was changed in Core Data
-    ///   - items: list of `PocketItem` that is displayed as search results
-    private func removeItemFromView(_ savedItem: SavedItem, and items: [PocketItem], at index: Int) {
-        var items = items
-        items.remove(at: index)
-        Log.debug("Search item removed \(String(describing: savedItem.displayTitle))")
-        // Animations seen to work better when we don't wrap this around main thread
-        self.searchState = .searchResults(items)
-    }
-
-    /// Update item in list of items in `SearchView`
-    /// - Parameters:
-    ///   - savedItem: savedItem that was changed in Core Data
-    ///   - items: list of `PocketItem` that is displayed as search results
-    private func updateItemInView(_ savedItem: SavedItem, and items: [PocketItem], at index: Int) {
-        var items = items
-        items.remove(at: index)
-        items.insert(PocketItem(item: savedItem), at: index)
-        Log.debug("Search item updated \(String(describing: savedItem.displayTitle))")
-        // Animations seen to work better when we don't wrap this around main thread
-        self.searchState = .searchResults(items)
     }
 }
 
