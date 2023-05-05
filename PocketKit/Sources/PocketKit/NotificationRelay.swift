@@ -5,23 +5,48 @@
 import Foundation
 import Localization
 import Textile
+import Combine
 
 /// Listens for general notifications and reroutes them to the appropriate NotificationCentre instance
 class NotificationRelay {
-    let broadcastNotificationCentre: NotificationCenter
+    private let broadcastNotificationCentre: NotificationCenter
+    private var subscriptions: Set<AnyCancellable> = []
+
+    private var serverErrorActions: [Int: () -> Void] = [:]
 
     init(_ broadcastNotificationCentre: NotificationCenter) {
         self.broadcastNotificationCentre = broadcastNotificationCentre
 
-        registerObservers()
+        registerSubscriptions()
+        registerActions()
     }
 
-    func registerObservers() {
-        NotificationCenter.default.addObserver(self, selector: #selector(serverError(_:)), name: .serverError, object: nil)
+    private func registerSubscriptions() {
+        NotificationCenter.default.publisher( for: .serverError)
+            .sink { [weak self] notification in
+                self?.serverError(notification)
+            }.store(in: &subscriptions)
     }
 
-    @objc public func serverError(_ notification: Notification) {
+    private func registerActions() {
+        serverErrorActions[429] = notRespondingError
+    }
 
+    private func serverError(_ notification: Notification) {
+        guard let HTTPError = notification.object as? Int else {
+            // Not an Error Code
+            return
+        }
+
+        guard let action = serverErrorActions[HTTPError] else {
+            // Unanticipated Error Code
+            return
+        }
+
+        action()
+    }
+
+    private func notRespondingError() {
         let bannerData = BannerModifier.BannerData(
             image: .warning,
             title: nil,
