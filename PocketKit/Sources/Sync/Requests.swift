@@ -48,7 +48,8 @@ public enum Requests {
         let request = SavedItem.fetchRequest()
         let urlPredicate = NSPredicate(format: "url CONTAINS %@", searchTerm)
         let titlePredicate = NSPredicate(format: "item.title CONTAINS %@", searchTerm)
-        var allPredicate = NSCompoundPredicate(type: .or, subpredicates: [urlPredicate, titlePredicate])
+        let unarchivedPredicate = NSPredicate(format: "isArchived = false")
+        var allPredicate = NSCompoundPredicate(type: .or, subpredicates: [urlPredicate, titlePredicate, unarchivedPredicate])
         if isPremium {
             let tagsPredicate = NSPredicate(format: "%@ IN tags.name", searchTerm)
             allPredicate = NSCompoundPredicate(type: .or, subpredicates: [urlPredicate, titlePredicate, tagsPredicate])
