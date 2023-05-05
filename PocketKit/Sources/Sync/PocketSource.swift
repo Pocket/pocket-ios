@@ -635,10 +635,20 @@ extension PocketSource {
     ///   - queue: The operation queue to run the task on
     ///   - completion: The completion block to execute when the operation is done. If you need to do cleanup work, you should instead do the completion work within the operation itself because they launch BackgroundTasks
     private func enqueue(operation: SyncOperation, task: SyncTask, queue: OperationQueue, completion: (() -> Void)? = nil) {
-        let persistentTask: PersistentSyncTask = PersistentSyncTask(context: space.backgroundContext)
+        let childBGContext = space.makeChildBackgroundContext()
+        let persistentTask: PersistentSyncTask = PersistentSyncTask(context: childBGContext)
         persistentTask.createdAt = Date()
         persistentTask.syncTaskContainer = SyncTaskContainer(task: task)
-        try? space.save()
+
+        // save the child context
+        try? childBGContext.performAndWait {
+            guard childBGContext.hasChanges else {
+                return
+            }
+            try childBGContext.save()
+            // then save the parent context
+            try space.save()
+        }
 
         enqueue(operation: operation, persistentTask: persistentTask, queue: queue, completion: completion)
     }

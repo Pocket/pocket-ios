@@ -85,6 +85,36 @@ class PocketSourceTests: XCTestCase {
         )
     }
 
+    func test_fetching_from_different_threads() async {
+        sessionProvider.session = MockSession()
+
+        operations.stubFetchSaves { _, _, _, _  in
+            TestSyncOperation { }
+        }
+
+        operations.stubFetchArchive { _, _, _, _  in
+            TestSyncOperation { }
+        }
+
+        let source = subject()
+
+        let expectationToFetchSaves = expectation(description: "Fetch Saves")
+        let expectationToFetchArchive = expectation(description: "Fetch Archive")
+
+        Task {
+            source.refreshSaves {
+                expectationToFetchSaves.fulfill()
+            }
+        }
+        Task {
+            source.refreshArchive {
+                expectationToFetchArchive.fulfill()
+            }
+        }
+
+        await fulfillment(of: [expectationToFetchSaves, expectationToFetchArchive], timeout: 10)
+    }
+
     func test_refresh_addsFetchSavesOperationToQueue() {
         let session = MockSession()
         sessionProvider.session = session
