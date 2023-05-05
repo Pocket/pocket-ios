@@ -24,9 +24,7 @@ extension Response {
     static func throttle() -> Response {
         Response {
             Status.tooManyRequests
-            Fixture.load(name: "initial-list")
-                .replacing("MARTICLE", withFixtureNamed: "marticle")
-                .data
+            Fixture.load(name: "throttled-user").data
         }
     }
 
