@@ -7,18 +7,13 @@ import Analytics
 
 class LocalSavesSearch {
     private let source: Source
-    private var cache: [String: [PocketItem]] = [:]
 
     init(source: Source) {
         self.source = source
     }
 
     func search(with term: String) -> [PocketItem] {
-        guard cache[term] == nil else {
-            return cache[term] ?? []
-        }
         let items = source.searchSaves(search: term)?.compactMap { PocketItem(item: $0) } ?? []
-        cache[term] = items
-        return cache[term] ?? []
+        return items
     }
 }
