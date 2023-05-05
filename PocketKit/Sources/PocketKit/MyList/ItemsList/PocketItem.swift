@@ -6,7 +6,7 @@ import Foundation
 import PocketGraph
 
 struct PocketItem {
-    private let item: ItemsListItem
+    let item: ItemsListItem
     private let itemPresenter: ItemsListItemPresenter
 
     init(item: ItemsListItem) {
