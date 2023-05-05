@@ -52,7 +52,7 @@ public enum Requests {
         var allPredicate = NSCompoundPredicate(type: .or, subpredicates: [urlPredicate, titlePredicate, unarchivedPredicate])
         if isPremium {
             let tagsPredicate = NSPredicate(format: "%@ IN tags.name", searchTerm)
-            allPredicate = NSCompoundPredicate(type: .or, subpredicates: [urlPredicate, titlePredicate, tagsPredicate])
+            allPredicate = NSCompoundPredicate(type: .or, subpredicates: [urlPredicate, titlePredicate, unarchivedPredicate, tagsPredicate])
         }
         request.predicate = allPredicate
         return request
