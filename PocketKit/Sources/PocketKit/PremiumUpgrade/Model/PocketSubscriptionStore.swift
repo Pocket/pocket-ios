@@ -174,7 +174,7 @@ private extension PocketSubscriptionStore {
             // if the subscription is expired, revert to free
             state = .unsubscribed
             user.setPremiumStatus(false)
-            Log.capture(message: "Subscription was expired")
+            Log.debug("Subscription was expired")
             return
         }
 
