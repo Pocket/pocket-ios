@@ -6,6 +6,7 @@ import Foundation
 import Localization
 import Textile
 import Combine
+import SharedPocketKit
 
 /// Listens for general notifications and reroutes them to the appropriate NotificationCentre instance
 class NotificationRelay {
