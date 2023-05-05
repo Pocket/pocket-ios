@@ -21,6 +21,15 @@ extension Response {
         }
     }
 
+    static func throttle() -> Response {
+        Response {
+            Status.tooManyRequests
+            Fixture.load(name: "initial-list")
+                .replacing("MARTICLE", withFixtureNamed: "marticle")
+                .data
+        }
+    }
+
     static func freeUserSaves(_ fixtureName: String = "initial-list") -> Response {
         saves("initial-list-free-user")
     }
