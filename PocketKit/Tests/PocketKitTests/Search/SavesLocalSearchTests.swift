@@ -31,7 +31,7 @@ class LocalSavesSearchTests: XCTestCase {
     func test_search_showsResultsAndCaches() throws {
         try setupLocalSavesSearch()
         let sut = subject()
-        var results = sut.search(with: "saved")
+        let results = sut.search(with: "saved")
         XCTAssertEqual(results.count, 2)
     }
 
