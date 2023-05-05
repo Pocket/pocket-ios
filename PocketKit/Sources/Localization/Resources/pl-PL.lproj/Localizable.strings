@@ -35,7 +35,7 @@
 "itemlist.filter.all" = "Wszystkie";
 "itemlist.filter.tagged" = "Oznaczony tagiem";
 "itemlist.filter.favorites" = "Ulubione";
-"itemlist.filter.sortFilter" = "Sortuj/filtruj";
+"itemlist.filter.sortFilter" = "Sortuj";
 "itemList.edit.banner" = "Edytowanie własnej listy nie jest dostępne w tej wersji Pocket, ale wróci już wkrótce!";
 
 //List view
@@ -73,7 +73,6 @@
 "search.error.view.needsInternet" = "Aby wyświetlić ten element, musisz mieć połączenie z Internetem.";
 "search.recent" = "Ostatnie wyszukiwania";
 "search.recent.empty" = "Pojawią się tutaj ostatnie wyszukiwania, aby móc łatwo do nich wrócić.";
-"search.swipe.unableToMove" = "Nie można przenieść";
 "search.swipe.archive" = "Archiwum";
 "search.swipe.moveToSaves" = "Przejdź do Zapisanych";
 "search.edit.banner" = "Edytowanie wyników wyszukiwania nie jest dostępne w tej wersji Pocket, ale wróci już wkrótce!";
@@ -149,11 +148,16 @@
 "tags.section.recentTags" = "Ostatnie tagi";
 "tags.section.userTags" = "Moje tagi";
 
-"tags.empty.header" = "Brak zapisanych elementów z tym tagiem.";
+"tags.empty.header" = "No Saves with this tag";
 "tags.empty.detail" = "Oznacz zapisane elementy według tematu, aby znaleźć je później.";
 "tags.empty.button" = "Jak oznaczyć";
 
 "tags.notTagged" = "Nieoznaczone tagiem";
+"tags.deleteTag" = "Usunąć tag?";
+"tags.deleteTag.message" = "Deleting this tag removes it from all items.";
+
+"tags.renameTag" = "Zmień nazwę tagu";
+"tags.renameTag.message" = "Wprowadź nową nazwę tego tagu";
 
 //Reader 
 "reader.activity.save" = "Zapisz";
@@ -176,7 +180,7 @@
 
 //The title of our Premium Membership page spans 2 lines. The '\n' character denotes a newline character and is not shown to the user.
 "premium.upgradeView.PremiumMembership" = "Członkostwo\nPremium";
-"premium.upgradeView.comingSoon" = "Już wkrótce!";
+
 // Description of the premium uprgade view
 "premium.upgradeView.description" = "Twoja karta kredytowa zostanie obciążona kosztem subskrypcji za pośrednictwem konta iTunes. Rachunek zostanie obciążony opłatą w wysokości %1$@ (miesięcznie) lub %2$@ (rocznie) wraz z odnowieniem subskrypcji w ciągu 24 godzin poprzedzających zakończenie bieżącego okresu. Subskrypcje zostaną automatycznie odnowione, jeśli nie zostaną anulowane co najmniej 24 godziny przed zakończeniem bieżącego okresu. Nie ma możliwości natychmiastowego anulowania subskrypcji. Zarządzanie subskrypcjami oraz wyłączenie automatycznego odnowienia subskrypcji jest możliwe w ustawieniach konta po jej wykupieniu. W przypadku niepełnego wykorzystania subskrypcji nie przysługują zwroty.";
 "premium.upgradeView.save" = "Zapisz";
@@ -246,14 +250,12 @@
 "Your quiet corner of the Internet" = "Twój cichy zakątek Internetu";
 "Pocket saves articles in a clean layout designed for reading—no interruptions, no popups—so you can sidestep the Internet's noise." = "Pocket zapisuje artykuły w przejrzystym układzie ułatwiającym czytanie – bez przerw, bez wyskakujących okien – omijając internetowy zgiełk.";
 
-"Log In" = "Zaloguj się";
-"Sign Up" = "Zarejestruj";
+"Log In" = "Zalogować się";
+"Sign Up" = "Zarejestruj się";
 
 "Tell us more" = "Powiedz nam więcej";
 "Report a concern" = "Zgłoś obawy";
 "Add copied URL to your Saves?" = "Dodać skopiowany adres URL do zapisanych?";
-
-"Premium Status:" = "Status Premium:";
 
 "Your Account" = "Twoje konto";
 "Sign Out" = "Wyloguj się";
@@ -265,14 +267,9 @@
 "Terms of Service" = "Warunki użytkowania usługi";
 "Privacy Policy" = "Zasady ochrony prywatności";
 
-"not tagged" = "Nieoznaczone tagiem";
-"Delete Tag?" = "Usunąć tag?";
-"Are you sure you want to delete the tags and remove it from all items?" = "Czy na pewno wykasować tagi i usunąć je ze wszystkich elementów?";
 "Delete" = "Usuń";
 "Cancel" = "Anuluj";
-"Rename Tag" = "Zmień nazwę tagu";
 "Rename" = "Zmień nazwę";
-"Enter a new name for this tag" = "Wprowadź nową nazwę tego tagu";
 "Close" = "Zamknij";
 
 "not tagged" = "Nieoznaczone tagiem";
@@ -281,9 +278,6 @@
 
 "Reported" = "Zgłoszono";
 "Submit feedback" = "Prześlij opinię";
-
-"Sign up for Premium" = "Subskrybuj aplikację Premium";
-"Premium Subscriber" = "Subskrybent aplikacji Premium";
 
 "The title, link, or image is broken" = "Tytuł, łącze lub obraz są uszkodzone";
 "It's in the wrong category" = "Nieprawidłowa kategoria";

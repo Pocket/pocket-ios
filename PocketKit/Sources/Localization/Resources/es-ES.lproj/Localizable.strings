@@ -35,7 +35,7 @@
 "itemlist.filter.all" = "Todo";
 "itemlist.filter.tagged" = "Etiquetado";
 "itemlist.filter.favorites" = "Favoritos";
-"itemlist.filter.sortFilter" = "Ordenar/filtrar";
+"itemlist.filter.sortFilter" = "Ordenar";
 "itemList.edit.banner" = "En esta versión de Pocket no está disponible la edición de tu lista, pero volverá pronto.";
 
 //List view
@@ -73,7 +73,6 @@
 "search.error.view.needsInternet" = "Debes disponer de conexión a Internet para ver este ítem.";
 "search.recent" = "Búsquedas recientes";
 "search.recent.empty" = "Las búsquedas recientes aparecerán aquí, para que puedas volver a ellas fácilmente.";
-"search.swipe.unableToMove" = "No se puede mover";
 "search.swipe.archive" = "Archivo";
 "search.swipe.moveToSaves" = "Mover a Guardados";
 "search.edit.banner" = "La edición de los resultados de tu búsqueda no está disponible en esta versión de Pocket, pero volverá pronto.";
@@ -149,11 +148,16 @@
 "tags.section.recentTags" = "Etiquetas recientes";
 "tags.section.userTags" = "Mis etiquetas";
 
-"tags.empty.header" = "No se ha guardado nada con esta etiqueta.";
+"tags.empty.header" = "No Saves with this tag";
 "tags.empty.detail" = "Etiqueta por tema los artículos guardados para encontrarlos más tarde.";
 "tags.empty.button" = "Cómo etiquetar";
 
 "tags.notTagged" = "Sin etiquetar";
+"tags.deleteTag" = "¿Eliminar etiqueta?";
+"tags.deleteTag.message" = "Deleting this tag removes it from all items.";
+
+"tags.renameTag" = "Renombrar etiqueta";
+"tags.renameTag.message" = "Escribe un nuevo nombre para esta etiqueta";
 
 //Reader 
 "reader.activity.save" = "Guardar";
@@ -176,7 +180,7 @@
 
 //The title of our Premium Membership page spans 2 lines. The '\n' character denotes a newline character and is not shown to the user.
 "premium.upgradeView.PremiumMembership" = "Suscripción\nPremium";
-"premium.upgradeView.comingSoon" = "¡Próximamente!";
+
 // Description of the premium uprgade view
 "premium.upgradeView.description" = "Las suscripciones se cargarán a tu tarjeta de crédito a través de tu cuenta de iTunes. Se te cobrarán a tu cuenta %1$@ (mensualmente) o %2$@ (anualmente), realizándose la renovación en las 24 horas anteriores a la finalización del periodo en curso. Las suscripciones se renovarán automáticamente a no ser que se cancelen al menos 24 horas antes del final del periodo actual. No es posible cancelar una suscripción de forma inmediata. Puedes gestionar tus suscripciones y desactivar la renovación automática accediendo a la configuración de tu cuenta tras la compra. No se admite la devolución de las partes de una suscripción de las que no hagas uso.";
 "premium.upgradeView.save" = "Guardar";
@@ -253,8 +257,6 @@
 "Report a concern" = "Informar sobre un problema";
 "Add copied URL to your Saves?" = "¿Añadir la URL copiada a tus guardados?";
 
-"Premium Status:" = "Estado Premium:";
-
 "Your Account" = "Tu cuenta";
 "Sign Out" = "Cerrar sesión";
 "Are you sure?" = "¿Seguro?";
@@ -265,14 +267,9 @@
 "Terms of Service" = "Condiciones de servicio";
 "Privacy Policy" = "Política de privacidad";
 
-"not tagged" = "Sin etiquetar";
-"Delete Tag?" = "¿Eliminar etiqueta?";
-"Are you sure you want to delete the tags and remove it from all items?" = "¿Seguro que quieres eliminar las etiquetas y quitarlas de todos los ítems?";
 "Delete" = "Eliminar";
 "Cancel" = "Cancelar";
-"Rename Tag" = "Renombrar etiqueta";
 "Rename" = "Renombrar";
-"Enter a new name for this tag" = "Escribe un nuevo nombre para esta etiqueta";
 "Close" = "Cerrar";
 
 "not tagged" = "Sin etiquetar";
@@ -281,9 +278,6 @@
 
 "Reported" = "Reportado";
 "Submit feedback" = "Enviar comentarios";
-
-"Sign up for Premium" = "Regístrate en Premium";
-"Premium Subscriber" = "Suscriptor Premium";
 
 "The title, link, or image is broken" = "El título, el enlace o la imagen están rotos";
 "It's in the wrong category" = "Está en la categoría equivocada";

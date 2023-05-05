@@ -117,7 +117,7 @@ extension DerivedSpace: ArchivedItemSpace {
                 item.update(from: node.fragments.savedItemSummary, with: space)
                 item.cursor = edge.cursor
                 if item.deletedAt != nil {
-                    space.delete(item)
+                    space.delete(item, in: context)
                 }
             }
         }

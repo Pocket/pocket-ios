@@ -75,7 +75,7 @@ struct HomeViewElement: PocketUIElement {
     }
 
     var seeAllCollectionButton: XCUIElement {
-        element.staticTexts["See All"]
+        element.staticTexts["See all"]
     }
 
     var returnToHomeButton: XCUIElement {

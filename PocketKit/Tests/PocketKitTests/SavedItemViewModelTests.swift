@@ -66,7 +66,7 @@ class SavedItemViewModelTests: XCTestCase {
             let viewModel = subject(item: space.buildSavedItem(isFavorite: false, isArchived: false))
             XCTAssertEqual(
                 viewModel._actions.map(\.title),
-                ["Display Settings", "Favorite", "Add Tags", "Delete", "Share"]
+                ["Display settings", "Favorite", "Add tags", "Delete", "Share"]
             )
         }
 
@@ -75,7 +75,7 @@ class SavedItemViewModelTests: XCTestCase {
             let viewModel = subject(item: space.buildSavedItem(isFavorite: true, isArchived: true))
             XCTAssertEqual(
                 viewModel._actions.map(\.title),
-                ["Display Settings", "Unfavorite", "Add Tags", "Delete", "Share"]
+                ["Display settings", "Unfavorite", "Add tags", "Delete", "Share"]
             )
         }
     }
@@ -87,13 +87,13 @@ class SavedItemViewModelTests: XCTestCase {
         item.isFavorite = true
         XCTAssertEqual(
             viewModel._actions.map(\.title),
-            ["Display Settings", "Unfavorite", "Add Tags", "Delete", "Share"]
+            ["Display settings", "Unfavorite", "Add tags", "Delete", "Share"]
         )
 
         item.isArchived = false
         XCTAssertEqual(
             viewModel._actions.map(\.title),
-            ["Display Settings", "Unfavorite", "Add Tags", "Delete", "Share"]
+            ["Display settings", "Unfavorite", "Add tags", "Delete", "Share"]
         )
     }
 
@@ -101,7 +101,7 @@ class SavedItemViewModelTests: XCTestCase {
         source.stubFetchDetails { _ in }
 
         let savedItem = space.buildSavedItem()
-        savedItem.item.article = nil
+        savedItem.item?.article = nil
         try space.save()
 
         let viewModel = subject(item: savedItem)
@@ -151,7 +151,7 @@ class SavedItemViewModelTests: XCTestCase {
 
     func test_displaySettings_updatesIsPresentingReaderSettings() {
         let viewModel = subject(item: space.buildSavedItem())
-        viewModel.invokeAction(title: "Display Settings")
+        viewModel.invokeAction(title: "Display settings")
 
         XCTAssertEqual(viewModel.isPresentingReaderSettings, true)
     }
@@ -196,7 +196,7 @@ class SavedItemViewModelTests: XCTestCase {
             XCTAssertEqual(viewModel?.tags, ["tag 1"])
         }.store(in: &subscriptions)
 
-        viewModel.invokeAction(title: "Add Tags")
+        viewModel.invokeAction(title: "Add tags")
 
         wait(for: [expectAddTags], timeout: 10)
     }
@@ -296,7 +296,7 @@ class SavedItemViewModelTests: XCTestCase {
         let viewModel = subject(item: space.buildSavedItem())
         let url = URL(string: "https://getpocket.com")!
         let actions = viewModel.externalActions(for: url)
-        viewModel.invokeAction(from: actions, title: "Copy Link")
+        viewModel.invokeAction(from: actions, title: "Copy link")
         XCTAssertEqual(pasteboard.url, url)
     }
 

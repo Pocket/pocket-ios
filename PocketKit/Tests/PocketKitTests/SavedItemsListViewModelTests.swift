@@ -256,7 +256,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         let viewModel = subject()
 
         let snapshotSent = expectation(description: "snapshotSent")
-        viewModel.snapshot.dropFirst().sink { [unowned self] snapshot in
+        viewModel.snapshot.dropFirst().sink { snapshot in
             XCTAssertEqual(snapshot.itemIdentifiers(inSection: .items).first, .item(savedItem.objectID))
             snapshotSent.fulfill()
         }.store(in: &subscriptions)
@@ -511,7 +511,7 @@ extension SavedItemsListViewModelTests {
         }.store(in: &subscriptions)
 
         viewModel.overflowActions(for: item.objectID)
-            .first { $0.title == "Add Tags" }?
+            .first { $0.title == "Add tags" }?
             .handler?(nil)
 
         wait(for: [expectAddTags], timeout: 10)

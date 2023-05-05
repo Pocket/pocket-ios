@@ -5,7 +5,7 @@ import SharedPocketKit
 
 /// Generic type to send subscription receipt to a server
 public protocol ReceiptService {
-    func send(_ product: Product?) async throws
+    func send(_ product: Product) async throws
 }
 
 public enum ReceiptError: LoggableError {
@@ -36,7 +36,7 @@ class AppStoreReceiptService: NSObject, ReceiptService {
         super.init()
     }
 
-    func send(_ product: Product?) async throws {
+    func send(_ product: Product) async throws {
         // on simulators, we typically use a local test environment, and don't want
         // to send the receipt to the backend
         #if targetEnvironment(simulator)
@@ -52,10 +52,10 @@ class AppStoreReceiptService: NSObject, ReceiptService {
 
         let transactionInfo = try getReceipt()
         let source = "itunes"
-        let productId = product?.id ?? ""
-        let amount = product?.price != nil ? "\(product!.price)" : ""
-        let transactionType = product != nil ? "purchase" : "restore"
-        let currency = product?.priceFormatStyle.currencyCode ?? ""
+        let productId = product.id
+        let amount = "\(product.price)"
+        let transactionType = "purchase"
+        let currency = product.priceFormatStyle.currencyCode
 
         try await client.sendAppstoreReceipt(
             source: source,
@@ -81,6 +81,7 @@ extension AppStoreReceiptService: SKRequestDelegate {
         continuationQueue.async { [unowned self] in
             self.storeKit1Continuations.forEach { $0.resume(throwing: error) }
             self.storeKit1Continuations.removeAll()
+            Log.capture(message: "StoreKit receipt request failed with error: \(error)")
         }
     }
 }
@@ -91,6 +92,7 @@ private extension AppStoreReceiptService {
     func getReceipt() throws -> String {
         guard let appStoreReceiptURL = Bundle.main.appStoreReceiptURL,
               FileManager.default.fileExists(atPath: appStoreReceiptURL.path) else {
+            Log.capture(message: "Unable to find the StoreKit receipt on device")
             throw ReceiptError.noData
         }
         let receiptString = try Data(contentsOf: appStoreReceiptURL, options: .alwaysMapped)

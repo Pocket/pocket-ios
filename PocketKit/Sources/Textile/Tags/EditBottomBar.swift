@@ -25,7 +25,7 @@ public struct EditBottomBar: ViewModifier {
                     Button(Localization.rename) {
                         showRenameAlert.toggle()
                     }
-                    .alert(Localization.renameTag, isPresented: $showRenameAlert) {
+                    .alert(Localization.Tags.renameTag, isPresented: $showRenameAlert) {
                         TextField("", text: $name)
                             .autocapitalization(.none)
                         Button("OK") {
@@ -33,7 +33,7 @@ public struct EditBottomBar: ViewModifier {
                             name = ""
                         }
                     } message: {
-                        Text(Localization.enterANewNameForThisTag)
+                        Text(Localization.Tags.RenameTag.message)
                     }
                     .disabled(selectedItems.count != 1)
                     .accessibilityIdentifier("rename-button")
@@ -43,11 +43,11 @@ public struct EditBottomBar: ViewModifier {
                     Button(Localization.delete) {
                         showDeleteAlert.toggle()
                     }
-                    .alert(Localization.deleteTag, isPresented: $showDeleteAlert) {
+                    .alert(Localization.Tags.deleteTag, isPresented: $showDeleteAlert) {
                         Button(Localization.cancel, role: .cancel, action: {})
                         Button(Localization.delete, role: .destructive, action: onDelete)
                     } message: {
-                        Text(Localization.areYouSureYouWantToDeleteTheTagsAndRemoveItFromAllItems)
+                        Text(Localization.Tags.DeleteTag.message)
                     }
                     .disabled(selectedItems.count == 0)
                     .accessibilityIdentifier("delete-button")

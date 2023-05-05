@@ -89,6 +89,10 @@ extension SearchSavedItem: ItemsListItem {
     var tagNames: [String]? {
         remoteItem.tags?.compactMap { $0.name }.sorted()
     }
+
+    var savedItemURL: URL? {
+        URL(string: remoteItem.url)
+    }
 }
 
 extension SavedItemParts.Item.AsItem.DomainMetadata: ItemsListItemDomainMetadata { }

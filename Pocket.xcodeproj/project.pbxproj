@@ -1349,7 +1349,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterProAlphaNeue.SaveTo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterProAlphaNeue.AddToPocketExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
@@ -1565,7 +1565,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterProAlphaNeue.SaveTo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterProAlphaNeue.AddToPocketExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
@@ -1841,7 +1841,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.SaveTo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.AddToPocketExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
@@ -1936,7 +1936,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.SaveTo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.AddToPocketExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
@@ -1968,7 +1968,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.SaveTo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.AddToPocketExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
@@ -2079,7 +2079,7 @@
 			repositoryURL = "https://github.com/braze-inc/braze-swift-sdk.git";
 			requirement = {
 				kind = exactVersion;
-				version = 5.14.0;
+				version = 6.0.0;
 			};
 		};
 		6547A0FD29F17AAF00F6FC6B /* XCRemoteSwiftPackageReference "Sails" */ = {

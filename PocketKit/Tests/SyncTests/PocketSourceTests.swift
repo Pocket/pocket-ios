@@ -189,7 +189,7 @@ class PocketSourceTests: XCTestCase {
         }
 
         let savedItem = try space.createSavedItem(item: space.buildItem())
-        let item = savedItem.item
+        let item = savedItem.item!
         item.recommendation = space.buildRecommendation(item: item)
 
         let remoteItemURL = item.givenURL
@@ -207,7 +207,7 @@ class PocketSourceTests: XCTestCase {
         }
 
         let savedItem = try space.createSavedItem(item: space.buildItem())
-        let item = savedItem.item
+        let item = savedItem.item!
 
         let remoteItemURL = item.givenURL
 
@@ -354,7 +354,7 @@ class PocketSourceTests: XCTestCase {
 
         let savedItem = savedItems[0]
         XCTAssertEqual(savedItem.objectID, seededSavedItem.objectID)
-        XCTAssertEqual(savedItem.item.objectID, seededItem.objectID)
+        XCTAssertEqual(savedItem.item?.objectID, seededItem.objectID)
         XCTAssertFalse(savedItem.isArchived)
     }
 
@@ -701,8 +701,8 @@ extension PocketSourceTests {
         let savedItem = source.fetchOrCreateSavedItem(with: URL(string: "http://localhost:8080/hello")!, and: itemParts)
 
         XCTAssertEqual(savedItem?.remoteID, "saved-item")
-        XCTAssertEqual(savedItem?.item.title, "item-title")
-        XCTAssertEqual(savedItem?.item.bestURL.absoluteString, "http://localhost:8080/hello")
+        XCTAssertEqual(savedItem?.item?.title, "item-title")
+        XCTAssertEqual(savedItem?.item?.bestURL.absoluteString, "http://localhost:8080/hello")
     }
 
     private func setupLocalSavesSearch(with urlString: String? = nil) throws {

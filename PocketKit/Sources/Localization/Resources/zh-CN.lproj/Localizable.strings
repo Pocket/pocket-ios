@@ -35,7 +35,7 @@
 "itemlist.filter.all" = "全部";
 "itemlist.filter.tagged" = "已标记";
 "itemlist.filter.favorites" = "收藏夹";
-"itemlist.filter.sortFilter" = "排序/过滤";
+"itemlist.filter.sortFilter" = "排序";
 "itemList.edit.banner" = "暂时无法在此 Pocket 版本中编辑您的列表，但很快就会恢复此功能！";
 
 //List view
@@ -73,7 +73,6 @@
 "search.error.view.needsInternet" = "您必须有互联网连接才能查看此项目。";
 "search.recent" = "最近的搜索";
 "search.recent.empty" = "最近的搜索将显示在此处，因此您可以轻松返回。";
-"search.swipe.unableToMove" = "无法移动";
 "search.swipe.archive" = "存档";
 "search.swipe.moveToSaves" = "移至“保存内容”";
 "search.edit.banner" = "暂时无法在此 Pocket 版本中编辑您的搜索结果，但很快就会恢复此功能！";
@@ -149,11 +148,16 @@
 "tags.section.recentTags" = "最近的标记";
 "tags.section.userTags" = "我的标记";
 
-"tags.empty.header" = "没有使用此标记的已保存内容。";
+"tags.empty.header" = "No Saves with this tag";
 "tags.empty.detail" = "按主题标记您的已保存内容，以便稍后进行查找。";
 "tags.empty.button" = "如何标记";
 
 "tags.notTagged" = "未标记";
+"tags.deleteTag" = "删除标记？";
+"tags.deleteTag.message" = "Deleting this tag removes it from all items.";
+
+"tags.renameTag" = "重命名标记";
+"tags.renameTag.message" = "为此标记输入新名称";
 
 //Reader 
 "reader.activity.save" = "保存";
@@ -176,7 +180,7 @@
 
 //The title of our Premium Membership page spans 2 lines. The '\n' character denotes a newline character and is not shown to the user.
 "premium.upgradeView.PremiumMembership" = "Premium\n会员";
-"premium.upgradeView.comingSoon" = "即将推出！";
+
 // Description of the premium uprgade view
 "premium.upgradeView.description" = "我们将通过您的 iTunes 帐号向您的信用卡收取订购费用。我们将在您的当前订购期限结束前 24 小时内向您的帐号收取续订费用 %1$@（月度）或 %2$@（年度）。除非您在当前订购期限结束前，提前至少 24 小时取消订购，否则将会自动续订。无法立即取消订购。您可以在购买后前往“帐号设置”管理订购并关闭自动续订。订购未使用部分不予退款。";
 "premium.upgradeView.save" = "保存";
@@ -253,8 +257,6 @@
 "Report a concern" = "报告问题";
 "Add copied URL to your Saves?" = "将复制的 URL 添加到您的保存内容？";
 
-"Premium Status:" = "Premium 状态：";
-
 "Your Account" = "您的帐户";
 "Sign Out" = "退出";
 "Are you sure?" = "您确定吗？";
@@ -265,14 +267,9 @@
 "Terms of Service" = "服务条款";
 "Privacy Policy" = "隐私政策";
 
-"not tagged" = "未标记";
-"Delete Tag?" = "删除标记？";
-"Are you sure you want to delete the tags and remove it from all items?" = "是否确定要删除标记并将其从所有项目中删除？";
 "Delete" = "删除";
 "Cancel" = "取消";
-"Rename Tag" = "重命名标记";
 "Rename" = "重命名";
-"Enter a new name for this tag" = "为此标记输入新名称";
 "Close" = "关闭";
 
 "not tagged" = "未标记";
@@ -281,9 +278,6 @@
 
 "Reported" = "已报告";
 "Submit feedback" = "提交反馈";
-
-"Sign up for Premium" = "注册 Premium";
-"Premium Subscriber" = "Premium 订户";
 
 "The title, link, or image is broken" = "标题、链接或图像损坏";
 "It's in the wrong category" = "类别错误";
