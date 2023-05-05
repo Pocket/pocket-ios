@@ -10,6 +10,7 @@ import SharedPocketKit
 class MockOperationFactory: SyncOperationFactory {
     private var implementations: [String: Any] = [:]
     private var calls: [String: [Any]] = [:]
+    private var lock: DispatchQueue = DispatchQueue(label: "")
 }
 
 // MARK: - fetchSaves
@@ -44,15 +45,17 @@ extension MockOperationFactory {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
 
-        calls["fetchSaves"] = (calls["fetchSaves"] ?? []) + [
-            FetchSavesCall(
-                apollo: apollo,
-                space: space,
-                events: events,
-                initialDownloadState: initialDownloadState,
-                lastRefresh: lastRefresh
-            )
-        ]
+        lock.sync {
+            calls["fetchSaves"] = (calls["fetchSaves"] ?? []) + [
+                FetchSavesCall(
+                    apollo: apollo,
+                    space: space,
+                    events: events,
+                    initialDownloadState: initialDownloadState,
+                    lastRefresh: lastRefresh
+                )
+            ]
+        }
 
         return impl(apollo, space, events, initialDownloadState)
     }
@@ -98,15 +101,17 @@ extension MockOperationFactory {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
 
-        calls["fetchArchive"] = (calls["fetchArchive"] ?? []) + [
-            FetchArchiveCall(
-                apollo: apollo,
-                space: space,
-                events: events,
-                initialDownloadState: initialDownloadState,
-                lastRefresh: lastRefresh
-            )
-        ]
+        lock.sync {
+            calls["fetchArchive"] = (calls["fetchArchive"] ?? []) + [
+                FetchArchiveCall(
+                    apollo: apollo,
+                    space: space,
+                    events: events,
+                    initialDownloadState: initialDownloadState,
+                    lastRefresh: lastRefresh
+                )
+            ]
+        }
 
         return impl(apollo, space, events, initialDownloadState)
     }
