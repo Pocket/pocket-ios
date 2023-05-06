@@ -148,13 +148,13 @@
 "tags.section.recentTags" = "Labels récents";
 "tags.section.userTags" = "Mes labels";
 
-"tags.empty.header" = "No Saves with this tag";
+"tags.empty.header" = "Aucune sauvegarde avec ce label";
 "tags.empty.detail" = "Organisez vos sauvegardes par sujet à l'aide d'un label pour les retrouver plus tard.";
 "tags.empty.button" = "Comment ajouter un label";
 
 "tags.notTagged" = "Sans label";
 "tags.deleteTag" = "Supprimer le label ?";
-"tags.deleteTag.message" = "Deleting this tag removes it from all items.";
+"tags.deleteTag.message" = "La suppression de ce label a pour effet de le supprimer de tous les éléments.";
 
 "tags.renameTag" = "Renommer le label";
 "tags.renameTag.message" = "Saisissez le nouveau nom du label";
