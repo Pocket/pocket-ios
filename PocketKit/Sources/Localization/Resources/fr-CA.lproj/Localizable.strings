@@ -148,13 +148,13 @@
 "tags.section.recentTags" = "Balises récentes";
 "tags.section.userTags" = "Mes balises";
 
-"tags.empty.header" = "No Saves with this tag";
+"tags.empty.header" = "Aucune page enregistrée avec cette balise";
 "tags.empty.detail" = "Ajoutez une balise de sujet à vos pages sauvegardées afin de les retrouver plus tard.";
 "tags.empty.button" = "Comment ajouter une balise";
 
 "tags.notTagged" = "Non balisé";
 "tags.deleteTag" = "Supprimer la balise?";
-"tags.deleteTag.message" = "Deleting this tag removes it from all items.";
+"tags.deleteTag.message" = "La suppression de cette balise la retire de tous les éléments.";
 
 "tags.renameTag" = "Renommer la balise";
 "tags.renameTag.message" = "Entrez un nouveau nom pour cette balise";
