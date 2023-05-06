@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "tab.home.launch.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
