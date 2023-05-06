@@ -148,13 +148,13 @@
 "tags.section.recentTags" = "最近のタグ";
 "tags.section.userTags" = "マイタグ";
 
-"tags.empty.header" = "No Saves with this tag";
+"tags.empty.header" = "このタグで保存されているコンテンツはありません";
 "tags.empty.detail" = "保存内容にトピック別のタグをつければ、後で見つけやすくなります。";
 "tags.empty.button" = "タグを付ける方法";
 
 "tags.notTagged" = "タグ付けされていません";
 "tags.deleteTag" = "タグを削除しますか？";
-"tags.deleteTag.message" = "Deleting this tag removes it from all items.";
+"tags.deleteTag.message" = "このタグを削除すると、すべてのアイテムからタグが削除されます。";
 
 "tags.renameTag" = "タグの名前を変更する";
 "tags.renameTag.message" = "このタグの新しい名前を入力";
