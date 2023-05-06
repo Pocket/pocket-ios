@@ -148,13 +148,13 @@
 "tags.section.recentTags" = "Ostatnie tagi";
 "tags.section.userTags" = "Moje tagi";
 
-"tags.empty.header" = "No Saves with this tag";
+"tags.empty.header" = "Brak zapisanych elementów z tym tagiem";
 "tags.empty.detail" = "Oznacz zapisane elementy według tematu, aby znaleźć je później.";
 "tags.empty.button" = "Jak oznaczyć";
 
 "tags.notTagged" = "Nieoznaczone tagiem";
 "tags.deleteTag" = "Usunąć tag?";
-"tags.deleteTag.message" = "Deleting this tag removes it from all items.";
+"tags.deleteTag.message" = "Usunięcie tego tagu spowoduje usunięcie go ze wszystkich elementów.";
 
 "tags.renameTag" = "Zmień nazwę tagu";
 "tags.renameTag.message" = "Wprowadź nową nazwę tego tagu";
