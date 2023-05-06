@@ -148,13 +148,13 @@
 "tags.section.recentTags" = "Etiquetas recentes";
 "tags.section.userTags" = "As minhas etiquetas";
 
-"tags.empty.header" = "No Saves with this tag";
+"tags.empty.header" = "Não guardou nada com esta etiqueta";
 "tags.empty.detail" = "Coloque uma etiqueta por tópico nos itens que guardou para os encontrar mais tarde.";
 "tags.empty.button" = "Como colocar etiquetas";
 
 "tags.notTagged" = "Não etiquetado";
 "tags.deleteTag" = "Eliminar Etiqueta?";
-"tags.deleteTag.message" = "Deleting this tag removes it from all items.";
+"tags.deleteTag.message" = "A eliminação desta etiqueta remove-a de todos os itens.";
 
 "tags.renameTag" = "Mudar o Nome da Etiqueta";
 "tags.renameTag.message" = "Introduza um nome novo para esta etiqueta";
