@@ -27,7 +27,7 @@ struct SettingsForm: View {
     var body: some View {
         Form {
             Group {
-                if model.featureFlags.isAssigned(flag: .debugMenu) {
+                if model.showDebugMenu {
                     Section(header: Text("Developer mode").style(.settings.header)) {
                         SettingsRowButton(title: "Debug menu", icon: SFIconModel("ladybug.fill")) {
                             model.isPresentingDebugMenu.toggle()
