@@ -25,6 +25,7 @@ public extension ApolloClientProtocol {
                 switch result {
                 case .failure(let error):
                     Log.capture(error: error, filename: filename, line: line, column: column, funcName: funcName)
+                    Self.checkForServerError(error)
                     continuation.resume(throwing: error)
                 case .success(let data):
                     guard let errors = data.errors,
@@ -52,6 +53,7 @@ public extension ApolloClientProtocol {
                 switch result {
                 case .failure(let error):
                     Log.capture(error: error, filename: filename, line: line, column: column, funcName: funcName)
+                    Self.checkForServerError(error)
                     continuation.resume(throwing: error)
                 case .success(let data):
                     guard let errors = data.errors,
@@ -66,5 +68,18 @@ public extension ApolloClientProtocol {
                 }
             }
         }
+    }
+
+    private static func checkForServerError(_ error: Error) {
+
+        // Codes we wish to notify the user about
+        let serverErrorCodes = [429]
+
+        guard let responseError = error as? ResponseCodeInterceptor.ResponseCodeError,
+              case .invalidResponseCode(let response, _) = responseError,
+              let code = response?.statusCode,
+              serverErrorCodes.contains(code) else { return }
+
+        NotificationCenter.default.post(name: .serverError, object: code)
     }
 }

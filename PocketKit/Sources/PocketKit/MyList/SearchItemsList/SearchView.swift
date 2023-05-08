@@ -64,9 +64,10 @@ struct ResultsView: View {
                     if triggerNextPage {
                         viewModel.loadMoreSearchResults(with: item, at: index)
                     }
-                    viewModel.trackViewResults(url: item.url, index: index)
+                    viewModel.trackViewResults(url: item.savedItemURL, index: index)
                 }
             }
+            .listRowBackground(Color.clear)
         }
         .zIndex(-1)
         .listStyle(.plain)
@@ -168,7 +169,7 @@ struct RecentSearchView: View {
                     .onTapGesture {
                         viewModel.searchText = recentSearch
                     }
-                }
+                }.listRowBackground(Color.clear)
             }
         }
         .listStyle(.plain)

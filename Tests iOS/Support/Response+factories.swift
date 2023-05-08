@@ -21,6 +21,13 @@ extension Response {
         }
     }
 
+    static func throttle() -> Response {
+        Response {
+            Status.tooManyRequests
+            Fixture.load(name: "throttled-user").data
+        }
+    }
+
     static func freeUserSaves(_ fixtureName: String = "initial-list") -> Response {
         saves("initial-list-free-user")
     }

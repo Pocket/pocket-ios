@@ -17,7 +17,7 @@
 "item.overflowMenu.moveToSaves" = "Mover a Guardado";
 
 //ItemAction
-"itemAction.addTags" = "Agregar etiquetas";
+"itemAction.addTags" = "Agregar Etiquetas";
 "itemAction.archive" = "Archivo";
 "itemAction.copyLink" = "Copiar enlace";
 "itemAction.delete" = "Eliminar";
@@ -35,7 +35,7 @@
 "itemlist.filter.all" = "Todo";
 "itemlist.filter.tagged" = "Etiquetado";
 "itemlist.filter.favorites" = "Favoritos";
-"itemlist.filter.sortFilter" = "Ordenar/filtrar";
+"itemlist.filter.sortFilter" = "Ordenar";
 "itemList.edit.banner" = "La edición de tu lista no está disponible en esta versión de Pocket, ¡pero volverá pronto!";
 
 //List view
@@ -73,7 +73,6 @@
 "search.error.view.needsInternet" = "Debes tener una conexión a Internet para ver este enlace.";
 "search.recent" = "Búsquedas recientes";
 "search.recent.empty" = "Las búsquedas recientes aparecerán aquí para que puedas volver fácilmente.";
-"search.swipe.unableToMove" = "No se puede mover";
 "search.swipe.archive" = "Archivo";
 "search.swipe.moveToSaves" = "Mover a Guardado";
 "search.edit.banner" = "La edición de tus resultados de búsqueda no está disponible en esta versión de Pocket, ¡pero volverá pronto!";
@@ -149,11 +148,16 @@
 "tags.section.recentTags" = "Etiquetas recientes";
 "tags.section.userTags" = "Mis etiquetas";
 
-"tags.empty.header" = "No has guardado nada con esta etiqueta.";
+"tags.empty.header" = "No has guardado nada con esta etiqueta";
 "tags.empty.detail" = "Etiqueta el contenido guardado por tema para poder encontrarlo más tarde.";
 "tags.empty.button" = "Cómo etiquetar";
 
 "tags.notTagged" = "No etiquetados";
+"tags.deleteTag" = "¿Eliminar etiqueta?";
+"tags.deleteTag.message" = "Si eliminas esta etiqueta, se borrará de todos los enlaces.";
+
+"tags.renameTag" = "Cambiar el nombre de la etiqueta";
+"tags.renameTag.message" = "Ingresa un nombre nuevo para esta etiqueta";
 
 //Reader 
 "reader.activity.save" = "Guardar";
@@ -176,7 +180,7 @@
 
 //The title of our Premium Membership page spans 2 lines. The '\n' character denotes a newline character and is not shown to the user.
 "premium.upgradeView.PremiumMembership" = "Membresía\nPremium";
-"premium.upgradeView.comingSoon" = "¡Muy pronto!";
+
 // Description of the premium uprgade view
 "premium.upgradeView.description" = "Las suscripciones se cobrarán a tu tarjeta de crédito a través de tu cuenta de iTunes. Se cargarán %1$@ (por mes) o %2$@ (por año) en tu cuenta por la renovación en el transcurso de las 24 horas previas a la finalización del período actual. Tus suscripciones se renovarán automáticamente, a menos que las canceles, como mínimo, 24 horas antes del final de período actual. No es posible cancelar una suscripción de forma inmediata. Puedes manejar las suscripciones y desactivar la renovación automática en la sección de configuración de cuenta una vez finalizada la compra. Tampoco podemos efectuar un reembolso para períodos no utilizados de una suscripción.";
 "premium.upgradeView.save" = "Guardar";
@@ -206,7 +210,7 @@
 "No Internet Connection" = "Sin conexión a Internet";
 "Looks like you're offline. Try checking your mobile data or wifi." = "Parece que no estás conectado a Internet. Verifica tus datos móviles o el wifi.";
 
-"Add Tags" = "Agregar etiquetas";
+"Add Tags" = "Agregar Etiquetas";
 "Tags" = "Etiquetas";
 "Share" = "Compartir";
 "carousel.listen" = "Escuchar";
@@ -253,8 +257,6 @@
 "Report a concern" = "Informa una inquietud";
 "Add copied URL to your Saves?" = "¿Quieres agregar la URL copiada a Guardado?";
 
-"Premium Status:" = "Estado Premium:";
-
 "Your Account" = "Tu cuenta";
 "Sign Out" = "Cerrar sesión";
 "Are you sure?" = "¿Estás seguro?";
@@ -262,17 +264,12 @@
 "App Customization" = "Personalización de la aplicación";
 "Show App Badge Count" = "Mostrar contador en el icono de la aplicación";
 "About & Support" = "Soporte y Acerca de";
-"Terms of Service" = "Términos del Servicio";
+"Terms of Service" = "Condiciones del servicio";
 "Privacy Policy" = "Política de privacidad";
 
-"not tagged" = "No etiquetados";
-"Delete Tag?" = "¿Eliminar etiqueta?";
-"Are you sure you want to delete the tags and remove it from all items?" = "¿Estás seguro de que deseas borrar las etiquetas y eliminarlas de todos los elementos?";
 "Delete" = "Eliminar";
 "Cancel" = "Cancelar";
-"Rename Tag" = "Cambiar el nombre de la etiqueta";
 "Rename" = "Cambiar nombre";
-"Enter a new name for this tag" = "Ingresa un nombre nuevo para esta etiqueta";
 "Close" = "Cerrar";
 
 "not tagged" = "No etiquetados";
@@ -281,9 +278,6 @@
 
 "Reported" = "Reportada";
 "Submit feedback" = "Enviar comentarios";
-
-"Sign up for Premium" = "Regístrate en Premium";
-"Premium Subscriber" = "Suscriptor de Premium";
 
 "The title, link, or image is broken" = "El título, el enlace o la imagen están dañados";
 "It's in the wrong category" = "Está en la categoría incorrecta";

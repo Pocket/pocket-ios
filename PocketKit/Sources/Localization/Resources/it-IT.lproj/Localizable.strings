@@ -35,7 +35,7 @@
 "itemlist.filter.all" = "Tutti";
 "itemlist.filter.tagged" = "Con tag";
 "itemlist.filter.favorites" = "Preferiti";
-"itemlist.filter.sortFilter" = "Ordina/Filtra";
+"itemlist.filter.sortFilter" = "Ordina";
 "itemList.edit.banner" = "Questa versione di Pocket non permette di modificare l'elenco, ma la funzionalità tornerà disponibile a breve.";
 
 //List view
@@ -73,7 +73,6 @@
 "search.error.view.needsInternet" = "Per visualizzare questo elemento è necessaria una connessione a Internet.";
 "search.recent" = "Ricerche recenti";
 "search.recent.empty" = "Le ricerche recenti vengono visualizzate qui, in modo che tu possa recuperarle facilmente.";
-"search.swipe.unableToMove" = "Impossibile spostare";
 "search.swipe.archive" = "Archivio";
 "search.swipe.moveToSaves" = "Vai su Salvati";
 "search.edit.banner" = "Questa versione di Pocket non permette di modificare i risultati della ricerca, ma la funzionalità tornerà disponibile a breve.";
@@ -130,7 +129,7 @@
 "settings.premium.settings.purchaseLocation" = "Luogo dell'acquisto";
 "settings.premium.settings.price" = "Prezzo";
 "settings.premium.settings.yourSubscription" = "Il tuo abbonamento";
-"settings.premium.settings.manageYourSubscription" = "Gestisci abbonamento";
+"settings.premium.settings.manageYourSubscription" = "Gestisci il tuo abbonamento";
 "settings.premium.settings.questionOrFeedback" = "Domande o suggerimenti?";
 "settings.premium.settings.pocketPremiumFAQ" = "Domande frequenti su Pocket Premium";
 // this refers to an action to open an email
@@ -149,11 +148,16 @@
 "tags.section.recentTags" = "Tag recenti";
 "tags.section.userTags" = "I miei tag";
 
-"tags.empty.header" = "Nessun contenuto salvato con questo tag.";
+"tags.empty.header" = "Nessun contenuto salvato con questo tag";
 "tags.empty.detail" = "Applica un tag per argomento ai contenuti salvati per trovarli in un secondo momento.";
 "tags.empty.button" = "Come applicare un tag";
 
 "tags.notTagged" = "Senza tag";
+"tags.deleteTag" = "Eliminare il tag?";
+"tags.deleteTag.message" = "L'eliminazione di questo tag ne comporta la rimozione da tutti i contenuti.";
+
+"tags.renameTag" = "Rinomina tag";
+"tags.renameTag.message" = "Inserisci un nuovo nome per questo tag";
 
 //Reader 
 "reader.activity.save" = "Salva";
@@ -176,7 +180,7 @@
 
 //The title of our Premium Membership page spans 2 lines. The '\n' character denotes a newline character and is not shown to the user.
 "premium.upgradeView.PremiumMembership" = "Abbonamento\nPremium";
-"premium.upgradeView.comingSoon" = "Disponibile a breve";
+
 // Description of the premium uprgade view
 "premium.upgradeView.description" = "Gli abbonamenti verranno addebitati sulla carta di credito attraverso l'account iTunes. Sul tuo account verranno addebitati %1$@ (al mese) o %2$@ (all'anno) per i rinnovi effettuati entro 24 ore dalla fine del periodo in corso. Gli abbonamenti si rinnoveranno automaticamente salvo in caso di annullamento almeno 24 ore prima della fine del periodo in corso. Non è possibile annullare immediatamente un abbonamento. È possibile gestire gli abbonamenti e disattivare il rinnovo automatico andando sulle impostazioni dell'account dopo l'acquisto. Non è previsto un rimborso per i periodi parziali di abbonamento non utilizzati.";
 "premium.upgradeView.save" = "Salva";
@@ -253,8 +257,6 @@
 "Report a concern" = "Segnala un problema";
 "Add copied URL to your Saves?" = "Aggiungere l'URL copiato ai contenuti salvati?";
 
-"Premium Status:" = "Stato Premium:";
-
 "Your Account" = "Il tuo account";
 "Sign Out" = "Disconnetti";
 "Are you sure?" = "Vuoi procedere?";
@@ -265,14 +267,9 @@
 "Terms of Service" = "Condizioni d'uso";
 "Privacy Policy" = "Tutela della privacy";
 
-"not tagged" = "Senza tag";
-"Delete Tag?" = "Eliminare il tag?";
-"Are you sure you want to delete the tags and remove it from all items?" = "Eliminare i tag e rimuoverli da tutti i contenuti?";
 "Delete" = "Elimina";
 "Cancel" = "Annulla";
-"Rename Tag" = "Rinomina tag";
 "Rename" = "Rinomina";
-"Enter a new name for this tag" = "Inserisci un nuovo nome per questo tag";
 "Close" = "Chiudi";
 
 "not tagged" = "Senza tag";
@@ -281,9 +278,6 @@
 
 "Reported" = "Segnalato";
 "Submit feedback" = "Invia feedback";
-
-"Sign up for Premium" = "Iscriviti a Premium";
-"Premium Subscriber" = "Abbonato Premium";
 
 "The title, link, or image is broken" = "Il titolo, il link o l'immagine sono danneggiati";
 "It's in the wrong category" = "È nella categoria errata";

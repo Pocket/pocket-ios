@@ -6,7 +6,7 @@ import Foundation
 import PocketGraph
 
 struct PocketItem {
-    private let item: ItemsListItem
+    let item: ItemsListItem
     private let itemPresenter: ItemsListItemPresenter
 
     init(item: ItemsListItem) {
@@ -50,8 +50,12 @@ struct PocketItem {
         item.remoteItemParts
     }
 
-    var url: URL? {
+    var bestURL: URL? {
         item.bestURL
+    }
+
+    var savedItemURL: URL? {
+        item.savedItemURL
     }
 
     var cursor: String? {

@@ -35,7 +35,7 @@
 "itemlist.filter.all" = "Tous";
 "itemlist.filter.tagged" = "Avec label";
 "itemlist.filter.favorites" = "Favoris";
-"itemlist.filter.sortFilter" = "Trier/Filtrer";
+"itemlist.filter.sortFilter" = "Trier";
 "itemList.edit.banner" = "Dans cette version de Pocket, vous ne pouvez pas modifier votre liste, mais cette fonctionnalité sera bientôt de retour !";
 
 //List view
@@ -73,7 +73,6 @@
 "search.error.view.needsInternet" = "Vous devez disposer d'une connexion Internet pour afficher cet élément.";
 "search.recent" = "Recherches récentes";
 "search.recent.empty" = "Les recherches récentes apparaîtront ici pour que vous puissiez y revenir facilement.";
-"search.swipe.unableToMove" = "Déplacement impossible";
 "search.swipe.archive" = "Archives";
 "search.swipe.moveToSaves" = "Déplacer vers Sauvegardes";
 "search.edit.banner" = "Dans cette version de Pocket, vous ne pouvez pas modifier vos résultats de recherche, mais cette fonctionnalité sera bientôt de retour !";
@@ -149,11 +148,16 @@
 "tags.section.recentTags" = "Labels récents";
 "tags.section.userTags" = "Mes labels";
 
-"tags.empty.header" = "Aucune sauvegarde avec ce label.";
+"tags.empty.header" = "Aucune sauvegarde avec ce label";
 "tags.empty.detail" = "Organisez vos sauvegardes par sujet à l'aide d'un label pour les retrouver plus tard.";
 "tags.empty.button" = "Comment ajouter un label";
 
 "tags.notTagged" = "Sans label";
+"tags.deleteTag" = "Supprimer le label ?";
+"tags.deleteTag.message" = "La suppression de ce label a pour effet de le supprimer de tous les éléments.";
+
+"tags.renameTag" = "Renommer le label";
+"tags.renameTag.message" = "Saisissez le nouveau nom du label";
 
 //Reader 
 "reader.activity.save" = "Enregistrer";
@@ -176,7 +180,7 @@
 
 //The title of our Premium Membership page spans 2 lines. The '\n' character denotes a newline character and is not shown to the user.
 "premium.upgradeView.PremiumMembership" = "Abonnement\nPremium";
-"premium.upgradeView.comingSoon" = "Prochainement !";
+
 // Description of the premium uprgade view
 "premium.upgradeView.description" = "Les échéances des abonnements seront débitées de votre carte bancaire via votre compte iTunes. En cas de renouvellement, votre compte sera débité de %1$@ (tous les mois) ou de %2$@ (tous les ans) dans les 24 heures précédant la fin de la période en cours. Les abonnements sont automatiquement renouvelés, sauf s'ils sont résiliés au moins 24 heures avant la fin de la période en cours. Il est impossible de résilier instantanément un abonnement. Vous pouvez gérer les abonnements et désactiver le renouvellement automatique en accédant aux paramètres de votre compte après l'achat. Aucun remboursement n'est effectué pour la fraction inutilisée d'un abonnement.";
 "premium.upgradeView.save" = "Enregistrer";
@@ -246,14 +250,12 @@
 "Your quiet corner of the Internet" = "Votre havre de paix du Web";
 "Pocket saves articles in a clean layout designed for reading—no interruptions, no popups—so you can sidestep the Internet's noise." = "Dans Pocket, vous pouvez sauvegarder des articles dans un environnement simple qui facilite la lecture et limite les distractions.";
 
-"Log In" = "Se connecter";
-"Sign Up" = "S'inscrire";
+"Log In" = "Connexion";
+"Sign Up" = "Inscription";
 
 "Tell us more" = "Dites-nous en davantage";
 "Report a concern" = "Signaler un problème";
 "Add copied URL to your Saves?" = "Ajouter l'URL copiée à vos sauvegardes ?";
-
-"Premium Status:" = "Statut Premium :";
 
 "Your Account" = "Votre compte";
 "Sign Out" = "Se déconnecter";
@@ -265,14 +267,9 @@
 "Terms of Service" = "Conditions générales d'utilisation";
 "Privacy Policy" = "Politique de confidentialité";
 
-"not tagged" = "Sans label";
-"Delete Tag?" = "Supprimer le label ?";
-"Are you sure you want to delete the tags and remove it from all items?" = "Voulez-vous vraiment supprimer les labels et les dissocier de tous les éléments ?";
 "Delete" = "Supprimer";
 "Cancel" = "Annuler";
-"Rename Tag" = "Renommer le label";
 "Rename" = "Renommer";
-"Enter a new name for this tag" = "Saisissez le nouveau nom du label";
 "Close" = "Fermer";
 
 "not tagged" = "Sans label";
@@ -281,9 +278,6 @@
 
 "Reported" = "Signalé";
 "Submit feedback" = "Envoyer des commentaires";
-
-"Sign up for Premium" = "S'inscrire à Premium";
-"Premium Subscriber" = "Abonné Premium";
 
 "The title, link, or image is broken" = "Le titre, le lien ou l'image ne fonctionne plus";
 "It's in the wrong category" = "La catégorie n'est pas correcte";

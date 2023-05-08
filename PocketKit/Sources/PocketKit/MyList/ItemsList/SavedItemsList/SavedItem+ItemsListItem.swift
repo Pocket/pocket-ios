@@ -55,6 +55,10 @@ extension SavedItem: ItemsListItem {
     var cursor: String? {
         item?.savedItem?.cursor
     }
+
+    var savedItemURL: URL? {
+        url
+    }
 }
 
 extension DomainMetadata: ItemsListItemDomainMetadata {

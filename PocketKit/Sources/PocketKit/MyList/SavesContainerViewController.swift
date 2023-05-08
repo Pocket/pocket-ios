@@ -146,6 +146,7 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
     // MARK: Search
     private func setupSearch() {
         let searchViewController = UIHostingController(rootView: SearchView(viewModel: searchViewModel))
+        searchViewController.view.backgroundColor = UIColor(.ui.white1)
         navigationItem.searchController = UISearchController(searchResultsController: searchViewController)
         navigationItem.searchController?.searchBar.delegate = self
         navigationItem.searchController?.searchBar.autocapitalizationType = .none
@@ -486,7 +487,7 @@ extension SavesContainerViewController: SFSafariViewControllerDelegate {
 extension SavesContainerViewController {
     private func showListen(listenViewModel: ListenViewModel) {
         let appConfig = PKTListenAppConfiguration(source: listenViewModel)
-        let listen = PKTListenQueueViewController(audibleQueue: PKTListen.queue(with: appConfig))
+        let listen =  PKTListenContainerViewController(configuration: appConfig)
         listen.title = listenViewModel.title
         self.present(listen, animated: true)
     }

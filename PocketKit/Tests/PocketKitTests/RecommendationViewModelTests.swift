@@ -57,7 +57,7 @@ class RecommendationViewModelTests: XCTestCase {
             let viewModel = subject(recommendation: recommendation)
             XCTAssertEqual(
                 viewModel._actions.map(\.title),
-                ["Display Settings", "Save", "Share", "Report"]
+                ["Display settings", "Save", "Share", "Report"]
             )
         }
 
@@ -71,7 +71,7 @@ class RecommendationViewModelTests: XCTestCase {
             let viewModel = subject(recommendation: recommendation)
             XCTAssertEqual(
                 viewModel._actions.map(\.title),
-                ["Display Settings", "Favorite", "Delete", "Share"]
+                ["Display settings", "Favorite", "Delete", "Share"]
             )
         }
 
@@ -86,7 +86,7 @@ class RecommendationViewModelTests: XCTestCase {
             let viewModel = subject(recommendation: recommendation)
             XCTAssertEqual(
                 viewModel._actions.map(\.title),
-                ["Display Settings", "Unfavorite", "Delete", "Share"]
+                ["Display settings", "Unfavorite", "Delete", "Share"]
             )
         }
     }
@@ -100,31 +100,31 @@ class RecommendationViewModelTests: XCTestCase {
 
         XCTAssertEqual(
             viewModel._actions.map(\.title),
-            ["Display Settings", "Favorite", "Delete", "Share"]
+            ["Display settings", "Favorite", "Delete", "Share"]
         )
 
         savedItem.isFavorite = true
         XCTAssertEqual(
             viewModel._actions.map(\.title),
-            ["Display Settings", "Unfavorite", "Delete", "Share"]
+            ["Display settings", "Unfavorite", "Delete", "Share"]
         )
 
         savedItem.isArchived = false
         XCTAssertEqual(
             viewModel._actions.map(\.title),
-            ["Display Settings", "Unfavorite", "Delete", "Share"]
+            ["Display settings", "Unfavorite", "Delete", "Share"]
         )
 
         item.savedItem = nil
         XCTAssertEqual(
             viewModel._actions.map(\.title),
-            ["Display Settings", "Save", "Share", "Report"]
+            ["Display settings", "Save", "Share", "Report"]
         )
 
         item.savedItem = savedItem
         XCTAssertEqual(
             viewModel._actions.map(\.title),
-            ["Display Settings", "Unfavorite", "Delete", "Share"]
+            ["Display settings", "Unfavorite", "Delete", "Share"]
         )
     }
 
@@ -135,7 +135,7 @@ class RecommendationViewModelTests: XCTestCase {
         let recommendation = space.buildRecommendation(item: space.buildItem())
         let viewModel = subject(recommendation: recommendation)
 
-        viewModel.invokeAction(title: "Display Settings")
+        viewModel.invokeAction(title: "Display settings")
 
         XCTAssertEqual(viewModel.isPresentingReaderSettings, true)
     }
@@ -317,7 +317,7 @@ class RecommendationViewModelTests: XCTestCase {
         let url = URL(string: "https://getpocket.com")!
         let actions = viewModel.externalActions(for: url)
 
-        viewModel.invokeAction(from: actions, title: "Copy Link")
+        viewModel.invokeAction(from: actions, title: "Copy link")
 
         XCTAssertEqual(pasteboard.url, url)
     }

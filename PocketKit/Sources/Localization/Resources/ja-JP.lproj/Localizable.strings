@@ -35,7 +35,7 @@
 "itemlist.filter.all" = "すべて";
 "itemlist.filter.tagged" = "タグ付けしました";
 "itemlist.filter.favorites" = "お気に入り";
-"itemlist.filter.sortFilter" = "並べ替え/フィルター";
+"itemlist.filter.sortFilter" = "並び替え";
 "itemList.edit.banner" = "このバージョンの Pocket でリストの編集を利用することはできませんが、間もなく利用できるようになります！";
 
 //List view
@@ -73,7 +73,6 @@
 "search.error.view.needsInternet" = "このアイテムを見るには、インターネット接続が必要です。";
 "search.recent" = "最近の検索";
 "search.recent.empty" = "最近検索した内容がここに表示されるので、簡単に戻ることができます。";
-"search.swipe.unableToMove" = "移動できません";
 "search.swipe.archive" = "アーカイブ";
 "search.swipe.moveToSaves" = "保存アイテムに移動";
 "search.edit.banner" = "このバージョンの Pocket で検索結果を編集することはできませんが、間もなく編集できるようになります！";
@@ -149,11 +148,16 @@
 "tags.section.recentTags" = "最近のタグ";
 "tags.section.userTags" = "マイタグ";
 
-"tags.empty.header" = "このタグで保存されているコンテンツはありません。";
+"tags.empty.header" = "このタグで保存されているコンテンツはありません";
 "tags.empty.detail" = "保存内容にトピック別のタグをつければ、後で見つけやすくなります。";
 "tags.empty.button" = "タグを付ける方法";
 
 "tags.notTagged" = "タグ付けされていません";
+"tags.deleteTag" = "タグを削除しますか？";
+"tags.deleteTag.message" = "このタグを削除すると、すべてのアイテムからタグが削除されます。";
+
+"tags.renameTag" = "タグの名前を変更する";
+"tags.renameTag.message" = "このタグの新しい名前を入力";
 
 //Reader 
 "reader.activity.save" = "保存";
@@ -176,7 +180,7 @@
 
 //The title of our Premium Membership page spans 2 lines. The '\n' character denotes a newline character and is not shown to the user.
 "premium.upgradeView.PremiumMembership" = "Premium\nメンバーシップ";
-"premium.upgradeView.comingSoon" = "近日公開！";
+
 // Description of the premium uprgade view
 "premium.upgradeView.description" = "購読料は iTunes のアカウントを通してクレジットカードに請求されます。購読は購読期間が終了する24時間前までにキャンセルしない限り自動的に更新され、アカウントごとに %1$@（月額）または %2$@（年額）が請求されます。購読は購読期間が終了する24時間前までにキャンセルしない限り、自動的に更新されます。購読をその場で中止することはできません。購読の管理および自動更新の無効化は、購読契約後にアカウント設定から行うことができます。残った購読期間の購読料の払い戻しはできません。";
 "premium.upgradeView.save" = "保存";
@@ -253,8 +257,6 @@
 "Report a concern" = "懸念事項を報告する";
 "Add copied URL to your Saves?" = "コピーした URL を「保存アイテム」に追加しますか？";
 
-"Premium Status:" = "Premium ステータス：";
-
 "Your Account" = "あなたのアカウント";
 "Sign Out" = "サインアウト";
 "Are you sure?" = "よろしいですか？";
@@ -265,14 +267,9 @@
 "Terms of Service" = "サービス利用規約";
 "Privacy Policy" = "プライバシーポリシー";
 
-"not tagged" = "タグ付けされていません";
-"Delete Tag?" = "タグを削除しますか？";
-"Are you sure you want to delete the tags and remove it from all items?" = "タグを削除し、すべてのアイテムから外してもよろしいですか？";
 "Delete" = "削除";
 "Cancel" = "キャンセル";
-"Rename Tag" = "タグの名前を変更する";
 "Rename" = "名前を変更";
-"Enter a new name for this tag" = "このタグの新しい名前を入力";
 "Close" = "閉じる";
 
 "not tagged" = "タグ付けされていません";
@@ -281,9 +278,6 @@
 
 "Reported" = "報告しました";
 "Submit feedback" = "フィードバックを送信";
-
-"Sign up for Premium" = "Premium に登録";
-"Premium Subscriber" = "Premium 購読者";
 
 "The title, link, or image is broken" = "タイトル、リンク、または画像が破損しています";
 "It's in the wrong category" = "カテゴリーが間違っています";

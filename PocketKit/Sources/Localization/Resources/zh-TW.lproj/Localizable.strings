@@ -35,7 +35,7 @@
 "itemlist.filter.all" = "全部";
 "itemlist.filter.tagged" = "已標記";
 "itemlist.filter.favorites" = "我的最愛";
-"itemlist.filter.sortFilter" = "排序／篩選";
+"itemlist.filter.sortFilter" = "排序";
 "itemList.edit.banner" = "暫時無法在此 Pocket 版本中編輯您的清單，但很快就會恢復該功能！";
 
 //List view
@@ -73,7 +73,6 @@
 "search.error.view.needsInternet" = "您必須有網際網路連線才能檢視此項目。";
 "search.recent" = "近期搜尋";
 "search.recent.empty" = "此處將顯示近期搜尋，以便您可以輕鬆地再次查閱。";
-"search.swipe.unableToMove" = "無法移動";
 "search.swipe.archive" = "封存";
 "search.swipe.moveToSaves" = "移至「儲存項目」";
 "search.edit.banner" = "暫時無法在此 Pocket 版本中編輯您的搜尋結果，但很快就會恢復該功能！";
@@ -149,11 +148,16 @@
 "tags.section.recentTags" = "近期標籤";
 "tags.section.userTags" = "我的標籤";
 
-"tags.empty.header" = "沒有使用此標籤的儲存內容。";
+"tags.empty.header" = "沒有使用此標籤的儲存內容";
 "tags.empty.detail" = "按主題標記儲存的內容，以便日後查找。";
 "tags.empty.button" = "如何標記";
 
 "tags.notTagged" = "未標記";
+"tags.deleteTag" = "刪除標籤？";
+"tags.deleteTag.message" = "刪除此標籤會將其從所有項目中移除。";
+
+"tags.renameTag" = "重新命名標籤";
+"tags.renameTag.message" = "輸入此標籤的新名稱";
 
 //Reader 
 "reader.activity.save" = "儲存";
@@ -176,7 +180,7 @@
 
 //The title of our Premium Membership page spans 2 lines. The '\n' character denotes a newline character and is not shown to the user.
 "premium.upgradeView.PremiumMembership" = "Premium\n會員資格";
-"premium.upgradeView.comingSoon" = "即將推出！";
+
 // Description of the premium uprgade view
 "premium.upgradeView.description" = "系統會透過您的 iTunes 帳戶自您的信用卡收取訂閱費。當期結束前 24 小時內會自您的帳戶收取續訂的 %1$@（月費）或 %2$@（年費）。除非在本期結束前至少 24 小時取消訂閱，否則將會自動續約。訂閱無法立即取消。您可在購買後至「帳戶設定」管理訂閱並關閉自動續約。訂閱未用部份無法退款。";
 "premium.upgradeView.save" = "儲存";
@@ -253,8 +257,6 @@
 "Report a concern" = "舉報問題";
 "Add copied URL to your Saves?" = "將複製的 URL 新增至您的儲存項目？";
 
-"Premium Status:" = "Premium 狀態：";
-
 "Your Account" = "您的帳號";
 "Sign Out" = "登出";
 "Are you sure?" = "您確定嗎？";
@@ -265,14 +267,9 @@
 "Terms of Service" = "服務條款";
 "Privacy Policy" = "隱私政策";
 
-"not tagged" = "未標記";
-"Delete Tag?" = "刪除標籤？";
-"Are you sure you want to delete the tags and remove it from all items?" = "確定要刪除標籤並將其從所有項目中移除？";
 "Delete" = "刪除";
 "Cancel" = "取消";
-"Rename Tag" = "重新命名標籤";
 "Rename" = "重新命名";
-"Enter a new name for this tag" = "輸入此標籤的新名稱";
 "Close" = "關閉";
 
 "not tagged" = "未標記";
@@ -281,9 +278,6 @@
 
 "Reported" = "已舉報";
 "Submit feedback" = "提交回饋意見";
-
-"Sign up for Premium" = "註冊 Premium";
-"Premium Subscriber" = "Premium 訂戶";
 
 "The title, link, or image is broken" = "標題、連結或影像已損壞";
 "It's in the wrong category" = "類別有誤";

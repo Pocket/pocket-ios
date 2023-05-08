@@ -26,7 +26,7 @@ struct ListItem: View {
                 ActionButton(viewModel.favoriteAction(), selected: viewModel.isFavorite)
                 ActionButton(viewModel.shareAction())
                     .sheet(isPresented: $viewModel.presentShareSheet) {
-                        ShareSheetView(activity: PocketItemActivity.fromSaves(url: viewModel.item.url))
+                        ShareSheetView(activity: PocketItemActivity.fromSaves(url: viewModel.item.bestURL))
                             .presentationDetents([.medium])
                     }
                 // Instead of using existing code of overflow, we created a new SwiftUI view

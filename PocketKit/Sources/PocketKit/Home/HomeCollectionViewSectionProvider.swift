@@ -196,7 +196,7 @@ class HomeViewControllerSectionProvider {
                 widthDimension: .fractionalWidth(1),
                 heightDimension: .absolute(
                     numberOfGroups * StyleConstants.groupHeight +
-                    (Constants.sectionSpacing * (numberOfGroups - 1))
+                    (Constants.spacing * (numberOfGroups - 1))
                 )
             ),
             subitems: groups

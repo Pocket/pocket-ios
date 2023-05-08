@@ -511,7 +511,7 @@ extension SavedItemsListViewModelTests {
         }.store(in: &subscriptions)
 
         viewModel.overflowActions(for: item.objectID)
-            .first { $0.title == "Add Tags" }?
+            .first { $0.title == "Add tags" }?
             .handler?(nil)
 
         wait(for: [expectAddTags], timeout: 10)

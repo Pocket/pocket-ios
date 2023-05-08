@@ -35,7 +35,7 @@
 "itemlist.filter.all" = "Tous";
 "itemlist.filter.tagged" = "Balisé";
 "itemlist.filter.favorites" = "Favoris";
-"itemlist.filter.sortFilter" = "Trier/Filtrer";
+"itemlist.filter.sortFilter" = "Organiser";
 "itemList.edit.banner" = "La modification de votre liste n'est pas disponible dans cette version de Pocket, mais elle sera bientôt de retour!";
 
 //List view
@@ -73,7 +73,6 @@
 "search.error.view.needsInternet" = "Vous devez disposer d'une connexion Internet pour afficher cet élément.";
 "search.recent" = "Recherches récentes";
 "search.recent.empty" = "Les recherches récentes s'affichent ici, ce qui vous permet d'y revenir facilement.";
-"search.swipe.unableToMove" = "Déplacement impossible";
 "search.swipe.archive" = "Archives";
 "search.swipe.moveToSaves" = "Déplacer vers les Sauvegardes";
 "search.edit.banner" = "La modification de vos résultats de recherche n'est pas disponible dans cette version de Pocket, mais elle sera bientôt de retour!";
@@ -94,7 +93,7 @@
 "settings.thankyou.credits" = "Merci d'utiliser Pocket";
 "settings.PocketForiOS %@ (%@)" = "Pocket pour iOS %1$@ (%2$@)";
 "settings.openSourceLicenses" = "Licences Open Source";
-"settings.logout" = "Déconnexion";
+"settings.logout" = "Se déconnecter";
 "settings.logout.areYouSureMessage" = "Vous serez déconnecté de votre compte et tous les éléments qui ont été sauvegardés pour être consultés hors ligne seront supprimés de votre appareil.";
 "settings.logout.areyousure" = "Êtes-vous certain?";
 "settings.help" = "Obtenir de l'aide et du soutien";
@@ -130,7 +129,7 @@
 "settings.premium.settings.purchaseLocation" = "Lieu d'achat";
 "settings.premium.settings.price" = "Prix";
 "settings.premium.settings.yourSubscription" = "Votre abonnement";
-"settings.premium.settings.manageYourSubscription" = "Gérer votre abonnement";
+"settings.premium.settings.manageYourSubscription" = "Gérez votre abonnement";
 "settings.premium.settings.questionOrFeedback" = "Des questions ou des commentaires?";
 "settings.premium.settings.pocketPremiumFAQ" = "FAQ de Pocket Premium";
 // this refers to an action to open an email
@@ -149,11 +148,16 @@
 "tags.section.recentTags" = "Balises récentes";
 "tags.section.userTags" = "Mes balises";
 
-"tags.empty.header" = "Aucune page enregistrée avec cette balise.";
+"tags.empty.header" = "Aucune page enregistrée avec cette balise";
 "tags.empty.detail" = "Ajoutez une balise de sujet à vos pages sauvegardées afin de les retrouver plus tard.";
 "tags.empty.button" = "Comment ajouter une balise";
 
 "tags.notTagged" = "Non balisé";
+"tags.deleteTag" = "Supprimer la balise?";
+"tags.deleteTag.message" = "La suppression de cette balise la retire de tous les éléments.";
+
+"tags.renameTag" = "Renommer la balise";
+"tags.renameTag.message" = "Entrez un nouveau nom pour cette balise";
 
 //Reader 
 "reader.activity.save" = "Sauvegarder";
@@ -176,7 +180,7 @@
 
 //The title of our Premium Membership page spans 2 lines. The '\n' character denotes a newline character and is not shown to the user.
 "premium.upgradeView.PremiumMembership" = "Abonnement\nPremium";
-"premium.upgradeView.comingSoon" = "À venir!";
+
 // Description of the premium uprgade view
 "premium.upgradeView.description" = "Les abonnements seront portés à votre carte de crédit par votre compte iTunes. Votre compte sera débité de %1$@ (mensuel) ou de %2$@ (annuel) pour le renouvellement dans les 24 heures avant la fin de la période en cours. Les abonnements seront automatiquement renouvelés à moins d'une annulation d'au moins 24 heures avant la fin de la période courante. Il est impossible d'annuler immédiatement un abonnement. Après l'achat, vous pouvez gérer les abonnements et désactiver le renouvellement automatique dans les paramètres de compte. Aucun remboursement n'est offert pour la période inutilisée d'un abonnement.";
 "premium.upgradeView.save" = "Sauvegarder";
@@ -246,14 +250,12 @@
 "Your quiet corner of the Internet" = "Votre coin paisible de l'Internet";
 "Pocket saves articles in a clean layout designed for reading—no interruptions, no popups—so you can sidestep the Internet's noise." = "Pocket sauvegarde les articles pour agrémenter la lecture — sans interruption ni fenêtre contextuelle — et vous éviter les dérangements d'Internet.";
 
-"Log In" = "Se connecter";
+"Log In" = "Vous connecter";
 "Sign Up" = "S'inscrire";
 
 "Tell us more" = "Dites-nous en plus";
 "Report a concern" = "Exprimer une préoccupation";
 "Add copied URL to your Saves?" = "Ajouter l'URL copiée à vos sauvegardes?";
-
-"Premium Status:" = "Statut Premium :";
 
 "Your Account" = "Votre compte";
 "Sign Out" = "Déconnexion";
@@ -265,14 +267,9 @@
 "Terms of Service" = "Conditions générales d'utilisation";
 "Privacy Policy" = "Politique de confidentialité";
 
-"not tagged" = "Non balisé";
-"Delete Tag?" = "Supprimer la balise?";
-"Are you sure you want to delete the tags and remove it from all items?" = "Êtes-vous certain de vouloir supprimer les balises et de les retirer de tous les éléments?";
 "Delete" = "Supprimer";
 "Cancel" = "Annuler";
-"Rename Tag" = "Renommer la balise";
 "Rename" = "Renommer";
-"Enter a new name for this tag" = "Entrez un nouveau nom pour cette balise";
 "Close" = "Fermer";
 
 "not tagged" = "Non balisé";
@@ -281,9 +278,6 @@
 
 "Reported" = "Signalé";
 "Submit feedback" = "Soumettre des commentaires";
-
-"Sign up for Premium" = "Inscrivez-vous à Premium";
-"Premium Subscriber" = "Abonné Premium";
 
 "The title, link, or image is broken" = "Le titre, le lien ou l'image ne fonctionne pas";
 "It's in the wrong category" = "Il est dans la mauvaise catégorie";
