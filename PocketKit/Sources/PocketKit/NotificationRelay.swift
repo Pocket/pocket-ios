@@ -18,8 +18,8 @@ class NotificationRelay {
     init(_ broadcastNotificationCentre: NotificationCenter) {
         self.broadcastNotificationCentre = broadcastNotificationCentre
 
-        registerSubscriptions()
         registerActions()
+        registerSubscriptions()
     }
 
     private func registerSubscriptions() {
@@ -51,7 +51,7 @@ class NotificationRelay {
         let bannerData = BannerModifier.BannerData(
             image: .warning,
             title: nil,
-            detail: Localization.General.Error.serverThrottle
+            detail: Localization.General.Error.serverNotResponding
         )
 
         broadcastNotificationCentre.post(name: .bannerRequested, object: bannerData)

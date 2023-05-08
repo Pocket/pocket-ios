@@ -191,7 +191,7 @@ public enum Localization {
     public static let oops = Localization.tr("Localizable", "general.oops", fallback: "Oops! Try again?")
     public enum Error {
       /// Our server is not responding right now. Please bear with us. It should be available within an hour.
-      public static let serverThrottle = Localization.tr("Localizable", "general.error.serverThrottle", fallback: "Our server is not responding right now. Please bear with us. It should be available within an hour.")
+      public static let serverNotResponding = Localization.tr("Localizable", "general.error.serverNotResponding", fallback: "Our server is not responding right now. Please bear with us. It should be available within an hour.")
     }
   }
   public enum Home {
@@ -486,8 +486,8 @@ public enum Localization {
     }
     public enum Premium {
       public enum Settings {
-        /// Contact pocket support
-        public static let contactPocketSupport = Localization.tr("Localizable", "settings.premium.settings.contactPocketSupport", fallback: "Contact pocket support")
+        /// Contact Pocket support
+        public static let contactPocketSupport = Localization.tr("Localizable", "settings.premium.settings.contactPocketSupport", fallback: "Contact Pocket support")
         /// Date purchased
         public static let datePurchased = Localization.tr("Localizable", "settings.premium.settings.datePurchased", fallback: "Date purchased")
         /// Manage your subscription

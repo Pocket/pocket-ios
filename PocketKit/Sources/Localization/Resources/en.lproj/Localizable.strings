@@ -2,7 +2,7 @@
 "general.oops" = "Oops! Try again?";
 
 // - General Error Messages
-"general.error.serverThrottle" = "Our server is not responding right now. Please bear with us. It should be available within an hour.";
+"general.error.serverNotResponding" = "Our server is not responding right now. Please bear with us. It should be available within an hour.";
 
 //Archive
 "archive.empty.header" = "Keep your list fresh and clean";
