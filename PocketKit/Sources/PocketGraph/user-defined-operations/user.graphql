@@ -8,5 +8,6 @@ query GetUserData {
     isPremium
     username
     name
+    email
   }
 }

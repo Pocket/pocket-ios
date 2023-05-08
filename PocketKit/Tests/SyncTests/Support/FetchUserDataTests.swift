@@ -30,6 +30,7 @@ class FetchUserTests: XCTestCase {
         user.stubSetStatus { _ in }
         user.stubSetUserName { _ in }
         user.stubSetDisplayName { _ in }
+        user.stubSetEmail { _ in }
         apollo.setupUserSyncResponse()
         let service = subject()
         try await service.fetchUser()

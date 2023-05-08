@@ -28,6 +28,7 @@ public extension UserDefaults {
         case userStatus = "User.statusKey"
         case userName = "User.nameKey"
         case displayName = "User.displayNameKey"
+        case userEmail = "User.email"
         case userId = "User.userId"
         case startingAppSection = "MainViewModel.StartingAppSection"
 

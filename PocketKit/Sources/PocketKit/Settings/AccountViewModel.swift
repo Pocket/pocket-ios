@@ -51,6 +51,10 @@ class AccountViewModel: ObservableObject {
         return networkPathMonitor.currentNetworkPath.status == .unsatisfied
     }
 
+    var userEmail: String {
+        user.email
+    }
+
     init(appSession: AppSession,
          user: User,
          tracker: Tracker,
