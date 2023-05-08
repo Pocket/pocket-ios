@@ -148,13 +148,13 @@
 "tags.section.recentTags" = "近期標籤";
 "tags.section.userTags" = "我的標籤";
 
-"tags.empty.header" = "No Saves with this tag";
+"tags.empty.header" = "沒有使用此標籤的儲存內容";
 "tags.empty.detail" = "按主題標記儲存的內容，以便日後查找。";
 "tags.empty.button" = "如何標記";
 
 "tags.notTagged" = "未標記";
 "tags.deleteTag" = "刪除標籤？";
-"tags.deleteTag.message" = "Deleting this tag removes it from all items.";
+"tags.deleteTag.message" = "刪除此標籤會將其從所有項目中移除。";
 
 "tags.renameTag" = "重新命名標籤";
 "tags.renameTag.message" = "輸入此標籤的新名稱";

@@ -148,13 +148,13 @@
 "tags.section.recentTags" = "最近的标记";
 "tags.section.userTags" = "我的标记";
 
-"tags.empty.header" = "No Saves with this tag";
+"tags.empty.header" = "没有使用此标记的已保存内容";
 "tags.empty.detail" = "按主题标记您的已保存内容，以便稍后进行查找。";
 "tags.empty.button" = "如何标记";
 
 "tags.notTagged" = "未标记";
 "tags.deleteTag" = "删除标记？";
-"tags.deleteTag.message" = "Deleting this tag removes it from all items.";
+"tags.deleteTag.message" = "删除此标记会将其从所有项目中移除。";
 
 "tags.renameTag" = "重命名标记";
 "tags.renameTag.message" = "为此标记输入新名称";
