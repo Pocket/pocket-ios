@@ -27,6 +27,17 @@ struct SettingsForm: View {
     var body: some View {
         Form {
             Group {
+                if model.featureFlags.isAssigned(flag: .debugMenu) {
+                    Section(header: Text("Developer mode").style(.settings.header)) {
+                        SettingsRowButton(title: "Debug menu", icon: SFIconModel("ladybug.fill")) {
+                            model.isPresentingDebugMenu.toggle()
+                        }
+                        .sheet(isPresented: $model.isPresentingDebugMenu) {
+                            DebugMenuView()
+                        }
+                    }
+                    .textCase(nil)
+                }
                 topSectionWithLeadingDivider()
                     .textCase(nil)
                 Section(header: Text(Localization.appCustomization).style(.settings.header)) {
