@@ -16,7 +16,7 @@ class AccountViewModel: ObservableObject {
     private let notificationCenter: NotificationCenter
     private let restoreSubscription: () async throws -> Void
     private let networkPathMonitor: NetworkPathMonitor
-    let featureFlags: FeatureFlagServiceProtocol
+    private let featureFlags: FeatureFlagServiceProtocol
 
     // Factories
     private let premiumUpgradeViewModelFactory: PremiumUpgradeViewModelFactory
@@ -105,6 +105,10 @@ class AccountViewModel: ObservableObject {
             self.userDefaults.setValue(!currentValue, forKey: AccountViewModel.ToggleAppBadgeKey)
             self.notificationCenter.post(name: .listUpdated, object: nil)
         }
+    }
+
+    var showDebugMenu: Bool {
+        featureFlags.isAssigned(flag: .debugMenu)
     }
 }
 
