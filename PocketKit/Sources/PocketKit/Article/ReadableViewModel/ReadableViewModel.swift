@@ -30,6 +30,7 @@ protocol ReadableViewModel: ReadableViewControllerDelegate {
     var url: URL? { get }
     var isArchived: Bool { get }
     var premiumURL: URL? { get }
+    var hasHighlights: Bool { get }
 
     func delete()
     /// Opens an item presented in the reader in a web view instead
@@ -51,6 +52,7 @@ protocol ReadableViewModel: ReadableViewControllerDelegate {
     func unfavorite()
     func favorite()
     func beginBulkEdit()
+    func viewDidAppear()
 }
 
 // MARK: - ReadableViewControllerDelegate
@@ -68,6 +70,18 @@ extension ReadableViewModel {
 // MARK: - Shared Actions
 
 extension ReadableViewModel {
+    func viewDidAppear() {
+        if hasHighlights {
+            let bannerData = BannerModifier.BannerData(
+                image: .warning,
+                title: nil,
+                detail: Localization.Reader.Alerts.highlightsArentAvailable
+            )
+
+            NotificationCenter.default.post(name: .bannerRequested, object: bannerData)
+        }
+    }
+
     func displaySettings() {
         track(identifier: .switchToWebView)
         isPresentingReaderSettings = true

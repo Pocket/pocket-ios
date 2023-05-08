@@ -346,6 +346,10 @@ public enum Localization {
       /// Unfavorite
       public static let unfavorite = Localization.tr("Localizable", "reader.activity.unfavorite", fallback: "Unfavorite")
     }
+    public enum Alerts {
+      /// Your highlights aren’t available in this version of Pocket. They will return soon via a future app update.
+      public static let highlightsArentAvailable = Localization.tr("Localizable", "reader.alerts.highlightsArentAvailable", fallback: "Your highlights aren’t available in this version of Pocket. They will return soon via a future app update.")
+    }
   }
   public enum Recommendation {
     /// Save

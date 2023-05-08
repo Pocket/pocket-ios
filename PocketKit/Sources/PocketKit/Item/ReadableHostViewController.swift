@@ -3,6 +3,8 @@ import Combine
 import Analytics
 import Sync
 import Textile
+import SharedPocketKit
+import Localization
 
 class ReadableHostViewController: UIViewController {
     private let moreButtonItem: UIBarButtonItem
@@ -82,6 +84,11 @@ class ReadableHostViewController: UIViewController {
     override func viewDidDisappear(_ animated: Bool) {
         lockOrientation(.portrait)
         super.viewDidDisappear(animated)
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        readableViewModel.viewDidAppear()
     }
 
     override func loadView() {

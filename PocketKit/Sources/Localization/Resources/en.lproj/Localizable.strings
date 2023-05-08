@@ -163,6 +163,7 @@
 "reader.activity.favorite" = "Favorite";
 "reader.activity.unfavorite" = "Unfavorite";
 "reader.activity.moveToSaves" = "Move to Saves";
+"reader.alerts.highlightsArentAvailable" = "Your highlights aren’t available in this version of Pocket. They will return soon via a future app update.";
 
 //Recommendation
 "recommendation.save" = "Save";

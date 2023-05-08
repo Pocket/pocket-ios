@@ -107,6 +107,10 @@ class SavedItemViewModel: ReadableViewModel {
         pocketPremiumURL(url, user: user)
     }
 
+    var hasHighlights: Bool {
+        item.annotations?.highlights?.count != 0
+    }
+
     func moveToSaves() {
         source.unarchive(item: item)
     }
