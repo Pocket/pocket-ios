@@ -10,6 +10,7 @@ public class User: MockObject {
   public typealias MockValueCollectionType = Array<Mock<User>>
 
   public struct MockFields {
+    @Field<String>("email") public var email
     @Field<Bool>("isPremium") public var isPremium
     @Field<String>("name") public var name
     @available(*, deprecated, message: "Use saveById instead")
@@ -23,6 +24,7 @@ public class User: MockObject {
 
 public extension Mock where O == User {
   convenience init(
+    email: String? = nil,
     isPremium: Bool? = nil,
     name: String? = nil,
     savedItemById: Mock<SavedItem>? = nil,
@@ -32,6 +34,7 @@ public extension Mock where O == User {
     username: String? = nil
   ) {
     self.init()
+    self.email = email
     self.isPremium = isPremium
     self.name = name
     self.savedItemById = savedItemById
