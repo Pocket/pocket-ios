@@ -376,6 +376,24 @@ class HomeTests: XCTestCase {
         validateBottomMessage()
     }
 
+    func test_serverError_banner_for_throttled_user() {
+        configureThrottledUser()
+        app.launch()
+
+        XCTAssert(app.saves.element.staticTexts["Our server is not responding right now. Please bear with us. It should be available within an hour."].exists)
+    }
+
+    /// Set user to throttled
+    private func configureThrottledUser() {
+        server.routes.post("/graphql") { request, _ -> Response in
+            let apiRequest = ClientAPIRequest(request)
+            if apiRequest.isForSavesContent {
+                return .throttle()
+            }
+            return .fallbackResponses(apiRequest: apiRequest)
+        }
+    }
+
     func validateBottomMessage() {
         XCTAssertTrue(app.homeView.overscrollText.exists)
     }

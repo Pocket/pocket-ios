@@ -1,6 +1,9 @@
 //General Messages
 "general.oops" = "Oops! Try again?";
 
+// - General Error Messages
+"general.error.serverNotResponding" = "Our server is not responding right now. Please bear with us. It should be available within an hour.";
+
 //Archive
 "archive.empty.header" = "Keep your list fresh and clean";
 "archive.empty.detail" = "Archive the Saves you're finished with\n using the archive icon.";
