@@ -152,6 +152,10 @@ struct SnowplowMicroContext: Codable {
         return (self.dataDict()["recommendation_id"] as? String) == recomendationId
     }
 
+    func has(slateId: String) -> Bool {
+        return (self.dataDict()["slate_id"] as? String) == slateId
+    }
+
     func has(reason: String) -> Bool {
         return (self.dataDict()["reason"] as? String) == reason
     }
@@ -268,6 +272,20 @@ class SnowplowMicro {
             }
 
             return uiContext.has(identifier: uiIdentifier) && recommendationContext.has(recomendationId: recommendationId)
+        })
+    }
+
+    /**
+     Gets the first event we can find with the given UI Identifier and slate ID in the slate context
+     */
+    func getFirstEvent(with uiIdentifier: String, slateId: String) async -> SnowplowMicroEvent? {
+        let events = await getGoodSnowplowEvents()
+        return events.first(where: {
+            guard let uiContext = $0.getUIContext(), let slateContext = $0.getSlateContext() else {
+                return false
+            }
+
+            return uiContext.has(identifier: uiIdentifier) && slateContext.has(slateId: slateId)
         })
     }
 

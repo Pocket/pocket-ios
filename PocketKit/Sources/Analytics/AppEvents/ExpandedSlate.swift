@@ -4,88 +4,27 @@
 
 import Foundation
 public extension Events {
-    struct Home {}
+    struct ExpandedSlate {}
 }
 
-public extension Events.Home {
+public extension Events.ExpandedSlate {
+
     /**
-     Fired when a card in the `Recent Saves` section scrolls into view
+     Fired when a user views a slate in detail
      */
-    static func RecentSavesCardImpression(url: URL, positionInList: Int) -> Impression {
+    static func SlateExpanded(slateId: String, slateRequestId: String, slateExperimentId: String, slateIndex: Int, slateLineupId: String, slateLineupRequestId: String, slateLineupExperimentId: String) -> Impression {
         return Impression(
-            component: .card,
+            component: .screen,
             requirement: .viewable,
             uiEntity: UiEntity(
                 .card,
-                identifier: "home.recent.impression",
-                index: positionInList
+                identifier: "home.expandedSlate.impression",
+                index: slateIndex
             ),
             extraEntities: [
-                ContentEntity(url: url)
+                SlateEntity(id: slateId, requestID: slateRequestId, experiment: slateExperimentId, index: slateIndex),
+                SlateLineupEntity(id: slateLineupId, requestID: slateLineupRequestId, experiment: slateExperimentId),
             ]
-        )
-    }
-
-    /**
-     Fired when a card in the `Recent Saves` section is shared
-     */
-    static func RecentSavesCardShare(url: URL, positionInList: Int) -> Engagement {
-        return Engagement(
-            uiEntity: UiEntity(
-                .button,
-                identifier: "home.recent.share",
-                index: positionInList
-            ),
-            extraEntities: [
-                ContentEntity(url: url)
-            ]
-        )
-    }
-
-    /**
-     Fired when a card in the `Recent Saves` section is deleted
-     */
-    static func RecentSavesCardDelete(url: URL, positionInList: Int) -> Engagement {
-        return Engagement(
-            uiEntity: UiEntity(
-                .button,
-                identifier: "home.recent.delete",
-                index: positionInList
-            ),
-            extraEntities: [
-                ContentEntity(url: url)
-            ]
-        )
-    }
-
-    /**
-     Fired when a card in the `Recent Saves` section is archived
-     */
-    static func RecentSavesCardArchive(url: URL, positionInList: Int) -> Engagement {
-        return Engagement(
-            uiEntity: UiEntity(
-                .button,
-                identifier: "home.recent.archive",
-                index: positionInList
-            ),
-            extraEntities: [
-                ContentEntity(url: url)
-            ]
-        )
-    }
-
-    /**
-     Fired when a user clicks a card in the `Recent Saves` section
-     */
-    static func RecentSavesCardContentOpen(url: URL, positionInList: Int) -> ContentOpen {
-        return ContentOpen(
-            contentEntity:
-                ContentEntity(url: url),
-            uiEntity: UiEntity(
-                .card,
-                identifier: "home.recent.open",
-                index: positionInList
-            )
         )
     }
 
@@ -99,7 +38,7 @@ public extension Events.Home {
                 ContentEntity(url: url),
             uiEntity: UiEntity(
                 .card,
-                identifier: "home.slate.article.open",
+                identifier: "home.expandedSlate.article.open",
                 index: positionInList
             ),
             extraEntities: [
@@ -119,7 +58,7 @@ public extension Events.Home {
             requirement: .viewable,
             uiEntity: UiEntity(
                 .card,
-                identifier: "home.slate.article.impression",
+                identifier: "home.expandedSlate.article.impression",
                 index: positionInList
             ),
             extraEntities: [
@@ -141,7 +80,7 @@ public extension Events.Home {
             ),
             uiEntity: UiEntity(
                 .button,
-                identifier: "home.slate.article.save",
+                identifier: "home.expandedSlate.article.save",
                 index: positionInList
             ),
             extraEntities: [
@@ -160,7 +99,7 @@ public extension Events.Home {
             .general,
             uiEntity: UiEntity(
                 .button,
-                identifier: "home.slate.article.archive",
+                identifier: "home.expandedSlate.article.archive",
                 index: positionInList
             ),
             extraEntities: [
@@ -180,7 +119,7 @@ public extension Events.Home {
             .general,
             uiEntity: UiEntity(
                 .button,
-                identifier: "home.slate.article.share",
+                identifier: "home.expandedSlate.article.share",
                 index: positionInList
             ),
             extraEntities: [
@@ -189,22 +128,6 @@ public extension Events.Home {
                 SlateLineupEntity(id: slateLineupId, requestID: slateLineupRequestId, experiment: slateExperimentId),
                 RecommendationEntity(id: recommendationId, index: UInt(positionInList))
             ]
-        )
-    }
-
-    /**
-     Fired when a user selects the report action on Home using the /discover API
-     */
-    static func SlateArticleReport(url: URL, reason: ReportEntity.Reason, comment: String?) -> Engagement {
-        return Engagement(
-            .report(
-                reportEntity: ReportEntity(reason: reason, comment: comment),
-                contentEntity: ContentEntity(url: url)
-            ),
-            uiEntity: UiEntity(
-                .dialog,
-                identifier: "home.slate.article.report"
-            )
         )
     }
 }
