@@ -4,7 +4,8 @@
       "__typename": "[type-name-here]",
       "isPremium": true,
       "username": "User Name",
-      "name": "Pocket User"
+      "name": "Pocket User",
+      "email": "pocket@mozilla.com"
     }
   }
 }
