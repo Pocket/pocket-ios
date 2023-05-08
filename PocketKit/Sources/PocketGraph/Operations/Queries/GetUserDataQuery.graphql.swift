@@ -14,6 +14,7 @@ public class GetUserDataQuery: GraphQLQuery {
           isPremium
           username
           name
+          email
         }
       }
       """#
@@ -46,6 +47,7 @@ public class GetUserDataQuery: GraphQLQuery {
         .field("isPremium", Bool?.self),
         .field("username", String?.self),
         .field("name", String?.self),
+        .field("email", String?.self),
       ] }
 
       /// The user's premium status
@@ -54,6 +56,8 @@ public class GetUserDataQuery: GraphQLQuery {
       public var username: String? { __data["username"] }
       /// The users first name and last name combined
       public var name: String? { __data["name"] }
+      /// Email address associated with the account.
+      public var email: String? { __data["email"] }
     }
   }
 }
