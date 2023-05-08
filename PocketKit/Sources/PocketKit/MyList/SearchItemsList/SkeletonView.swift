@@ -27,6 +27,7 @@ struct SkeletonView: View {
                     }
                 }.foregroundColor(Color(.ui.skeletonCellImageBackground))
             }
+            .listRowBackground(Color.clear)
         }
         .listStyle(.plain)
         .accessibilityIdentifier("skeleton-view")

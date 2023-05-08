@@ -73,6 +73,14 @@ public class PocketSaveService: SaveService {
                 space.fetchOrCreateTag(byName: tag)
             }))
 
+            // Adding and sending a SavedItemUpdatedNotification will trigger the app to update
+            // its list for updated items from the share extension, since the context
+            // used within the space, here, and that within the app (used by Saves) may be different.
+            // Once the notification is posted, and these types of notifications exist within the space,
+            // the app target can appropriately update from the Save extension by listener (see PocketSource.init).
+            let notification: SavedItemUpdatedNotification = SavedItemUpdatedNotification(context: space.backgroundContext)
+            notification.savedItem = savedItem
+
             try? space.save()
 
             osNotifications.post(name: .savedItemUpdated)

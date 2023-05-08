@@ -67,6 +67,7 @@ struct ResultsView: View {
                     viewModel.trackViewResults(url: item.savedItemURL, index: index)
                 }
             }
+            .listRowBackground(Color.clear)
         }
         .zIndex(-1)
         .listStyle(.plain)
@@ -168,7 +169,7 @@ struct RecentSearchView: View {
                     .onTapGesture {
                         viewModel.searchText = recentSearch
                     }
-                }
+                }.listRowBackground(Color.clear)
             }
         }
         .listStyle(.plain)

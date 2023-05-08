@@ -583,50 +583,26 @@ extension SearchViewModel: SavedItemsControllerDelegate {
         for type: NSFetchedResultsChangeType,
         newIndexPath: IndexPath?
     ) {
-        switch type {
-        case .update:
-            guard case .searchResults(let items) = searchState, let index = items.firstIndex(where: { $0.id == savedItem.remoteID }) else { return }
-            // Check if the update is moving item between archives or saves
-            if savedItem.isArchived && selectedScope == .saves || !savedItem.isArchived && selectedScope == .archive {
-                removeItemFromView(savedItem, and: items, at: index)
-            } else {
-                updateItemInView(savedItem, and: items, at: index)
-            }
-        case .delete:
-            guard case .searchResults(let items) = searchState, let index = items.firstIndex(where: { $0.id == savedItem.remoteID }) else { return }
-            removeItemFromView(savedItem, and: items, at: index)
-        default:
-            return
-        }
-    }
-
-    func controller(_ controller: SavedItemsController, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
         // no-op
     }
 
-    /// Remove item from list of items in `SearchView`
-    /// - Parameters:
-    ///   - savedItem: savedItem that was changed in Core Data
-    ///   - items: list of `PocketItem` that is displayed as search results
-    private func removeItemFromView(_ savedItem: SavedItem, and items: [PocketItem], at index: Int) {
-        var items = items
-        items.remove(at: index)
-        Log.debug("Search item removed \(String(describing: savedItem.displayTitle))")
-        // Animations seen to work better when we don't wrap this around main thread
-        self.searchState = .searchResults(items)
+    func controller(_ controller: SavedItemsController, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
+        guard case .searchResults(let items) = searchState, let savedItems = items.map({ $0.item }) as? [SavedItem] else {
+            return
+        }
+        let currentObjectIDs = savedItems.map { $0.objectID }
+        let snapshotIDs = snapshot.itemIdentifiers as! [NSManagedObjectID]
+        let deletedIDs = currentObjectIDs.filter { snapshotIDs.contains($0) == false }
+        let updatedItems = savedItems
+            .filter { deletedIDs.contains($0.objectID) == false }
+            .filter { outOfScope($0) }
+            .map { PocketItem(item: $0) }
+        searchState = .searchResults(updatedItems)
     }
 
-    /// Update item in list of items in `SearchView`
-    /// - Parameters:
-    ///   - savedItem: savedItem that was changed in Core Data
-    ///   - items: list of `PocketItem` that is displayed as search results
-    private func updateItemInView(_ savedItem: SavedItem, and items: [PocketItem], at index: Int) {
-        var items = items
-        items.remove(at: index)
-        items.insert(PocketItem(item: savedItem), at: index)
-        Log.debug("Search item updated \(String(describing: savedItem.displayTitle))")
-        // Animations seen to work better when we don't wrap this around main thread
-        self.searchState = .searchResults(items)
+    /// Checks if a saved item should be moved to archive or vice versa
+    private func outOfScope(_ savedItem: SavedItem) -> Bool {
+        (savedItem.isArchived && selectedScope == .saves) || (!savedItem.isArchived && selectedScope == .archive)
     }
 }
 
