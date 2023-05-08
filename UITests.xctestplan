@@ -76,6 +76,7 @@
         "ArchiveFiltersTests\/test_archiveView_sortingNoTagFilter_showFilteredItems()",
         "ArchiveFiltersTests\/test_archiveView_tappingTaggedFilter_showsFilteredItems()",
         "BannerViewTests\/test_foregroundingTheApp_withAlreadySavedURL_showsSaveFromClipboardBannerAndBringsItemToTop()",
+        "ErrorTests",
         "HomeTests",
         "HomeWebViewTests",
         "ListenTests",

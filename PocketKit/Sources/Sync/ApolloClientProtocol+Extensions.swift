@@ -24,8 +24,9 @@ public extension ApolloClientProtocol {
             _ = fetch(query: query, queue: queue) { result in
                 switch result {
                 case .failure(let error):
-                    Log.capture(error: error, filename: filename, line: line, column: column, funcName: funcName)
-                    Self.checkForServerError(error)
+                    if !Self.handleServerError(error) {
+                        Log.capture(error: error, filename: filename, line: line, column: column, funcName: funcName)
+                    }
                     continuation.resume(throwing: error)
                 case .success(let data):
                     guard let errors = data.errors,
@@ -52,8 +53,9 @@ public extension ApolloClientProtocol {
             ) { result in
                 switch result {
                 case .failure(let error):
-                    Log.capture(error: error, filename: filename, line: line, column: column, funcName: funcName)
-                    Self.checkForServerError(error)
+                    if !Self.handleServerError(error) {
+                        Log.capture(error: error, filename: filename, line: line, column: column, funcName: funcName)
+                    }
                     continuation.resume(throwing: error)
                 case .success(let data):
                     guard let errors = data.errors,
@@ -70,16 +72,17 @@ public extension ApolloClientProtocol {
         }
     }
 
-    private static func checkForServerError(_ error: Error) {
+    private static func handleServerError(_ error: Error) -> Bool {
 
         // Codes we wish to notify the user about
-        let serverErrorCodes = [429]
+        let serverErrorCodes = [429, 500]
 
         guard let responseError = error as? ResponseCodeInterceptor.ResponseCodeError,
               case .invalidResponseCode(let response, _) = responseError,
               let code = response?.statusCode,
-              serverErrorCodes.contains(code) else { return }
+              serverErrorCodes.contains(code) else { return false }
 
         NotificationCenter.default.post(name: .serverError, object: code)
+        return true
     }
 }
