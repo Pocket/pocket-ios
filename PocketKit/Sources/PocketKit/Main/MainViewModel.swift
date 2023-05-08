@@ -98,7 +98,8 @@ class MainViewModel: ObservableObject {
                 },
                 premiumStatusViewModelFactory: {
                     PremiumStatusViewModel(service: PocketSubscriptionInfoService(client: Services.shared.v3Client), tracker: Services.shared.tracker)
-                }
+                },
+                featureFlags: Services.shared.featureFlagService
             ),
             source: Services.shared.source,
             userDefaults: Services.shared.userDefaults
