@@ -11,10 +11,12 @@ public protocol User {
     var status: Status { get }
     var userName: String { get }
     var displayName: String { get }
+    var email: String { get }
     var statusPublisher: Published<Status>.Publisher { get }
     func setPremiumStatus(_ isPremium: Bool)
     func setUserName(_ userName: String)
     func setDisplayName(_ displayName: String)
+    func setEmail(_ email: String)
     func clear()
 }
 
@@ -24,6 +26,8 @@ public class PocketUser: User, ObservableObject {
     public var userName: String
     @AppStorage
     public var displayName: String
+    @AppStorage
+    public private(set) var email: String
     public var statusPublisher: Published<Status>.Publisher { $status }
     @AppStorage
     private var storedStatus: Status
@@ -31,11 +35,13 @@ public class PocketUser: User, ObservableObject {
     private static let userStatusKey = UserDefaults.Key.userStatus
     private static let userNameKey = UserDefaults.Key.userName
     private static let displayNameKey = UserDefaults.Key.displayName
+    private static let emailKey = UserDefaults.Key.userEmail
 
-    public init(status: Status = .unknown, userDefaults: UserDefaults, userName: String = "", displayName: String = "") {
+    public init(status: Status = .unknown, userDefaults: UserDefaults, userName: String = "", displayName: String = "", email: String = "") {
         _storedStatus = AppStorage(wrappedValue: status, Self.userStatusKey, store: userDefaults)
         _userName = AppStorage(wrappedValue: userName, Self.userNameKey, store: userDefaults)
         _displayName = AppStorage(wrappedValue: displayName, Self.displayNameKey, store: userDefaults)
+        _email = AppStorage(wrappedValue: email, Self.emailKey)
         publishStatus()
     }
 
@@ -52,10 +58,15 @@ public class PocketUser: User, ObservableObject {
         self.displayName = displayName
     }
 
+    public func setEmail(_ email: String) {
+        self.email = email
+    }
+
     public func clear() {
         setStatus(.unknown)
         setUserName("")
         setDisplayName("")
+        setEmail("")
     }
 }
 
