@@ -50,9 +50,9 @@ class AccountViewModel: ObservableObject {
     var isOffline: Bool {
         return networkPathMonitor.currentNetworkPath.status == .unsatisfied
     }
-    // TODO: replace with the actual email
+
     var userEmail: String {
-        user.displayName
+        user.email
     }
 
     init(appSession: AppSession,
