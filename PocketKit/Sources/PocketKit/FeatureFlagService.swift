@@ -61,6 +61,7 @@ class FeatureFlagService: FeatureFlagServiceProtocol {
 public enum CurrentFeatureFlags: String, CaseIterable {
     case listen = "temp.ios.listen"
     case listenTagsPlaylists = "temp.ios.listen.tag_playlists"
+    case debugMenu = "perm.ios.debug.menu"
 
     /// Description to use in a debug menu
     var description: String {
@@ -69,6 +70,8 @@ public enum CurrentFeatureFlags: String, CaseIterable {
             return "Enable the Listen feature"
         case .listenTagsPlaylists:
             return "Enable the Playlist support via tags in Listen"
+        case .debugMenu:
+            return "Debug menu for iOS"
         }
     }
 }

@@ -27,6 +27,17 @@ struct SettingsForm: View {
     var body: some View {
         Form {
             Group {
+                if model.showDebugMenu {
+                    Section(header: Text("Developer mode").style(.settings.header)) {
+                        SettingsRowButton(title: "Debug menu", icon: SFIconModel("ladybug.fill")) {
+                            model.isPresentingDebugMenu.toggle()
+                        }
+                        .sheet(isPresented: $model.isPresentingDebugMenu) {
+                            DebugMenuView()
+                        }
+                    }
+                    .textCase(nil)
+                }
                 topSectionWithLeadingDivider()
                     .textCase(nil)
                 Section(header: Text(Localization.appCustomization).style(.settings.header)) {
@@ -90,16 +101,25 @@ struct SettingsForm: View {
 // These methods should be removed once we support iOS 16+
 extension SettingsForm {
     /// Handles top section separator on different versions of iOS
-    @ViewBuilder
     private func topSectionWithLeadingDivider() -> some View {
         topSection()
             .alignmentGuide(.listRowSeparatorLeading) { _ in
                 return 0
             }
     }
+
+    private func header() -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(Localization.yourAccount)
+                .style(.settings.header)
+            Text(model.userEmail)
+                .style(.credits)
+        }
+        .padding(.bottom, 16)
+    }
     /// Provides the standard top section view
     private func topSection() -> some View {
-        Section(header: Text(Localization.yourAccount).style(.settings.header)) {
+        Section(header: header()) {
             if model.isPremium {
                 makePremiumSubscriptionRow()
                     .accessibilityIdentifier("premium-subscription-button")

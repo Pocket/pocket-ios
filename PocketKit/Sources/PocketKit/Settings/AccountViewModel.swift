@@ -16,6 +16,7 @@ class AccountViewModel: ObservableObject {
     private let notificationCenter: NotificationCenter
     private let restoreSubscription: () async throws -> Void
     private let networkPathMonitor: NetworkPathMonitor
+    private let featureFlags: FeatureFlagServiceProtocol
 
     // Factories
     private let premiumUpgradeViewModelFactory: PremiumUpgradeViewModelFactory
@@ -37,6 +38,7 @@ class AccountViewModel: ObservableObject {
     @Published var isPresentingRestoreNotSuccessful = false
     @Published var isPresentingPremiumStatus = false
     @Published var isPresentingHooray = false
+    @Published var isPresentingDebugMenu = false
 
     @AppStorage
     public var appBadgeToggle: Bool
@@ -49,6 +51,10 @@ class AccountViewModel: ObservableObject {
         return networkPathMonitor.currentNetworkPath.status == .unsatisfied
     }
 
+    var userEmail: String {
+        user.email
+    }
+
     init(appSession: AppSession,
          user: User,
          tracker: Tracker,
@@ -58,7 +64,9 @@ class AccountViewModel: ObservableObject {
          networkPathMonitor: NetworkPathMonitor,
          restoreSubscription: @escaping () async throws -> Void,
          premiumUpgradeViewModelFactory: @escaping PremiumUpgradeViewModelFactory,
-         premiumStatusViewModelFactory: @escaping PremiumStatusViewModelFactory) {
+         premiumStatusViewModelFactory: @escaping PremiumStatusViewModelFactory,
+         featureFlags: FeatureFlagServiceProtocol
+    ) {
         self.user = user
         self.tracker = tracker
         self.userDefaults = userDefaults
@@ -69,6 +77,7 @@ class AccountViewModel: ObservableObject {
         self.premiumStatusViewModelFactory = premiumStatusViewModelFactory
         self.isPremium = user.status == .premium
         self.networkPathMonitor = networkPathMonitor
+        self.featureFlags = featureFlags
 
         _appBadgeToggle = AppStorage(wrappedValue: false, UserDefaults.Key.toggleAppBadge, store: userDefaults)
 
@@ -100,6 +109,10 @@ class AccountViewModel: ObservableObject {
             self.userDefaults.setValue(!currentValue, forKey: AccountViewModel.ToggleAppBadgeKey)
             self.notificationCenter.post(name: .listUpdated, object: nil)
         }
+    }
+
+    var showDebugMenu: Bool {
+        featureFlags.isAssigned(flag: .debugMenu)
     }
 }
 

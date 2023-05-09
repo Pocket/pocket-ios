@@ -284,7 +284,8 @@ class HomeTests: XCTestCase {
         XCTAssertFalse(app.saves.itemView(matching: "Slate 1, Recommendation 1").exists)
     }
 
-    func test_slateDetailsView_tappingSaveButtonInRecommendationCell_savesItemToList() {
+    @MainActor
+    func test_slateDetailsView_tappingSaveButtonInRecommendationCell_savesItemToList() async {
         server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isToSaveAnItem {
@@ -338,6 +339,28 @@ class HomeTests: XCTestCase {
         rec2Cell.saveButton.wait().tap()
         rec2Cell.savedButton.wait()
         rec1Cell.savedButton.wait()
+
+        async let slate1Rec1 = snowplowMicro.getFirstEvent(with: "home.expandedSlate.article.impression", recommendationId: "slate-1-rec-1")
+        async let slate1Rec2 = snowplowMicro.getFirstEvent(with: "home.expandedSlate.article.impression", recommendationId: "slate-1-rec-2")
+        async let slate1Rec1Save = snowplowMicro.getFirstEvent(with: "home.expandedSlate.article.save", recommendationId: "slate-1-rec-1")
+        async let slate1Rec2Save = snowplowMicro.getFirstEvent(with: "home.expandedSlate.article.save", recommendationId: "slate-1-rec-2")
+        async let slate1Rec2Unsave = snowplowMicro.getFirstEvent(with: "home.expandedSlate.article.archive", recommendationId: "slate-1-rec-2")
+        async let slateDetail = snowplowMicro.getFirstEvent(with: "home.expandedSlate.impression", slateId: "slate-1")
+
+        let recs = await [slate1Rec1, slate1Rec2, slate1Rec1Save, slate1Rec2Save, slate1Rec2Unsave, slateDetail]
+        let loadedSlate1Rec1 = recs[0]!
+        let loadedSlate1Rec2 = recs[1]!
+        let loadedSlate1Rec1Save = recs[2]!
+        let loadedSlate1Rec2Save = recs[3]!
+        let loadedSlate1Rec2Unsave = recs[4]!
+        let loadedSlateDetail = recs[5]!
+        snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate1Rec1, url: "http://localhost:8080/slate-1-rec-1")
+        snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate1Rec2, url: "https://example.com/slate-1-rec-2")
+
+        XCTAssertNotNil(loadedSlate1Rec1Save)
+        XCTAssertNotNil(loadedSlate1Rec2Save)
+        XCTAssertNotNil(loadedSlate1Rec2Unsave)
+        XCTAssertNotNil(loadedSlateDetail)
     }
 
     func test_returningFromSaves_maintainsHomePosition() {

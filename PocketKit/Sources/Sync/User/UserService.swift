@@ -39,5 +39,6 @@ class APIUserService: UserService {
         user.setPremiumStatus(remoteIsPremium)
         user.setUserName(remote.username ?? "")
         user.setDisplayName(remote.name ?? "")
+        user.setEmail(remote.email ?? "")
     }
 }

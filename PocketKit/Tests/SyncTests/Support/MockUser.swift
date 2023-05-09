@@ -2,12 +2,17 @@ import SharedPocketKit
 import Combine
 
 class MockUser: User {
-    @Published public private(set) var status: Status = .unknown
+    @Published public private(set) var status: Status
     public var statusPublisher: Published<Status>.Publisher { $status }
     private var implementations: [String: Any] = [:]
     private var calls: [String: [Any]] = [:]
-    internal var userName: String = ""
-    internal var displayName: String = ""
+    var userName: String = ""
+    var displayName: String = ""
+    var email: String = ""
+
+    init(status: Status = .unknown) {
+        self.status = status
+    }
 }
 
 // MARK: - Set Status
@@ -77,11 +82,10 @@ extension MockUser {
 
 // MARK: - User Name
 extension MockUser {
+    typealias SetParameterImpl = (String) -> Void
     private static let setUserName = "setUserName"
-    typealias SetUserNameImpl = (String) -> Void
-
     private static let setDisplayName = "setDisplayName"
-    typealias SetDisplayNameImpl = (String) -> Void
+    private static let setEmail = "setEmail"
 
     struct SetUserName {
         let userName: String
@@ -91,12 +95,20 @@ extension MockUser {
         let displayName: String
     }
 
-    func stubSetUserName(impl: @escaping SetUserNameImpl) {
+    struct SetEmail {
+        let email: String
+    }
+
+    func stubSetUserName(impl: @escaping SetParameterImpl) {
         implementations[Self.setUserName] = impl
     }
 
-    func stubSetDisplayName(impl: @escaping SetDisplayNameImpl) {
+    func stubSetDisplayName(impl: @escaping SetParameterImpl) {
         implementations[Self.setDisplayName] = impl
+    }
+
+    func stubSetEmail(impl: @escaping SetParameterImpl) {
+        implementations[Self.setEmail] = impl
     }
 
     func stubStandardUserName() {
@@ -108,7 +120,7 @@ extension MockUser {
     }
 
     func setUserName(_ userName: String) {
-        guard let impl = implementations[Self.setUserName] as? SetUserNameImpl else {
+        guard let impl = implementations[Self.setUserName] as? SetParameterImpl else {
             fatalError("\(Self.self)#\(#function) has not been stubbed")
         }
 
@@ -118,12 +130,22 @@ extension MockUser {
     }
 
     func setDisplayName(_ displayName: String) {
-        guard let impl = implementations[Self.setDisplayName] as? SetDisplayNameImpl else {
+        guard let impl = implementations[Self.setDisplayName] as? SetParameterImpl else {
             fatalError("\(Self.self)#\(#function) has not been stubbed")
         }
 
         calls[Self.setDisplayName] = (calls[Self.setDisplayName] ?? [] + [SetDisplayName(displayName: displayName)])
 
         impl(displayName)
+    }
+
+    func setEmail(_ email: String) {
+        guard let impl = implementations[Self.setEmail] as? SetParameterImpl else {
+            fatalError("\(Self.self)#\(#function) has not been stubbed")
+        }
+
+        calls[Self.setEmail] = (calls[Self.setEmail] ?? [] + [SetEmail(email: email)])
+
+        impl(email)
     }
 }
