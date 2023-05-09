@@ -41,7 +41,7 @@ class SaveItemOperation: SyncOperation {
             case ResponseCodeInterceptor.ResponseCodeError.invalidResponseCode(let response, _):
                 switch response?.statusCode {
                 case .some((500...)):
-                    return .retry(error)
+                    return .failure(error)
                 default:
                     return .failure(error)
                 }
