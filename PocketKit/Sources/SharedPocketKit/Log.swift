@@ -246,6 +246,8 @@ extension Log {
         SentrySDK.start { options in
             options.dsn = dsn
             options.enableAutoSessionTracking = true
+            options.tracesSampleRate = 0.01 // tracing must be enabled for profiling
+            options.profilesSampleRate = 0.01 // see also `profilesSampler` if you need custom sampling logic
         }
         #endif
     }
