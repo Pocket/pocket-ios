@@ -92,7 +92,7 @@ class SaveItemOperationTests: XCTestCase {
         }
     }
 
-    func test_main_whenMutationFailsWithHTTP5XX_retries() async throws {
+    func test_main_whenMutationFailsWithHTTP5XX_does_not_retry() async throws {
         let initialError = ResponseCodeInterceptor.ResponseCodeError.withStatusCode(500)
         apollo.stubPerform(ofMutationType: SaveItemMutation.self, toReturnError: initialError)
 
@@ -100,8 +100,8 @@ class SaveItemOperationTests: XCTestCase {
         let service = subject(managedItemID: savedItem.objectID, url: savedItem.url)
         let result = await service.execute(syncTaskId: task.objectID)
 
-        guard case .retry = result else {
-            XCTFail("Expected retry result but got \(result)")
+        guard case .failure = result else {
+            XCTFail("Expected failure result but got \(result)")
             return
         }
     }

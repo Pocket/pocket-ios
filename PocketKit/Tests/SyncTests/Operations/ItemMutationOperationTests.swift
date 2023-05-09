@@ -94,8 +94,8 @@ class ItemMutationOperationTests: XCTestCase {
         let service = subject(mutation: mutation)
         let result = await service.execute(syncTaskId: task.objectID)
 
-        guard case .retry = result else {
-            XCTFail("Expected retry result but got \(result)")
+        guard case .failure = result else {
+            XCTFail("Expected failure result but got \(result)")
             return
         }
     }
