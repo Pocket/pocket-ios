@@ -23,8 +23,8 @@ public extension Mock where O == SavedItemSearchResultConnection {
     totalCount: Int? = nil
   ) {
     self.init()
-    _set(edges, for: \.edges)
-    _set(pageInfo, for: \.pageInfo)
-    _set(totalCount, for: \.totalCount)
+    self.edges = edges
+    self.pageInfo = pageInfo
+    self.totalCount = totalCount
   }
 }

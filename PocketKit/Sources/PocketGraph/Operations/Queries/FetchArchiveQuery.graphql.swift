@@ -227,7 +227,7 @@ public class FetchArchiveQuery: GraphQLQuery {
                 public let __data: DataDict
                 public init(_dataDict: DataDict) { __data = _dataDict }
 
-                public typealias RootEntityType = FetchArchiveQuery.Data.User.SavedItems.Edge.Node.Item
+                public typealias RootEntityType = User.SavedItems.Edge.Node.Item
                 public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Item }
                 public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
                   ItemSummary.self,
@@ -339,7 +339,7 @@ public class FetchArchiveQuery: GraphQLQuery {
                 public let __data: DataDict
                 public init(_dataDict: DataDict) { __data = _dataDict }
 
-                public typealias RootEntityType = FetchArchiveQuery.Data.User.SavedItems.Edge.Node.Item
+                public typealias RootEntityType = User.SavedItems.Edge.Node.Item
                 public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.PendingItem }
                 public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
                   PendingItemParts.self,

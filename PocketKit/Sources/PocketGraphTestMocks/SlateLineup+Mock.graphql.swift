@@ -25,9 +25,9 @@ public extension Mock where O == SlateLineup {
     slates: [Mock<Slate>]? = nil
   ) {
     self.init()
-    _set(experimentId, for: \.experimentId)
-    _set(id, for: \.id)
-    _set(requestId, for: \.requestId)
-    _set(slates, for: \.slates)
+    self.experimentId = experimentId
+    self.id = id
+    self.requestId = requestId
+    self.slates = slates
   }
 }

@@ -19,6 +19,6 @@ public extension Mock where O == MarticleBulletedList {
     rows: [Mock<BulletedListElement>]? = nil
   ) {
     self.init()
-    _set(rows, for: \.rows)
+    self.rows = rows
   }
 }

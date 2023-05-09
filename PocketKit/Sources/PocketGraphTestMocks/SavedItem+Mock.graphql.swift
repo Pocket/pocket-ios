@@ -39,16 +39,16 @@ public extension Mock where O == SavedItem {
     url: String? = nil
   ) {
     self.init()
-    _set(_createdAt, for: \._createdAt)
-    _set(_deletedAt, for: \._deletedAt)
-    _set(annotations, for: \.annotations)
-    _set(archivedAt, for: \.archivedAt)
-    _set(id, for: \.id)
-    _set(isArchived, for: \.isArchived)
-    _set(isFavorite, for: \.isFavorite)
-    _set(item, for: \.item)
-    _set(remoteID, for: \.remoteID)
-    _set(tags, for: \.tags)
-    _set(url, for: \.url)
+    self._createdAt = _createdAt
+    self._deletedAt = _deletedAt
+    self.annotations = annotations
+    self.archivedAt = archivedAt
+    self.id = id
+    self.isArchived = isArchived
+    self.isFavorite = isFavorite
+    self.item = item
+    self.remoteID = remoteID
+    self.tags = tags
+    self.url = url
   }
 }

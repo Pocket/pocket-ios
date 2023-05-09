@@ -19,6 +19,6 @@ public extension Mock where O == SavedItemAnnotations {
     highlights: [Mock<Highlight>?]? = nil
   ) {
     self.init()
-    _set(highlights, for: \.highlights)
+    self.highlights = highlights
   }
 }

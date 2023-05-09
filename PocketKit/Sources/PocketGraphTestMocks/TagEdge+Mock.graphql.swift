@@ -21,7 +21,7 @@ public extension Mock where O == TagEdge {
     node: Mock<Tag>? = nil
   ) {
     self.init()
-    _set(cursor, for: \.cursor)
-    _set(node, for: \.node)
+    self.cursor = cursor
+    self.node = node
   }
 }

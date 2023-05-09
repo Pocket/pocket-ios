@@ -13,8 +13,7 @@ extension Space {
         archivedAt: Date? = nil,
         cursor: String? = nil,
         tags: [String]? = nil,
-        item: Item? = nil,
-        hasHighlights: Bool = false
+        item: Item? = nil
     ) throws -> SavedItem {
         try backgroundContext.performAndWait {
             let savedItem = buildSavedItem(
@@ -26,8 +25,7 @@ extension Space {
                 archivedAt: archivedAt,
                 cursor: cursor,
                 tags: tags,
-                item: item,
-                hasHighlights: hasHighlights
+                item: item
             )
             try backgroundContext.save()
 
@@ -42,11 +40,11 @@ extension Space {
         isFavorite: Bool = false,
         isArchived: Bool = false,
         createdAt: Date = Date(),
+
         archivedAt: Date? = nil,
         cursor: String? = nil,
         tags: [String]? = nil,
-        item: Item? = nil,
-        hasHighlights: Bool = false
+        item: Item? = nil
     ) -> SavedItem {
         backgroundContext.performAndWait {
             let savedItem: SavedItem = SavedItem(context: backgroundContext, url: URL(string: url)!)
@@ -65,7 +63,6 @@ extension Space {
             savedItem.cursor = cursor
             savedItem.tags = NSOrderedSet(array: tags ?? [])
             savedItem.item = item ?? Item(context: backgroundContext, givenURL: URL(string: url)!, remoteID: remoteID)
-            savedItem.hasHighlights = hasHighlights
 
             return savedItem
         }

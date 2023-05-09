@@ -25,9 +25,9 @@ public extension Mock where O == PageInfo {
     startCursor: String? = nil
   ) {
     self.init()
-    _set(endCursor, for: \.endCursor)
-    _set(hasNextPage, for: \.hasNextPage)
-    _set(hasPreviousPage, for: \.hasPreviousPage)
-    _set(startCursor, for: \.startCursor)
+    self.endCursor = endCursor
+    self.hasNextPage = hasNextPage
+    self.hasPreviousPage = hasPreviousPage
+    self.startCursor = startCursor
   }
 }
