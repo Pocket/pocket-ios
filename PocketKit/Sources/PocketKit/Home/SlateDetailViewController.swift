@@ -117,6 +117,11 @@ class SlateDetailViewController: UIViewController {
 
         model.fetch()
     }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        model.trackSlateDetailViewed()
+    }
 }
 
 private extension SlateDetailViewController {
