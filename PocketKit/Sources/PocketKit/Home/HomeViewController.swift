@@ -201,7 +201,7 @@ extension HomeViewController {
             cell.configure(model: viewModel)
             return cell
         case .recommendationHero(let objectID):
-            if sectionProvider.shouldUseWideLayout(traitCollection: traitCollection) {
+            if traitCollection.shouldUseWideLayout() {
                 let cell: RecommendationCellHeroWide = collectionView.dequeueCell(for: indexPath)
                 guard let viewModel = model.recommendationHeroWideViewModel(for: objectID, at: indexPath) else {
                     return cell
