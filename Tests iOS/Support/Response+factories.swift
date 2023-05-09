@@ -28,6 +28,13 @@ extension Response {
         }
     }
 
+    static func internalServerError() -> Response {
+        Response {
+            Status.internalServerError
+            Fixture.load(name: "internal-sever-error-user").data
+        }
+    }
+
     static func freeUserSaves(_ fixtureName: String = "initial-list") -> Response {
         saves("initial-list-free-user")
     }
