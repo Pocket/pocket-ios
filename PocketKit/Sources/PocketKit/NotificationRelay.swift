@@ -31,6 +31,7 @@ class NotificationRelay {
 
     private func registerActions() {
         serverErrorActions[429] = notRespondingError
+        serverErrorActions[503] = notRespondingError
         serverErrorActions[500] = serverError
     }
 
