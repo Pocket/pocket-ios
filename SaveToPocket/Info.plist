@@ -13,7 +13,7 @@
 		<key>NSExtensionAttributes</key>
 		<dict>
 			<key>NSExtensionActivationRule</key>
-			<string>SUBQUERY(extensionItems, $extensionItem, SUBQUERY($extensionItem.attachments, $attachment, (ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.url" OR ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.plain-text") AND (NOT ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.file-url")).@count &gt; 0).@count &gt; 0</string>
+			<string>SUBQUERY(extensionItems, $extensionItem, SUBQUERY($extensionItem.attachments, $attachment, (ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.url" OR ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.plain-text") AND (NOT ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.file-url") AND (NOT ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "com.apple.application-bundle")).@count &gt; 0).@count &gt; 0</string>
 		</dict>
 		<key>NSExtensionPointIdentifier</key>
 		<string>com.apple.share-services</string>
