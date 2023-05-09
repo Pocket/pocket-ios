@@ -443,7 +443,7 @@ class FetchSavesTests: XCTestCase {
         }
     }
 
-    func test_execute_whenResponseIs5XX_retries() async {
+    func test_execute_whenResponseIs5XX_does_not_retry() async {
         let initialError = ResponseCodeInterceptor.ResponseCodeError.withStatusCode(500)
         user.stubSetStatus { _ in }
         apollo.setupTagsResponse()
@@ -452,8 +452,8 @@ class FetchSavesTests: XCTestCase {
         let service = subject()
         let result = await service.execute(syncTaskId: task.objectID)
 
-        guard case .retry = result else {
-            XCTFail("Expected retry result but got \(result)")
+        guard case .failure = result else {
+            XCTFail("Expected failure result but got \(result)")
             return
         }
     }
