@@ -277,10 +277,13 @@ extension HomeViewModel {
         )
         let item = recommendation.item
 
+        var destination: ContentOpen.Destination = .internal
         if item.shouldOpenInWebView {
             selectedReadableType = .webViewRecommendation(viewModel)
+            destination = .external
         } else {
             selectedReadableType = .recommendation(viewModel)
+            destination = .internal
         }
 
         guard
@@ -291,7 +294,7 @@ extension HomeViewModel {
             return
         }
 
-        tracker.track(event: Events.Home.SlateArticleContentOpen(url: item.givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
+        tracker.track(event: Events.Home.SlateArticleContentOpen(url: item.givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID, destination: destination))
     }
 
     private func select(savedItem: SavedItem, at indexPath: IndexPath) {
