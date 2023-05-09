@@ -206,6 +206,7 @@ extension Response {
         return .init(
             mock: Mock<Query>(
                 user: Mock<PocketGraphTestMocks.User>(
+                    email: "free@mozilla.com",
                     isPremium: false,
                     name: "Pocket User",
                     username: "User Name"
@@ -218,6 +219,7 @@ extension Response {
         return .init(
             mock: Mock<Query>(
                 user: Mock<PocketGraphTestMocks.User>(
+                    email: "premium@mozilla.com",
                     isPremium: true,
                     name: "Pocket User",
                     username: "User Name"
