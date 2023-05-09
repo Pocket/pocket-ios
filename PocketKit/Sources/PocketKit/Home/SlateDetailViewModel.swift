@@ -52,6 +52,17 @@ class SlateDetailViewModel {
         }.store(in: &subscriptions)
     }
 
+    func trackSlateDetailViewed() {
+        guard
+            let slateLineup = slate.slateLineup,
+            let slateIndex = slateLineup.slates?.index(of: slate)
+        else {
+            Log.capture(message: "Tried to display slate without slatelineup, not logging analytics")
+            return
+        }
+        tracker.track(event: Events.ExpandedSlate.SlateExpanded(slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: slateIndex, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID))
+    }
+
     func fetch() {
         let snapshot = buildSnapshot()
         guard snapshot.numberOfItems != 0 else { return }
@@ -67,10 +78,16 @@ class SlateDetailViewModel {
                 return
             }
 
-            tracker.track(
-                event: ImpressionEvent(component: .content, requirement: .instant),
-                contexts(for: recommendation, at: indexPath)
-            )
+            let item = recommendation.item
+            guard
+                let slate = recommendation.slate,
+                let slateLineup = slate.slateLineup
+            else {
+                Log.capture(message: "Tried to display recommendation without slate and slatelineup, not logging analytics")
+                return
+            }
+
+            tracker.track(event: Events.ExpandedSlate.SlateArticleImpression(url: item.givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
         }
     }
 }
@@ -91,19 +108,12 @@ extension SlateDetailViewModel {
             return
         }
 
-        tracker.track(
-            event: SnowplowEngagement(type: .general, value: nil),
-            contexts(for: recommendation, at: indexPath)
-        )
         let item = recommendation.item
+        var destination: ContentOpen.Destination = .internal
         if item.shouldOpenInWebView {
             let url = pocketPremiumURL(item.bestURL, user: user)
             presentedWebReaderURL = url
-
-            tracker.track(
-                event: ContentOpenEvent(destination: .external, trigger: .click),
-                contexts(for: recommendation, at: indexPath)
-            )
+            destination = .external
         } else {
             selectedReadableViewModel = RecommendationViewModel(
                 recommendation: recommendation,
@@ -113,12 +123,18 @@ extension SlateDetailViewModel {
                 user: user,
                 userDefaults: userDefaults
             )
-
-            tracker.track(
-                event: ContentOpenEvent(destination: .internal, trigger: .click),
-                contexts(for: recommendation, at: indexPath)
-            )
+            destination = .internal
         }
+
+        guard
+            let slate = recommendation.slate,
+            let slateLineup = slate.slateLineup
+        else {
+            Log.capture(message: "Selected recommendation without an associated slate and slatelineup, not logging analytics")
+            return
+        }
+
+        tracker.track(event: Events.ExpandedSlate.SlateArticleContentOpen(url: item.givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID, destination: destination))
     }
 }
 
@@ -161,56 +177,35 @@ extension SlateDetailViewModel {
     }
 
     private func save(_ recommendation: Recommendation, at indexPath: IndexPath) {
-        let contexts = contexts(for: recommendation, at: indexPath) + [UIContext.button(identifier: .itemSave)]
-        tracker.track(
-            event: SnowplowEngagement(type: .save, value: nil),
-            contexts
-        )
-
         source.save(recommendation: recommendation)
+        let item = recommendation.item
+        guard
+            let slate = recommendation.slate,
+            let slateLineup = slate.slateLineup
+        else {
+            Log.capture(message: "Saved recommendation slate and slatelineup, not logging analytics")
+            return
+        }
+
+        tracker.track(event: Events.ExpandedSlate.SlateArticleSave(url: item.givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
     }
 
     private func archive(_ recommendation: Recommendation, at indexPath: IndexPath) {
-        let contexts = contexts(for: recommendation, at: indexPath) + [UIContext.button(identifier: .itemArchive)]
-        tracker.track(
-            event: SnowplowEngagement(type: .save, value: nil),
-            contexts
-        )
-
         source.archive(recommendation: recommendation)
+        let item = recommendation.item
+        guard
+            let slate = recommendation.slate,
+            let slateLineup = slate.slateLineup
+        else {
+            Log.capture(message: "Archived recommendation without slate and slatelineup, not logging analytics")
+            return
+        }
+
+        tracker.track(event: Events.ExpandedSlate.SlateArticleArchive(url: item.givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
     }
 
     private func report(_ recommendation: Recommendation, at indexPath: IndexPath) {
-        tracker.track(
-            event: SnowplowEngagement(type: .report, value: nil),
-            contexts(for: recommendation, at: indexPath)
-        )
-
         selectedRecommendationToReport = recommendation
-    }
-
-    private func contexts(for recommendation: Recommendation, at indexPath: IndexPath) -> [Context] {
-        let recommendationURL = recommendation.item.bestURL
-        var contexts: [Context] = []
-
-        let slateContext = SlateContext(
-            id: slate.remoteID,
-            requestID: slate.requestID,
-            experiment: slate.experimentID,
-            index: UIIndex(0)
-        )
-        contexts.append(slateContext)
-
-        let recommendationContext = RecommendationContext(
-            id: recommendation.remoteID,
-            index: UIIndex(indexPath.item)
-        )
-        contexts.append(recommendationContext)
-
-        return contexts + [
-            ContentContext(url: recommendationURL),
-            UIContext.slateDetail.recommendation(index: UIIndex(indexPath.item))
-        ]
     }
 }
 

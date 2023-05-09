@@ -76,6 +76,7 @@
         "DeleteAnItemTests",
         "EditTagsTests",
         "EmptyStateTests",
+        "ErrorTests",
         "FavoriteAnItemTests",
         "HomeTests",
         "HomeWebViewTests",

@@ -31,6 +31,8 @@ class NotificationRelay {
 
     private func registerActions() {
         serverErrorActions[429] = notRespondingError
+        serverErrorActions[503] = notRespondingError
+        serverErrorActions[500] = serverError
     }
 
     private func serverError(_ notification: Notification) {
@@ -52,6 +54,16 @@ class NotificationRelay {
             image: .warning,
             title: nil,
             detail: Localization.General.Error.serverNotResponding
+        )
+
+        broadcastNotificationCentre.post(name: .bannerRequested, object: bannerData)
+    }
+
+    private func serverError() {
+        let bannerData = BannerModifier.BannerData(
+            image: .warning,
+            title: nil,
+            detail: Localization.General.Error.serverError
         )
 
         broadcastNotificationCentre.post(name: .bannerRequested, object: bannerData)
