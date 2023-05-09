@@ -75,7 +75,7 @@ public extension ApolloClientProtocol {
     private static func handleServerError(_ error: Error) -> Bool {
 
         // Codes we wish to notify the user about
-        let serverErrorCodes = [429, 500]
+        let serverErrorCodes = [429, 500, 503]
 
         guard let responseError = error as? ResponseCodeInterceptor.ResponseCodeError,
               case .invalidResponseCode(let response, _) = responseError,
