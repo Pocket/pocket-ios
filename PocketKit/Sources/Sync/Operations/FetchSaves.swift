@@ -75,7 +75,7 @@ class FetchSaves: SyncOperation {
                         level: .error,
                         message: "ResponseCodeInterceptor.ResponseCodeError with Error: \(error.localizedDescription) and status code \(String(describing: response?.statusCode))"
                     )
-                    return .retry(error)
+                    return .failure(error)
                 default:
                     return .failure(error)
                 }
