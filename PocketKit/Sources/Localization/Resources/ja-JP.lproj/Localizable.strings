@@ -1,6 +1,10 @@
 //General Messages
 "general.oops" = "エラーが発生しました。もう一度お試しください。";
 
+// - General Error Messages
+"general.error.serverNotResponding" = "現在サーバーが応答していません。ご迷惑をおかけし、大変申し訳ございません。1時間以内に利用可能になる予定です。";
+"general.error.serverError" = "Something went wrong with your request. The Pocket team has been notified. Please try again later.";
+
 //Archive
 "archive.empty.header" = "リストを最新に保ちながら整理";
 "archive.empty.detail" = "アーカイブアイコンを使用すると、読み終えた保存コンテンツをアーカイブできます。";
