@@ -1,6 +1,10 @@
 //General Messages
 "general.oops" = "糟糕！再试一次？";
 
+// - General Error Messages
+"general.error.serverNotResponding" = "我们的服务器现在没有响应。请耐心等待。它应该在一个小时内就可以使用。";
+"general.error.serverError" = "您的请求出错了。Pocket 团队已收到通知。请稍后重试。";
+
 //Archive
 "archive.empty.header" = "保持您的列表清新整齐";
 "archive.empty.detail" = "使用存档图标将您完成的已保存内容存档。";
