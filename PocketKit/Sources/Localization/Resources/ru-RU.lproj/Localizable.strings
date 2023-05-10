@@ -1,6 +1,10 @@
 //General Messages
 "general.oops" = "Ой! Попробовать еще раз?";
 
+// - General Error Messages
+"general.error.serverNotResponding" = "Наш сервер сейчас не отвечает. Подождите немного. Он должен снова стать доступен в течение часа.";
+"general.error.serverError" = "Возникла проблема с вашим запросом. Уведомление отправлено команде Pocket. Повторите попытку позже.";
+
 //Archive
 "archive.empty.header" = "Храните свой список свежим и упорядоченным";
 "archive.empty.detail" = "Архивируйте сохраненные материалы с помощью значка архива.";
