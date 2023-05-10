@@ -51,7 +51,7 @@ class NotificationRelay {
 
     private func notRespondingError() {
         let errorMessage = Localization.General.Error.ServerNotResponding.self
-        
+
         let bannerData = BannerModifier.BannerData(
             image: .warning,
             title: errorMessage.title,
