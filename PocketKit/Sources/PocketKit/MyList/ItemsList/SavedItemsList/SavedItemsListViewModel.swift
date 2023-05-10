@@ -366,13 +366,13 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         switch self.viewType {
         case .saves:
             return [
-                .addTags { [weak self] _ in self?.showAddTagsView(item: item) },
+                tagsAction(for: item),
                 .archive { [weak self] _ in self?._archive(item: item) },
                 .delete { [weak self] _ in self?.confirmDelete(item: item) }
             ]
         case .archive:
             return [
-                .addTags { [weak self] _ in self?.showAddTagsView(item: item) },
+                tagsAction(for: item),
                 .moveToSaves { [weak self] _ in self?._moveToSaves(item: item) },
                 .delete { [weak self] _ in self?.confirmDelete(item: item) }
             ]
@@ -755,6 +755,15 @@ extension SavedItemsListViewModel: SavedItemsControllerDelegate {
 
 // MARK: - Add Tags to an item
 extension SavedItemsListViewModel {
+    private func tagsAction(for item: SavedItem) -> ItemAction {
+        let hasTags = (item.tags?.count ?? 0) > 0
+        if hasTags {
+            return .editTags { [weak self] _ in self?.showAddTagsView(item: item) }
+        } else {
+            return .addTags { [weak self] _ in self?.showAddTagsView(item: item) }
+        }
+    }
+
     private func showAddTagsView(item: SavedItem) {
         presentedAddTags = PocketAddTagsViewModel(
             item: item,
