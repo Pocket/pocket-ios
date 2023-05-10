@@ -231,6 +231,8 @@ public enum Localization {
     public static let delete = Localization.tr("Localizable", "itemAction.delete", fallback: "Delete")
     /// Display settings
     public static let displaySettings = Localization.tr("Localizable", "itemAction.displaySettings", fallback: "Display settings")
+    /// Edit tags
+    public static let editTags = Localization.tr("Localizable", "itemAction.editTags", fallback: "Edit tags")
     /// Favorite
     public static let favorite = Localization.tr("Localizable", "itemAction.favorite", fallback: "Favorite")
     /// Move to Saves
