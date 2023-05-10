@@ -7,13 +7,9 @@ class HomeViewControllerSectionProvider {
     struct Constants {
         static let margin: CGFloat = Margins.thin.rawValue
         static let sideMargin: CGFloat = Margins.normal.rawValue
+        static let iPadSideMargin: CGFloat = Margins.iPadNormal.rawValue
         static let spacing: CGFloat = 16
         static let sectionSpacing: CGFloat = 64
-    }
-
-    func shouldUseWideLayout(traitCollection: UITraitCollection) -> Bool {
-        traitCollection.userInterfaceIdiom == .pad &&
-        traitCollection.horizontalSizeClass == .regular
     }
 
     func loadingSection() -> NSCollectionLayoutSection {
@@ -47,9 +43,12 @@ class HomeViewControllerSectionProvider {
         )
 
         let itemWidthPercentage: CGFloat
-        if shouldUseWideLayout(traitCollection: env.traitCollection) {
+        let sideMargin: CGFloat
+        if env.traitCollection.shouldUseWideLayout() {
+            sideMargin = Constants.iPadSideMargin
             itemWidthPercentage = 2/5
         } else {
+            sideMargin = Constants.sideMargin
             itemWidthPercentage = 0.8
         }
 
@@ -83,9 +82,9 @@ class HomeViewControllerSectionProvider {
         section.boundarySupplementaryItems = [headerItem]
         section.contentInsets = NSDirectionalEdgeInsets(
             top: Constants.margin,
-            leading: Constants.sideMargin,
+            leading: sideMargin,
             bottom: Constants.sectionSpacing,
-            trailing: Constants.sideMargin
+            trailing: sideMargin
         )
         return section
     }
@@ -104,9 +103,12 @@ class HomeViewControllerSectionProvider {
 
         let width = env.container.effectiveContentSize.width
         let heroHeight: CGFloat
-        if shouldUseWideLayout(traitCollection: env.traitCollection) {
+        let sideMargin: CGFloat
+        if env.traitCollection.shouldUseWideLayout() {
+            sideMargin = Constants.iPadSideMargin
             heroHeight = width * 0.28
         } else {
+            sideMargin = Constants.sideMargin
             heroHeight = RecommendationCell.fullHeight(viewModel: hero, availableWidth: width - (Constants.sideMargin * 2))
         }
 
@@ -127,15 +129,15 @@ class HomeViewControllerSectionProvider {
         section.boundarySupplementaryItems = [headerItem]
         section.contentInsets = NSDirectionalEdgeInsets(
             top: Constants.margin,
-            leading: Constants.sideMargin,
+            leading: sideMargin,
             bottom: Constants.margin,
-            trailing: Constants.sideMargin
+            trailing: sideMargin
         )
         return section
     }
 
     func additionalRecommendationsSection(for slateID: NSManagedObjectID, in viewModel: HomeViewModel, env: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? {
-        if shouldUseWideLayout(traitCollection: env.traitCollection) {
+        if env.traitCollection.shouldUseWideLayout() {
             return recommendationCellGridSection(for: slateID, in: viewModel, env: env)
         } else {
             return carouselSection(for: slateID, in: viewModel, env: env)
@@ -206,9 +208,9 @@ class HomeViewControllerSectionProvider {
         let section = NSCollectionLayoutSection(group: group)
         section.contentInsets = NSDirectionalEdgeInsets(
             top: Constants.margin,
-            leading: Constants.sideMargin,
+            leading: Constants.iPadSideMargin,
             bottom: Constants.sectionSpacing,
-            trailing: Constants.sideMargin
+            trailing: Constants.iPadSideMargin
         )
 
         return section

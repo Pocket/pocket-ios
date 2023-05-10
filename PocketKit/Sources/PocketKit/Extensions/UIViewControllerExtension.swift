@@ -18,3 +18,12 @@ extension UIViewController {
         PocketAppDelegate.phoneOrientationLock = orientation
     }
 }
+
+extension UITraitCollection {
+    /// Used to determine if the device should use wide layout due to it being an iPad with regular horizontal size class
+    /// - Returns: true or false if the device should use our configurations for a wide layout
+    func shouldUseWideLayout() -> Bool {
+        userInterfaceIdiom == .pad &&
+        horizontalSizeClass == .regular
+    }
+}

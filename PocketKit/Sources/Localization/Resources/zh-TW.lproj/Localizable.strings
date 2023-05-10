@@ -1,6 +1,10 @@
 //General Messages
 "general.oops" = "哎呀！要再試一次嗎？";
 
+// - General Error Messages
+"general.error.serverNotResponding" = "我們的伺服器現在沒有回應。請耐心等待。應該在一個小時內可以重新使用。";
+"general.error.serverError" = "Something went wrong with your request. The Pocket team has been notified. Please try again later.";
+
 //Archive
 "archive.empty.header" = "及時更新和整理您的清單";
 "archive.empty.detail" = "使用封存圖示封存已讀完的儲存內容。";
