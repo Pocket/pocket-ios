@@ -2,7 +2,8 @@
 "general.oops" = "Oops! Try again?";
 
 // - General Error Messages
-"general.error.serverNotResponding" = "Our server is not responding right now. Please bear with us. It should be available within an hour.";
+"general.error.serverNotResponding.title" = "Server not responding";
+"general.error.serverNotResponding.detail" = "Our server is not responding right now. Please bear with us. It should be available within an hour.";
 "general.error.serverError" = "Something went wrong with your request. The Pocket team has been notified. Please try again later.";
 
 //Archive
