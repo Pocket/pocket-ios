@@ -1,6 +1,10 @@
 //General Messages
 "general.oops" = "죄송합니다! 다시 시도하시겠습니까?";
 
+// - General Error Messages
+"general.error.serverNotResponding" = "현재 서버가 응답하지 않습니다. 잠시만 기다려주세요. 한 시간 이내에 사용할 수 있습니다.";
+"general.error.serverError" = "Something went wrong with your request. The Pocket team has been notified. Please try again later.";
+
 //Archive
 "archive.empty.header" = "목록을 깔끔하게 정리해 보세요";
 "archive.empty.detail" = "보관 아이콘을 사용하여 작업이 완료된 저장 항목을 보관해 보세요.";
