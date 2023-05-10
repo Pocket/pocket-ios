@@ -12,6 +12,8 @@ protocol FeatureFlagServiceProtocol {
 
     /// Only call this track feature when the User has felt the change of the feature flag, not before.
     func trackFeatureFlagFelt(flag: CurrentFeatureFlags, variant: String?)
+
+    func getPayload(flag: CurrentFeatureFlags) -> String?
 }
 
 /// Extension for default values https://medium.com/@georgetsifrikas/swift-protocols-with-default-values-b7278d3eef22
@@ -46,6 +48,14 @@ class FeatureFlagService: FeatureFlagServiceProtocol {
         return flag.assigned && flagVariant == variant
     }
 
+    func getPayload(flag: CurrentFeatureFlags) -> String? {
+        guard let flag = source.fetchFeatureFlag(by: flag.rawValue) else {
+            return nil
+        }
+
+        return flag.payloadValue
+    }
+
     /// Only call this track feature when the User has felt the change of the feature flag, not before.
     func trackFeatureFlagFelt(flag: CurrentFeatureFlags, variant: String?) {
         guard let variant else {
@@ -62,6 +72,8 @@ public enum CurrentFeatureFlags: String, CaseIterable {
     case listen = "temp.ios.listen"
     case listenTagsPlaylists = "temp.ios.listen.tag_playlists"
     case debugMenu = "perm.ios.debug.menu"
+    case traceSampling = "perm.ios.sentry.traces"
+    case profileSampling = "perm.ios.sentry.profile"
 
     /// Description to use in a debug menu
     var description: String {
@@ -72,6 +84,10 @@ public enum CurrentFeatureFlags: String, CaseIterable {
             return "Enable the Playlist support via tags in Listen"
         case .debugMenu:
             return "Debug menu for iOS"
+        case .traceSampling:
+            return "Percentage to use to sample traces in Sentry"
+        case .profileSampling:
+            return "Percentage to use to sample profiles in Sentry"
         }
     }
 }

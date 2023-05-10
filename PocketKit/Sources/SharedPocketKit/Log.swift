@@ -236,7 +236,7 @@ extension Log {
      - Parameters:
         - dsn: The sentry secret
      */
-    public class func start(dsn: String) {
+    public class func start(dsn: String, tracesSampler: Sentry.SentryTracesSamplerCallback? = nil, profilesSampler: Sentry.SentryTracesSamplerCallback? = nil) {
         if isRunningTests() {
             // We are in a test environment, lets not init sentry.
             return
@@ -244,10 +244,8 @@ extension Log {
 
         #if !DEBUG
         SentrySDK.start { options in
-            options.dsn = dsn
-            options.enableAutoSessionTracking = true
-            options.tracesSampleRate = 0.01 // tracing must be enabled for profiling
-            options.profilesSampleRate = 0.01 // see also `profilesSampler` if you need custom sampling logic
+            options.tracesSampler = tracesSampler
+            options.profilesSampler = profilesSampler
         }
         #endif
     }
