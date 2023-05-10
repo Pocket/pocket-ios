@@ -1,6 +1,10 @@
 //General Messages
 "general.oops" = "Oeps! Opnieuw proberen?";
 
+// - General Error Messages
+"general.error.serverNotResponding" = "Onze server reageert op dit moment niet. Een ogenblik geduld. De server zou binnen een uur weer beschikbaar moeten zijn.";
+"general.error.serverError" = "Er is iets misgegaan met je aanvraag. Het team van Pocket is op de hoogte gesteld. Probeer het later opnieuw.";
+
 //Archive
 "archive.empty.header" = "Houd je lijst up-to-date en geordend";
 "archive.empty.detail" = "Archiveer opgeslagen artikelen die je al hebt gelezen via het archief-pictogram.";
