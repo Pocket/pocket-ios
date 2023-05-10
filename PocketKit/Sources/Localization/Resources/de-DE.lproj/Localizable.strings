@@ -1,6 +1,10 @@
 //General Messages
 "general.oops" = "Hoppla! Erneut versuchen?";
 
+// - General Error Messages
+"general.error.serverNotResponding" = "Der Server antwortet derzeit nicht. Bitte hab ein wenig Geduld. Innerhalb einer Stunde sollte das Problem behoben sein.";
+"general.error.serverError" = "Something went wrong with your request. The Pocket team has been notified. Please try again later.";
+
 //Archive
 "archive.empty.header" = "Sorge dafür, dass deine Liste aktuell und schön ordentlich bleibt";
 "archive.empty.detail" = "Archiviere die gespeicherten Elemente, mit denen du fertig bist, über das Archivierungssymbol.";
