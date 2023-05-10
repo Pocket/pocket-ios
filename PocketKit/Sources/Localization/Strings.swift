@@ -192,8 +192,12 @@ public enum Localization {
     public enum Error {
       /// Something went wrong with your request. The Pocket team has been notified. Please try again later.
       public static let serverError = Localization.tr("Localizable", "general.error.serverError", fallback: "Something went wrong with your request. The Pocket team has been notified. Please try again later.")
-      /// Our server is not responding right now. Please bear with us. It should be available within an hour.
-      public static let serverNotResponding = Localization.tr("Localizable", "general.error.serverNotResponding", fallback: "Our server is not responding right now. Please bear with us. It should be available within an hour.")
+      public enum ServerNotResponding {
+        /// Our server is not responding right now. Please bear with us. It should be available within an hour.
+        public static let detail = Localization.tr("Localizable", "general.error.serverNotResponding.detail", fallback: "Our server is not responding right now. Please bear with us. It should be available within an hour.")
+        /// Server not responding
+        public static let title = Localization.tr("Localizable", "general.error.serverNotResponding.title", fallback: "Server not responding")
+      }
     }
   }
   public enum Home {
