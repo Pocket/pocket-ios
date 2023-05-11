@@ -244,6 +244,8 @@ extension Log {
 
         #if !DEBUG
         SentrySDK.start { options in
+            options.dsn = dsn
+            options.enableAutoSessionTracking = true
             options.tracesSampler = tracesSampler
             options.profilesSampler = profilesSampler
         }
