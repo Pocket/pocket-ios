@@ -242,14 +242,17 @@ extension Log {
             return
         }
 
-        #if !DEBUG
         SentrySDK.start { options in
             options.dsn = dsn
+            #if DEBUG
+            options.environment = "development"
+            #else
+            options.environment = "production"
+            #endif
             options.enableAutoSessionTracking = true
             options.tracesSampler = tracesSampler
             options.profilesSampler = profilesSampler
         }
-        #endif
     }
 
     public class func setUserID(_ userID: String) {

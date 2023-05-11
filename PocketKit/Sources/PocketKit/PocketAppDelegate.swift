@@ -58,6 +58,8 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
             }
             return sample
         }, profilesSampler: { context in
+            // NOTE: This is relative to the TracesSampler. IE. if tracesSampler responds with 100%, profilesSampler will be called 100% of the time,
+            // if traces responds with 50%, profileSamples will be called 50% of the time.
             guard self.featureFlags.isAssigned(flag: .profileSampling),
                   // Get the sentry profile sample value from the feature flag
                   let sample = self.featureFlags.getPayload(flag: .profileSampling)?.numberValue else {
