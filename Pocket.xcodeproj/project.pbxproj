@@ -84,6 +84,12 @@
 		8ADD6AA1292C1B2C007F419D /* SearchViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ADD6AA0292C1B2C007F419D /* SearchViewElement.swift */; };
 		9367E9E82A05B6A10052DF47 /* Launch Screen.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9367E9E72A05B6A10052DF47 /* Launch Screen.xcassets */; };
 		938D45322A05B87D00E68B0B /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 938D45312A05B87D00E68B0B /* Launch Screen.storyboard */; };
+		AA2E89032A0D8847004A27BD /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2E89022A0D8847004A27BD /* WidgetKit.framework */; };
+		AA2E89052A0D8847004A27BD /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2E89042A0D8847004A27BD /* SwiftUI.framework */; };
+		AA2E89082A0D8848004A27BD /* RecentSavesWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2E89072A0D8848004A27BD /* RecentSavesWidgetBundle.swift */; };
+		AA2E890A2A0D8848004A27BD /* RecentSavesWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2E89092A0D8848004A27BD /* RecentSavesWidget.swift */; };
+		AA2E890C2A0D8849004A27BD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA2E890B2A0D8849004A27BD /* Assets.xcassets */; };
+		AA2E89102A0D8849004A27BD /* RecentSavesWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = AA2E89012A0D8847004A27BD /* RecentSavesWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		AA69A28429B7FC6E00BBA644 /* SearchGetPremiumEmptyViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA69A28329B7FC6E00BBA644 /* SearchGetPremiumEmptyViewElement.swift */; };
 		AA7D6A2B2995F0A20094FD18 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA7D6A2A2995F0A20094FD18 /* StoreKit.framework */; };
 		AA9DB97429B6E6480046AEF6 /* Test_Subscriptions.storekit in Resources */ = {isa = PBXBuildFile; fileRef = AA909ACC299F4D5400F90FA7 /* Test_Subscriptions.storekit */; };
@@ -131,6 +137,13 @@
 			remoteGlobalIDString = 65EC272428BA8AD50075E1DF;
 			remoteInfo = PushNotificationStoryExtension;
 		};
+		AA2E890E2A0D8849004A27BD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 166A81A42637406B0015AA1D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AA2E89002A0D8847004A27BD;
+			remoteInfo = RecentSavesWidgetExtension;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -140,6 +153,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
+				AA2E89102A0D8849004A27BD /* RecentSavesWidgetExtension.appex in Embed App Extensions */,
 				166DF27427E9160A00C03BF4 /* SaveToPocket.appex in Embed App Extensions */,
 				65EC273328BA8AD50075E1DF /* PushNotificationStoryExtension.appex in Embed App Extensions */,
 				650FECD228BA85F300A3CB0C /* PushNotificationServiceExtension.appex in Embed App Extensions */,
@@ -254,6 +268,14 @@
 		8ADD6AA0292C1B2C007F419D /* SearchViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewElement.swift; sourceTree = "<group>"; };
 		9367E9E72A05B6A10052DF47 /* Launch Screen.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Launch Screen.xcassets"; sourceTree = "<group>"; };
 		938D45312A05B87D00E68B0B /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		AA2E89012A0D8847004A27BD /* RecentSavesWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = RecentSavesWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA2E89022A0D8847004A27BD /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		AA2E89042A0D8847004A27BD /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		AA2E89072A0D8848004A27BD /* RecentSavesWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentSavesWidgetBundle.swift; sourceTree = "<group>"; };
+		AA2E89092A0D8848004A27BD /* RecentSavesWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentSavesWidget.swift; sourceTree = "<group>"; };
+		AA2E890B2A0D8849004A27BD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		AA2E890D2A0D8849004A27BD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AA2E89172A0D9391004A27BD /* libcmark-gfm.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libcmark-gfm.tbd"; path = "Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.4.sdk/usr/lib/libcmark-gfm.tbd"; sourceTree = DEVELOPER_DIR; };
 		AA69A28329B7FC6E00BBA644 /* SearchGetPremiumEmptyViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchGetPremiumEmptyViewElement.swift; sourceTree = "<group>"; };
 		AA7D6A2A2995F0A20094FD18 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.2.sdk/System/Library/Frameworks/StoreKit.framework; sourceTree = DEVELOPER_DIR; };
 		AA909AC8299EFD3A00F90FA7 /* secrets_test.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = secrets_test.xcconfig; sourceTree = "<group>"; };
@@ -320,6 +342,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AA2E88FE2A0D8847004A27BD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA2E89052A0D8847004A27BD /* SwiftUI.framework in Frameworks */,
+				AA2E89032A0D8847004A27BD /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F204A75D27E22EC50010E155 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -375,6 +406,7 @@
 				F204A76127E22EC50010E155 /* SaveToPocket */,
 				650FECCC28BA85F300A3CB0C /* PushNotificationServiceExtension */,
 				65EC272A28BA8AD50075E1DF /* PushNotificationStoryExtension */,
+				AA2E89062A0D8848004A27BD /* RecentSavesWidget */,
 				F220F2B8264DC2750064D272 /* Frameworks */,
 				166A81B12637406C0015AA1D /* Products */,
 			);
@@ -388,6 +420,7 @@
 				F204A76027E22EC50010E155 /* SaveToPocket.appex */,
 				650FECCB28BA85F300A3CB0C /* PushNotificationServiceExtension.appex */,
 				65EC272528BA8AD50075E1DF /* PushNotificationStoryExtension.appex */,
+				AA2E89012A0D8847004A27BD /* RecentSavesWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -517,6 +550,17 @@
 			path = "Launch Screen";
 			sourceTree = "<group>";
 		};
+		AA2E89062A0D8848004A27BD /* RecentSavesWidget */ = {
+			isa = PBXGroup;
+			children = (
+				AA2E89072A0D8848004A27BD /* RecentSavesWidgetBundle.swift */,
+				AA2E89092A0D8848004A27BD /* RecentSavesWidget.swift */,
+				AA2E890B2A0D8849004A27BD /* Assets.xcassets */,
+				AA2E890D2A0D8849004A27BD /* Info.plist */,
+			);
+			path = RecentSavesWidget;
+			sourceTree = "<group>";
+		};
 		F204A76127E22EC50010E155 /* SaveToPocket */ = {
 			isa = PBXGroup;
 			children = (
@@ -531,10 +575,13 @@
 		F220F2B8264DC2750064D272 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AA2E89172A0D9391004A27BD /* libcmark-gfm.tbd */,
 				AA7D6A2A2995F0A20094FD18 /* StoreKit.framework */,
 				F227F0C3265E96290031F985 /* CoreText.framework */,
 				65EC272628BA8AD50075E1DF /* UserNotifications.framework */,
 				65EC272828BA8AD50075E1DF /* UserNotificationsUI.framework */,
+				AA2E89022A0D8847004A27BD /* WidgetKit.framework */,
+				AA2E89042A0D8847004A27BD /* SwiftUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -560,6 +607,7 @@
 				166DF27627E9160A00C03BF4 /* PBXTargetDependency */,
 				650FECD128BA85F300A3CB0C /* PBXTargetDependency */,
 				65EC273228BA8AD50075E1DF /* PBXTargetDependency */,
+				AA2E890F2A0D8849004A27BD /* PBXTargetDependency */,
 			);
 			name = "Pocket (iOS)";
 			packageProductDependencies = (
@@ -638,6 +686,23 @@
 			productReference = 65EC272528BA8AD50075E1DF /* PushNotificationStoryExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		AA2E89002A0D8847004A27BD /* RecentSavesWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AA2E89162A0D884A004A27BD /* Build configuration list for PBXNativeTarget "RecentSavesWidgetExtension" */;
+			buildPhases = (
+				AA2E88FD2A0D8847004A27BD /* Sources */,
+				AA2E88FE2A0D8847004A27BD /* Frameworks */,
+				AA2E88FF2A0D8847004A27BD /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RecentSavesWidgetExtension;
+			productName = RecentSavesWidgetExtension;
+			productReference = AA2E89012A0D8847004A27BD /* RecentSavesWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		F204A75F27E22EC50010E155 /* SaveToPocket */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = F204A76E27E22EC50010E155 /* Build configuration list for PBXNativeTarget "SaveToPocket" */;
@@ -664,7 +729,7 @@
 		166A81A42637406B0015AA1D /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1340;
+				LastSwiftUpdateCheck = 1430;
 				LastUpgradeCheck = 1300;
 				TargetAttributes = {
 					166A81AF2637406C0015AA1D = {
@@ -680,6 +745,9 @@
 					};
 					65EC272428BA8AD50075E1DF = {
 						CreatedOnToolsVersion = 13.4.1;
+					};
+					AA2E89002A0D8847004A27BD = {
+						CreatedOnToolsVersion = 14.3;
 					};
 					F204A75F27E22EC50010E155 = {
 						CreatedOnToolsVersion = 13.3;
@@ -726,6 +794,7 @@
 				F204A75F27E22EC50010E155 /* SaveToPocket */,
 				650FECCA28BA85F300A3CB0C /* PushNotificationServiceExtension */,
 				65EC272428BA8AD50075E1DF /* PushNotificationStoryExtension */,
+				AA2E89002A0D8847004A27BD /* RecentSavesWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -762,6 +831,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA2E88FF2A0D8847004A27BD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA2E890C2A0D8849004A27BD /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -911,6 +988,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AA2E88FD2A0D8847004A27BD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA2E89082A0D8848004A27BD /* RecentSavesWidgetBundle.swift in Sources */,
+				AA2E890A2A0D8848004A27BD /* RecentSavesWidget.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F204A75C27E22EC50010E155 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -941,6 +1027,11 @@
 			isa = PBXTargetDependency;
 			target = 65EC272428BA8AD50075E1DF /* PushNotificationStoryExtension */;
 			targetProxy = 65EC273128BA8AD50075E1DF /* PBXContainerItemProxy */;
+		};
+		AA2E890F2A0D8849004A27BD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AA2E89002A0D8847004A27BD /* RecentSavesWidgetExtension */;
+			targetProxy = AA2E890E2A0D8849004A27BD /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1953,6 +2044,163 @@
 			};
 			name = Debug_Tests;
 		};
+		AA2E89112A0D884A004A27BD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = EX3VH4YFCH;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = RecentSavesWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = RecentSavesWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 8.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.RecentSavesWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AA2E89122A0D884A004A27BD /* Debug_Tests */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = EX3VH4YFCH;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = RecentSavesWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = RecentSavesWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 8.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.RecentSavesWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug_Tests;
+		};
+		AA2E89132A0D884A004A27BD /* Debug_AlphaNeue */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = EX3VH4YFCH;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = RecentSavesWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = RecentSavesWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 8.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.RecentSavesWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug_AlphaNeue;
+		};
+		AA2E89142A0D884A004A27BD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = EX3VH4YFCH;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = RecentSavesWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = RecentSavesWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 8.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.RecentSavesWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		AA2E89152A0D884A004A27BD /* Release_AlphaNeue */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = EX3VH4YFCH;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = RecentSavesWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = RecentSavesWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 8.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.RecentSavesWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release_AlphaNeue;
+		};
 		F204A76C27E22EC50010E155 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2078,6 +2326,18 @@
 				653DA73529C3BBE800123847 /* Debug_AlphaNeue */,
 				65EC273728BA8AD50075E1DF /* Release */,
 				653DA72B29C3BB0C00123847 /* Release_AlphaNeue */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AA2E89162A0D884A004A27BD /* Build configuration list for PBXNativeTarget "RecentSavesWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA2E89112A0D884A004A27BD /* Debug */,
+				AA2E89122A0D884A004A27BD /* Debug_Tests */,
+				AA2E89132A0D884A004A27BD /* Debug_AlphaNeue */,
+				AA2E89142A0D884A004A27BD /* Release */,
+				AA2E89152A0D884A004A27BD /* Release_AlphaNeue */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
