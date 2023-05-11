@@ -55,7 +55,7 @@ extension MockFeatureFlagService {
     }
 
     func trackFeatureFlagFelt(flag: PocketKit.CurrentFeatureFlags, variant: String?) {
-        guard let impl = implementations[Self.trackFeatureFlagFelt] as? IsAssignedImpl else {
+        guard let impl = implementations[Self.trackFeatureFlagFelt] as? TrackFeatureFlagFeltImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
 
@@ -71,5 +71,37 @@ extension MockFeatureFlagService {
         }
 
         return calls[index] as? TrackFeatureFlagFeltImpl
+    }
+}
+
+// MARK: getPayload
+extension MockFeatureFlagService {
+    static let getPayload = "getPayload"
+    typealias GetPayloadImpl = (PocketKit.CurrentFeatureFlags) -> String?
+    struct GetPayloadCall {
+        let flag: PocketKit.CurrentFeatureFlags
+    }
+
+    func stubGetPayload(impl: @escaping GetPayloadImpl) {
+        implementations[Self.getPayload] = impl
+    }
+
+    func getPayload(flag: CurrentFeatureFlags) -> String? {
+        guard let impl = implementations[Self.getPayload] as? GetPayloadImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.getPayload] = (calls[Self.getPayload] ?? []) + [GetPayloadCall(flag: flag)]
+
+        return impl(flag)
+    }
+
+    func handleGetPayloadCall(at index: Int) -> GetPayloadImpl? {
+        guard let calls = calls[Self.getPayload],
+              calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? GetPayloadImpl
     }
 }
