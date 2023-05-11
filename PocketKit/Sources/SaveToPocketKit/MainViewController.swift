@@ -16,14 +16,14 @@ class MainViewController: UIViewController {
     convenience init(services: Services) {
         Textiles.initialize()
 
-        let appSession = services.appSession!
+        let appSession = services.appSession
         let encryptedStore = PocketEncryptedStore()
-        let userDefaults = services.userDefaults!
-        let user = services.user!
-        let notificationCenter = services.notificationCenter!
+        let userDefaults = services.userDefaults
+        let user = services.user
+        let notificationCenter = services.notificationCenter
         let child: UIViewController
-        let tracker = services.tracker!
-        let braze = services.braze!
+        let tracker = services.tracker
+        let braze = services.braze
 
         // Reset and attach at least an api user entity on extension launch
         tracker.resetPersistentEntities([
@@ -109,16 +109,16 @@ class MainViewController: UIViewController {
                 viewModel: LoggedOutViewModel()
             )
         } else {
-            Log.setUserID(services.appSession!.currentSession!.userIdentifier)
+            Log.setUserID(services.appSession.currentSession!.userIdentifier)
             child = SavedItemViewController(
                 viewModel: SavedItemViewModel(
                     appSession: appSession,
-                    saveService: services.saveService!,
+                    saveService: services.saveService,
                     dismissTimer: Timer.TimerPublisher(interval: 3.0, runLoop: .main, mode: .default),
-                    tracker: Services.shared.tracker!.childTracker(hosting: .saveExtension.screen),
+                    tracker: Services.shared.tracker.childTracker(hosting: .saveExtension.screen),
                     consumerKey: Keys.shared.pocketApiConsumerKey,
                     userDefaults: userDefaults,
-                    user: Services.shared.user!
+                    user: Services.shared.user
                 )
             )
         }
