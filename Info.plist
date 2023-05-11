@@ -86,11 +86,26 @@
 		<false/>
 		<key>UISceneConfigurations</key>
 		<dict>
+			<key>CPTemplateApplicationSceneSessionRoleApplication</key>
+			<array>
+				<dict>
+					<key>UISceneClassName</key>
+					<string>CPTemplateApplicationScene</string>
+					<key>UISceneConfigurationName</key>
+					<string>CarPlayApplicationSceneDelegate</string>
+					<key>UISceneDelegateClassName</key>
+					<string>PocketKit.CarPlayApplicationSceneDelegate</string>
+				</dict>
+			</array>
 			<key>UIWindowSceneSessionRoleApplication</key>
 			<array>
 				<dict>
+					<key>UISceneClassName</key>
+					<string>UIWindowScene</string>
 					<key>UISceneConfigurationName</key>
-					<string>Default Configuration</string>
+					<string>PocketSceneDelegate</string>
+					<key>UISceneDelegateClassName</key>
+					<string>PocketKit.PocketSceneDelegate</string>
 				</dict>
 			</array>
 		</dict>
