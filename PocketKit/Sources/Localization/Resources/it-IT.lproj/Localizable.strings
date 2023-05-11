@@ -2,8 +2,9 @@
 "general.oops" = "Errore della ricerca. Riprovare?";
 
 // - General Error Messages
-"general.error.serverNotResponding" = "Al momento il nostro server non risponde, ma dovrebbe tornare disponibile entro un'ora. Ti ringraziamo per la pazienza.";
-"general.error.serverError" = "Something went wrong with your request. The Pocket team has been notified. Please try again later.";
+"general.error.serverNotResponding.title" = "Server not responding";
+"general.error.serverNotResponding.detail" = "Al momento il nostro server non risponde, ma dovrebbe tornare disponibile entro un'ora. Ti ringraziamo per la pazienza.";
+"general.error.serverError" = "Qualcosa non ha funzionato con la tua richiesta e abbiamo avvisato il team Pocket. Riprova più tardi.";
 
 //Archive
 "archive.empty.header" = "Tieni in ordine il tuo elenco";
