@@ -2,7 +2,8 @@
 "general.oops" = "Oeps! Opnieuw proberen?";
 
 // - General Error Messages
-"general.error.serverNotResponding" = "Onze server reageert op dit moment niet. Een ogenblik geduld. De server zou binnen een uur weer beschikbaar moeten zijn.";
+"general.error.serverNotResponding.title" = "Server reageert niet";
+"general.error.serverNotResponding.detail" = "Onze server reageert op dit moment niet. Een ogenblik geduld. De server zou binnen een uur weer beschikbaar moeten zijn.";
 "general.error.serverError" = "Er is iets misgegaan met je aanvraag. Het team van Pocket is op de hoogte gesteld. Probeer het later opnieuw.";
 
 //Archive
