@@ -23,6 +23,7 @@
 
 //ItemAction
 "itemAction.addTags" = "Tags toevoegen";
+"itemAction.editTags" = "Tags bewerken";
 "itemAction.archive" = "Archief";
 "itemAction.copyLink" = "Kopieer link";
 "itemAction.delete" = "Verwijderen";
@@ -294,3 +295,5 @@
 "Hooray!" = "Hoera!";
 
 "back.to.pocket" = "Terug naar Pocket";
+
+"saveToPocket.tapToDismiss" = "Tik om af te wijzen";
