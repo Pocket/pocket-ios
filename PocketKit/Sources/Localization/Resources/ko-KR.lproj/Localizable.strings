@@ -23,6 +23,7 @@
 
 //ItemAction
 "itemAction.addTags" = "태그 추가";
+"itemAction.editTags" = "태그 편집";
 "itemAction.archive" = "보관소";
 "itemAction.copyLink" = "링크 복사";
 "itemAction.delete" = "삭제";
@@ -294,3 +295,5 @@
 "Hooray!" = "환영합니다!";
 
 "back.to.pocket" = "Pocket으로 돌아가기";
+
+"saveToPocket.tapToDismiss" = "해제하려면 누르십시오";
