@@ -2,7 +2,7 @@
 "general.oops" = "エラーが発生しました。もう一度お試しください。";
 
 // - General Error Messages
-"general.error.serverNotResponding.title" = "Server not responding";
+"general.error.serverNotResponding.title" = "サーバーが応答していません";
 "general.error.serverNotResponding.detail" = "現在サーバーが応答していません。ご迷惑をおかけし、大変申し訳ございません。1時間以内に利用可能になる予定です。";
 "general.error.serverError" = "リクエストで問題が発生したため、Pocket チームに通知しました。後ほどもう一度お試しください。";
 
@@ -23,6 +23,7 @@
 
 //ItemAction
 "itemAction.addTags" = "タグを追加";
+"itemAction.editTags" = "タグを編集";
 "itemAction.archive" = "アーカイブ";
 "itemAction.copyLink" = "リンクをコピー";
 "itemAction.delete" = "削除";
@@ -294,3 +295,5 @@
 "Hooray!" = "やった～！";
 
 "back.to.pocket" = "Pocket に戻る";
+
+"saveToPocket.tapToDismiss" = "タップして閉じる";
