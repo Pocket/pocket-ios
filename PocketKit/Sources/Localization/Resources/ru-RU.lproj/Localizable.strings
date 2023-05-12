@@ -23,6 +23,7 @@
 
 //ItemAction
 "itemAction.addTags" = "Назначить теги";
+"itemAction.editTags" = "Редактировать теги";
 "itemAction.archive" = "Архив";
 "itemAction.copyLink" = "Скопировать ссылку";
 "itemAction.delete" = "Удалить";
@@ -294,3 +295,5 @@
 "Hooray!" = "Поздравляем!";
 
 "back.to.pocket" = "Назад к Pocket";
+
+"saveToPocket.tapToDismiss" = "Нажмите, чтобы закрыть";
