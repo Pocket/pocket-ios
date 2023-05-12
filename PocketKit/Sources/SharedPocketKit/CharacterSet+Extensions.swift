@@ -3,11 +3,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import Foundation
-import PocketGraph
 
-extension DomainMetadata {
-    func update(remote: DomainMetadataParts) {
-        name = remote.name
-        logo = remote.logo.flatMap(URL.init(string:))
-    }
+public extension CharacterSet {
+    static let urlAllowed = CharacterSet(charactersIn: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~:/?#[]@!$&'()*+,;=%")
 }
