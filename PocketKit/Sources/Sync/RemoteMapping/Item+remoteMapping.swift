@@ -18,9 +18,9 @@ extension Item {
         }
 
         givenURL = url
-        resolvedURL = remote.resolvedUrl.flatMap(URL.init)
+        resolvedURL = remote.resolvedUrl.flatMap(URL.init(string:))
         title = remote.title
-        topImageURL = remote.topImageUrl.flatMap(URL.init)
+        topImageURL = remote.topImageUrl.flatMap(URL.init(string:))
         domain = remote.domain
         language = remote.language
 
@@ -105,9 +105,9 @@ extension Item {
         }
 
         givenURL = url
-        resolvedURL = summary.resolvedUrl.flatMap(URL.init)
+        resolvedURL = summary.resolvedUrl.flatMap(URL.init(string:))
         title = summary.title
-        topImageURL = summary.topImageUrl.flatMap(URL.init)
+        topImageURL = summary.topImageUrl.flatMap(URL.init(string:))
         domain = summary.domain
         language = summary.language
         if let readTime = summary.timeToRead {
@@ -169,7 +169,7 @@ extension Item {
             self.syndicatedArticle?.publisherName = syndicatedArticle.publisher?.name
             self.syndicatedArticle?.title = syndicatedArticle.title
             self.syndicatedArticle?.excerpt = syndicatedArticle.excerpt
-            self.syndicatedArticle?.imageURL = syndicatedArticle.mainImage.flatMap(URL.init)
+            self.syndicatedArticle?.imageURL = syndicatedArticle.mainImage.flatMap(URL.init(string:))
             if let imageSrc = syndicatedArticle.mainImage {
                 self.syndicatedArticle?.image = Image(src: imageSrc, context: context)
             }

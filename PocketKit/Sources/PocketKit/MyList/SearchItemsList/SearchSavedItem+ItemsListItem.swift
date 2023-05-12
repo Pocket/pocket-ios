@@ -60,7 +60,7 @@ extension SearchSavedItem: ItemsListItem {
             return nil
         }
 
-        let resolvedURL = itemParts.resolvedUrl.flatMap(URL.init)
+        let resolvedURL = itemParts.resolvedUrl.flatMap(URL.init(string:))
         let givenURL = URL(string: itemParts.givenUrl)
         return resolvedURL ?? givenURL
     }

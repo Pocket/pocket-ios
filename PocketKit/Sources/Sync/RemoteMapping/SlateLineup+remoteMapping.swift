@@ -61,7 +61,7 @@ extension Recommendation {
 
         title = remote.curatedInfo?.title
         excerpt = remote.curatedInfo?.excerpt
-        imageURL = remote.curatedInfo?.imageSrc.flatMap(URL.init)
+        imageURL = remote.curatedInfo?.imageSrc.flatMap(URL.init(string:))
         if let imageSrc = remote.curatedInfo?.imageSrc {
             image = Image(src: imageSrc, context: context)
         }
