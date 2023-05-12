@@ -23,6 +23,7 @@
 
 //ItemAction
 "itemAction.addTags" = "Añadir etiquetas";
+"itemAction.editTags" = "Editar etiquetas";
 "itemAction.archive" = "Archivo";
 "itemAction.copyLink" = "Copiar enlace";
 "itemAction.delete" = "Eliminar";
@@ -294,3 +295,5 @@
 "Hooray!" = "¡Viva!";
 
 "back.to.pocket" = "Volver a Pocket";
+
+"saveToPocket.tapToDismiss" = "Pulsa para descartar";
