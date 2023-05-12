@@ -2,7 +2,7 @@
 "general.oops" = "Errore della ricerca. Riprovare?";
 
 // - General Error Messages
-"general.error.serverNotResponding.title" = "Server not responding";
+"general.error.serverNotResponding.title" = "Il server non risponde";
 "general.error.serverNotResponding.detail" = "Al momento il nostro server non risponde, ma dovrebbe tornare disponibile entro un'ora. Ti ringraziamo per la pazienza.";
 "general.error.serverError" = "Qualcosa non ha funzionato con la tua richiesta e abbiamo avvisato il team Pocket. Riprova più tardi.";
 
@@ -23,6 +23,7 @@
 
 //ItemAction
 "itemAction.addTags" = "Aggiungi tag";
+"itemAction.editTags" = "Modifica tag";
 "itemAction.archive" = "Archivio";
 "itemAction.copyLink" = "Copia link";
 "itemAction.delete" = "Elimina";
@@ -294,3 +295,5 @@
 "Hooray!" = "Evviva!";
 
 "back.to.pocket" = "Torna a Pocket";
+
+"saveToPocket.tapToDismiss" = "Tocca per ignorare";
