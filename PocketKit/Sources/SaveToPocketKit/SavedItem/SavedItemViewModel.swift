@@ -31,7 +31,10 @@ class SavedItemViewModel {
         )
     }
 
-    let dismissAttributedText = NSAttributedString(string: "Tap to Dismiss", style: .dismiss)
+    let dismissAttributedText = NSAttributedString(
+        string: Localization.SaveToPocket.tapToDismiss,
+        style: .dismiss
+    )
 
     init(appSession: AppSession,
          saveService: SaveService,

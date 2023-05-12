@@ -1,6 +1,7 @@
 import UIKit
 import SharedPocketKit
 import Combine
+import Localization
 
 class LoggedOutViewModel {
     let infoViewModel = InfoView.Model(
@@ -15,7 +16,10 @@ class LoggedOutViewModel {
         )
     )
 
-    let dismissAttributedText = NSAttributedString(string: "Tap to Dismiss", style: .dismiss)
+    let dismissAttributedText = NSAttributedString(
+        string: Localization.SaveToPocket.tapToDismiss,
+        style: .dismiss
+    )
 
     @Published var actionButtonConfiguration: UIButton.Configuration?
 

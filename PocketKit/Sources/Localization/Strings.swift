@@ -349,6 +349,10 @@ public enum Localization {
     /// Saved
     public static let saved = Localization.tr("Localizable", "recommendation.saved", fallback: "Saved")
   }
+  public enum SaveToPocket {
+    /// Tap to dismiss
+    public static let tapToDismiss = Localization.tr("Localizable", "saveToPocket.tapToDismiss", fallback: "Tap to dismiss")
+  }
   public enum Saves {
     public enum Empty {
       /// How to save
