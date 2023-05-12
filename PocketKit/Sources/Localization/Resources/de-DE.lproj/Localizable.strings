@@ -2,7 +2,7 @@
 "general.oops" = "Hoppla! Erneut versuchen?";
 
 // - General Error Messages
-"general.error.serverNotResponding.title" = "Server not responding";
+"general.error.serverNotResponding.title" = "Server antwortet nicht";
 "general.error.serverNotResponding.detail" = "Der Server antwortet derzeit nicht. Bitte hab ein wenig Geduld. Innerhalb einer Stunde sollte das Problem behoben sein.";
 "general.error.serverError" = "Bei deiner Anfrage ist etwas schiefgegangen. Das Pocket-Team wurde benachrichtigt. Bitte versuche es später erneut.";
 
@@ -23,6 +23,7 @@
 
 //ItemAction
 "itemAction.addTags" = "Tags hinzufügen";
+"itemAction.editTags" = "Tags bearbeiten";
 "itemAction.archive" = "Archiv";
 "itemAction.copyLink" = "Link kopieren";
 "itemAction.delete" = "Löschen";
@@ -294,3 +295,5 @@
 "Hooray!" = "Hurra!";
 
 "back.to.pocket" = "Zurück zu Pocket";
+
+"saveToPocket.tapToDismiss" = "Zum Verwerfen antippen";
