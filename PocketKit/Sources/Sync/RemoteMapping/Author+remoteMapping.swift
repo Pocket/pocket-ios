@@ -7,7 +7,7 @@ extension Author {
 
         id = remote.id
         name = remote.name
-        url = remote.url.flatMap(URL.init)
+        url = remote.url.flatMap(URL.init(string:))
     }
 
     convenience init(remote: ItemSummary.Author, context: NSManagedObjectContext) {
@@ -15,6 +15,6 @@ extension Author {
 
         id = remote.id
         name = remote.name
-        url = remote.url.flatMap(URL.init)
+        url = remote.url.flatMap(URL.init(string:))
     }
 }
