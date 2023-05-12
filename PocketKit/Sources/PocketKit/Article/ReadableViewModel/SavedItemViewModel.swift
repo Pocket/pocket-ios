@@ -158,7 +158,7 @@ extension SavedItemViewModel {
         _actions = [
             .displaySettings { [weak self] _ in self?.displaySettings() },
             favoriteAction,
-            .addTags { [weak self] _ in self?.showAddTagsView() },
+            tagsAction(),
             .delete { [weak self] _ in self?.confirmDelete() },
             .share { [weak self] _ in self?.share() }
         ]
@@ -208,6 +208,15 @@ extension SavedItemViewModel {
         )
 
         notificationCenter.post(name: .bannerRequested, object: bannerData)
+    }
+
+    private func tagsAction() -> ItemAction {
+        let hasTags = (item.tags?.count ?? 0) > 0
+        if hasTags {
+            return .editTags { [weak self] _ in self?.showAddTagsView() }
+        } else {
+            return .addTags { [weak self] _ in self?.showAddTagsView() }
+        }
     }
 
     private func showAddTagsView() {

@@ -13,12 +13,12 @@ class SavedItemViewController: UIViewController {
     private var infoViewModelSubscription: AnyCancellable?
     private var subscriptions: [AnyCancellable] = []
 
-    private let addTagsButton: UIButton = {
+    private lazy var addTagsButton: UIButton = {
         var configuration: UIButton.Configuration = .filled()
         configuration.background.backgroundColor = UIColor(.ui.teal2).resolvedColor(with: UITraitCollection(userInterfaceStyle: .light))
         configuration.background.cornerRadius = 13
         configuration.contentInsets = NSDirectionalEdgeInsets(top: 13, leading: 0, bottom: 13, trailing: 0)
-        configuration.attributedTitle = AttributedString(NSAttributedString(string: "Add Tags", style: .buttonText))
+        configuration.attributedTitle = AttributedString(viewModel.tagsActionAttributedText)
 
         let button = UIButton(
             configuration: configuration,

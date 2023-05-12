@@ -30,6 +30,12 @@ class PocketItemViewModel: ObservableObject {
         item.isArchived
     }
 
+    /// Returns whether the underlying `PocketItem` contains any tags.
+    /// Used to dynamically generate the tags action title
+    var hasTags: Bool {
+        item.hasTags
+    }
+
     /// Retrieves view model to present Add Tags view
     var tagsViewModel: PocketAddTagsViewModel? {
         guard let savedItem = fetchSavedItem() else {

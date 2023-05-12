@@ -79,6 +79,19 @@ extension ItemAction {
         )
     }
 
+    static func editTags(_ handler: @escaping (Any?) -> Void) -> ItemAction {
+        return ItemAction(
+            title: Localization.ItemAction.editTags,
+            identifier: .addTagsItem,
+            accessibilityIdentifier: "item-action-add-tags",
+            image: UIImage(asset: .tag),
+            handler: { sender in
+                Haptics.addTagsTap()
+                handler(sender)
+            }
+        )
+    }
+
     static func moveToSaves(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
             title: Localization.ItemAction.moveToSaves,

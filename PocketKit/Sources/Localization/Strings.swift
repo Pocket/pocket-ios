@@ -231,6 +231,8 @@ public enum Localization {
     public static let delete = Localization.tr("Localizable", "itemAction.delete", fallback: "Delete")
     /// Display settings
     public static let displaySettings = Localization.tr("Localizable", "itemAction.displaySettings", fallback: "Display settings")
+    /// Edit tags
+    public static let editTags = Localization.tr("Localizable", "itemAction.editTags", fallback: "Edit tags")
     /// Favorite
     public static let favorite = Localization.tr("Localizable", "itemAction.favorite", fallback: "Favorite")
     /// Move to Saves
@@ -346,6 +348,10 @@ public enum Localization {
     public static let save = Localization.tr("Localizable", "recommendation.save", fallback: "Save")
     /// Saved
     public static let saved = Localization.tr("Localizable", "recommendation.saved", fallback: "Saved")
+  }
+  public enum SaveToPocket {
+    /// Tap to dismiss
+    public static let tapToDismiss = Localization.tr("Localizable", "saveToPocket.tapToDismiss", fallback: "Tap to dismiss")
   }
   public enum Saves {
     public enum Empty {

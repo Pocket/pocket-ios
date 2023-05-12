@@ -406,7 +406,18 @@ class SearchViewModel: ObservableObject {
 
 extension SearchViewModel: SearchResultActionDelegate {
     func itemViewModel(_ searchItem: PocketItem, index: Int) -> PocketItemViewModel {
-        return PocketItemViewModel(item: searchItem, index: index, source: source, tracker: tracker, userDefaults: userDefaults, scope: selectedScope, user: user, store: store, networkPathMonitor: networkPathMonitor, searchActionDelegate: self)
+        return PocketItemViewModel(
+            item: searchItem,
+            index: index,
+            source: source,
+            tracker: tracker,
+            userDefaults: userDefaults,
+            scope: selectedScope,
+            user: user,
+            store: store,
+            networkPathMonitor: networkPathMonitor,
+            searchActionDelegate: self
+        )
     }
 
     func select(_ searchItem: PocketItem, index: Int) {

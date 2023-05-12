@@ -23,6 +23,7 @@
 
 //ItemAction
 "itemAction.addTags" = "Add tags";
+"itemAction.editTags" = "Edit tags";
 "itemAction.archive" = "Archive";
 "itemAction.copyLink" = "Copy link";
 "itemAction.delete" = "Delete";
@@ -294,3 +295,5 @@
 "Hooray!" = "Hooray!";
 
 "back.to.pocket" = "Back to Pocket";
+
+"saveToPocket.tapToDismiss" = "Tap to dismiss";

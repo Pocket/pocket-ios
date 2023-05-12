@@ -61,4 +61,8 @@ struct PocketItem {
     var cursor: String? {
         item.cursor
     }
+
+    var hasTags: Bool {
+        (item.tagNames ?? []).isEmpty == false
+    }
 }

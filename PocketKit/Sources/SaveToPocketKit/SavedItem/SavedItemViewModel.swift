@@ -3,6 +3,7 @@ import SharedPocketKit
 import Sync
 import Combine
 import Analytics
+import Localization
 
 class SavedItemViewModel {
     private let appSession: AppSession
@@ -21,7 +22,19 @@ class SavedItemViewModel {
 
     var savedItem: SavedItem?
 
-    let dismissAttributedText = NSAttributedString(string: "Tap to Dismiss", style: .dismiss)
+    var tagsActionAttributedText: NSAttributedString {
+        let tagCount = savedItem?.tags?.count ?? 0
+        let hasTags = tagCount > 0
+        return NSAttributedString(
+            string: hasTags ? Localization.ItemAction.editTags : Localization.ItemAction.addTags,
+            style: .buttonText
+        )
+    }
+
+    let dismissAttributedText = NSAttributedString(
+        string: Localization.SaveToPocket.tapToDismiss,
+        style: .dismiss
+    )
 
     init(appSession: AppSession,
          saveService: SaveService,

@@ -279,6 +279,30 @@ extension SavedItemViewModelTests {
 
 // MARK: - Tags
 extension SavedItemViewModelTests {
+    func test_tagsActionTitle_withNoItem_isAddTags() throws {
+        let viewModel = subject()
+        let hasCorrectTitle = viewModel.tagsActionAttributedText.string == "Add tags"
+        XCTAssertTrue(hasCorrectTitle)
+    }
+
+    func test_tagsActionTitle_withNoTags_isAddTags() throws {
+        let savedItem = space.buildSavedItem(tags: [])
+
+        let viewModel = subject()
+        viewModel.savedItem = savedItem
+        let hasCorrectTitle = viewModel.tagsActionAttributedText.string == "Add tags"
+        XCTAssertTrue(hasCorrectTitle)
+    }
+
+    func test_tagsActionTitle_withTags_isEditTags() throws {
+        let savedItem = space.buildSavedItem(tags: ["tag 1"])
+
+        let viewModel = subject()
+        viewModel.savedItem = savedItem
+        let hasCorrectTitle = viewModel.tagsActionAttributedText.string == "Edit tags"
+        XCTAssertTrue(hasCorrectTitle)
+    }
+
     func test_addTagsAction_sendsAddTagsViewModel() {
         let viewModel = subject()
         saveService.stubRetrieveTags { _ in return nil }

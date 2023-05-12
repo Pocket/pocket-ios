@@ -14,7 +14,11 @@ struct OverflowMenu: View {
                 showingSheet = true
             }) {
                 Label {
-                    Text(Localization.addTags)
+                    if viewModel.hasTags {
+                        Text(Localization.ItemAction.editTags)
+                    } else {
+                        Text(Localization.ItemAction.addTags)
+                    }
                 } icon: {
                     Image(asset: .tag)
                 }

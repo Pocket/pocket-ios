@@ -186,6 +186,24 @@ class SavedItemViewModelTests: XCTestCase {
         wait(for: [expectUnfavorite], timeout: 10)
     }
 
+    func test_tagsAction_withNoTags_isAddTags() throws {
+        let savedItem = space.buildSavedItem(tags: [])
+        try space.save()
+
+        let viewModel = subject(item: savedItem)
+        let hasCorrectTitle = viewModel._actions.contains { $0.title == "Add tags" }
+        XCTAssertTrue(hasCorrectTitle)
+    }
+
+    func test_tagsAction_withTags_isEditTags() throws {
+        let savedItem = space.buildSavedItem(tags: ["tag 1"])
+        try space.save()
+
+        let viewModel = subject(item: savedItem)
+        let hasCorrectTitle = viewModel._actions.contains { $0.title == "Edit tags" }
+        XCTAssertTrue(hasCorrectTitle)
+    }
+
     func test_addTagsAction_sendsAddTagsViewModel() {
         let viewModel = subject(item: space.buildSavedItem(tags: ["tag 1"]))
         source.stubRetrieveTags { _ in return nil }
@@ -196,7 +214,7 @@ class SavedItemViewModelTests: XCTestCase {
             XCTAssertEqual(viewModel?.tags, ["tag 1"])
         }.store(in: &subscriptions)
 
-        viewModel.invokeAction(title: "Add tags")
+        viewModel.invokeAction(title: "Edit tags")
 
         wait(for: [expectAddTags], timeout: 10)
     }

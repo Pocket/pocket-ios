@@ -496,6 +496,46 @@ class SavedItemsListViewModelTests: XCTestCase {
 
 // MARK: - Tags
 extension SavedItemsListViewModelTests {
+    func test_tagsAction_whenUnarchived_withNoTags_isAddTags() throws {
+        let item = space.buildSavedItem(tags: [])
+        try space.save()
+
+        let viewModel = subject()
+
+        let hasCorrectTitle = viewModel.overflowActions(for: item.objectID).contains { $0.title == "Add tags" }
+        XCTAssertTrue(hasCorrectTitle)
+    }
+
+    func test_tagsAction_whenArchived_withNoTags_isAddTags() throws {
+        let item = space.buildSavedItem(isArchived: true, tags: [])
+        try space.save()
+
+        let viewModel = subject()
+
+        let hasCorrectTitle = viewModel.overflowActions(for: item.objectID).contains { $0.title == "Add tags" }
+        XCTAssertTrue(hasCorrectTitle)
+    }
+
+    func test_tagsAction_whenUnarchived_withTags_isEditTags() throws {
+        let item = space.buildSavedItem(tags: ["tag 1"])
+        try space.save()
+
+        let viewModel = subject()
+
+        let hasCorrectTitle = viewModel.overflowActions(for: item.objectID).contains { $0.title == "Edit tags" }
+        XCTAssertTrue(hasCorrectTitle)
+    }
+
+    func test_tagsAction_whenArchived_withTags_isEditTags() throws {
+        let item = space.buildSavedItem(isArchived: true, tags: ["tag 1"])
+        try space.save()
+
+        let viewModel = subject()
+
+        let hasCorrectTitle = viewModel.overflowActions(for: item.objectID).contains { $0.title == "Edit tags" }
+        XCTAssertTrue(hasCorrectTitle)
+    }
+
     func test_addTagsAction_sendsAddTagsViewModel() throws {
         let item = space.buildSavedItem(tags: ["tag 1"])
         try space.save()
@@ -511,7 +551,7 @@ extension SavedItemsListViewModelTests {
         }.store(in: &subscriptions)
 
         viewModel.overflowActions(for: item.objectID)
-            .first { $0.title == "Add tags" }?
+            .first { $0.title == "Edit tags" }?
             .handler?(nil)
 
         wait(for: [expectAddTags], timeout: 10)
