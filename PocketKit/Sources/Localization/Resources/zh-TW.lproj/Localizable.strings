@@ -23,6 +23,7 @@
 
 //ItemAction
 "itemAction.addTags" = "新增標籤";
+"itemAction.editTags" = "編輯標籤";
 "itemAction.archive" = "封存";
 "itemAction.copyLink" = "複製連結";
 "itemAction.delete" = "刪除";
@@ -294,3 +295,5 @@
 "Hooray!" = "太棒了！";
 
 "back.to.pocket" = "返回 Pocket";
+
+"saveToPocket.tapToDismiss" = "點選以關閉";
