@@ -10,6 +10,7 @@ import Sync
 import Combine
 import Textile
 import CoreData
+import Localization
 
 class HomeSharedWithYouCellViewModel {
     let sharedWithYou: SharedWithYouHighlight
@@ -17,8 +18,8 @@ class HomeSharedWithYouCellViewModel {
     let primaryAction: ItemAction?
 
     var isSaved: Bool {
-        sharedWithYou.item?.savedItem != nil &&
-        sharedWithYou.item?.savedItem?.isArchived == false
+        sharedWithYou.item.savedItem != nil &&
+        sharedWithYou.item.savedItem?.isArchived == false
     }
 
     init(
@@ -35,7 +36,7 @@ class HomeSharedWithYouCellViewModel {
 extension HomeSharedWithYouCellViewModel: HomeCarouselItemCellModel {
 
     var attributedTitle: NSAttributedString {
-        NSAttributedString(string: sharedWithYou.item?.title ?? "", style: .title)
+        NSAttributedString(string: title ?? "", style: .title)
     }
 
     var attributedDomain: NSAttributedString {
@@ -47,7 +48,7 @@ extension HomeSharedWithYouCellViewModel: HomeCarouselItemCellModel {
     }
 
     var title: String? {
-        sharedWithYou.item?.title
+        sharedWithYou.bestTitle ?? ""
     }
 
     var saveButtonMode: RecommendationSaveButton.Mode? {
@@ -55,21 +56,20 @@ extension HomeSharedWithYouCellViewModel: HomeCarouselItemCellModel {
     }
 
     var domain: String? {
-        sharedWithYou.item?.domainMetadata?.name ?? sharedWithYou.item?.domain ?? sharedWithYou.item?.bestURL?.host
+        sharedWithYou.bestDomain
     }
 
     var timeToRead: String? {
-        guard let timeToRead = sharedWithYou.item?.timeToRead,
-              timeToRead > 0 else {
+        guard let timeToRead = sharedWithYou.item.timeToRead,
+              timeToRead.intValue > 0 else {
             return nil
         }
 
-        return "\(timeToRead) min read"
+        return Localization.Home.Recommendation.readTime(timeToRead)
     }
 
     var thumbnailURL: URL? {
-        let topImageURL = sharedWithYou.item?.topImageURL
-        return imageCacheURL(for: topImageURL)
+        sharedWithYou.bestImageURL
     }
 
     var favoriteAction: ItemAction? {

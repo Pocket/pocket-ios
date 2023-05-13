@@ -99,7 +99,6 @@ public protocol Source {
       Saves a new snapshot of highlights provided by SWHighlightCenter delegates.
     - parameter sharedWithYouHighlights: The highlights to replace the existing snapsnow.
     */
-    @available(iOS 16.0, *)
     func saveNewSharedWithYouSnapshot(for sharedWithYouHighlights: [PocketSWHighlight]) throws
 
     func save(url: URL)

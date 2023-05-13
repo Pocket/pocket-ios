@@ -3,12 +3,12 @@
 
 @_exported import ApolloAPI
 
-public class SharedWithYouFullItemQuery: GraphQLQuery {
-  public static let operationName: String = "SharedWithYouFullItem"
+public class SharedWithYouDetailsQuery: GraphQLQuery {
+  public static let operationName: String = "SharedWithYouDetails"
   public static let document: ApolloAPI.DocumentType = .notPersisted(
     definition: .init(
       #"""
-      query SharedWithYouFullItem($url: String!) {
+      query SharedWithYouDetails($url: String!) {
         itemByUrl(url: $url) {
           __typename
           ...ItemParts

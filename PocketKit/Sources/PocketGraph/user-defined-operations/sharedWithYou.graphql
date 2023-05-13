@@ -1,19 +1,10 @@
-query SharedWithYouNeededData($url: String!) {
+query SharedWithYouSummary($url: String!) {
   itemByUrl(url: $url) {
-    resolvedItemId: itemId
-    givenUrl
-    title
-    topImageUrl
-    timeToRead
-    domain
-    excerpt
-    domainMetadata {
-      name
-    }
+    ...ItemSummary
   }
 }
 
-query SharedWithYouFullItem($url: String!) {
+query SharedWithYouDetails($url: String!) {
   itemByUrl(url: $url) {
     ...ItemParts
   }

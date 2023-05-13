@@ -33,6 +33,7 @@ extension Item {
     @NSManaged public var recommendation: Recommendation?
     @NSManaged public var savedItem: SavedItem?
     @NSManaged public var syndicatedArticle: SyndicatedArticle?
+    @NSManaged public var sharedWithYouHighlight: SharedWithYouHighlight?
 }
 
 // MARK: Generated accessors for authors

@@ -629,74 +629,83 @@ extension PocketSource {
 
 // MARK: - Shared With You
 extension PocketSource {
-    @available(iOS 16.0, *)
     public func saveNewSharedWithYouSnapshot(for sharedWithYouHighlights: [PocketSWHighlight]) throws {
-        // Remove all existing highlights from core data that aren't in the latest array
-        try space.batchDeleteSharedWithYouHighlightsNotInArray(sharedWithYouHighlights: sharedWithYouHighlights)
-
-        sharedWithYouHighlights.enumerated().forEach { (index, highlight) in
-            Task.init(priority: .high, operation: {
-                // Save the highlight to CoreData
-                let sharedWithYouHighlight = try space.fetchOrCreateSharedWithYouHighlight(byUrl: highlight.url)
-                sharedWithYouHighlight.url = highlight.url
-                sharedWithYouHighlight.sortOrder = Int32(index)
-
-                 if sharedWithYouHighlight.item == nil {
-                    // Grab the highlight metadata only if we don't have it.
-                    try await fetchDetails(for: sharedWithYouHighlight)
-                } else {
-                    try space.context.performAndWait {
-                        try space.save()
-                    }
-                }
-            })
-        }
+//        // Remove all existing highlights from core data that aren't in the latest array
+//        try space.batchDeleteSharedWithYouHighlightsNotInArray(sharedWithYouHighlights: sharedWithYouHighlights)
+//
+//        sharedWithYouHighlights.enumerated().forEach { (index, highlight) in
+//            Task.init(priority: .high, operation: {
+//                // Save the highlight to CoreData
+//                let sharedWithYouHighlight = try space.fetchOrCreateSharedWithYouHighlight(byUrl: highlight.url)
+//                sharedWithYouHighlight.url = highlight.url
+//                sharedWithYouHighlight.sortOrder = Int32(index)
+//
+//                 if sharedWithYouHighlight.item == nil {
+//                    // Grab the highlight metadata only if we don't have it.
+//                    try await fetchDetails(for: sharedWithYouHighlight)
+//                } else {
+//                    try space.context.performAndWait {
+//                        try space.save()
+//                    }
+//                }
+//            })
+//        }
     }
 
     public func fetchDetails(for sharedWithYouHighlight: SharedWithYouHighlight) async throws {
         guard let remoteItem = try await apollo
-            .fetch(query: SharedWithYouFullItemQuery(url: sharedWithYouHighlight.url!.absoluteString))
-            .data?.itemByUrl?.fragments.itemParts else {
+            .fetch(query: SharedWithYouSummaryQuery(url: sharedWithYouHighlight.url.absoluteString))
+            .data?.itemByUrl?.fragments.itemSummary,
+              let url = URL(string: remoteItem.givenUrl) else {
             return
         }
 
-        // TODO: How can we save data thats not a full item? Do we save it all?
-
-        try space.context.performAndWait {
-            let item = try space.fetchOrCreateItem(byRemoteID: remoteItem.remoteId)
-            item.update(remote: remoteItem)
+        try space.backgroundContext.performAndWait {
+            let item = try space.fetchItem(byURL: url) ?? Item(context: space.backgroundContext, givenURL: url, remoteID: remoteItem.remoteID)
+            item.update(from: remoteItem, with: self.space)
             sharedWithYouHighlight.item = item
             try space.save()
         }
     }
 
     public func save(sharedWithYouHighlight: SharedWithYouHighlight) {
-        guard let item = sharedWithYouHighlight.item, item.bestURL != nil else {
-            return
-        }
+        space.performAndWait {
+            guard let sharedWithYouHighlight = space.backgroundObject(with: sharedWithYouHighlight.objectID) as? SharedWithYouHighlight else {
+                return
+            }
 
-        if let savedItem = sharedWithYouHighlight.item?.savedItem {
-            unarchive(item: savedItem)
-        } else {
-            let savedItem: SavedItem = space.new()
-            savedItem.update(from: sharedWithYouHighlight)
-            try? space.save()
+            if let savedItem = try? space.fetchSavedItem(byURL: sharedWithYouHighlight.item.givenURL) {
+                unarchive(item: savedItem)
+            } else {
+                let savedItem: SavedItem = SavedItem(context: space.backgroundContext, url: sharedWithYouHighlight.item.givenURL)
+                savedItem.update(from: sharedWithYouHighlight)
+                try? space.save()
 
-            save(item: savedItem)
+                save(item: savedItem)
+            }
         }
     }
 
     public func archive(sharedWithYouHighlight: SharedWithYouHighlight) {
-        guard let savedItem = sharedWithYouHighlight.item?.savedItem, savedItem.isArchived == false else {
-            return
-        }
+        space.performAndWait {
+            guard let sharedWithYouHighlight = space.backgroundObject(with: sharedWithYouHighlight.objectID) as? SharedWithYouHighlight,
+                  let savedItem = sharedWithYouHighlight.item.savedItem, savedItem.isArchived == false else {
+                return
+            }
 
-        archive(item: savedItem)
+            archive(item: savedItem)
+        }
     }
 
     public func remove(sharedWithYouHighlight: SharedWithYouHighlight) {
-        space.delete(sharedWithYouHighlight)
-        try? space.save()
+        space.performAndWait {
+            guard let sharedWithYouHighlight = space.backgroundObject(with: sharedWithYouHighlight.objectID) as? SharedWithYouHighlight else {
+                return
+            }
+
+            space.delete(sharedWithYouHighlight)
+            try? space.save()
+        }
     }
 }
 

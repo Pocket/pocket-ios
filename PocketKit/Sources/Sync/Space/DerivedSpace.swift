@@ -23,6 +23,10 @@ protocol TagSpace: Paginated {
     func updateTags(edges: [Tag.TagEdge?], cursor: String?) throws
 }
 
+protocol SharedWithYouSpace {
+    func batchDeleteSharedWithYouHighlightsNotInArray(urls: [String]) throws
+}
+
 /// A type that handles save operations on paginated data,
 /// using a child context derived from the `Space` instance
 struct DerivedSpace {
@@ -138,6 +142,18 @@ extension DerivedSpace: TagSpace {
                 tag.update(remote: node.fragments.tagParts)
             }
         }
+        try saveContexts()
+    }
+}
+
+extension DerivedSpace: SharedWithYouSpace {
+
+    func batchDeleteSharedWithYouHighlightsNotInArray(urls: [String]) throws {
+        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = SharedWithYouHighlight.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "NOT (url IN %@)", urls)
+        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+        deleteRequest.resultType = .resultTypeObjectIDs
+        try context.execute(deleteRequest)
         try saveContexts()
     }
 }

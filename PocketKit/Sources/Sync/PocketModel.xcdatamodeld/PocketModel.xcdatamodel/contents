@@ -96,8 +96,8 @@
     <entity name="SavedItemUpdatedNotification" representedClassName="SavedItemUpdatedNotification" syncable="YES">
         <relationship name="savedItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SavedItem" inverseName="savedItemUpdatedNotification" inverseEntity="SavedItem"/>
     </entity>
-    <entity name="SharedWithYouHighlight" representedClassName="SharedWithYouHighlight" syncable="YES" codeGenerationType="class">
-        <attribute name="sortOrder" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+    <entity name="SharedWithYouHighlight" representedClassName="SharedWithYouHighlight" syncable="YES">
+        <attribute name="sortOrder" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="url" attributeType="URI"/>
         <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="sharedWithYouHighlight" inverseEntity="Item"/>
     </entity>

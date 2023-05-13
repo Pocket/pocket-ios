@@ -8,11 +8,10 @@
 import Foundation
 import UIKit
 import Textile
-
+import SharedPocketKit
 import SharedWithYou
 import Sync
 
-@available(iOS 16.0, *)
 class SharedWithYouCell: HomeCarouselItemCell {
 
     let attributionView = SWAttributionView()
@@ -71,11 +70,6 @@ class SharedWithYouCell: HomeCarouselItemCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-}
-
-@available(iOS 16.0, *)
-extension SharedWithYouCell {
-
     /**
       Override to configure shared with you attribution
      */
@@ -83,9 +77,9 @@ extension SharedWithYouCell {
         self.attributionView.highlight = nil
         self.configure(model: sharedWithYouModel)
 
-        Services.shared.sharedWithYouMonitor.highlightCenter!.getHighlightFor(sharedWithYouModel.sharedWithYou.url!) { swHighlight, error in
+        Services.shared.sharedWithYouManager.highlightCenter?.getHighlightFor(sharedWithYouModel.sharedWithYou.url) { swHighlight, error in
             if error != nil {
-                Crashlogger.capture(error: error!)
+                Log.capture(error: error!)
             }
             self.attributionView.highlight = swHighlight
         }

@@ -12,7 +12,8 @@ enum ReadableType {
     case savedItem(SavedItemViewModel)
     case webViewRecommendation(RecommendationViewModel)
     case webViewSavedItem(SavedItemViewModel)
-    case sharedWithYou(SharedWithYouViewModel)
+    case webViewSharedWithYou(SharedWithYouHighlightViewModel)
+    case sharedWithYou(SharedWithYouHighlightViewModel)
 
     func clearIsPresentingReaderSettings() {
         switch self {
@@ -26,13 +27,18 @@ enum ReadableType {
             savedItemViewModel.clearPresentedWebReaderURL()
         case .sharedWithYou(let sharedWithYouViewModel):
             sharedWithYouViewModel.clearIsPresentingReaderSettings()
+        case .webViewSharedWithYou(let sharedWithYouViewModel):
+            sharedWithYouViewModel.clearPresentedWebReaderURL()
         }
+
     }
 }
 
 enum SeeAll {
     case saves
     case slate(SlateDetailViewModel)
+    // TODO: Add shared with you detail
+    // case sharedWithYou(SharedWithYouDetailViewModel)
 
     func clearRecommendationToReport() {
         switch self {
@@ -262,7 +268,7 @@ extension HomeViewModel {
 
             select(savedItem: savedItem, at: indexPath)
         case .sharedWithYou(let objectID):
-            guard let sharedWithYouHighlight = source.mainContext.object(with: objectID) as? SharedWithYouHighlight else {
+            guard let sharedWithYouHighlight = source.viewContext.object(with: objectID) as? SharedWithYouHighlight else {
                 return
             }
 
@@ -339,32 +345,24 @@ extension HomeViewModel {
     }
 
     private func select(sharedWithYouHighlight: SharedWithYouHighlight, at indexPath: IndexPath) {
-        tracker.track(
-            event: SnowplowEngagement(type: .general, value: nil),
-            contexts(for: sharedWithYouHighlight, at: indexPath)
+        let viewModel = SharedWithYouHighlightViewModel(
+            sharedWithYouHighlight: sharedWithYouHighlight,
+            source: source,
+            tracker: tracker.childTracker(hosting: .articleView.screen),
+            pasteboard: UIPasteboard.general,
+            user: user,
+            userDefaults: userDefaults
         )
 
-        let item = sharedWithYouHighlight.item
-
-        if item?.shouldOpenInWebView == true {
-            presentedWebReaderURL = item?.bestURL
-            tracker.track(
-                event: ContentOpenEvent(destination: .external, trigger: .click),
-                contexts(for: sharedWithYouHighlight, at: indexPath)
-            )
+        var destination: ContentOpen.Destination = .internal
+        if sharedWithYouHighlight.item.shouldOpenInWebView {
+            selectedReadableType = .webViewSharedWithYou(viewModel)
+            destination = .external
         } else {
-            let viewModel = SharedWithYouViewModel(
-                sharedWithYouHighlight: sharedWithYouHighlight,
-                source: source,
-                tracker: tracker.childTracker(hosting: .articleView.screen)
-            )
             selectedReadableType = .sharedWithYou(viewModel)
-
-            tracker.track(
-                event: ContentOpenEvent(destination: .internal, trigger: .click),
-                contexts(for: sharedWithYouHighlight, at: indexPath)
-            )
+            destination = .internal
         }
+        tracker.track(event: Events.Home.SharedWithYouCardContentOpen(url: sharedWithYouHighlight.url, positionInList: indexPath.item, destination: destination))
     }
 }
 
@@ -381,14 +379,13 @@ extension HomeViewModel {
                 self?.tappedSeeAll = .saves
             }
         case .sharedWithYou:
-            var sectionName = "Shared With You"
-
-            if #available(iOS 16.0, *) {
-                sectionName = SWHighlightCenter.highlightCollectionTitle
-            }
-            return .init(name: sectionName, buttonTitle: "See All", buttonImage: nil) { [weak self] in
+            return .init(
+                name: SWHighlightCenter.highlightCollectionTitle,
+                buttonTitle: Localization.seeAll,
+                buttonImage: UIImage(asset: .chevronRight)
+            ) { [weak self] in
                 // TODO: Go to a view for shared with you.
-                self?.tappedSeeAll = .myList
+                self?.tappedSeeAll = .saves
             }
         case .slateHero(let objectID):
             guard let slate = source.viewObject(id: objectID) as? Slate else {
@@ -495,7 +492,7 @@ extension HomeViewModel {
         for objectID: NSManagedObjectID,
         at indexPath: IndexPath?
     ) -> HomeSharedWithYouCellViewModel? {
-        guard let sharedWithYou = source.mainContext.object(with: objectID) as? SharedWithYouHighlight else {
+        guard let sharedWithYou = source.viewContext.object(with: objectID) as? SharedWithYouHighlight else {
             return nil
         }
 
@@ -511,8 +508,8 @@ extension HomeViewModel {
                 },
             ],
             primaryAction: .recommendationPrimary { [weak self] _ in
-                let isSaved = sharedWithYou.item?.savedItem != nil
-                && sharedWithYou.item?.savedItem?.isArchived == false
+                let isSaved = sharedWithYou.item.savedItem != nil
+                && sharedWithYou.item.savedItem?.isArchived == false
 
                 if isSaved {
                    self?.archive(sharedWithYou, at: indexPath)
@@ -524,37 +521,13 @@ extension HomeViewModel {
     }
 
     private func save(_ sharedWithYouHighlight: SharedWithYouHighlight, at indexPath: IndexPath) {
-        let contexts = contexts(for: sharedWithYouHighlight, at: indexPath) + [UIContext.button(identifier: .itemSave)]
-
-        tracker.track(
-            event: SnowplowEngagement(type: .save, value: nil),
-            contexts
-        )
-
+        tracker.track(event: Events.Home.SharedWithYouCardSave(url: sharedWithYouHighlight.url, positionInList: indexPath.item))
         source.save(sharedWithYouHighlight: sharedWithYouHighlight)
     }
 
     private func archive(_ sharedWithYouHighlight: SharedWithYouHighlight, at indexPath: IndexPath) {
-        let contexts = contexts(for: sharedWithYouHighlight, at: indexPath) + [UIContext.button(identifier: .itemArchive)]
-        tracker.track(
-            event: SnowplowEngagement(type: .save, value: nil),
-            contexts
-        )
-
+       tracker.track(event: Events.Home.SharedWithYouCardArchive(url: sharedWithYouHighlight.url, positionInList: indexPath.item))
        source.archive(sharedWithYouHighlight: sharedWithYouHighlight)
-    }
-
-    private func contexts(for sharedWithYouHighlight: SharedWithYouHighlight, at indexPath: IndexPath) -> [Context] {
-        guard let sharedWithYouURL = sharedWithYouHighlight.item?.bestURL else {
-            return []
-        }
-
-        let contexts: [Context] = []
-
-        return contexts + [
-            ContentContext(url: sharedWithYouURL),
-            UIContext.home.item(index: UIIndex(indexPath.item))
-        ]
     }
 }
 
@@ -796,6 +769,9 @@ extension HomeViewModel {
             return viewModel.webViewActivityItems(url: url)
         case .savedItem(let viewModel),
                 .webViewSavedItem(let viewModel):
+            return viewModel.webViewActivityItems(url: url)
+        case .sharedWithYou(let viewModel),
+                .webViewSharedWithYou(let viewModel):
             return viewModel.webViewActivityItems(url: url)
         case .none:
             return []

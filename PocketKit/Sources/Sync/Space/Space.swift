@@ -262,6 +262,15 @@ extension Space {
         )
     }
 
+    func makeSharedWithYouHighlightController(limit: Int) -> NSFetchedResultsController<SharedWithYouHighlight> {
+        NSFetchedResultsController(
+            fetchRequest: Requests.fetchSharedWithYouHighlights(limit: limit),
+            managedObjectContext: viewContext,
+            sectionNameKeyPath: nil,
+            cacheName: nil
+        )
+    }
+
     func makeArchivedItemsController(filters: [NSPredicate] = []) -> NSFetchedResultsController<SavedItem> {
         NSFetchedResultsController(
             fetchRequest: Requests.fetchArchivedItems(filters: filters),
@@ -433,35 +442,15 @@ extension Space {
     }
 }
 
-
 extension Space {
-    func fetchSharedWithYouHighlight(byUrl url: URL) throws -> SharedWithYouHighlight? {
-        let request = Requests.fetchSharedWithYouHighlight()
-        request.predicate = NSPredicate(format: "url = %@", url.absoluteString)
-        request.fetchLimit = 1
-        return try fetch(request).first
-    }
-
-    func fetchOrCreateSharedWithYouHighlight(byUrl url: URL) throws -> SharedWithYouHighlight {
-        return try fetchSharedWithYouHighlight(byUrl: url) ?? new()
-    }
-
-    /**
-     Remove shared highlights that are no longer given to us by iOS
-    */
-    func batchDeleteSharedWithYouHighlightsNotInArray(sharedWithYouHighlights: [PocketSWHighlight]) throws {
-        let urls = sharedWithYouHighlights.map { $0.url }
-        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = SharedWithYouHighlight.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "NOT (url IN %@)", urls)
-        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-        deleteRequest.resultType = .resultTypeObjectIDs
-
-        let deleteResult = try context.execute(deleteRequest) as? NSBatchDeleteResult
-        if let deletedItemIDs = deleteResult?.result as? [NSManagedObjectID] {
-            NSManagedObjectContext.mergeChanges(
-                fromRemoteContextSave: [NSDeletedObjectsKey: deletedItemIDs],
-                into: [context]
-            )
-        }
-    }
+//    func fetchSharedWithYouHighlight(byUrl url: URL) throws -> SharedWithYouHighlight? {
+//        let request = Requests.fetchSharedWithYouHighlight()
+//        request.predicate = NSPredicate(format: "url = %@", url.absoluteString)
+//        request.fetchLimit = 1
+//        return try fetch(request).first
+//    }
+//
+//    func fetchOrCreateSharedWithYouHighlight(byUrl url: URL) throws -> SharedWithYouHighlight {
+//        return try fetchSharedWithYouHighlight(byUrl: url) ?? SharedWithYouHighlight(context: backgroundContext)
+//    }
 }

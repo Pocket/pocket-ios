@@ -11,8 +11,8 @@ public class SavedItem: MockObject {
 
   public struct MockFields {
     @Field<Int>("_createdAt") public var _createdAt
-    @Field<Int?>("_deletedAt") public var _deletedAt
-    @Field<Int?>("archivedAt") public var archivedAt
+    @Field<Int>("_deletedAt") public var _deletedAt
+    @Field<Int>("archivedAt") public var archivedAt
     @Field<PocketGraph.ID>("id") public var id
     @Field<Bool>("isArchived") public var isArchived
     @Field<Bool>("isFavorite") public var isFavorite

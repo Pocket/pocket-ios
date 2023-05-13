@@ -361,6 +361,13 @@ extension HomeViewController {
             // Since the view model is not publishing a direct request to present a url (e.g presentedWebReaderURL),
             // we'll utilize its premium url to present a premium Pocket web page as necessary
             present(url: viewModel.premiumURL)
+        case .webViewSharedWithYou(let viewModel):
+            showSharedWithYouHighlight(forWebView: viewModel)
+            // Since the view model is not publishing a direct request to present a url (e.g presentedWebReaderURL),
+            // we'll utilize its premium url to present a premium Pocket web page as necessary
+            present(url: viewModel.premiumURL)
+        case .sharedWithYou(let viewModel):
+            show(viewModel)
         case .none:
             readerSubscriptions = []
         }
@@ -474,6 +481,43 @@ extension HomeViewController {
         }.store(in: &readerSubscriptions)
     }
 
+    func show(_ sharedWithYouHighlight: SharedWithYouHighlightViewModel?) {
+        readerSubscriptions = []
+        guard let sharedWithYouHighlight = sharedWithYouHighlight else {
+            return
+        }
+
+        navigationController?.pushViewController(
+            ReadableHostViewController(readableViewModel: sharedWithYouHighlight),
+            animated: true
+        )
+
+        sharedWithYouHighlight.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
+            self?.present(alert: alert)
+        }.store(in: &readerSubscriptions)
+
+        sharedWithYouHighlight.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
+            self?.present(activity: activity)
+        }.store(in: &readerSubscriptions)
+
+        sharedWithYouHighlight.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
+            self?.present(url: url)
+        }.store(in: &readerSubscriptions)
+
+        sharedWithYouHighlight.$isPresentingReaderSettings.receive(on: DispatchQueue.main).sink { [weak self] isPresenting in
+            self?.presentReaderSettings(isPresenting, on: sharedWithYouHighlight)
+        }.store(in: &readerSubscriptions)
+
+        sharedWithYouHighlight.events.receive(on: DispatchQueue.main).sink { [weak self] event in
+            switch event {
+            case .contentUpdated:
+                break
+            case .archive, .delete:
+                self?.popToPreviousScreen()
+            }
+        }.store(in: &readerSubscriptions)
+    }
+
     private func showRecommendation(forWebView viewModel: RecommendationViewModel) {
         viewModel.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
             self?.present(alert: alert)
@@ -494,6 +538,21 @@ extension HomeViewController {
     }
 
     private func showSavedItem(forWebView viewModel: SavedItemViewModel) {
+        viewModel.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
+            self?.present(alert: alert)
+        }.store(in: &readerSubscriptions)
+
+        viewModel.events.receive(on: DispatchQueue.main).sink { [weak self] event in
+            switch event {
+            case .contentUpdated:
+                break
+            case .archive, .delete:
+                self?.popToPreviousScreen()
+            }
+        }.store(in: &readerSubscriptions)
+    }
+
+    private func showSharedWithYouHighlight(forWebView viewModel: SharedWithYouHighlightViewModel) {
         viewModel.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
             self?.present(alert: alert)
         }.store(in: &readerSubscriptions)

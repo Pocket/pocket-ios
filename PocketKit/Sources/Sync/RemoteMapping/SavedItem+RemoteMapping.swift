@@ -26,7 +26,7 @@ extension SavedItem {
     public func update(from remote: RemoteSavedItem, with space: Space) {
         remoteID = remote.remoteID
         guard let url = URL(string: remote.url) else {
-            Log.breadcrumb(category: "sync", level: .warning, message: "Skipping updating of SavedItem \(remoteID) because \(remote.url) is not valid url")
+            Log.breadcrumb(category: "sync", level: .warning, message: "Skipping updating of SavedItem \(String(describing: remoteID)) because \(remote.url) is not valid url")
             return
         }
 
@@ -74,24 +74,22 @@ extension SavedItem {
     }
 
     public func update(from recommendation: Recommendation) {
-        let url = recommendation.item.givenURL
-        self.url = url
+        self.url = recommendation.item.givenURL
         self.createdAt = Date()
 
         self.item = recommendation.item
     }
 
     public func update(from sharedWithYouHighlight: SharedWithYouHighlight) {
-        self.url = sharedWithYouHighlight.item?.bestURL
+        self.url = sharedWithYouHighlight.item.givenURL
         self.createdAt = Date()
-
-        item = sharedWithYouHighlight.item
+        self.item = sharedWithYouHighlight.item
     }
 
     public func update(from summary: SavedItemSummary, with space: Space) {
         remoteID = summary.remoteID
         guard let url = URL(string: summary.url) else {
-            Log.breadcrumb(category: "sync", level: .warning, message: "Skipping updating of SavedItem \(remoteID) because \(summary.url) is not valid url")
+            Log.breadcrumb(category: "sync", level: .warning, message: "Skipping updating of SavedItem \(String(describing: remoteID)) because \(summary.url) is not valid url")
             return
         }
 

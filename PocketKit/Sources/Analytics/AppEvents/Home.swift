@@ -90,6 +90,104 @@ public extension Events.Home {
     }
 
     /**
+     Fired when a card in the `Shared With You` section scrolls into view
+     */
+    static func SharedWithYouCardImpression(url: URL, positionInList: Int) -> Impression {
+        return Impression(
+            component: .card,
+            requirement: .viewable,
+            uiEntity: UiEntity(
+                .card,
+                identifier: "home.sharedWithYou.impression",
+                index: positionInList
+            ),
+            extraEntities: [
+                ContentEntity(url: url)
+            ]
+        )
+    }
+
+    /**
+     Fired when a card in the `Shared With You` section is shared
+     */
+    static func SharedWithYouCardShare(url: URL, positionInList: Int) -> Engagement {
+        return Engagement(
+            uiEntity: UiEntity(
+                .button,
+                identifier: "home.sharedWithYou.share",
+                index: positionInList
+            ),
+            extraEntities: [
+                ContentEntity(url: url)
+            ]
+        )
+    }
+
+    /**
+     Fired when a card in the `Shared With You` section is deleted
+     */
+    static func SharedWithYouCardDelete(url: URL, positionInList: Int) -> Engagement {
+        return Engagement(
+            uiEntity: UiEntity(
+                .button,
+                identifier: "home.sharedWithYou.delete",
+                index: positionInList
+            ),
+            extraEntities: [
+                ContentEntity(url: url)
+            ]
+        )
+    }
+
+    /**
+     Fired when a card in the `Shared With You` section is archived
+     */
+    static func SharedWithYouCardArchive(url: URL, positionInList: Int) -> Engagement {
+        return Engagement(
+            uiEntity: UiEntity(
+                .button,
+                identifier: "home.sharedWithYou.archive",
+                index: positionInList
+            ),
+            extraEntities: [
+                ContentEntity(url: url)
+            ]
+        )
+    }
+
+    /**
+     Fired when a card in the `Shared With You` section is saved
+     */
+    static func SharedWithYouCardSave(url: URL, positionInList: Int) -> Engagement {
+        return Engagement(
+            .save(
+                contentEntity: ContentEntity(url: url)
+            ),
+            uiEntity: UiEntity(
+                .button,
+                identifier: "home.sharedWithYou.save",
+                index: positionInList
+            )
+        )
+    }
+
+    /**
+     Fired when a user clicks a card in the `Shared With You` section
+     */
+    static func SharedWithYouCardContentOpen(url: URL, positionInList: Int, destination: ContentOpen.Destination) -> ContentOpen {
+        return ContentOpen(
+            destination: destination,
+            contentEntity:
+                ContentEntity(url: url),
+            uiEntity: UiEntity(
+                .card,
+                identifier: "home.sharedWithYou.open",
+                index: positionInList
+            )
+        )
+    }
+
+    /**
      Fired when a user clicks a card on Home using the /discover API
      */
     static func SlateArticleContentOpen(url: URL, positionInList: Int, slateId: String, slateRequestId: String, slateExperimentId: String, slateIndex: Int, slateLineupId: String, slateLineupRequestId: String, slateLineupExperimentId: String, recommendationId: String, destination: ContentOpen.Destination) -> ContentOpen {

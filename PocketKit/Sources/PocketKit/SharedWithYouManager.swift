@@ -3,20 +3,13 @@ import SharedWithYou
 import Sync
 import Combine
 import SharedPocketKit
+import Apollo
 
 // Handles iOS Shared With You delegates in iOS 16 for any getpocket.com urls shared with a user.
-@available(iOS 16.0, *)
-final class SharedWithYouManager: NSObject {
+class SharedWithYouManager: NSObject {
 
     public var highlightCenter: SWHighlightCenter?
-    /**
-     Instance of our API client for pulling in data when we recieve a highlight.
-     */
     private let source: Source
-
-    /**
-     Instance of the Pocket Session manager for us to get a current session.
-     */
     private let appSession: AppSession
 
     /**
@@ -24,33 +17,36 @@ final class SharedWithYouManager: NSObject {
      */
     private var subscriptions: Set<AnyCancellable> = []
 
-    init(source: Sync.Source, appSession: AppSession) {
-        self.appSession = appSession
-        self.source = source
-        super.init()
+    init(
+        source: Source,
+        appSession: AppSession) {
 
-        // Register for login notifications
-        NotificationCenter.default.publisher(
-            for: .userLoggedIn
-        ).sink { [weak self] notification in
-            self?.loggedIn()
-        }.store(in: &subscriptions)
+            self.source = source
+            self.appSession = appSession
+            super.init()
 
-        // Register for logout notifications
-        NotificationCenter.default.publisher(
-            for: .userLoggedOut
-        ).sink { [weak self] notification in
-            self?.loggedOut()
-        }.store(in: &subscriptions)
+            // Register for login notifications
+            NotificationCenter.default.publisher(
+                for: .userLoggedIn
+            ).sink { [weak self] notification in
+                self?.loggedIn()
+            }.store(in: &subscriptions)
 
-        handleSessionInitilization(session: appSession.currentSession)
-    }
+            // Register for logout notifications
+            NotificationCenter.default.publisher(
+                for: .userLoggedOut
+            ).sink { [weak self] notification in
+                self?.loggedOut()
+            }.store(in: &subscriptions)
+
+            handleSessionInitilization(session: appSession.currentSession)
+        }
 
     /**
      Handle session intitlization when not coming from a notification center subscriber. Mainly for app initilization.
      */
     private func handleSessionInitilization(session: SharedPocketKit.Session?) {
-        guard let _ = session else {
+        guard session != nil else {
             loggedOut()
             return
         }
@@ -87,22 +83,23 @@ final class SharedWithYouManager: NSObject {
      Save our most recent highlight snapshot from the HighlightCenter
      */
     private func saveHighlightsSnapshot(highlights: [SWHighlight]) {
-        // Convert to a PocketSWHighlight which is a custom simple struct that is easier to test with then SWHighlight which is only availabe in iOS 16+
-        let pocketHighlights: [PocketSWHighlight] = highlights.map { highlight in
-            return PocketSWHighlight(url: highlight.url)
-        }
-
-        do {
-            // Save the highlights to CoreData and get the latest parser info for the ViewModel to pick up
-            try source.saveNewSharedWithYouSnapshot(for: pocketHighlights)
-        } catch {
-            // Failed to save the new highlight snapshot.
-            Crashlogger.capture(error: error)
-        }
+        //
+        //
+        //        // Convert to a PocketSWHighlight which is a custom simple struct that is easier to test with then SWHighlight which is only availabe in iOS 16+
+        //        let pocketHighlights: [PocketSWHighlight] = highlights.map { highlight in
+        //            return PocketSWHighlight(url: highlight.url)
+        //        }
+        //
+        //        do {
+        //            // Save the highlights to CoreData and get the latest parser info for the ViewModel to pick up
+        //            try source.saveNewSharedWithYouSnapshot(for: pocketHighlights)
+        //        } catch {
+        //            // Failed to save the new highlight snapshot.
+        //            Log.capture(error: error)
+        //        }
     }
 }
 
-@available(iOS 16.0, *)
 extension SharedWithYouManager: SWHighlightCenterDelegate {
     func highlightCenterHighlightsDidChange(_ highlightCenter: SWHighlightCenter) {
         saveHighlightsSnapshot(highlights: highlightCenter.highlights)

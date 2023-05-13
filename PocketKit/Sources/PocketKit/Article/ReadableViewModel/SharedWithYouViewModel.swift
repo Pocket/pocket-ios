@@ -4,79 +4,89 @@ import Foundation
 import Textile
 import UIKit
 import Analytics
+import SharedPocketKit
 
-class SharedWithYouViewModel: ReadableViewModel {
-    @Published
-    private(set) var _actions: [ItemAction] = []
+class SharedWithYouHighlightViewModel: ReadableViewModel {
+    @Published private(set) var _actions: [ItemAction] = []
     var actions: Published<[ItemAction]>.Publisher { $_actions }
 
     private var _events = PassthroughSubject<ReadableEvent, Never>()
     var events: EventPublisher { _events.eraseToAnyPublisher() }
 
-    @Published
-    var presentedAlert: PocketAlert?
+    @Published var presentedAlert: PocketAlert?
 
-    @Published
-    var sharedActivity: PocketActivity?
+    @Published var sharedActivity: PocketActivity?
 
-    @Published
-    var presentedWebReaderURL: URL?
+    @Published var presentedWebReaderURL: URL?
 
-    @Published
-    var isPresentingReaderSettings: Bool?
+    @Published var isPresentingReaderSettings: Bool?
 
     private let sharedWithYouHighlight: SharedWithYouHighlight
     private let source: Source
+    private let pasteboard: Pasteboard
+    private let user: User
+    private let userDefaults: UserDefaults
     let tracker: Tracker
 
     private var savedItemCancellable: AnyCancellable?
     private var savedItemSubscriptions: Set<AnyCancellable> = []
 
-    init(sharedWithYouHighlight: SharedWithYouHighlight, source: Source, tracker: Tracker) {
+    init(sharedWithYouHighlight: SharedWithYouHighlight, source: Source, tracker: Tracker, pasteboard: Pasteboard, user: User, userDefaults: UserDefaults) {
         self.sharedWithYouHighlight = sharedWithYouHighlight
         self.source = source
         self.tracker = tracker
+        self.pasteboard = pasteboard
+        self.user = user
+        self.userDefaults = userDefaults
 
-        self.savedItemCancellable = sharedWithYouHighlight.item?.publisher(for: \.savedItem).sink { [weak self] savedItem in
+        self.savedItemCancellable = sharedWithYouHighlight.item.publisher(for: \.savedItem).sink { [weak self] savedItem in
             self?.update(for: savedItem)
         }
     }
 
     var components: [ArticleComponent]? {
-        sharedWithYouHighlight.item?.article?.components
+        sharedWithYouHighlight.item.article?.components
     }
 
     var readerSettings: ReaderSettings {
         // TODO: inject this
-        ReaderSettings()
+        ReaderSettings(userDefaults: userDefaults)
     }
 
     var textAlignment: Textile.TextAlignment {
-        TextAlignment(language: sharedWithYouHighlight.item?.language)
+        TextAlignment(language: sharedWithYouHighlight.item.language)
     }
 
     var title: String? {
-        sharedWithYouHighlight.item?.title
+        sharedWithYouHighlight.bestTitle
     }
 
     var authors: [ReadableAuthor]? {
-        sharedWithYouHighlight.item?.authors?.compactMap { $0 as? Author}
+        sharedWithYouHighlight.item.authors?.compactMap { $0 as? Author }
     }
 
     var domain: String? {
-        sharedWithYouHighlight.item?.domainMetadata?.name ?? sharedWithYouHighlight.item?.domain ?? sharedWithYouHighlight.item?.bestURL?.host
+        sharedWithYouHighlight.bestDomain
     }
 
     var publishDate: Date? {
-        sharedWithYouHighlight.item?.datePublished
+        sharedWithYouHighlight.item.datePublished
     }
 
     var url: URL? {
-        sharedWithYouHighlight.item?.bestURL
+        sharedWithYouHighlight.item.bestURL
     }
 
-    func moveToMyList() {
-        guard let savedItem = sharedWithYouHighlight.item?.savedItem else {
+    var isArchived: Bool {
+        return sharedWithYouHighlight.item.savedItem?.isArchived ?? false
+    }
+
+    var premiumURL: URL? {
+        pocketPremiumURL(url, user: user)
+    }
+
+    func moveToSaves() {
+        guard let savedItem = sharedWithYouHighlight.item.savedItem else {
             return
         }
 
@@ -84,7 +94,7 @@ class SharedWithYouViewModel: ReadableViewModel {
     }
 
     func delete() {
-        guard let savedItem = sharedWithYouHighlight.item?.savedItem else {
+        guard let savedItem = sharedWithYouHighlight.item.savedItem else {
             return
         }
 
@@ -92,12 +102,8 @@ class SharedWithYouViewModel: ReadableViewModel {
         _events.send(.delete)
     }
 
-    func showWebReader() {
-        presentedWebReaderURL = url
-    }
-
     func fetchDetailsIfNeeded() {
-        guard sharedWithYouHighlight.item?.article == nil else {
+        guard sharedWithYouHighlight.item.article == nil else {
             _events.send(.contentUpdated)
             return
         }
@@ -111,16 +117,40 @@ class SharedWithYouViewModel: ReadableViewModel {
     func externalActions(for url: URL) -> [ItemAction] {
         [
             .save { [weak self] _ in self?.saveExternalURL(url) },
-            .open { [weak self] _ in self?.openExternalURL(url) },
+            .open { [weak self] _ in self?.openExternalLink(url: url) },
             .copyLink { [weak self] _ in self?.copyExternalURL(url) },
             .share { [weak self] _ in self?.shareExternalURL(url) }
         ]
     }
+
+    func webViewActivityItems(url: URL) -> [UIActivity] {
+        guard let item = source.fetchItem(url) else {
+            return []
+        }
+
+        if !item.isSaved {
+            // When recommendation is Not saved
+            let saveActivity = ReaderActionsWebActivity(title: .save) { [weak self] in
+                if item.isSaved {
+                    self?.archive()
+                } else {
+                    self?.save()
+                }
+            }
+            return [saveActivity]
+        } else {
+            // When recommendation is saved
+            guard let savedItem = item.savedItem else {
+                return []
+            }
+            return webViewActivityItems(for: savedItem)
+        }
+    }
 }
 
-extension SharedWithYouViewModel {
+extension SharedWithYouHighlightViewModel {
     private func buildActions() {
-        guard let savedItem = sharedWithYouHighlight.item?.savedItem else {
+        guard let savedItem = sharedWithYouHighlight.item.savedItem else {
             _actions = [
                 .displaySettings { [weak self] _ in self?.displaySettings() },
                 .save { [weak self] _ in self?.save() },
@@ -137,17 +167,9 @@ extension SharedWithYouViewModel {
             favoriteAction = .favorite { [weak self] _ in self?.favorite() }
         }
 
-        let archiveAction: ItemAction
-        if savedItem.isArchived {
-            archiveAction = .moveToMyList { [weak self] _ in self?.moveToMyList() }
-        } else {
-            archiveAction = .archive { [weak self] _ in self?.archive() }
-        }
-
         _actions = [
             .displaySettings { [weak self] _ in self?.displaySettings() },
             favoriteAction,
-            archiveAction,
             .delete { [weak self] _ in self?.confirmDelete() },
             .share { [weak self] _ in self?.share() }
         ]
@@ -172,8 +194,8 @@ extension SharedWithYouViewModel {
         subscribe(to: savedItem)
     }
 
-    private func favorite() {
-        guard let savedItem = sharedWithYouHighlight.item?.savedItem else {
+    func favorite() {
+        guard let savedItem = sharedWithYouHighlight.item.savedItem else {
             return
         }
 
@@ -181,8 +203,8 @@ extension SharedWithYouViewModel {
         track(identifier: .itemFavorite)
     }
 
-    private func unfavorite() {
-        guard let savedItem = sharedWithYouHighlight.item?.savedItem else {
+    func unfavorite() {
+        guard let savedItem = sharedWithYouHighlight.item.savedItem else {
             return
         }
 
@@ -190,14 +212,44 @@ extension SharedWithYouViewModel {
         track(identifier: .itemUnfavorite)
     }
 
-    private func archive() {
-        guard let savedItem = sharedWithYouHighlight.item?.savedItem else {
+    func openInWebView(url: URL?) {
+        let updatedURL = pocketPremiumURL(url, user: user)
+        presentedWebReaderURL = updatedURL
+
+        trackWebViewOpen()
+    }
+
+    func openExternalLink(url: URL) {
+        let updatedURL = pocketPremiumURL(url, user: user)
+        presentedWebReaderURL = updatedURL
+
+        trackExternalLinkOpen(url: url)
+    }
+
+    func moveFromArchiveToSaves(completion: (Bool) -> Void) {
+        guard let savedItem = sharedWithYouHighlight.item.savedItem else {
+            Log.capture(message: "Could not get SavedItem so unarchive action not taken")
+            completion(false)
+            return
+        }
+        source.unarchive(item: savedItem)
+        trackMoveFromArchiveToSavesButtonTapped(url: savedItem.url)
+        completion(true)
+    }
+
+    func archive() {
+        guard let savedItem = sharedWithYouHighlight.item.savedItem else {
+            Log.capture(message: "Could not get SavedItem so archive action not taken")
             return
         }
 
         source.archive(item: savedItem)
-        track(identifier: .itemArchive)
+        trackArchiveButtonTapped(url: savedItem.url)
         _events.send(.archive)
+    }
+
+    func beginBulkEdit() {
+
     }
 
     private func save() {
@@ -210,19 +262,16 @@ extension SharedWithYouViewModel {
     }
 
     private func copyExternalURL(_ url: URL) {
-        UIPasteboard.general.url = url
+        pasteboard.url = url
     }
 
     private func shareExternalURL(_ url: URL) {
-        sharedActivity = PocketItemActivity(url: url)
-    }
-
-    private func openExternalURL(_ url: URL) {
-        presentedWebReaderURL = url
+        // This view model is used within the context of a view that is presented within the reader
+        sharedActivity = PocketItemActivity.fromReader(url: url)
     }
 }
 
-extension SharedWithYouViewModel {
+extension SharedWithYouHighlightViewModel {
     func clearPresentedWebReaderURL() {
         presentedWebReaderURL = nil
     }
