@@ -135,8 +135,18 @@ public enum Requests {
         return request
     }
 
-    public static func fetchSharedWithYouHighlights(limit: Int? = nil) -> NSFetchRequest<SharedWithYouHighlight> {
-        let request = fetchAllSharedWithYouHighlights()
+    public static func fetchSharedWithYouHighlights(limit: Int? = nil) -> RichFetchRequest<SharedWithYouHighlight> {
+        let request = RichFetchRequest<SharedWithYouHighlight>(entityName: "SharedWithYouHighlight")
+        request.sortDescriptors = [
+            NSSortDescriptor(keyPath: \SharedWithYouHighlight.sortOrder, ascending: true),
+            NSSortDescriptor(keyPath: \SharedWithYouHighlight.item.title, ascending: true)
+        ]
+        request.relationshipKeyPathsForRefreshing = [
+            #keyPath(SharedWithYouHighlight.item.title),
+            #keyPath(SharedWithYouHighlight.item.savedItem.archivedAt),
+            #keyPath(SharedWithYouHighlight.item.savedItem.isFavorite),
+            #keyPath(SharedWithYouHighlight.item.savedItem.createdAt),
+        ]
         if let limit = limit {
             request.fetchLimit = limit
         }

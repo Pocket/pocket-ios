@@ -262,8 +262,8 @@ extension Space {
         )
     }
 
-    func makeSharedWithYouHighlightController(limit: Int) -> NSFetchedResultsController<SharedWithYouHighlight> {
-        NSFetchedResultsController(
+    func makeSharedWithYouHighlightsController(limit: Int) -> RichFetchedResultsController<SharedWithYouHighlight> {
+        RichFetchedResultsController(
             fetchRequest: Requests.fetchSharedWithYouHighlights(limit: limit),
             managedObjectContext: viewContext,
             sectionNameKeyPath: nil,

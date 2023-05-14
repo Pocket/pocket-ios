@@ -34,6 +34,8 @@ public protocol Source {
 
     func makeRecentSavesController() -> NSFetchedResultsController<SavedItem>
 
+    func makeSharedWithYouHighlightsController() -> RichFetchedResultsController<SharedWithYouHighlight>
+
     func makeHomeController() -> RichFetchedResultsController<Recommendation>
 
     func makeSavesController() -> SavedItemsController

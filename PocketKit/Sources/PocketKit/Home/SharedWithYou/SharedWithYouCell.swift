@@ -30,41 +30,41 @@ class SharedWithYouCell: HomeCarouselItemCell {
         attributionView.horizontalAlignment = .trailing
         attributionView.displayContext = .detail
 
-        attributionStack.addArrangedSubview(attributionView)
+        // attributionStack.addArrangedSubview(attributionView)
     }
-
-    /**
-    Overrride the original constraints so we can add in our attribution view from iOS
-     */
-    override internal func activateConstraints() {
-        contentView.addSubview(mainContentStack)
-        contentView.addSubview(bottomStack)
-        contentView.addSubview(attributionStack)
-        contentView.layoutMargins = Constants.layoutMargins
-
-        NSLayoutConstraint.activate([
-            mainContentStack.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor),
-            mainContentStack.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
-            mainContentStack.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
-
-            thumbnailView.heightAnchor.constraint(equalToConstant: StyleConstants.thumbnailSize.height).with(priority: .required),
-            thumbnailWidthConstraint!,
-
-            bottomStack.leadingAnchor.constraint(equalTo: mainContentStack.leadingAnchor),
-            bottomStack.trailingAnchor.constraint(equalTo: mainContentStack.trailingAnchor),
-            bottomStack.topAnchor.constraint(equalTo: mainContentStack.bottomAnchor),
-
-            attributionStack.topAnchor.constraint(equalTo: bottomStack.bottomAnchor),
-            attributionStack.leadingAnchor.constraint(equalTo: bottomStack.leadingAnchor),
-            attributionStack.trailingAnchor.constraint(equalTo: bottomStack.trailingAnchor),
-            attributionStack.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor).with(priority: .required),
-
-            contentView.topAnchor.constraint(equalTo: topAnchor),
-            contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: bottomAnchor),
-        ])
-    }
+//
+//    /**
+//    Overrride the original constraints so we can add in our attribution view from iOS
+//     */
+//    override internal func activateConstraints() {
+//        contentView.addSubview(mainContentStack)
+//        contentView.addSubview(bottomStack)
+//        contentView.addSubview(attributionStack)
+//        contentView.layoutMargins = Constants.layoutMargins
+//
+//        NSLayoutConstraint.activate([
+//            mainContentStack.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor),
+//            mainContentStack.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
+//            mainContentStack.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
+//
+//            thumbnailView.heightAnchor.constraint(equalToConstant: StyleConstants.thumbnailSize.height).with(priority: .required),
+//            thumbnailWidthConstraint!,
+//
+//            bottomStack.leadingAnchor.constraint(equalTo: mainContentStack.leadingAnchor),
+//            bottomStack.trailingAnchor.constraint(equalTo: mainContentStack.trailingAnchor),
+//            bottomStack.topAnchor.constraint(equalTo: mainContentStack.bottomAnchor),
+//
+////            attributionStack.topAnchor.constraint(equalTo: bottomStack.bottomAnchor),
+////            attributionStack.leadingAnchor.constraint(equalTo: bottomStack.leadingAnchor),
+////            attributionStack.trailingAnchor.constraint(equalTo: bottomStack.trailingAnchor),
+////            attributionStack.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor).with(priority: .defaultHigh),
+//
+//            contentView.topAnchor.constraint(equalTo: topAnchor),
+//            contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
+//            contentView.trailingAnchor.constraint(equalTo: trailingAnchor),
+//            contentView.bottomAnchor.constraint(equalTo: bottomAnchor),
+//        ])
+//    }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -77,9 +77,11 @@ class SharedWithYouCell: HomeCarouselItemCell {
         self.attributionView.highlight = nil
         self.configure(model: sharedWithYouModel)
 
-        Services.shared.sharedWithYouManager.highlightCenter?.getHighlightFor(sharedWithYouModel.sharedWithYou.url) { swHighlight, error in
+        SWHighlightCenter().getHighlightFor(sharedWithYouModel.sharedWithYou.url) { swHighlight, error in
+            Log.breadcrumb(category: "sharedWithYou", level: .debug, message: "Loading highlight annotation for itemId: \(sharedWithYouModel.sharedWithYou.item.remoteID)")
             if error != nil {
                 Log.capture(error: error!)
+                return
             }
             self.attributionView.highlight = swHighlight
         }

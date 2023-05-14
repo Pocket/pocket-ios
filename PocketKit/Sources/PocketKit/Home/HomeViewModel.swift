@@ -116,7 +116,8 @@ class HomeViewModel: NSObject {
 
     private let recentSavesController: NSFetchedResultsController<SavedItem>
     private let recomendationsController: RichFetchedResultsController<Recommendation>
-    private var sharedWithYouCount: Int = 0
+    private let sharedWithYouHighlightsController: RichFetchedResultsController<SharedWithYouHighlight>
+    private var sharedWithYouHighlightsCount: Int = 0
 
     init(
         source: Source,
@@ -144,10 +145,12 @@ class HomeViewModel: NSObject {
 
         self.recentSavesController = source.makeRecentSavesController()
         self.recomendationsController = source.makeHomeController()
+        self.sharedWithYouHighlightsController = source.makeSharedWithYouHighlightsController()
 
         super.init()
         self.recentSavesController.delegate = self
         self.recomendationsController.delegate = self
+        self.sharedWithYouHighlightsController.delegate = self
 
         networkPathMonitor.updateHandler = { [weak self] path in
             if path.status == .satisfied {
@@ -166,6 +169,7 @@ class HomeViewModel: NSObject {
         do {
             try self.recentSavesController.performFetch()
             try self.recomendationsController.performFetch()
+            try self.sharedWithYouHighlightsController.performFetch()
         } catch {
             Log.capture(error: error)
         }
@@ -192,10 +196,9 @@ class HomeViewModel: NSObject {
 // MARK: - Snapshot building
 extension HomeViewModel {
     private func buildSnapshot() -> Snapshot {
-        let recentSaves = self.recentSavesController.fetchedObjects
-
         var snapshot = Snapshot()
 
+        let recentSaves = self.recentSavesController.fetchedObjects
         if let recentSaves, !recentSaves.isEmpty {
             recentSavesCount = recentSaves.count
             snapshot.appendSections([.recentSaves])
@@ -205,14 +208,15 @@ extension HomeViewModel {
             )
         }
 
-        // sharedWithYouCount = shatedWithYouItems.count
-        // if !shatedWithYouItems.isEmpty {
-        //     snapshot.appendSections([.sharedWithYou])
-        //     snapshot.appendItems(
-        //         shatedWithYouItems.map { .sharedWithYou($0.objectID) },
-        //         toSection: .sharedWithYou
-        //     )
-        // }
+        let sharedWithYouHighlights = self.sharedWithYouHighlightsController.fetchedObjects as? [SharedWithYouHighlight]
+        if let sharedWithYouHighlights, !sharedWithYouHighlights.isEmpty {
+            sharedWithYouHighlightsCount = sharedWithYouHighlights.count
+            snapshot.appendSections([.sharedWithYou])
+            snapshot.appendItems(
+                sharedWithYouHighlights.map { .sharedWithYou($0.objectID) },
+                toSection: .sharedWithYou
+            )
+        }
 
         guard !isOffline else {
             snapshot.appendSections([.offline])
@@ -485,7 +489,7 @@ extension HomeViewModel {
 // MARK: - Shared With You Model
 extension HomeViewModel {
     func numberOfSharedWithYouItems() -> Int {
-        return sharedWithYouCount
+        return sharedWithYouHighlightsCount
     }
 
     func sharedWithYouViewModel(
@@ -786,6 +790,13 @@ extension HomeViewModel: NSFetchedResultsControllerDelegate {
         if controller == self.recentSavesController {
             let reloadedItemIdentifiers: [Cell] = snapshot.reloadedItemIdentifiers.compactMap({ .recentSaves($0 as! NSManagedObjectID) })
             let reconfiguredItemdIdentifiers: [Cell] = snapshot.reloadedItemIdentifiers.compactMap({ .recentSaves($0 as! NSManagedObjectID) })
+            newSnapshot.reloadItems(reloadedItemIdentifiers)
+            newSnapshot.reconfigureItems(reconfiguredItemdIdentifiers)
+        }
+
+        if controller == self.sharedWithYouHighlightsController {
+            let reloadedItemIdentifiers: [Cell] = snapshot.reloadedItemIdentifiers.compactMap({ .sharedWithYou($0 as! NSManagedObjectID) })
+            let reconfiguredItemdIdentifiers: [Cell] = snapshot.reloadedItemIdentifiers.compactMap({ .sharedWithYou($0 as! NSManagedObjectID) })
             newSnapshot.reloadItems(reloadedItemIdentifiers)
             newSnapshot.reconfigureItems(reconfiguredItemdIdentifiers)
         }

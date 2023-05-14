@@ -206,6 +206,10 @@ public class PocketSource: Source {
         space.makeRecomendationsSlateLineupController(by: SyncConstants.Home.slateLineupIdentifier)
     }
 
+    public func makeSharedWithYouHighlightsController() -> RichFetchedResultsController<SharedWithYouHighlight> {
+        space.makeSharedWithYouHighlightsController(limit: SyncConstants.Home.sharedWithYouHighlights)
+    }
+
     public func viewObject<T: NSManagedObject>(id: NSManagedObjectID) -> T? {
         space.viewObject(with: id)
     }
