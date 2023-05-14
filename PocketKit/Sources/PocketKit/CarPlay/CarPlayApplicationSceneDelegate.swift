@@ -11,37 +11,15 @@ import UIKit
 import PKTListen
 import Sync
 import Localization
+import SharedPocketKit
 
 class CarPlayApplicationSceneDelegate: NSObject {
     /// The template manager handles the connection to CarPlay and manages the displayed templates.
-    let templateManager: CarPlayTemplateManager
+    let templateManager: CarPlayTemplateManager = CarPlayTemplateManager()
 
+    let source: Source
     override init() {
-        let source = Services.shared.source
-
-        var saves: [SavedItem] = []
-        var archive: [SavedItem] = []
-
-        do {
-            let savesController = source.makeSavesController()
-            try savesController.performFetch()
-            saves = savesController.fetchedObjects ?? []
-        } catch {
-
-        }
-
-        do {
-            let archiveController = source.makeArchiveController()
-            try archiveController.performFetch()
-            archive = archiveController.fetchedObjects ?? []
-        } catch {
-
-        }
-
-        templateManager = CarPlayTemplateManager(
-            saves: PKTListenAppConfiguration(source: ListenViewModel.source(savedItems: saves, title: Localization.saves)),
-            archive: PKTListenAppConfiguration(source: ListenViewModel.source(savedItems: archive, title: Localization.archive))
-        )
+        self.source = Services.shared.source
     }
 
     // MARK: UISceneDelegate
@@ -73,11 +51,45 @@ class CarPlayApplicationSceneDelegate: NSObject {
 extension CarPlayApplicationSceneDelegate: CPTemplateApplicationSceneDelegate {
 
     func templateApplicationScene(_ templateApplicationScene: CPTemplateApplicationScene, didConnect interfaceController: CPInterfaceController) {
-        templateManager.connect(interfaceController)
+        templateManager.connect(interfaceController, saves: loadSavesListenConfiguration(), archive: loadArchiveListenConfiguration())
     }
 
     func templateApplicationScene(_ templateApplicationScene: CPTemplateApplicationScene,
                                   didDisconnectInterfaceController interfaceController: CPInterfaceController) {
         templateManager.disconnect()
+    }
+}
+
+extension CarPlayApplicationSceneDelegate {
+
+    func loadSavesListenConfiguration() -> PKTListenAudibleItemQueue {
+        var saves: [SavedItem] = []
+
+        do {
+            let savesController = source.makeSavesController()
+            try savesController.performFetch()
+            saves = savesController.fetchedObjects ?? []
+        } catch {
+            Log.capture(error: error)
+        }
+        let savesConfig = PKTListenAppConfiguration(source: ListenViewModel.source(savedItems: saves, title: Localization.saves))
+        // savesConfig.source.loadMore()
+        return PKTListenAudibleItemQueue(configuration: savesConfig)
+    }
+
+    func loadArchiveListenConfiguration() -> PKTListenAudibleItemQueue {
+        var archive: [SavedItem] = []
+
+        do {
+            let archiveController = source.makeArchiveController()
+            try archiveController.performFetch()
+            archive = archiveController.fetchedObjects ?? []
+        } catch {
+            Log.capture(error: error)
+        }
+
+        let archiveConfig = PKTListenAppConfiguration(source: ListenViewModel.source(savedItems: archive, title: Localization.archive))
+        // archiveConfig.source.loadMore()
+        return PKTListenAudibleItemQueue(configuration: archiveConfig)
     }
 }
