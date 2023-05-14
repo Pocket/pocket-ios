@@ -218,15 +218,18 @@ public class PocketSource: Source {
                 self?.fetchSavesQueue.isSuspended = true
                 self?.fetchArchiveQueue.isSuspended = true
                 self?.saveQueue.isSuspended = true
+                self?.fetchTagsQueue.isSuspended = true
             case .satisfied:
                 self?.fetchSavesQueue.isSuspended = false
                 self?.fetchArchiveQueue.isSuspended = false
                 self?.saveQueue.isSuspended = false
+                self?.fetchTagsQueue.isSuspended = false
                 self?.retrySignal.send()
             @unknown default:
                 self?.fetchSavesQueue.isSuspended = false
                 self?.fetchArchiveQueue.isSuspended = false
                 self?.saveQueue.isSuspended = false
+                self?.fetchTagsQueue.isSuspended = false
             }
         }
     }
@@ -237,6 +240,7 @@ public class PocketSource: Source {
         self.fetchSavesQueue.waitUntilAllOperationsAreFinished()
         self.fetchArchiveQueue.waitUntilAllOperationsAreFinished()
         self.saveQueue.waitUntilAllOperationsAreFinished()
+        self.fetchTagsQueue.waitUntilAllOperationsAreFinished()
         completion()
     }
 
