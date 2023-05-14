@@ -46,7 +46,7 @@ class SharedWithYouManager: NSObject {
      Handle session intitlization when not coming from a notification center subscriber. Mainly for app initilization.
      */
     private func handleSessionInitilization(session: SharedPocketKit.Session?) {
-        guard session != nil else {
+        guard session != nil     else {
             loggedOut()
             return
         }
@@ -83,20 +83,20 @@ class SharedWithYouManager: NSObject {
      Save our most recent highlight snapshot from the HighlightCenter
      */
     private func saveHighlightsSnapshot(highlights: [SWHighlight]) {
-        //
-        //
-        //        // Convert to a PocketSWHighlight which is a custom simple struct that is easier to test with then SWHighlight which is only availabe in iOS 16+
-        //        let pocketHighlights: [PocketSWHighlight] = highlights.map { highlight in
-        //            return PocketSWHighlight(url: highlight.url)
-        //        }
-        //
-        //        do {
-        //            // Save the highlights to CoreData and get the latest parser info for the ViewModel to pick up
-        //            try source.saveNewSharedWithYouSnapshot(for: pocketHighlights)
-        //        } catch {
-        //            // Failed to save the new highlight snapshot.
-        //            Log.capture(error: error)
-        //        }
+        // Convert to a PocketSWHighlight which is a custom simple struct that is easier to test with then SWHighlight.
+        var i = 0
+        let pocketHighlights = highlights.map { highlight in
+            defer { i += 1 }
+            return PocketSWHighlight(url: highlight.url, index: Int32(i))
+        }
+
+        do {
+            // Save the highlights to CoreData and get the latest parser info for the ViewModel to pick up
+            try source.saveNewSharedWithYouSnapshot(for: pocketHighlights)
+        } catch {
+            // Failed to save the new highlight snapshot.
+            Log.capture(error: error)
+        }
     }
 }
 

@@ -71,6 +71,14 @@ public class PocketSource: Source {
         return q
     }()
 
+    private let fetchSharedWithYouHighlights: OperationQueue = {
+        let q = OperationQueue()
+        q.maxConcurrentOperationCount = 1
+        q.qualityOfService = .background
+        q.name = "com.mozilla.pocket.fetch.sharedWithYou"
+        return q
+    }()
+
     public convenience init(
         space: Space,
         user: User,
@@ -219,17 +227,20 @@ public class PocketSource: Source {
                 self?.fetchArchiveQueue.isSuspended = true
                 self?.saveQueue.isSuspended = true
                 self?.fetchTagsQueue.isSuspended = true
+                self?.fetchSharedWithYouHighlights.isSuspended = true
             case .satisfied:
                 self?.fetchSavesQueue.isSuspended = false
                 self?.fetchArchiveQueue.isSuspended = false
                 self?.saveQueue.isSuspended = false
                 self?.fetchTagsQueue.isSuspended = false
+                self?.fetchSharedWithYouHighlights.isSuspended = false
                 self?.retrySignal.send()
             @unknown default:
                 self?.fetchSavesQueue.isSuspended = false
                 self?.fetchArchiveQueue.isSuspended = false
                 self?.saveQueue.isSuspended = false
                 self?.fetchTagsQueue.isSuspended = false
+                self?.fetchSharedWithYouHighlights.isSuspended = false
             }
         }
     }
@@ -241,6 +252,7 @@ public class PocketSource: Source {
         self.fetchArchiveQueue.waitUntilAllOperationsAreFinished()
         self.saveQueue.waitUntilAllOperationsAreFinished()
         self.fetchTagsQueue.waitUntilAllOperationsAreFinished()
+        self.fetchSharedWithYouHighlights.waitUntilAllOperationsAreFinished()
         completion()
     }
 
@@ -634,26 +646,13 @@ extension PocketSource {
 // MARK: - Shared With You
 extension PocketSource {
     public func saveNewSharedWithYouSnapshot(for sharedWithYouHighlights: [PocketSWHighlight]) throws {
-//        // Remove all existing highlights from core data that aren't in the latest array
-//        try space.batchDeleteSharedWithYouHighlightsNotInArray(sharedWithYouHighlights: sharedWithYouHighlights)
-//
-//        sharedWithYouHighlights.enumerated().forEach { (index, highlight) in
-//            Task.init(priority: .high, operation: {
-//                // Save the highlight to CoreData
-//                let sharedWithYouHighlight = try space.fetchOrCreateSharedWithYouHighlight(byUrl: highlight.url)
-//                sharedWithYouHighlight.url = highlight.url
-//                sharedWithYouHighlight.sortOrder = Int32(index)
-//
-//                 if sharedWithYouHighlight.item == nil {
-//                    // Grab the highlight metadata only if we don't have it.
-//                    try await fetchDetails(for: sharedWithYouHighlight)
-//                } else {
-//                    try space.context.performAndWait {
-//                        try space.save()
-//                    }
-//                }
-//            })
-//        }
+        let operation = operations.fetchSharedWithYouHighlights(
+            apollo: apollo,
+            space: space,
+            sharedWithYouHighlights: sharedWithYouHighlights
+        )
+
+        enqueue(operation: operation, task: .fetchSaves, queue: fetchSharedWithYouHighlights, completion: nil)
     }
 
     public func fetchDetails(for sharedWithYouHighlight: SharedWithYouHighlight) async throws {
@@ -809,6 +808,13 @@ extension PocketSource {
                     lastRefresh: lastRefresh
                 )
                 enqueue(operation: operation, persistentTask: persistentTask, queue: self.fetchTagsQueue)
+            case .fetchSharedWithYouHighlights(let sharedWithYouHighlights):
+                let operation = operations.fetchSharedWithYouHighlights(
+                    apollo: apollo,
+                    space: space,
+                    sharedWithYouHighlights: sharedWithYouHighlights
+                )
+                enqueue(operation: operation, persistentTask: persistentTask, queue: self.fetchSharedWithYouHighlights)
             case .archive(let remoteID):
                 let operation = operations.savedItemMutationOperation(
                     apollo: apollo,

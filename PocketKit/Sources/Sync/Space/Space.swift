@@ -443,6 +443,13 @@ extension Space {
 }
 
 extension Space {
+    func fetchSharedWithYouHighlight(with url: URL, in context: NSManagedObjectContext?) throws -> SharedWithYouHighlight? {
+        let request = Requests.fetchSharedWithYouHighlight()
+        request.predicate = NSPredicate(format: "url = %@", url as CVarArg)
+        request.fetchLimit = 1
+        return try fetch(request, context: context).first
+    }
+
 //    func fetchSharedWithYouHighlight(byUrl url: URL) throws -> SharedWithYouHighlight? {
 //        let request = Requests.fetchSharedWithYouHighlight()
 //        request.predicate = NSPredicate(format: "url = %@", url.absoluteString)

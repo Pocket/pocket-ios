@@ -6,7 +6,7 @@
 	<string>development</string>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>applinks:getpocket.com</string>
+		<string>applinks:getpocket.com?mode=developer</string>
 	</array>
 	<key>com.apple.developer.shared-with-you</key>
 	<true/>

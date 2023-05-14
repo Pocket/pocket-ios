@@ -10,11 +10,12 @@ public enum InitialDownloadState {
     case completed
 }
 
-public struct PocketSWHighlight {
+public struct PocketSWHighlight: Codable {
     var url: URL!
-
-    public init(url: URL!) {
+    var index: Int32!
+    public init(url: URL!, index: Int32) {
         self.url = url
+        self.index = index
     }
 }
 

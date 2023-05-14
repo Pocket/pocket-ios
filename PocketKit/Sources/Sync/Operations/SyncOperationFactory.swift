@@ -29,6 +29,12 @@ protocol SyncOperationFactory {
         lastRefresh: LastRefresh
     ) -> SyncOperation
 
+    func fetchSharedWithYouHighlights(
+        apollo: ApolloClientProtocol,
+        space: Space,
+        sharedWithYouHighlights: [PocketSWHighlight]
+    ) -> SyncOperation
+
     func savedItemMutationOperation<Mutation: GraphQLMutation>(
         apollo: ApolloClientProtocol,
         events: SyncEvents,
@@ -94,6 +100,18 @@ class OperationFactory: SyncOperationFactory {
             space: space,
             events: events,
             lastRefresh: lastRefresh
+        )
+    }
+
+    func fetchSharedWithYouHighlights(
+        apollo: ApolloClientProtocol,
+        space: Space,
+        sharedWithYouHighlights: [PocketSWHighlight]
+    ) -> SyncOperation {
+        return FetchSharedWithYouHighlights(
+            apollo: apollo,
+            space: space,
+            sharedWithYouHighlights: sharedWithYouHighlights
         )
     }
 

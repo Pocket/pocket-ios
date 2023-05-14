@@ -4,6 +4,7 @@ enum SyncTask: Codable {
     case fetchSaves
     case fetchArchive
     case fetchTags
+    case fetchSharedWithYouHighlights(sharedWithYouHighlights: [PocketSWHighlight])
     case favorite(remoteID: String)
     case unfavorite(remoteID: String)
     case delete(remoteID: String)

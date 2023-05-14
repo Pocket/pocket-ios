@@ -4,6 +4,7 @@
 
 import CoreData
 import SharedPocketKit
+import PocketGraph
 
 /// Protocol representing a type that exposes a (read only) task cursor
 protocol Paginated {
@@ -24,7 +25,8 @@ protocol TagSpace: Paginated {
 }
 
 protocol SharedWithYouSpace {
-    func batchDeleteSharedWithYouHighlightsNotInArray(urls: [String]) throws
+    func batchDeleteSharedWithYouHighlightsNotInArray(urls: [URL]) throws
+    func updateSharedWithYouHighlight(highlight: PocketSWHighlight, with remoteParts: ItemSummary) throws
 }
 
 /// A type that handles save operations on paginated data,
@@ -148,12 +150,35 @@ extension DerivedSpace: TagSpace {
 
 extension DerivedSpace: SharedWithYouSpace {
 
-    func batchDeleteSharedWithYouHighlightsNotInArray(urls: [String]) throws {
-        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = SharedWithYouHighlight.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "NOT (url IN %@)", urls)
-        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-        deleteRequest.resultType = .resultTypeObjectIDs
-        try context.execute(deleteRequest)
+    func updateSharedWithYouHighlight(highlight: PocketSWHighlight, with remoteParts: ItemSummary) throws {
+        guard let url = URL(string: remoteParts.givenUrl) else {
+            return
+        }
+
+        context.performAndWait {
+            let item = (try? space.fetchItem(byURL: url)) ?? Item(context: context, givenURL: url, remoteID: remoteParts.remoteID)
+            item.update(from: remoteParts, with: space)
+            _ = (try? space.fetchSharedWithYouHighlight(with: highlight.url, in: context)) ?? SharedWithYouHighlight(context: context, url: highlight.url, sortOrder: highlight.index, item: item)
+        }
+        try saveContexts()
+    }
+
+    /// Cleans up any shared wtih you highlights no longer in our snapshot handed to us by Apple
+    /// - Parameter urls: <#urls description#>
+    func batchDeleteSharedWithYouHighlightsNotInArray(urls: [URL]) throws {
+        context.performAndWait {
+            let fetchRequest = SharedWithYouHighlight.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "NOT %K IN %@", #keyPath(SharedWithYouHighlight.url), urls.map({ $0 as CVarArg }))
+
+            guard let sharedWithYouHighlightsToDelete = try? context.fetch(fetchRequest) else {
+                // Nothing to delete.
+                return
+            }
+
+            sharedWithYouHighlightsToDelete.forEach { sharedWithYouHighlight in
+                space.delete(sharedWithYouHighlight, in: context)
+            }
+        }
         try saveContexts()
     }
 }
