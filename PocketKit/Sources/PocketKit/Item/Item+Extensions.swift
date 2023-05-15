@@ -12,7 +12,7 @@ public extension SavedItem {
     }
 
     var bestURL: URL? {
-        item?.bestURL ?? url
+        item.flatMap { URL(string: $0.bestURL) } ?? url
     }
 
     var isPending: Bool {
