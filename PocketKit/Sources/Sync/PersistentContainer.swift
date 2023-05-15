@@ -15,7 +15,7 @@ public class PersistentContainer: NSPersistentContainer {
     }()
 
     private (set) var spotlightIndexer: CoreDataSpotlightDelegate?
-    private (set) var storeDescription: NSPersistentStoreDescription?
+    private (set) var storeDescription: NSPersistentStoreDescription!
 
     private lazy var modifiedViewContext: NSManagedObjectContext = {
         viewContext.automaticallyMergesChangesFromParent = true
@@ -36,21 +36,7 @@ public class PersistentContainer: NSPersistentContainer {
         let model = NSManagedObjectModel(contentsOf: url)!
         super.init(name: "PocketModel", managedObjectModel: model)
 
-        switch storage {
-        case .inMemory:
-            storeDescription = NSPersistentStoreDescription(url: URL(fileURLWithPath: "/dev/null"))
-        case .shared:
-            let sharedContainerURL = FileManager.default
-                .containerURL(forSecurityApplicationGroupIdentifier: groupID)!
-                .appendingPathComponent("PocketModel.sqlite")
-
-            Log.debug("Store URL: \(sharedContainerURL)")
-            storeDescription = NSPersistentStoreDescription(url: sharedContainerURL)
-        }
-
-        guard let storeDescription else {
-            fatalError("no store description")
-        }
+        storeDescription = getStoreDescription(with: storage, groupID)
 
         persistentStoreDescriptions = [
             storeDescription
@@ -68,5 +54,17 @@ public class PersistentContainer: NSPersistentContainer {
 
         spotlightIndexer = CoreDataSpotlightDelegate(forStoreWith: storeDescription, coordinator: self.persistentStoreCoordinator)
         spotlightIndexer?.startSpotlightIndexing()
+    }
+
+    private func getStoreDescription(with storage: Storage, _ groupID: String) -> NSPersistentStoreDescription {
+        if case .shared = storage,
+            let sharedContainerURL = FileManager.default
+                .containerURL(forSecurityApplicationGroupIdentifier: groupID)?
+                .appendingPathComponent("PocketModel.sqlite") {
+            Log.debug("Store URL: \(sharedContainerURL)")
+            return NSPersistentStoreDescription(url: sharedContainerURL)
+        }
+
+        return NSPersistentStoreDescription(url: URL(fileURLWithPath: "/dev/null"))
     }
 }
