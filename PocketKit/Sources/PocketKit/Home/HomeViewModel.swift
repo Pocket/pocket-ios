@@ -208,16 +208,6 @@ extension HomeViewModel {
             )
         }
 
-        let sharedWithYouHighlights = self.sharedWithYouHighlightsController.fetchedObjects as? [SharedWithYouHighlight]
-        if let sharedWithYouHighlights, !sharedWithYouHighlights.isEmpty {
-            sharedWithYouHighlightsCount = sharedWithYouHighlights.count
-            snapshot.appendSections([.sharedWithYou])
-            snapshot.appendItems(
-                sharedWithYouHighlights.map { .sharedWithYou($0.objectID) },
-                toSection: .sharedWithYou
-            )
-        }
-
         guard !isOffline else {
             snapshot.appendSections([.offline])
             snapshot.appendItems([.offline], toSection: .offline)
@@ -252,6 +242,16 @@ extension HomeViewModel {
             snapshot.appendItems(
                 recommendations.prefix(4).map { .recommendationCarousel($0.objectID) },
                 toSection: .slateCarousel(slateId)
+            )
+        }
+
+        let sharedWithYouHighlights = self.sharedWithYouHighlightsController.fetchedObjects as? [SharedWithYouHighlight]
+        if let sharedWithYouHighlights, !sharedWithYouHighlights.isEmpty {
+            sharedWithYouHighlightsCount = sharedWithYouHighlights.count
+            snapshot.appendSections([.sharedWithYou])
+            snapshot.appendItems(
+                sharedWithYouHighlights.map { .sharedWithYou($0.objectID) },
+                toSection: .sharedWithYou
             )
         }
 
