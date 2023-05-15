@@ -2,7 +2,7 @@
 "general.oops" = "¡Vaya! ¿Quieres probar de nuevo?";
 
 // - General Error Messages
-"general.error.serverNotResponding.title" = "Server not responding";
+"general.error.serverNotResponding.title" = "El servidor no responde";
 "general.error.serverNotResponding.detail" = "Nuestro servidor no responde en este momento. Ten paciencia. Debería estar disponible en una hora.";
 "general.error.serverError" = "Se ha producido un error con tu solicitud. Hemos notificado al equipo de Pocket. Vuelve a intentarlo más tarde.";
 
