@@ -43,10 +43,14 @@ struct RecentSavesWidgetEntryView: View {
     }
 }
 
-struct RecentSavesWidget: Widget {
-    let kind: String = "RecentSavesWidget"
+public struct RecentSavesWidget: Widget {
+    let kind: String
 
-    var body: some WidgetConfiguration {
+    public init() {
+        self.kind = "RecentSavesWidget"
+    }
+
+    public var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             RecentSavesWidgetEntryView(entry: entry)
         }

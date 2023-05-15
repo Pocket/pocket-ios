@@ -4,6 +4,7 @@
 
 import WidgetKit
 import SwiftUI
+import RecentSavesWidgetKit
 
 @main
 struct RecentSavesWidgetBundle: WidgetBundle {

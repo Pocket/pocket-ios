@@ -84,10 +84,10 @@
 		8ADD6AA1292C1B2C007F419D /* SearchViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ADD6AA0292C1B2C007F419D /* SearchViewElement.swift */; };
 		9367E9E82A05B6A10052DF47 /* Launch Screen.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9367E9E72A05B6A10052DF47 /* Launch Screen.xcassets */; };
 		938D45322A05B87D00E68B0B /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 938D45312A05B87D00E68B0B /* Launch Screen.storyboard */; };
+		AA283FAA2A12EC5A0081A34E /* RecentSavesWidgetKit in Frameworks */ = {isa = PBXBuildFile; productRef = AA283FA92A12EC5A0081A34E /* RecentSavesWidgetKit */; };
 		AA2E89032A0D8847004A27BD /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2E89022A0D8847004A27BD /* WidgetKit.framework */; };
 		AA2E89052A0D8847004A27BD /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2E89042A0D8847004A27BD /* SwiftUI.framework */; };
 		AA2E89082A0D8848004A27BD /* RecentSavesWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2E89072A0D8848004A27BD /* RecentSavesWidgetBundle.swift */; };
-		AA2E890A2A0D8848004A27BD /* RecentSavesWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2E89092A0D8848004A27BD /* RecentSavesWidget.swift */; };
 		AA2E890C2A0D8849004A27BD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA2E890B2A0D8849004A27BD /* Assets.xcassets */; };
 		AA2E89102A0D8849004A27BD /* RecentSavesWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = AA2E89012A0D8847004A27BD /* RecentSavesWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		AA69A28429B7FC6E00BBA644 /* SearchGetPremiumEmptyViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA69A28329B7FC6E00BBA644 /* SearchGetPremiumEmptyViewElement.swift */; };
@@ -272,7 +272,6 @@
 		AA2E89022A0D8847004A27BD /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		AA2E89042A0D8847004A27BD /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		AA2E89072A0D8848004A27BD /* RecentSavesWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentSavesWidgetBundle.swift; sourceTree = "<group>"; };
-		AA2E89092A0D8848004A27BD /* RecentSavesWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentSavesWidget.swift; sourceTree = "<group>"; };
 		AA2E890B2A0D8849004A27BD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AA2E890D2A0D8849004A27BD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AA2E89172A0D9391004A27BD /* libcmark-gfm.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libcmark-gfm.tbd"; path = "Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.4.sdk/usr/lib/libcmark-gfm.tbd"; sourceTree = DEVELOPER_DIR; };
@@ -347,6 +346,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA283FAA2A12EC5A0081A34E /* RecentSavesWidgetKit in Frameworks */,
 				AA2E89052A0D8847004A27BD /* SwiftUI.framework in Frameworks */,
 				AA2E89032A0D8847004A27BD /* WidgetKit.framework in Frameworks */,
 			);
@@ -556,7 +556,6 @@
 			children = (
 				AAE33A7F2A0ED5A600214652 /* RecentSavesWidgetExtension.entitlements */,
 				AA2E89072A0D8848004A27BD /* RecentSavesWidgetBundle.swift */,
-				AA2E89092A0D8848004A27BD /* RecentSavesWidget.swift */,
 				AA2E890B2A0D8849004A27BD /* Assets.xcassets */,
 				AA2E890D2A0D8849004A27BD /* Info.plist */,
 			);
@@ -701,6 +700,9 @@
 			dependencies = (
 			);
 			name = RecentSavesWidgetExtension;
+			packageProductDependencies = (
+				AA283FA92A12EC5A0081A34E /* RecentSavesWidgetKit */,
+			);
 			productName = RecentSavesWidgetExtension;
 			productReference = AA2E89012A0D8847004A27BD /* RecentSavesWidgetExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
@@ -995,7 +997,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA2E89082A0D8848004A27BD /* RecentSavesWidgetBundle.swift in Sources */,
-				AA2E890A2A0D8848004A27BD /* RecentSavesWidget.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2453,6 +2454,10 @@
 		8A3B77BC29E0AEEB00AD71D0 /* PocketKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = PocketKit;
+		};
+		AA283FA92A12EC5A0081A34E /* RecentSavesWidgetKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RecentSavesWidgetKit;
 		};
 		F2687E7227E28F0F00E43F09 /* SaveToPocketKit */ = {
 			isa = XCSwiftPackageProductDependency;
