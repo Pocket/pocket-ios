@@ -122,6 +122,10 @@ extension RefreshCoordinator {
             return
         }
 
+        #if targetEnvironment(simulator)
+            // You can't submit background requests in the simulator, so stopping early.
+            Log.info("Simulator - Not submitting background request for \(self.taskID)")
+        #else
         do {
             let request: BGTaskRequest
             switch backgroundRequestType {
@@ -137,6 +141,7 @@ extension RefreshCoordinator {
             Log.warning("Could not submit background task request for \(self.taskID)")
             Log.capture(error: error)
         }
+        #endif
     }
 
     /// Private function that calls the underlying refresh function
