@@ -4,7 +4,7 @@ import CoreData
 
 @MainActor
 class HomeViewControllerSectionProvider {
-    struct Constants {
+    enum Constants {
         static let margin: CGFloat = Margins.thin.rawValue
         static let sideMargin: CGFloat = Margins.normal.rawValue
         static let iPadSideMargin: CGFloat = Margins.iPadNormal.rawValue
