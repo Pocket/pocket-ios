@@ -656,7 +656,7 @@ extension PocketSource {
             sharedWithYouHighlights: sharedWithYouHighlights
         )
 
-        enqueue(operation: operation, task: .fetchSaves, queue: fetchSharedWithYouHighlights, completion: nil)
+        enqueue(operation: operation, task: .fetchSharedWithYouHighlights(sharedWithYouHighlights: sharedWithYouHighlights), queue: fetchSharedWithYouHighlights, completion: nil)
     }
 
     public func fetchDetails(for sharedWithYouHighlight: SharedWithYouHighlight) async throws {
