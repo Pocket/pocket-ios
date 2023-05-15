@@ -84,7 +84,7 @@ public protocol Source {
 
     func save(url: URL)
 
-    func fetchItem(_ url: URL) -> Item?
+    func fetchItem(_ url: String) -> Item?
 
     func searchSaves(search: String) -> [SavedItem]?
 

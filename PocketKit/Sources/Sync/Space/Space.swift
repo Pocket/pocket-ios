@@ -159,7 +159,7 @@ extension Space {
         return try fetch(Requests.fetchItems())
     }
 
-    func fetchItem(byURL url: URL, context: NSManagedObjectContext? = nil) throws -> Item? {
+    func fetchItem(byURL url: String, context: NSManagedObjectContext? = nil) throws -> Item? {
         return try fetch(Requests.fetchItem(byURL: url), context: context).first
     }
 

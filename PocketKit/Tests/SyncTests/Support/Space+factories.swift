@@ -58,7 +58,7 @@ extension Space {
             savedItem.archivedAt = archivedAt
             savedItem.cursor = cursor
             savedItem.tags = NSOrderedSet(array: tags ?? [])
-            savedItem.item = item ?? Item(context: backgroundContext, givenURL: URL(string: url)!, remoteID: remoteID)
+            savedItem.item = item ?? Item(context: backgroundContext, givenURL: url, remoteID: remoteID)
 
             return savedItem
         }
@@ -120,7 +120,7 @@ extension Space {
     func createItem(
         remoteID: String = "item-1",
         title: String = "Item 1",
-        givenURL: URL = URL(string: "https://example.com/items/item-1")!,
+        givenURL: String = "https://example.com/items/item-1",
         isArticle: Bool = true,
         syndicatedArticle: SyndicatedArticle? = nil
     ) throws -> Item {
@@ -142,15 +142,15 @@ extension Space {
     func buildItem(
         remoteID: String = "item-1",
         title: String = "Item 1",
-        givenURL: URL? = URL(string: "https://example.com/items/item-1"),
-        resolvedURL: URL? = nil,
+        givenURL: String? = "https://example.com/items/item-1",
+        resolvedURL: String? = nil,
         isArticle: Bool = true,
         syndicatedArticle: SyndicatedArticle? = nil,
         num: Int? = nil
     ) -> Item {
         var url = givenURL
-        if url == nil {
-            url = URL(string: "https://example.com/items/item-1-\(num)")
+        if url == nil, let num = num {
+            url = "https://example.com/items/item-1-\(num)"
         }
 
         return backgroundContext.performAndWait {

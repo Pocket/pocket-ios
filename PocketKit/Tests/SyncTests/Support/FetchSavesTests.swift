@@ -111,8 +111,8 @@ class FetchSavesTests: XCTestCase {
 
         let item = savedItem.item
         XCTAssertEqual(item?.remoteID, "item-1")
-        XCTAssertEqual(item?.givenURL, URL(string: "https://given.example.com/item-1")!)
-        XCTAssertEqual(item?.resolvedURL, URL(string: "https://resolved.example.com/item-1")!)
+        XCTAssertEqual(item?.givenURL, "https://given.example.com/item-1")
+        XCTAssertEqual(item?.resolvedURL, "https://resolved.example.com/item-1")
         XCTAssertEqual(item?.title, "Item 1")
         XCTAssertEqual(item?.topImageURL, URL(string: "https://example.com/item-1/top-image.jpg")!)
         XCTAssertEqual(item?.domain, "example.com")

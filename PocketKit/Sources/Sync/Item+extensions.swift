@@ -5,7 +5,7 @@
 import Foundation
 
 extension Item {
-    public var bestURL: URL {
+    public var bestURL: String {
         resolvedURL ?? givenURL
     }
 

@@ -53,12 +53,6 @@ extension Recommendation {
     public typealias RemoteRecommendation = SlateParts.Recommendation
 
     func update(from remote: RemoteRecommendation, in space: Space, context: NSManagedObjectContext) {
-        guard let url = URL(string: remote.item.givenUrl) else {
-            // TODO: Daniel work to make id non-null in the API Layer.
-            Log.breadcrumb(category: "sync", level: .warning, message: "Skipping updating of Recomendation because \(remote.item.givenUrl) is not valid url")
-            return
-        }
-
         title = remote.curatedInfo?.title
         excerpt = remote.curatedInfo?.excerpt
         imageURL = remote.curatedInfo?.imageSrc.flatMap(URL.init(string:))
@@ -66,6 +60,7 @@ extension Recommendation {
             image = Image(src: imageSrc, context: context)
         }
 
+        let url = remote.item.givenUrl
         let recommendationItem = (try? space.fetchItem(byURL: url, context: context)) ?? Item(context: context, givenURL: url, remoteID: remoteID)
         recommendationItem.update(from: remote.item.fragments.itemSummary, with: space)
         item = recommendationItem

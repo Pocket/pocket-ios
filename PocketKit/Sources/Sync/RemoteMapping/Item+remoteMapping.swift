@@ -12,13 +12,8 @@ extension Item {
     func update(remote: ItemParts, with space: Space) {
         remoteID = remote.remoteID
 
-        guard let url = URL(string: remote.givenUrl) else {
-            Log.breadcrumb(category: "sync", level: .warning, message: "Skipping updating of Item \(remoteID) because \(givenURL) is not valid url")
-            return
-        }
-
-        givenURL = url
-        resolvedURL = remote.resolvedUrl.flatMap(URL.init(string:))
+        givenURL = remote.givenUrl
+        resolvedURL = remote.resolvedUrl
         title = remote.title
         topImageURL = remote.topImageUrl.flatMap(URL.init(string:))
         domain = remote.domain
@@ -88,24 +83,14 @@ extension Item {
     func update(remote: PendingItemParts, with space: Space) {
         remoteID = remote.remoteID
 
-        guard let url = URL(string: remote.givenUrl) else {
-            Log.breadcrumb(category: "sync", level: .warning, message: "Skipping updating of Pending Item \(remoteID) because \(givenURL) is not valid url")
-            return
-        }
-
-        givenURL = url
+        givenURL = remote.givenUrl
     }
 
     func update(from summary: ItemSummary, with space: Space) {
         remoteID = summary.remoteID
 
-        guard let url = URL(string: summary.givenUrl) else {
-            Log.breadcrumb(category: "sync", level: .warning, message: "Skipping updating of Item \(remoteID) because \(summary.givenUrl) is not valid url")
-            return
-        }
-
-        givenURL = url
-        resolvedURL = summary.resolvedUrl.flatMap(URL.init(string:))
+        givenURL = summary.givenUrl
+        resolvedURL = summary.resolvedUrl
         title = summary.title
         topImageURL = summary.topImageUrl.flatMap(URL.init(string:))
         domain = summary.domain

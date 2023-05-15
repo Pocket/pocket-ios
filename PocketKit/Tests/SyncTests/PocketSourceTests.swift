@@ -310,7 +310,16 @@ class PocketSourceTests: XCTestCase {
         }
         savesResultsController.delegate = delegate
 
-        let item2 = try space.createSavedItem(remoteID: "saved-item-2", url: "http://example.com/item-2", createdAt: .init(timeIntervalSince1970: TimeInterval(0)), item: space.buildItem(remoteID: "item-2", title: "Item 2", givenURL: URL(string: "https://example.com/items/item-2")))
+        let item2 = try space.createSavedItem(
+            remoteID: "saved-item-2",
+            url: "http://example.com/item-2",
+            createdAt: .init(timeIntervalSince1970: TimeInterval(0)),
+            item: space.buildItem(
+                remoteID: "item-2",
+                title: "Item 2",
+                givenURL: "https://example.com/items/item-2"
+            )
+        )
         try space.save()
         try savesResultsController.performFetch()
 
@@ -347,7 +356,7 @@ class PocketSourceTests: XCTestCase {
             }
         }
 
-        let seededItem = space.buildItem(givenURL: URL(string: "https://getpocket.com")!)
+        let seededItem = space.buildItem(givenURL: "https://getpocket.com")
         let recommendation = space.buildRecommendation(item: seededItem)
         try? space.save()
 
@@ -372,7 +381,7 @@ class PocketSourceTests: XCTestCase {
             }
         }
 
-        let seededItem = space.buildItem(givenURL: URL(string: "https://example.com/item-rec")!)
+        let seededItem = space.buildItem(givenURL: "https://example.com/item-rec")
         let seededSavedItem = space.buildSavedItem(url: "https://example.com/item-rec", isArchived: true, item: seededItem)
         let recommendation = space.buildRecommendation(item: seededItem)
         try? space.save()
@@ -733,14 +742,14 @@ extension PocketSourceTests {
 
         XCTAssertEqual(savedItem?.remoteID, "saved-item")
         XCTAssertEqual(savedItem?.item?.title, "item-title")
-        XCTAssertEqual(savedItem?.item?.bestURL.absoluteString, "http://localhost:8080/hello")
+        XCTAssertEqual(savedItem?.item?.bestURL, "http://localhost:8080/hello")
     }
 
     private func setupLocalSavesSearch(with urlString: String? = nil) throws {
-        var url: URL?
+        var url: String?
         _ = (1...2).map {
             if let urlString {
-                url = URL(string: urlString + "-\($0)")
+                url = urlString + "-\($0)"
             }
             space.buildSavedItem(
                 remoteID: "saved-item-\($0)",

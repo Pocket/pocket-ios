@@ -581,7 +581,7 @@ extension PocketSource {
         return mutation
     }
 
-    public func fetchItem(_ url: URL) -> Item? {
+    public func fetchItem(_ url: String) -> Item? {
         return try? space.fetchItem(byURL: url)
     }
 }
@@ -835,10 +835,11 @@ extension PocketSource {
                 return
             }
 
-            if let savedItem = try? space.fetchSavedItem(byURL: recommendation.item.givenURL) {
+            if let url = URL(string: recommendation.item.givenURL), let savedItem = try? space.fetchSavedItem(byURL: url) {
                 unarchive(item: savedItem)
             } else {
-                let savedItem: SavedItem = SavedItem(context: space.backgroundContext, url: recommendation.item.givenURL)
+                let givenURL = URL(string: recommendation.item.givenURL)! // TODO: This should not be force-unwrapped
+                let savedItem: SavedItem = SavedItem(context: space.backgroundContext, url: givenURL)
                 savedItem.update(from: recommendation)
                 try? space.save()
 
