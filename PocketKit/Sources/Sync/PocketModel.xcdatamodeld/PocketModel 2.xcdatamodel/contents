@@ -29,12 +29,12 @@
         <attribute name="datePublished" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="domain" optional="YES" attributeType="String"/>
         <attribute name="excerpt" optional="YES" attributeType="String"/>
-        <attribute name="givenURL" attributeType="URI"/>
+        <attribute name="givenURL" attributeType="String"/>
         <attribute name="imageness" optional="YES" attributeType="String"/>
         <attribute name="isArticle" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="language" optional="YES" attributeType="String"/>
         <attribute name="remoteID" attributeType="String"/>
-        <attribute name="resolvedURL" optional="YES" attributeType="URI"/>
+        <attribute name="resolvedURL" optional="YES" attributeType="String"/>
         <attribute name="timeToRead" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="title" optional="YES" attributeType="String"/>
         <attribute name="topImageURL" optional="YES" attributeType="URI"/>
