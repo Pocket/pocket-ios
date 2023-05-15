@@ -89,7 +89,7 @@
 		AA2E89052A0D8847004A27BD /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2E89042A0D8847004A27BD /* SwiftUI.framework */; };
 		AA2E89082A0D8848004A27BD /* RecentSavesWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2E89072A0D8848004A27BD /* RecentSavesWidgetBundle.swift */; };
 		AA2E890C2A0D8849004A27BD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA2E890B2A0D8849004A27BD /* Assets.xcassets */; };
-		AA2E89102A0D8849004A27BD /* RecentSavesWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = AA2E89012A0D8847004A27BD /* RecentSavesWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		AA2E89102A0D8849004A27BD /* RecentSavesWidget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = AA2E89012A0D8847004A27BD /* RecentSavesWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		AA69A28429B7FC6E00BBA644 /* SearchGetPremiumEmptyViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA69A28329B7FC6E00BBA644 /* SearchGetPremiumEmptyViewElement.swift */; };
 		AA7D6A2B2995F0A20094FD18 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA7D6A2A2995F0A20094FD18 /* StoreKit.framework */; };
 		AA9DB97429B6E6480046AEF6 /* Test_Subscriptions.storekit in Resources */ = {isa = PBXBuildFile; fileRef = AA909ACC299F4D5400F90FA7 /* Test_Subscriptions.storekit */; };
@@ -153,7 +153,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				AA2E89102A0D8849004A27BD /* RecentSavesWidgetExtension.appex in Embed App Extensions */,
+				AA2E89102A0D8849004A27BD /* RecentSavesWidget.appex in Embed App Extensions */,
 				166DF27427E9160A00C03BF4 /* SaveToPocket.appex in Embed App Extensions */,
 				65EC273328BA8AD50075E1DF /* PushNotificationStoryExtension.appex in Embed App Extensions */,
 				650FECD228BA85F300A3CB0C /* PushNotificationServiceExtension.appex in Embed App Extensions */,
@@ -268,7 +268,7 @@
 		8ADD6AA0292C1B2C007F419D /* SearchViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewElement.swift; sourceTree = "<group>"; };
 		9367E9E72A05B6A10052DF47 /* Launch Screen.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Launch Screen.xcassets"; sourceTree = "<group>"; };
 		938D45312A05B87D00E68B0B /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
-		AA2E89012A0D8847004A27BD /* RecentSavesWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = RecentSavesWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA2E89012A0D8847004A27BD /* RecentSavesWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = RecentSavesWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA2E89022A0D8847004A27BD /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		AA2E89042A0D8847004A27BD /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		AA2E89072A0D8848004A27BD /* RecentSavesWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentSavesWidgetBundle.swift; sourceTree = "<group>"; };
@@ -421,7 +421,7 @@
 				F204A76027E22EC50010E155 /* SaveToPocket.appex */,
 				650FECCB28BA85F300A3CB0C /* PushNotificationServiceExtension.appex */,
 				65EC272528BA8AD50075E1DF /* PushNotificationStoryExtension.appex */,
-				AA2E89012A0D8847004A27BD /* RecentSavesWidgetExtension.appex */,
+				AA2E89012A0D8847004A27BD /* RecentSavesWidget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -687,9 +687,9 @@
 			productReference = 65EC272528BA8AD50075E1DF /* PushNotificationStoryExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
-		AA2E89002A0D8847004A27BD /* RecentSavesWidgetExtension */ = {
+		AA2E89002A0D8847004A27BD /* RecentSavesWidget */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = AA2E89162A0D884A004A27BD /* Build configuration list for PBXNativeTarget "RecentSavesWidgetExtension" */;
+			buildConfigurationList = AA2E89162A0D884A004A27BD /* Build configuration list for PBXNativeTarget "RecentSavesWidget" */;
 			buildPhases = (
 				AA2E88FD2A0D8847004A27BD /* Sources */,
 				AA2E88FE2A0D8847004A27BD /* Frameworks */,
@@ -699,12 +699,12 @@
 			);
 			dependencies = (
 			);
-			name = RecentSavesWidgetExtension;
+			name = RecentSavesWidget;
 			packageProductDependencies = (
 				AA283FA92A12EC5A0081A34E /* RecentSavesWidgetKit */,
 			);
 			productName = RecentSavesWidgetExtension;
-			productReference = AA2E89012A0D8847004A27BD /* RecentSavesWidgetExtension.appex */;
+			productReference = AA2E89012A0D8847004A27BD /* RecentSavesWidget.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 		F204A75F27E22EC50010E155 /* SaveToPocket */ = {
@@ -798,7 +798,7 @@
 				F204A75F27E22EC50010E155 /* SaveToPocket */,
 				650FECCA28BA85F300A3CB0C /* PushNotificationServiceExtension */,
 				65EC272428BA8AD50075E1DF /* PushNotificationStoryExtension */,
-				AA2E89002A0D8847004A27BD /* RecentSavesWidgetExtension */,
+				AA2E89002A0D8847004A27BD /* RecentSavesWidget */,
 			);
 		};
 /* End PBXProject section */
@@ -1033,7 +1033,7 @@
 		};
 		AA2E890F2A0D8849004A27BD /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = AA2E89002A0D8847004A27BD /* RecentSavesWidgetExtension */;
+			target = AA2E89002A0D8847004A27BD /* RecentSavesWidget */;
 			targetProxy = AA2E890E2A0D8849004A27BD /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -2336,7 +2336,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		AA2E89162A0D884A004A27BD /* Build configuration list for PBXNativeTarget "RecentSavesWidgetExtension" */ = {
+		AA2E89162A0D884A004A27BD /* Build configuration list for PBXNativeTarget "RecentSavesWidget" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AA2E89112A0D884A004A27BD /* Debug */,
