@@ -6,7 +6,7 @@ import Foundation
 import SwiftUI
 
 public struct SavesSelectorButtonStyle: ButtonStyle {
-    private struct Constants {
+    private enum Constants {
         static let cornerRadius: CGFloat = 16
         static let selected: Style = .header.sansSerif.h6
         static let title: Style = .header.sansSerif.h8
