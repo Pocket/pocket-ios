@@ -16,8 +16,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "AA2E89002A0D8847004A27BD"
-               BuildableName = "RecentSavesWidgetExtension.appex"
-               BlueprintName = "RecentSavesWidgetExtension"
+               BuildableName = "RecentSavesWidget.appex"
+               BlueprintName = "RecentSavesWidget"
                ReferencedContainer = "container:Pocket.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -62,8 +62,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "AA2E89002A0D8847004A27BD"
-            BuildableName = "RecentSavesWidgetExtension.appex"
-            BlueprintName = "RecentSavesWidgetExtension"
+            BuildableName = "RecentSavesWidget.appex"
+            BlueprintName = "RecentSavesWidget"
             ReferencedContainer = "container:Pocket.xcodeproj">
          </BuildableReference>
       </RemoteRunnable>
