@@ -69,9 +69,10 @@ class SearchViewModel: ObservableObject {
 
     var selectedScope: SearchScope = .saves
 
-    @Published var showBanner: Bool = false
+    @Published var showBanner: Bool = true
     @Published var isPresentingPremiumUpgrade = false
     @Published var isPresentingHooray = false
+    @Published var isPresentingReportIssue = false
     @Published var searchState: SearchViewState?
     @Published var selectedItem: SelectedItem?
     @Published var searchText = "" {
@@ -80,10 +81,19 @@ class SearchViewModel: ObservableObject {
         }
     }
 
+    /// Create the banner details to populate the view
     var bannerData: BannerModifier.BannerData {
         let offlineView = BannerModifier.BannerData(image: .looking, title: Localization.Search.limitedResults, detail: Localization.Search.offlineMessage)
-        let errorView = BannerModifier.BannerData(image: .warning, title: Localization.Search.limitedResults, detail: Localization.Search.Banner.errorMessage)
-        return isOffline ? offlineView : errorView
+        let errorView = BannerModifier.BannerData(
+            image: .warning, title: Localization.Search.limitedResults,
+            detail: Localization.Search.Banner.errorMessage,
+            action: BannerModifier.BannerData.BannerAction(
+                text: Localization.General.Error.sendReport,
+                style: PocketButtonStyle(.primary)
+            ) {
+                self.isPresentingReportIssue.toggle()
+            })
+        return errorView
     }
 
     var defaultState: SearchViewState {
@@ -148,6 +158,7 @@ class SearchViewModel: ObservableObject {
                 }
                 self?.searchState = self?.defaultState
             }
+        showBanner = true
     }
 
     /// Updates the scope user is in and presents an empty state or submits a search
@@ -196,7 +207,7 @@ class SearchViewModel: ObservableObject {
         searchState = defaultState
         currentSearchTerm = nil
 
-        showBanner = false
+        showBanner = true
         subscriptions = []
 
         savesLocalSearch = LocalSavesSearch(source: source)
@@ -207,7 +218,7 @@ class SearchViewModel: ObservableObject {
 
     /// Resets the search objects if it does not have a cache before each search
     private func resetSearch(with term: String) {
-        showBanner = false
+        showBanner = true
         subscriptions = []
 
         if !savesOnlineSearch.hasCache(with: term) {
@@ -627,5 +638,12 @@ extension SearchViewModel {
     /// Ttoggle the presentation of `PremiumUpgradeView`
     func showPremiumUpgrade() {
         self.isPresentingPremiumUpgrade = true
+    }
+}
+
+// MARK: Sentry
+extension SearchViewModel {
+    func submitIssue(name: String, email: String, comments: String) {
+        Log.captureUserFeedback(message: "SearchViewModel - Report an issue", name: name, email: email, comments: comments)
     }
 }

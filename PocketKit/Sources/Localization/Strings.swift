@@ -190,6 +190,8 @@ public enum Localization {
     /// Oops! Try again?
     public static let oops = Localization.tr("Localizable", "general.oops", fallback: "Oops! Try again?")
     public enum Error {
+      /// Send a report
+      public static let sendReport = Localization.tr("Localizable", "general.error.sendReport", fallback: "Send a report")
       /// Something went wrong with your request. The Pocket team has been notified. Please try again later.
       public static let serverError = Localization.tr("Localizable", "general.error.serverError", fallback: "Something went wrong with your request. The Pocket team has been notified. Please try again later.")
       public enum ServerNotResponding {
@@ -348,6 +350,20 @@ public enum Localization {
     public static let save = Localization.tr("Localizable", "recommendation.save", fallback: "Save")
     /// Saved
     public static let saved = Localization.tr("Localizable", "recommendation.saved", fallback: "Saved")
+  }
+  public enum ReportIssue {
+    /// What happened?
+    public static let comment = Localization.tr("Localizable", "reportIssue.comment", fallback: "What happened?")
+    /// Thanks for helping us improve Pocket! Please give us more details about the problem you've experienced.
+    public static let description = Localization.tr("Localizable", "reportIssue.description", fallback: "Thanks for helping us improve Pocket! Please give us more details about the problem you've experienced.")
+    /// E-mail
+    public static let email = Localization.tr("Localizable", "reportIssue.email", fallback: "E-mail")
+    /// Report an issue
+    public static let header = Localization.tr("Localizable", "reportIssue.header", fallback: "Report an issue")
+    /// Name
+    public static let name = Localization.tr("Localizable", "reportIssue.name", fallback: "Name")
+    /// Submit issue
+    public static let submitIssue = Localization.tr("Localizable", "reportIssue.submitIssue", fallback: "Submit issue")
   }
   public enum SaveToPocket {
     /// Tap to dismiss

@@ -73,6 +73,9 @@ struct ResultsView: View {
         .listStyle(.plain)
         .accessibilityIdentifier("search-results")
         .banner(data: viewModel.bannerData, show: $viewModel.showBanner, bottomOffset: 0)
+        .sheet(isPresented: $viewModel.isPresentingReportIssue, content: {
+            ReportIssueView(submitIssue: viewModel.submitIssue)
+        })
         .alert(isPresented: $showingAlert) {
             Alert(title: Text(Localization.Search.Error.View.needsInternet), dismissButton: .default(Text("OK")))
         }
@@ -103,6 +106,7 @@ struct SearchEmptyView: View {
     }
 
     var body: some View {
+        // TODO: Account for Pocket Premium Button
         if let text = viewModel.buttonText {
             EmptyStateView(viewModel: viewModel) {
                 GetPocketPremiumButton(text: text)
