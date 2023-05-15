@@ -54,20 +54,16 @@ extension SavedItem {
 
         if let itemParts = remote.item.asItem?.fragments.itemParts {
             Log.breadcrumb(category: "sync", level: .debug, message: "Updating item parts for \(itemParts.remoteID)")
-            guard let itemUrl = URL(string: itemParts.givenUrl) else {
-                Log.capture(message: "Item parts not a valid url")
-                return
-            }
-            let itemToUpdate = (try? space.fetchItem(byURL: itemUrl, context: context)) ?? Item(context: context, givenURL: itemUrl, remoteID: itemParts.remoteID)
+
+            let givenURL = itemParts.givenUrl
+            let itemToUpdate = (try? space.fetchItem(byURL: givenURL, context: context)) ?? Item(context: context, givenURL: givenURL, remoteID: itemParts.remoteID)
             itemToUpdate.update(remote: itemParts, with: space)
             item = itemToUpdate
         } else if let pendingParts = remote.item.asPendingItem?.fragments.pendingItemParts {
             Log.breadcrumb(category: "sync", level: .debug, message: "Updating pending parts for \(pendingParts.remoteID)")
-            guard let itemUrl = URL(string: pendingParts.givenUrl) else {
-                Log.capture(message: "Pending item parts not a valid url")
-                return
-            }
-            let itemToUpdate = (try? space.fetchItem(byURL: itemUrl, context: context)) ?? Item(context: context, givenURL: itemUrl, remoteID: pendingParts.remoteID)
+
+            let givenURL = pendingParts.givenUrl
+            let itemToUpdate = (try? space.fetchItem(byURL: givenURL, context: context)) ?? Item(context: context, givenURL: givenURL, remoteID: pendingParts.remoteID)
             itemToUpdate.update(remote: pendingParts, with: space)
             item = itemToUpdate
         }
@@ -75,7 +71,7 @@ extension SavedItem {
 
     public func update(from recommendation: Recommendation) {
         let url = recommendation.item.givenURL
-        self.url = url
+        self.url = URL(string: url)! // TODO: This should not be force unwrapped
         self.createdAt = Date()
 
         self.item = recommendation.item
@@ -112,20 +108,16 @@ extension SavedItem {
 
         if let itemSummary = summary.item.asItem?.fragments.itemSummary {
             Log.breadcrumb(category: "sync", level: .debug, message: "Updating item parts from summary for \(itemSummary.remoteID)")
-            guard let itemUrl = URL(string: itemSummary.givenUrl) else {
-                Log.capture(message: "Item parts not a valid url")
-                return
-            }
-            let itemToUpdate = (try? space.fetchItem(byURL: itemUrl, context: context)) ?? Item(context: context, givenURL: itemUrl, remoteID: itemSummary.remoteID)
+
+            let givenURL = itemSummary.givenUrl
+            let itemToUpdate = (try? space.fetchItem(byURL: givenURL, context: context)) ?? Item(context: context, givenURL: givenURL, remoteID: itemSummary.remoteID)
             itemToUpdate.update(from: itemSummary, with: space)
             item = itemToUpdate
         } else if let pendingParts = summary.item.asPendingItem?.fragments.pendingItemParts {
             Log.breadcrumb(category: "sync", level: .debug, message: "Updating pending parts from summary for \(pendingParts.remoteID)")
-            guard let itemUrl = URL(string: pendingParts.givenUrl) else {
-                Log.capture(message: "Pending item parts not a valid url")
-                return
-            }
-            let itemToUpdate = (try? space.fetchItem(byURL: itemUrl, context: context)) ?? Item(context: context, givenURL: itemUrl, remoteID: pendingParts.remoteID)
+
+            let givenURL = pendingParts.givenUrl
+            let itemToUpdate = (try? space.fetchItem(byURL: givenURL, context: context)) ?? Item(context: context, givenURL: givenURL, remoteID: pendingParts.remoteID)
             itemToUpdate.update(remote: pendingParts, with: space)
             item = itemToUpdate
         }

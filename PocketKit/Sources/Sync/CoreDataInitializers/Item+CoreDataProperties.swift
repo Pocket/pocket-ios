@@ -16,12 +16,12 @@ extension Item {
     @NSManaged public var datePublished: Date?
     @NSManaged public var domain: String?
     @NSManaged public var excerpt: String?
-    @NSManaged public var givenURL: URL
+    @NSManaged public var givenURL: String
     @NSManaged public var imageness: String?
     @NSManaged public var isArticle: Bool
     @NSManaged public var language: String?
     @NSManaged public var remoteID: String
-    @NSManaged public var resolvedURL: URL?
+    @NSManaged public var resolvedURL: String?
     @NSManaged public var timeToRead: NSNumber?
     @NSManaged public var wordCount: NSNumber?
     @NSManaged public var title: String?

@@ -202,9 +202,9 @@ public enum Requests {
         return request
     }
 
-    public static func fetchItem(byURL url: URL) -> NSFetchRequest<Item> {
+    public static func fetchItem(byURL url: String) -> NSFetchRequest<Item> {
         let request = fetchItems()
-        request.predicate = NSPredicate(format: "givenURL = %@", url as CVarArg)
+        request.predicate = NSPredicate(format: "givenURL = %@", url)
         request.fetchLimit = 1
         return request
     }
