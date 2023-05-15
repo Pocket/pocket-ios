@@ -69,7 +69,7 @@ class RecommendationViewModelTests: XCTestCase {
 
         // not-favorited, not-archived
         do {
-            let item = space.buildItem(remoteID: "item-2", givenURL: URL(string: "https://example.com/items/item-2"))
+            let item = space.buildItem(remoteID: "item-2", givenURL: "https://example.com/items/item-2")
             let recommendation = space.buildRecommendation(remoteID: "rec-2", item: item)
 
             try space.createSavedItem(isFavorite: false, isArchived: false, item: item)
@@ -83,7 +83,7 @@ class RecommendationViewModelTests: XCTestCase {
 
         // favorited, archived
         do {
-            let item = space.buildItem(remoteID: "item-3", givenURL: URL(string: "https://example.com/items/item-2"))
+            let item = space.buildItem(remoteID: "item-3", givenURL: "https://example.com/items/item-2")
             let recommendation = space.buildRecommendation(remoteID: "rec-3", item: item)
 
             try space.createSavedItem(isFavorite: true, isArchived: true, item: item)
@@ -273,7 +273,7 @@ class RecommendationViewModelTests: XCTestCase {
         let viewModel = subject(recommendation: recommendation)
         viewModel.showWebReader()
 
-        XCTAssertEqual(viewModel.presentedWebReaderURL, item.bestURL)
+        XCTAssertEqual(viewModel.presentedWebReaderURL, URL(string: item.bestURL)!)
     }
 
     func test_save_delegatesToSource() {
@@ -423,7 +423,7 @@ class RecommendationViewModelTests: XCTestCase {
             return recommendation.item
         }
 
-        let webViewActivityList = viewModel.webViewActivityItems(url: recommendation.item.givenURL)
+        let webViewActivityList = viewModel.webViewActivityItems(url: URL(string: recommendation.item.givenURL)!)
         XCTAssertEqual(webViewActivityList[0].activityTitle, "Save")
         XCTAssertEqual(webViewActivityList[1].activityTitle, "Report")
 
@@ -445,7 +445,7 @@ class RecommendationViewModelTests: XCTestCase {
             return recommendation.item
         }
 
-        let webViewActivityList = viewModel.webViewActivityItems(url: recommendation.item.givenURL)
+        let webViewActivityList = viewModel.webViewActivityItems(url: URL(string: recommendation.item.givenURL)!)
         XCTAssertEqual(webViewActivityList[0].activityTitle, "Archive")
         XCTAssertEqual(webViewActivityList[1].activityTitle, "Delete")
         XCTAssertEqual(webViewActivityList[2].activityTitle, "Favorite")

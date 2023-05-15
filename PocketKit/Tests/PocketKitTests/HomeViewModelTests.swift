@@ -134,7 +134,7 @@ class HomeViewModelTests: XCTestCase {
 
     func test_fetch_whenRecentSavesIsEmpty_andSlateLineupIsAvailable_sendsSnapshotWithSlates() throws {
         let recommendations = try (0...3).map {
-            try space.createRecommendation(remoteID: "recommendation-\($0)", item: space.createItem(remoteID: "item-\($0)", givenURL: URL(string: "http://example.com/item-\($0)")))
+            try space.createRecommendation(remoteID: "recommendation-\($0)", item: space.createItem(remoteID: "item-\($0)", givenURL: "http://example.com/item-\($0)"))
         }
 
         let slates = try [
@@ -183,7 +183,7 @@ class HomeViewModelTests: XCTestCase {
     }
 
     func test_fetch_whenRecentSavesAreAvailable_andSlateLineupIsUnavailable_sendsSnapshotWithRecentSaves() throws {
-        let items = try (1...2).map { try space.createItem(remoteID: "item-\($0)", givenURL: URL(string: "http://example.com/item-\($0)")) }
+        let items = try (1...2).map { try space.createItem(remoteID: "item-\($0)", givenURL: "http://example.com/item-\($0)") }
         let savedItems = try (1...2).map {
             try space.createSavedItem(
                 remoteID: "saved-item-\($0)",
@@ -215,7 +215,7 @@ class HomeViewModelTests: XCTestCase {
     }
 
     func test_fetch_whenSlateContainsMoreThanFiveRecommendations_sendsSnapshotFirstFiveRecommendations() throws {
-        let items = try (0...5).map { try space.createItem(remoteID: "item-\($0)", givenURL: URL(string: "http://example.com/item-\($0)")) }
+        let items = try (0...5).map { try space.createItem(remoteID: "item-\($0)", givenURL: "http://example.com/item-\($0)") }
         let recommendations = try items.map { try space.createRecommendation(remoteID: "recommendation-\($0.remoteID)", item: $0) }
         let slate = space.buildSlate(recommendations: recommendations)
         try space.createSlateLineup(
@@ -286,7 +286,7 @@ class HomeViewModelTests: XCTestCase {
         space.delete(lineup)
         rec = space.buildRecommendation(
             remoteID: "rec-2",
-            item: space.buildItem(remoteID: "item-2", givenURL: URL(string: "https://example.com/items/item-123")!)
+            item: space.buildItem(remoteID: "item-2", givenURL: "https://example.com/items/item-123")
         )
         slate = space.buildSlate(
             remoteID: "slate-2",
@@ -306,7 +306,7 @@ class HomeViewModelTests: XCTestCase {
         let item = space.buildItem()
         let recommendations = [
             space.buildRecommendation(item: item),
-            space.buildRecommendation(remoteID: "recommendation-2", item: space.buildItem(remoteID: "item-2", givenURL: URL(string: "https://example.com/items/item-2")))
+            space.buildRecommendation(remoteID: "recommendation-2", item: space.buildItem(remoteID: "item-2", givenURL: "https://example.com/items/item-2"))
         ]
         let slates: [Slate] = [space.buildSlate(recommendations: recommendations)]
         try space.createSlateLineup(
@@ -352,7 +352,7 @@ class HomeViewModelTests: XCTestCase {
         item.savedItem = space.buildSavedItem()
         let recommendations = [
             space.buildRecommendation(item: item),
-            space.buildRecommendation(remoteID: "recommendation-2", item: space.buildItem(remoteID: "item-2", givenURL: URL(string: "https://example.com/items/item-2")))
+            space.buildRecommendation(remoteID: "recommendation-2", item: space.buildItem(remoteID: "item-2", givenURL: "https://example.com/items/item-2"))
         ]
         let slates: [Slate] = [space.buildSlate(recommendations: recommendations)]
         try space.createSlateLineup(
@@ -397,7 +397,7 @@ class HomeViewModelTests: XCTestCase {
 
         let recommendations = [
             space.buildRecommendation(item: item),
-            space.buildRecommendation(remoteID: "recommendation-2", item: space.buildItem(remoteID: "item-2", givenURL: URL(string: "https://example.com/items/item-2")))
+            space.buildRecommendation(remoteID: "recommendation-2", item: space.buildItem(remoteID: "item-2", givenURL: "https://example.com/items/item-2"))
         ]
 
         let slates: [Slate] = [space.buildSlate(recommendations: recommendations)]
@@ -537,7 +537,7 @@ class HomeViewModelTests: XCTestCase {
     func test_selectCell_whenSelectingRecommendation_recommendationIsReadable_updatesSelectedReadable() throws {
         let item = space.buildItem()
         let heroRec = space.buildRecommendation(item: item)
-        let carouselRec = space.buildRecommendation(remoteID: "carousel-rec", item: space.buildItem(remoteID: "item-2", givenURL: URL(string: "https://example.com/items/item-2")))
+        let carouselRec = space.buildRecommendation(remoteID: "carousel-rec", item: space.buildItem(remoteID: "item-2", givenURL: "https://example.com/items/item-2"))
         let recommendations = [heroRec, carouselRec]
         try space.createSlateLineup(
             remoteID: SyncConstants.Home.slateLineupIdentifier,
@@ -841,9 +841,9 @@ class HomeViewModelTests: XCTestCase {
 
     func test_numberOfCarouselItemsForSlate_returnsAccurateCount() throws {
         let slates = [
-            space.buildSlate(recommendations: (0...1).map { space.buildRecommendation(remoteID: "recommendation1-\($0)", item: space.buildItem(remoteID: "item1-\($0)", givenURL: URL(string: "https://example.com/items/item1-\($0)"))) }),
-            space.buildSlate(recommendations: (0...2).map { space.buildRecommendation(remoteID: "recommendation2-\($0)", item: space.buildItem(remoteID: "item2-\($0)", givenURL: URL(string: "https://example.com/items/item2-\($0)"))) }),
-            space.buildSlate(recommendations: (0...3).map { space.buildRecommendation(remoteID: "recommendation3-\($0)", item: space.buildItem(remoteID: "item3-\($0)", givenURL: URL(string: "https://example.com/items/item3-\($0)"))) })
+            space.buildSlate(recommendations: (0...1).map { space.buildRecommendation(remoteID: "recommendation1-\($0)", item: space.buildItem(remoteID: "item1-\($0)", givenURL: "https://example.com/items/item1-\($0)")) }),
+            space.buildSlate(recommendations: (0...2).map { space.buildRecommendation(remoteID: "recommendation2-\($0)", item: space.buildItem(remoteID: "item2-\($0)", givenURL: "https://example.com/items/item2-\($0)")) }),
+            space.buildSlate(recommendations: (0...3).map { space.buildRecommendation(remoteID: "recommendation3-\($0)", item: space.buildItem(remoteID: "item3-\($0)", givenURL: "https://example.com/items/item3-\($0)")) })
         ]
 
         try space.createSlateLineup(

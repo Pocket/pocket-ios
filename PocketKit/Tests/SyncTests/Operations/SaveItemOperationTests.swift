@@ -55,7 +55,7 @@ class SaveItemOperationTests: XCTestCase {
         let url = URL(string: "http://example.com/add-me-to-your-list")!
         let savedItem = try space.createSavedItem(
             remoteID: "saved-item-1",
-            item: space.buildItem(givenURL: url)
+            item: space.buildItem(givenURL: url.absoluteString)
         )
 
         apollo.stubPerform(
@@ -77,7 +77,7 @@ class SaveItemOperationTests: XCTestCase {
         XCTAssertEqual(performCall?.mutation.input.url, url.absoluteString)
 
         let item = try space.fetchSavedItem(byURL: url)
-        XCTAssertEqual(savedItem.item?.resolvedURL, URL(string: "https://resolved.example.com/item-1")!)
+        XCTAssertEqual(savedItem.item?.resolvedURL, "https://resolved.example.com/item-1")
         XCTAssertNotNil(item)
     }
 

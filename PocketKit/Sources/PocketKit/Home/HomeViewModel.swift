@@ -322,7 +322,8 @@ extension HomeViewModel {
             return
         }
 
-        tracker.track(event: Events.Home.SlateArticleContentOpen(url: item.givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID, destination: destination))
+        let givenURL = URL(string: item.givenURL)! // TODO: This should not be force-unwrapped
+        tracker.track(event: Events.Home.SlateArticleContentOpen(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID, destination: destination))
     }
 
     private func select(savedItem: SavedItem, at indexPath: IndexPath) {
@@ -531,7 +532,8 @@ extension HomeViewModel {
 
     private func share(_ recommendation: Recommendation, at indexPath: IndexPath, with sender: Any?) {
         // This view model is used within the context of a view that is presented within Saves
-        self.sharedActivity = PocketItemActivity.fromHome(url: recommendation.item.bestURL, sender: sender)
+        let bestURL = URL(string: recommendation.item.bestURL)! // TODO: This should not be force-unwrapped
+        self.sharedActivity = PocketItemActivity.fromHome(url: bestURL, sender: sender)
         let item = recommendation.item
         guard
             let slate = recommendation.slate,
@@ -541,7 +543,8 @@ extension HomeViewModel {
             return
         }
 
-        tracker.track(event: Events.Home.SlateArticleShare(url: item.givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
+        let givenURL = URL(string: item.givenURL)! // TODO: This should not be force-unwrapped
+        tracker.track(event: Events.Home.SlateArticleShare(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
     }
 
     private func share(_ savedItem: SavedItem, at indexPath: IndexPath, with sender: Any?) {
@@ -562,7 +565,8 @@ extension HomeViewModel {
             return
         }
 
-        tracker.track(event: Events.Home.SlateArticleSave(url: item.givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
+        let givenURL = URL(string: item.givenURL)! // TODO: This should not be force-unwrapped
+        tracker.track(event: Events.Home.SlateArticleSave(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
     }
 
     private func archive(_ recommendation: Recommendation, at indexPath: IndexPath) {
@@ -576,7 +580,8 @@ extension HomeViewModel {
             return
         }
 
-        tracker.track(event: Events.Home.SlateArticleArchive(url: item.givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
+        let givenURL = URL(string: item.givenURL)! // TODO: This should not be force-unwrapped
+        tracker.track(event: Events.Home.SlateArticleArchive(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
     }
 
     private func archive(_ savedItem: SavedItem, at indexPath: IndexPath) {
@@ -614,7 +619,8 @@ extension HomeViewModel {
                 return
             }
 
-            tracker.track(event: Events.Home.SlateArticleImpression(url: item.givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
+            let givenURL = URL(string: item.givenURL)! // TODO: This should not be force-unwrapped
+            tracker.track(event: Events.Home.SlateArticleImpression(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
         }
     }
 }

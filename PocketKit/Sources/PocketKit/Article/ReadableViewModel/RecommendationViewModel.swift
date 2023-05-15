@@ -79,8 +79,9 @@ class RecommendationViewModel: ReadableViewModel {
         recommendation.item.datePublished
     }
 
+    // TODO: Can this be converted from URL? -> String?
     var url: URL? {
-        recommendation.item.bestURL
+        URL(string: recommendation.item.bestURL)
     }
 
     var isArchived: Bool {
@@ -183,7 +184,7 @@ class RecommendationViewModel: ReadableViewModel {
     }
 
     func webViewActivityItems(url: URL) -> [UIActivity] {
-        guard let item = source.fetchItem(url) else {
+        guard let item = source.fetchItem(url.absoluteString) else {
             return []
         }
 
