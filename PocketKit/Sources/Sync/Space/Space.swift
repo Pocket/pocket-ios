@@ -449,15 +449,4 @@ extension Space {
         request.fetchLimit = 1
         return try fetch(request, context: context).first
     }
-
-//    func fetchSharedWithYouHighlight(byUrl url: URL) throws -> SharedWithYouHighlight? {
-//        let request = Requests.fetchSharedWithYouHighlight()
-//        request.predicate = NSPredicate(format: "url = %@", url.absoluteString)
-//        request.fetchLimit = 1
-//        return try fetch(request).first
-//    }
-//
-//    func fetchOrCreateSharedWithYouHighlight(byUrl url: URL) throws -> SharedWithYouHighlight {
-//        return try fetchSharedWithYouHighlight(byUrl: url) ?? SharedWithYouHighlight(context: backgroundContext)
-//    }
 }
