@@ -15,6 +15,13 @@ public struct PocketButtonStyle: ButtonStyle {
         case destructive
     }
 
+    // TODO: Need to create other button types shown in Figma
+    public enum Size {
+        case small
+        case normal
+    }
+
+    let size: Size
     let variation: Variation
 
     private enum Constants {
@@ -57,18 +64,20 @@ public struct PocketButtonStyle: ButtonStyle {
         }
     }
 
-    public init(_ variation: Variation) {
+    public init(_ variation: Variation, _ size: Size = .normal) {
         self.variation = variation
+        self.size = size
     }
 
     public func makeBody(configuration: Configuration) -> some View {
-        PocketButton(configuration: configuration, variation: self.variation)
+        PocketButton(configuration: configuration, variation: self.variation, size: self.size)
     }
 
     struct PocketButton: View {
         let configuration: ButtonStyle.Configuration
 
         let variation: Variation
+        let size: Size
 
         @Environment(\.isEnabled)
         private var isEnabled: Bool

@@ -182,6 +182,16 @@ public class Log {
         Log.warning(message, filename: filename, line: line, column: column, funcName: funcName)
     }
 
+    /**
+     Captures a general message and sends it to all relevant logging tools.
+
+     - Parameters:
+        - message: The message to send to tooling
+     */
+    public class func captureUserFeedback(message: String, name: String, email: String, comments: String) {
+        Log.sentryCaptureUserFeedback(message: message, name: name, email: email, comments: comments)
+    }
+
     /// Helper function to capture an error that a statement tried to execute with a weak self.
     public class func captureNilWeakSelf(filename: String = #file, line: Int = #line, column: Int = #column, funcName: String = #function) {
         Log.capture(message: "Nil weak self, this should not happen", filename: filename, line: line, column: column, funcName: funcName)
@@ -284,6 +294,21 @@ extension Log {
      */
     internal class func sentryCapture(message: String) {
         SentrySDK.capture(message: message)
+    }
+
+    /**
+     Captures a user feedback and sends it to sentry.
+
+     - Parameters:
+        - error: The error to capture
+     */
+    internal class func sentryCaptureUserFeedback(message: String, name: String, email: String, comments: String) {
+        let eventId = SentrySDK.capture(message: message)
+        let userFeedback = UserFeedback(eventId: eventId)
+        userFeedback.name = name
+        userFeedback.email = email
+        userFeedback.comments = comments
+        SentrySDK.capture(userFeedback: userFeedback)
     }
 
     /**

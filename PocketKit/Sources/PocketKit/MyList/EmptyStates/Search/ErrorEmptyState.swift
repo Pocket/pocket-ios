@@ -12,7 +12,7 @@ struct ErrorEmptyState: EmptyStateViewModel {
     let icon: ImageAsset? = nil
     let headline: String? = Localization.General.oops
     let detailText: String? = Localization.Search.errorMessage
-    let buttonText: String? = nil
+    let buttonText: String? = Localization.General.Error.sendReport
     let webURL: URL? = nil
     let accessibilityIdentifier = "error-empty-state"
 }
