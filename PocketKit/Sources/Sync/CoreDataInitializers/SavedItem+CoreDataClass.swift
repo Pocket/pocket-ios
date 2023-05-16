@@ -23,7 +23,7 @@ public class SavedItem: NSManagedObject {
 
     public init(
         context: NSManagedObjectContext,
-        url: URL,
+        url: String,
         remoteID: String? = nil
     ) {
         let entity = NSEntityDescription.entity(forEntityName: "SavedItem", in: context)!

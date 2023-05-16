@@ -25,12 +25,7 @@ extension SavedItem {
 
     public func update(from remote: RemoteSavedItem, with space: Space) {
         remoteID = remote.remoteID
-        guard let url = URL(string: remote.url) else {
-            Log.breadcrumb(category: "sync", level: .warning, message: "Skipping updating of SavedItem \(remoteID) because \(remote.url) is not valid url")
-            return
-        }
-
-        self.url = url
+        url = remote.url
         createdAt = Date(timeIntervalSince1970: TimeInterval(remote._createdAt))
         deletedAt = remote._deletedAt.flatMap(TimeInterval.init).flatMap(Date.init(timeIntervalSince1970:))
         archivedAt = remote.archivedAt.flatMap(TimeInterval.init).flatMap(Date.init(timeIntervalSince1970:))
@@ -71,7 +66,7 @@ extension SavedItem {
 
     public func update(from recommendation: Recommendation) {
         let url = recommendation.item.givenURL
-        self.url = URL(string: url)! // TODO: This should not be force unwrapped
+        self.url = url
         self.createdAt = Date()
 
         self.item = recommendation.item
@@ -79,12 +74,8 @@ extension SavedItem {
 
     public func update(from summary: SavedItemSummary, with space: Space) {
         remoteID = summary.remoteID
-        guard let url = URL(string: summary.url) else {
-            Log.breadcrumb(category: "sync", level: .warning, message: "Skipping updating of SavedItem \(remoteID) because \(summary.url) is not valid url")
-            return
-        }
 
-        self.url = url
+        url = summary.url
         createdAt = Date(timeIntervalSince1970: TimeInterval(summary._createdAt))
         deletedAt = summary._deletedAt.flatMap(TimeInterval.init).flatMap(Date.init(timeIntervalSince1970:))
         archivedAt = summary.archivedAt.flatMap(TimeInterval.init).flatMap(Date.init(timeIntervalSince1970:))
