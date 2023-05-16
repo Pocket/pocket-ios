@@ -59,8 +59,8 @@ public struct RecentSavesWidget: Widget {
     }
 }
 
-struct RecentSavesWidget_Previews: PreviewProvider {
-    static var previews: some View {
+public struct RecentSavesWidget_Previews: PreviewProvider {
+    public static var previews: some View {
         RecentSavesWidgetEntryView(entry: SimpleEntry(date: Date()))
             .previewContext(WidgetPreviewContext(family: .systemSmall))
     }
