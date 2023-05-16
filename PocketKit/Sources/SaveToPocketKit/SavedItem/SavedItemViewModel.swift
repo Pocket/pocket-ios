@@ -144,7 +144,7 @@ extension SavedItemViewModel {
         }
     }
 
-    private func url(from item: ExtensionItem) async throws -> URL? {
+    private func url(from item: ExtensionItem) async throws -> String? {
         guard let providers = item.itemProviders else {
             return nil
         }
@@ -165,7 +165,7 @@ extension SavedItemViewModel {
                     continue
                 }
 
-                return url
+                return url.absoluteString
             } else {
                 continue
             }
@@ -177,7 +177,7 @@ extension SavedItemViewModel {
     /// Modified from https://www.hackingwithswift.com/example-code/strings/how-to-detect-a-url-in-a-string-using-nsdatadetector
     /// - Parameter inputString: string input used to search for a URL
     /// - Returns: URL found within the string
-    private func retrieveURLFromString(with inputString: String) -> URL? {
+    private func retrieveURLFromString(with inputString: String) -> String? {
         guard let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue) else {
             Log.capture(message: "Unable to initialize detector")
             return nil
@@ -187,7 +187,7 @@ extension SavedItemViewModel {
         for match in matches {
             guard let range = Range(match.range, in: inputString) else { continue }
             let string = String(inputString[range])
-            return URL(string: string)
+            return string
         }
         return nil
     }
