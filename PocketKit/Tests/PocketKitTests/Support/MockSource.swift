@@ -252,6 +252,37 @@ extension MockSource {
     }
 }
 
+// MARK: - makeSharedWithYouHighlightsController
+extension MockSource {
+    static let makeSharedWithYouHighlightsController = "makeSharedWithYouHighlightsController"
+    typealias MakeSharedWithYouHighlightsControllerImpl = () -> RichFetchedResultsController<Sync.SharedWithYouHighlight>
+
+    struct MakeSharedWithYouHighlightsControllerCall {
+    }
+
+    func stubMakeSharedWithYouHighlightsController(impl: @escaping MakeSharedWithYouHighlightsControllerImpl) {
+        implementations[Self.makeSharedWithYouHighlightsController] = impl
+    }
+
+    func makeSharedWithYouHighlightsController() -> RichFetchedResultsController<Sync.SharedWithYouHighlight> {
+        guard let impl = implementations[Self.makeHomeController] as? MakeSharedWithYouHighlightsControllerImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.makeSharedWithYouHighlightsController] = (calls[Self.makeSharedWithYouHighlightsController] ?? []) + [MakeSharedWithYouHighlightsControllerCall()]
+
+        return impl()
+    }
+
+    func makeSharedWithYouHighlightsControllerCall(at index: Int) -> MakeSharedWithYouHighlightsControllerCall? {
+        guard let calls = calls[Self.makeSharedWithYouHighlightsController], calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? MakeSharedWithYouHighlightsControllerCall
+    }
+}
+
 // MARK: - Make archive controller
 extension MockSource {
     static let makeArchiveController = "makeArchiveController"

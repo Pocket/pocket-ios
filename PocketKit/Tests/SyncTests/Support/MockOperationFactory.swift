@@ -125,6 +125,51 @@ extension MockOperationFactory {
     }
 }
 
+// MARK: - fetchSharedWithYouHighlights
+extension MockOperationFactory {
+    typealias FetchSharedWithYouHighlightsImpl = (
+        ApolloClientProtocol,
+        Space,
+        [Sync.PocketSWHighlight]
+    ) -> SyncOperation
+
+    struct FetchSharedWithYouHighlightsCall {
+        let apollo: ApolloClientProtocol
+        let space: Space
+        let sharedWithYouHighlights: [Sync.PocketSWHighlight]
+    }
+
+    func stubFetchSharedWithYouHighlights(impl: @escaping FetchArchiveImpl) {
+        implementations["fetchSharedWithYouHighlights"] = impl
+    }
+
+    func fetchSharedWithYouHighlights(apollo: Apollo.ApolloClientProtocol, space: Sync.Space, sharedWithYouHighlights: [Sync.PocketSWHighlight]) -> Sync.SyncOperation {
+        guard let impl = implementations["fetchSharedWithYouHighlights"] as? FetchSharedWithYouHighlightsImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        lock.sync {
+            calls["fetchSharedWithYouHighlights"] = (calls["fetchSharedWithYouHighlights"] ?? []) + [
+                FetchSharedWithYouHighlightsCall(
+                    apollo: apollo,
+                    space: space,
+                    sharedWithYouHighlights: sharedWithYouHighlights
+                )
+            ]
+        }
+
+        return impl(apollo, space, sharedWithYouHighlights)
+    }
+
+    func fetchSharedWithYouHighlightsCall(at index: Int) -> FetchSharedWithYouHighlightsCall? {
+        guard let fetchSharedWithYouHighlightsCalls = calls["fetchSharedWithYouHighlights"], index < fetchSharedWithYouHighlightsCalls.count else {
+            return nil
+        }
+
+        return fetchSharedWithYouHighlightsCalls[index] as? FetchSharedWithYouHighlightsCall
+    }
+}
+
 // MARK: - fetchTags
 extension MockOperationFactory {
     typealias FetchTagsImpl = (
