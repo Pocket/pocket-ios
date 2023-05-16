@@ -43,7 +43,7 @@ protocol SyncOperationFactory {
 
     func saveItemOperation(
         managedItemID: NSManagedObjectID,
-        url: URL,
+        url: String,
         events: SyncEvents,
         apollo: ApolloClientProtocol,
         space: Space
@@ -115,7 +115,7 @@ class OperationFactory: SyncOperationFactory {
 
     func saveItemOperation(
         managedItemID: NSManagedObjectID,
-        url: URL,
+        url: String,
         events: SyncEvents,
         apollo: ApolloClientProtocol,
         space: Space

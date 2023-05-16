@@ -9,14 +9,14 @@ import PocketGraph
 
 class SaveItemOperation: SyncOperation {
     private let managedItemID: NSManagedObjectID
-    private let url: URL
+    private let url: String
     private let events: SyncEvents
     private let apollo: ApolloClientProtocol
     private let space: Space
 
     init(
         managedItemID: NSManagedObjectID,
-        url: URL,
+        url: String,
         events: SyncEvents,
         apollo: ApolloClientProtocol,
         space: Space
@@ -29,7 +29,7 @@ class SaveItemOperation: SyncOperation {
     }
 
     func execute(syncTaskId: NSManagedObjectID) async -> SyncOperationResult {
-        let input = SavedItemUpsertInput(url: url.absoluteString)
+        let input = SavedItemUpsertInput(url: url)
         let mutation = SaveItemMutation(input: input)
 
         do {
