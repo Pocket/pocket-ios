@@ -65,6 +65,7 @@ UI Tests are split into 3 test plans. As you built UI tests you should ensure th
 
 Pocket localization is handled by Smartling. The project is currently setup in [Single Branch Mode](https://help.smartling.com/hc/en-us/articles/360008152513-GitHub-Connector-Overview#SingleBranchModeTranslationFlow) against the `develop` branch. Everytime a commit is made to `develop` Smartling will analyze the branch and determine if it needs to start a translation job. 
 If it does, it will begin automatically and make a PR back against the repo with the needed translations.
+Occasionally our translators may have a question or need some alterations to unblock their work. You can check in the Smartling Dashboard for these queries.
 
 
 #### Adding Strings
