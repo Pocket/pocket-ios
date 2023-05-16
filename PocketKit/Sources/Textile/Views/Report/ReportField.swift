@@ -20,7 +20,6 @@ struct ReportField: View {
                 .padding()
                 .frame(height: height)
                 .overlay(RoundedRectangle(cornerRadius: Constants.cornerRadius).strokeBorder(Color.black, style: StrokeStyle(lineWidth: Constants.lineWidth)))
-               .foregroundColor(.black)
         }.listRowInsets(EdgeInsets())
     }
 }

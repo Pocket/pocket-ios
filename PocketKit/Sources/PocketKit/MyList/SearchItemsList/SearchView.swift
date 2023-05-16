@@ -74,7 +74,7 @@ struct ResultsView: View {
         .accessibilityIdentifier("search-results")
         .banner(data: viewModel.bannerData, show: $viewModel.showBanner, bottomOffset: 0)
         .sheet(isPresented: $viewModel.isPresentingReportIssue, content: {
-            ReportIssueView(submitIssue: viewModel.submitIssue)
+            ReportIssueView(userEmail: viewModel.userEmail, submitIssue: viewModel.submitIssue)
         })
         .alert(isPresented: $showingAlert) {
             Alert(title: Text(Localization.Search.Error.View.needsInternet), dismissButton: .default(Text("OK")))
@@ -106,16 +106,45 @@ struct SearchEmptyView: View {
     }
 
     var body: some View {
-        // TODO: Account for Pocket Premium Button
-        if let text = viewModel.buttonText {
-            EmptyStateView(viewModel: viewModel) {
-                GetPocketPremiumButton(text: text)
+        if let buttonType = viewModel.buttonType {
+            if case .premium(let text) = buttonType {
+                EmptyStateView(viewModel: viewModel) {
+                    GetPocketPremiumButton(text: text)
+                }.padding(Margins.normal.rawValue)
+
+            } else if case .normal(let text) = buttonType {
+                EmptyStateView(viewModel: viewModel) {
+                    ReportIssueButton(text: text)
+                }.padding(Margins.normal.rawValue)
             }
-            .padding(Margins.normal.rawValue)
         } else {
             EmptyStateView<EmptyView>(viewModel: viewModel)
                 .padding(Margins.normal.rawValue)
         }
+    }
+}
+
+struct ReportIssueButton: View {
+    @EnvironmentObject private var searchViewModel: SearchViewModel
+    private let text: String
+
+    init(text: String) {
+        self.text = text
+    }
+
+    var body: some View {
+        Button(action: {
+            searchViewModel.isPresentingReportIssue.toggle()
+        }, label: {
+            Text(text)
+                .style(.header.sansSerif.h7.with(color: .ui.white))
+                .padding(EdgeInsets(top: 12, leading: 0, bottom: 12, trailing: 0))
+                .frame(maxWidth: 320)
+        }).buttonStyle(PocketButtonStyle(.primary))
+        .sheet(isPresented: $searchViewModel.isPresentingReportIssue) {
+            ReportIssueView(userEmail: searchViewModel.userEmail, submitIssue: searchViewModel.submitIssue)
+        }
+        .accessibilityIdentifier("get-report-issue-button")
     }
 }
 

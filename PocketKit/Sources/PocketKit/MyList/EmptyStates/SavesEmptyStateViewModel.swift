@@ -8,7 +8,7 @@ struct SavesEmptyStateViewModel: EmptyStateViewModel {
     let icon: ImageAsset? = nil
     let headline: String? = Localization.Saves.Empty.header
     let detailText: String? = nil
-    let buttonText: String? = Localization.Saves.Empty.button
+    let buttonType: ButtonType? = .normal(Localization.Saves.Empty.button)
     let webURL: URL? = URL(string: "https://getpocket.com/saving-in-ios")!
     let accessibilityIdentifier = "saves-empty-state"
 }

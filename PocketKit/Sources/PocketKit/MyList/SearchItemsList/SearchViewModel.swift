@@ -69,7 +69,7 @@ class SearchViewModel: ObservableObject {
 
     var selectedScope: SearchScope = .saves
 
-    @Published var showBanner: Bool = true
+    @Published var showBanner: Bool = false
     @Published var isPresentingPremiumUpgrade = false
     @Published var isPresentingHooray = false
     @Published var isPresentingReportIssue = false
@@ -89,11 +89,11 @@ class SearchViewModel: ObservableObject {
             detail: Localization.Search.Banner.errorMessage,
             action: BannerModifier.BannerData.BannerAction(
                 text: Localization.General.Error.sendReport,
-                style: PocketButtonStyle(.primary)
+                style: PocketButtonStyle(.primary, .small)
             ) {
                 self.isPresentingReportIssue.toggle()
             })
-        return errorView
+        return isOffline ? offlineView : errorView
     }
 
     var defaultState: SearchViewState {
@@ -158,7 +158,6 @@ class SearchViewModel: ObservableObject {
                 }
                 self?.searchState = self?.defaultState
             }
-        showBanner = true
     }
 
     /// Updates the scope user is in and presents an empty state or submits a search
@@ -207,7 +206,7 @@ class SearchViewModel: ObservableObject {
         searchState = defaultState
         currentSearchTerm = nil
 
-        showBanner = true
+        showBanner = false
         subscriptions = []
 
         savesLocalSearch = LocalSavesSearch(source: source)
@@ -218,7 +217,7 @@ class SearchViewModel: ObservableObject {
 
     /// Resets the search objects if it does not have a cache before each search
     private func resetSearch(with term: String) {
-        showBanner = true
+        showBanner = false
         subscriptions = []
 
         if !savesOnlineSearch.hasCache(with: term) {
@@ -641,8 +640,12 @@ extension SearchViewModel {
     }
 }
 
-// MARK: Sentry
+// MARK: Sentry User Feedback Reporting
 extension SearchViewModel {
+    var userEmail: String {
+        user.email
+    }
+
     func submitIssue(name: String, email: String, comments: String) {
         Log.captureUserFeedback(message: "SearchViewModel - Report an issue", name: name, email: email, comments: comments)
     }

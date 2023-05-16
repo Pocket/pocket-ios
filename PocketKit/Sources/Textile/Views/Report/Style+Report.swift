@@ -5,6 +5,8 @@
 public extension Style {
     static let recommendation = RecommendationStyle()
     struct RecommendationStyle {
-        let textStyle = Style.header.sansSerif.p3
+        let textStyle = Style.header.sansSerif.p3.with { paragraph in
+            paragraph.with(lineSpacing: 4)
+        }
     }
 }

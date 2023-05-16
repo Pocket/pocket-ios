@@ -17,13 +17,14 @@ public struct ReportIssueView: View {
 
     private var submitIssue: (String, String, String) -> Void
 
-    public init(submitIssue: @escaping (String, String, String) -> Void) {
+    public init(userEmail: String, submitIssue: @escaping (String, String, String) -> Void) {
+        _email = State(initialValue: userEmail)
         self.submitIssue = submitIssue
     }
 
     @Environment(\.dismiss) private var dismiss
     @State private var name = ""
-    @State private var email = ""
+    @State private var email: String
     @State private var reportComment = ""
 
     public var body: some View {
@@ -41,10 +42,10 @@ public struct ReportIssueView: View {
 
             Section(header: Text(Localization.ReportIssue.comment).style(.recommendation.textStyle).textCase(nil)) {
                 TextEditor(text: $reportComment)
+                    .style(.recommendation.textStyle)
                     .padding()
                     .frame(height: Constants.commentRowHeight)
                     .overlay(RoundedRectangle(cornerRadius: Constants.cornerRadius).strokeBorder(Color.black, style: StrokeStyle(lineWidth: Constants.lineWidth)))
-                   .foregroundColor(.black)
             }.listRowInsets(EdgeInsets())
 
             Button(action: {
@@ -67,11 +68,15 @@ public struct ReportIssueView: View {
 
 struct ReportIssueView_PreviewProvider: PreviewProvider {
     static var previews: some View {
-        ReportIssueView(submitIssue: { _, _, _ in })
+        ReportIssueView(userEmail: "user@email.com", submitIssue: { _, email, _ in
+            print(email)
+            })
             .previewDisplayName("Report Issue - Light")
             .preferredColorScheme(.light)
 
-        ReportIssueView(submitIssue: { _, _, _ in })
+        ReportIssueView(userEmail: "user@email.com", submitIssue: { _, email, _ in
+            print(email)
+        })
             .previewDisplayName("Report Issue - Dark")
             .preferredColorScheme(.dark)
     }
