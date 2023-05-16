@@ -25,7 +25,7 @@ public extension Events.Search {
      Fired when a user clicks the Favorite icon in a card for `Search`
      */
     static func favoriteItem(
-        itemUrl: URL,
+        itemUrl: String,
         positionInList: Int,
         scope: SearchScope
     ) -> Event {
@@ -49,7 +49,7 @@ public extension Events.Search {
      Fired when a user clicks the Un-Favorite icon in a card for `Search`
      */
     static func unfavoriteItem(
-        itemUrl: URL,
+        itemUrl: String,
         positionInList: Int,
         scope: SearchScope
     ) -> Event {
@@ -73,7 +73,7 @@ public extension Events.Search {
      Fired when a user shares a card in `Search`
      */
     static func shareItem(
-        itemUrl: URL,
+        itemUrl: String,
         positionInList: Int,
         scope: SearchScope
     ) -> Event {
@@ -97,7 +97,7 @@ public extension Events.Search {
      Fired when a user clicks the Delete option in the overflow menu in a card for `Search`
      */
     static func deleteItem(
-        itemUrl: URL,
+        itemUrl: String,
         positionInList: Int,
         scope: SearchScope
     ) -> Event {
@@ -121,7 +121,7 @@ public extension Events.Search {
      Fired when a user clicks the Archive option in the overflow menu in a card for `Search`
      */
     static func archiveItem(
-        itemUrl: URL,
+        itemUrl: String,
         positionInList: Int,
         scope: SearchScope
     ) -> Event {
@@ -145,7 +145,7 @@ public extension Events.Search {
      Fired when a user clicks the Unarchive option in the overflow menu in a card for `Search`
      */
     static func unarchiveItem(
-        itemUrl: URL,
+        itemUrl: String,
         positionInList: Int,
         scope: SearchScope
     ) -> Event {
@@ -169,7 +169,7 @@ public extension Events.Search {
      Fired when a user clicks the Unarchive option in the overflow menu in a card for `Search`
      */
     static func overFlowMenu(
-        itemUrl: URL,
+        itemUrl: String,
         positionInList: Int,
         scope: SearchScope
     ) -> Event {
@@ -193,7 +193,7 @@ public extension Events.Search {
      Fired when a user clicks the Add Tags option in the overflow menu in a card for `Search`
      */
     static func showAddTags(
-        itemUrl: URL,
+        itemUrl: String,
         positionInList: Int,
         scope: SearchScope
     ) -> Event {
@@ -264,7 +264,7 @@ public extension Events.Search {
      Fired when a card in the `Search` comes into view
      */
     static func searchCardImpression(
-        url: URL,
+        url: String,
         positionInList: Int,
         scope: SearchScope
     ) -> Impression {
@@ -287,7 +287,7 @@ public extension Events.Search {
      Fired when a user clicks a card in the `Search`
      */
     static func searchCardContentOpen(
-        url: URL,
+        url: String,
         positionInList: Int,
         scope: SearchScope,
         destination: ContentOpen.Destination

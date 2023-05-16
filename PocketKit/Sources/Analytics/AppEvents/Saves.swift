@@ -17,7 +17,7 @@ public extension Events.Saves {
     static func contentOpen(
         destination: ContentOpen.Destination,
         trigger: ContentOpen.Trigger = .click,
-        url: URL
+        url: String
     ) -> ContentOpen {
         return ContentOpen(
             destination: destination,

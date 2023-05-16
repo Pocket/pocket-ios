@@ -11,7 +11,7 @@ public extension Events.Reader {
     /**
      Fired when the user views an unsupported content cell in the `Reader`
      */
-    static func unsupportedContentViewed(url: URL) -> Impression {
+    static func unsupportedContentViewed(url: String) -> Impression {
         return Impression(
             component: .card,
             requirement: .viewable,
@@ -28,7 +28,7 @@ public extension Events.Reader {
     /**
      Fired when the user taps on the button in the unsupported content cell in the `Reader`
      */
-    static func unsupportedContentButtonTapped(url: URL) -> Engagement {
+    static func unsupportedContentButtonTapped(url: String) -> Engagement {
         return Engagement(
             uiEntity: UiEntity(
                 .button,
@@ -43,7 +43,7 @@ public extension Events.Reader {
     /**
      Fired when a user un-archives/adds an article to Saves via the top toolbar on Reader
      */
-    static func moveFromArchiveToSavesClicked(url: URL) -> Engagement {
+    static func moveFromArchiveToSavesClicked(url: String) -> Engagement {
         return Engagement(
             .save(contentEntity: ContentEntity(url: url)),
             uiEntity: UiEntity(
@@ -56,7 +56,7 @@ public extension Events.Reader {
     /**
      Fired when a user archives an article via the top toolbar on Reader
      */
-    static func archiveClicked(url: URL) -> Engagement {
+    static func archiveClicked(url: String) -> Engagement {
         return Engagement(
             uiEntity: UiEntity(
                 .button,
@@ -71,7 +71,7 @@ public extension Events.Reader {
     /**
      Fired when the user taps on the button to open item in web view  in the `Reader`
      */
-    static func openInWebView(url: URL) -> ContentOpen {
+    static func openInWebView(url: String) -> ContentOpen {
         return ContentOpen(
             contentEntity: ContentEntity(url: url),
             uiEntity: UiEntity(
@@ -81,7 +81,7 @@ public extension Events.Reader {
         )
     }
 
-    static func openExternalLink(url: URL) -> ContentOpen {
+    static func openExternalLink(url: String) -> ContentOpen {
         return ContentOpen(
             contentEntity: ContentEntity(url: url),
             uiEntity: UiEntity(

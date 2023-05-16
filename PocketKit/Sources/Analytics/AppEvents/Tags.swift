@@ -11,7 +11,7 @@ public extension Events {
 
 public extension Events.Tags {
     /// Fired when user taps on "Save" button in `Add Tags` screen for an item
-    static func saveTags(itemUrl: URL) -> Event {
+    static func saveTags(itemUrl: String) -> Event {
         return Engagement(
             .general,
             uiEntity: UiEntity(
@@ -30,7 +30,7 @@ public extension Events.Tags {
     /// - Parameters:
     ///     - tag: The tag added to an item.
     ///     - itemUrl: The url of the item to which a new tag was added.
-    static func addTag(_ tag: String, itemUrl: URL) -> Event {
+    static func addTag(_ tag: String, itemUrl: String) -> Event {
         return Engagement(
             .general,
             value: tag,
@@ -50,7 +50,7 @@ public extension Events.Tags {
     /// - Parameters:
     ///     - tag: The tag that was removed from the list of input tags.
     ///     ///     - itemUrl: The url of the item to which a tag was removed.
-    static func removeInputTag(_ tag: String, itemUrl: URL) -> Event {
+    static func removeInputTag(_ tag: String, itemUrl: String) -> Event {
         return Engagement(
             .general,
             value: tag,
@@ -67,7 +67,7 @@ public extension Events.Tags {
     }
 
     /// Fired when a user enters text in the text field in the `Add Tags` screen for an item and includes component detail of text user entered
-    static func userEntersText(itemUrl: URL, text: String) -> Event {
+    static func userEntersText(itemUrl: String, text: String) -> Event {
         return Engagement(
             .general,
             value: text,
@@ -84,7 +84,7 @@ public extension Events.Tags {
     }
 
     /// Fired when a user views all of their tags in the `Add Tags` screen for an item
-    static func allTagsImpression(itemUrl: URL) -> Event {
+    static func allTagsImpression(itemUrl: String) -> Event {
         return Impression(
             component: .screen,
             requirement: .viewable,
@@ -99,7 +99,7 @@ public extension Events.Tags {
     }
 
     /// Fired when a user views filtered tags in the `Add Tags` screen for an item
-    static func filteredTagsImpression(itemUrl: URL) -> Event {
+    static func filteredTagsImpression(itemUrl: String) -> Event {
         return Impression(
             component: .screen,
             requirement: .viewable,
@@ -114,7 +114,7 @@ public extension Events.Tags {
     }
 
     /// "Go Premium" button viewed
-    static func premiumUpsellViewed(itemURL: URL) -> Event {
+    static func premiumUpsellViewed(itemURL: String) -> Event {
         return Impression(
             component: .button,
             requirement: .viewable,
