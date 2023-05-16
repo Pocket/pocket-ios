@@ -18,6 +18,7 @@ class HomeViewModelTests: XCTestCase {
     var homeRefreshCoordinator: RefreshCoordinator!
     var subscriptions: Set<AnyCancellable> = []
     var homeController: RichFetchedResultsController<Recommendation>!
+    var sharedWithYouHighlightsController: RichFetchedResultsController<SharedWithYouHighlight>!
     var recentSavesController: NSFetchedResultsController<SavedItem>!
     var user: User!
     var subscriptionStore: SubscriptionStore!
@@ -41,6 +42,7 @@ class HomeViewModelTests: XCTestCase {
         appSession.currentSession = SharedPocketKit.Session(guid: "test-guid", accessToken: "test-access-token", userIdentifier: "test-id")
         homeRefreshCoordinator = HomeRefreshCoordinator(notificationCenter: .default, taskScheduler: taskScheduler, appSession: appSession, source: source, lastRefresh: lastRefresh)
         homeController = space.makeRecomendationsSlateLineupController(by: SyncConstants.Home.slateLineupIdentifier)
+        sharedWithYouHighlightsController = space.makeSharedWithYouHighlightsController(limit: SyncConstants.Home.sharedWithYouHighlights)
         recentSavesController = space.makeRecentSavesController(limit: 5)
         subscriptionStore = MockSubscriptionStore()
         userDefaults = .standard
@@ -54,6 +56,10 @@ class HomeViewModelTests: XCTestCase {
 
         source.stubMakeRecentSavesController {
             self.recentSavesController
+        }
+
+        source.stubMakeSharedWithYouHighlightsController {
+            self.sharedWithYouHighlightsController
         }
 
         source.stubViewObject { identifier in

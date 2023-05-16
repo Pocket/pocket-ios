@@ -265,7 +265,7 @@ extension MockSource {
     }
 
     func makeSharedWithYouHighlightsController() -> RichFetchedResultsController<Sync.SharedWithYouHighlight> {
-        guard let impl = implementations[Self.makeHomeController] as? MakeSharedWithYouHighlightsControllerImpl else {
+        guard let impl = implementations[Self.makeSharedWithYouHighlightsController] as? MakeSharedWithYouHighlightsControllerImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
 
