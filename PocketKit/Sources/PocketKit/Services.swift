@@ -10,6 +10,7 @@ import BackgroundTasks
 import SharedPocketKit
 import Kingfisher
 import Network
+import SharedWithYou
 
 struct Services {
     static let shared: Services = { Services() }()
@@ -45,6 +46,7 @@ struct Services {
     let notificationCenter: NotificationCenter
     let sessionBackupUtility: SessionBackupUtility
     let sharedWithYouManager: SharedWithYouManager
+    let swHighlightCenter: SWHighlightCenter
 
     private let persistentContainer: PersistentContainer
 
@@ -210,7 +212,13 @@ struct Services {
             notificationCenter: notificationCenter
         )
 
-        sharedWithYouManager = SharedWithYouManager(source: source, appSession: appSession)
+        swHighlightCenter = SWHighlightCenter()
+
+        sharedWithYouManager = SharedWithYouManager(
+            source: source,
+            appSession: appSession,
+            highlightCenter: swHighlightCenter
+        )
     }
 }
 

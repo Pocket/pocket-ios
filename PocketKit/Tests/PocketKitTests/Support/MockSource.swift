@@ -1156,7 +1156,7 @@ extension MockSource {
     }
 
     func stubSaveNewSharedWithYouSnapshot(_ impl: @escaping SaveNewSharedWithYouSnapshotImpl) {
-        implementations[Self.saveSharedWithYouHighlight] = impl
+        implementations[Self.saveNewSharedWithYouSnapshot] = impl
     }
 
     func saveNewSharedWithYouSnapshotCall(at index: Int) -> SaveNewSharedWithYouSnapshotCall? {

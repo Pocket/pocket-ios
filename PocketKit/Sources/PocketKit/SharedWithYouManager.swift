@@ -8,7 +8,7 @@ import Apollo
 // Handles iOS Shared With You delegates in iOS 16 for any getpocket.com urls shared with a user.
 class SharedWithYouManager: NSObject {
 
-    public var highlightCenter: SWHighlightCenter?
+    private var highlightCenter: SWHighlightCenterProtocol
     private let source: Source
     private let appSession: AppSession
 
@@ -19,10 +19,12 @@ class SharedWithYouManager: NSObject {
 
     init(
         source: Source,
-        appSession: AppSession) {
-
+        appSession: AppSession,
+        highlightCenter: SWHighlightCenterProtocol
+    ) {
             self.source = source
             self.appSession = appSession
+            self.highlightCenter = highlightCenter
             super.init()
 
             // Register for login notifications
@@ -58,15 +60,8 @@ class SharedWithYouManager: NSObject {
      We only set the highlight center and the delegate if a user is logged in otherwise it will get callbacks when the user is logged out
      */
     private func loggedIn() {
-        self.highlightCenter = SWHighlightCenter()
-        self.highlightCenter!.delegate = self
-
-        guard let highlights = self.highlightCenter?.highlights else {
-            self.saveHighlightsSnapshot(highlights: [])
-            return
-        }
-
-        self.saveHighlightsSnapshot(highlights: highlights)
+        self.highlightCenter.delegate = self
+        self.saveHighlightsSnapshot(highlights: self.highlightCenter.highlights)
     }
 
     /**
@@ -74,8 +69,7 @@ class SharedWithYouManager: NSObject {
      We need to unset the highlight center because it can be called when we are logged out.
      */
     private func loggedOut() {
-        self.highlightCenter?.delegate = nil
-        self.highlightCenter = nil
+        self.highlightCenter.delegate = nil
         self.saveHighlightsSnapshot(highlights: [])
     }
 
