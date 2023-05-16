@@ -300,7 +300,10 @@ extension Log {
      Captures a user feedback and sends it to sentry.
 
      - Parameters:
-        - error: The error to capture
+        - message: The message that is used to create an eventId to be able to associate the user feedback to the corresponding event
+        - name: The name of the user
+        - email: The email of the user
+        - comments: The comments provided by the user
      */
     internal class func sentryCaptureUserFeedback(message: String, name: String, email: String, comments: String) {
         let eventId = SentrySDK.capture(message: message)
