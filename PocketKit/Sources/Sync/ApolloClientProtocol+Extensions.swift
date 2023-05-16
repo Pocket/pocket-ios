@@ -79,16 +79,20 @@ public extension ApolloClientProtocol {
         // Codes we wish to notify the user about
         let notifiableErrorCodes = [429, 500, 503]
 
-        guard let responseError = error as? ResponseCodeInterceptor.ResponseCodeError,
-              case .invalidResponseCode(let response, _) = responseError,
-              let code = response?.statusCode else {
-            Log.capture(message: "GraphQl Error - unknown response/status code.", filename: filename, line: line, column: column, funcName: funcName)
+        guard let responseError = error as? ResponseCodeInterceptor.ResponseCodeError else {
+            Log.capture(message: "GraphQl Error - unknown error.", filename: filename, line: line, column: column, funcName: funcName)
             return
         }
 
-        Log.capture(message: "GraphQl Error - status code:\(code).", filename: filename, line: line, column: column, funcName: funcName)
+        Log.capture(message: "GraphQl Error - description: \(responseError.errorDescription ?? "no description found").",
+                    filename: filename,
+                    line: line,
+                    column: column,
+                    funcName: funcName)
 
-        if notifiableErrorCodes.contains(code) {
+        if case .invalidResponseCode(let response, _) = responseError,
+           let code = response?.statusCode,
+           notifiableErrorCodes.contains(code) {
             NotificationCenter.default.post(name: .serverError, object: code)
         }
     }
