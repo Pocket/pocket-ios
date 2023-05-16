@@ -223,14 +223,4 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         Log.debug("Tried to deep link into url: \(url)")
         return false
     }
-
-    /**
-     Helper Function to see if something is a syndicated url.
-     */
-    func isSyndicatedURL(url: String) -> Bool {
-       let urlRegEx = "^https?://(?:getpocket.com)/explore/item/(.*)"
-       let urlTest = NSPredicate(format: "SELF MATCHES %@", urlRegEx)
-       let result = urlTest.evaluate(with: url)
-       return result
-    }
 }
