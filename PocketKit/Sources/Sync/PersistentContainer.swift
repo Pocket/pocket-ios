@@ -57,10 +57,14 @@ public class PersistentContainer: NSPersistentContainer {
     }
 
     private func getStoreDescription(with storage: Storage, _ groupID: String) -> NSPersistentStoreDescription {
-        if case .shared = storage,
-            let sharedContainerURL = FileManager.default
+        if case .shared = storage {
+            guard let sharedContainerURL = FileManager.default
                 .containerURL(forSecurityApplicationGroupIdentifier: groupID)?
-                .appendingPathComponent("PocketModel.sqlite") {
+                .appendingPathComponent("PocketModel.sqlite") else {
+                Log.warning("Invalid GroupID \(groupID). Falling back to inMemory Storage")
+                break
+            }
+
             Log.debug("Store URL: \(sharedContainerURL)")
             return NSPersistentStoreDescription(url: sharedContainerURL)
         }
