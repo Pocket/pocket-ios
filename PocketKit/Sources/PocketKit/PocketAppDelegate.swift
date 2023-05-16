@@ -214,17 +214,14 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     public func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
-        // TODO: Do actual url checking
-        return true
+        Log.debug("Tried to deep link into activity: \(userActivity.activityType) with url: \(String(describing: userActivity.webpageURL))")
+        return false
     }
 
-    /**
-     Handle opening a URL from a universal link.
-     We support Syndicated URLs and Collection URLs
-     */
+    /// Handle opening a URL from a universal link
     public func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
-        // TODO: Do actual url checking
-        return true
+        Log.debug("Tried to deep link into url: \(url)")
+        return false
     }
 
     /**
