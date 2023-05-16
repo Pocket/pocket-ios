@@ -62,7 +62,8 @@ public class PersistentContainer: NSPersistentContainer {
                 .containerURL(forSecurityApplicationGroupIdentifier: groupID)?
                 .appendingPathComponent("PocketModel.sqlite") else {
                 Log.warning("Invalid GroupID \(groupID). Falling back to inMemory Storage")
-                break
+
+                return NSPersistentStoreDescription(url: URL(fileURLWithPath: "/dev/null"))
             }
 
             Log.debug("Store URL: \(sharedContainerURL)")
