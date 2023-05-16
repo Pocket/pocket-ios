@@ -205,17 +205,13 @@ extension HomeViewController {
             cell.configure(model: viewModel)
             return cell
         case .sharedWithYou(let objectID):
-            if #available(iOS 16.0, *) {
-                let cell: SharedWithYouCell = collectionView.dequeueCell(for: indexPath)
-                guard let viewModel = model.sharedWithYouViewModel(for: objectID, at: indexPath) else {
-                    return cell
-                }
-
-                cell.configure(sharedWithYouModel: viewModel)
+            let cell: SharedWithYouCell = collectionView.dequeueCell(for: indexPath)
+            guard let viewModel = model.sharedWithYouViewModel(for: objectID, at: indexPath) else {
                 return cell
             }
-            // This should never be called on non iOS 16 devices because we will never fill it with SharedWithYou content
-            return UICollectionViewCell(frame: CGRect())
+
+            cell.configure(sharedWithYouModel: viewModel)
+            return cell
         case .recommendationHero(let objectID):
             if traitCollection.shouldUseWideLayout() {
                 let cell: RecommendationCellHeroWide = collectionView.dequeueCell(for: indexPath)

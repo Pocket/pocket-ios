@@ -96,7 +96,12 @@ extension SectionHeaderView {
             model.buttonAction?()
         }
         seeAllButton.addAction(buttonAction, for: .primaryActionTriggered)
-        seeAllButton.isHidden = false
+
+        if model.buttonAction != nil {
+            seeAllButton.isHidden = false
+        } else {
+            seeAllButton.isHidden = true
+        }
     }
 }
 

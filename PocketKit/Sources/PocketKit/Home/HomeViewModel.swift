@@ -386,10 +386,7 @@ extension HomeViewModel {
                 name: SWHighlightCenter.highlightCollectionTitle,
                 buttonTitle: Localization.seeAll,
                 buttonImage: UIImage(asset: .chevronRight)
-            ) { [weak self] in
-                // TODO: Go to a view for shared with you.
-                self?.tappedSeeAll = .saves
-            }
+            )
         case .slateHero(let objectID):
             guard let slate = source.viewObject(id: objectID) as? Slate else {
                 return nil

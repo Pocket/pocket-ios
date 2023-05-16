@@ -100,17 +100,15 @@ class HomeViewControllerSectionProvider {
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: numberOfSharedWithYouItems)
         group.interItemSpacing = .fixed(16)
 
-        var sectionName = "Shared With You"
-
-        if #available(iOS 16.0, *) {
-            sectionName = SWHighlightCenter.highlightCollectionTitle
-        }
-
-        let sectionHeaderViewModel: SectionHeaderView.Model = .init(name: sectionName, buttonTitle: "See All", buttonImage: nil)
+        let sectionHeaderViewModel = viewModel.sectionHeaderViewModel(for: .sharedWithYou)
         let headerItem = NSCollectionLayoutBoundarySupplementaryItem(
             layoutSize: NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
-                heightDimension: .absolute(sectionHeaderViewModel.height(width: width - Constants.sideMargin*2))
+                heightDimension: .absolute(
+                    sectionHeaderViewModel?.height(
+                        width: width - Constants.sideMargin * 2
+                    ) ?? 1
+                )
             ),
             elementKind: SectionHeaderView.kind,
             alignment: .top

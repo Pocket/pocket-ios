@@ -46,7 +46,7 @@ class SharedWithYouManager: NSObject {
      Handle session intitlization when not coming from a notification center subscriber. Mainly for app initilization.
      */
     private func handleSessionInitilization(session: SharedPocketKit.Session?) {
-        guard session != nil     else {
+        guard session != nil else {
             loggedOut()
             return
         }
