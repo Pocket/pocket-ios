@@ -274,6 +274,34 @@ extension Space {
     }
 }
 
+// MARK: - SharedWithYou
+extension Space {
+    @discardableResult
+    func createSharedWithYouHighlight(
+        item: Item,
+        sortOrder: Int32 = 1
+    ) throws -> SharedWithYouHighlight {
+        try backgroundContext.performAndWait {
+            let sharedWithYouHighlight = buildSharedWithYouHighlight(
+                item: item,
+                sortOrder: sortOrder
+            )
+            try backgroundContext.save()
+            return sharedWithYouHighlight
+        }
+    }
+
+    @discardableResult
+    func buildSharedWithYouHighlight(
+        item: Item,
+        sortOrder: Int32
+    ) -> SharedWithYouHighlight {
+        backgroundContext.performAndWait {
+            return SharedWithYouHighlight(context: backgroundContext, url: item.givenURL, sortOrder: sortOrder, item: item)
+        }
+    }
+}
+
 // MARK: - Syndication
 extension Space {
     @discardableResult

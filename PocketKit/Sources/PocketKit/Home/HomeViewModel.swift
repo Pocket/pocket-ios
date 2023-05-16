@@ -214,35 +214,34 @@ extension HomeViewModel {
             return snapshot
         }
 
-        guard let slateSections = self.recomendationsController.sections, !slateSections.isEmpty else {
+        if let slateSections = self.recomendationsController.sections, !slateSections.isEmpty {
+            for slateSection in slateSections {
+                guard var recommendations = slateSection.objects as? [Recommendation],
+                      let slateId = recommendations.first?.slate?.objectID
+                else {
+                    continue
+                }
+
+                let hero = recommendations.removeFirst()
+                snapshot.appendSections([.slateHero(slateId)])
+                snapshot.appendItems(
+                    [.recommendationHero(hero.objectID)],
+                    toSection: .slateHero(slateId)
+                )
+
+                guard !recommendations.isEmpty else {
+                    continue
+                }
+
+                snapshot.appendSections([.slateCarousel(slateId)])
+                snapshot.appendItems(
+                    recommendations.prefix(4).map { .recommendationCarousel($0.objectID) },
+                    toSection: .slateCarousel(slateId)
+                )
+            }
+        } else {
             snapshot.appendSections([.loading])
             snapshot.appendItems([.loading], toSection: .loading)
-            return snapshot
-        }
-
-        for slateSection in slateSections {
-            guard var recommendations = slateSection.objects as? [Recommendation],
-                  let slateId = recommendations.first?.slate?.objectID
-            else {
-                continue
-            }
-
-            let hero = recommendations.removeFirst()
-            snapshot.appendSections([.slateHero(slateId)])
-            snapshot.appendItems(
-                [.recommendationHero(hero.objectID)],
-                toSection: .slateHero(slateId)
-            )
-
-            guard !recommendations.isEmpty else {
-                continue
-            }
-
-            snapshot.appendSections([.slateCarousel(slateId)])
-            snapshot.appendItems(
-                recommendations.prefix(4).map { .recommendationCarousel($0.objectID) },
-                toSection: .slateCarousel(slateId)
-            )
         }
 
         let sharedWithYouHighlights = self.sharedWithYouHighlightsController.fetchedObjects as? [SharedWithYouHighlight]

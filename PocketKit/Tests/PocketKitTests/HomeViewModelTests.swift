@@ -117,7 +117,7 @@ class HomeViewModelTests: XCTestCase {
         let viewModel = subject()
 
         let receivedLoadingSnapshot = expectation(description: "receivedLoadingSnapshot")
-        viewModel.$snapshot.dropFirst(2).sink { snapshot in
+        viewModel.$snapshot.dropFirst(3).sink { snapshot in
             defer { receivedLoadingSnapshot.fulfill() }
             XCTAssertEqual(snapshot.sectionIdentifiers, [.loading])
         }.store(in: &subscriptions)
@@ -209,6 +209,74 @@ class HomeViewModelTests: XCTestCase {
         wait(for: [receivedEmptySnapshot], timeout: 10)
     }
 
+    func test_whenSharedWithYouHasItems_andNoRecomendations_sendsSnapshotWithSharedWithYouHighlights_andLoading() throws {
+        let items = try (0...5).map { try space.createItem(remoteID: "item-\($0)", givenURL: URL(string: "http://example.com/item-\($0)")) }
+        let sharedWithYouHighlights: [SharedWithYouHighlight] = try items.enumerated().map { index, item in
+            return try space.createSharedWithYouHighlight(item: item, sortOrder: Int32(index))
+        }
+        try space.save()
+
+        let viewModel = subject()
+        let receivedSnapshotWithSharedWithYou = expectation(description: "receivedSnapshotWithSharedWithYou")
+        viewModel.$snapshot.dropFirst().first().sink { snapshot in
+            defer { receivedSnapshotWithSharedWithYou.fulfill() }
+
+            XCTAssertEqual(
+                snapshot.itemIdentifiers(inSection: .sharedWithYou),
+                sharedWithYouHighlights[0...4].map { .sharedWithYou($0.objectID) }
+            )
+
+            XCTAssertEqual(
+                snapshot.itemIdentifiers(inSection: .loading),
+                [HomeViewModel.Cell.loading]
+            )
+        }.store(in: &subscriptions)
+
+        viewModel.fetch()
+
+        wait(for: [receivedSnapshotWithSharedWithYou], timeout: 10)
+    }
+
+    func test_whenSharedWithYouHasItems_andRecomendations_sendsSnapshotWithSharedWithYouHighlights_andRecs() throws {
+        let items = try (0...5).map { try space.createItem(remoteID: "item-\($0)", givenURL: URL(string: "http://example.com/item-\($0)")) }
+        let recommendations = try items.map { try space.createRecommendation(remoteID: "recommendation-\($0.remoteID)", item: $0) }
+        let slate = space.buildSlate(recommendations: recommendations)
+        try space.createSlateLineup(
+            remoteID: SyncConstants.Home.slateLineupIdentifier,
+            slates: [slate]
+        )
+
+        let sharedWithYouItems = try (0...5).map { try space.createItem(remoteID: "sharedWithYouItem-\($0)", givenURL: URL(string: "http://example.com/sharedWithYouItem-\($0)")) }
+        let sharedWithYouHighlights: [SharedWithYouHighlight] = try sharedWithYouItems.enumerated().map { index, item in
+            return try space.createSharedWithYouHighlight(item: item, sortOrder: Int32(index))
+        }
+        try space.save()
+
+        let viewModel = subject()
+        let receivedSnapshotWithSharedWithYou = expectation(description: "receivedSnapshotWithSharedWithYou")
+        viewModel.$snapshot.dropFirst().first().sink { snapshot in
+            defer { receivedSnapshotWithSharedWithYou.fulfill() }
+
+            XCTAssertEqual(
+                snapshot.itemIdentifiers(inSection: .slateHero(slate.objectID)),
+                [.recommendationHero(recommendations[0].objectID)]
+            )
+            XCTAssertEqual(
+                snapshot.itemIdentifiers(inSection: .slateCarousel(slate.objectID)),
+                recommendations[1...4].map { .recommendationCarousel($0.objectID) }
+            )
+
+            XCTAssertEqual(
+                snapshot.itemIdentifiers(inSection: .sharedWithYou),
+                sharedWithYouHighlights[0...4].map { .sharedWithYou($0.objectID) }
+            )
+        }.store(in: &subscriptions)
+
+        viewModel.fetch()
+
+        wait(for: [receivedSnapshotWithSharedWithYou], timeout: 10)
+    }
+
     func test_fetch_whenSlateContainsMoreThanFiveRecommendations_sendsSnapshotFirstFiveRecommendations() throws {
         let items = try (0...5).map { try space.createItem(remoteID: "item-\($0)", givenURL: URL(string: "http://example.com/item-\($0)")) }
         let recommendations = try items.map { try space.createRecommendation(remoteID: "recommendation-\($0.remoteID)", item: $0) }
@@ -230,6 +298,10 @@ class HomeViewModelTests: XCTestCase {
             XCTAssertEqual(
                 snapshot.itemIdentifiers(inSection: .slateCarousel(slate.objectID)),
                 recommendations[1...4].map { .recommendationCarousel($0.objectID) }
+            )
+
+            XCTAssertNil(
+                snapshot.indexOfSection(.sharedWithYou)
             )
         }.store(in: &subscriptions)
 
@@ -484,7 +556,7 @@ class HomeViewModelTests: XCTestCase {
 
         let snapshotExpectation = expectation(description: "expect a snapshot")
         let viewModel = subject()
-        viewModel.$snapshot.dropFirst(2).sink { snapshot in
+        viewModel.$snapshot.dropFirst(3).sink { snapshot in
             XCTAssertEqual(
                 snapshot.itemIdentifiers(inSection: .recentSaves),
                 [
@@ -508,7 +580,7 @@ class HomeViewModelTests: XCTestCase {
         let viewModel = subject()
 
         let snapshotExpectation = expectation(description: "expected a snapshot update")
-        viewModel.$snapshot.dropFirst(2).sink { snapshot in
+        viewModel.$snapshot.dropFirst(3).sink { snapshot in
             XCTAssertNotNil(snapshot.indexOfSection(.offline))
             XCTAssertEqual(snapshot.itemIdentifiers(inSection: .offline), [.offline])
             snapshotExpectation.fulfill()
@@ -819,5 +891,80 @@ class HomeViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.numberOfCarouselItemsForSlate(with: slates[0].objectID), 1)
         XCTAssertEqual(viewModel.numberOfCarouselItemsForSlate(with: slates[1].objectID), 2)
         XCTAssertEqual(viewModel.numberOfCarouselItemsForSlate(with: slates[2].objectID), 3)
+    }
+
+    func test_snapshot_whenSharedWithYouHighlightIsSaved_updatesSnapshot() throws {
+        let item = space.buildItem(remoteID: "sharedWithYou-1", givenURL: URL(string: "https://example.com/items/sharedWithYou-1"))
+        let sharedWithYouHighlights = [
+            space.buildSharedWithYouHighlight(item: item, sortOrder: 0),
+            space.buildSharedWithYouHighlight(item: space.buildItem(remoteID: "sharedWithYou-2", givenURL: URL(string: "https://example.com/items/sharedWithYou-2")), sortOrder: 1)
+        ]
+        try space.save()
+
+        var savedItem: SavedItem!
+        let viewModel = subject()
+        viewModel.fetch()
+
+        let snapshotExpectation = expectation(description: "expected snapshot to update")
+        viewModel.$snapshot.dropFirst(1).sink { snapshot in
+            defer { snapshotExpectation.fulfill() }
+
+            XCTAssertEqual(
+                snapshot.sectionIdentifiers,
+                [.recentSaves, .loading, .sharedWithYou]
+            )
+
+            XCTAssertEqual(
+                snapshot.itemIdentifiers(inSection: .sharedWithYou),
+                [.sharedWithYou(sharedWithYouHighlights[0].objectID), .sharedWithYou(sharedWithYouHighlights[1].objectID)]
+            )
+            XCTAssertEqual(
+                snapshot.reloadedItemIdentifiers,
+                []
+            )
+        }.store(in: &subscriptions)
+
+        savedItem = space.buildSavedItem()
+        item.savedItem = savedItem
+        try space.save()
+
+        wait(for: [snapshotExpectation], timeout: 10)
+    }
+
+    func test_snapshot_whenSharedWithYouHighlightIsArchived_updatesSnapshot() throws {
+        let item = space.buildItem(remoteID: "sharedWithYou-1", givenURL: URL(string: "https://example.com/items/sharedWithYou-1"))
+        item.savedItem = space.buildSavedItem()
+        let sharedWithYouHighlights = [
+            space.buildSharedWithYouHighlight(item: item, sortOrder: 0),
+            space.buildSharedWithYouHighlight(item: space.buildItem(remoteID: "sharedWithYou-2", givenURL: URL(string: "https://example.com/items/sharedWithYou-2")), sortOrder: 1)
+        ]
+        try space.save()
+
+        let viewModel = subject()
+        viewModel.fetch()
+
+        let snapshotExpectation = expectation(description: "expected snapshot to update")
+        viewModel.$snapshot.dropFirst().sink { snapshot in
+            defer { snapshotExpectation.fulfill() }
+
+            XCTAssertEqual(
+                snapshot.sectionIdentifiers,
+                [.loading, .sharedWithYou]
+            )
+
+            XCTAssertEqual(
+                snapshot.itemIdentifiers(inSection: .sharedWithYou),
+                [.sharedWithYou(sharedWithYouHighlights[0].objectID), .sharedWithYou(sharedWithYouHighlights[1].objectID)]
+            )
+            XCTAssertEqual(
+                snapshot.reloadedItemIdentifiers,
+                []
+            )
+        }.store(in: &subscriptions)
+
+        item.savedItem?.isArchived = true
+        try space.save()
+
+        wait(for: [snapshotExpectation], timeout: 10)
     }
 }
