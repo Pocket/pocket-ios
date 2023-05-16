@@ -2,7 +2,7 @@
 "general.oops" = "哎呀！要再試一次嗎？";
 
 // - General Error Messages
-"general.error.serverNotResponding.title" = "Server not responding";
+"general.error.serverNotResponding.title" = "伺服器無回應";
 "general.error.serverNotResponding.detail" = "我們的伺服器現在沒有回應。請耐心等待。應該在一個小時內可以重新使用。";
 "general.error.serverError" = "您的請求出了點問題。Pocket 團隊已收到通知。請稍後重試。";
 
