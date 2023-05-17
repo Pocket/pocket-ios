@@ -111,8 +111,12 @@ class RecommendationViewModel: ReadableViewModel {
         }
 
         Task {
-            try await source.fetchDetails(for: recommendation)
-            _events.send(.contentUpdated)
+            do {
+                try await source.fetchDetails(for: recommendation)
+                _events.send(.contentUpdated)
+            } catch {
+                Log.capture(message: "Failed to fetch details for recommendation: \(error)")
+            }
         }
     }
 
