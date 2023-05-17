@@ -123,8 +123,22 @@ class SavedItemViewModel: ReadableViewModel {
         }
 
         Task {
-            try? await self.source.fetchDetails(for: self.item)
+            do {
+                try await self.source.fetchDetails(for: self.item)
+                checkForArticleData()
+            } catch {
+                Log.capture(message: "Failed to fetch details for SavedItemViewModel: \(error)")
+            }
+        }
+    }
+
+    /// Check to see if item has article components to display in reader view, else display in web view
+    /// - Parameter item: item that the user wants to open
+    private func checkForArticleData() {
+        if let itemDetails = item.item, itemDetails.hasArticleComponents {
             _events.send(.contentUpdated)
+        } else {
+            showWebReader()
         }
     }
 

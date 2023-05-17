@@ -282,7 +282,9 @@ extension Response {
     static func fixture(named fixtureName: String) -> Response {
         Response {
             Status.ok
-            Fixture.data(name: fixtureName)
+            Fixture.load(name: fixtureName)
+                .replacing("MARTICLE", withFixtureNamed: "marticle")
+                .data
         }
     }
 
