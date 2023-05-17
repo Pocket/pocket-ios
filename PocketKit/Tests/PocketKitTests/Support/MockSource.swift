@@ -4,7 +4,6 @@ import CoreData
 import Combine
 
 class MockSource: Source {
-
     var _events: SyncEvents = SyncEvents()
     var events: AnyPublisher<SyncEvent, Never> {
         _events.eraseToAnyPublisher()
@@ -1154,17 +1153,17 @@ extension MockSource {
 // MARK: - Fetch item by URL
 extension MockSource {
     private static let fetchItem = "fetchItem"
-    typealias FetchItemImpl = (URL) -> Item?
+    typealias FetchItemImpl = (String) -> Item?
 
     struct FetchItemCall {
-        let url: URL
+        let url: String
     }
 
     func stubFetchItem(impl: @escaping FetchItemImpl) {
         implementations[Self.fetchItem] = impl
     }
 
-    func fetchItem(_ url: URL) -> Item? {
+    func fetchItem(_ url: String) -> Item? {
         guard let impl = implementations[Self.fetchItem] as? FetchItemImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
