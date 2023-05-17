@@ -343,7 +343,7 @@ class RecommendationViewModelTests: XCTestCase {
             item: space.buildItem()
         )
         source.stubFetchDetailsForRecommendation { rec in
-            rec.item.article = .some(Article(components: []))
+            rec.item.article = .some(Article(components: [.text(TextComponent(content: "This article has components"))]))
         }
 
         let viewModel = subject(recommendation: recommendation)
@@ -359,6 +359,28 @@ class RecommendationViewModelTests: XCTestCase {
         viewModel.fetchDetailsIfNeeded()
         wait(for: [receivedEvent], timeout: 10)
         XCTAssertNotNil(recommendation.item.article)
+    }
+
+    func test_fetchDetailsIfNeeded_whenMarticleIsNilAfterFetching_returnsWebView() {
+        let recommendation = space.buildRecommendation(
+            item: space.buildItem()
+        )
+        source.stubFetchDetailsForRecommendation { rec in
+            rec.item.article = nil
+        }
+
+        let viewModel = subject(recommendation: recommendation)
+        let receivedEvent = expectation(description: "receivedEvent")
+        receivedEvent.isInverted = true
+        viewModel.events.sink { event in
+            receivedEvent.fulfill()
+        }.store(in: &subscriptions)
+
+        viewModel.fetchDetailsIfNeeded()
+        wait(for: [receivedEvent], timeout: 10)
+
+        XCTAssertFalse(recommendation.item.hasArticleComponents)
+        XCTAssertNil(recommendation.item.article)
     }
 
     func test_fetchDetailsIfNeeded_whenMarticleIsPresent_immediatelySendsContentUpdatedEvent() {

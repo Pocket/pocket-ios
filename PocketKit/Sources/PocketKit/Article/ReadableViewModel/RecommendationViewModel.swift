@@ -113,10 +113,20 @@ class RecommendationViewModel: ReadableViewModel {
         Task {
             do {
                 try await source.fetchDetails(for: recommendation)
-                _events.send(.contentUpdated)
+                checkForArticleData()
             } catch {
-                Log.capture(message: "Failed to fetch details for recommendation: \(error)")
+                Log.capture(message: "Failed to fetch details for RecommendationViewModel: \(error)")
             }
+        }
+    }
+
+    /// Check to see if item has article components to display in reader view, else display in web view
+    /// - Parameter item: item that the user wants to open
+    private func checkForArticleData() {
+        if recommendation.item.hasArticleComponents {
+            _events.send(.contentUpdated)
+        } else {
+            showWebReader()
         }
     }
 
