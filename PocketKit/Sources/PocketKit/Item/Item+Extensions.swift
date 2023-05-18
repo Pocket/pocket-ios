@@ -67,7 +67,6 @@ public extension Item {
     }
 
     var hasArticleComponents: Bool {
-        guard let article else { return false }
-        return !article.components.isEmpty
+        article?.components.isEmpty == false
     }
 }
