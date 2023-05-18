@@ -125,7 +125,7 @@ class SavedItemViewModel: ReadableViewModel {
         Task {
             do {
                 let remoteHasArticle = try await self.source.fetchDetails(for: self.item)
-                checkForArticleData(with: remoteHasArticle)
+                displayArticle(with: remoteHasArticle)
             } catch {
                 Log.capture(message: "Failed to fetch details for SavedItemViewModel: \(error)")
             }
@@ -134,7 +134,7 @@ class SavedItemViewModel: ReadableViewModel {
 
     /// Check to see if item has article components to display in reader view, else display in web view
     /// - Parameter remoteHasArticle: condition if the remote in `fetchDetails` has article data
-    private func checkForArticleData(with remoteHasArticle: Bool) {
+    private func displayArticle(with remoteHasArticle: Bool) {
         if let itemDetails = item.item, itemDetails.hasArticleComponents || remoteHasArticle {
             _events.send(.contentUpdated)
         } else {

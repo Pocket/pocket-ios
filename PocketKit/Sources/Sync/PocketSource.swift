@@ -547,7 +547,7 @@ extension PocketSource {
     }
 
     public func fetchDetails(for savedItem: SavedItem) async throws -> Bool {
-        Log.breadcrumb(category: "sync", level: .debug, message: "Fetching detals for item with id \(String(describing: savedItem.remoteID))")
+        Log.breadcrumb(category: "sync", level: .debug, message: "Fetching details for item with id \(String(describing: savedItem.remoteID))")
 
         guard let remoteID = savedItem.remoteID else {
             return false
@@ -567,8 +567,7 @@ extension PocketSource {
             savedItem.update(from: remoteSavedItem.fragments.savedItemParts, with: space)
             try space.save()
 
-            guard let article = remoteSavedItem.item.asItem?.marticle else { return false }
-            return !article.isEmpty
+            return remoteSavedItem.item.asItem?.marticle?.isEmpty == false
         }
     }
 
@@ -630,8 +629,7 @@ extension PocketSource {
             backgroundItem.update(remote: remoteItem, with: space)
             try space.save()
 
-            guard let article = remoteItem.marticle else { return false }
-            return !article.isEmpty
+            return remoteItem.marticle?.isEmpty == false
         }
     }
 }
