@@ -104,6 +104,7 @@ class SavedItemViewModelTests: XCTestCase {
 
         source.stubFetchDetails { _ in
             savedItem.item?.article = .some(Article(components: [.text(TextComponent(content: "This article has components"))]))
+            return true
         }
 
         let viewModel = subject(item: savedItem)
@@ -133,6 +134,7 @@ class SavedItemViewModelTests: XCTestCase {
 
         source.stubFetchDetails { _ in
             savedItem.item?.article = nil
+            return false
         }
 
         let viewModel = subject(item: savedItem)
@@ -156,6 +158,7 @@ class SavedItemViewModelTests: XCTestCase {
     func test_fetchDetailsIfNeeded_whenItemDetailsAreAlreadyAvailable_immediatelySendsContentUpdatedEvent() {
         source.stubFetchDetails { _ in
             XCTFail("Expected no calls to fetch details, but lo, it has been called.")
+            return false
         }
 
         let savedItem = space.buildSavedItem(

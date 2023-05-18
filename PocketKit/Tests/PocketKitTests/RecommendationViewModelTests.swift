@@ -344,6 +344,7 @@ class RecommendationViewModelTests: XCTestCase {
         )
         source.stubFetchDetailsForRecommendation { rec in
             rec.item.article = .some(Article(components: [.text(TextComponent(content: "This article has components"))]))
+            return true
         }
 
         let viewModel = subject(recommendation: recommendation)
@@ -367,6 +368,7 @@ class RecommendationViewModelTests: XCTestCase {
         )
         source.stubFetchDetailsForRecommendation { rec in
             rec.item.article = nil
+            return false
         }
 
         let viewModel = subject(recommendation: recommendation)
@@ -390,6 +392,7 @@ class RecommendationViewModelTests: XCTestCase {
 
         source.stubFetchDetailsForRecommendation { rec in
             XCTFail("Should not fetch details when article content is already available")
+            return false
         }
 
         let viewModel = subject(recommendation: recommendation)

@@ -112,8 +112,8 @@ class RecommendationViewModel: ReadableViewModel {
 
         Task {
             do {
-                try await source.fetchDetails(for: recommendation)
-                checkForArticleData()
+                let remoteHasArticle = try await source.fetchDetails(for: recommendation)
+                checkForArticleData(with: remoteHasArticle)
             } catch {
                 Log.capture(message: "Failed to fetch details for RecommendationViewModel: \(error)")
             }
@@ -121,9 +121,9 @@ class RecommendationViewModel: ReadableViewModel {
     }
 
     /// Check to see if item has article components to display in reader view, else display in web view
-    /// - Parameter item: item that the user wants to open
-    private func checkForArticleData() {
-        if recommendation.item.hasArticleComponents {
+    /// - Parameter remoteHasArticle: condition if the remote in `fetchDetails` has article data
+    private func checkForArticleData(with remoteHasArticle: Bool) {
+        if recommendation.item.hasArticleComponents || remoteHasArticle {
             _events.send(.contentUpdated)
         } else {
             showWebReader()
