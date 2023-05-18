@@ -45,7 +45,7 @@ extension SavedItem: ItemsListItem {
     }
 
     var host: String? {
-        guard let bestURL = bestURL, let url = URL(string: bestURL) else { return nil }
+        guard let url = URL(string: bestURL) else { return nil }
         return url.host
     }
 
@@ -57,8 +57,8 @@ extension SavedItem: ItemsListItem {
         item?.savedItem?.cursor
     }
 
-    var savedItemURL: String {
-        url
+    var savedItemURL: URL? {
+        URL(string: url)
     }
 }
 

@@ -27,9 +27,9 @@ protocol ReadableViewModel: ReadableViewControllerDelegate {
     var authors: [ReadableAuthor]? { get }
     var domain: String? { get }
     var publishDate: Date? { get }
-    var url: URL? { get }
+    var url: String { get }
     var isArchived: Bool { get }
-    var premiumURL: URL? { get }
+    var premiumURL: String? { get }
 
     func delete()
     /// Opens an item presented in the reader in a web view instead
@@ -74,10 +74,14 @@ extension ReadableViewModel {
     }
 
     func showWebReader() {
+        // TODO: URL usage marker
+        guard let url = URL(string: url) else { return }
         openInWebView(url: url)
     }
 
     func share(additionalText: String? = nil) {
+        // TODO: URL usage marker
+        guard let url = URL(string: url) else { return }
         track(identifier: .itemShare)
         // Instances conforming to this view model are used within the context
         // of an item presented within the reader
@@ -106,10 +110,6 @@ extension ReadableViewModel {
     }
 
     func track(identifier: UIContext.Identifier) {
-        guard let url = url else {
-            return
-        }
-
         let contexts: [Context] = [
             UIContext.button(identifier: identifier),
             ContentContext(url: url)
@@ -156,44 +156,32 @@ extension ReadableViewModel {
 extension ReadableViewModel {
     /// track when user views unsupported content cell
     func trackUnsupportedContentViewed() {
-        guard let url else {
-            Log.capture(message: "Reader item without an associated url, not logging analytics for unsupportedContentViewed")
-            return
-        }
         tracker.track(event: Events.Reader.unsupportedContentViewed(url: url))
     }
 
     /// track when user taps on button to open unsupported content in web view
     func trackUnsupportedContentButtonTapped() {
-        guard let url else {
-            Log.capture(message: "Reader item without an associated url, not logging analytics for unsupportedContentButtonTapped")
-            return
-        }
         tracker.track(event: Events.Reader.unsupportedContentButtonTapped(url: url))
     }
 
     /// track archive button tapped in reader toolbar
     /// - Parameter url: url of saved item
-    func trackArchiveButtonTapped(url: URL) {
+    func trackArchiveButtonTapped(url: String) {
         tracker.track(event: Events.Reader.archiveClicked(url: url))
     }
 
     /// track move to saves from archive button tapped in reader toolbar
     /// - Parameter url: url of saved item
-    func trackMoveFromArchiveToSavesButtonTapped(url: URL) {
+    func trackMoveFromArchiveToSavesButtonTapped(url: String) {
         tracker.track(event: Events.Reader.moveFromArchiveToSavesClicked(url: url))
     }
 
     /// track when user taps on the safari button to open content in web view
     func trackWebViewOpen() {
-        guard let url else {
-            Log.capture(message: "Reader item without an associated url, not logging analytics for openInWebView")
-            return
-        }
         tracker.track(event: Events.Reader.openInWebView(url: url))
     }
 
-    func trackExternalLinkOpen(url: URL) {
+    func trackExternalLinkOpen(url: String) {
         tracker.track(event: Events.Reader.openExternalLink(url: url))
     }
 }

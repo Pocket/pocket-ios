@@ -95,7 +95,7 @@ class SavedItemViewModel: ReadableViewModel {
         item.item?.datePublished
     }
 
-    var url: URL? {
+    var url: String {
         item.bestURL
     }
 
@@ -103,7 +103,7 @@ class SavedItemViewModel: ReadableViewModel {
         item.isArchived
     }
 
-    var premiumURL: URL? {
+    var premiumURL: String? {
         pocketPremiumURL(url, user: user)
     }
 
@@ -205,7 +205,7 @@ extension SavedItemViewModel {
         let updatedURL = pocketPremiumURL(url, user: user)
         presentedWebReaderURL = updatedURL
 
-        trackExternalLinkOpen(url: url)
+        trackExternalLinkOpen(url: url.absoluteString)
     }
 
     func archive() {
@@ -250,7 +250,8 @@ extension SavedItemViewModel {
     }
 
     private func saveExternalURL(_ url: URL) {
-        source.save(url: url)
+        // TODO: URL usage marker
+        source.save(url: url.absoluteString)
     }
 
     private func copyExternalURL(_ url: URL) {

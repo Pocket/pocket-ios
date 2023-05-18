@@ -76,15 +76,15 @@ class RecommendationViewModel: ReadableViewModel {
     }
 
     // TODO: Can this be converted from URL? -> String?
-    var url: URL? {
-        URL(string: recommendation.item.bestURL)
+    var url: String {
+        recommendation.item.bestURL
     }
 
     var isArchived: Bool {
         return recommendation.item.savedItem?.isArchived ?? false
     }
 
-    var premiumURL: URL? {
+    var premiumURL: String? {
         pocketPremiumURL(url, user: user)
     }
 
@@ -249,7 +249,7 @@ extension RecommendationViewModel {
         let updatedURL = pocketPremiumURL(url, user: user)
         presentedWebReaderURL = updatedURL
 
-        trackExternalLinkOpen(url: url)
+        trackExternalLinkOpen(url: url.absoluteString)
     }
 
     func moveFromArchiveToSaves(completion: (Bool) -> Void) {
@@ -284,7 +284,8 @@ extension RecommendationViewModel {
     }
 
     private func saveExternalURL(_ url: URL) {
-        source.save(url: url)
+        // TODO: URL usage marker
+        source.save(url: url.absoluteString)
     }
 
     private func copyExternalURL(_ url: URL) {
