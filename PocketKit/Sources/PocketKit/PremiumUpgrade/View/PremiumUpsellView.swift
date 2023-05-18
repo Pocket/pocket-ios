@@ -5,7 +5,7 @@ import Localization
 struct PremiumUpsellView: View {
     @ObservedObject
     var viewModel: PremiumUpsellViewModel
-    let itemURL: URL
+    let itemURL: String
 
     @State var dismissReason: DismissReason = .swipe
     var body: some View {

@@ -7,7 +7,7 @@ protocol ItemsListItem {
     var displayDetail: String { get }
     var isFavorite: Bool { get }
     var isArchived: Bool { get }
-    var bestURL: String { get }
+    var bestURL: String? { get }
     var topImageURL: URL? { get }
     var displayDomain: String? { get }
     var displayAuthors: String? { get }
