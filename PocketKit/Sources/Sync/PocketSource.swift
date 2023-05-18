@@ -546,26 +546,29 @@ extension PocketSource {
         try? space.filterTags(with: input, excluding: tags)
     }
 
-    public func fetchDetails(for savedItem: SavedItem) async throws {
+    public func fetchDetails(for savedItem: SavedItem) async throws -> Bool {
         Log.breadcrumb(category: "sync", level: .debug, message: "Fetching detals for item with id \(String(describing: savedItem.remoteID))")
 
         guard let remoteID = savedItem.remoteID else {
-            return
+            return false
         }
 
         guard let remoteSavedItem = try await apollo
             .fetch(query: SavedItemByIDQuery(id: remoteID))
             .data?.user?.savedItemById else {
-            return
+            return false
         }
 
-        try space.performAndWait {
+        return try space.performAndWait {
             guard let savedItem = space.backgroundObject(with: savedItem.objectID) as? SavedItem else {
                 Log.capture(message: "Could not retreive item from background context for mutation")
-                return
+                return false
             }
             savedItem.update(from: remoteSavedItem.fragments.savedItemParts, with: space)
             try space.save()
+
+            guard let article = remoteSavedItem.item.asItem?.marticle else { return false }
+            return !article.isEmpty
         }
     }
 
@@ -610,22 +613,25 @@ extension PocketSource {
         try await slateService.fetchSlateLineup(identifier)
     }
 
-    public func fetchDetails(for recommendation: Recommendation) async throws {
+    public func fetchDetails(for recommendation: Recommendation) async throws -> Bool {
         Log.breadcrumb(category: "recommendations", level: .debug, message: "Loading details for Recomendation: \(String(describing: recommendation.remoteID))")
 
         guard let remoteItem = try await apollo
             .fetch(query: ItemByIDQuery(id: recommendation.item.remoteID))
             .data?.itemByItemId?.fragments.itemParts else {
-            return
+            return false
         }
 
-        try space.performAndWait {
+        return try space.performAndWait {
             guard let backgroundItem = space.backgroundObject(with: recommendation.item.objectID) as? Item else {
                 Log.capture(message: "Could not fetch a background item when fetching details for Recommendations")
-                return
+                return false
             }
             backgroundItem.update(remote: remoteItem, with: space)
             try space.save()
+
+            guard let article = remoteItem.marticle else { return false }
+            return !article.isEmpty
         }
     }
 }

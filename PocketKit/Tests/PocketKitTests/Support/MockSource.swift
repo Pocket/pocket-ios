@@ -1020,7 +1020,7 @@ extension MockSource {
 // MARK: - Fetch details
 extension MockSource {
     static let fetchDetails = "fetchDetails"
-    typealias FetchDetailsImpl = (SavedItem) async throws -> Void
+    typealias FetchDetailsImpl = (SavedItem) async throws -> Bool
 
     struct FetchDetailsCall {
         let savedItem: SavedItem
@@ -1030,7 +1030,7 @@ extension MockSource {
         implementations[Self.fetchDetails] = impl
     }
 
-    func fetchDetails(for savedItem: SavedItem) async throws {
+    func fetchDetails(for savedItem: SavedItem) async throws -> Bool {
         guard let impl = implementations[Self.fetchDetails] as? FetchDetailsImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
@@ -1119,7 +1119,7 @@ extension MockSource {
 // MARK: - Fetch Details for Recommendation
 extension MockSource {
     static let fetchDetailsForRecommendation = "fetchDetailsForRecommendation"
-    typealias FetchDetailsForRecommendationImpl = (Recommendation) async throws -> Void
+    typealias FetchDetailsForRecommendationImpl = (Recommendation) async throws -> Bool
 
     struct FetchDetailsForRecommendationCall {
         let recommendation: Recommendation
@@ -1129,7 +1129,7 @@ extension MockSource {
         implementations[Self.fetchDetailsForRecommendation] = impl
     }
 
-    func fetchDetails(for recommendation: Recommendation) async throws {
+    func fetchDetails(for recommendation: Recommendation) async throws -> Bool {
         guard let impl = implementations[Self.fetchDetailsForRecommendation] as? FetchDetailsForRecommendationImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
