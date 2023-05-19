@@ -238,7 +238,8 @@ extension RecommendationViewModel {
         track(identifier: .itemUnfavorite)
     }
 
-    func openInWebView(url: URL?) {
+    func openInWebView(url: String) {
+        guard let url = URL(string: url) else { return }
         let updatedURL = pocketPremiumURL(url, user: user)
         presentedWebReaderURL = updatedURL
 
@@ -284,7 +285,6 @@ extension RecommendationViewModel {
     }
 
     private func saveExternalURL(_ url: URL) {
-        // TODO: URL usage marker
         source.save(url: url.absoluteString)
     }
 
@@ -294,7 +294,7 @@ extension RecommendationViewModel {
 
     private func shareExternalURL(_ url: URL) {
         // This view model is used within the context of a view that is presented within the reader
-        sharedActivity = PocketItemActivity.fromReader(url: url)
+        sharedActivity = PocketItemActivity.fromReader(url: url.absoluteString)
     }
 }
 

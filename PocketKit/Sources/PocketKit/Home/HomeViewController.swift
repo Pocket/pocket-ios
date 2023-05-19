@@ -399,7 +399,6 @@ extension HomeViewController {
         }.store(in: &readerSubscriptions)
 
         recommendation.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
-            // TODO: URL usage marker
             self?.present(url: url?.absoluteString)
         }.store(in: &readerSubscriptions)
 
@@ -438,7 +437,6 @@ extension HomeViewController {
         }.store(in: &readerSubscriptions)
 
         savedItem.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
-            // TODO: URL usage marker
             self?.present(url: url?.absoluteString)
         }.store(in: &readerSubscriptions)
 
@@ -536,7 +534,6 @@ extension HomeViewController {
     }
 
     private func present(url: String?) {
-        // TODO: URL usage marker
         guard let string = url, let url = URL(string: string) else { return }
 
         let safariVC = SFSafariViewController(url: url)

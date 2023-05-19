@@ -159,9 +159,8 @@ extension SlateDetailViewModel {
             recommendation: recommendation,
             overflowActions: [
                 .share { [weak self] sender in
-                    guard let bestURL = URL(string: recommendation.item.bestURL) else { return }
                     // This view model is used within the context of a view that is presented within Home
-                    self?.sharedActivity = PocketItemActivity.fromHome(url: bestURL, sender: sender)
+                    self?.sharedActivity = PocketItemActivity.fromHome(url: recommendation.item.bestURL, sender: sender)
                 },
                 .report { [weak self] _ in
                     self?.report(recommendation, at: indexPath)

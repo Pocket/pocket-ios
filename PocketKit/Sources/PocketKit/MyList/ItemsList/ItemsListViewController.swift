@@ -381,7 +381,6 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
 
         return UIContextMenuConfiguration {
             if showInWebView {
-                // TODO: URL usage marker
                 guard let url = URL(string: viewModel.url) else { return UIViewController() }
                 return SFSafariViewController(url: url)
             } else {

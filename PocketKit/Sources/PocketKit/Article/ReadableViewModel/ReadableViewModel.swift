@@ -36,7 +36,7 @@ protocol ReadableViewModel: ReadableViewControllerDelegate {
     /// - Parameters:
     ///     - url: The URL of the item to open in a web view
     /// - Note: A typical callee of this function will be the handler for when the Safari icon in the navigation bar is tapped
-    func openInWebView(url: URL?)
+    func openInWebView(url: String)
     /// Opens a link that was tapped within an item opened in the reader
     /// - Parameters:
     ///     - url: The URL of the link that was tapped within the reader
@@ -74,14 +74,10 @@ extension ReadableViewModel {
     }
 
     func showWebReader() {
-        // TODO: URL usage marker
-        guard let url = URL(string: url) else { return }
         openInWebView(url: url)
     }
 
     func share(additionalText: String? = nil) {
-        // TODO: URL usage marker
-        guard let url = URL(string: url) else { return }
         track(identifier: .itemShare)
         // Instances conforming to this view model are used within the context
         // of an item presented within the reader

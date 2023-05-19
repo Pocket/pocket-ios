@@ -519,8 +519,7 @@ extension HomeViewModel {
 
     private func share(_ recommendation: Recommendation, at indexPath: IndexPath, with sender: Any?) {
         // This view model is used within the context of a view that is presented within Saves
-        let bestURL = URL(string: recommendation.item.bestURL)! // TODO: This should not be force-unwrapped
-        self.sharedActivity = PocketItemActivity.fromHome(url: bestURL, sender: sender)
+        self.sharedActivity = PocketItemActivity.fromHome(url: recommendation.item.bestURL, sender: sender)
         let item = recommendation.item
         guard
             let slate = recommendation.slate,
@@ -537,8 +536,7 @@ extension HomeViewModel {
     private func share(_ savedItem: SavedItem, at indexPath: IndexPath, with sender: Any?) {
         // This view model is used within the context of a view that is presented within Home, but
         // within the context of "Recent Saves"
-        // TODO: URL usage marker
-        self.sharedActivity = PocketItemActivity.fromSaves(url: URL(string: savedItem.url), sender: sender)
+        self.sharedActivity = PocketItemActivity.fromSaves(url: savedItem.url, sender: sender)
         tracker.track(event: Events.Home.RecentSavesCardShare(url: savedItem.url, positionInList: indexPath.item))
     }
 
