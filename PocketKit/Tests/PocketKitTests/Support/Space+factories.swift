@@ -46,7 +46,7 @@ extension Space {
         item: Item? = nil
     ) -> SavedItem {
         backgroundContext.performAndWait {
-            let savedItem: SavedItem = SavedItem(context: backgroundContext, url: URL(string: url)!)
+            let savedItem: SavedItem = SavedItem(context: backgroundContext, url: url)
             let tags: [Tag]? = tags?.map { tag -> Tag in
                 let newTag: Tag = Tag(context: backgroundContext)
                 newTag.name = tag
@@ -58,7 +58,7 @@ extension Space {
             savedItem.isArchived = isArchived
             savedItem.createdAt = createdAt
             savedItem.archivedAt = archivedAt
-            savedItem.url = URL(string: url)!
+            savedItem.url = url
             savedItem.cursor = cursor
             savedItem.tags = NSOrderedSet(array: tags ?? [])
             savedItem.item = item ?? Item(context: backgroundContext, givenURL: url, remoteID: remoteID)
@@ -70,7 +70,7 @@ extension Space {
     @discardableResult
         func buildPendingSavedItem() -> SavedItem {
             backgroundContext.performAndWait {
-                let savedItem: SavedItem = SavedItem(context: backgroundContext, url: URL(string: "https://mozilla.com/example")!)
+                let savedItem: SavedItem = SavedItem(context: backgroundContext, url: "https://mozilla.com/example")
                 savedItem.createdAt = Date()
                 return savedItem
             }

@@ -4,7 +4,7 @@ import Localization
 
 struct MockItemsListItem: ItemsListItem {
     var displayTitle: String {
-        title ?? bestURL?.absoluteString ?? ""
+        title ?? bestURL ?? ""
     }
 
     var displayDomain: String? {
@@ -31,7 +31,7 @@ struct MockItemsListItem: ItemsListItem {
     let title: String?
     let isFavorite: Bool
     let isArchived: Bool
-    let bestURL: URL?
+    let bestURL: String
     let topImageURL: URL?
     let domain: String?
     let domainMetadata: ItemsListItemDomainMetadata?
@@ -40,14 +40,14 @@ struct MockItemsListItem: ItemsListItem {
     let host: String?
     let tagNames: [String]?
     let cursor: String?
-    let savedItemURL: URL?
+    let savedItemURL: String
 
     static func build(
         id: String? = nil,
         title: String? = nil,
         isFavorite: Bool = false,
         isArchived: Bool = false,
-        bestURL: URL? = nil,
+        bestURL: String = "https://example.com",
         topImageURL: URL? = nil,
         domain: String? = nil,
         domainMetadata: ItemsListItemDomainMetadata? = nil,
@@ -56,7 +56,7 @@ struct MockItemsListItem: ItemsListItem {
         host: String? = nil,
         tagNames: [String]? = nil,
         cursor: String? = nil,
-        savedItemURL: URL? = nil
+        savedItemURL: String = "https://example.com"
     ) -> MockItemsListItem {
         MockItemsListItem(
             id: id,

@@ -212,7 +212,7 @@ class PocketItemViewModelTests: XCTestCase {
 
         wait(for: [expectFetchSavedItemCall], timeout: 10)
 
-        XCTAssertEqual(viewModel.item.remoteItemParts?.url, pocketItem.savedItemURL?.absoluteString)
+        XCTAssertEqual(viewModel.item.remoteItemParts?.url, pocketItem.savedItemURL)
     }
 
     private func setupSearchItem() -> SearchSavedItem {
