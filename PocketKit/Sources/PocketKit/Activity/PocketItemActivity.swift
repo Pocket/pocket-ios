@@ -30,7 +30,7 @@ struct PocketItemActivity: PocketActivity {
         // Append utm_source (using pocketShareURL) as necessary if there is a source, else use the original URL
         let itemSourceURL = source.flatMap { pocketShareURL(url, source: $0) } ?? url
         return [
-            URL(string: itemSourceURL).flatMap { ActivityItemSource($0) },
+            URL(percentEncoding: itemSourceURL).flatMap { ActivityItemSource($0) },
             additionalText.flatMap(ActivityItemSource.init)
         ].compactMap { $0 }
     }

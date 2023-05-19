@@ -239,7 +239,7 @@ extension RecommendationViewModel {
     }
 
     func openInWebView(url: String) {
-        guard let url = URL(string: url) else { return }
+        guard let url = URL(percentEncoding: url) else { return }
         let updatedURL = pocketPremiumURL(url, user: user)
         presentedWebReaderURL = updatedURL
 

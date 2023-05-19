@@ -112,7 +112,7 @@ extension SlateDetailViewModel {
         let item = recommendation.item
         var destination: ContentOpen.Destination = .internal
         if item.shouldOpenInWebView {
-            guard let bestURL = URL(string: item.bestURL) else { return }
+            guard let bestURL = URL(percentEncoding: item.bestURL) else { return }
             let url = pocketPremiumURL(bestURL, user: user)
             presentedWebReaderURL = url
             destination = .external

@@ -534,7 +534,7 @@ extension HomeViewController {
     }
 
     private func present(url: String?) {
-        guard let string = url, let url = URL(string: string) else { return }
+        guard let string = url, let url = URL(percentEncoding: string) else { return }
 
         let safariVC = SFSafariViewController(url: url)
         safariVC.delegate = self

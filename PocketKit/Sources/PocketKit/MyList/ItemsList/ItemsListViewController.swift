@@ -381,7 +381,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
 
         return UIContextMenuConfiguration {
             if showInWebView {
-                guard let url = URL(string: viewModel.url) else { return UIViewController() }
+                guard let url = URL(percentEncoding: viewModel.url) else { return UIViewController() }
                 return SFSafariViewController(url: url)
             } else {
                 return ReadableViewController(readable: viewModel, readerSettings: ReaderSettings(userDefaults: .standard))
