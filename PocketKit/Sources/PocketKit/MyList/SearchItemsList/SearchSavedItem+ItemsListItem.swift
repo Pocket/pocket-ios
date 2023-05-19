@@ -92,8 +92,8 @@ extension SearchSavedItem: ItemsListItem {
         remoteItem.tags?.compactMap { $0.name }.sorted()
     }
 
-    var savedItemURL: URL? {
-        URL(string: remoteItem.url)
+    var savedItemURL: String {
+        remoteItem.url
     }
 }
 

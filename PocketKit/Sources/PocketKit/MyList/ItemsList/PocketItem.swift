@@ -54,7 +54,7 @@ struct PocketItem {
         item.bestURL
     }
 
-    var savedItemURL: URL? {
+    var savedItemURL: String {
         item.savedItemURL
     }
 

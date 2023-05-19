@@ -57,8 +57,8 @@ extension SavedItem: ItemsListItem {
         item?.savedItem?.cursor
     }
 
-    var savedItemURL: URL? {
-        URL(string: url)
+    var savedItemURL: String {
+        url
     }
 }
 
