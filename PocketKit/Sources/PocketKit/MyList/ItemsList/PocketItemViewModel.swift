@@ -115,11 +115,7 @@ class PocketItemViewModel: ObservableObject {
     }
 
     private func _share() {
-        if let url = item.savedItemURL {
-            tracker.track(event: Events.Search.shareItem(itemUrl: url, positionInList: index, scope: scope))
-        } else {
-            Log.capture(message: "Selected search item without an associated url, not logging analytics for shareItem")
-        }
+        tracker.track(event: Events.Search.shareItem(itemUrl: item.savedItemURL, positionInList: index, scope: scope))
         presentShareSheet = true
     }
 
@@ -154,13 +150,10 @@ class PocketItemViewModel: ObservableObject {
 
     /// Fetch a SavedItem or create one in order to use actions related to source
     private func fetchSavedItem() -> SavedItem? {
-        guard
-            let url = item.savedItemURL,
-            let savedItem = source.fetchOrCreateSavedItem(
-                with: url,
-                and: item.remoteItemParts
-            )
-        else {
+        guard let savedItem = source.fetchOrCreateSavedItem(
+            with: item.savedItemURL,
+            and: item.remoteItemParts
+        ) else {
             Log.capture(message: "Saved Item not created")
             return nil
         }
