@@ -355,7 +355,8 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     func _share(item: SavedItem, sender: Any?) {
         track(item: item, identifier: .itemShare)
         // This view model is used within the context of a view that is presented within Saves
-        sharedActivity = PocketItemActivity.fromSaves(url: item.url, sender: sender)
+        // TODO: URL usage marker
+        sharedActivity = PocketItemActivity.fromSaves(url: URL(string: item.url), sender: sender)
     }
 
     func overflowActions(for objectID: NSManagedObjectID) -> [ItemAction] {
