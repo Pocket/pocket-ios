@@ -50,7 +50,7 @@ struct PocketItem {
         item.remoteItemParts
     }
 
-    var bestURL: URL? {
+    var bestURL: String {
         item.bestURL
     }
 
