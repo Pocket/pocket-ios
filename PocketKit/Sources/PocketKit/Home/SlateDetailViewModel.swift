@@ -87,7 +87,7 @@ class SlateDetailViewModel {
                 return
             }
 
-            let givenURL = URL(string: item.givenURL)! // TODO: This should not be force-unwrapped
+            let givenURL = item.givenURL
             tracker.track(event: Events.ExpandedSlate.SlateArticleImpression(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
         }
     }
@@ -136,7 +136,7 @@ extension SlateDetailViewModel {
             return
         }
 
-        let givenURL = URL(string: item.givenURL)! // TODO: This should not be force-unwrapped
+        let givenURL = item.givenURL
         tracker.track(event: Events.ExpandedSlate.SlateArticleContentOpen(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID, destination: destination))
     }
 }
@@ -191,7 +191,7 @@ extension SlateDetailViewModel {
             return
         }
 
-        let givenURL = URL(string: item.givenURL)! // TODO: This should not be force-unwrapped
+        let givenURL = item.givenURL
         tracker.track(event: Events.ExpandedSlate.SlateArticleSave(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
     }
 
@@ -206,7 +206,7 @@ extension SlateDetailViewModel {
             return
         }
 
-        let givenURL = URL(string: item.givenURL)! // TODO: This should not be force-unwrapped
+        let givenURL = item.givenURL
         tracker.track(event: Events.ExpandedSlate.SlateArticleArchive(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
     }
 

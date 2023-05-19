@@ -371,7 +371,7 @@ extension HomeViewController {
         }.store(in: &slateDetailSubscriptions)
 
         viewModel.$presentedWebReaderURL.sink { [weak self] url in
-            self?.present(url: url)
+            self?.present(url: url?.absoluteString)
         }.store(in: &slateDetailSubscriptions)
 
         viewModel.$sharedActivity.sink { [weak self] activity in
@@ -399,7 +399,8 @@ extension HomeViewController {
         }.store(in: &readerSubscriptions)
 
         recommendation.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
-            self?.present(url: url)
+            // TODO: URL usage marker
+            self?.present(url: url?.absoluteString)
         }.store(in: &readerSubscriptions)
 
         recommendation.$isPresentingReaderSettings.receive(on: DispatchQueue.main).sink { [weak self] isPresenting in
@@ -437,7 +438,8 @@ extension HomeViewController {
         }.store(in: &readerSubscriptions)
 
         savedItem.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
-            self?.present(url: url)
+            // TODO: URL usage marker
+            self?.present(url: url?.absoluteString)
         }.store(in: &readerSubscriptions)
 
         savedItem.$isPresentingReaderSettings.receive(on: DispatchQueue.main).sink { [weak self] isPresenting in
@@ -533,8 +535,9 @@ extension HomeViewController {
         self.present(activityVC, animated: true)
     }
 
-    private func present(url: URL?) {
-        guard true, let url = url else { return }
+    private func present(url: String?) {
+        // TODO: URL usage marker
+        guard let string = url, let url = URL(string: string) else { return }
 
         let safariVC = SFSafariViewController(url: url)
         safariVC.delegate = self

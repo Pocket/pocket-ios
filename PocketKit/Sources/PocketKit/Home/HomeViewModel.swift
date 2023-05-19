@@ -294,7 +294,7 @@ extension HomeViewModel {
             return
         }
 
-        let givenURL = URL(string: item.givenURL)! // TODO: This should not be force-unwrapped
+        let givenURL = item.givenURL
         tracker.track(event: Events.Home.SlateArticleContentOpen(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID, destination: destination))
     }
 
@@ -530,14 +530,15 @@ extension HomeViewModel {
             return
         }
 
-        let givenURL = URL(string: item.givenURL)! // TODO: This should not be force-unwrapped
+        let givenURL = item.givenURL
         tracker.track(event: Events.Home.SlateArticleShare(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
     }
 
     private func share(_ savedItem: SavedItem, at indexPath: IndexPath, with sender: Any?) {
         // This view model is used within the context of a view that is presented within Home, but
         // within the context of "Recent Saves"
-        self.sharedActivity = PocketItemActivity.fromSaves(url: savedItem.url, sender: sender)
+        // TODO: URL usage marker
+        self.sharedActivity = PocketItemActivity.fromSaves(url: URL(string: savedItem.url), sender: sender)
         tracker.track(event: Events.Home.RecentSavesCardShare(url: savedItem.url, positionInList: indexPath.item))
     }
 
@@ -552,7 +553,7 @@ extension HomeViewModel {
             return
         }
 
-        let givenURL = URL(string: item.givenURL)! // TODO: This should not be force-unwrapped
+        let givenURL = item.givenURL
         tracker.track(event: Events.Home.SlateArticleSave(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
     }
 
@@ -567,7 +568,7 @@ extension HomeViewModel {
             return
         }
 
-        let givenURL = URL(string: item.givenURL)! // TODO: This should not be force-unwrapped
+        let givenURL = item.givenURL
         tracker.track(event: Events.Home.SlateArticleArchive(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
     }
 
@@ -606,7 +607,7 @@ extension HomeViewModel {
                 return
             }
 
-            let givenURL = URL(string: item.givenURL)! // TODO: This should not be force-unwrapped
+            let givenURL = item.givenURL
             tracker.track(event: Events.Home.SlateArticleImpression(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
         }
     }
