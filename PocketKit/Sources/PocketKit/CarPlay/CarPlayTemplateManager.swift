@@ -138,7 +138,7 @@ extension CarPlayTemplateManager {
     }
 
     private func updateUpdateNextButton() {
-        guard let currentQueue = self.currentQueue, let _ = currentQueue.staged else {
+        guard let currentQueue = self.currentQueue, currentQueue.staged != nil else {
             CPNowPlayingTemplate.shared.isUpNextButtonEnabled = false
             return
         }
