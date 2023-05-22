@@ -311,8 +311,8 @@ class RecommendationViewModelTests: XCTestCase {
         source.stubSaveURL { _ in }
 
         let viewModel = try subject(recommendation: space.createRecommendation(item: space.buildItem()))
-        let url = URL(string: "https://getpocket.com")!
-        let actions = viewModel.externalActions(for: url)
+        let url = "https://getpocket.com"
+        let actions = viewModel.externalActions(for: URL(string: url)!)
         viewModel.invokeAction(from: actions, title: "Save")
         XCTAssertEqual(source.saveURLCall(at: 0)?.url, url)
     }

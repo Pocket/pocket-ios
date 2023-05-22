@@ -11,8 +11,8 @@ public extension SavedItem {
         TextAlignment(language: item?.language)
     }
 
-    var bestURL: URL? {
-        item.flatMap { URL(string: $0.bestURL) } ?? url
+    var bestURL: String {
+        item?.bestURL ?? url
     }
 
     var isPending: Bool {

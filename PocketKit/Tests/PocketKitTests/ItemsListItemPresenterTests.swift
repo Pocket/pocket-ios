@@ -18,7 +18,7 @@ extension ItemsListItemPresenterTests {
     }
 
     func test_attributedTitle_noItemTitle_usesBestURL() {
-        let item = MockItemsListItem.build(bestURL: URL(string: "https://getpocket.com")!)
+        let item = MockItemsListItem.build(bestURL: "https://getpocket.com")
         let presenter = ItemsListItemPresenter(item: item)
 
         XCTAssertEqual(presenter.attributedTitle.string, "https://getpocket.com")

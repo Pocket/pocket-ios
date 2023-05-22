@@ -80,15 +80,15 @@ class RecommendationViewModel: ReadableViewModel {
     }
 
     // TODO: Can this be converted from URL? -> String?
-    var url: URL? {
-        URL(string: recommendation.item.bestURL)
+    var url: String {
+        recommendation.item.bestURL
     }
 
     var isArchived: Bool {
         return recommendation.item.savedItem?.isArchived ?? false
     }
 
-    var premiumURL: URL? {
+    var premiumURL: String? {
         pocketPremiumURL(url, user: user)
     }
 
@@ -282,7 +282,8 @@ extension RecommendationViewModel {
         trackUnfavorite(url: savedItem.url)
     }
 
-    func openInWebView(url: URL?) {
+    func openInWebView(url: String) {
+        guard let url = URL(percentEncoding: url) else { return }
         let updatedURL = pocketPremiumURL(url, user: user)
         presentedWebReaderURL = updatedURL
 
@@ -293,7 +294,7 @@ extension RecommendationViewModel {
         let updatedURL = pocketPremiumURL(url, user: user)
         presentedWebReaderURL = updatedURL
 
-        trackExternalLinkOpen(url: url)
+        trackExternalLinkOpen(url: url.absoluteString)
     }
 
     func moveFromArchiveToSaves(completion: (Bool) -> Void) {
@@ -327,7 +328,7 @@ extension RecommendationViewModel {
     }
 
     private func saveExternalURL(_ url: URL) {
-        source.save(url: url)
+        source.save(url: url.absoluteString)
     }
 
     private func copyExternalURL(_ url: URL) {
@@ -336,7 +337,7 @@ extension RecommendationViewModel {
 
     private func shareExternalURL(_ url: URL) {
         // This view model is used within the context of a view that is presented within the reader
-        sharedActivity = PocketItemActivity.fromReader(url: url)
+        sharedActivity = PocketItemActivity.fromReader(url: url.absoluteString)
     }
 }
 

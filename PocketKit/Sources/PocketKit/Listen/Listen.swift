@@ -127,7 +127,7 @@ extension Listen: PKTListenServiceDelegate {
 
         Log.breadcrumb(category: "listen", level: .info, message: "Performed \(actionName) via \(controlType)")
 
-        guard let url = kusari?.album?.givenURL else {
+        guard let url = kusari?.album?.givenURL?.absoluteString else {
             Log.capture(message: "Listen action occurred without an item url")
             return
         }
@@ -223,7 +223,7 @@ extension Listen: PKTListenPocketProxy {
     ///   - kusari: An object representing the item the user saved
     ///   - userInfo: Extra context info as needed
     func add(_ kusari: PKTKusari<PKTListenItem>, userInfo: [AnyHashable: Any] = [:]) {
-        guard let url = kusari.album?.givenURL else {
+        guard let url = kusari.album?.givenURL?.absoluteString else {
             Log.capture(message: "Tried to save item from Listen where we dont have the url")
             return
         }

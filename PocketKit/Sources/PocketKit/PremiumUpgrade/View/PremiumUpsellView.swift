@@ -7,8 +7,9 @@ import SharedPocketKit
 import Localization
 
 struct PremiumUpsellView: View {
-    @ObservedObject var viewModel: PremiumUpsellViewModel
-    let itemURL: URL
+    @ObservedObject
+    var viewModel: PremiumUpsellViewModel
+    let itemURL: String
 
     @State var dismissReason: DismissReason = .swipe
     var body: some View {

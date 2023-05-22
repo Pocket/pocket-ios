@@ -31,16 +31,16 @@ protocol ReadableViewModel: ReadableViewControllerDelegate {
     var authors: [ReadableAuthor]? { get }
     var domain: String? { get }
     var publishDate: Date? { get }
-    var url: URL? { get }
+    var url: String { get }
     var isArchived: Bool { get }
-    var premiumURL: URL? { get }
+    var premiumURL: String? { get }
 
     func delete()
     /// Opens an item presented in the reader in a web view instead
     /// - Parameters:
     ///     - url: The URL of the item to open in a web view
     /// - Note: A typical callee of this function will be the handler for when the Safari icon in the navigation bar is tapped
-    func openInWebView(url: URL?)
+    func openInWebView(url: String)
     /// Opens a link that was tapped within an item opened in the reader
     /// - Parameters:
     ///     - url: The URL of the link that was tapped within the reader
@@ -148,19 +148,11 @@ extension ReadableViewModel {
 extension ReadableViewModel {
     /// track when user views unsupported content cell
     func trackUnsupportedContentViewed() {
-        guard let url else {
-            Log.capture(message: "Reader item without an associated url, not logging analytics for unsupportedContentViewed")
-            return
-        }
         tracker.track(event: Events.Reader.unsupportedContentViewed(url: url))
     }
 
     /// track when user taps on button to open unsupported content in web view
     func trackUnsupportedContentButtonTapped() {
-        guard let url else {
-            Log.capture(message: "Reader item without an associated url, not logging analytics for unsupportedContentButtonTapped")
-            return
-        }
         tracker.track(event: Events.Reader.unsupportedContentButtonTapped(url: url))
     }
 
@@ -257,7 +249,7 @@ extension ReadableViewModel {
         tracker.track(event: Events.ReaderToolbar.openInWebView(url: url))
     }
 
-    func trackExternalLinkOpen(url: URL) {
+    func trackExternalLinkOpen(url: String) {
         tracker.track(event: Events.Reader.openExternalLink(url: url))
     }
 }

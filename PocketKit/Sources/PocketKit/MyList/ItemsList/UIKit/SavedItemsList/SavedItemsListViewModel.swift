@@ -543,14 +543,14 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     private func track(item: SavedItem, identifier: UIContext.Identifier) {
-        guard let url = item.bestURL, let indexPath = itemsController.indexPath(forObject: item) else {
+        guard let indexPath = itemsController.indexPath(forObject: item) else {
             return
         }
 
         var contexts: [Context] = [
             UIContext.saves.item(index: UIIndex(indexPath.item)),
             UIContext.button(identifier: identifier),
-            ContentContext(url: url)
+            ContentContext(url: item.bestURL)
         ]
 
         if selectedFilters.contains(.favorites) {
@@ -562,21 +562,13 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     private func trackContentOpen(destination: ContentOpen.Destination, item: SavedItem) {
-        guard let url = item.bestURL else {
-            return
-        }
-
-        tracker.track(event: Events.Saves.contentOpen(destination: destination, url: url))
+        tracker.track(event: Events.Saves.contentOpen(destination: destination, url: item.bestURL))
     }
 
     private func trackButton(item: SavedItem, identifier: UIContext.Identifier) {
-        guard let url = item.bestURL else {
-            return
-        }
-
         let contexts: [Context] = [
             UIContext.button(identifier: identifier),
-            ContentContext(url: url)
+            ContentContext(url: item.bestURL)
         ]
 
         let event = SnowplowEngagement(type: .general, value: nil)
@@ -584,13 +576,13 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     private func trackImpression(of item: SavedItem) {
-        guard let url = item.bestURL, let indexPath = self.itemsController.indexPath(forObject: item) else {
+        guard let indexPath = self.itemsController.indexPath(forObject: item) else {
             return
         }
 
         var contexts: [Context] = [
             UIContext.saves.item(index: UIIndex(indexPath.item)),
-            ContentContext(url: url)
+            ContentContext(url: item.bestURL)
         ]
 
         if selectedFilters.contains(.favorites) {

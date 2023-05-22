@@ -15,15 +15,15 @@ public struct ContentEntity: Entity {
     /**
      * The full URL of the content.
      */
-    let url: URL
+    let url: String
 
-    public init(url: URL) {
+    public init(url: String) {
         self.url = url
     }
 
     public func toSelfDescribingJson() -> SelfDescribingJson {
         return SelfDescribingJson(schema: ContentEntity.schema, andDictionary: [
-            "url": url.absoluteString,
+            "url": url,
         ])
     }
 }

@@ -57,7 +57,7 @@ class PocketSaveServiceTests: XCTestCase {
         }
 
         let service = subject()
-        let result = service.save(url: URL(string: "https://getpocket.com")!)
+        let result = service.save(url: "https://getpocket.com")
 
         guard case .newItem = result else {
             XCTFail("Expected newItem, but was \(result)")
@@ -71,8 +71,8 @@ class PocketSaveServiceTests: XCTestCase {
     }
 
     func test_save_whenSavedItemExistsWithGivenURL_returnsExistingItemStatus_postsItemUpdatedNotification() throws {
-        let url = URL(string: "http://example.com/item-1")!
-        let existingSavedItem = try space.createSavedItem(url: url.absoluteString)
+        let url = "http://example.com/item-1"
+        let existingSavedItem = try space.createSavedItem(url: url)
         backgroundActivityPerformer.stubPerformExpiringActivity { _, _ in }
 
         let savedItemUpdated = expectation(description: "savedItemUpdated")
@@ -117,7 +117,7 @@ class PocketSaveServiceTests: XCTestCase {
             return MockCancellable()
         }
 
-        let url = URL(string: "http://example.com/add-me-to-your-list")!
+        let url = "http://example.com/add-me-to-your-list"
         let service = subject()
         _ = service.save(url: url)
 
@@ -146,7 +146,7 @@ class PocketSaveServiceTests: XCTestCase {
             performMutationCalled.fulfill()
         }
 
-        let url = URL(string: "https://getpocket.com")!
+        let url = "https://getpocket.com"
         let service = self.subject()
         _ = service.save(url: url)
 
@@ -180,7 +180,7 @@ class PocketSaveServiceTests: XCTestCase {
         }
 
         let service = self.subject()
-        _ = service.save(url: URL(string: "https://getpocket.com")!)
+        _ = service.save(url: "https://getpocket.com")
 
         let finishedActivity = expectation(description: "finished the original call to perform an activity")
         queue.async {
@@ -212,7 +212,7 @@ class PocketSaveServiceTests: XCTestCase {
             return MockCancellable()
         }
 
-        let url = URL(string: "https://getpocket.com")!
+        let url = "https://getpocket.com"
         let service = self.subject()
         _ = service.save(url: url)
 
@@ -263,7 +263,7 @@ class PocketSaveServiceTests: XCTestCase {
         }
 
         let service = subject()
-        _ = service.save(url: URL(string: "https://getpocket.com")!)
+        _ = service.save(url: "https://getpocket.com")
         wait(for: [performCalled, savedItemCreated], timeout: 10)
 
         DispatchQueue.main.async {

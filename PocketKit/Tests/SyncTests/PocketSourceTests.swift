@@ -209,7 +209,7 @@ class PocketSourceTests: XCTestCase {
         let source = subject()
         source.delete(item: item)
 
-        let fetchedItem = try space.fetchSavedItem(byURL: URL(string: "https://mozilla.com/delete")!)
+        let fetchedItem = try space.fetchSavedItem(byURL: "https://mozilla.com/delete")
         XCTAssertNil(fetchedItem)
         XCTAssertFalse(item.hasChanges)
         wait(for: [expectationToRunOperation], timeout: 10)
@@ -368,7 +368,7 @@ class PocketSourceTests: XCTestCase {
         XCTAssertEqual(savedItems.count, 1)
 
         let savedItem = savedItems[0]
-        XCTAssertEqual(savedItem.url, URL(string: "https://getpocket.com")!)
+        XCTAssertEqual(savedItem.url, "https://getpocket.com")
 
         XCTAssertEqual(savedItem.item, seededItem)
     }
@@ -480,7 +480,7 @@ class PocketSourceTests: XCTestCase {
             }
         }
 
-        let url = URL(string: "https://getpocket.com")!
+        let url = "https://getpocket.com"
 
         let source = subject()
         source.save(url: url)
@@ -498,8 +498,8 @@ class PocketSourceTests: XCTestCase {
             }
         }
 
-        let url = URL(string: "https://getpocket.com")!
-        let seed = space.buildSavedItem(url: url.absoluteString)
+        let url = "https://getpocket.com"
+        let seed = space.buildSavedItem(url: url)
         let seedDate = Date()
         seed.createdAt = seedDate
         try? space.save()
@@ -522,7 +522,7 @@ class PocketSourceTests: XCTestCase {
             }
         }
 
-        let url = URL(string: "https://getpocket.com")!
+        let url = "https://getpocket.com"
         _ = space.buildSavedItem(url: "https://getpocket.com", isArchived: true)
         try? space.save()
 
@@ -738,7 +738,7 @@ extension PocketSourceTests {
         )
 
         let source = subject()
-        let savedItem = source.fetchOrCreateSavedItem(with: URL(string: "http://localhost:8080/hello")!, and: itemParts)
+        let savedItem = source.fetchOrCreateSavedItem(with: "http://localhost:8080/hello", and: itemParts)
 
         XCTAssertEqual(savedItem?.remoteID, "saved-item")
         XCTAssertEqual(savedItem?.item?.title, "item-title")
