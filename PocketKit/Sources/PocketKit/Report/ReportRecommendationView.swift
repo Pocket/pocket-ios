@@ -6,7 +6,7 @@ import Localization
 import SharedPocketKit
 
 struct ReportRecommendationView: View {
-    private struct Constants {
+    private enum Constants {
         static let cornerRadius: CGFloat = 4
         static let reasonRowHeight: CGFloat = 44
         static let reasonRowSelectedColor = Color(.ui.teal6)
@@ -111,7 +111,7 @@ struct ReportRecommendationView: View {
 }
 
 private struct ReportReasonRow: View {
-    private struct Constants {
+    private enum Constants {
         static let contentSpacing: CGFloat = 12
     }
 
@@ -136,7 +136,7 @@ private struct ReportReasonRow: View {
 }
 
 private struct ReportCommentRow: View {
-    private struct Constants {
+    private enum Constants {
         static let placeholderPadding = EdgeInsets(top: 8, leading: 5, bottom: 0, trailing: 0)
         static let placeholderOpacity: CGFloat = 0.5
         static let padding: CGFloat = 8

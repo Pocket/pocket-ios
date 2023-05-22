@@ -57,7 +57,7 @@ extension AuthorizationClientTests {
         }
     }
 
-    func test_logIn_startsOnlyOneSession() throws {
+    func test_logIn_startsOnlyOneSession() async {
         mockAuthenticationSession.url = URL(string: "pocket://fxa?guid=test-guid&access_token=test-access-token&id=test-id")
 
         let expectSessionStart = expectation(description: "expected session start")
@@ -69,14 +69,24 @@ extension AuthorizationClientTests {
         }
 
         Task {
-            _ = try await self.client.logIn(from: self)
+            do {
+                _ = try await self.client.logIn(from: self)
+            } catch {
+                XCTFail("Should not have thrown an error \(error)")
+            }
         }
 
         Task {
-            _ = try await self.client.logIn(from: self)
+            do {
+                _ = try await self.client.logIn(from: self)
+                XCTFail("Expected to throw error, but didn't")
+            } catch {
+                XCTAssertTrue(error is AuthorizationClient.Error)
+                XCTAssertEqual(error as? AuthorizationClient.Error, .alreadyAuthenticating)
+            }
         }
 
-        wait(for: [expectSessionStart], timeout: 10)
+        await fulfillment(of: [expectSessionStart], timeout: 10)
     }
 }
 
@@ -111,7 +121,8 @@ extension AuthorizationClientTests {
         }
     }
 
-    func test_signUp_startsOnlyOneSession() throws {
+    @MainActor
+    func test_signUp_startsOnlyOneSession() async {
         mockAuthenticationSession.url = URL(string: "pocket://fxa?guid=test-guid&access_token=test-access-token&id=test-id")
 
         let expectSessionStart = expectation(description: "expected session start")
@@ -123,14 +134,25 @@ extension AuthorizationClientTests {
         }
 
         Task {
-            _ = try await self.client.signUp(from: self)
+            do {
+                _ = try await self.client.signUp(from: self)
+            } catch {
+                XCTFail("Should not have thrown an error \(error)")
+            }
+
         }
 
         Task {
-            _ = try await self.client.signUp(from: self)
+            do {
+                _ = try await self.client.signUp(from: self)
+                XCTFail("Expected to throw error, but didn't")
+            } catch {
+                XCTAssertTrue(error is AuthorizationClient.Error)
+                XCTAssertEqual(error as? AuthorizationClient.Error, .alreadyAuthenticating)
+            }
         }
 
-        wait(for: [expectSessionStart], timeout: 10)
+        await fulfillment(of: [expectSessionStart], timeout: 10)
     }
 }
 

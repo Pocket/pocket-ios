@@ -17,12 +17,12 @@ public struct PocketButtonStyle: ButtonStyle {
 
     let variation: Variation
 
-    private struct Constants {
+    private enum Constants {
         static let cornerRadius: CGFloat = 13
         static let buttonHeight: CGFloat = 52
         static let style = Style.header.sansSerif.h6
 
-        struct Primary {
+        enum Primary {
             static let tintColor = Color(.ui.grey1)
             static let backgroundColor = Color(UIColor(.ui.teal2).resolvedColor(with: UITraitCollection(userInterfaceStyle: .light)))
             static let pressedBackgroundColor = Color(UIColor(.ui.teal1).resolvedColor(with: UITraitCollection(userInterfaceStyle: .light)))
@@ -30,7 +30,7 @@ public struct PocketButtonStyle: ButtonStyle {
             static let pressedForegroundColor = Color(.ui.white)
         }
 
-        struct Secondary {
+        enum Secondary {
             static let tintColor = Color(.ui.grey1)
             static let backgroundColor = Color(.clear)
             static let pressedBackgroundColor = Color(.ui.black1)
@@ -38,7 +38,7 @@ public struct PocketButtonStyle: ButtonStyle {
             static let pressedForegorundColor = Color(.ui.white1)
         }
 
-        struct InternalInfoLink {
+        enum InternalInfoLink {
             static let tintColor = Color(.ui.grey5)
             static let backgroundColor = Color(.ui.grey6)
             static let pressedBackgroundColor = Color(.ui.black1)
@@ -48,7 +48,7 @@ public struct PocketButtonStyle: ButtonStyle {
             static let style = Style.header.sansSerif.p4
         }
 
-        struct Destructive {
+        enum Destructive {
             static let tintColor = Color(.ui.grey1)
             static let backgroundColor = Color(.ui.coral1)
             static let pressedBackgroundColor = Color(.ui.white)

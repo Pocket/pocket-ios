@@ -50,6 +50,8 @@ class SavesRefreshCoordinatorTests: XCTestCase {
         XCTAssertEqual(registerCall?.identifier, coordinator.taskID)
     }
 
+    // Adding target, because we disable submitting background refreshes in the Sim.
+    #if !targetEnvironment(simulator)
     func test_receivingAppDidEnterBackgroundNotification_submitsBGAppRefreshRequest() {
         taskScheduler.stubRegisterHandler { _, _, _ in return true }
         taskScheduler.stubSubmit { _ in }
@@ -63,6 +65,7 @@ class SavesRefreshCoordinatorTests: XCTestCase {
         XCTAssertTrue(submitCall?.taskRequest is BGProcessingTaskRequest)
         XCTAssertEqual(submitCall?.taskRequest.identifier, coordinator.taskID)
     }
+    #endif
 
     func test_backgroundTaskHandler_beginsBackgroundtask_callsRefresh_completsBackgroundTask_completesRefreshTask() {
         // Setup task scheduler to capture the task handler so we can invoke it later
