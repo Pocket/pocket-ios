@@ -839,15 +839,11 @@ extension SavedItemsListViewModel {
 
 extension SavedItemsListViewModel {
     static func isItemDisabled(_ item: SavedItem, networkStatus: NWPath.Status) -> Bool {
-        if networkStatus == .unsatisfied {
-            if item.isArchived {
-                return !(item.item?.hasArticleComponents ?? false)
-            } else {
-                return item.isPending
-            }
+        guard networkStatus == .unsatisfied, item.isArchived else {
+            return item.isPending
         }
 
-        return item.isPending
+        return !(item.item?.hasArticleComponents ?? false)
     }
 
     func reloadSnapshot(for identifiers: [ItemsListCell<ItemIdentifier>]) {

@@ -40,7 +40,7 @@ class ItemsListItemPresenter {
     private let item: ItemsListItem
     private let isDisabled: Bool
 
-    init(item: ItemsListItem, isDisabled: Bool) {
+    init(item: ItemsListItem, isDisabled: Bool = false) {
         self.item = item
         self.isDisabled = isDisabled
     }
