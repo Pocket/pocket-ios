@@ -6,6 +6,7 @@ import UIKit
 import Localization
 import SharedPocketKit
 import Textile
+import Network
 
 public enum SavesViewType {
     case saves
@@ -153,6 +154,11 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             }
             .store(in: &subscriptions)
 
+        networkPathMonitor.updateHandler = { [weak self] status in
+            guard let self = self else { return }
+            _events.send(.networkStatusUpdated)
+        }
+        networkPathMonitor.start(queue: DispatchQueue.global(qos: .utility))
     }
 
     func fetch() {
@@ -260,7 +266,10 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     func presenter(for itemID: ItemIdentifier) -> ItemsListItemPresenter? {
-        bareItem(with: itemID).flatMap(ItemsListItemPresenter.init)
+        return bareItem(with: itemID)
+            .flatMap { ($0, Self.isItemDisabled($0, networkStatus: networkPathMonitor.currentNetworkPath.status)) }
+            .map { ItemsListItemPresenter(item: $0.0, isDisabled: $0.1) }
+        ?? nil
     }
 
     func filterButton(with filter: ItemsListFilter) -> TopicChipPresenter {
@@ -280,7 +289,8 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         case .filterButton:
             return true
         case .item(let objectID):
-            return !(bareItem(with: objectID)?.isPending ?? true)
+            guard let item = bareItem(with: objectID) else { return false }
+            return !Self.isItemDisabled(item, networkStatus: networkPathMonitor.currentNetworkPath.status)
         case .offline, .emptyState, .placeholder, .tag:
             return false
         }
@@ -824,5 +834,22 @@ extension SavedItemsListViewModel {
 
     func clearSelectedItem() {
         selectedItem = nil
+    }
+}
+
+extension SavedItemsListViewModel {
+    static func isItemDisabled(_ item: SavedItem, networkStatus: NWPath.Status) -> Bool {
+        guard networkStatus == .unsatisfied, item.isArchived else {
+            return item.isPending
+        }
+
+        return !(item.item?.hasArticleComponents ?? false)
+    }
+
+    func reloadSnapshot(for identifiers: [ItemsListCell<ItemIdentifier>]) {
+        guard identifiers.isEmpty == false else { return }
+        var snapshot = _snapshot
+        snapshot.reloadItems(identifiers)
+        _snapshot = snapshot
     }
 }
