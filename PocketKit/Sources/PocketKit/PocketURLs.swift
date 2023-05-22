@@ -13,11 +13,26 @@ func pocketPremiumURL(_ url: URL?, user: User) -> URL? {
     return url.appending(queryItems: [premiumQueryItem])
 }
 
+func pocketPremiumURL(_ url: String, user: User) -> String? {
+    guard let url = URL(string: url) else { return nil }
+    guard url.host == "getpocket.com", user.status == .premium else { return url.absoluteString }
+
+    let premiumQueryItem = URLQueryItem(name: "premium_user", value: "true")
+    return url.appending(queryItems: [premiumQueryItem]).absoluteString
+}
+
 func pocketShareURL(_ url: URL?, source: String) -> URL? {
     guard let url = url else { return nil }
 
     let sourceQueryItem = URLQueryItem(name: "utm_source", value: source)
     return append(queryItems: [sourceQueryItem], to: url)
+}
+
+func pocketShareURL(_ url: String, source: String) -> String? {
+    guard let url = URL(string: url) else { return nil }
+
+    let sourceQueryItem = URLQueryItem(name: "utm_source", value: source)
+    return append(queryItems: [sourceQueryItem], to: url).absoluteString
 }
 
 private func append(queryItems: [URLQueryItem], to url: URL) -> URL {

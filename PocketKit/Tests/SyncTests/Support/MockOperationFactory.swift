@@ -235,7 +235,7 @@ extension MockOperationFactory {
 
 // MARK: - saveItemOperation
 extension MockOperationFactory {
-    typealias SaveItemOperationImpl = (NSManagedObjectID, URL, SyncEvents, ApolloClientProtocol, Space) -> SyncOperation
+    typealias SaveItemOperationImpl = (NSManagedObjectID, String, SyncEvents, ApolloClientProtocol, Space) -> SyncOperation
 
     func stubSaveItemOperation(_ impl: @escaping SaveItemOperationImpl) {
         implementations["saveItemOperation"] = impl
@@ -243,7 +243,7 @@ extension MockOperationFactory {
 
     func saveItemOperation(
         managedItemID: NSManagedObjectID,
-        url: URL,
+        url: String,
         events: SyncEvents,
         apollo: ApolloClientProtocol,
         space: Space

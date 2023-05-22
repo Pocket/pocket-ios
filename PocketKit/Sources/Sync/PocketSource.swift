@@ -835,10 +835,10 @@ extension PocketSource {
                 return
             }
 
-            if let url = URL(string: recommendation.item.givenURL), let savedItem = try? space.fetchSavedItem(byURL: url) {
+            let givenURL = recommendation.item.givenURL
+            if let savedItem = try? space.fetchSavedItem(byURL: givenURL) {
                 unarchive(item: savedItem)
             } else {
-                let givenURL = URL(string: recommendation.item.givenURL)! // TODO: This should not be force-unwrapped
                 let savedItem: SavedItem = SavedItem(context: space.backgroundContext, url: givenURL)
                 savedItem.update(from: recommendation)
                 try? space.save()
@@ -886,7 +886,7 @@ extension PocketSource {
 
 // MARK: - URL
 extension PocketSource {
-    public func save(url: URL) {
+    public func save(url: String) {
         space.performAndWait {
             if let savedItem = try? space.fetchSavedItem(byURL: url) {
                 unarchive(item: savedItem)
@@ -908,7 +908,7 @@ extension PocketSource {
         try? space.fetchSavedItems(bySearchTerm: search, userPremium: user.status == .premium)
     }
 
-    public func fetchOrCreateSavedItem(with url: URL, and remoteParts: SavedItem.RemoteSavedItem?) -> SavedItem? {
+    public func fetchOrCreateSavedItem(with url: String, and remoteParts: SavedItem.RemoteSavedItem?) -> SavedItem? {
         let savedItem = (try? space.fetchSavedItem(byURL: url))
 
         if let remoteParts {

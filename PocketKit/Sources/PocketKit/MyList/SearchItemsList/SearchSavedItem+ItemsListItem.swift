@@ -54,15 +54,17 @@ extension SearchSavedItem: ItemsListItem {
         item.asItem?.title
     }
 
-    var bestURL: URL? {
-        guard let itemParts = item.asItem else {
-            Log.breadcrumb(category: "search", level: .warning, message: "Skipping updating of Item \(remoteItem.remoteID) because \(item) does not have itemParts")
-            return nil
+    var bestURL: String {
+        if let resolvedURL = item.asItem?.resolvedUrl {
+            return resolvedURL
+        } else if let item = item.asItem {
+            return item.givenUrl
+        } else if let url = item.asPendingItem?.givenUrl {
+            return url
+        } else {
+            Log.capture(message: "Server returned a search item not as Item or PendingItem")
+            return ""
         }
-
-        let resolvedURL = itemParts.resolvedUrl.flatMap(URL.init(string:))
-        let givenURL = URL(string: itemParts.givenUrl)
-        return resolvedURL ?? givenURL
     }
 
     var topImageURL: URL? {
@@ -87,15 +89,15 @@ extension SearchSavedItem: ItemsListItem {
     }
 
     var host: String? {
-        bestURL?.host
+        URL(string: bestURL)?.host(percentEncoded: false)
     }
 
     var tagNames: [String]? {
         remoteItem.tags?.compactMap { $0.name }.sorted()
     }
 
-    var savedItemURL: URL? {
-        URL(string: remoteItem.url)
+    var savedItemURL: String {
+        remoteItem.url
     }
 }
 

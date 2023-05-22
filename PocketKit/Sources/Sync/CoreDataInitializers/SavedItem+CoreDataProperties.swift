@@ -19,7 +19,7 @@ extension SavedItem {
     @NSManaged public var isArchived: Bool
     @NSManaged public var isFavorite: Bool
     @NSManaged public var remoteID: String?
-    @NSManaged public var url: URL
+    @NSManaged public var url: String
     @NSManaged public var item: Item?
     @NSManaged public var savedItemUpdatedNotification: SavedItemUpdatedNotification?
     @NSManaged public var tags: NSOrderedSet?

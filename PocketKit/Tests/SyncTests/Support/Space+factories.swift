@@ -50,7 +50,7 @@ extension Space {
         item: Item? = nil
     ) -> SavedItem {
         backgroundContext.performAndWait {
-            let savedItem: SavedItem = SavedItem(context: backgroundContext, url: URL(string: url)!)
+            let savedItem: SavedItem = SavedItem(context: backgroundContext, url: url)
             savedItem.remoteID = remoteID
             savedItem.isFavorite = isFavorite
             savedItem.isArchived = isArchived

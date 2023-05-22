@@ -66,7 +66,7 @@ extension SavedItem: PKTListenItem {
     }
 
     public var givenURL: URL? {
-        self.url
+        URL(percentEncoding: url)
     }
 
     public var localID: String? {

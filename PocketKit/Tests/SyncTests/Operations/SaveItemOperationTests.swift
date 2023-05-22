@@ -37,7 +37,7 @@ class SaveItemOperationTests: XCTestCase {
 
     func subject(
         managedItemID: NSManagedObjectID,
-        url: URL,
+        url: String,
         events: SyncEvents? = nil,
         apollo: ApolloClientProtocol? = nil,
         space: Space? = nil
@@ -52,10 +52,10 @@ class SaveItemOperationTests: XCTestCase {
     }
 
     func test_main_performsSaveItemMutation_andUpdatesLocalStorage() async throws {
-        let url = URL(string: "http://example.com/add-me-to-your-list")!
+        let url = "http://example.com/add-me-to-your-list"
         let savedItem = try space.createSavedItem(
             remoteID: "saved-item-1",
-            item: space.buildItem(givenURL: url.absoluteString)
+            item: space.buildItem(givenURL: url)
         )
 
         apollo.stubPerform(
@@ -74,7 +74,7 @@ class SaveItemOperationTests: XCTestCase {
 
         let performCall: MockApolloClient.PerformCall<SaveItemMutation>? = apollo.performCall(at: 0)
         XCTAssertNotNil(performCall)
-        XCTAssertEqual(performCall?.mutation.input.url, url.absoluteString)
+        XCTAssertEqual(performCall?.mutation.input.url, url)
 
         let item = try space.fetchSavedItem(byURL: url)
         XCTAssertEqual(savedItem.item?.resolvedURL, "https://resolved.example.com/item-1")

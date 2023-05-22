@@ -445,9 +445,8 @@ extension SearchViewModel: SearchResultActionDelegate {
 
     func select(_ searchItem: PocketItem, index: Int) {
         guard
-            let url = searchItem.savedItemURL,
             let savedItem = source.fetchOrCreateSavedItem(
-                with: url,
+                with: searchItem.savedItemURL,
                 and: searchItem.remoteItemParts
             )
         else {
@@ -534,13 +533,10 @@ extension SearchViewModel: SearchResultActionDelegate {
     }
 
     func fetchSavedItem(_ searchItem: PocketItem) -> SavedItem? {
-        guard
-            let url = searchItem.savedItemURL,
-            let savedItem = source.fetchOrCreateSavedItem(
-                with: url,
-                and: searchItem.remoteItemParts
-            )
-        else {
+        guard let savedItem = source.fetchOrCreateSavedItem(
+            with: searchItem.savedItemURL,
+            and: searchItem.remoteItemParts
+        ) else {
             Log.capture(message: "Saved Item not created")
             return nil
         }
@@ -570,11 +566,7 @@ extension SearchViewModel {
     /// - Parameters:
     ///   - url: url associated with the item
     ///   - index: position index of item in the list
-    func trackViewResults(url: URL?, index: Int) {
-        guard let url else {
-            Log.capture(message: "Selected search item without an associated url, not logging analytics for searchCardImpression")
-            return
-        }
+    func trackViewResults(url: String, index: Int) {
         tracker.track(event: Events.Search.searchCardImpression(url: url, positionInList: index, scope: selectedScope))
     }
 
@@ -582,7 +574,7 @@ extension SearchViewModel {
     /// - Parameters:
     ///   - url: url associated with the item
     ///   - index: position index of item in the list
-    func trackOpenSearchItem(url: URL, index: Int, destination: ContentOpen.Destination) {
+    func trackOpenSearchItem(url: String, index: Int, destination: ContentOpen.Destination) {
         tracker.track(event: Events.Search.searchCardContentOpen(url: url, positionInList: index, scope: selectedScope, destination: destination))
     }
 

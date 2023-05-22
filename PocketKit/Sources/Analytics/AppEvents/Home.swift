@@ -11,7 +11,7 @@ public extension Events.Home {
     /**
      Fired when a card in the `Recent Saves` section scrolls into view
      */
-    static func RecentSavesCardImpression(url: URL, positionInList: Int) -> Impression {
+    static func RecentSavesCardImpression(url: String, positionInList: Int) -> Impression {
         return Impression(
             component: .card,
             requirement: .viewable,
@@ -29,7 +29,7 @@ public extension Events.Home {
     /**
      Fired when a card in the `Recent Saves` section is shared
      */
-    static func RecentSavesCardShare(url: URL, positionInList: Int) -> Engagement {
+    static func RecentSavesCardShare(url: String, positionInList: Int) -> Engagement {
         return Engagement(
             uiEntity: UiEntity(
                 .button,
@@ -45,7 +45,7 @@ public extension Events.Home {
     /**
      Fired when a card in the `Recent Saves` section is deleted
      */
-    static func RecentSavesCardDelete(url: URL, positionInList: Int) -> Engagement {
+    static func RecentSavesCardDelete(url: String, positionInList: Int) -> Engagement {
         return Engagement(
             uiEntity: UiEntity(
                 .button,
@@ -61,7 +61,7 @@ public extension Events.Home {
     /**
      Fired when a card in the `Recent Saves` section is archived
      */
-    static func RecentSavesCardArchive(url: URL, positionInList: Int) -> Engagement {
+    static func RecentSavesCardArchive(url: String, positionInList: Int) -> Engagement {
         return Engagement(
             uiEntity: UiEntity(
                 .button,
@@ -77,7 +77,7 @@ public extension Events.Home {
     /**
      Fired when a user clicks a card in the `Recent Saves` section
      */
-    static func RecentSavesCardContentOpen(url: URL, positionInList: Int) -> ContentOpen {
+    static func RecentSavesCardContentOpen(url: String, positionInList: Int) -> ContentOpen {
         return ContentOpen(
             contentEntity:
                 ContentEntity(url: url),
@@ -92,7 +92,7 @@ public extension Events.Home {
     /**
      Fired when a user clicks a card on Home using the /discover API
      */
-    static func SlateArticleContentOpen(url: URL, positionInList: Int, slateId: String, slateRequestId: String, slateExperimentId: String, slateIndex: Int, slateLineupId: String, slateLineupRequestId: String, slateLineupExperimentId: String, recommendationId: String, destination: ContentOpen.Destination) -> ContentOpen {
+    static func SlateArticleContentOpen(url: String, positionInList: Int, slateId: String, slateRequestId: String, slateExperimentId: String, slateIndex: Int, slateLineupId: String, slateLineupRequestId: String, slateLineupExperimentId: String, recommendationId: String, destination: ContentOpen.Destination) -> ContentOpen {
         return ContentOpen(
             destination: destination,
             contentEntity:
@@ -113,7 +113,7 @@ public extension Events.Home {
     /**
      Fired when a user sees a card on Home using the /discover API
      */
-    static func SlateArticleImpression(url: URL, positionInList: Int, slateId: String, slateRequestId: String, slateExperimentId: String, slateIndex: Int, slateLineupId: String, slateLineupRequestId: String, slateLineupExperimentId: String, recommendationId: String) -> Impression {
+    static func SlateArticleImpression(url: String, positionInList: Int, slateId: String, slateRequestId: String, slateExperimentId: String, slateIndex: Int, slateLineupId: String, slateLineupRequestId: String, slateLineupExperimentId: String, recommendationId: String) -> Impression {
         return Impression(
             component: .card,
             requirement: .viewable,
@@ -134,7 +134,7 @@ public extension Events.Home {
     /**
      Fired when a user saves a card on Home using the /discover API
      */
-    static func SlateArticleSave(url: URL, positionInList: Int, slateId: String, slateRequestId: String, slateExperimentId: String, slateIndex: Int, slateLineupId: String, slateLineupRequestId: String, slateLineupExperimentId: String, recommendationId: String) -> Engagement {
+    static func SlateArticleSave(url: String, positionInList: Int, slateId: String, slateRequestId: String, slateExperimentId: String, slateIndex: Int, slateLineupId: String, slateLineupRequestId: String, slateLineupExperimentId: String, recommendationId: String) -> Engagement {
         return Engagement(
             .save(
                 contentEntity: ContentEntity(url: url)
@@ -155,7 +155,7 @@ public extension Events.Home {
     /**
      Fired when a user archives a card on Home using the /discover API
      */
-    static func SlateArticleArchive(url: URL, positionInList: Int, slateId: String, slateRequestId: String, slateExperimentId: String, slateIndex: Int, slateLineupId: String, slateLineupRequestId: String, slateLineupExperimentId: String, recommendationId: String) -> Engagement {
+    static func SlateArticleArchive(url: String, positionInList: Int, slateId: String, slateRequestId: String, slateExperimentId: String, slateIndex: Int, slateLineupId: String, slateLineupRequestId: String, slateLineupExperimentId: String, recommendationId: String) -> Engagement {
         return Engagement(
             .general,
             uiEntity: UiEntity(
@@ -175,7 +175,7 @@ public extension Events.Home {
     /**
      Fired when a user shares a card on Home using the /discover API
      */
-    static func SlateArticleShare(url: URL, positionInList: Int, slateId: String, slateRequestId: String, slateExperimentId: String, slateIndex: Int, slateLineupId: String, slateLineupRequestId: String, slateLineupExperimentId: String, recommendationId: String) -> Engagement {
+    static func SlateArticleShare(url: String, positionInList: Int, slateId: String, slateRequestId: String, slateExperimentId: String, slateIndex: Int, slateLineupId: String, slateLineupRequestId: String, slateLineupExperimentId: String, recommendationId: String) -> Engagement {
         return Engagement(
             .general,
             uiEntity: UiEntity(
@@ -195,7 +195,7 @@ public extension Events.Home {
     /**
      Fired when a user selects the report action on Home using the /discover API
      */
-    static func SlateArticleReport(url: URL, reason: ReportEntity.Reason, comment: String?) -> Engagement {
+    static func SlateArticleReport(url: String, reason: ReportEntity.Reason, comment: String?) -> Engagement {
         return Engagement(
             .report(
                 reportEntity: ReportEntity(reason: reason, comment: comment),

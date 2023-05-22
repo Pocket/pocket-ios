@@ -29,11 +29,7 @@ class ReadableViewController: UIViewController {
     weak var delegate: ReadableViewControllerDelegate?
 
     private var contexts: [Context] {
-        guard let url = readableViewModel.url else {
-            return []
-        }
-
-        let content = ContentContext(url: url)
+        let content = ContentContext(url: readableViewModel.url)
         return [content]
     }
 

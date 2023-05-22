@@ -52,7 +52,7 @@ class SavedItemViewModelTests: XCTestCase {
         userDefaults = UserDefaults(suiteName: "SavedItemViewModelTests")
         user = MockUser()
 
-        let savedItem = SavedItem(context: space.backgroundContext, url: URL(string: "http://mozilla.com")!)
+        let savedItem = SavedItem(context: space.backgroundContext, url: "http://mozilla.com")
         saveService.stubSave { _ in .newItem(savedItem) }
     }
 
@@ -132,7 +132,7 @@ extension SavedItemViewModelTests {
         context.stubCompleteRequest { _, _ in }
 
         await viewModel.save(from: context)
-        XCTAssertEqual(saveService.saveCall(at: 0)?.url, URL(string: "https://getpocket.com")!)
+        XCTAssertEqual(saveService.saveCall(at: 0)?.url, "https://getpocket.com")
     }
 
     func test_save_ifValidSessionAndURLString_sendsCorrectURLToService() async {
@@ -158,7 +158,7 @@ extension SavedItemViewModelTests {
         context.stubCompleteRequest { _, _ in }
 
         await viewModel.save(from: context)
-        XCTAssertEqual(saveService.saveCall(at: 0)?.url, URL(string: "https://getpocket.com")!)
+        XCTAssertEqual(saveService.saveCall(at: 0)?.url, "https://getpocket.com")
     }
 
     func test_save_withStringContainingURL_sendsCorrectURLToService() async {
@@ -184,7 +184,7 @@ extension SavedItemViewModelTests {
         context.stubCompleteRequest { _, _ in }
 
         await viewModel.save(from: context)
-        XCTAssertEqual(saveService.saveCall(at: 0)?.url, URL(string: "https://getpocket.com")!)
+        XCTAssertEqual(saveService.saveCall(at: 0)?.url, "https://getpocket.com")
     }
 
     func test_save_ifValidSessionAndURL_automaticallyCompletesRequest() async {
@@ -224,7 +224,7 @@ extension SavedItemViewModelTests {
             accessToken: "mock-access-token",
             userIdentifier: "mock-user-identifier"
         )
-        let savedItem = SavedItem(context: self.space.backgroundContext, url: URL(string: "http://mozilla.com")!)
+        let savedItem = SavedItem(context: self.space.backgroundContext, url: "http://mozilla.com")
         saveService.stubSave { _ in .existingItem(savedItem) }
 
         let provider = MockItemProvider()

@@ -19,7 +19,7 @@ extension Recommendation {
         item.syndicatedArticle?.publisherName
         ?? item.domainMetadata?.name
         ?? item.domain
-        ?? URL(string: item.bestURL)?.host
+        ?? URL(percentEncoding: item.bestURL)?.host
         ?? "" // TODO: What should be the final fallback string?
     }
 

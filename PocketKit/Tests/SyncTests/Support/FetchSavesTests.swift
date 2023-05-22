@@ -99,7 +99,7 @@ class FetchSavesTests: XCTestCase {
         let savedItem = savedItems[0]
         XCTAssertEqual(savedItem.cursor, "cursor-1")
         XCTAssertEqual(savedItem.remoteID, "saved-item-1")
-        XCTAssertEqual(savedItem.url, URL(string: "https://example.com/item-1")!)
+        XCTAssertEqual(savedItem.url, "https://example.com/item-1")
         XCTAssertEqual(savedItem.createdAt.timeIntervalSince1970, 0)
         XCTAssertEqual(savedItem.deletedAt?.timeIntervalSince1970, nil)
         XCTAssertEqual(savedItem.isArchived, false)
@@ -162,7 +162,7 @@ class FetchSavesTests: XCTestCase {
         let service = subject()
         _ = await service.execute(syncTaskId: task.objectID)
 
-        let item = try space.fetchSavedItem(byURL: URL(string: "http://example.com/item-1")!)
+        let item = try space.fetchSavedItem(byURL: "http://example.com/item-1")
         XCTAssertEqual(item?.item?.title, "Updated Item 1")
     }
 

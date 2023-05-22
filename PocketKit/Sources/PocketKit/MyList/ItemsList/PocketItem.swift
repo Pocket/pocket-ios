@@ -52,11 +52,11 @@ struct PocketItem {
         item.remoteItemParts
     }
 
-    var bestURL: URL? {
+    var bestURL: String {
         item.bestURL
     }
 
-    var savedItemURL: URL? {
+    var savedItemURL: String {
         item.savedItemURL
     }
 
