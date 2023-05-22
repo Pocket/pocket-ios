@@ -336,6 +336,10 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
         switch event {
         case .selectionCleared:
             deselectAll()
+        case .networkStatusUpdated:
+            let reloads = collectionView.indexPathsForVisibleItems
+                .compactMap { dataSource.itemIdentifier(for: $0) }
+            model.reloadSnapshot(for: reloads)
         }
     }
 
