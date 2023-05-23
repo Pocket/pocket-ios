@@ -1,10 +1,10 @@
 import UIKit
 
 private func imageCacheFilters(_ requestedSize: CGSize?) -> String {
-    let width = requestedSize?.width ?? UIScreen.main.nativeBounds.width
-    let height = requestedSize?.height ?? UIScreen.main.nativeBounds.height
+    let width: Int = Int(requestedSize?.width ?? UIScreen.main.nativeBounds.width)
+    let height: Int = Int(requestedSize?.height ?? UIScreen.main.nativeBounds.height)
 
-    return "/fit-in/\(Int(width))x\(Int(height))/filters:format(jpeg):quality(60):no_upscale():strip_exif()"
+    return "/fit-in/\(width)x\(height)/filters:format(jpeg):quality(60):no_upscale():strip_exif()"
 }
 
 private let baseURL = URL(string: "https://pocket-image-cache.com")!
