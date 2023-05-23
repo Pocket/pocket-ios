@@ -86,9 +86,9 @@ public protocol Source {
 
     func delete(images: [Image])
 
-    func fetchDetails(for savedItem: SavedItem) async throws
+    func fetchDetails(for savedItem: SavedItem) async throws -> Bool
 
-    func fetchDetails(for recommendation: Recommendation) async throws
+    func fetchDetails(for recommendation: Recommendation) async throws -> Bool
 
     func fetchDetails(for sharedWithYouHighlight: SharedWithYouHighlight) async throws
 

@@ -2,6 +2,7 @@ import Analytics
 import Combine
 import SharedPocketKit
 import SwiftUI
+import StoreKit
 import Sync
 import Textile
 import Network
@@ -158,8 +159,12 @@ extension AccountViewModel {
                 try await self.restoreSubscription()
                 isPresentingRestoreSuccessful = true
             } catch {
-                Log.capture(message: "Manual purchase restore failed: \(error)")
                 isPresentingRestoreNotSuccessful = true
+                // do not send user cancellations as errors to Sentry
+                if let storeKitError = error as? StoreKitError, case .userCancelled = storeKitError {
+                    return
+                }
+                Log.capture(message: "Manual purchase restore failed: \(error)")
             }
         }
     }

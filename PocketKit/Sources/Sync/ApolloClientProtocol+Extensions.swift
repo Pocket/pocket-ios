@@ -24,9 +24,7 @@ public extension ApolloClientProtocol {
             _ = fetch(query: query, queue: queue) { result in
                 switch result {
                 case .failure(let error):
-                    if !Self.handleServerError(error) {
-                        Log.capture(error: error, filename: filename, line: line, column: column, funcName: funcName)
-                    }
+                    Self.handleServerError(error, filename: filename, line: line, column: column, funcName: funcName)
                     continuation.resume(throwing: error)
                 case .success(let data):
                     guard let errors = data.errors,
@@ -53,9 +51,7 @@ public extension ApolloClientProtocol {
             ) { result in
                 switch result {
                 case .failure(let error):
-                    if !Self.handleServerError(error) {
-                        Log.capture(error: error, filename: filename, line: line, column: column, funcName: funcName)
-                    }
+                    Self.handleServerError(error, filename: filename, line: line, column: column, funcName: funcName)
                     continuation.resume(throwing: error)
                 case .success(let data):
                     guard let errors = data.errors,
@@ -72,17 +68,32 @@ public extension ApolloClientProtocol {
         }
     }
 
-    private static func handleServerError(_ error: Error) -> Bool {
+    /// Takes a GraphQl response error and logs it to Sentry. If the error code belongs
+    /// to a specified set of errors, also posts a notification containing the status code
+    private static func handleServerError(_ error: Error,
+                                          filename: String,
+                                          line: Int,
+                                          column: Int,
+                                          funcName: String) {
 
         // Codes we wish to notify the user about
-        let serverErrorCodes = [429, 500, 503]
+        let notifiableErrorCodes = [429, 500, 503]
 
-        guard let responseError = error as? ResponseCodeInterceptor.ResponseCodeError,
-              case .invalidResponseCode(let response, _) = responseError,
-              let code = response?.statusCode,
-              serverErrorCodes.contains(code) else { return false }
+        guard let responseError = error as? ResponseCodeInterceptor.ResponseCodeError else {
+            Log.capture(message: "GraphQl Error - unknown error.", filename: filename, line: line, column: column, funcName: funcName)
+            return
+        }
 
-        NotificationCenter.default.post(name: .serverError, object: code)
-        return true
+        Log.capture(message: "GraphQl Error - description: \(responseError.errorDescription ?? "no description found").",
+                    filename: filename,
+                    line: line,
+                    column: column,
+                    funcName: funcName)
+
+        if case .invalidResponseCode(let response, _) = responseError,
+           let code = response?.statusCode,
+           notifiableErrorCodes.contains(code) {
+            NotificationCenter.default.post(name: .serverError, object: code)
+        }
     }
 }

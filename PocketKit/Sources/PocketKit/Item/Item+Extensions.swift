@@ -65,4 +65,8 @@ public extension Item {
     var isImage: Bool {
         hasImage == .isImage
     }
+
+    var hasArticleComponents: Bool {
+        article?.components.isEmpty == false
+    }
 }

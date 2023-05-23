@@ -92,6 +92,7 @@ enum ItemsListFilter: String, Hashable, CaseIterable {
 
 enum ItemsListEvent<ItemIdentifier: Hashable> {
     case selectionCleared
+    case networkStatusUpdated
 }
 
 protocol ItemsListViewModel: AnyObject {
@@ -126,4 +127,6 @@ protocol ItemsListViewModel: AnyObject {
 
     func willDisplay(_ cell: ItemsListCell<ItemIdentifier>)
     func prefetch(itemsAt: [IndexPath])
+
+    func reloadSnapshot(for identifiers: [ItemsListCell<ItemIdentifier>])
 }

@@ -38,17 +38,19 @@ private extension Style {
 
 class ItemsListItemPresenter {
     private let item: ItemsListItem
+    private let isDisabled: Bool
 
-    init(item: ItemsListItem) {
+    init(item: ItemsListItem, isDisabled: Bool = false) {
         self.item = item
+        self.isDisabled = isDisabled
     }
 
     var attributedTitle: NSAttributedString {
-        NSAttributedString(string: title, style: item.isPending ? .pendingTitle : .title)
+        NSAttributedString(string: title, style: isDisabled ? .pendingTitle : .title)
     }
 
     var attributedDetail: NSAttributedString {
-        NSAttributedString(string: detail, style: item.isPending ? .pendingDetail : .detail)
+        NSAttributedString(string: detail, style: isDisabled ? .pendingDetail : .detail)
     }
 
     var attributedTags: [NSAttributedString]? {

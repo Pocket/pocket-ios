@@ -17,7 +17,6 @@
 #define PKTCoreLogging_h
 #endif /* PKTCoreLogging_h */
 
-#define NSLoggerAvailable
 #define CocoaLumberjackAvailable
 
 UIKIT_EXTERN NSString *__nonnull const PKTShareExtensionAPICommunicatorBaseURL;
