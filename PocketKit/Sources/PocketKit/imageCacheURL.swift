@@ -1,10 +1,15 @@
 import UIKit
 
-private let imageCacheFilters = "/fit-in/\(Int(UIScreen.main.nativeBounds.width))x\(Int(UIScreen.main.nativeBounds.height))/filters:format(jpeg):quality(60):no_upscale():strip_exif()"
+private func imageCacheFilters(_ requestedSize: CGSize?) -> String {
+    let width = requestedSize?.width ?? UIScreen.main.nativeBounds.width
+    let height = requestedSize?.height ?? UIScreen.main.nativeBounds.height
+
+    return "/fit-in/\(Int(width))x\(Int(height))/filters:format(jpeg):quality(60):no_upscale():strip_exif()"
+}
 
 private let baseURL = URL(string: "https://pocket-image-cache.com")!
 
-func imageCacheURL(for imageURL: URL?) -> URL? {
+func imageCacheURL(for imageURL: URL?, requestedSize: CGSize? = nil) -> URL? {
     let url = imageURL
         .flatMap { $0.absoluteString }
         // Need to remove percent encoding because we add it in Marticle Images
@@ -17,7 +22,7 @@ func imageCacheURL(for imageURL: URL?) -> URL? {
             allowedCharacterSet.remove(charactersIn: ":?&")
 
             let path = [
-                imageCacheFilters,
+                imageCacheFilters(requestedSize),
                 imageURLString.addingPercentEncoding(withAllowedCharacters: allowedCharacterSet) ?? imageURLString
             ].joined(separator: "/")
             return URL(string: path, relativeTo: baseURL)
