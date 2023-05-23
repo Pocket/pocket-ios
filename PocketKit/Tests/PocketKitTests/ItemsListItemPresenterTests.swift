@@ -30,7 +30,7 @@ extension ItemsListItemPresenterTests {
 
     func test_attributedTitle_whenItemIsPending_usesCorrectStyle() {
         let item = MockItemsListItem.build(title: "Pocket", isPending: true)
-        let presenter = ItemsListItemPresenter(item: item)
+        let presenter = ItemsListItemPresenter(item: item, isDisabled: true)
 
         let style = presenter.attributedTitle.attributes(at: 0, effectiveRange: nil)[.style] as! Style
         XCTAssertEqual(UIColor(style.colorAsset), UIColor(.ui.grey5))
@@ -114,7 +114,7 @@ extension ItemsListItemPresenterTests {
 
     func test_attributedDetail_whenItemIsPending_usesCorrectStyle() {
         let item = MockItemsListItem.build(domain: "Pocket", isPending: true)
-        let presenter = ItemsListItemPresenter(item: item)
+        let presenter = ItemsListItemPresenter(item: item, isDisabled: true)
 
         let style = presenter.attributedDetail.attributes(at: 0, effectiveRange: nil)[.style] as! Style
         XCTAssertEqual(UIColor(style.colorAsset), UIColor(.ui.grey5))
