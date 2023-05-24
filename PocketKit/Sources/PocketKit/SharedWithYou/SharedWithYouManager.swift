@@ -30,18 +30,28 @@ class SharedWithYouManager: NSObject {
             // Register for login notifications
             NotificationCenter.default.publisher(
                 for: .userLoggedIn
-            ).sink { [weak self] notification in
+            )
+            .receive(on: DispatchQueue.global(qos: .utility))
+            .sink { [weak self] notification in
                 self?.loggedIn()
             }.store(in: &subscriptions)
 
             // Register for logout notifications
             NotificationCenter.default.publisher(
                 for: .userLoggedOut
-            ).sink { [weak self] notification in
+            )
+            .receive(on: DispatchQueue.global(qos: .utility))
+            .sink { [weak self] notification in
                 self?.loggedOut()
             }.store(in: &subscriptions)
 
-            handleSessionInitilization(session: appSession.currentSession)
+            NotificationCenter.default.publisher(
+                for: UIScene.willEnterForegroundNotification
+            )
+            .receive(on: DispatchQueue.global(qos: .utility))
+            .sink { [weak self] notification in
+                self?.handleSessionInitilization(session: self?.appSession.currentSession)
+            }.store(in: &subscriptions)
         }
 
     /**
