@@ -37,8 +37,10 @@ public struct ReportIssueView: View {
             }.listRowInsets(EdgeInsets())
 
             ReportField(userInput: $name, header: Localization.ReportIssue.name, height: Constants.defaultRowHeight)
+                .accessibilityIdentifier("name-field")
 
             ReportField(userInput: $email, header: Localization.ReportIssue.email, height: Constants.defaultRowHeight)
+                .accessibilityIdentifier("email-field")
 
             Section(header: Text(Localization.ReportIssue.comment).style(.recommendation.textStyle).textCase(nil)) {
                 TextEditor(text: $reportComment)
@@ -46,6 +48,7 @@ public struct ReportIssueView: View {
                     .padding()
                     .frame(height: Constants.commentRowHeight)
                     .overlay(RoundedRectangle(cornerRadius: Constants.cornerRadius).strokeBorder(Color.black, style: StrokeStyle(lineWidth: Constants.lineWidth)))
+                    .accessibilityIdentifier("comment-section")
             }.listRowInsets(EdgeInsets())
 
             Button(action: {
@@ -57,6 +60,7 @@ public struct ReportIssueView: View {
             .listRowBackground(Rectangle().foregroundColor(.clear))
             .listRowInsets(EdgeInsets())
             .buttonStyle(PocketButtonStyle(.primary))
+            .accessibilityIdentifier("submit-issue")
         }
         .padding([.top, .bottom], Constants.padding)
         .formStyle(.grouped)
