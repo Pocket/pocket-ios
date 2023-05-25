@@ -106,8 +106,9 @@ class HomeViewModel: NSObject {
     private let notificationCenter: NotificationCenter
     private var subscriptions: [AnyCancellable] = []
     private var recentSavesCount: Int = 0
-    private var store: SubscriptionStore
     private let featureFlags: FeatureFlagServiceProtocol
+    private let store: SubscriptionStore
+    private let recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService
 
     private let recentSavesController: NSFetchedResultsController<SavedItem>
     private let recomendationsController: RichFetchedResultsController<Recommendation>
@@ -119,6 +120,7 @@ class HomeViewModel: NSObject {
         homeRefreshCoordinator: RefreshCoordinator,
         user: User,
         store: SubscriptionStore,
+        recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService,
         userDefaults: UserDefaults,
         notificationCenter: NotificationCenter,
         featureFlags: FeatureFlagServiceProtocol
@@ -130,6 +132,7 @@ class HomeViewModel: NSObject {
         self.homeRefreshCoordinator = homeRefreshCoordinator
         self.user = user
         self.store = store
+        self.recentSavesWidgetUpdateService = recentSavesWidgetUpdateService
         self.userDefaults = userDefaults
         self.notificationCenter = notificationCenter
         self.featureFlags = featureFlags
@@ -686,6 +689,9 @@ extension HomeViewModel: NSFetchedResultsControllerDelegate {
             let reconfiguredItemdIdentifiers: [Cell] = snapshot.reloadedItemIdentifiers.compactMap({ .recentSaves($0 as! NSManagedObjectID) })
             newSnapshot.reloadItems(reloadedItemIdentifiers)
             newSnapshot.reconfigureItems(reconfiguredItemdIdentifiers)
+            if reloadedItemIdentifiers.count > 0 || reconfiguredItemdIdentifiers.count > 0 {
+                updateRecentSavesWidget()
+            }
         }
 
         if isOffline {
@@ -715,5 +721,17 @@ extension HomeViewModel: NSFetchedResultsControllerDelegate {
         }
 
         self.snapshot = newSnapshot
+    }
+}
+
+// MARK: recent saves widget
+private extension HomeViewModel {
+    func updateRecentSavesWidget() {
+        guard let items = recentSavesController.fetchedObjects else {
+            recentSavesWidgetUpdateService.setRecentSaves([])
+            return
+        }
+        // because we might still end up with more items, slice the first n elements anyway.
+        recentSavesWidgetUpdateService.setRecentSaves(Array(items.prefix(SyncConstants.Home.recentSaves)))
     }
 }
