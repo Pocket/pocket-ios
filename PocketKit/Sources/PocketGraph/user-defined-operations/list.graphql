@@ -80,8 +80,8 @@ mutation TagUpdate($input: TagUpdateInput!) {
   }
 }
 
-mutation ReplaceSavedItemTags($input: [SavedItemTagsInput!]!) {
-  replaceSavedItemTags(input: $input) {
+mutation SavedItemTag($input: SavedItemTagInput!, $timestamp: ISOString!) {
+  savedItemTag(input: $input, timestamp: $timestamp) {
     __typename
     ...SavedItemParts
   }

@@ -41,16 +41,6 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "CollectionAuthor": return PocketGraph.Objects.CollectionAuthor
     case "CollectionStory": return PocketGraph.Objects.CollectionStory
     case "CollectionStoryAuthor": return PocketGraph.Objects.CollectionStoryAuthor
-    case "SlateLineup": return PocketGraph.Objects.SlateLineup
-    case "Slate": return PocketGraph.Objects.Slate
-    case "Recommendation": return PocketGraph.Objects.Recommendation
-    case "CuratedInfo": return PocketGraph.Objects.CuratedInfo
-    case "UnleashAssignmentList": return PocketGraph.Objects.UnleashAssignmentList
-    case "UnleashAssignment": return PocketGraph.Objects.UnleashAssignment
-    case "CorpusSlateLineup": return PocketGraph.Objects.CorpusSlateLineup
-    case "CorpusSlate": return PocketGraph.Objects.CorpusSlate
-    case "CorpusRecommendation": return PocketGraph.Objects.CorpusRecommendation
-    case "CorpusItem": return PocketGraph.Objects.CorpusItem
     case "MarticleText": return PocketGraph.Objects.MarticleText
     case "MarticleDivider": return PocketGraph.Objects.MarticleDivider
     case "MarticleTable": return PocketGraph.Objects.MarticleTable
@@ -63,6 +53,16 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "UnMarseable": return PocketGraph.Objects.UnMarseable
     case "BulletedListElement": return PocketGraph.Objects.BulletedListElement
     case "NumberedListElement": return PocketGraph.Objects.NumberedListElement
+    case "SlateLineup": return PocketGraph.Objects.SlateLineup
+    case "Slate": return PocketGraph.Objects.Slate
+    case "Recommendation": return PocketGraph.Objects.Recommendation
+    case "CuratedInfo": return PocketGraph.Objects.CuratedInfo
+    case "UnleashAssignmentList": return PocketGraph.Objects.UnleashAssignmentList
+    case "UnleashAssignment": return PocketGraph.Objects.UnleashAssignment
+    case "CorpusSlateLineup": return PocketGraph.Objects.CorpusSlateLineup
+    case "CorpusSlate": return PocketGraph.Objects.CorpusSlate
+    case "CorpusRecommendation": return PocketGraph.Objects.CorpusRecommendation
+    case "CorpusItem": return PocketGraph.Objects.CorpusItem
     case "TagConnection": return PocketGraph.Objects.TagConnection
     case "TagEdge": return PocketGraph.Objects.TagEdge
     case "SavedItemSearchResultConnection": return PocketGraph.Objects.SavedItemSearchResultConnection

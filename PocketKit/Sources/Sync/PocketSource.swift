@@ -450,8 +450,7 @@ extension PocketSource {
     public func addTags(item: SavedItem, tags: [String]) {
         Log.breadcrumb(category: "sync", level: .debug, message: "Adding tags to item with id \(String(describing: item.remoteID))")
         space.performAndWait {
-            guard let item = space.backgroundObject(with: item.objectID) as? SavedItem,
-                  let remoteID = item.remoteID else {
+            guard let item = space.backgroundObject(with: item.objectID) as? SavedItem else {
                 Log.capture(message: "Could not retreive item from background context for mutation")
                 return
             }
@@ -466,13 +465,19 @@ extension PocketSource {
                 Log.capture(error: error)
             }
 
+            guard let mutation = addTagsMutation(for: item, tags: tags),
+            let task = addTagsSyncTask(for: item, tags: tags) else {
+                Log.capture(message: "Could not retreive add tags mutation and sync task for SavedItem")
+                return
+            }
+
             let operation = operations.savedItemMutationOperation(
                 apollo: apollo,
                 events: _events,
-                mutation: getMutation(for: tags, and: remoteID)
+                mutation: mutation
             )
 
-            enqueue(operation: operation, task: .addTags(remoteID: remoteID, tags: tags), queue: saveQueue)
+            enqueue(operation: operation, task: task, queue: saveQueue)
         }
     }
 
@@ -571,14 +576,54 @@ extension PocketSource {
         }
     }
 
-    private func getMutation(for tags: [String], and remoteID: String) -> AnyMutation {
-        let mutation: AnyMutation
+    private func addTagsMutation(for savedItem: SavedItem, tags: [String]) -> AnyMutation? {
         if tags.isEmpty {
-            mutation = AnyMutation(UpdateSavedItemRemoveTagsMutation(savedItemId: remoteID))
+            guard let remoteID = savedItem.remoteID else {
+                Log.capture(message: "Could not retreive remoteID from SavedItem for mutation")
+                return nil
+            }
+
+            return AnyMutation(updateSavedItemRemoveTagsMutation(remoteID: remoteID))
         } else {
-            mutation = AnyMutation(ReplaceSavedItemTagsMutation(input: [SavedItemTagsInput(savedItemId: remoteID, tags: tags)]))
+            guard let givenURL = savedItem.item?.givenURL else {
+                Log.capture(message: "Could not retreive givenURL from SavedItem.Item for mutation")
+                return nil
+            }
+
+            return AnyMutation(savedItemTagMutation(url: givenURL, tags: tags))
         }
-        return mutation
+    }
+
+    private func savedItemTagMutation(url: String, tags: [String]) -> SavedItemTagMutation {
+        return SavedItemTagMutation(
+            input: SavedItemTagInput(
+                givenUrl: url,
+                tagNames: tags
+            ),
+            timestamp: ISO8601DateFormatter.pocketGraphFormatter.string(from: .now)
+        )
+    }
+
+    private func updateSavedItemRemoveTagsMutation(remoteID: String) -> UpdateSavedItemRemoveTagsMutation {
+        return UpdateSavedItemRemoveTagsMutation(savedItemId: remoteID)
+    }
+
+    private func addTagsSyncTask(for savedItem: SavedItem, tags: [String]) -> SyncTask? {
+        if tags.isEmpty {
+            guard let remoteID = savedItem.remoteID else {
+                Log.capture(message: "Could not retreive remoteID from SavedItem for mutation")
+                return nil
+            }
+
+            return .clearTags(remoteID: remoteID)
+        } else {
+            guard let givenURL = savedItem.item?.givenURL else {
+                Log.capture(message: "Could not retreive givenURL from SavedItem.Item for mutation")
+                return nil
+            }
+
+            return .addTags(givenURL: givenURL, tags: tags)
+        }
     }
 
     public func fetchItem(_ url: String) -> Item? {
@@ -761,11 +806,18 @@ extension PocketSource {
                     space: space
                 )
                 enqueue(operation: operation, persistentTask: persistentTask, queue: self.saveQueue)
-            case .addTags(let remoteID, let tags):
+            case .addTags(let givenURL, let tags):
                 let operation = operations.savedItemMutationOperation(
                     apollo: apollo,
                     events: _events,
-                    mutation: getMutation(for: tags, and: remoteID)
+                    mutation: savedItemTagMutation(url: givenURL, tags: tags)
+                )
+                enqueue(operation: operation, persistentTask: persistentTask, queue: self.saveQueue)
+            case .clearTags(let remoteID):
+                let operation = operations.savedItemMutationOperation(
+                    apollo: apollo,
+                    events: _events,
+                    mutation: updateSavedItemRemoveTagsMutation(remoteID: remoteID)
                 )
                 enqueue(operation: operation, persistentTask: persistentTask, queue: self.saveQueue)
             case .deleteTag(let tagID):

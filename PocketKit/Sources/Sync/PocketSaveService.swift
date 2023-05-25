@@ -159,16 +159,20 @@ public class PocketSaveService: SaveService {
                 }
                 queue.addOperation(operation)
             } else {
-                let mutation = ReplaceSavedItemTagsMutation(input: [SavedItemTagsInput(savedItemId: remoteID, tags: names)])
+                let url = savedItem.item?.givenURL ?? savedItem.url
+                let mutation = SavedItemTagMutation(
+                    input: SavedItemTagInput(givenUrl: url, tagNames: names),
+                    timestamp: ISO8601DateFormatter.pocketGraphFormatter.string(from: .now)
+                )
 
-                let operation = SaveOperation<ReplaceSavedItemTagsMutation>(
+                let operation = SaveOperation<SavedItemTagMutation>(
                     apollo: apollo,
                     osNotifications: osNotifications,
                     space: space,
                     savedItem: savedItem,
                     mutation: mutation
                 ) { graphQLResultData in
-                    return (graphQLResultData as? ReplaceSavedItemTagsMutation.Data)?.replaceSavedItemTags.first?.fragments.savedItemParts
+                    return (graphQLResultData as? SavedItemTagMutation.Data)?.savedItemTag?.fragments.savedItemParts
                 }
                 queue.addOperation(operation)
             }

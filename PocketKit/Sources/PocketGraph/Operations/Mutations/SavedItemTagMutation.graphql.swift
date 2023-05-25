@@ -3,13 +3,13 @@
 
 @_exported import ApolloAPI
 
-public class ReplaceSavedItemTagsMutation: GraphQLMutation {
-  public static let operationName: String = "ReplaceSavedItemTags"
+public class SavedItemTagMutation: GraphQLMutation {
+  public static let operationName: String = "SavedItemTag"
   public static let document: ApolloAPI.DocumentType = .notPersisted(
     definition: .init(
       #"""
-      mutation ReplaceSavedItemTags($input: [SavedItemTagsInput!]!) {
-        replaceSavedItemTags(input: $input) {
+      mutation SavedItemTag($input: SavedItemTagInput!, $timestamp: ISOString!) {
+        savedItemTag(input: $input, timestamp: $timestamp) {
           __typename
           ...SavedItemParts
         }
@@ -18,13 +18,21 @@ public class ReplaceSavedItemTagsMutation: GraphQLMutation {
       fragments: [SavedItemParts.self, TagParts.self, ItemParts.self, MarticleTextParts.self, ImageParts.self, MarticleDividerParts.self, MarticleTableParts.self, MarticleHeadingParts.self, MarticleCodeBlockParts.self, VideoParts.self, MarticleBulletedListParts.self, MarticleNumberedListParts.self, MarticleBlockquoteParts.self, DomainMetadataParts.self, SyndicatedArticleParts.self, PendingItemParts.self]
     ))
 
-  public var input: [SavedItemTagsInput]
+  public var input: SavedItemTagInput
+  public var timestamp: ISOString
 
-  public init(input: [SavedItemTagsInput]) {
+  public init(
+    input: SavedItemTagInput,
+    timestamp: ISOString
+  ) {
     self.input = input
+    self.timestamp = timestamp
   }
 
-  public var __variables: Variables? { ["input": input] }
+  public var __variables: Variables? { [
+    "input": input,
+    "timestamp": timestamp
+  ] }
 
   public struct Data: PocketGraph.SelectionSet {
     public let __data: DataDict
@@ -32,22 +40,19 @@ public class ReplaceSavedItemTagsMutation: GraphQLMutation {
 
     public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Mutation }
     public static var __selections: [ApolloAPI.Selection] { [
-      .field("replaceSavedItemTags", [ReplaceSavedItemTag].self, arguments: ["input": .variable("input")]),
+      .field("savedItemTag", SavedItemTag?.self, arguments: [
+        "input": .variable("input"),
+        "timestamp": .variable("timestamp")
+      ]),
     ] }
 
-    /// Replaces the old tags associated with the savedItem to the new tag list
-    /// given in the entry
-    /// To remove all Tags from a SavedItem, use `updateSavedItemRemoveTags`.
-    /// Note: if there is a new tag name in the SavedItemTagsInput, then the tag record will be created
-    /// Inputs a list of SavedItemTagsInput(ie. savedItemId and list of tag names)
-    /// Returns the SavedItem for which the tags have been modified.
-    @available(*, deprecated, message: "use saveBatchUpdateTags")
-    public var replaceSavedItemTags: [ReplaceSavedItemTag] { __data["replaceSavedItemTags"] }
+    /// Associate Tag(s) with a Save
+    public var savedItemTag: SavedItemTag? { __data["savedItemTag"] }
 
-    /// ReplaceSavedItemTag
+    /// SavedItemTag
     ///
     /// Parent Type: `SavedItem`
-    public struct ReplaceSavedItemTag: PocketGraph.SelectionSet {
+    public struct SavedItemTag: PocketGraph.SelectionSet {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 
@@ -83,7 +88,7 @@ public class ReplaceSavedItemTagsMutation: GraphQLMutation {
         public var savedItemParts: SavedItemParts { _toFragment() }
       }
 
-      /// ReplaceSavedItemTag.Tag
+      /// SavedItemTag.Tag
       ///
       /// Parent Type: `Tag`
       public struct Tag: PocketGraph.SelectionSet {
@@ -105,7 +110,7 @@ public class ReplaceSavedItemTagsMutation: GraphQLMutation {
         }
       }
 
-      /// ReplaceSavedItemTag.Item
+      /// SavedItemTag.Item
       ///
       /// Parent Type: `ItemResult`
       public struct Item: PocketGraph.SelectionSet {
@@ -117,14 +122,14 @@ public class ReplaceSavedItemTagsMutation: GraphQLMutation {
         public var asItem: AsItem? { _asInlineFragment() }
         public var asPendingItem: AsPendingItem? { _asInlineFragment() }
 
-        /// ReplaceSavedItemTag.Item.AsItem
+        /// SavedItemTag.Item.AsItem
         ///
         /// Parent Type: `Item`
         public struct AsItem: PocketGraph.InlineFragment, ApolloAPI.CompositeInlineFragment {
           public let __data: DataDict
           public init(_dataDict: DataDict) { __data = _dataDict }
 
-          public typealias RootEntityType = ReplaceSavedItemTagsMutation.Data.ReplaceSavedItemTag.Item
+          public typealias RootEntityType = SavedItemTagMutation.Data.SavedItemTag.Item
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Item }
           public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
             ItemParts.self,
@@ -182,7 +187,7 @@ public class ReplaceSavedItemTagsMutation: GraphQLMutation {
             public var itemParts: ItemParts { _toFragment() }
           }
 
-          /// ReplaceSavedItemTag.Item.AsItem.Marticle
+          /// SavedItemTag.Item.AsItem.Marticle
           ///
           /// Parent Type: `MarticleComponent`
           public struct Marticle: PocketGraph.SelectionSet {
@@ -202,14 +207,14 @@ public class ReplaceSavedItemTagsMutation: GraphQLMutation {
             public var asMarticleNumberedList: AsMarticleNumberedList? { _asInlineFragment() }
             public var asMarticleBlockquote: AsMarticleBlockquote? { _asInlineFragment() }
 
-            /// ReplaceSavedItemTag.Item.AsItem.Marticle.AsMarticleText
+            /// SavedItemTag.Item.AsItem.Marticle.AsMarticleText
             ///
             /// Parent Type: `MarticleText`
             public struct AsMarticleText: PocketGraph.InlineFragment, ApolloAPI.CompositeInlineFragment {
               public let __data: DataDict
               public init(_dataDict: DataDict) { __data = _dataDict }
 
-              public typealias RootEntityType = ReplaceSavedItemTagsMutation.Data.ReplaceSavedItemTag.Item.AsItem.Marticle
+              public typealias RootEntityType = SavedItemTagMutation.Data.SavedItemTag.Item.AsItem.Marticle
               public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleText }
               public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
                 MarticleTextParts.self,
@@ -227,14 +232,14 @@ public class ReplaceSavedItemTagsMutation: GraphQLMutation {
               }
             }
 
-            /// ReplaceSavedItemTag.Item.AsItem.Marticle.AsImage
+            /// SavedItemTag.Item.AsItem.Marticle.AsImage
             ///
             /// Parent Type: `Image`
             public struct AsImage: PocketGraph.InlineFragment, ApolloAPI.CompositeInlineFragment {
               public let __data: DataDict
               public init(_dataDict: DataDict) { __data = _dataDict }
 
-              public typealias RootEntityType = ReplaceSavedItemTagsMutation.Data.ReplaceSavedItemTag.Item.AsItem.Marticle
+              public typealias RootEntityType = SavedItemTagMutation.Data.SavedItemTag.Item.AsItem.Marticle
               public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Image }
               public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
                 ImageParts.self,
@@ -263,14 +268,14 @@ public class ReplaceSavedItemTagsMutation: GraphQLMutation {
               }
             }
 
-            /// ReplaceSavedItemTag.Item.AsItem.Marticle.AsMarticleDivider
+            /// SavedItemTag.Item.AsItem.Marticle.AsMarticleDivider
             ///
             /// Parent Type: `MarticleDivider`
             public struct AsMarticleDivider: PocketGraph.InlineFragment, ApolloAPI.CompositeInlineFragment {
               public let __data: DataDict
               public init(_dataDict: DataDict) { __data = _dataDict }
 
-              public typealias RootEntityType = ReplaceSavedItemTagsMutation.Data.ReplaceSavedItemTag.Item.AsItem.Marticle
+              public typealias RootEntityType = SavedItemTagMutation.Data.SavedItemTag.Item.AsItem.Marticle
               public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleDivider }
               public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
                 MarticleDividerParts.self,
@@ -288,14 +293,14 @@ public class ReplaceSavedItemTagsMutation: GraphQLMutation {
               }
             }
 
-            /// ReplaceSavedItemTag.Item.AsItem.Marticle.AsMarticleTable
+            /// SavedItemTag.Item.AsItem.Marticle.AsMarticleTable
             ///
             /// Parent Type: `MarticleTable`
             public struct AsMarticleTable: PocketGraph.InlineFragment, ApolloAPI.CompositeInlineFragment {
               public let __data: DataDict
               public init(_dataDict: DataDict) { __data = _dataDict }
 
-              public typealias RootEntityType = ReplaceSavedItemTagsMutation.Data.ReplaceSavedItemTag.Item.AsItem.Marticle
+              public typealias RootEntityType = SavedItemTagMutation.Data.SavedItemTag.Item.AsItem.Marticle
               public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleTable }
               public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
                 MarticleTableParts.self,
@@ -313,14 +318,14 @@ public class ReplaceSavedItemTagsMutation: GraphQLMutation {
               }
             }
 
-            /// ReplaceSavedItemTag.Item.AsItem.Marticle.AsMarticleHeading
+            /// SavedItemTag.Item.AsItem.Marticle.AsMarticleHeading
             ///
             /// Parent Type: `MarticleHeading`
             public struct AsMarticleHeading: PocketGraph.InlineFragment, ApolloAPI.CompositeInlineFragment {
               public let __data: DataDict
               public init(_dataDict: DataDict) { __data = _dataDict }
 
-              public typealias RootEntityType = ReplaceSavedItemTagsMutation.Data.ReplaceSavedItemTag.Item.AsItem.Marticle
+              public typealias RootEntityType = SavedItemTagMutation.Data.SavedItemTag.Item.AsItem.Marticle
               public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleHeading }
               public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
                 MarticleHeadingParts.self,
@@ -340,14 +345,14 @@ public class ReplaceSavedItemTagsMutation: GraphQLMutation {
               }
             }
 
-            /// ReplaceSavedItemTag.Item.AsItem.Marticle.AsMarticleCodeBlock
+            /// SavedItemTag.Item.AsItem.Marticle.AsMarticleCodeBlock
             ///
             /// Parent Type: `MarticleCodeBlock`
             public struct AsMarticleCodeBlock: PocketGraph.InlineFragment, ApolloAPI.CompositeInlineFragment {
               public let __data: DataDict
               public init(_dataDict: DataDict) { __data = _dataDict }
 
-              public typealias RootEntityType = ReplaceSavedItemTagsMutation.Data.ReplaceSavedItemTag.Item.AsItem.Marticle
+              public typealias RootEntityType = SavedItemTagMutation.Data.SavedItemTag.Item.AsItem.Marticle
               public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleCodeBlock }
               public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
                 MarticleCodeBlockParts.self,
@@ -367,14 +372,14 @@ public class ReplaceSavedItemTagsMutation: GraphQLMutation {
               }
             }
 
-            /// ReplaceSavedItemTag.Item.AsItem.Marticle.AsVideo
+            /// SavedItemTag.Item.AsItem.Marticle.AsVideo
             ///
             /// Parent Type: `Video`
             public struct AsVideo: PocketGraph.InlineFragment, ApolloAPI.CompositeInlineFragment {
               public let __data: DataDict
               public init(_dataDict: DataDict) { __data = _dataDict }
 
-              public typealias RootEntityType = ReplaceSavedItemTagsMutation.Data.ReplaceSavedItemTag.Item.AsItem.Marticle
+              public typealias RootEntityType = SavedItemTagMutation.Data.SavedItemTag.Item.AsItem.Marticle
               public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Video }
               public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
                 VideoParts.self,
@@ -404,14 +409,14 @@ public class ReplaceSavedItemTagsMutation: GraphQLMutation {
               }
             }
 
-            /// ReplaceSavedItemTag.Item.AsItem.Marticle.AsMarticleBulletedList
+            /// SavedItemTag.Item.AsItem.Marticle.AsMarticleBulletedList
             ///
             /// Parent Type: `MarticleBulletedList`
             public struct AsMarticleBulletedList: PocketGraph.InlineFragment, ApolloAPI.CompositeInlineFragment {
               public let __data: DataDict
               public init(_dataDict: DataDict) { __data = _dataDict }
 
-              public typealias RootEntityType = ReplaceSavedItemTagsMutation.Data.ReplaceSavedItemTag.Item.AsItem.Marticle
+              public typealias RootEntityType = SavedItemTagMutation.Data.SavedItemTag.Item.AsItem.Marticle
               public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleBulletedList }
               public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
                 MarticleBulletedListParts.self,
@@ -428,14 +433,14 @@ public class ReplaceSavedItemTagsMutation: GraphQLMutation {
               }
             }
 
-            /// ReplaceSavedItemTag.Item.AsItem.Marticle.AsMarticleNumberedList
+            /// SavedItemTag.Item.AsItem.Marticle.AsMarticleNumberedList
             ///
             /// Parent Type: `MarticleNumberedList`
             public struct AsMarticleNumberedList: PocketGraph.InlineFragment, ApolloAPI.CompositeInlineFragment {
               public let __data: DataDict
               public init(_dataDict: DataDict) { __data = _dataDict }
 
-              public typealias RootEntityType = ReplaceSavedItemTagsMutation.Data.ReplaceSavedItemTag.Item.AsItem.Marticle
+              public typealias RootEntityType = SavedItemTagMutation.Data.SavedItemTag.Item.AsItem.Marticle
               public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleNumberedList }
               public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
                 MarticleNumberedListParts.self,
@@ -452,14 +457,14 @@ public class ReplaceSavedItemTagsMutation: GraphQLMutation {
               }
             }
 
-            /// ReplaceSavedItemTag.Item.AsItem.Marticle.AsMarticleBlockquote
+            /// SavedItemTag.Item.AsItem.Marticle.AsMarticleBlockquote
             ///
             /// Parent Type: `MarticleBlockquote`
             public struct AsMarticleBlockquote: PocketGraph.InlineFragment, ApolloAPI.CompositeInlineFragment {
               public let __data: DataDict
               public init(_dataDict: DataDict) { __data = _dataDict }
 
-              public typealias RootEntityType = ReplaceSavedItemTagsMutation.Data.ReplaceSavedItemTag.Item.AsItem.Marticle
+              public typealias RootEntityType = SavedItemTagMutation.Data.SavedItemTag.Item.AsItem.Marticle
               public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleBlockquote }
               public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
                 MarticleBlockquoteParts.self,
@@ -478,7 +483,7 @@ public class ReplaceSavedItemTagsMutation: GraphQLMutation {
             }
           }
 
-          /// ReplaceSavedItemTag.Item.AsItem.DomainMetadata
+          /// SavedItemTag.Item.AsItem.DomainMetadata
           ///
           /// Parent Type: `DomainMetadata`
           public struct DomainMetadata: PocketGraph.SelectionSet {
@@ -500,7 +505,7 @@ public class ReplaceSavedItemTagsMutation: GraphQLMutation {
             }
           }
 
-          /// ReplaceSavedItemTag.Item.AsItem.SyndicatedArticle
+          /// SavedItemTag.Item.AsItem.SyndicatedArticle
           ///
           /// Parent Type: `SyndicatedArticle`
           public struct SyndicatedArticle: PocketGraph.SelectionSet {
@@ -529,14 +534,14 @@ public class ReplaceSavedItemTagsMutation: GraphQLMutation {
           }
         }
 
-        /// ReplaceSavedItemTag.Item.AsPendingItem
+        /// SavedItemTag.Item.AsPendingItem
         ///
         /// Parent Type: `PendingItem`
         public struct AsPendingItem: PocketGraph.InlineFragment, ApolloAPI.CompositeInlineFragment {
           public let __data: DataDict
           public init(_dataDict: DataDict) { __data = _dataDict }
 
-          public typealias RootEntityType = ReplaceSavedItemTagsMutation.Data.ReplaceSavedItemTag.Item
+          public typealias RootEntityType = SavedItemTagMutation.Data.SavedItemTag.Item
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.PendingItem }
           public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
             PendingItemParts.self,

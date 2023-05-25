@@ -109,6 +109,10 @@ struct ClientAPIRequest {
         self.operationName == "Tags"
     }
 
+    var isForSaveTags: Bool {
+        self.operationName == "SavedItemTag"
+    }
+
     var isForDeleteUser: Bool {
         self.operationName == "DeleteUser"
     }
@@ -156,5 +160,9 @@ extension ClientAPIRequest {
 
     var inputURL: URL {
         URL(string: self.apolloRequestBody!.inputDict["url"] as! String)!
+    }
+
+    var givenURL: URL {
+        URL(string: self.apolloRequestBody!.inputDict["givenUrl"] as! String)!
     }
 }

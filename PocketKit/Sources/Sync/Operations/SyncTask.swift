@@ -13,7 +13,8 @@ enum SyncTask: Codable {
     case delete(remoteID: String)
     case archive(remoteID: String)
     case save(localID: URL, url: String)
-    case addTags(remoteID: String, tags: [String])
+    case addTags(givenURL: String, tags: [String])
+    case clearTags(remoteID: String)
     case deleteTag(remoteID: String)
     case renameTag(remoteID: String, name: String)
 }
