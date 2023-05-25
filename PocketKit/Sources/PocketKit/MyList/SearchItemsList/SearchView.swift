@@ -125,6 +125,10 @@ struct SearchEmptyView: View {
 }
 
 struct ReportIssueButton: View {
+    enum Constants {
+        static let padding = EdgeInsets(top: 12, leading: 0, bottom: 12, trailing: 0)
+        static let maxWidth: CGFloat = 320
+    }
     @EnvironmentObject private var searchViewModel: SearchViewModel
     private let text: String
 
@@ -138,8 +142,8 @@ struct ReportIssueButton: View {
         }, label: {
             Text(text)
                 .style(.header.sansSerif.h7.with(color: .ui.white))
-                .padding(EdgeInsets(top: 12, leading: 0, bottom: 12, trailing: 0))
-                .frame(maxWidth: 320)
+                .padding(Constants.padding)
+                .frame(maxWidth: Constants.maxWidth)
         }).buttonStyle(PocketButtonStyle(.primary))
         .sheet(isPresented: $searchViewModel.isPresentingReportIssue) {
             ReportIssueView(userEmail: searchViewModel.userEmail, submitIssue: searchViewModel.submitIssue)

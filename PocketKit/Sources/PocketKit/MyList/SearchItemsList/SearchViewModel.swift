@@ -647,6 +647,6 @@ extension SearchViewModel {
     }
 
     func submitIssue(name: String, email: String, comments: String) {
-        Log.captureUserFeedback(message: "SearchViewModel - Report an issue", name: name, email: email, comments: comments)
+        Log.captureUserFeedback(message: "Report an issue", name: name, email: email, comments: comments)
     }
 }
