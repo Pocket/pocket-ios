@@ -81,16 +81,22 @@ opt_in_rules: # some rules are only opt-in
   - multiline_arguments
   - opening_brace
   - optional_enum_case_matching
-  - overridden_super_call:
-      excluded:
-        - PocketKit/Tests
-        - Tests iOS/
+#  - overridden_super_call:
+#      excluded:
+#        - PocketKit/Tests
+#        - Tests iOS/
   - return_arrow_whitespace
   - unused_import
   - vertical_parameter_alignment_on_call
   - vertical_whitespace_closing_braces
   - vertical_whitespace_opening_braces
   - yoda_condition
+
+file_header:
+  required_pattern: |
+                    \/\/ This Source Code Form is subject to the terms of the Mozilla Public
+                    \/\/ License, v. 2.0. If a copy of the MPL was not distributed with this
+                    \/\/ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 excluded: # paths to ignore during linting. Takes precedence over `included`.
   - build
