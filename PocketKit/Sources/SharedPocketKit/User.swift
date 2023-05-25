@@ -2,9 +2,9 @@ import Combine
 import SwiftUI
 
 public enum Status: String {
-    case premium = "premium"
-    case free = "free"
-    case unknown = "unknown"
+    case premium
+    case free
+    case unknown
 }
 
 public protocol User {
