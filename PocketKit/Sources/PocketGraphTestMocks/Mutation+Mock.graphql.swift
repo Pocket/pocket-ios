@@ -13,8 +13,7 @@ public class Mutation: MockObject {
     @Field<PocketGraph.ID>("deleteSavedItem") public var deleteSavedItem
     @Field<PocketGraph.ID>("deleteTag") public var deleteTag
     @Field<PocketGraph.ID>("deleteUser") public var deleteUser
-    @available(*, deprecated, message: "use saveBatchUpdateTags")
-    @Field<[SavedItem]>("replaceSavedItemTags") public var replaceSavedItemTags
+    @Field<SavedItem>("savedItemTag") public var savedItemTag
     @Field<SavedItem>("updateSavedItemArchive") public var updateSavedItemArchive
     @Field<SavedItem>("updateSavedItemFavorite") public var updateSavedItemFavorite
     @available(*, deprecated, message: "use saveBatchUpdateTags")
@@ -30,7 +29,7 @@ public extension Mock where O == Mutation {
     deleteSavedItem: PocketGraph.ID? = nil,
     deleteTag: PocketGraph.ID? = nil,
     deleteUser: PocketGraph.ID? = nil,
-    replaceSavedItemTags: [Mock<SavedItem>]? = nil,
+    savedItemTag: Mock<SavedItem>? = nil,
     updateSavedItemArchive: Mock<SavedItem>? = nil,
     updateSavedItemFavorite: Mock<SavedItem>? = nil,
     updateSavedItemRemoveTags: Mock<SavedItem>? = nil,
@@ -42,7 +41,7 @@ public extension Mock where O == Mutation {
     _set(deleteSavedItem, for: \.deleteSavedItem)
     _set(deleteTag, for: \.deleteTag)
     _set(deleteUser, for: \.deleteUser)
-    _set(replaceSavedItemTags, for: \.replaceSavedItemTags)
+    _set(savedItemTag, for: \.savedItemTag)
     _set(updateSavedItemArchive, for: \.updateSavedItemArchive)
     _set(updateSavedItemFavorite, for: \.updateSavedItemFavorite)
     _set(updateSavedItemRemoveTags, for: \.updateSavedItemRemoveTags)

@@ -278,7 +278,7 @@ class PocketSaveServiceTests: XCTestCase {
 
 // MARK: Tags
 extension PocketSaveServiceTests {
-    func test_addTags_beginsBackgroundActivity_andPerformsReplaceSavedItemTagsMutationWithCorrectTags() {
+    func test_addTags_beginsBackgroundActivity_andPerformsSaveItemTagMutationWithCorrectTags() {
         backgroundActivityPerformer.stubPerformExpiringActivity { _, block in
             DispatchQueue.global(qos: .background).async {
                 block(false)
@@ -286,7 +286,7 @@ extension PocketSaveServiceTests {
         }
 
         let performCalled = expectation(description: "perform called")
-        client.stubPerform(toReturnFixtureNamed: "add-tags", asResultType: ReplaceSavedItemTagsMutation.self) {
+        client.stubPerform(toReturnFixtureNamed: "add-tags", asResultType: SavedItemTagMutation.self) {
             performCalled.fulfill()
         }
 
@@ -301,18 +301,18 @@ extension PocketSaveServiceTests {
         XCTAssertNotNil(backgroundActivityPerformer.performCall(at: 0))
 
         wait(for: [performCalled], timeout: 10)
-        let performCall: MockApolloClient.PerformCall<ReplaceSavedItemTagsMutation>? = client.performCall(at: 0)
-        XCTAssertEqual(performCall?.mutation.input.compactMap { $0.tags }, [["tag 1", "tag 2"]])
+        let performCall: MockApolloClient.PerformCall<SavedItemTagMutation>? = client.performCall(at: 0)
+        XCTAssertEqual(performCall?.mutation.input.tagNames, ["tag 1", "tag 2"])
     }
 
-    func test_addTags_whenApolloRequestFailsForReplaceSavedItemTagsMutation_storesUnresolvedSavedItemAndPostsNotification() throws {
+    func test_addTags_whenApolloRequestFailsForSaveItemTagMutation_storesUnresolvedSavedItemAndPostsNotification() throws {
         var expiringActivity: ((Bool) -> Void)?
         backgroundActivityPerformer.stubPerformExpiringActivity { _, _expiringActivity in
             expiringActivity = _expiringActivity
         }
 
         let performMutationCalled = expectation(description: "perform called")
-        client.stubPerform(ofMutationType: ReplaceSavedItemTagsMutation.self, toReturnError: TestError.anError) {
+        client.stubPerform(ofMutationType: SavedItemTagMutation.self, toReturnError: TestError.anError) {
             performMutationCalled.fulfill()
         }
         let item = space.buildSavedItem()

@@ -77,7 +77,7 @@ class RetriableOperationTests: XCTestCase {
         // NOTE: We need to await after the firstAttempt because it takes a few ms for the
         // retrySubscritpion to get setup after firstAttempt is fullfilled.
         // TODO: Refactor retrySignal to keep track of its number of subscribers and instead wait for that to become 1 instead of this random wait.
-        _ = XCTWaiter.wait(for: [expectation(description: "wait for subscriber")], timeout: 10)
+        _ = XCTWaiter.wait(for: [expectation(description: "wait for subscriber")], timeout: 1)
         retrySignal.send()
         wait(for: [secondAttempt, completed], timeout: 5, enforceOrder: true)
         XCTAssertEqual(try space.fetchPersistentSyncTasks().count, 0)
@@ -116,7 +116,7 @@ class RetriableOperationTests: XCTestCase {
             // NOTE: We need to await after each attempt because it takes a few ms for the
             // retrySubscritpion to get setup after the attempt is fullfilled.
             // TODO: Refactor retrySignal to keep track of its number of subscribers and instead wait for that to become 1 instead of this random wait.
-            _ = XCTWaiter.wait(for: [expectation(description: "wait for subscriber")], timeout: 10)
+            _ = XCTWaiter.wait(for: [expectation(description: "wait for subscriber")], timeout: 1)
             retrySignal.send()
         }
 

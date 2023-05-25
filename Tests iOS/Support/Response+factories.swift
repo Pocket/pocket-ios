@@ -100,6 +100,17 @@ extension Response {
         )
     }
 
+    static func saveTags(apiRequest: ClientAPIRequest) -> Response {
+        return .init(
+            mock: Mock<Mutation>(
+                savedItemTag: Mock<SavedItem>(
+                    item: createMockSavedItem(item: createMockItem(givenUrl: apiRequest.givenURL.absoluteString)),
+                    url: apiRequest.givenURL.absoluteString
+                )
+            )
+        )
+    }
+
     /// To send a request to unarchive an item or move from saves, uses same mutation response as `saveItem(apiRequest:)`
     /// - Parameter apiRequest: apiRequest that is requesting a response
     /// - Returns: returns mock response for `upsertSavedItem`
@@ -341,6 +352,8 @@ extension Response {
             return .searchList(.archive)
         } else if apiRequest.isForFeatureFlags {
             return .featureFlags()
+        } else if apiRequest.isForSaveTags {
+            return .saveTags(apiRequest: apiRequest)
         } else {
             fatalError("Unexpected request")
         }

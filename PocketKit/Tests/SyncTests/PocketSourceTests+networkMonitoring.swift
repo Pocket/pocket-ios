@@ -79,7 +79,7 @@ extension PocketSourceTests {
 
         let source = subject()
         try source.archive(item: space.createSavedItem())
-        _ = XCTWaiter.wait(for: [expectation(description: "wait for last refresh to be avoid its 5.0 second wait")], timeout: 100.0)
+        _ = XCTWaiter.wait(for: [expectation(description: "wait for last refresh to be avoid its 5.0 second wait")], timeout: 1.0)
         wait(for: [firstAttempt], timeout: 10)
 
         networkMonitor.update(status: .unsatisfied)
