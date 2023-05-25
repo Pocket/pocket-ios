@@ -18,7 +18,7 @@ public struct RecentSavesWidget: Widget {
 
     public var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: RecentSavesProvider()) { entry in
-            RecentSavesView()
+            RecentSavesView(entry: entry)
         }
         .configurationDisplayName("My Widget")
         .description("This is an example widget.")
@@ -27,7 +27,7 @@ public struct RecentSavesWidget: Widget {
 
 public struct RecentSavesWidget_Previews: PreviewProvider {
     public static var previews: some View {
-        RecentSavesView()
+        RecentSavesView(entry: RecentSavesEntry(date: Date(), content: [.placeHolder]))
             .previewContext(WidgetPreviewContext(family: .systemSmall))
     }
 }

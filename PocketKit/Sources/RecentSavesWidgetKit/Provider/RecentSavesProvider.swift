@@ -3,24 +3,44 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import WidgetKit
-import SwiftUI
+import SharedPocketKit
+import Sync
 
+enum RecentSavesProviderError: Error {
+    case invalidStore
+}
+
+/// Timeline provider for the recent saves widget
 struct RecentSavesProvider: TimelineProvider {
-    func placeholder(in context: Context) -> SavedItemEntry {
-        SavedItemEntry(date: Date(), content: .placeHolder)
+    func placeholder(in context: Context) -> RecentSavesEntry {
+        RecentSavesEntry(date: Date(), content: [.placeHolder])
     }
 
-    func getSnapshot(in context: Context, completion: @escaping (SavedItemEntry) -> Void) {
-        let entry = SavedItemEntry(date: Date(), content: .placeHolder)
+    func getSnapshot(in context: Context, completion: @escaping (RecentSavesEntry) -> Void) {
+        // TODO: because recent saves are fetched locally, we might just want to show them in the snapshot as well
+
+        let entry = RecentSavesEntry(date: Date(), content: [.placeHolder])
         completion(entry)
     }
 
-    func getTimeline(in context: Context, completion: @escaping (Timeline<SavedItemEntry>) -> Void) {
-        var entries: [SavedItemEntry] = []
+    func getTimeline(in context: Context, completion: @escaping (Timeline<RecentSavesEntry>) -> Void) {
+        var entries = [RecentSavesEntry]()
 
-        // TODO: populate entries here
+        do {
+            let service = try makeRecentSavesService()
+            entries = [RecentSavesEntry(date: Date(), content: service.getRecentSaves())]
+        } catch {
+            Log.capture(message: "Unable to read saved items from shared useer defaults")
+        }
 
-        let timeline = Timeline(entries: entries, policy: .atEnd)
+        let timeline = Timeline(entries: entries, policy: .never)
         completion(timeline)
+    }
+
+    private func makeRecentSavesService() throws -> RecentSavesWidgetService {
+        guard let defaults = UserDefaults(suiteName: "group.com.ideashower.ReadItLaterPro") else {
+            throw RecentSavesProviderError.invalidStore
+        }
+        return RecentSavesWidgetService(store: RecentSavesWidgetStore(userDefaults: defaults))
     }
 }
