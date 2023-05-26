@@ -5,10 +5,6 @@
 import WidgetKit
 import SwiftUI
 
-struct SimpleEntry: TimelineEntry {
-    let date: Date
-}
-
 public struct RecentSavesWidget: Widget {
     let kind: String
 
@@ -20,8 +16,9 @@ public struct RecentSavesWidget: Widget {
         StaticConfiguration(kind: kind, provider: RecentSavesProvider()) { entry in
             RecentSavesView(entry: entry)
         }
-        .configurationDisplayName("My Widget")
-        .description("This is an example widget.")
+        .configurationDisplayName("RecentSaves")
+        .description("Access your most recently saved articles.")
+        .supportedFamilies([.systemMedium, .systemLarge])
     }
 }
 

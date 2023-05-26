@@ -31,6 +31,7 @@ struct RecentSavesProvider: TimelineProvider {
             entries = [RecentSavesEntry(date: Date(), content: service.getRecentSaves())]
         } catch {
             Log.capture(message: "Unable to read saved items from shared useer defaults")
+            // TODO: Handle error scenario here
         }
 
         let timeline = Timeline(entries: entries, policy: .never)
