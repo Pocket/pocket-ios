@@ -13,6 +13,7 @@ class SavesFiltersTests: XCTestCase {
     var snowplowMicro = SnowplowMicro()
 
     override func setUp() async throws {
+        try await super.setUp()
         continueAfterFailure = false
 
         let uiApp = XCUIApplication()
@@ -30,9 +31,10 @@ class SavesFiltersTests: XCTestCase {
 
     @MainActor
     override func tearDown() async throws {
-       try server.stop()
-       app.terminate()
-       await snowplowMicro.assertBaselineSnowplowExpectation()
+        try server.stop()
+        app.terminate()
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+        try await super.tearDown()
     }
 
     func test_savesView_tappingFavoritesPill_showsOnlyFavoritedItems() {

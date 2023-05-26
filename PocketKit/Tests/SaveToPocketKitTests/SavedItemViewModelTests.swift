@@ -40,6 +40,7 @@ class SavedItemViewModelTests: XCTestCase {
     }
 
     override func setUp() {
+        super.setUp()
         self.continueAfterFailure = false
 
         appSession = AppSession(keychain: MockKeychain(), groupID: "group.com.ideashower.ReadItLaterPro")
@@ -55,9 +56,10 @@ class SavedItemViewModelTests: XCTestCase {
         saveService.stubSave { _ in .newItem(savedItem) }
     }
 
-    override func tearDown() async throws {
+    override func tearDownWithError() throws {
         UserDefaults.standard.removePersistentDomain(forName: "SavedItemViewModelTests")
         try space.clear()
+        try super.tearDownWithError()
     }
 }
 

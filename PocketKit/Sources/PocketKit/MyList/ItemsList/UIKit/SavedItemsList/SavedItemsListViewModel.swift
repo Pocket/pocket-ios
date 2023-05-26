@@ -505,7 +505,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         case .started:
             // If you background the app, and reopen the Fetch operations can override the sent staus,
             // so instead we will first make sure we have no objects before switching to placeholders.
-            if let fetchedObjects = itemsController.fetchedObjects, fetchedObjects.count > 0 {
+            if let fetchedObjects = itemsController.fetchedObjects, !fetchedObjects.isEmpty {
                 itemCellIDs = (0..<fetchedObjects.count).compactMap { index in
                     .item(fetchedObjects[index].objectID)
                 }

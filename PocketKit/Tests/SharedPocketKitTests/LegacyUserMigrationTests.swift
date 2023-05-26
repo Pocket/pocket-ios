@@ -36,6 +36,7 @@ class LegacyUserMigrationTests: XCTestCase {
     }
 
     override func setUp() {
+        super.setUp()
         groupID = "group.com.mozilla.test"
         userDefaults = UserDefaults(suiteName: "LegacyUserMigrationTests")
         encryptedStore = MockEncryptedStore()
@@ -45,6 +46,7 @@ class LegacyUserMigrationTests: XCTestCase {
 
     override func tearDown() {
         UserDefaults.standard.removePersistentDomain(forName: "LegacyUserMigrationTests")
+        super.tearDown()
     }
 }
 

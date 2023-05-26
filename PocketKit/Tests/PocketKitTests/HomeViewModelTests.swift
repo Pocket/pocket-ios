@@ -29,7 +29,8 @@ class HomeViewModelTests: XCTestCase {
     var lastRefresh: UserDefaultsLastRefresh!
     var notificationCenter: NotificationCenter!
 
-    override func setUp() async throws {
+    override func setUp() {
+        super.setUp()
         subscriptions = []
         space = .testSpace()
         source = MockSource()
@@ -75,6 +76,7 @@ class HomeViewModelTests: XCTestCase {
         subscriptions = []
         try space.clear()
         subscriptionStore = nil
+        try super.tearDownWithError()
     }
 
     func subject(

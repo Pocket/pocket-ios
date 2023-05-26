@@ -29,6 +29,7 @@ class SavedItemsListViewModelTests: XCTestCase {
     var featureFlags: MockFeatureFlagService!
 
     override func setUp() {
+        try super.setUp()
         source = MockSource()
         tracker = MockTracker()
         featureFlags = MockFeatureFlagService()
@@ -80,6 +81,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         try space.save()
         networkPathMonitor = nil
         subscriptionStore = nil
+        try super.tearDownWithError()
     }
 
     func subject(

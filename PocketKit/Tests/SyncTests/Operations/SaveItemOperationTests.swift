@@ -19,6 +19,7 @@ class SaveItemOperationTests: XCTestCase {
     var task: PersistentSyncTask!
 
     override func setUpWithError() throws {
+        try super.setUpWithError()
         apollo = MockApolloClient()
         space = .testSpace()
         queue = OperationQueue()
@@ -31,6 +32,7 @@ class SaveItemOperationTests: XCTestCase {
     override func tearDownWithError() throws {
         subscriptions = []
         try space.clear()
+        try super.tearDownWithError()
     }
 
     func subject(

@@ -18,7 +18,8 @@ class HomeRefreshCoordinatorTests: XCTestCase {
     private var taskScheduler: MockBGTaskScheduler!
     private var userDefaults: UserDefaults!
 
-    override func setUpWithError() throws {
+    override func setUp() {
+        super.setUp()
         notificationCenter = NotificationCenter()
         userDefaults = UserDefaults()
         lastRefresh = UserDefaultsLastRefresh(defaults: userDefaults)

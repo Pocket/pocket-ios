@@ -20,6 +20,7 @@ final class PushNotificationServiceTests: XCTestCase {
     private var subject: PushNotificationService!
 
     override func setUp() {
+        super.setUp()
         subscriptions = []
         source = MockSource()
         appSession = AppSession(keychain: MockKeychain(), groupID: "group.com.ideashower.ReadItLaterPro")

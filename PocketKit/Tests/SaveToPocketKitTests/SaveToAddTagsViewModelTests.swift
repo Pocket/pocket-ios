@@ -25,15 +25,17 @@ class SaveToAddTagsViewModelTests: XCTestCase {
     }
 
     override func setUp() {
+        super.setUp()
         tracker = MockTracker()
         user = MockUser()
         userDefaults = UserDefaults(suiteName: "SaveToAddTagsViewModelTests")
         space = .testSpace()
     }
 
-    override func tearDown() async throws {
+    override func tearDownWithError() throws {
         UserDefaults.standard.removePersistentDomain(forName: "SaveToAddTagsViewModelTests")
         try space.clear()
+        try super.tearDownWithError()
     }
 
     private func subject(

@@ -14,6 +14,7 @@ class PremiumTests: XCTestCase {
     var snowplowMicro = SnowplowMicro()
 
     override func setUp() async throws {
+        try await super.setUp()
         continueAfterFailure = false
         storeSession = try SKTestSession(configurationFileNamed: "Test_Subscriptions")
         storeSession.resetToDefaultState()
@@ -32,6 +33,7 @@ class PremiumTests: XCTestCase {
         storeSession.resetToDefaultState()
         storeSession = nil
         app.terminate()
+        try super.tearDownWithError()
     }
 
     /// Test that tapping "Go Premium" in Settings presents the Premium Upgrade view

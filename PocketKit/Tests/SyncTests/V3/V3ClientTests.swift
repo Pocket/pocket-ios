@@ -17,6 +17,7 @@ final class V3ClientTests: XCTestCase {
     var session: MockSession!
 
     override func setUp() {
+        try super.setUp()
         urlSession = MockURLSession()
         session = MockSession()
         sessionProvider = MockSessionProvider(session: session)

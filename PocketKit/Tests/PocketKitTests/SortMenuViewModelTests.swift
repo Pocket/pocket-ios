@@ -16,6 +16,7 @@ class SortMenuViewModelTests: XCTestCase {
     private var subscriptions: [AnyCancellable] = []
 
     override func setUp() {
+        super.setUp()
         source = MockSource()
         tracker = MockTracker()
         listOptions = .saved(userDefaults: .standard)
@@ -24,6 +25,7 @@ class SortMenuViewModelTests: XCTestCase {
 
     override func tearDown() {
         subscriptions = []
+        super.tearDown()
     }
 
     private func subject(

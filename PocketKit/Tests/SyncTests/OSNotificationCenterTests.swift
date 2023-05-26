@@ -11,6 +11,7 @@ class OSNotificationCenterTests: XCTestCase {
     var cfCenter: CFNotificationCenter!
 
     override func setUp() {
+        super.setUp()
         cfCenter = CFNotificationCenterGetDarwinNotifyCenter()
     }
 

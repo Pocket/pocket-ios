@@ -15,6 +15,7 @@ class RetriableOperationTests: XCTestCase {
     var task: PersistentSyncTask!
 
     override func setUpWithError() throws {
+        try super.setUpWithError()
         retrySignal = .init()
         backgroundTaskManager = MockBackgroundTaskManager()
         space = .testSpace()

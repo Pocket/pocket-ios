@@ -11,6 +11,7 @@ class AuthorizationClientTests: XCTestCase {
     var mockAuthenticationSession: MockAuthenticationSession!
 
     override func setUp() {
+        super.setUp()
         mockAuthenticationSession = MockAuthenticationSession()
         client = AuthorizationClient(consumerKey: "the-consumer-key", adjustSignupEventToken: "token") { (_, _, completion) in
             self.mockAuthenticationSession.completionHandler = completion

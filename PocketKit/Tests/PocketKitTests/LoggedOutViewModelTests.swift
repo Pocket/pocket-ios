@@ -21,6 +21,7 @@ class LoggedOutViewModelTests: XCTestCase {
     private var subscriptions: Set<AnyCancellable>!
 
     override func setUp() {
+        super.setUp()
         authorizationClient = AuthorizationClient(consumerKey: "the-consumer-key", adjustSignupEventToken: "token") { (_, _, completion) in
             self.mockAuthenticationSession.completionHandler = completion
             return self.mockAuthenticationSession
@@ -44,6 +45,7 @@ class LoggedOutViewModelTests: XCTestCase {
 
     override func tearDown() {
         subscriptions = []
+        super.tearDown()
     }
 
     func subject(

@@ -14,6 +14,7 @@ class APISlateServiceTests: XCTestCase {
     var space: Space!
 
     override func setUpWithError() throws {
+        try super.setUpWithError()
         continueAfterFailure = false
 
         apollo = MockApolloClient()

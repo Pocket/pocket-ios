@@ -14,12 +14,14 @@ class PocketSearchServiceTests: XCTestCase {
     var apollo: MockApolloClient!
     var cancellables: [AnyCancellable] = []
 
-    override func setUpWithError() throws {
+    override func setUp() {
+        super.setUp()
         apollo = MockApolloClient()
     }
 
-    override func tearDownWithError() throws {
+    override func tearDown() {
         cancellables = []
+        super.tearDown()
     }
 
     func subject(

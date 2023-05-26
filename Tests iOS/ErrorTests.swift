@@ -12,6 +12,7 @@ class ErrorTests: XCTestCase {
     var snowplowMicro = SnowplowMicro()
 
     override func setUp() async throws {
+        try await super.setUp()
         continueAfterFailure = false
 
         let uiApp = XCUIApplication()
@@ -37,6 +38,7 @@ class ErrorTests: XCTestCase {
         app.terminate()
         try server.stop()
         await snowplowMicro.assertBaselineSnowplowExpectation()
+        try await super.tearDown()
     }
 
     func test_serverError_banner_for_throttled_user() {

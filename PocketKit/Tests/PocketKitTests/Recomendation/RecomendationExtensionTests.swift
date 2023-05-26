@@ -13,6 +13,7 @@ class RecomendationExtensionTests: XCTestCase {
     private var allowedCharset: CharacterSet!
 
     override func setUp() {
+        super.setUp()
         source = MockSource()
         space = .testSpace()
         allowedCharset = NSCharacterSet.urlHostAllowed
@@ -22,6 +23,7 @@ class RecomendationExtensionTests: XCTestCase {
 
     override func tearDownWithError() throws {
         try space.clear()
+        try super.tearDownWithError()
     }
 
     // MARK: - Tests

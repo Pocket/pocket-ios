@@ -11,14 +11,12 @@ class ReportARecommendationTests: XCTestCase {
     var snowplowMicro = SnowplowMicro()
 
     override func setUp() async throws {
-        await snowplowMicro.resetSnowplowEvents()
-    }
-
-    override func setUpWithError() throws {
+        try await super.setUp()
         continueAfterFailure = false
 
         let uiApp = XCUIApplication()
         app = PocketAppElement(app: uiApp)
+        await snowplowMicro.resetSnowplowEvents()
 
         server = Application()
 
@@ -29,11 +27,13 @@ class ReportARecommendationTests: XCTestCase {
         try server.start()
 
         app.launch()
+        try super.setUpWithError()
     }
 
     override func tearDownWithError() throws {
         try server.stop()
         app.terminate()
+        try super.tearDownWithError()
     }
 
     @MainActor

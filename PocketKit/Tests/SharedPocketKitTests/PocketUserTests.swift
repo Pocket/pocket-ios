@@ -8,12 +8,14 @@ import XCTest
 class PocketUserTests: XCTestCase {
     private var userDefaults: UserDefaults!
 
-    override func setUpWithError() throws {
+    override func setUp() {
+        super.setUp()
         userDefaults = UserDefaults(suiteName: "PocketUserTests")
     }
 
-    override func tearDownWithError() throws {
+    override func tearDown() {
         userDefaults.resetKeys()
+        super.tearDown()
     }
 
     func subject(
