@@ -67,6 +67,10 @@ public struct RecentSavesWidgetUpdateService {
                              title: $0.item?.title ?? $0.url.absoluteString,
                              imageUrl: $0.item?.topImageURL?.absoluteString)
         }
+        // avoid triggering widget updates if stored data did not change
+        guard store.recentSaves != saves else {
+            return
+        }
 
         do {
             try store.updateRecentSaves(saves)

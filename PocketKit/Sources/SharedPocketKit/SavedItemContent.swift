@@ -5,7 +5,7 @@
 import Foundation
 
 /// Type representing the content of a Core Data `SavedItem`.
-public struct SavedItemContent: Identifiable, Codable {
+public struct SavedItemContent: Identifiable, Codable, Equatable {
     public var id = UUID()
     public let url: String
     public let title: String
