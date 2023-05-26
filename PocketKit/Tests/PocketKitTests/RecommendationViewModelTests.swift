@@ -81,7 +81,6 @@ class RecommendationViewModelTests: XCTestCase {
 
         // favorited, archived
         do {
-
             let item = space.buildItem(remoteID: "item-3", givenURL: URL(string: "https://example.com/items/item-2"))
             let recommendation = space.buildRecommendation(remoteID: "rec-3", item: item)
 

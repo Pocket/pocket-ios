@@ -33,7 +33,6 @@ class APIFeatureFlagService: FeatureFlagLoadingService {
 
     /// Fetches the latest feature flags from the server
     func fetchFeatureFlags() async {
-
         let context =  UnleashContext(appName: "pocket-ios", userId: appSession.currentSession?.userIdentifier ?? .none, sessionId: appSession.currentSession?.guid ?? .none)
 
         let query = FeatureFlagsQuery(context: context)

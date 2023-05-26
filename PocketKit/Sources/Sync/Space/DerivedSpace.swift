@@ -40,7 +40,6 @@ struct DerivedSpace {
         var fetchedTask: PersistentSyncTask?
         context.performAndWait {
             fetchedTask = context.object(with: taskID) as? PersistentSyncTask
-
         }
         guard let task = fetchedTask else {
             return nil

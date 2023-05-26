@@ -32,7 +32,6 @@ public struct RootView: View {
         UINavigationBar.appearance().compactAppearance = navBar
         UINavigationBar.appearance().scrollEdgeAppearance = navBar2
         UINavigationBar.appearance().compactScrollEdgeAppearance = navBar2
-
     }
 
     /// Sets up the tab bar appearance following some of https://stackoverflow.com/questions/56969309/change-tabbed-view-bar-color-swiftui

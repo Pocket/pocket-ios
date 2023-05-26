@@ -187,8 +187,8 @@ class SettingsTest: XCTestCase {
         XCTAssertTrue(app.deleteConfirmationView.deleteAccountButton.isEnabled)
     }
 
-    @MainActor
     /// Helper to load and assert the basics of the delete confirmation view
+    @MainActor
     func loadDeleteConfirmationView() async {
         await tapSettings()
         await tap_AccountManagement()

@@ -596,7 +596,6 @@ extension PocketSource {
 // MARK: - Feature Flags
 
 extension PocketSource {
-
     public func fetchAllFeatureFlags() async throws {
         try await featureFlagService.fetchFeatureFlags()
     }

@@ -278,7 +278,6 @@ extension RecommendationViewModel {
     }
 
     func beginBulkEdit() {
-
     }
 
     private func save() {

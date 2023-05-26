@@ -6,7 +6,6 @@ import XCTest
 @testable import PocketKit
 
 final class NotificationRelayTests: XCTestCase {
-
     func test_expected_bannerRequest_for_serverError() {
         let retainedRelayInstance = NotificationRelay(NotificationCenter.default)
 

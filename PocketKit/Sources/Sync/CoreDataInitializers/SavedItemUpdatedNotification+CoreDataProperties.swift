@@ -7,7 +7,8 @@ import Foundation
 import CoreData
 
 extension SavedItemUpdatedNotification {
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<SavedItemUpdatedNotification> {
+    @nonobjc
+    public class func fetchRequest() -> NSFetchRequest<SavedItemUpdatedNotification> {
         return NSFetchRequest<SavedItemUpdatedNotification>(entityName: "SavedItemUpdatedNotification")
     }
 

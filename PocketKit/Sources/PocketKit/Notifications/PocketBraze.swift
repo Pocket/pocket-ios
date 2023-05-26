@@ -28,7 +28,6 @@ typealias BrazeProtocol = BrazeSDKProtocol & PushNotificationProtocol
  Class that is managing our Braze SDK implementation
  */
 class PocketBraze: NSObject {
-
     /// Our Braze SDK Object
     let braze: Braze
 

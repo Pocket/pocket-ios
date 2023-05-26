@@ -44,6 +44,10 @@ disabled_rules: # rule identifiers to exclude from running
   - weak_delegate
   - xctfail_message
 
+analyzer_rules:
+  - capture_variable
+  - unused_import
+
 opt_in_rules: # some rules are only opt-in
   # These rules were originally opted into. Disabling for now to get
   # Swiftlint up and running.
@@ -60,7 +64,6 @@ opt_in_rules: # some rules are only opt-in
   - anyobject_protocol
   - array_init
   - attributes
-  - capture_variable
   - closing_brace
   - closure_spacing
   - contains_over_filter_count
@@ -81,22 +84,12 @@ opt_in_rules: # some rules are only opt-in
   - multiline_arguments
   - opening_brace
   - optional_enum_case_matching
-#  - overridden_super_call:
-#      excluded:
-#        - PocketKit/Tests
-#        - Tests iOS/
+  - overridden_super_call
   - return_arrow_whitespace
-  - unused_import
   - vertical_parameter_alignment_on_call
   - vertical_whitespace_closing_braces
   - vertical_whitespace_opening_braces
   - yoda_condition
-
-file_header:
-  required_pattern: |
-                    \/\/ This Source Code Form is subject to the terms of the Mozilla Public
-                    \/\/ License, v. 2.0. If a copy of the MPL was not distributed with this
-                    \/\/ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 excluded: # paths to ignore during linting. Takes precedence over `included`.
   - build
@@ -109,3 +102,12 @@ excluded: # paths to ignore during linting. Takes precedence over `included`.
   - PocketKit/Sources/Localization/Strings.swift
 # reporter: "json" # reporter type (xcode, json, csv, checkstyle)
 reporter: 'xcode' # reporter type (xcode, json, csv, checkstyle)
+
+#file_header:
+#  required_pattern: |
+#                    \/\/ This Source Code Form is subject to the terms of the Mozilla Public
+#                    \/\/ License, v. 2.0. If a copy of the MPL was not distributed with this
+#                    \/\/ file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+overridden_super_call:
+  excluded: ["PocketKit/Tests/*", "Tests iOS/*"]

@@ -138,7 +138,6 @@ struct ClientAPIRequest {
 }
 
 extension ClientAPIRequest {
-
     var variableItemId: String {
         self.apolloRequestBody!.variableDict["itemID"] as! String
     }

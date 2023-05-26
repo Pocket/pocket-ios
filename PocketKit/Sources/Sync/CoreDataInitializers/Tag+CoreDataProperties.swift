@@ -7,19 +7,18 @@ import Foundation
 import CoreData
 
 extension Tag {
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<Tag> {
+    @nonobjc
+    public class func fetchRequest() -> NSFetchRequest<Tag> {
         return NSFetchRequest<Tag>(entityName: "Tag")
     }
 
     @NSManaged public var name: String
     @NSManaged public var remoteID: String?
     @NSManaged public var savedItems: NSOrderedSet?
-
 }
 
 // MARK: Generated accessors for savedItems
 extension Tag {
-
     @objc(insertObject:inSavedItemsAtIndex:)
     @NSManaged public func insertIntoSavedItems(_ value: SavedItem, at idx: Int)
 

@@ -8,7 +8,6 @@ import CoreData
 import Combine
 
 class MockSource: Source {
-
     var _events: SyncEvents = SyncEvents()
     var events: AnyPublisher<SyncEvent, Never> {
         _events.eraseToAnyPublisher()

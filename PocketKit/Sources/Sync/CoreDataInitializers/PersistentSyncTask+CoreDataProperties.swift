@@ -7,7 +7,8 @@ import Foundation
 import CoreData
 
 extension PersistentSyncTask {
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<PersistentSyncTask> {
+    @nonobjc
+    public class func fetchRequest() -> NSFetchRequest<PersistentSyncTask> {
         return NSFetchRequest<PersistentSyncTask>(entityName: "PersistentSyncTask")
     }
 

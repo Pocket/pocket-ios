@@ -801,9 +801,9 @@ class HomeViewModelTests: XCTestCase {
 
     func test_numberOfCarouselItemsForSlate_returnsAccurateCount() throws {
         let slates = [
-            space.buildSlate(recommendations: (0...1).map { space.buildRecommendation(remoteID: "recommendation1-\($0)", item: space.buildItem(remoteID: "item1-\($0)", givenURL: URL(string: "https://example.com/items/item1-\($0)")))}),
-            space.buildSlate(recommendations: (0...2).map { space.buildRecommendation(remoteID: "recommendation2-\($0)", item: space.buildItem(remoteID: "item2-\($0)", givenURL: URL(string: "https://example.com/items/item2-\($0)")))}),
-            space.buildSlate(recommendations: (0...3).map { space.buildRecommendation(remoteID: "recommendation3-\($0)", item: space.buildItem(remoteID: "item3-\($0)", givenURL: URL(string: "https://example.com/items/item3-\($0)")))})
+            space.buildSlate(recommendations: (0...1).map { space.buildRecommendation(remoteID: "recommendation1-\($0)", item: space.buildItem(remoteID: "item1-\($0)", givenURL: URL(string: "https://example.com/items/item1-\($0)"))) }),
+            space.buildSlate(recommendations: (0...2).map { space.buildRecommendation(remoteID: "recommendation2-\($0)", item: space.buildItem(remoteID: "item2-\($0)", givenURL: URL(string: "https://example.com/items/item2-\($0)"))) }),
+            space.buildSlate(recommendations: (0...3).map { space.buildRecommendation(remoteID: "recommendation3-\($0)", item: space.buildItem(remoteID: "item3-\($0)", givenURL: URL(string: "https://example.com/items/item3-\($0)"))) })
         ]
 
         try space.createSlateLineup(

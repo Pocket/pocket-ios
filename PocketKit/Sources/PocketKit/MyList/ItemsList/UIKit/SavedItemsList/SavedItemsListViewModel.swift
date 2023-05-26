@@ -48,8 +48,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
     @Published var presentedSortFilterViewModel: SortMenuViewModel?
 
-    @Published
-    var presentedListenViewModel: ListenViewModel?
+    @Published var presentedListenViewModel: ListenViewModel?
 
     @Published private var _initialDownloadState: InitialDownloadState
     var initialDownloadState: Published<InitialDownloadState>.Publisher { $_initialDownloadState }
@@ -487,7 +486,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
         var cases = ItemsListFilter.allCases
         if !self.featureFlags.isAssigned(flag: .listen) {
-            cases.removeAll(where: {$0 == .listen})
+            cases.removeAll(where: { $0 == .listen })
         }
         snapshot.appendItems(
             cases.map { ItemsListCell<ItemIdentifier>.filterButton($0) },

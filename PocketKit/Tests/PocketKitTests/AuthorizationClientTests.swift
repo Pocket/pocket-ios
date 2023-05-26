@@ -139,7 +139,6 @@ extension AuthorizationClientTests {
             } catch {
                 XCTFail("Should not have thrown an error \(error)")
             }
-
         }
 
         Task {

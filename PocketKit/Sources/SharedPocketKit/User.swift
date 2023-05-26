@@ -26,15 +26,11 @@ public protocol User {
 
 public class PocketUser: User, ObservableObject {
     @Published public private(set) var status: Status = .unknown
-    @AppStorage
-    public var userName: String
-    @AppStorage
-    public var displayName: String
-    @AppStorage
-    public private(set) var email: String
+    @AppStorage public var userName: String
+    @AppStorage public var displayName: String
+    @AppStorage public private(set) var email: String
     public var statusPublisher: Published<Status>.Publisher { $status }
-    @AppStorage
-    private var storedStatus: Status
+    @AppStorage private var storedStatus: Status
 
     private static let userStatusKey = UserDefaults.Key.userStatus
     private static let userNameKey = UserDefaults.Key.userName
