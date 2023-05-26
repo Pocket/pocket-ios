@@ -20,7 +20,7 @@ struct RecentSavesProvider: TimelineProvider {
         // TODO: because recent saves are fetched locally, we might just want to show them in the snapshot as well
         var entry: RecentSavesEntry
         do {
-            try entry = getEntry()
+            try entry = getEntry(for: context)
         } catch {
             Log.capture(message: "Unable to read saved items from shared useer defaults")
             entry = RecentSavesEntry(date: Date(), content: [.placeHolder])
@@ -32,7 +32,7 @@ struct RecentSavesProvider: TimelineProvider {
         var entries = [RecentSavesEntry]()
 
         do {
-            let entry = try getEntry()
+            let entry = try getEntry(for: context)
             entries = [entry]
         } catch {
             Log.capture(message: "Unable to read saved items from shared useer defaults")
@@ -43,12 +43,25 @@ struct RecentSavesProvider: TimelineProvider {
         completion(timeline)
     }
 
-    private func getEntry() throws -> RecentSavesEntry {
+    private func numberOfItems(for context: TimelineProviderContext) -> Int {
+        switch context.family {
+        case .systemExtraLarge:
+            return 0
+        case .systemLarge:
+            return 4
+        case .systemMedium:
+            return 2
+        default:
+            return 1
+        }
+    }
+
+    private func getEntry(for context: TimelineProviderContext) throws -> RecentSavesEntry {
         guard let defaults = UserDefaults(suiteName: "group.com.ideashower.ReadItLaterPro") else {
             throw RecentSavesProviderError.invalidStore
         }
         let service = RecentSavesWidgetService(store: RecentSavesWidgetStore(userDefaults: defaults))
 
-        return RecentSavesEntry(date: Date(), content: service.getRecentSaves())
+        return RecentSavesEntry(date: Date(), content: service.getRecentSaves(limit: numberOfItems(for: context)))
     }
 }

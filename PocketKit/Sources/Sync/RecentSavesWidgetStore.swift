@@ -48,8 +48,13 @@ public struct RecentSavesWidgetService {
         self.store = store
     }
 
-    public func getRecentSaves() -> [SavedItemContent] {
-        store.recentSaves
+    /// Returns the current recent saves list, sliced at the specified limit.
+    /// if limit is `0`, the full list is returned
+    /// - Parameter limit: the specified limit
+    /// - Returns: the list of items
+    public func getRecentSaves(limit: Int) -> [SavedItemContent] {
+        let saves = store.recentSaves
+        return limit > 0 ? Array(saves.prefix(min(saves.count, limit))) : saves
     }
 }
 
