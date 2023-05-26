@@ -15,7 +15,8 @@ class FetchUserTests: XCTestCase {
     var apollo: MockApolloClient!
     var user: MockUser!
 
-    override func setUpWithError() throws {
+    override func setUp() {
+        super.setUp()
         apollo = MockApolloClient()
         user = MockUser()
     }

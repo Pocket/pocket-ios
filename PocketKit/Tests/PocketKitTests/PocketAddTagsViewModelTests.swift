@@ -22,6 +22,7 @@ class PocketAddTagsViewModelTests: XCTestCase {
     private var networkPathMonitor: MockNetworkPathMonitor!
 
     override func setUp() {
+        super.setUp()
         source = MockSource()
         tracker = MockTracker()
         space = .testSpace()
@@ -38,6 +39,7 @@ class PocketAddTagsViewModelTests: XCTestCase {
         try space.clear()
         networkPathMonitor = nil
         subscriptionStore = nil
+        try await super.tearDown()
     }
 
     private func subject(

@@ -44,10 +44,6 @@ disabled_rules: # rule identifiers to exclude from running
   - weak_delegate
   - xctfail_message
 
-analyzer_rules:
-  - capture_variable
-  - unused_import
-
 opt_in_rules: # some rules are only opt-in
   # These rules were originally opted into. Disabling for now to get
   # Swiftlint up and running.
@@ -91,6 +87,16 @@ opt_in_rules: # some rules are only opt-in
   - vertical_whitespace_opening_braces
   - yoda_condition
 
+file_header:
+  required_string: |
+                    // This Source Code Form is subject to the terms of the Mozilla Public
+                    // License, v. 2.0. If a copy of the MPL was not distributed with this
+                    // file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+analyzer_rules: # Rules run by `swiftlint analyze`
+  - capture_variable
+  - unused_import
+
 excluded: # paths to ignore during linting. Takes precedence over `included`.
   - build
   - .build
@@ -102,12 +108,3 @@ excluded: # paths to ignore during linting. Takes precedence over `included`.
   - PocketKit/Sources/Localization/Strings.swift
 # reporter: "json" # reporter type (xcode, json, csv, checkstyle)
 reporter: 'xcode' # reporter type (xcode, json, csv, checkstyle)
-
-#file_header:
-#  required_pattern: |
-#                    \/\/ This Source Code Form is subject to the terms of the Mozilla Public
-#                    \/\/ License, v. 2.0. If a copy of the MPL was not distributed with this
-#                    \/\/ file, You can obtain one at http://mozilla.org/MPL/2.0/.
-
-overridden_super_call:
-  excluded: ["PocketKit/Tests/*", "Tests iOS/*"]

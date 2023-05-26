@@ -19,7 +19,8 @@ class PocketItemViewModelTests: XCTestCase {
     private var subscriptionStore: SubscriptionStore!
     private var networkPathMonitor: MockNetworkPathMonitor!
 
-    override func setUpWithError() throws {
+    override func setUp() {
+        super.setUp()
         source = MockSource()
         tracker = MockTracker()
         userDefaults = UserDefaults(suiteName: "PocketItemViewModelTests")
@@ -36,6 +37,7 @@ class PocketItemViewModelTests: XCTestCase {
         try space.clear()
         networkPathMonitor = nil
         subscriptionStore = nil
+        try super.tearDownWithError()
     }
 
     func subject(

@@ -24,6 +24,7 @@ class SavedItemViewModelTests: XCTestCase {
     private var subscriptions: Set<AnyCancellable> = []
 
     override func setUp() {
+        super.setUp()
         source = MockSource()
         tracker = MockTracker()
         pasteboard = MockPasteboard()
@@ -35,11 +36,12 @@ class SavedItemViewModelTests: XCTestCase {
         notificationCenter = .default
     }
 
-    override func tearDown() async throws {
+    override func tearDownWithError() throws {
         subscriptions = []
         try space.clear()
         networkPathMonitor = nil
         subscriptionStore = nil
+        try super.tearDownWithError()
     }
 
     func subject(

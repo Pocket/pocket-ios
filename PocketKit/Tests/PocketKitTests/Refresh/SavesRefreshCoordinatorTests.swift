@@ -16,6 +16,7 @@ class SavesRefreshCoordinatorTests: XCTestCase {
     var appSession: AppSession!
 
     override func setUp() {
+        super.setUp()
         notificationCenter = NotificationCenter()
         taskScheduler = MockBGTaskScheduler()
         source = MockSource()

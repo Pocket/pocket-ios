@@ -19,6 +19,7 @@ class TagsFilterViewModelTests: XCTestCase {
     private var user: MockUser!
 
     override func setUp() {
+        super.setUp()
         space = .testSpace()
         source = MockSource()
         tracker = MockTracker()
@@ -32,6 +33,7 @@ class TagsFilterViewModelTests: XCTestCase {
         source = nil
         subscriptions = []
         try space.clear()
+        try await super.tearDown()
     }
 
     private func subject(

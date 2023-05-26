@@ -12,12 +12,14 @@ class SpaceTests: XCTestCase {
     var backgroundContext: NSManagedObjectContext!
 
     override func setUp() {
+        super.setUp()
         viewContext = PersistentContainer.testContainer.viewContext
         backgroundContext = PersistentContainer.testContainer.newBackgroundContext()
     }
 
     override func tearDownWithError() throws {
         try Space.testSpace().clear()
+        try super.tearDownWithError()
     }
 
     func subject() -> Space {

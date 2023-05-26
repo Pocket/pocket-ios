@@ -19,6 +19,7 @@ final class InstantSyncTests: XCTestCase {
     private var subject: InstantSync!
 
     override func setUp() {
+        super.setUp()
         source = MockSource()
         appSession = AppSession(keychain: MockKeychain(), groupID: "test")
         session = SharedPocketKit.Session(guid: "test-guid", accessToken: "test-access-token", userIdentifier: "test-id")

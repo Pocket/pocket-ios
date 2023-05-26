@@ -24,6 +24,7 @@ class FetchSavesTests: XCTestCase {
     var task: PersistentSyncTask!
 
     override func setUpWithError() throws {
+        try super.setUpWithError()
         apollo = MockApolloClient()
         user = MockUser()
         events = PassthroughSubject()
@@ -39,6 +40,7 @@ class FetchSavesTests: XCTestCase {
     override func tearDownWithError() throws {
         cancellables = []
         try space.clear()
+        try super.tearDownWithError()
     }
 
     func subject(

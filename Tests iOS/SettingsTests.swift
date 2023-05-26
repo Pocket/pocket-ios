@@ -12,6 +12,7 @@ class SettingsTest: XCTestCase {
     var snowplowMicro = SnowplowMicro()
 
     override func setUp() async throws {
+        try await super.setUp()
         continueAfterFailure = false
 
         app = PocketAppElement(app: XCUIApplication())
@@ -26,6 +27,7 @@ class SettingsTest: XCTestCase {
         try server.stop()
         app.terminate()
         await snowplowMicro.assertBaselineSnowplowExpectation()
+        try await super.tearDown()
     }
 
     @MainActor

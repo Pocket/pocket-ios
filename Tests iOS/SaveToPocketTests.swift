@@ -10,6 +10,7 @@ class SaveToPocketTests: XCTestCase {
     var app: PocketAppElement!
 
     override func setUpWithError() throws {
+        try super.setUpWithError()
         self.continueAfterFailure = false
 
         server = Application()
@@ -35,6 +36,7 @@ class SaveToPocketTests: XCTestCase {
         app.terminate()
         let reminders = XCUIApplication(bundleIdentifier: "com.apple.reminders")
         reminders.terminate()
+        try super.tearDownWithError()
     }
 
     func test_whenLoggedOut_userTapsLogIn_opensApp() {

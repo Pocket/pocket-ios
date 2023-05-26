@@ -12,12 +12,14 @@ class RouterTests: XCTestCase {
     private var source: MockSource!
 
     override func setUpWithError() throws {
+        try super.setUpWithError()
         source = MockSource()
         space = .testSpace()
     }
 
     override func tearDownWithError() throws {
         try space.clear()
+        try super.tearDownWithError()
     }
 
     func subject(source: Source? = nil) -> Router {

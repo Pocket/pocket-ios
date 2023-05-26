@@ -21,6 +21,7 @@ class SlateDetailViewModelTests: XCTestCase {
     var userDefaults: UserDefaults!
 
     override func setUp() {
+        super.setUp()
         source = MockSource()
         tracker = MockTracker()
         space = .testSpace()
@@ -38,6 +39,7 @@ class SlateDetailViewModelTests: XCTestCase {
     override func tearDownWithError() throws {
         subscriptions = []
         try space.clear()
+        try super.tearDownWithError()
     }
 
     func subject(

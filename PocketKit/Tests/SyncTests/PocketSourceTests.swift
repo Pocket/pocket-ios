@@ -27,7 +27,8 @@ class PocketSourceTests: XCTestCase {
     var userService: MockUserService!
     var featureFlagService: MockFeatureFlagService!
 
-    override func setUpWithError() throws {
+    override func setUp() {
+        super.setUp()
         space = .testSpace()
         user = MockUser()
         user.stubStandardSetStatus()
@@ -54,6 +55,7 @@ class PocketSourceTests: XCTestCase {
         try space.clear()
         subscriptions = []
         osNotificationCenter.removeAllObservers()
+        try super.tearDownWithError()
     }
 
     func subject(

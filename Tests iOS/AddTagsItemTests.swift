@@ -11,6 +11,7 @@ class AddTagsItemTests: XCTestCase {
     var snowplowMicro = SnowplowMicro()
 
     override func setUp() async throws {
+        try await super.setUp()
         continueAfterFailure = false
 
         let uiApp = XCUIApplication()
@@ -31,6 +32,7 @@ class AddTagsItemTests: XCTestCase {
         try server.stop()
         app.terminate()
         await snowplowMicro.assertNoBadEvents()
+        try await super.tearDown()
     }
 
     @MainActor

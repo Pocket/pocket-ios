@@ -21,6 +21,7 @@ class RecommendationViewModelTests: XCTestCase {
     private var subscriptions: Set<AnyCancellable> = []
 
     override func setUp() {
+        super.setUp()
         source = MockSource()
         tracker = MockTracker()
         pasteboard = MockPasteboard()
@@ -34,6 +35,7 @@ class RecommendationViewModelTests: XCTestCase {
     override func tearDownWithError() throws {
         subscriptions = []
         try space.clear()
+        try super.tearDownWithError()
     }
 
     func subject(
