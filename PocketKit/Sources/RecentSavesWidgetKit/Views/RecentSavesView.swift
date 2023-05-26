@@ -10,7 +10,23 @@ struct RecentSavesView: View {
     let entry: RecentSavesProvider.Entry
 
     var body: some View {
-        LabeledContent(entry.content.first!.title, value: entry.content.first!.url)
+        ForEach(entry.content) { entry in
+            SavedItemRow(title: entry.title)
+                .padding()
+        }
+    }
+}
+
+struct SavedItemRow: View {
+    let title: String
+
+    var body: some View {
+        HStack {
+            Text(title)
+                .lineLimit(2)
+            Spacer()
+            Text("image goes here")
+        }
     }
 }
 
