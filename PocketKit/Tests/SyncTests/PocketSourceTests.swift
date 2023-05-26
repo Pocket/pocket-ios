@@ -713,7 +713,6 @@ extension PocketSourceTests {
     }
 
     func test_fetchOrCreateSavedItem_retrievesItem() throws {
-
         let itemParts = SavedItemParts(
             url: "http://localhost:8080/hello",
             remoteID: "saved-item",

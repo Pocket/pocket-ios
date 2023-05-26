@@ -188,7 +188,6 @@ struct PocketAppElement {
 /// Listen
 /// Hacky helper extenstion until we add accessibility identifier helpers to Listen
 extension PocketAppElement {
-
     var listenPlay: XCUIElement {
         app.buttons["Play"]
     }
@@ -197,5 +196,4 @@ extension PocketAppElement {
     var listenList: XCUIElement {
         app.collectionViews.element(boundBy: 0)
     }
-
 }

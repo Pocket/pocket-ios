@@ -45,6 +45,5 @@ extension MockPocketBraze {
     }
 
     func signedInUserDidBeginMigration() {
-
     }
 }

@@ -8,8 +8,7 @@ import SharedPocketKit
 import PocketGraph
 
 class MockSearchService: SearchService {
-    @Published
-    var _results: [SearchSavedItem]? = []
+    @Published var _results: [SearchSavedItem]? = []
     var results: Published<[SearchSavedItem]?>.Publisher { $_results }
 
     public var hasFinishedResults: Bool = false

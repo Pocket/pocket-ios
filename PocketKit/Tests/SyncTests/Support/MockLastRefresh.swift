@@ -5,7 +5,6 @@
 @testable import SharedPocketKit
 
 class MockLastRefresh: LastRefresh {
-
     // MARK: - lastRefresh saves
     typealias GetLastRefreshSavesImpl = () -> Double?
     private var getLastRefreshSavesImpl: GetLastRefreshSavesImpl?

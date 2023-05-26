@@ -38,5 +38,4 @@ class CoreSpotlightTests: XCTestCase {
         app.saves.itemView(at: 0).wait()
         app.terminate()
     }
-
 }

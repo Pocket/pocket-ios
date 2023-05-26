@@ -53,7 +53,7 @@ public struct EditBottomBar: ViewModifier {
                     } message: {
                         Text(Localization.Tags.DeleteTag.message)
                     }
-                    .disabled(selectedItems.count == 0)
+                    .disabled(selectedItems.isEmpty)
                     .accessibilityIdentifier("delete-button")
                 }
                 .padding()

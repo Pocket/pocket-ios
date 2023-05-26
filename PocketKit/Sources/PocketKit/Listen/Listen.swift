@@ -104,7 +104,6 @@ class Listen: NSObject {
 }
 
 extension Listen: PKTListenServiceDelegate {
-
     static let skippedActions = [
         "listen_opened",
         "listen_closed"

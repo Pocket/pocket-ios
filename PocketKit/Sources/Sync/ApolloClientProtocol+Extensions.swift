@@ -75,7 +75,6 @@ public extension ApolloClientProtocol {
                                           line: Int,
                                           column: Int,
                                           funcName: String) {
-
         // Codes we wish to notify the user about
         let notifiableErrorCodes = [429, 500, 503]
 
@@ -84,11 +83,13 @@ public extension ApolloClientProtocol {
             return
         }
 
-        Log.capture(message: "GraphQl Error - description: \(responseError.errorDescription ?? "no description found").",
-                    filename: filename,
-                    line: line,
-                    column: column,
-                    funcName: funcName)
+        Log.capture(
+            message: "GraphQl Error - description: \(responseError.errorDescription ?? "no description found").",
+            filename: filename,
+            line: line,
+            column: column,
+            funcName: funcName
+        )
 
         if case .invalidResponseCode(let response, _) = responseError,
            let code = response?.statusCode,

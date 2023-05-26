@@ -14,7 +14,6 @@ public extension Events {
 }
 
 public extension Events.Listen {
-
     /// Fired when an Item is impressed in the listen view
     /// - Parameters:
     ///   - url: URL of the item

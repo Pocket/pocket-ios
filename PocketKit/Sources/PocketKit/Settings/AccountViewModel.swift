@@ -45,8 +45,7 @@ class AccountViewModel: ObservableObject {
     @Published var isPresentingHooray = false
     @Published var isPresentingDebugMenu = false
 
-    @AppStorage
-    public var appBadgeToggle: Bool
+    @AppStorage public var appBadgeToggle: Bool
 
     private var userStatusListener: AnyCancellable?
 

@@ -41,8 +41,7 @@ class ListOptions: ObservableObject {
 }
 
 class SavedListOptions: ObservableObject, ListOptionsHolder {
-    @AppStorage
-    var selectedSortOption: SortOption
+    @AppStorage var selectedSortOption: SortOption
 
     private var cancellable: AnyCancellable?
     private let _publisher: PassthroughSubject<Void, Never>
@@ -61,8 +60,7 @@ class SavedListOptions: ObservableObject, ListOptionsHolder {
 }
 
 class ArchiveListOptions: ObservableObject, ListOptionsHolder {
-    @AppStorage
-    var selectedSortOption: SortOption
+    @AppStorage var selectedSortOption: SortOption
 
     private var cancellable: AnyCancellable?
     private let _publisher: PassthroughSubject<Void, Never>
