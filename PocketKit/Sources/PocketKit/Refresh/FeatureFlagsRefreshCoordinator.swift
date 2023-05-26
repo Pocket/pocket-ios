@@ -37,7 +37,7 @@ class FeatureFlagsRefreshCoordinator: RefreshCoordinator {
     func refresh(isForced: Bool = false, _ completion: @escaping () -> Void) {
         Log.debug("Refresh feature flags called, isForced: \(String(describing: isForced))")
 
-        if isForced, !isRefreshing {
+        if isForced || !isRefreshing {
             Task { [weak self] in
                 guard let self else {
                     Log.captureNilWeakSelf()
