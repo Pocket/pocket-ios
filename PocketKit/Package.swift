@@ -42,9 +42,10 @@ let package = Package(
             checksum: "0e21242b5cdadf2da674de811476910a89b7046bd2f1282d23193695d9e61a05"
         ),
         .target(name: "RecentSavesWidgetKit", dependencies: [
+            "Analytics",
             "SharedPocketKit",
             "Sync",
-            "Analytics",
+            "Textile",
             .product(name: "Kingfisher", package: "Kingfisher")
         ]),
         .target(
