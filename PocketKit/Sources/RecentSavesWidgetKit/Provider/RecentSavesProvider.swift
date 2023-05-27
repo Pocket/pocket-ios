@@ -20,7 +20,7 @@ struct RecentSavesProvider: TimelineProvider {
         // TODO: because recent saves are fetched locally, we might just want to show them in the snapshot as well
         var entry: RecentSavesEntry
         do {
-            try entry = getEntry(for: context)
+            try entry = getEntry(for: context.family)
         } catch {
             Log.capture(message: "Unable to read saved items from shared useer defaults")
             entry = RecentSavesEntry(date: Date(), content: [.placeHolder])
@@ -32,7 +32,7 @@ struct RecentSavesProvider: TimelineProvider {
         var entries = [RecentSavesEntry]()
 
         do {
-            let entry = try getEntry(for: context)
+            let entry = try getEntry(for: context.family)
             entries = [entry]
         } catch {
             Log.capture(message: "Unable to read saved items from shared useer defaults")
@@ -43,8 +43,8 @@ struct RecentSavesProvider: TimelineProvider {
         completion(timeline)
     }
 
-    private func numberOfItems(for context: TimelineProviderContext) -> Int {
-        switch context.family {
+    private func numberOfItems(for widgetFamily: WidgetFamily) -> Int {
+        switch widgetFamily {
         case .systemExtraLarge:
             return 0
         case .systemLarge:
@@ -56,12 +56,12 @@ struct RecentSavesProvider: TimelineProvider {
         }
     }
 
-    private func getEntry(for context: TimelineProviderContext) throws -> RecentSavesEntry {
+    private func getEntry(for widgetFamily: WidgetFamily) throws -> RecentSavesEntry {
         guard let defaults = UserDefaults(suiteName: "group.com.ideashower.ReadItLaterPro") else {
             throw RecentSavesProviderError.invalidStore
         }
         let service = RecentSavesWidgetService(store: RecentSavesWidgetStore(userDefaults: defaults))
 
-        return RecentSavesEntry(date: Date(), content: service.getRecentSaves(limit: numberOfItems(for: context)))
+        return RecentSavesEntry(date: Date(), content: service.getRecentSaves(limit: numberOfItems(for: widgetFamily)))
     }
 }
