@@ -2,7 +2,9 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import Kingfisher
 import SwiftUI
+import Textile
 
 struct RecentSavesView: View {
     @Environment(\.widgetFamily) private var widgetFamily
@@ -11,21 +13,31 @@ struct RecentSavesView: View {
 
     var body: some View {
         ForEach(entry.content) { entry in
-            SavedItemRow(title: entry.title)
+            SavedItemRow(title: entry.title.isEmpty ? entry.url : entry.title, imageUrl: entry.imageUrl)
                 .padding()
+                .cornerRadius(16)
         }
+        .background(Color(.ui.homeCellBackground))
     }
 }
 
 struct SavedItemRow: View {
     let title: String
+    let imageUrl: String?
 
     var body: some View {
-        HStack {
-            Text(title)
-                .lineLimit(2)
-            Spacer()
-            Text("image goes here")
+        GeometryReader { frame in
+            HStack {
+                Text(title)
+                    .lineLimit(3)
+                if let imageUrl, let url = URL(string: imageUrl) {
+                    Spacer()
+                    KFImage.url(url)
+                        .resizable()
+                        .frame(width: frame.size.width * 0.2)
+                        .cornerRadius(8)
+                }
+            }
         }
     }
 }
