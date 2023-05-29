@@ -50,8 +50,10 @@ struct RecentSavesProvider: TimelineProvider {
         }
     }
 
+    /// Download thumbnails, attach them to the related item and return the updated list of recent `[SavedItemRowContent]`
+    /// - Parameter content: the recent saves without thumbnails `[SavedItemContent]`
+    /// - Returns: the updated list
     private func getContentWithImages(content: [SavedItemContent]) async throws -> [SavedItemRowContent] {
-        let orderedContent = content.map { SavedItemRowContent(content: $0, image: nil) }
         return try await withThrowingTaskGroup(of: SavedItemRowContent.self, returning: [SavedItemRowContent].self) { taskGroup in
 
             content.forEach { item in
@@ -59,7 +61,9 @@ struct RecentSavesProvider: TimelineProvider {
                         try await downloadImage(for: item)
                     }
             }
-
+            // we need to update the content in the existing order,
+            // because we don't know when each task will complete.
+            let orderedContent = content.map { SavedItemRowContent(content: $0, image: nil) }
             return try await taskGroup.reduce(into: orderedContent) { orderedContent, item in
                 if let index = orderedContent.firstIndex(where: { $0.content == item.content }) {
                     orderedContent[index] = item
