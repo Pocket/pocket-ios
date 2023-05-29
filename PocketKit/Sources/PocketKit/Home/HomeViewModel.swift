@@ -689,9 +689,7 @@ extension HomeViewModel: NSFetchedResultsControllerDelegate {
             let reconfiguredItemdIdentifiers: [Cell] = snapshot.reloadedItemIdentifiers.compactMap({ .recentSaves($0 as! NSManagedObjectID) })
             newSnapshot.reloadItems(reloadedItemIdentifiers)
             newSnapshot.reconfigureItems(reconfiguredItemdIdentifiers)
-            if reloadedItemIdentifiers.count > 0 || reconfiguredItemdIdentifiers.count > 0 {
-                updateRecentSavesWidget()
-            }
+            updateRecentSavesWidget()
         }
 
         if isOffline {
