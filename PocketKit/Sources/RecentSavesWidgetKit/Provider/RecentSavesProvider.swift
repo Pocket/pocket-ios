@@ -49,6 +49,43 @@ struct RecentSavesProvider: TimelineProvider {
             completion(timeline)
         }
     }
+}
+
+// MARK: read recent saves
+extension RecentSavesProvider {
+    /// Returns the number of recent saves to display for a given widget family
+    /// - Parameter widgetFamily: the given widget family
+    /// - Returns: the number of recent saves
+    private func numberOfItems(for widgetFamily: WidgetFamily) -> Int {
+        switch widgetFamily {
+        case .systemExtraLarge:
+            return 0
+        case .systemLarge:
+            return 4
+        case .systemMedium:
+            return 2
+        default:
+            return 1
+        }
+    }
+
+    /// Retrieves the recent saves for a given widget family
+    /// - Parameter widgetFamily: the given widget family
+    /// - Returns: the list of recent saves in a `[SavedItemContent]` array
+    private func getRecentSaves(for widgetFamily: WidgetFamily) throws -> [SavedItemContent] {
+        guard let defaults = UserDefaults(suiteName: "group.com.ideashower.ReadItLaterPro") else {
+            throw RecentSavesProviderError.invalidStore
+        }
+        let service = RecentSavesWidgetService(store: RecentSavesWidgetStore(userDefaults: defaults))
+
+        return service.getRecentSaves(limit: numberOfItems(for: widgetFamily))
+    }
+}
+
+// MARK: download thumbnails
+extension RecentSavesProvider {
+    /// Default size for downloaded thumbnails
+    static let defaultThumbnailSize = CGSize(width: 48, height: 36)
 
     /// Download thumbnails, attach them to the related item and return the updated list of recent `[SavedItemRowContent]`
     /// - Parameter content: the recent saves without thumbnails `[SavedItemContent]`
@@ -92,36 +129,8 @@ struct RecentSavesProvider: TimelineProvider {
     ///   - url: the original url
     ///   - size: the given size
     /// - Returns: the CDN URL or the original URL, if no CDN URL was found
-    private func bestURL(for url: URL, size: CGSize = CGSize(width: 48, height: 36)) -> URL {
+    private func bestURL(for url: URL, size: CGSize = Self.defaultThumbnailSize) -> URL {
         let builder = CDNURLBuilder()
         return builder.imageCacheURL(for: url, size: size) ?? url
-    }
-
-    /// Returns the number of recent saves to display for a given widget family
-    /// - Parameter widgetFamily: the given widget family
-    /// - Returns: the number of recent saves
-    private func numberOfItems(for widgetFamily: WidgetFamily) -> Int {
-        switch widgetFamily {
-        case .systemExtraLarge:
-            return 0
-        case .systemLarge:
-            return 4
-        case .systemMedium:
-            return 2
-        default:
-            return 1
-        }
-    }
-
-    /// Retrieves the recent saves for a given widget family
-    /// - Parameter widgetFamily: the given widget family
-    /// - Returns: the list of recent saves in a `[SavedItemContent]` array
-    private func getRecentSaves(for widgetFamily: WidgetFamily) throws -> [SavedItemContent] {
-        guard let defaults = UserDefaults(suiteName: "group.com.ideashower.ReadItLaterPro") else {
-            throw RecentSavesProviderError.invalidStore
-        }
-        let service = RecentSavesWidgetService(store: RecentSavesWidgetStore(userDefaults: defaults))
-
-        return service.getRecentSaves(limit: numberOfItems(for: widgetFamily))
     }
 }

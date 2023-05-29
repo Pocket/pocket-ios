@@ -45,8 +45,7 @@ let package = Package(
             "Analytics",
             "SharedPocketKit",
             "Sync",
-            "Textile",
-            .product(name: "Kingfisher", package: "Kingfisher")
+            "Textile"
         ]),
         .target(
             name: "PocketKit",
