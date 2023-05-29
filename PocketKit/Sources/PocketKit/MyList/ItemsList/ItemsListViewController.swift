@@ -9,12 +9,9 @@ import SafariServices
 class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, UICollectionViewDelegate, UICollectionViewDataSourcePrefetching {
     private let model: ViewModel
     private var subscriptions: [AnyCancellable] = []
-    private var collectionView: UICollectionView!
+    private var collectionView: ItemListCollectionView!
     private var progressView: UIProgressView!
     private var dataSource: UICollectionViewDiffableDataSource<ItemsListSection, ItemsListCell<ViewModel.ItemIdentifier>>!
-
-    private var regularCollectionViewConstraints: [NSLayoutConstraint] = []
-    private var compactCollectionViewConstraints: [NSLayoutConstraint] = []
 
     init(model: ViewModel) {
         self.model = model
@@ -135,7 +132,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
             }
         }
 
-        self.collectionView = UICollectionView(
+        self.collectionView = ItemListCollectionView(
             frame: .zero,
             collectionViewLayout: layout
         )
@@ -218,69 +215,19 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
         view.backgroundColor = UIColor(.ui.white1)
 
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-
-        regularCollectionViewConstraints = initRegularCollectionViewConstraints()
-        compactCollectionViewConstraints = initCompactCollectionViewConstraints()
-
-        applyCollectionViewConstraints(for: traitCollection.horizontalSizeClass)
+        collectionView.loadConstraints()
+        collectionView.applyConstraints(for: traitCollection.horizontalSizeClass)
 
         model.fetch()
-
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
 
-        coordinator.animate(alongsideTransition: { [weak self] _ in
-            guard let self else { return }
-            self.applyCollectionViewConstraints(for: self.traitCollection.horizontalSizeClass)
+        coordinator.animate(alongsideTransition: { [weak self, collectionView] _ in
+            guard let self, let collectionView else { return }
+            collectionView.applyConstraints(for: self.traitCollection.horizontalSizeClass)
         })
-    }
-
-    // MARK: - CollectionView Constraints
-
-    private func applyCollectionViewConstraints(for sizeClass: UIUserInterfaceSizeClass) {
-        if sizeClass == .regular {
-            print("==Regular")
-            compactCollectionViewConstraints.forEach {
-                $0.isActive = false
-            }
-            regularCollectionViewConstraints.forEach {
-                $0.isActive = true
-            }
-        } else {
-            print("==Compact")
-            regularCollectionViewConstraints.forEach {
-                $0.isActive = false
-            }
-            compactCollectionViewConstraints.forEach {
-                $0.isActive = true
-            }
-        }
-
-        collectionView.setNeedsUpdateConstraints()
-        collectionView.setNeedsLayout()
-        collectionView.layoutIfNeeded()
-    }
-
-    private func clearCollectionViewConstraints() {
-        print("==CV \(collectionView.constraints.count)")
-        print("==V \(view.constraints.count)")
-        NSLayoutConstraint.deactivate(collectionView.constraints)
-    }
-
-    private func initRegularCollectionViewConstraints() -> [NSLayoutConstraint] {
-        return [collectionView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                collectionView.topAnchor.constraint(equalTo: view.topAnchor),
-                collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-                collectionView.widthAnchor.constraint(equalToConstant: 500)]
-    }
-
-    private func initCompactCollectionViewConstraints() -> [NSLayoutConstraint] {
-        return [collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-                collectionView.topAnchor.constraint(equalTo: view.topAnchor),
-                collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)]
     }
 
     /// Whether or not we should show the progress bar.
