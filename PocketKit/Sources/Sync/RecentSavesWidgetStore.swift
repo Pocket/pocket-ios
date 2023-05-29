@@ -61,27 +61,32 @@ public struct RecentSavesWidgetService {
 /// Service that updates recent saves to a store
 public struct RecentSavesWidgetUpdateService {
     private let store: RecentSavesStore
+    /// Queue used to update values, to ensure subsequent calls always happen serially.
+    /// Also prevents blocking execution at the caller site.
+    private let savesUpdateQueue = DispatchQueue(label: "RecentSavesWidgetUpdateQueue", qos: .userInteractive)
 
     public init(store: RecentSavesStore) {
         self.store = store
     }
 
     public func setRecentSaves(_ items: [SavedItem]) {
-        let saves = items.map {
-            SavedItemContent(url: $0.url.absoluteString,
-                             title: $0.item?.title ?? $0.url.absoluteString,
-                             imageUrl: $0.item?.topImageURL?.absoluteString)
-        }
-        // avoid triggering widget updates if stored data did not change
-        guard store.recentSaves != saves else {
-            return
-        }
+        savesUpdateQueue.async {
+            let saves = items.map {
+                SavedItemContent(url: $0.url.absoluteString,
+                                 title: $0.item?.title ?? $0.url.absoluteString,
+                                 imageUrl: $0.item?.topImageURL?.absoluteString)
+            }
+            // avoid triggering widget updates if stored data did not change
+            guard store.recentSaves != saves else {
+                return
+            }
 
-        do {
-            try store.updateRecentSaves(saves)
-            WidgetCenter.shared.reloadTimelines(ofKind: "RecentSavesWidget")
-        } catch {
-            Log.capture(message: "Failed to update recent saves for widget: \(error)")
+            do {
+                try store.updateRecentSaves(saves)
+                WidgetCenter.shared.reloadTimelines(ofKind: "RecentSavesWidget")
+            } catch {
+                Log.capture(message: "Failed to update recent saves for widget: \(error)")
+            }
         }
     }
 }
