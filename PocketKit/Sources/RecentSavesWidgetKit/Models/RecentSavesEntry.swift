@@ -3,9 +3,10 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import SharedPocketKit
+import SwiftUI
 import WidgetKit
 
 struct RecentSavesEntry: TimelineEntry {
     let date: Date
-    let content: [SavedItemContent]
+    let content: [SavedItemRowContent]
 }

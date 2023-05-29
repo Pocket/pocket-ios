@@ -15,7 +15,7 @@ struct RecentSavesView: View {
 
     var body: some View {
         ForEach(entry.content) { entry in
-            SavedItemRow(title: entry.title.isEmpty ? entry.url : entry.title, imageUrl: entry.imageUrl)
+            SavedItemRow(title: entry.content.title.isEmpty ? entry.content.url : entry.content.title, image: entry.image)
                 .padding()
                 .cornerRadius(16)
         }
@@ -24,34 +24,26 @@ struct RecentSavesView: View {
 
 struct SavedItemRow: View {
     let title: String
-    let imageUrl: String?
+    let image: Image?
 
     var body: some View {
         HStack {
             Text(title)
                 .lineLimit(3)
             Spacer()
-            if let imageUrl, let url = URL(string: imageUrl) {
-                ItemThumbnail(url: url)
+            if let image {
+                ItemThumbnail(image: image)
             }
         }
     }
 }
 
 struct ItemThumbnail: View {
-    let url: URL
+    let image: Image
     private static let imageSize = CGSize(width: 48, height: 36)
 
-    private var bestURL: URL {
-        let builder = CDNURLBuilder()
-        return builder.imageCacheURL(for: url, size: Self.imageSize) ?? url
-    }
-
     var body: some View {
-        KFImage.url(bestURL)
-            .onSuccess { _ in
-                WidgetCenter.shared.reloadTimelines(ofKind: "RecentSavesWidget")
-            }
+        image
             .resizable()
             .frame(width: Self.imageSize.width, height: Self.imageSize.height)
             .cornerRadius(8)
