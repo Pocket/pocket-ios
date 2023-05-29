@@ -105,17 +105,7 @@ class HomeViewModel: NSObject {
     private let homeRefreshCoordinator: RefreshCoordinator
     private let notificationCenter: NotificationCenter
     private var subscriptions: [AnyCancellable] = []
-    private var recentSavesCount: Int = 0 {
-        didSet {
-            // a bit of a hack to prevent updating the widget when more fetched results are
-            // appended. This should not happen, but it does in certain conditions
-            // more info at https://stackoverflow.com/questions/4858228/nsfetchedresultscontroller-ignores-fetchlimit
-            // and https://developer.apple.com/forums/thread/26907
-            if oldValue == 0, recentSavesCount == SyncConstants.Home.recentSaves {
-                updateRecentSavesWidget()
-            }
-        }
-    }
+    private var recentSavesCount: Int = 0
     private let store: SubscriptionStore
     private let recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService
 
@@ -695,9 +685,7 @@ extension HomeViewModel: NSFetchedResultsControllerDelegate {
             let reconfiguredItemdIdentifiers: [Cell] = snapshot.reloadedItemIdentifiers.compactMap({ .recentSaves($0 as! NSManagedObjectID) })
             newSnapshot.reloadItems(reloadedItemIdentifiers)
             newSnapshot.reconfigureItems(reconfiguredItemdIdentifiers)
-            if reloadedItemIdentifiers.count > 0 || reconfiguredItemdIdentifiers.count > 0 {
-                updateRecentSavesWidget()
-            }
+            updateRecentSavesWidget()
         }
 
         if isOffline {
