@@ -31,13 +31,12 @@ struct RecentSavesProvider: TimelineProvider {
                 completion(RecentSavesEntry(date: Date(), contentType: .empty))
                 return
             }
-            // TODO: handle task result
             Task {
-                let contentWithImages = try await getContentWithImages(content: saves)
+                let contentWithImages = await getContentWithImages(content: saves)
                 completion(RecentSavesEntry(date: Date(), contentType: .items(contentWithImages)))
             }
         } catch {
-            Log.capture(message: "Unable to read saved items from shared useer defaults")
+            Log.capture(message: "Recent Saves widget: unable to initialize service - \(error)")
             completion(RecentSavesEntry(date: Date(), contentType: .error))
         }
     }
@@ -60,15 +59,14 @@ struct RecentSavesProvider: TimelineProvider {
                 completion(timeline)
                 return
             }
-            // TODO: handle task result
             Task {
-                let contentWithImages = try await getContentWithImages(content: saves)
+                let contentWithImages = await getContentWithImages(content: saves)
                 let entriesWithImages = [RecentSavesEntry(date: Date(), contentType: .items(contentWithImages))]
                 let timeline = Timeline(entries: entriesWithImages, policy: .never)
                 completion(timeline)
             }
         } catch {
-            Log.capture(message: "Unable to read saved items from shared useer defaults")
+            Log.capture(message: "Recent Saves widget: unable to initialize service - \(error)")
             let timeline = Timeline(entries: [RecentSavesEntry(date: Date(), contentType: .error)], policy: .never)
             completion(timeline)
         }
@@ -111,18 +109,18 @@ extension RecentSavesProvider {
     /// Download thumbnails, attach them to the related item and return the updated list of recent `[SavedItemRowContent]`
     /// - Parameter content: the recent saves without thumbnails `[SavedItemContent]`
     /// - Returns: the updated list
-    private func getContentWithImages(content: [SavedItemContent]) async throws -> [SavedItemRowContent] {
-        return try await withThrowingTaskGroup(of: SavedItemRowContent.self, returning: [SavedItemRowContent].self) { taskGroup in
+    private func getContentWithImages(content: [SavedItemContent]) async -> [SavedItemRowContent] {
+        return await withTaskGroup(of: SavedItemRowContent.self, returning: [SavedItemRowContent].self) { taskGroup in
 
             content.forEach { item in
                     taskGroup.addTask {
-                        try await downloadImage(for: item)
+                        await downloadImage(for: item)
                     }
             }
             // we need to update the content in the existing order,
             // because we don't know when each task will complete.
             let orderedContent = content.map { SavedItemRowContent(content: $0, image: nil) }
-            return try await taskGroup.reduce(into: orderedContent) { orderedContent, item in
+            return await taskGroup.reduce(into: orderedContent) { orderedContent, item in
                 if let index = orderedContent.firstIndex(where: { $0.content == item.content }) {
                     orderedContent[index] = item
                 }
@@ -132,17 +130,21 @@ extension RecentSavesProvider {
 
     /// Downloads the thumbnail for a given `SavedItemRowContent` item
     /// - Parameter item: the given item
-    /// - Returns: the updated item with the downloaded image, if any.
-    private func downloadImage(for item: SavedItemContent) async throws -> SavedItemRowContent {
+    /// - Returns: the updated item with the downloaded image, or the original content, if no thumbnail was found.
+    private func downloadImage(for item: SavedItemContent) async -> SavedItemRowContent {
         guard let imageUrl = item.imageUrl, let url = URL(string: imageUrl) else {
             return SavedItemRowContent(content: item, image: nil)
         }
-        let (data, _) = try await URLSession.shared.data(from: bestURL(for: url))
-        guard let uiImage = UIImage(data: data) else {
+        do {
+            let (data, _) = try await URLSession.shared.data(from: bestURL(for: url))
+            guard let uiImage = UIImage(data: data) else {
+                return SavedItemRowContent(content: item, image: nil)
+            }
+            return SavedItemRowContent(content: item, image: Image(uiImage: uiImage))
+        } catch {
+            Log.capture(message: "Recent Saves widget: unable to download thumbnail - \(error)")
             return SavedItemRowContent(content: item, image: nil)
         }
-
-        return SavedItemRowContent(content: item, image: Image(uiImage: uiImage))
     }
 
     /// Returns the CDN URL to download an image of a given size
