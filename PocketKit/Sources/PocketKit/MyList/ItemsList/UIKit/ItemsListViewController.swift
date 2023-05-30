@@ -6,10 +6,10 @@ import Kingfisher
 import Textile
 import SafariServices
 
-class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, UICollectionViewDelegate, UICollectionViewDataSourcePrefetching {
+class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, UICollectionViewDelegate, UICollectionViewDataSourcePrefetching, UICollectionViewDelegateFlowLayout {
     private let model: ViewModel
     private var subscriptions: [AnyCancellable] = []
-    private var collectionView: ItemListCollectionView!
+    private var collectionView: UICollectionView!
     private var progressView: UIProgressView!
     private var dataSource: UICollectionViewDiffableDataSource<ItemsListSection, ItemsListCell<ViewModel.ItemIdentifier>>!
 
@@ -17,7 +17,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
         self.model = model
         super.init(nibName: nil, bundle: nil)
 
-        self.collectionView = ItemListCollectionView(
+        self.collectionView = UICollectionView(
             frame: .zero,
             collectionViewLayout: collectionViewLayout()
         )
@@ -58,23 +58,13 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.addSubview(collectionView)
         view.backgroundColor = UIColor(.ui.white1)
-
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.loadConstraints()
-        collectionView.applyConstraints(for: traitCollection.horizontalSizeClass)
 
         model.fetch()
     }
 
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
-
-        coordinator.animate(alongsideTransition: { [weak self, collectionView] _ in
-            guard let self, let collectionView else { return }
-            collectionView.applyConstraints(for: self.traitCollection.horizontalSizeClass)
-        })
+    override func loadView() {
+        view = collectionView
     }
 
     /// Whether or not we should show the progress bar.
@@ -245,7 +235,15 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
                     return UISwipeActionsConfiguration(actions: actions)
                 }
 
-                return NSCollectionLayoutSection.list(using: config, layoutEnvironment: env)
+                let section = NSCollectionLayoutSection.list(using: config, layoutEnvironment: env)
+                section.contentInsetsReference = .readableContent
+
+                var contentInsets = section.contentInsets
+                    contentInsets.leading = 0
+                    contentInsets.trailing = 0
+                    section.contentInsets = contentInsets
+
+                return section
             case .offline:
                 var config = UICollectionLayoutListConfiguration(appearance: .plain)
                 config.backgroundColor = UIColor(.ui.white1)
