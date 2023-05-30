@@ -11,17 +11,21 @@ enum RecentSavesStoreError: Error {
 
 /// A store that provides a list of recent saves
 public protocol RecentSavesStore {
+    var isLoggedIn: Bool { get }
+    func setLoggedIn(_ isLoggedIn: Bool)
     var recentSaves: [SavedItemContent] { get }
     func updateRecentSaves(_ items: [SavedItemContent]) throws
 }
 
 /// A concrete implementation of `RecentSavesStore` used for the recent saves widget
 public struct RecentSavesWidgetStore: RecentSavesStore {
+    private static let isLoggedInKey = "RecentSavesWidgetLoggedInKey"
     private static let recentSavesKey = "RecentSavesWidgetKey"
     private static let groupID = "group.com.ideashower.ReadItLaterPro"
 
     private var defaults: UserDefaults
 
+    /// Current recent saves list
     public var recentSaves: [SavedItemContent] {
         guard let encodedSaves = defaults.object(forKey: Self.recentSavesKey) as? Data,
                 let saves = try? JSONDecoder().decode([SavedItemContent].self, from: encodedSaves) else {
@@ -30,13 +34,26 @@ public struct RecentSavesWidgetStore: RecentSavesStore {
         return saves
     }
 
+    /// Current logged in status
+    public var isLoggedIn: Bool {
+        defaults.bool(forKey: Self.isLoggedInKey)
+    }
+
     public init(userDefaults: UserDefaults) {
         self.defaults = userDefaults
     }
 
+    /// Update the recent saves list with the given list
+    /// - Parameter items: the given list
     public func updateRecentSaves(_ items: [SavedItemContent]) throws {
         let encodedList = try JSONEncoder().encode(items)
         defaults.setValue(encodedList, forKey: Self.recentSavesKey)
+    }
+
+    /// Sets the logged in status
+    /// - Parameter isLoggedIn: the logged in status to set
+    public func setLoggedIn(_ isLoggedIn: Bool) {
+        defaults.setValue(isLoggedIn, forKey: Self.isLoggedInKey)
     }
 }
 
@@ -56,6 +73,11 @@ public struct RecentSavesWidgetService {
         let saves = store.recentSaves
         return limit > 0 ? Array(saves.prefix(min(saves.count, limit))) : saves
     }
+
+    /// True if the user is logged in, false otherwise
+    public var isLoggedIn: Bool {
+        store.isLoggedIn
+    }
 }
 
 /// Service that updates recent saves to a store
@@ -69,6 +91,8 @@ public struct RecentSavesWidgetUpdateService {
         self.store = store
     }
 
+    /// Set the recent saves list to the given list
+    /// - Parameter items: the given list
     public func setRecentSaves(_ items: [SavedItem]) {
         savesUpdateQueue.async {
             let saves = items.map {
@@ -83,10 +107,22 @@ public struct RecentSavesWidgetUpdateService {
 
             do {
                 try store.updateRecentSaves(saves)
-                WidgetCenter.shared.reloadTimelines(ofKind: "RecentSavesWidget")
+                reloadWidget()
             } catch {
                 Log.capture(message: "Failed to update recent saves for widget: \(error)")
             }
         }
+    }
+
+    /// Sets the logged in status
+    /// - Parameter isloggedIn: the logged in status
+    public func setLoggedIn(_ isloggedIn: Bool) {
+        store.setLoggedIn(isloggedIn)
+        reloadWidget()
+    }
+
+    /// Reloads the widget
+    private func reloadWidget() {
+        WidgetCenter.shared.reloadTimelines(ofKind: "RecentSavesWidget")
     }
 }

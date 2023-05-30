@@ -44,6 +44,7 @@ struct Services {
     let bannerPresenter: BannerPresenter
     let notificationCenter: NotificationCenter
     let sessionBackupUtility: SessionBackupUtility
+    let recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService
 
     private let persistentContainer: PersistentContainer
 
@@ -209,6 +210,8 @@ struct Services {
             store: PocketEncryptedStore(),
             notificationCenter: notificationCenter
         )
+
+        recentSavesWidgetUpdateService = RecentSavesWidgetUpdateService(store: RecentSavesWidgetStore(userDefaults: userDefaults))
     }
 }
 
