@@ -79,8 +79,7 @@ class MainViewModel: ObservableObject {
                 homeRefreshCoordinator: Services.shared.homeRefreshCoordinator,
                 user: Services.shared.user,
                 store: Services.shared.subscriptionStore,
-                recentSavesWidgetUpdateService:
-                    RecentSavesWidgetUpdateService(store: RecentSavesWidgetStore(userDefaults: Services.shared.userDefaults)),
+                recentSavesWidgetUpdateService: Services.shared.recentSavesWidgetUpdateService,
                 userDefaults: Services.shared.userDefaults,
                 notificationCenter: Services.shared.notificationCenter,
                 featureFlags: Services.shared.featureFlagService

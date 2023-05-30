@@ -21,23 +21,26 @@ public class RootViewModel: ObservableObject {
     private let tracker: Tracker
     private let source: Source
     private let userDefaults: UserDefaults
+    private let recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService
 
     private var subscriptions: Set<AnyCancellable> = []
 
     public convenience init() {
-        self.init(appSession: Services.shared.appSession, tracker: Services.shared.tracker, source: Services.shared.source, userDefaults: Services.shared.userDefaults)
+        self.init(appSession: Services.shared.appSession, tracker: Services.shared.tracker, source: Services.shared.source, userDefaults: Services.shared.userDefaults, recentSavesWidgetUpdateService: Services.shared.recentSavesWidgetUpdateService)
     }
 
     init(
         appSession: AppSession,
         tracker: Tracker,
         source: Source,
-        userDefaults: UserDefaults
+        userDefaults: UserDefaults,
+        recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService
     ) {
         self.appSession = appSession
         self.tracker = tracker
         self.source = source
         self.userDefaults = userDefaults
+        self.recentSavesWidgetUpdateService = recentSavesWidgetUpdateService
 
         // Register for login notifications
         NotificationCenter.default.publisher(
@@ -80,6 +83,7 @@ public class RootViewModel: ObservableObject {
             APIUserEntity(consumerKey: Keys.shared.pocketApiConsumerKey),
             UserEntity(guid: session.guid, userID: session.userIdentifier, adjustAdId: Adjust.adid())
         ])
+        recentSavesWidgetUpdateService.setLoggedIn(true)
         Log.setUserID(session.userIdentifier)
     }
 
@@ -87,6 +91,7 @@ public class RootViewModel: ObservableObject {
         source.clear()
 
         userDefaults.resetKeys()
+        recentSavesWidgetUpdateService.setLoggedIn(false)
         tracker.resetPersistentEntities([
             APIUserEntity(consumerKey: Keys.shared.pocketApiConsumerKey)
         ])
