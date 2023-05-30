@@ -14,31 +14,57 @@ enum RecentSavesProviderError: Error {
 /// Timeline provider for the recent saves widget
 struct RecentSavesProvider: TimelineProvider {
     func placeholder(in context: Context) -> RecentSavesEntry {
-        RecentSavesEntry(date: Date(), content: [SavedItemRowContent(content: .placeHolder, image: nil)])
+        RecentSavesEntry(date: Date(), contentType: .items([SavedItemRowContent(content: .placeHolder, image: nil)]))
     }
 
     func getSnapshot(in context: Context, completion: @escaping (RecentSavesEntry) -> Void) {
         do {
-            let saves = try getRecentSaves(for: context.family)
+            let service = try makeService()
+            // logged out
+            guard service.isLoggedIn else {
+                completion(RecentSavesEntry(date: Date(), contentType: .loggedOut))
+                return
+            }
+            let saves = service.getRecentSaves(limit: numberOfItems(for: context.family))
+            // empty result
+            guard !saves.isEmpty else {
+                completion(RecentSavesEntry(date: Date(), contentType: .empty))
+                return
+            }
             // TODO: handle task result
             Task {
                 let contentWithImages = try await getContentWithImages(content: saves)
-                completion(RecentSavesEntry(date: Date(), content: contentWithImages))
+                completion(RecentSavesEntry(date: Date(), contentType: .items(contentWithImages)))
             }
         } catch {
             Log.capture(message: "Unable to read saved items from shared useer defaults")
             // TODO: Handle error scenario here
-            completion(RecentSavesEntry(date: Date(), content: [SavedItemRowContent(content: .placeHolder, image: nil)]))
+            completion(RecentSavesEntry(date: Date(), contentType: .items([SavedItemRowContent(content: .placeHolder, image: nil)])))
         }
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<RecentSavesEntry>) -> Void) {
         do {
-            let saves = try getRecentSaves(for: context.family)
+            let service = try makeService()
+            // logged out
+            guard service.isLoggedIn else {
+                let entries = [RecentSavesEntry(date: Date(), contentType: .loggedOut)]
+                let timeline = Timeline(entries: entries, policy: .never)
+                completion(timeline)
+                return
+            }
+            let saves = service.getRecentSaves(limit: numberOfItems(for: context.family))
+            // empty result
+            guard !saves.isEmpty else {
+                let entries = [RecentSavesEntry(date: Date(), contentType: .empty)]
+                let timeline = Timeline(entries: entries, policy: .never)
+                completion(timeline)
+                return
+            }
             // TODO: handle task result
             Task {
                 let contentWithImages = try await getContentWithImages(content: saves)
-                let entriesWithImages = [RecentSavesEntry(date: Date(), content: contentWithImages)]
+                let entriesWithImages = [RecentSavesEntry(date: Date(), contentType: .items(contentWithImages))]
                 let timeline = Timeline(entries: entriesWithImages, policy: .never)
                 completion(timeline)
             }
@@ -69,16 +95,13 @@ extension RecentSavesProvider {
         }
     }
 
-    /// Retrieves the recent saves for a given widget family
-    /// - Parameter widgetFamily: the given widget family
-    /// - Returns: the list of recent saves in a `[SavedItemContent]` array
-    private func getRecentSaves(for widgetFamily: WidgetFamily) throws -> [SavedItemContent] {
+    /// Builds an instance of `RecentSavesWidgetService`
+    /// - Returns: the instance
+    private func makeService() throws -> RecentSavesWidgetService {
         guard let defaults = UserDefaults(suiteName: "group.com.ideashower.ReadItLaterPro") else {
             throw RecentSavesProviderError.invalidStore
         }
-        let service = RecentSavesWidgetService(store: RecentSavesWidgetStore(userDefaults: defaults))
-
-        return service.getRecentSaves(limit: numberOfItems(for: widgetFamily))
+        return RecentSavesWidgetService(store: RecentSavesWidgetStore(userDefaults: defaults))
     }
 }
 

@@ -24,7 +24,7 @@ public struct RecentSavesWidget: Widget {
 
 public struct RecentSavesWidget_Previews: PreviewProvider {
     public static var previews: some View {
-        RecentSavesView(entry: RecentSavesEntry(date: Date(), content: [SavedItemRowContent(content: .placeHolder, image: nil)]))
+        RecentSavesView(entry: RecentSavesEntry(date: Date(), contentType: .items([SavedItemRowContent(content: .placeHolder, image: nil)])))
             .previewContext(WidgetPreviewContext(family: .systemSmall))
     }
 }
