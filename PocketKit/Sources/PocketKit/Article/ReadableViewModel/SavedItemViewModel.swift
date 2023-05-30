@@ -184,12 +184,12 @@ extension SavedItemViewModel {
 
     func favorite() {
         source.favorite(item: item)
-        track(identifier: .itemFavorite)
+        trackFavorite(url: item.url)
     }
 
     func unfavorite() {
         source.unfavorite(item: item)
-        track(identifier: .itemUnfavorite)
+        trackUnfavorite(url: item.url)
     }
 
     func moveFromArchiveToSaves(completion: (Bool) -> Void) {
@@ -250,7 +250,7 @@ extension SavedItemViewModel {
                 self?.fetchDetailsIfNeeded()
             }
         )
-        track(identifier: .itemAddTags)
+        trackAddTags(url: item.url)
     }
 
     private func saveExternalURL(_ url: URL) {

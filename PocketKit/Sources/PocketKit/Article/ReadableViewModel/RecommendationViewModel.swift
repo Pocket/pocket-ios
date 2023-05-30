@@ -221,6 +221,7 @@ extension RecommendationViewModel {
 
     private func report() {
         selectedRecommendationToReport = recommendation
+        trackReport()
     }
 
     func favorite() {
@@ -229,7 +230,7 @@ extension RecommendationViewModel {
         }
 
         source.favorite(item: savedItem)
-        track(identifier: .itemFavorite)
+        trackFavorite(url: savedItem.url)
     }
 
     func unfavorite() {
@@ -238,7 +239,7 @@ extension RecommendationViewModel {
         }
 
         source.unfavorite(item: savedItem)
-        track(identifier: .itemUnfavorite)
+        trackUnfavorite(url: savedItem.url)
     }
 
     func openInWebView(url: URL?) {
@@ -282,7 +283,7 @@ extension RecommendationViewModel {
 
     private func save() {
         source.save(recommendation: recommendation)
-        track(identifier: .itemSave)
+        trackSave()
     }
 
     private func saveExternalURL(_ url: URL) {
