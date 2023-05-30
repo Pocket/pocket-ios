@@ -8,5 +8,13 @@ import WidgetKit
 
 struct RecentSavesEntry: TimelineEntry {
     let date: Date
-    let content: [SavedItemRowContent]
+    let contentType: RecentSavesContentType
+}
+
+/// Determines which type of content to display in the Recent Saves widget.
+enum RecentSavesContentType {
+    case empty
+    case loggedOut
+    case error
+    case items([SavedItemRowContent])
 }
