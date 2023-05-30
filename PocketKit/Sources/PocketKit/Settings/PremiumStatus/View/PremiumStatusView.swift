@@ -9,7 +9,8 @@ import StoreKit
 import Localization
 
 struct PremiumStatusView: View {
-    @Environment(\.dismiss) private var dismiss
+    @Environment(\.dismiss)
+    private var dismiss
     @StateObject var viewModel: PremiumStatusViewModel
     @State var result: Result<MFMailComposeResult, Error>?
     @State private var presentManageSubscriptions = false

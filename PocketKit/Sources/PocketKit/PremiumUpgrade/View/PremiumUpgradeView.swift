@@ -9,7 +9,8 @@ import Localization
 
 struct PremiumUpgradeView: View {
     @Binding var dismissReason: DismissReason
-    @Environment(\.dismiss) private var dismiss
+    @Environment(\.dismiss)
+    private var dismiss
     @StateObject var viewModel: PremiumUpgradeViewModel
 
     var body: some View {

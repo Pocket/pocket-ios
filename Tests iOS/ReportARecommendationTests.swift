@@ -25,9 +25,6 @@ class ReportARecommendationTests: XCTestCase {
         }
 
         try server.start()
-
-        app.launch()
-        try super.setUpWithError()
     }
 
     override func tearDownWithError() throws {
@@ -38,6 +35,7 @@ class ReportARecommendationTests: XCTestCase {
 
     @MainActor
     func test_reportingARecommendationfromHero_asBrokenMeta_sendsEvent() async {
+        app.launch()
         app.homeView
             .recommendationCell("Slate 1, Recommendation 1")
             .overflowButton.wait().tap()
@@ -62,6 +60,7 @@ class ReportARecommendationTests: XCTestCase {
 
     @MainActor
     func test_reportingARecommendationFromCarousel_asBrokenMeta_sendsEvent() async {
+        app.launch()
         let coordinateToScroll = app.homeView
             .recommendationCell("Slate 1, Recommendation 1")
             .element.coordinate(
@@ -99,6 +98,7 @@ class ReportARecommendationTests: XCTestCase {
 
     @MainActor
     func test_reportingARecommendation_fromReader_showsReportView() async {
+        app.launch()
         app.homeView
             .recommendationCell("Slate 1, Recommendation 1")
             .wait()

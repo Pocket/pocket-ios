@@ -9,7 +9,8 @@ import SwiftUI
 import UIKit
 
 struct MailView: UIViewControllerRepresentable {
-    @Environment(\.presentationMode) var presentation
+    @Environment(\.presentationMode)
+    var presentation
     @Binding var result: Result<MFMailComposeResult, Error>?
     var recipients = [String]()
     var messageBody = ""
