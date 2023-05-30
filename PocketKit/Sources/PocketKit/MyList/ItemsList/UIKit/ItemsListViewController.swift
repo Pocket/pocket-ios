@@ -129,7 +129,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
         }
     }
 
-    // Mark: - Setup Views
+    // MARK: - Setup Views
 
     private func setupDataSourceFilters() {
         let filterButtonRegistration: UICollectionView.CellRegistration<TopicChipCell, ItemsListFilter> = .init { [weak self] cell, indexPath, filterID in
