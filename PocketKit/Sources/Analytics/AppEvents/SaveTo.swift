@@ -18,13 +18,11 @@ public extension Events.SaveTo {
     /// for that tap, so treat the opening of the Save extension as an engagement.
     static func saveEngagement(url: URL) -> Event {
         return Engagement(
+            .save(contentEntity: ContentEntity(url: url)),
             uiEntity: UiEntity(
                 .screen,
                 identifier: "save-extension.opened"
-            ),
-            extraEntities: [
-                ContentEntity(url: url)
-            ]
+            )
         )
     }
 
