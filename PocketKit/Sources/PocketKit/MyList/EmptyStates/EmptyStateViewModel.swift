@@ -14,6 +14,7 @@ protocol EmptyStateViewModel {
 }
 
 enum ButtonType {
-    case premium(String)
     case normal(String)
+    case premium(String)
+    case reportIssue(String)
 }

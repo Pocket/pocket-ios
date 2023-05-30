@@ -362,8 +362,10 @@ public enum Localization {
     public static let header = Localization.tr("Localizable", "reportIssue.header", fallback: "Report an issue")
     /// Name
     public static let name = Localization.tr("Localizable", "reportIssue.name", fallback: "Name")
-    /// Submit issue
-    public static let submitIssue = Localization.tr("Localizable", "reportIssue.submitIssue", fallback: "Submit issue")
+    public enum SubmitIssue {
+      /// Submit issue
+      public static let title = Localization.tr("Localizable", "reportIssue.submitIssue.title", fallback: "Submit issue")
+    }
   }
   public enum SaveToPocket {
     /// Tap to dismiss
