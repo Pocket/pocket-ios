@@ -107,15 +107,17 @@ struct SearchEmptyView: View {
 
     var body: some View {
         if let buttonType = viewModel.buttonType {
-            if case .premium(let text) = buttonType {
+            switch buttonType {
+            case .premium(let text):
                 EmptyStateView(viewModel: viewModel) {
                     GetPocketPremiumButton(text: text)
                 }.padding(Margins.normal.rawValue)
-
-            } else if case .normal(let text) = buttonType {
+            case .reportIssue(let text):
                 EmptyStateView(viewModel: viewModel) {
                     ReportIssueButton(text: text)
                 }.padding(Margins.normal.rawValue)
+            default:
+                EmptyView()
             }
         } else {
             EmptyStateView<EmptyView>(viewModel: viewModel)

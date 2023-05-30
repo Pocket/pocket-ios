@@ -13,7 +13,7 @@
 "reportIssue.name" = "Name";
 "reportIssue.email" = "E-mail";
 "reportIssue.comment" = "What happened?";
-"reportIssue.submitIssue" = "Submit issue";
+"reportIssue.submitIssue.title" = "Submit issue";
 
 //Archive
 "archive.empty.header" = "Keep your list fresh and clean";

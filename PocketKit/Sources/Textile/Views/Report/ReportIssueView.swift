@@ -55,7 +55,7 @@ public struct ReportIssueView: View {
                 submitIssue(name, email, reportComment)
                 dismiss()
             }) {
-                Text(Localization.ReportIssue.submitIssue)
+                Text(Localization.ReportIssue.SubmitIssue.title)
             }
             .listRowBackground(Rectangle().foregroundColor(.clear))
             .listRowInsets(EdgeInsets())
