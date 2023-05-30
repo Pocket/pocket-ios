@@ -6,47 +6,35 @@ import SharedPocketKit
 import SwiftUI
 import Textile
 
+/// Main view of the Recent Saves widget
 struct RecentSavesView: View {
     @Environment(\.widgetFamily) private var widgetFamily
     /// The list of saved items to be displayed
     let entry: RecentSavesProvider.Entry
 
     var body: some View {
-        ForEach(entry.content) { entry in
-            SavedItemRow(title: entry.content.title.isEmpty ?
-                         entry.content.url :
-                            entry.content.title,
-                         image: entry.image)
-                .padding()
-                .cornerRadius(16)
+        if case let .items(items) = entry.contentType {
+            SavedItemsView(items: items)
+        } else {
+            makeEmptyContentView(entry.contentType)
         }
     }
-}
 
-struct SavedItemRow: View {
-    let title: String
-    let image: Image?
-
-    var body: some View {
-        HStack {
-            Text(title)
-                .lineLimit(3)
-            Spacer()
-            if let image {
-                ItemThumbnail(image: image)
-            }
-        }
+    private func makeEmptyContentView(_ contentType: RecentSavesContentType) -> some View {
+        Text(emptyContentMessage(contentType))
+        // TODO: add formatting and colors
     }
-}
 
-struct ItemThumbnail: View {
-    let image: Image
-
-    var body: some View {
-        image
-            .resizable()
-            .frame(width: RecentSavesProvider.defaultThumbnailSize.width,
-                   height: RecentSavesProvider.defaultThumbnailSize.height)
-            .cornerRadius(8)
+    private func emptyContentMessage(_ contentType: RecentSavesContentType) -> String {
+        switch contentType {
+        case .empty:
+            return "Add saves to Pocket to see them in here."
+        case .loggedOut:
+            return "Log in to Pocket to see your recent saves."
+        case .error:
+            return "Something went wrong."
+        default:
+            return ""
+        }
     }
 }
