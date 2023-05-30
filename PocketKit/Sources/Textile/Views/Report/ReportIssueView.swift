@@ -22,7 +22,8 @@ public struct ReportIssueView: View {
         self.submitIssue = submitIssue
     }
 
-    @Environment(\.dismiss) private var dismiss
+    @Environment(\.dismiss)
+    private var dismiss
     @State private var name = ""
     @State private var email: String
     @State private var reportComment = ""

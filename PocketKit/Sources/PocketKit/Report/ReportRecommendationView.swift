@@ -26,7 +26,8 @@ struct ReportRecommendationView: View {
         selectedReason == nil ? "submit-report-disabled" : "submit-report"
     }
 
-    @Environment(\.dismiss) private var dismiss
+    @Environment(\.dismiss)
+    private var dismiss
 
     @State private var selectedReason: ReportEntity.Reason?
 

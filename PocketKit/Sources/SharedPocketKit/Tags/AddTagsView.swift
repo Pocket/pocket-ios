@@ -10,7 +10,8 @@ import Textile
 public struct AddTagsView<ViewModel>: View where ViewModel: AddTagsViewModel {
     @ObservedObject var viewModel: ViewModel
 
-    @Environment(\.dismiss) private var dismiss
+    @Environment(\.dismiss)
+    private var dismiss
 
     @FocusState private var isTextFieldFocused: Bool
 

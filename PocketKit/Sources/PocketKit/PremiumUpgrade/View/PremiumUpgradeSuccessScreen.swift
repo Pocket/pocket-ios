@@ -7,8 +7,10 @@ import Textile
 import Localization
 
 struct PremiumUpgradeSuccessView: View {
-    @Environment(\.dismiss) private var dismiss
-    @Environment(\.colorScheme) var colorScheme
+    @Environment(\.dismiss)
+    private var dismiss
+    @Environment(\.colorScheme)
+    var colorScheme
 
     var body: some View {
         VStack(spacing: Constants.verticalPadding) {
