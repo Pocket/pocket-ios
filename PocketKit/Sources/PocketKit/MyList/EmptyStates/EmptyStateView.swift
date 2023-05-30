@@ -81,7 +81,7 @@ struct EmptyStateView<Content: View>: View {
                 }
                 if let content {
                     content
-                } else if let buttonText = viewModel.buttonText, let webURL = viewModel.webURL {
+                } else if case .normal(let buttonText) = viewModel.buttonType, let webURL = viewModel.webURL {
                     Button(action: {
                         self.showSafariView = true
                     }, label: {

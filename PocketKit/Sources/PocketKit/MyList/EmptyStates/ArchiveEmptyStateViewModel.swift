@@ -8,7 +8,7 @@ struct ArchiveEmptyStateViewModel: EmptyStateViewModel {
     let icon: ImageAsset? = .archive
     let headline: String? = Localization.Archive.Empty.header
     let detailText: String? = Localization.Archive.Empty.detail
-    let buttonText: String? = Localization.Archive.Empty.button
+    let buttonType: ButtonType? = .normal(Localization.Archive.Empty.button)
     let webURL: URL? = URL(string: "https://getpocket.com/what-is-the-archive-ios")!
     let accessibilityIdentifier = "archive-empty-state"
 }
