@@ -38,8 +38,7 @@ struct RecentSavesProvider: TimelineProvider {
             }
         } catch {
             Log.capture(message: "Unable to read saved items from shared useer defaults")
-            // TODO: Handle error scenario here
-            completion(RecentSavesEntry(date: Date(), contentType: .items([SavedItemRowContent(content: .placeHolder, image: nil)])))
+            completion(RecentSavesEntry(date: Date(), contentType: .error))
         }
     }
 
@@ -70,8 +69,7 @@ struct RecentSavesProvider: TimelineProvider {
             }
         } catch {
             Log.capture(message: "Unable to read saved items from shared useer defaults")
-            // TODO: Handle error scenario here
-            let timeline = Timeline(entries: [RecentSavesEntry](), policy: .never)
+            let timeline = Timeline(entries: [RecentSavesEntry(date: Date(), contentType: .error)], policy: .never)
             completion(timeline)
         }
     }
