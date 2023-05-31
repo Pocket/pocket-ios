@@ -39,7 +39,7 @@ struct SearchView: View {
 struct ResultsView: View {
     enum Constants {
         static let indexToTriggerNextPage = 15
-        static let maxReadableWidth: CGFloat = 500
+        static let maxReadableWidth: CGFloat = 700
     }
 
     @Environment(\.horizontalSizeClass) var sizeClass
