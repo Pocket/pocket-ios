@@ -59,8 +59,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/onevcat/Kingfisher.git",
       "state" : {
-        "revision" : "af4be924ad984cf4d16f4ae4df424e79a443d435",
-        "version" : "7.6.2"
+        "revision" : "e8625b80c413457b13ea9be75d07f6e9f5830c19",
+        "version" : "7.7.0"
       }
     },
     {
@@ -158,8 +158,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio.git",
       "state" : {
-        "revision" : "546eaa261ec5028b9cc5c7fa883fba9dd5881a3b",
-        "version" : "2.52.0"
+        "revision" : "6213ba7a06febe8fef60563a4a7d26a4085783cf",
+        "version" : "2.54.0"
       }
     },
     {
