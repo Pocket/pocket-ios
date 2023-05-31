@@ -311,3 +311,4 @@
 "widgets.recentSaves.emptyMessage" = "Add saves to Pocket to see them in here.";
 "widgets.recentSaves.loggedOutMessage" = "Log in to Pocket to see your recent saves.";
 "widgets.recentSaves.errorMessage" = "Something went wrong.";
+"widgets.recentSaves.title" = "Recent Saves";

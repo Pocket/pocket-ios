@@ -605,6 +605,8 @@ public enum Localization {
       public static let errorMessage = Localization.tr("Localizable", "widgets.recentSaves.errorMessage", fallback: "Something went wrong.")
       /// Log in to Pocket to see your recent saves.
       public static let loggedOutMessage = Localization.tr("Localizable", "widgets.recentSaves.loggedOutMessage", fallback: "Log in to Pocket to see your recent saves.")
+      /// Recent Saves
+      public static let title = Localization.tr("Localizable", "widgets.recentSaves.title", fallback: "Recent Saves")
     }
   }
 }

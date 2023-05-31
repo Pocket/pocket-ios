@@ -3,43 +3,55 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import Foundation
+import Localization
 import SwiftUI
 import Textile
+import WidgetKit
 
 /// Recent Saves widget - recent saves list view
 struct SavedItemsView: View {
+    @Environment(\.widgetFamily) private var widgetFamily
+
     let items: [SavedItemRowContent]
 
     var body: some View {
-        ForEach(items) { entry in
-            SavedItemRow(title: entry.content.title.isEmpty ? entry.content.url : entry.content.title,
-                         domain: entry.content.bestDomain,
-                         readingTime: entry.content.readingTime,
-                         image: entry.image)
-            .padding(.bottom, 8)
+        VStack(alignment: .leading) {
+            Text(AttributedString(NSAttributedString(string: Localization.Widgets.RecentSaves.title, style: .widgetHeader(for: widgetFamily))))
             .padding(.leading, 16)
             .padding(.trailing, 16)
+            ForEach(items) { entry in
+                SavedItemRow(title: entry.content.title.isEmpty ? entry.content.url : entry.content.title,
+                             domain: entry.content.bestDomain,
+                             readingTime: entry.content.readingTime,
+                             image: entry.image)
+                .padding(.top, Size.cellPadding(for: widgetFamily))
+                .padding(.bottom, Size.cellPadding(for: widgetFamily))
+                .padding(.leading, 16)
+                .padding(.trailing, 16)
+            }
         }
     }
 }
 
 /// Recent Saves widget - saved item view
 struct SavedItemRow: View {
+    @Environment(\.widgetFamily) private var widgetFamily
+
     let title: String
     let domain: String
     let readingTime: String?
     let image: Image?
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        VStack(alignment: .leading, spacing: 2) {
             HStack(alignment: .top) {
-                Text(AttributedString(NSAttributedString(string: title, style: .title)))
+                Text(AttributedString(NSAttributedString(string: title, style: .widgetTitle(for: widgetFamily))))
                 Spacer()
                 if let image {
                     ItemThumbnail(image: image)
                 }
             }
-            .lineLimit(2)
+            .lineLimit(3)
             if let readingTime {
                 Text(AttributedString(NSAttributedString(string: domain + " - " + readingTime, style: .domain)))
             } else {
@@ -63,15 +75,41 @@ struct ItemThumbnail: View {
 }
 
 private extension Style {
-    static let title: Style = .header.sansSerif.h8.with(color: .ui.black1).with { paragraph in
-        paragraph.with(lineBreakMode: .byTruncatingTail) // .with(lineSpacing: 4)
-    }
-
-    static let domain: Style = .header.sansSerif.p4.with(color: .ui.grey8).with(weight: .medium).with { paragraph in
+    static let domain: Style = .header.sansSerif.p5.with(color: .ui.grey8).with { paragraph in
         paragraph.with(lineBreakMode: .byTruncatingTail)
     }
+    static func widgetHeader(for widgetFamily: WidgetFamily) -> Style {
+        if widgetFamily == .systemLarge {
+            return .header.sansSerif.h7.with(color: .ui.teal2)
+        }
+        return .header.sansSerif.p4.with(color: .ui.teal2)
+    }
 
-    static let timeToRead: Style = .header.sansSerif.p4.with(color: .ui.grey8).with { paragraph in
-        paragraph.with(lineBreakMode: .byTruncatingTail)
-    }.with(maxScaleSize: 22)
+    static func widgetTitle(for widgetFamily: WidgetFamily) -> Style {
+        if widgetFamily == .systemLarge {
+            return .header.sansSerif.h7.with(color: .ui.black1).with { paragraph in
+                paragraph.with(lineBreakMode: .byTruncatingTail).with(lineSpacing: 4)
+            }
+        } else {
+            return .header.sansSerif.h8.with(color: .ui.black1).with { paragraph in
+                paragraph.with(lineBreakMode: .byTruncatingTail).with(lineSpacing: 4)
+            }
+        }
+    }
+}
+
+// MARK: formatting
+private extension SavedItemsView {
+    enum Size {
+        static func cellPadding(for family: WidgetFamily) -> CGFloat {
+            switch family {
+            case .systemMedium:
+                return 2
+            case .systemLarge:
+                return 4
+            default:
+                return 0
+            }
+        }
+    }
 }
