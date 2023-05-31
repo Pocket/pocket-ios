@@ -8,7 +8,7 @@ struct RecentSearchEmptyState: EmptyStateViewModel {
     let icon: ImageAsset? = nil
     let headline: String? = nil
     let detailText: String? = Localization.Search.Recent.empty
-    let buttonText: String? = nil
+    let buttonType: ButtonType? = nil
     let webURL: URL? = nil
     let accessibilityIdentifier = "recent-search-empty-state"
 }

@@ -327,7 +327,7 @@ class SearchTests: XCTestCase {
     }
 
     // MARK: - Search Error State
-    func test_search_showsErrorView() {
+    func test_search_showsErrorView_andReportView() {
         server.routes.post("/graphql") { request, eventLoop -> FutureResponse in
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isForSearch(.archive) {
@@ -344,6 +344,8 @@ class SearchTests: XCTestCase {
         searchField.typeText("item\n")
 
         app.saves.searchEmptyStateView(for: "error-empty-state").wait()
+        app.reportIssueButton.wait().tap()
+        openReportIssueView()
     }
 
     func test_search_forSaves_forPremiumUser_showsErrorBanner() {
@@ -363,6 +365,19 @@ class SearchTests: XCTestCase {
         searchField.typeText("item\n")
 
         XCTAssertTrue(app.saves.searchView.hasBanner(with: "Limited search results"))
+        // TODO: Fix tests after addressing issue with other server error banner
+//        app.saves.searchView.banner(with: "Send a report").tap()
+//        openReportIssueView()
+    }
+
+    private func openReportIssueView() {
+        let reportIssueView = app.reportIssueView.wait()
+        reportIssueView.nameField.wait().tap()
+        reportIssueView.nameField.wait().typeText("First Last")
+        reportIssueView.commentSection.wait().tap()
+        reportIssueView.commentSection.wait().typeText("An error has occurred when searching")
+        XCTAssertEqual(reportIssueView.nameField.value as! String, "First Last")
+        XCTAssertEqual(reportIssueView.commentSection.value as! String, "An error has occurred when searching")
     }
 
     // MARK: Search Actions

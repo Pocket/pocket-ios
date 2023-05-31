@@ -8,7 +8,7 @@ struct FavoritesEmptyStateViewModel: EmptyStateViewModel {
     let icon: ImageAsset? = .favorite
     let headline: String? = Localization.Favourites.Empty.header
     let detailText: String? = Localization.Favourites.Empty.detail
-    let buttonText: String? = nil
+    let buttonType: ButtonType? = nil
     let webURL: URL? = nil
     let accessibilityIdentifier = "favorites-empty-state"
 }

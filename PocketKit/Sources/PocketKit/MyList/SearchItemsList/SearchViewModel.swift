@@ -72,6 +72,7 @@ class SearchViewModel: ObservableObject {
     @Published var showBanner: Bool = false
     @Published var isPresentingPremiumUpgrade = false
     @Published var isPresentingHooray = false
+    @Published var isPresentingReportIssue = false
     @Published var searchState: SearchViewState?
     @Published var selectedItem: SelectedItem?
     @Published var searchText = "" {
@@ -80,9 +81,18 @@ class SearchViewModel: ObservableObject {
         }
     }
 
+    /// Create the banner details to populate the view
     var bannerData: BannerModifier.BannerData {
         let offlineView = BannerModifier.BannerData(image: .looking, title: Localization.Search.limitedResults, detail: Localization.Search.offlineMessage)
-        let errorView = BannerModifier.BannerData(image: .warning, title: Localization.Search.limitedResults, detail: Localization.Search.Banner.errorMessage)
+        let errorView = BannerModifier.BannerData(
+            image: .warning, title: Localization.Search.limitedResults,
+            detail: Localization.Search.Banner.errorMessage,
+            action: BannerModifier.BannerData.BannerAction(
+                text: Localization.General.Error.sendReport,
+                style: PocketButtonStyle(.primary, .small)
+            ) {
+                self.isPresentingReportIssue.toggle()
+            })
         return isOffline ? offlineView : errorView
     }
 
@@ -627,5 +637,16 @@ extension SearchViewModel {
     /// Ttoggle the presentation of `PremiumUpgradeView`
     func showPremiumUpgrade() {
         self.isPresentingPremiumUpgrade = true
+    }
+}
+
+// MARK: Sentry User Feedback Reporting
+extension SearchViewModel {
+    var userEmail: String {
+        user.email
+    }
+
+    func submitIssue(name: String, email: String, comments: String) {
+        Log.captureUserFeedback(message: "Report an issue", name: name, email: email, comments: comments)
     }
 }
