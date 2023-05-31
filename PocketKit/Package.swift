@@ -43,6 +43,7 @@ let package = Package(
         ),
         .target(name: "RecentSavesWidgetKit", dependencies: [
             "Analytics",
+            "Localization",
             "SharedPocketKit",
             "Sync",
             "Textile"

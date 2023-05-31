@@ -597,6 +597,16 @@ public enum Localization {
       public static let tagStoriesFasterThanEver = Localization.tr("Localizable", "tags.upsell.tagStoriesFasterThanEver", fallback: "Tag stories faster than ever—get your most recent tags with Pocket Premium.")
     }
   }
+  public enum Widgets {
+    public enum RecentSaves {
+      /// Add saves to Pocket to see them in here.
+      public static let emptyMessage = Localization.tr("Localizable", "widgets.recentSaves.emptyMessage", fallback: "Add saves to Pocket to see them in here.")
+      /// Something went wrong.
+      public static let errorMessage = Localization.tr("Localizable", "widgets.recentSaves.errorMessage", fallback: "Something went wrong.")
+      /// Log in to Pocket to see your recent saves.
+      public static let loggedOutMessage = Localization.tr("Localizable", "widgets.recentSaves.loggedOutMessage", fallback: "Log in to Pocket to see your recent saves.")
+    }
+  }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:enable nesting type_body_length type_name vertical_whitespace_opening_braces
