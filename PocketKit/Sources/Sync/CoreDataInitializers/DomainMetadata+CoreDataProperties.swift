@@ -7,7 +7,8 @@ import Foundation
 import CoreData
 
 extension DomainMetadata {
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<DomainMetadata> {
+    @nonobjc
+    public class func fetchRequest() -> NSFetchRequest<DomainMetadata> {
         return NSFetchRequest<DomainMetadata>(entityName: "DomainMetadata")
     }
 

@@ -8,5 +8,4 @@ import CoreData
 
 @objc(FeatureFlag)
 public class FeatureFlag: NSManagedObject {
-
 }

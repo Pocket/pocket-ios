@@ -149,7 +149,6 @@ public struct PocketButtonStyle: ButtonStyle {
                 }
             }
             }
-
     }
 }
 

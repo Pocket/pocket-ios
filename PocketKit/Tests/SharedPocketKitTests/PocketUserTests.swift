@@ -1,15 +1,21 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 @testable import SharedPocketKit
 
 class PocketUserTests: XCTestCase {
     private var userDefaults: UserDefaults!
 
-    override func setUpWithError() throws {
+    override func setUp() {
+        super.setUp()
         userDefaults = UserDefaults(suiteName: "PocketUserTests")
     }
 
-    override func tearDownWithError() throws {
+    override func tearDown() {
         userDefaults.resetKeys()
+        super.tearDown()
     }
 
     func subject(

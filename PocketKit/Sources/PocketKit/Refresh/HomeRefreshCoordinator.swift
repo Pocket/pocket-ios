@@ -9,7 +9,6 @@ import Sync
 import SharedPocketKit
 
 class HomeRefreshCoordinator: RefreshCoordinator {
-
     let taskID: String = "com.mozilla.pocket.refresh.home"
 
     let refreshInterval: TimeInterval? = 12 * 60 * 60

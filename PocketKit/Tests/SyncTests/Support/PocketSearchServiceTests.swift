@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 import Apollo
 import PocketGraph
@@ -10,12 +14,14 @@ class PocketSearchServiceTests: XCTestCase {
     var apollo: MockApolloClient!
     var cancellables: [AnyCancellable] = []
 
-    override func setUpWithError() throws {
+    override func setUp() {
+        super.setUp()
         apollo = MockApolloClient()
     }
 
-    override func tearDownWithError() throws {
+    override func tearDown() {
         cancellables = []
+        super.tearDown()
     }
 
     func subject(

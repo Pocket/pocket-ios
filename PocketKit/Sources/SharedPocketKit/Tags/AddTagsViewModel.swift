@@ -59,7 +59,7 @@ public extension AddTagsViewModel {
     private func addTag(with tagName: String) {
         guard !tags.contains(tagName) else { return }
         tags.append(tagName)
-        if let index = otherTags.firstIndex(where: { $0.name == tagName}) {
+        if let index = otherTags.firstIndex(where: { $0.name == tagName }) {
             otherTags.remove(at: index)
         }
         if otherTags.isEmpty {

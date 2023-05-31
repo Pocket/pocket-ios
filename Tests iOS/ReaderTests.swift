@@ -11,6 +11,7 @@ class ReaderTests: XCTestCase {
     var snowplowMicro = SnowplowMicro()
 
     override func setUp() async throws {
+        try await super.setUp()
         continueAfterFailure = false
 
         let uiApp = XCUIApplication()
@@ -45,6 +46,7 @@ class ReaderTests: XCTestCase {
         app.terminate()
         await snowplowMicro.assertBaselineSnowplowExpectation()
         try server.stop()
+        try await super.tearDown()
     }
 
     func test_tappingSaves_dismissesReader_andShowsSaves() {

@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import CoreData
 import Sync
 import Analytics
@@ -44,8 +48,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
     @Published var presentedSortFilterViewModel: SortMenuViewModel?
 
-    @Published
-    var presentedListenViewModel: ListenViewModel?
+    @Published var presentedListenViewModel: ListenViewModel?
 
     @Published private var _initialDownloadState: InitialDownloadState
     var initialDownloadState: Published<InitialDownloadState>.Publisher { $_initialDownloadState }
@@ -483,7 +486,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
         var cases = ItemsListFilter.allCases
         if !self.featureFlags.isAssigned(flag: .listen) {
-            cases.removeAll(where: {$0 == .listen})
+            cases.removeAll(where: { $0 == .listen })
         }
         snapshot.appendItems(
             cases.map { ItemsListCell<ItemIdentifier>.filterButton($0) },
@@ -502,7 +505,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         case .started:
             // If you background the app, and reopen the Fetch operations can override the sent staus,
             // so instead we will first make sure we have no objects before switching to placeholders.
-            if let fetchedObjects = itemsController.fetchedObjects, fetchedObjects.count > 0 {
+            if let fetchedObjects = itemsController.fetchedObjects, !fetchedObjects.isEmpty {
                 itemCellIDs = (0..<fetchedObjects.count).compactMap { index in
                     .item(fetchedObjects[index].objectID)
                 }

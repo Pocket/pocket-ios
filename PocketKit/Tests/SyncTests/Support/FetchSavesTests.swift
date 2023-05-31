@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 import Combine
 import CoreData
@@ -20,6 +24,7 @@ class FetchSavesTests: XCTestCase {
     var task: PersistentSyncTask!
 
     override func setUpWithError() throws {
+        try super.setUpWithError()
         apollo = MockApolloClient()
         user = MockUser()
         events = PassthroughSubject()
@@ -35,6 +40,7 @@ class FetchSavesTests: XCTestCase {
     override func tearDownWithError() throws {
         cancellables = []
         try space.clear()
+        try super.tearDownWithError()
     }
 
     func subject(

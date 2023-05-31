@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import AVFoundation
 import Foundation
 import MessageUI
@@ -5,7 +9,8 @@ import SwiftUI
 import UIKit
 
 struct MailView: UIViewControllerRepresentable {
-    @Environment(\.presentationMode) var presentation
+    @Environment(\.presentationMode)
+    var presentation
     @Binding var result: Result<MFMailComposeResult, Error>?
     var recipients = [String]()
     var messageBody = ""

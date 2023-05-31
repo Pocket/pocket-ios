@@ -8,7 +8,6 @@ public extension Events {
 }
 
 public extension Events.ExpandedSlate {
-
     /**
      Fired when a user views a slate in detail
      */

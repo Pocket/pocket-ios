@@ -8,5 +8,4 @@ import CoreData
 
 @objc(UnresolvedSavedItem)
 public class UnresolvedSavedItem: NSManagedObject {
-
 }

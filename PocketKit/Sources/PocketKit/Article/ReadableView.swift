@@ -16,6 +16,5 @@ struct ReadableView: UIViewControllerRepresentable {
     }
 
     func updateUIViewController(_ viewController: ReadableViewController, context: Context) {
-
     }
 }

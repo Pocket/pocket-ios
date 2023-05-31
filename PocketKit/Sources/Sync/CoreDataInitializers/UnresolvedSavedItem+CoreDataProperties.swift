@@ -7,7 +7,8 @@ import Foundation
 import CoreData
 
 extension UnresolvedSavedItem {
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<UnresolvedSavedItem> {
+    @nonobjc
+    public class func fetchRequest() -> NSFetchRequest<UnresolvedSavedItem> {
         return NSFetchRequest<UnresolvedSavedItem>(entityName: "UnresolvedSavedItem")
     }
 

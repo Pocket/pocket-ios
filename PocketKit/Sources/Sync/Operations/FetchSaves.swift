@@ -10,7 +10,6 @@ import SharedPocketKit
 import CoreData
 
 class FetchSaves: SyncOperation {
-
     private let apollo: ApolloClientProtocol
     private let space: Space
     private let events: SyncEvents
