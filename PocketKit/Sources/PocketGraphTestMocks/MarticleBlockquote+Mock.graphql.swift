@@ -19,6 +19,6 @@ public extension Mock where O == MarticleBlockquote {
     content: PocketGraph.Markdown? = nil
   ) {
     self.init()
-    self.content = content
+    _set(content, for: \.content)
   }
 }

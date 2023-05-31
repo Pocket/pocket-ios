@@ -56,18 +56,20 @@ public struct VideoParts: PocketGraph.SelectionSet, Fragment {
     width: Int? = nil,
     length: Int? = nil
   ) {
-    self.init(_dataDict: DataDict(data: [
-      "__typename": PocketGraph.Objects.Video.typename,
-      "height": height,
-      "src": src,
-      "type": type,
-      "vid": vid,
-      "videoID": videoID,
-      "width": width,
-      "length": length,
-      "__fulfilled": Set([
+    self.init(_dataDict: DataDict(
+      data: [
+        "__typename": PocketGraph.Objects.Video.typename,
+        "height": height,
+        "src": src,
+        "type": type,
+        "vid": vid,
+        "videoID": videoID,
+        "width": width,
+        "length": length,
+      ],
+      fulfilledFragments: [
         ObjectIdentifier(Self.self)
-      ])
-    ]))
+      ]
+    ))
   }
 }

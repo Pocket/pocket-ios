@@ -31,13 +31,15 @@ public struct DomainMetadataParts: PocketGraph.SelectionSet, Fragment {
     name: String? = nil,
     logo: PocketGraph.Url? = nil
   ) {
-    self.init(_dataDict: DataDict(data: [
-      "__typename": PocketGraph.Objects.DomainMetadata.typename,
-      "name": name,
-      "logo": logo,
-      "__fulfilled": Set([
+    self.init(_dataDict: DataDict(
+      data: [
+        "__typename": PocketGraph.Objects.DomainMetadata.typename,
+        "name": name,
+        "logo": logo,
+      ],
+      fulfilledFragments: [
         ObjectIdentifier(Self.self)
-      ])
-    ]))
+      ]
+    ))
   }
 }

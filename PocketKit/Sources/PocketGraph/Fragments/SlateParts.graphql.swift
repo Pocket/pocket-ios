@@ -61,18 +61,20 @@ public struct SlateParts: PocketGraph.SelectionSet, Fragment {
     description: String? = nil,
     recommendations: [Recommendation]
   ) {
-    self.init(_dataDict: DataDict(data: [
-      "__typename": PocketGraph.Objects.Slate.typename,
-      "id": id,
-      "requestId": requestId,
-      "experimentId": experimentId,
-      "displayName": displayName,
-      "description": description,
-      "recommendations": recommendations._fieldData,
-      "__fulfilled": Set([
+    self.init(_dataDict: DataDict(
+      data: [
+        "__typename": PocketGraph.Objects.Slate.typename,
+        "id": id,
+        "requestId": requestId,
+        "experimentId": experimentId,
+        "displayName": displayName,
+        "description": description,
+        "recommendations": recommendations._fieldData,
+      ],
+      fulfilledFragments: [
         ObjectIdentifier(Self.self)
-      ])
-    ]))
+      ]
+    ))
   }
 
   /// Recommendation
@@ -103,15 +105,17 @@ public struct SlateParts: PocketGraph.SelectionSet, Fragment {
       item: Item,
       curatedInfo: CuratedInfo? = nil
     ) {
-      self.init(_dataDict: DataDict(data: [
-        "__typename": PocketGraph.Objects.Recommendation.typename,
-        "id": id,
-        "item": item._fieldData,
-        "curatedInfo": curatedInfo._fieldData,
-        "__fulfilled": Set([
+      self.init(_dataDict: DataDict(
+        data: [
+          "__typename": PocketGraph.Objects.Recommendation.typename,
+          "id": id,
+          "item": item._fieldData,
+          "curatedInfo": curatedInfo._fieldData,
+        ],
+        fulfilledFragments: [
           ObjectIdentifier(Self.self)
-        ])
-      ]))
+        ]
+      ))
     }
 
     /// Recommendation.Item
@@ -194,31 +198,33 @@ public struct SlateParts: PocketGraph.SelectionSet, Fragment {
         images: [ItemSummary.Image?]? = nil,
         syndicatedArticle: SyndicatedArticle? = nil
       ) {
-        self.init(_dataDict: DataDict(data: [
-          "__typename": PocketGraph.Objects.Item.typename,
-          "remoteID": remoteID,
-          "givenUrl": givenUrl,
-          "resolvedUrl": resolvedUrl,
-          "title": title,
-          "language": language,
-          "topImageUrl": topImageUrl,
-          "timeToRead": timeToRead,
-          "domain": domain,
-          "datePublished": datePublished,
-          "isArticle": isArticle,
-          "hasImage": hasImage,
-          "hasVideo": hasVideo,
-          "wordCount": wordCount,
-          "authors": authors._fieldData,
-          "excerpt": excerpt,
-          "domainMetadata": domainMetadata._fieldData,
-          "images": images._fieldData,
-          "syndicatedArticle": syndicatedArticle._fieldData,
-          "__fulfilled": Set([
+        self.init(_dataDict: DataDict(
+          data: [
+            "__typename": PocketGraph.Objects.Item.typename,
+            "remoteID": remoteID,
+            "givenUrl": givenUrl,
+            "resolvedUrl": resolvedUrl,
+            "title": title,
+            "language": language,
+            "topImageUrl": topImageUrl,
+            "timeToRead": timeToRead,
+            "domain": domain,
+            "datePublished": datePublished,
+            "isArticle": isArticle,
+            "hasImage": hasImage,
+            "hasVideo": hasVideo,
+            "wordCount": wordCount,
+            "authors": authors._fieldData,
+            "excerpt": excerpt,
+            "domainMetadata": domainMetadata._fieldData,
+            "images": images._fieldData,
+            "syndicatedArticle": syndicatedArticle._fieldData,
+          ],
+          fulfilledFragments: [
             ObjectIdentifier(Self.self),
             ObjectIdentifier(ItemSummary.self)
-          ])
-        ]))
+          ]
+        ))
       }
 
       /// Recommendation.Item.DomainMetadata
@@ -246,15 +252,17 @@ public struct SlateParts: PocketGraph.SelectionSet, Fragment {
           name: String? = nil,
           logo: PocketGraph.Url? = nil
         ) {
-          self.init(_dataDict: DataDict(data: [
-            "__typename": PocketGraph.Objects.DomainMetadata.typename,
-            "name": name,
-            "logo": logo,
-            "__fulfilled": Set([
+          self.init(_dataDict: DataDict(
+            data: [
+              "__typename": PocketGraph.Objects.DomainMetadata.typename,
+              "name": name,
+              "logo": logo,
+            ],
+            fulfilledFragments: [
               ObjectIdentifier(Self.self),
               ObjectIdentifier(DomainMetadataParts.self)
-            ])
-          ]))
+            ]
+          ))
         }
       }
 
@@ -292,18 +300,20 @@ public struct SlateParts: PocketGraph.SelectionSet, Fragment {
           excerpt: String? = nil,
           publisher: SyndicatedArticleParts.Publisher? = nil
         ) {
-          self.init(_dataDict: DataDict(data: [
-            "__typename": PocketGraph.Objects.SyndicatedArticle.typename,
-            "itemId": itemId,
-            "mainImage": mainImage,
-            "title": title,
-            "excerpt": excerpt,
-            "publisher": publisher._fieldData,
-            "__fulfilled": Set([
+          self.init(_dataDict: DataDict(
+            data: [
+              "__typename": PocketGraph.Objects.SyndicatedArticle.typename,
+              "itemId": itemId,
+              "mainImage": mainImage,
+              "title": title,
+              "excerpt": excerpt,
+              "publisher": publisher._fieldData,
+            ],
+            fulfilledFragments: [
               ObjectIdentifier(Self.self),
               ObjectIdentifier(SyndicatedArticleParts.self)
-            ])
-          ]))
+            ]
+          ))
         }
       }
     }
@@ -337,16 +347,18 @@ public struct SlateParts: PocketGraph.SelectionSet, Fragment {
         imageSrc: PocketGraph.Url? = nil,
         title: String? = nil
       ) {
-        self.init(_dataDict: DataDict(data: [
-          "__typename": PocketGraph.Objects.CuratedInfo.typename,
-          "excerpt": excerpt,
-          "imageSrc": imageSrc,
-          "title": title,
-          "__fulfilled": Set([
+        self.init(_dataDict: DataDict(
+          data: [
+            "__typename": PocketGraph.Objects.CuratedInfo.typename,
+            "excerpt": excerpt,
+            "imageSrc": imageSrc,
+            "title": title,
+          ],
+          fulfilledFragments: [
             ObjectIdentifier(Self.self),
             ObjectIdentifier(CuratedInfoParts.self)
-          ])
-        ]))
+          ]
+        ))
       }
     }
   }

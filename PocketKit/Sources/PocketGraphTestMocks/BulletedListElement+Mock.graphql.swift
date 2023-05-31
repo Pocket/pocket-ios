@@ -21,7 +21,7 @@ public extension Mock where O == BulletedListElement {
     level: Int? = nil
   ) {
     self.init()
-    self.content = content
-    self.level = level
+    _set(content, for: \.content)
+    _set(level, for: \.level)
   }
 }

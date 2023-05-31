@@ -56,24 +56,24 @@ public extension Mock where O == Item {
     wordCount: Int? = nil
   ) {
     self.init()
-    self.authors = authors
-    self.datePublished = datePublished
-    self.domain = domain
-    self.domainMetadata = domainMetadata
-    self.excerpt = excerpt
-    self.givenUrl = givenUrl
-    self.hasImage = hasImage
-    self.hasVideo = hasVideo
-    self.images = images
-    self.isArticle = isArticle
-    self.language = language
-    self.marticle = marticle
-    self.remoteID = remoteID
-    self.resolvedUrl = resolvedUrl
-    self.syndicatedArticle = syndicatedArticle
-    self.timeToRead = timeToRead
-    self.title = title
-    self.topImageUrl = topImageUrl
-    self.wordCount = wordCount
+    _set(authors, for: \.authors)
+    _set(datePublished, for: \.datePublished)
+    _set(domain, for: \.domain)
+    _set(domainMetadata, for: \.domainMetadata)
+    _set(excerpt, for: \.excerpt)
+    _set(givenUrl, for: \.givenUrl)
+    _set(hasImage, for: \.hasImage)
+    _set(hasVideo, for: \.hasVideo)
+    _set(images, for: \.images)
+    _set(isArticle, for: \.isArticle)
+    _set(language, for: \.language)
+    _set(marticle, for: \.marticle)
+    _set(remoteID, for: \.remoteID)
+    _set(resolvedUrl, for: \.resolvedUrl)
+    _set(syndicatedArticle, for: \.syndicatedArticle)
+    _set(timeToRead, for: \.timeToRead)
+    _set(title, for: \.title)
+    _set(topImageUrl, for: \.topImageUrl)
+    _set(wordCount, for: \.wordCount)
   }
 }
