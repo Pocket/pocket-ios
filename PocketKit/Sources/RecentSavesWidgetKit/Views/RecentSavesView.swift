@@ -2,6 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import Localization
 import SharedPocketKit
 import SwiftUI
 import Textile
@@ -28,11 +29,11 @@ struct RecentSavesView: View {
     private func emptyContentMessage(_ contentType: RecentSavesContentType) -> String {
         switch contentType {
         case .empty:
-            return "Add saves to Pocket to see them in here."
+            return Localization.Widgets.RecentSaves.emptyMessage
         case .loggedOut:
-            return "Log in to Pocket to see your recent saves."
+            return Localization.Widgets.RecentSaves.loggedOutMessage
         case .error:
-            return "Something went wrong."
+            return Localization.Widgets.RecentSaves.errorMessage
         default:
             return ""
         }
