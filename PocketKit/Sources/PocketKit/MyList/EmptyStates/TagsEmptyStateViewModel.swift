@@ -8,7 +8,7 @@ struct TagsEmptyStateViewModel: EmptyStateViewModel {
     let icon: ImageAsset? = nil
     let headline: String? = Localization.Tags.Empty.header
     let detailText: String? =  Localization.Tags.Empty.detail
-    let buttonText: String? =  Localization.Tags.Empty.button
+    let buttonType: ButtonType? = .normal(Localization.Tags.Empty.button)
     let webURL: URL? = URL(string: "https://help.getpocket.com/article/940-tagging-in-pocket-for-iphone")!
     let accessibilityIdentifier = "tags-empty-state"
 }
