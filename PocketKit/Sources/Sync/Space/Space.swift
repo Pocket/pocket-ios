@@ -220,7 +220,7 @@ extension Space {
         return try fetch(Requests.fetchSavedItems(bySearchTerm: searchTerm, userPremium: isPremium))
     }
 
-    func fetchSavedItems() throws -> [SavedItem] {
+    func fetchSavedItems(limit: Int? = nil) throws -> [SavedItem] {
         return try fetch(Requests.fetchSavedItems())
     }
 

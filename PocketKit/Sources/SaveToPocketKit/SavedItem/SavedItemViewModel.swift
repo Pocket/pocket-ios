@@ -8,6 +8,7 @@ import Sync
 import Combine
 import Analytics
 import Localization
+import WidgetKit
 
 class SavedItemViewModel {
     private let appSession: AppSession
@@ -91,6 +92,11 @@ class SavedItemViewModel {
             autodismiss(from: context)
             break
         }
+    }
+
+    func reloadRecentSavesWidget() {
+        let recentSavesWidgetUpdateService = RecentSavesWidgetUpdateService(store: RecentSavesWidgetStore(userDefaults: userDefaults))
+
     }
 
     func showAddTagsView(from context: ExtensionContext?) {

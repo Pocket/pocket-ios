@@ -89,9 +89,9 @@ public class RootViewModel: ObservableObject {
 
     private func tearDownSession() {
         source.clear()
-
-        userDefaults.resetKeys()
         recentSavesWidgetUpdateService.setLoggedIn(false)
+        userDefaults.resetKeys()
+
         tracker.resetPersistentEntities([
             APIUserEntity(consumerKey: Keys.shared.pocketApiConsumerKey)
         ])
