@@ -98,7 +98,9 @@ public struct RecentSavesWidgetUpdateService {
             let saves = items.map {
                 SavedItemContent(url: $0.url.absoluteString,
                                  title: $0.item?.title ?? $0.url.absoluteString,
-                                 imageUrl: $0.item?.topImageURL?.absoluteString)
+                                 imageUrl: $0.item?.topImageURL?.absoluteString,
+                                 bestDomain: $0.item?.domainMetadata?.name ?? $0.item?.domain ?? $0.url.host ?? "",
+                                 timeToRead: ($0.item?.timeToRead) != nil ? Int(truncating: ($0.item?.timeToRead)!) : nil)
             }
             // avoid triggering widget updates if stored data did not change
             guard store.recentSaves != saves else {
