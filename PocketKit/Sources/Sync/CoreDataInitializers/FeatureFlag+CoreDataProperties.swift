@@ -7,7 +7,8 @@ import Foundation
 import CoreData
 
 extension FeatureFlag {
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<FeatureFlag> {
+    @nonobjc
+    public class func fetchRequest() -> NSFetchRequest<FeatureFlag> {
         return NSFetchRequest<FeatureFlag>(entityName: "FeatureFlag")
     }
     @NSManaged public var assigned: Bool

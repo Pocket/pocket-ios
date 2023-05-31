@@ -7,11 +7,9 @@ import Textile
 import SwiftUI
 
 class ReaderSettings: StylerModifier, ObservableObject {
-    @AppStorage
-    var fontSizeAdjustment: Int
+    @AppStorage var fontSizeAdjustment: Int
 
-    @AppStorage
-    var fontFamily: FontDescriptor.Family
+    @AppStorage var fontFamily: FontDescriptor.Family
 
     var currentStyling: FontStyling {
         if fontFamily == .graphik {

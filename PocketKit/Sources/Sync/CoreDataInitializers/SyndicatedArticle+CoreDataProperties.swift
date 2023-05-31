@@ -7,7 +7,8 @@ import Foundation
 import CoreData
 
 extension SyndicatedArticle {
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<SyndicatedArticle> {
+    @nonobjc
+    public class func fetchRequest() -> NSFetchRequest<SyndicatedArticle> {
         return NSFetchRequest<SyndicatedArticle>(entityName: "SyndicatedArticle")
     }
 

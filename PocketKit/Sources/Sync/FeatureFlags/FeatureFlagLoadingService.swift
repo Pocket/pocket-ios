@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Apollo
 import Foundation
 import CoreData
@@ -29,7 +33,6 @@ class APIFeatureFlagService: FeatureFlagLoadingService {
 
     /// Fetches the latest feature flags from the server
     func fetchFeatureFlags() async {
-
         let context =  UnleashContext(appName: "pocket-ios", userId: appSession.currentSession?.userIdentifier ?? .none, sessionId: appSession.currentSession?.guid ?? .none)
 
         let query = FeatureFlagsQuery(context: context)

@@ -12,6 +12,7 @@ class SessionBackupUtilityTests: XCTestCase {
     var notificationCenter: NotificationCenter!
 
     override func setUp() {
+        super.setUp()
         userDefaults = UserDefaults(suiteName: "SessionBackupUtilityTests")!
         userDefaults.removePersistentDomain(forName: "SessionBackupUtilityTests")
 

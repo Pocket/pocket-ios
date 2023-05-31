@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 import Combine
 import Textile
@@ -15,6 +19,7 @@ class TagsFilterViewModelTests: XCTestCase {
     private var user: MockUser!
 
     override func setUp() {
+        super.setUp()
         space = .testSpace()
         source = MockSource()
         tracker = MockTracker()
@@ -28,6 +33,7 @@ class TagsFilterViewModelTests: XCTestCase {
         source = nil
         subscriptions = []
         try space.clear()
+        try await super.tearDown()
     }
 
     private func subject(

@@ -9,7 +9,6 @@ import Combine
 
 /// Refresh coordinator to handle the refreshing of feature flags
 class FeatureFlagsRefreshCoordinator: RefreshCoordinator {
-
     let taskID: String = "com.mozilla.pocket.refresh.featureFlags"
 
     let refreshInterval: TimeInterval? = 60 * 60 * 48 // once every 48 hours.

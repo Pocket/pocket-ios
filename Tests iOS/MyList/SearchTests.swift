@@ -12,6 +12,7 @@ class SearchTests: XCTestCase {
     var snowplowMicro = SnowplowMicro()
 
     override func setUp() async throws {
+        try await super.setUp()
         continueAfterFailure = false
 
         let uiApp = XCUIApplication()
@@ -27,9 +28,10 @@ class SearchTests: XCTestCase {
 
     @MainActor
     override func tearDown() async throws {
-       try server.stop()
-       app.terminate()
-       await snowplowMicro.assertBaselineSnowplowExpectation()
+        try server.stop()
+        app.terminate()
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+        try await super.tearDown()
     }
 
     // MARK: - Saves: Search

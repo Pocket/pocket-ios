@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Foundation
 import SharedPocketKit
 import Sync
@@ -65,6 +69,7 @@ class SavedItemViewModel {
 
         for item in extensionItems {
             guard let url = try? await url(from: item) else {
+                tracker.track(event: Events.SaveTo.unableToSave())
                 infoViewModel = .error
                 break
             }

@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 import Combine
 import Analytics
@@ -26,6 +30,7 @@ class HomeViewModelTests: XCTestCase {
     var notificationCenter: NotificationCenter!
 
     override func setUp() async throws {
+        try await super.setUp()
         subscriptions = []
         space = .testSpace()
         source = MockSource()
@@ -71,6 +76,7 @@ class HomeViewModelTests: XCTestCase {
         subscriptions = []
         try space.clear()
         subscriptionStore = nil
+        try super.tearDownWithError()
     }
 
     func subject(
@@ -797,9 +803,9 @@ class HomeViewModelTests: XCTestCase {
 
     func test_numberOfCarouselItemsForSlate_returnsAccurateCount() throws {
         let slates = [
-            space.buildSlate(recommendations: (0...1).map { space.buildRecommendation(remoteID: "recommendation1-\($0)", item: space.buildItem(remoteID: "item1-\($0)", givenURL: URL(string: "https://example.com/items/item1-\($0)")))}),
-            space.buildSlate(recommendations: (0...2).map { space.buildRecommendation(remoteID: "recommendation2-\($0)", item: space.buildItem(remoteID: "item2-\($0)", givenURL: URL(string: "https://example.com/items/item2-\($0)")))}),
-            space.buildSlate(recommendations: (0...3).map { space.buildRecommendation(remoteID: "recommendation3-\($0)", item: space.buildItem(remoteID: "item3-\($0)", givenURL: URL(string: "https://example.com/items/item3-\($0)")))})
+            space.buildSlate(recommendations: (0...1).map { space.buildRecommendation(remoteID: "recommendation1-\($0)", item: space.buildItem(remoteID: "item1-\($0)", givenURL: URL(string: "https://example.com/items/item1-\($0)"))) }),
+            space.buildSlate(recommendations: (0...2).map { space.buildRecommendation(remoteID: "recommendation2-\($0)", item: space.buildItem(remoteID: "item2-\($0)", givenURL: URL(string: "https://example.com/items/item2-\($0)"))) }),
+            space.buildSlate(recommendations: (0...3).map { space.buildRecommendation(remoteID: "recommendation3-\($0)", item: space.buildItem(remoteID: "item3-\($0)", givenURL: URL(string: "https://example.com/items/item3-\($0)"))) })
         ]
 
         try space.createSlateLineup(

@@ -13,7 +13,6 @@ import CoreData
 /// After initial login, requesting saves/archives via the updatedSince filter will pull in all new/changed tags associated with any save.
 /// We can not filter on tags updatedSince explicitly because in the server database, tags are not a real entity at the moment and need database modeling changes to support this.
 class FetchTags: SyncOperation {
-
     private let apollo: ApolloClientProtocol
     private let space: Space
     private let events: SyncEvents

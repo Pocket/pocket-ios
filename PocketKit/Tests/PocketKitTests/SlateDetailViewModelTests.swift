@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 import Combine
 import Analytics
@@ -17,6 +21,7 @@ class SlateDetailViewModelTests: XCTestCase {
     var userDefaults: UserDefaults!
 
     override func setUp() {
+        super.setUp()
         source = MockSource()
         tracker = MockTracker()
         space = .testSpace()
@@ -34,6 +39,7 @@ class SlateDetailViewModelTests: XCTestCase {
     override func tearDownWithError() throws {
         subscriptions = []
         try space.clear()
+        try super.tearDownWithError()
     }
 
     func subject(

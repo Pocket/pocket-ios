@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 import RNCryptor
 @testable import SharedPocketKit
@@ -32,6 +36,7 @@ class LegacyUserMigrationTests: XCTestCase {
     }
 
     override func setUp() {
+        super.setUp()
         groupID = "group.com.mozilla.test"
         userDefaults = UserDefaults(suiteName: "LegacyUserMigrationTests")
         encryptedStore = MockEncryptedStore()
@@ -41,6 +46,7 @@ class LegacyUserMigrationTests: XCTestCase {
 
     override func tearDown() {
         UserDefaults.standard.removePersistentDomain(forName: "LegacyUserMigrationTests")
+        super.tearDown()
     }
 }
 

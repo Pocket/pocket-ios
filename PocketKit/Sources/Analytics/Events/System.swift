@@ -22,6 +22,8 @@ public struct System: Event, CustomStringConvertible {
         switch type {
         case .userMigration(let userMigrationState):
             return userMigrationState.id(source)
+        case .unableToSave:
+            return "ios.\(source).unableToSave"
         }
     }
 
@@ -29,6 +31,8 @@ public struct System: Event, CustomStringConvertible {
         switch type {
         case .userMigration(let userMigrationState):
             return userMigrationState.value(source)
+        case .unableToSave:
+            return nil
         }
     }
 
@@ -48,6 +52,7 @@ public struct System: Event, CustomStringConvertible {
 extension System {
     public enum SystemLogType {
         case userMigration(UserMigrationState)
+        case unableToSave
     }
 
     public enum UserMigrationState {

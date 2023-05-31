@@ -11,12 +11,14 @@ import XCTest
 class PremiumStatusViewModelTests: XCTestCase {
     var service: MockSubscriptionInfoService!
 
-    override func setUpWithError() throws {
+    override func setUp() {
+        super.setUp()
         service = MockSubscriptionInfoService()
     }
 
-    override func tearDownWithError() throws {
+    override func tearDown() {
         service = nil
+        super.tearDown()
     }
     @MainActor
     func test_getInfoCalled() async {

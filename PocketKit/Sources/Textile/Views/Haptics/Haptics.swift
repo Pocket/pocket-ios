@@ -14,7 +14,6 @@ enum HapticFeedbackType {
 /// Singleton used to provide Haptics to buttons and elements in UIKit
 /// Inspired by https://stackoverflow.com/questions/56748539/how-to-create-haptic-feedback-for-a-button-in-swiftui
 public class Haptics {
-
     static let shared = Haptics()
 
     private init() { }
@@ -43,7 +42,6 @@ public class Haptics {
 
 /// Saves/Archive View Haptics
 extension Haptics {
-
     /// Saves/Archive selector changed
     public static func savesSelectorChanged() {
         Haptics.shared.haptic(.play(.rigid))
