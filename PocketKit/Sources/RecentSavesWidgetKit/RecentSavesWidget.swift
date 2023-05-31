@@ -4,6 +4,7 @@
 
 import WidgetKit
 import SwiftUI
+import Textile
 
 public struct RecentSavesWidget: Widget {
     let kind: String
@@ -15,6 +16,8 @@ public struct RecentSavesWidget: Widget {
     public var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: RecentSavesProvider()) { entry in
             RecentSavesView(entry: entry)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color(.ui.homeCellBackground))
         }
         .configurationDisplayName("RecentSaves")
         .description("Access your most recently saved articles.")

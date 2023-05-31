@@ -18,8 +18,9 @@ struct SavedItemsView: View {
     var body: some View {
         VStack(alignment: .leading) {
             Text(AttributedString(NSAttributedString(string: Localization.Widgets.RecentSaves.title, style: .widgetHeader(for: widgetFamily))))
-            .padding(.leading, 16)
-            .padding(.trailing, 16)
+                .padding(.leading, 16)
+                .padding(.trailing, 16)
+                .padding(.bottom, Size.bottomHeaderPadding(for: widgetFamily))
             ForEach(items) { entry in
                 SavedItemRow(title: entry.content.title.isEmpty ? entry.content.url : entry.content.title,
                              domain: entry.content.bestDomain,
@@ -108,6 +109,15 @@ private extension SavedItemsView {
             switch family {
             case .systemMedium:
                 return 2
+            case .systemLarge:
+                return 4
+            default:
+                return 0
+            }
+        }
+
+        static func bottomHeaderPadding(for family: WidgetFamily) -> CGFloat {
+            switch family {
             case .systemLarge:
                 return 4
             default:
