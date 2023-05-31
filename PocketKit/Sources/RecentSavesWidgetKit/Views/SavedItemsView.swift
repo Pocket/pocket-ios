@@ -2,6 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+// swiftlint:disable multiline_arguments_brackets
 import Foundation
 import Localization
 import SwiftUI
@@ -68,8 +69,10 @@ struct ItemThumbnail: View {
     var body: some View {
         image
             .resizable()
-            .frame(width: RecentSavesProvider.defaultThumbnailSize.width,
-                   height: RecentSavesProvider.defaultThumbnailSize.height)
+            .frame(
+                width: RecentSavesProvider.defaultThumbnailSize.width,
+                height: RecentSavesProvider.defaultThumbnailSize.height
+            )
             .cornerRadius(8)
     }
 }
@@ -113,3 +116,4 @@ private extension SavedItemsView {
         }
     }
 }
+// swiftlint:enable multiline_arguments_brackets

@@ -96,7 +96,6 @@ class SavedItemViewModel {
 
     func reloadRecentSavesWidget() {
         let recentSavesWidgetUpdateService = RecentSavesWidgetUpdateService(store: RecentSavesWidgetStore(userDefaults: userDefaults))
-
     }
 
     func showAddTagsView(from context: ExtensionContext?) {

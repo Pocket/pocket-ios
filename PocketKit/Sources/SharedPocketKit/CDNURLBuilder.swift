@@ -6,7 +6,6 @@ import UIKit
 
 /// Builds the url of the image from the pocket CDN
 public struct CDNURLBuilder {
-
     public init() { }
 
     private func imageCachePathComponents(for size: CGSize) -> String {
