@@ -111,7 +111,6 @@ extension RecentSavesProvider {
     /// - Returns: the updated list
     private func getContentWithImages(content: [SavedItemContent]) async -> [SavedItemRowContent] {
         return await withTaskGroup(of: SavedItemRowContent.self, returning: [SavedItemRowContent].self) { taskGroup in
-
             content.forEach { item in
                     taskGroup.addTask {
                         await downloadImage(for: item)
