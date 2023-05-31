@@ -42,7 +42,8 @@ struct ResultsView: View {
         static let maxReadableWidth: CGFloat = 700
     }
 
-    @Environment(\.horizontalSizeClass) var sizeClass
+    @Environment(\.horizontalSizeClass)
+    var sizeClass
     @ObservedObject var viewModel: SearchViewModel
     @State private var showingAlert = false
 
