@@ -14,15 +14,17 @@ class OnlineSearchTests: XCTestCase {
     private var source: MockSource!
     private var searchService: MockSearchService!
 
-    override func setUpWithError() throws {
+    override func setUp() {
+        super.setUp()
         source = MockSource()
         searchService = MockSearchService()
         source.stubMakeSearchService { self.searchService }
     }
 
-    override func tearDownWithError() throws {
+    override func tearDown() {
         source = nil
         searchService = nil
+        super.tearDown()
     }
 
     func subject(source: Source? = nil, scope: SearchScope? = nil) -> OnlineSearch {

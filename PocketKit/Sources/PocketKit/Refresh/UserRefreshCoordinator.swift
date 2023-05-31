@@ -9,7 +9,6 @@ import Combine
 
 /// Refresh coordinator to handle the refreshing of user data
 class UserRefreshCoordinator: RefreshCoordinator {
-
     let taskID: String = "com.mozilla.pocket.refresh.user"
 
     let refreshInterval: TimeInterval? = 60 * 60 * 24 // once every 24 hours.

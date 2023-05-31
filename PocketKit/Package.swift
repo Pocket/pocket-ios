@@ -1,6 +1,10 @@
 // swift-tools-version:5.7
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import PackageDescription
 
 let package = Package(
@@ -19,14 +23,14 @@ let package = Package(
         .library(name: "PKTListen", targets: ["PKTListen"])
     ],
     dependencies: [
-        .package(url: "https://github.com/apollographql/apollo-ios.git", exact: "1.1.2"),
-        .package(url: "https://github.com/onevcat/Kingfisher.git", exact: "7.6.2"),
-        .package(url: "https://github.com/getsentry/sentry-cocoa.git", exact: "8.6.0"),
-        .package(url: "https://github.com/snowplow/snowplow-objc-tracker", exact: "5.0.1"),
+        .package(url: "https://github.com/apollographql/apollo-ios.git", exact: "1.2.0"),
+        .package(url: "https://github.com/onevcat/Kingfisher.git", exact: "7.7.0"),
+        .package(url: "https://github.com/getsentry/sentry-cocoa.git", exact: "8.7.3"),
+        .package(url: "https://github.com/snowplow/snowplow-objc-tracker", exact: "5.1.0"),
         .package(url: "https://github.com/airbnb/lottie-ios.git", exact: "4.2.0"),
         .package(url: "https://github.com/johnxnguyen/Down", exact: "0.11.0"),
-        .package(url: "https://github.com/SvenTiigi/YouTubePlayerKit.git", exact: "1.4.0"),
-        .package(url: "https://github.com/braze-inc/braze-swift-sdk.git", exact: "6.0.0"),
+        .package(url: "https://github.com/SvenTiigi/YouTubePlayerKit.git", exact: "1.5.0"),
+        .package(url: "https://github.com/braze-inc/braze-swift-sdk.git", exact: "6.2.0"),
         .package(url: "https://github.com/adjust/ios_sdk", exact: "4.33.4"),
         .package(url: "https://github.com/RNCryptor/RNCryptor.git", exact: "5.1.0"),
     ],

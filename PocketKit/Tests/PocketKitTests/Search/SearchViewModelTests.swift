@@ -25,6 +25,7 @@ class SearchViewModelTests: XCTestCase {
     private var notificationCenter: NotificationCenter!
 
     override func setUpWithError() throws {
+        try super.setUpWithError()
         networkPathMonitor = MockNetworkPathMonitor()
         source = MockSource()
         tracker = MockTracker()
@@ -53,6 +54,7 @@ class SearchViewModelTests: XCTestCase {
         subscriptions = []
         subscriptionStore = nil
         try space.clear()
+        try super.tearDownWithError()
     }
 
     func subject(

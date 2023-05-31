@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 import CoreData
 @testable import PocketKit
@@ -18,6 +22,7 @@ final class AppBadgeTrackerTests: XCTestCase {
     private var badgeProvider: MockBadgeProvider!
 
     override func setUp() {
+        super.setUp()
         space = .testSpace()
         source = MockSource()
         source.viewContext = space.viewContext
@@ -38,6 +43,7 @@ final class AppBadgeTrackerTests: XCTestCase {
         userDefaults.removeObject(forKey: AccountViewModel.ToggleAppBadgeKey)
         try space.clear()
         try space.save()
+        try super.tearDownWithError()
     }
 
     func test_on_savedItemsUpdated_noSubscriberCalled() throws {

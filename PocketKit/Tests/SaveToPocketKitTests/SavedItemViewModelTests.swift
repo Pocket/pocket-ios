@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 import Analytics
 import SharedPocketKit
@@ -36,6 +40,7 @@ class SavedItemViewModelTests: XCTestCase {
     }
 
     override func setUp() {
+        super.setUp()
         self.continueAfterFailure = false
 
         appSession = AppSession(keychain: MockKeychain(), groupID: "group.com.ideashower.ReadItLaterPro")
@@ -51,9 +56,10 @@ class SavedItemViewModelTests: XCTestCase {
         saveService.stubSave { _ in .newItem(savedItem) }
     }
 
-    override func tearDown() async throws {
+    override func tearDownWithError() throws {
         UserDefaults.standard.removePersistentDomain(forName: "SavedItemViewModelTests")
         try space.clear()
+        try super.tearDownWithError()
     }
 }
 

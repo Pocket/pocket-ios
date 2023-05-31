@@ -64,7 +64,6 @@ class FeatureFlagService: FeatureFlagServiceProtocol {
         }
         tracker.track(event: Events.FeatureFlag.FeatureFlagFelt(name: flag.rawValue, variant: variant))
     }
-
 }
 
 /// Describes the current feature flags that iOS cares about

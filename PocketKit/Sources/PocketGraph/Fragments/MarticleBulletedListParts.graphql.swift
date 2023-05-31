@@ -29,13 +29,15 @@ public struct MarticleBulletedListParts: PocketGraph.SelectionSet, Fragment {
   public init(
     rows: [Row]
   ) {
-    self.init(_dataDict: DataDict(data: [
-      "__typename": PocketGraph.Objects.MarticleBulletedList.typename,
-      "rows": rows._fieldData,
-      "__fulfilled": Set([
+    self.init(_dataDict: DataDict(
+      data: [
+        "__typename": PocketGraph.Objects.MarticleBulletedList.typename,
+        "rows": rows._fieldData,
+      ],
+      fulfilledFragments: [
         ObjectIdentifier(Self.self)
-      ])
-    ]))
+      ]
+    ))
   }
 
   /// Row
@@ -61,14 +63,16 @@ public struct MarticleBulletedListParts: PocketGraph.SelectionSet, Fragment {
       content: PocketGraph.Markdown,
       level: Int
     ) {
-      self.init(_dataDict: DataDict(data: [
-        "__typename": PocketGraph.Objects.BulletedListElement.typename,
-        "content": content,
-        "level": level,
-        "__fulfilled": Set([
+      self.init(_dataDict: DataDict(
+        data: [
+          "__typename": PocketGraph.Objects.BulletedListElement.typename,
+          "content": content,
+          "level": level,
+        ],
+        fulfilledFragments: [
           ObjectIdentifier(Self.self)
-        ])
-      ]))
+        ]
+      ))
     }
   }
 }

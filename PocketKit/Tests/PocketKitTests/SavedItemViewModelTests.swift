@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 import Analytics
 import Combine
@@ -20,6 +24,7 @@ class SavedItemViewModelTests: XCTestCase {
     private var subscriptions: Set<AnyCancellable> = []
 
     override func setUp() {
+        super.setUp()
         source = MockSource()
         tracker = MockTracker()
         pasteboard = MockPasteboard()
@@ -31,11 +36,12 @@ class SavedItemViewModelTests: XCTestCase {
         notificationCenter = .default
     }
 
-    override func tearDown() async throws {
+    override func tearDownWithError() throws {
         subscriptions = []
         try space.clear()
         networkPathMonitor = nil
         subscriptionStore = nil
+        try super.tearDownWithError()
     }
 
     func subject(

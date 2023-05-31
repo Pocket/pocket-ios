@@ -129,6 +129,5 @@ extension SavedItem {
             itemToUpdate.update(remote: pendingParts, with: space)
             item = itemToUpdate
         }
-
     }
 }

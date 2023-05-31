@@ -34,13 +34,13 @@ public extension Mock where O == User {
     username: String? = nil
   ) {
     self.init()
-    self.email = email
-    self.isPremium = isPremium
-    self.name = name
-    self.savedItemById = savedItemById
-    self.savedItems = savedItems
-    self.searchSavedItems = searchSavedItems
-    self.tags = tags
-    self.username = username
+    _set(email, for: \.email)
+    _set(isPremium, for: \.isPremium)
+    _set(name, for: \.name)
+    _set(savedItemById, for: \.savedItemById)
+    _set(savedItems, for: \.savedItems)
+    _set(searchSavedItems, for: \.searchSavedItems)
+    _set(tags, for: \.tags)
+    _set(username, for: \.username)
   }
 }

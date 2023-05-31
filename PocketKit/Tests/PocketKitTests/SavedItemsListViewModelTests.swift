@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 import CoreData
 import Analytics
@@ -25,6 +29,7 @@ class SavedItemsListViewModelTests: XCTestCase {
     var featureFlags: MockFeatureFlagService!
 
     override func setUp() {
+        try super.setUp()
         source = MockSource()
         tracker = MockTracker()
         featureFlags = MockFeatureFlagService()
@@ -76,6 +81,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         try space.save()
         networkPathMonitor = nil
         subscriptionStore = nil
+        try super.tearDownWithError()
     }
 
     func subject(

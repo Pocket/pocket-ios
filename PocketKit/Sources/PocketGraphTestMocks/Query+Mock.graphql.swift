@@ -29,10 +29,10 @@ public extension Mock where O == Query {
     user: Mock<User>? = nil
   ) {
     self.init()
-    self.assignments = assignments
-    self.getSlate = getSlate
-    self.getSlateLineup = getSlateLineup
-    self.itemByItemId = itemByItemId
-    self.user = user
+    _set(assignments, for: \.assignments)
+    _set(getSlate, for: \.getSlate)
+    _set(getSlateLineup, for: \.getSlateLineup)
+    _set(itemByItemId, for: \.itemByItemId)
+    _set(user, for: \.user)
   }
 }

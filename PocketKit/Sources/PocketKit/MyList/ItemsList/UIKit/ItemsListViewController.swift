@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import UIKit
 import Sync
 import CoreData
@@ -59,7 +63,6 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor(.ui.white1)
-
         model.fetch()
     }
 
@@ -394,7 +397,6 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
     }
 
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
-
         guard let item = dataSource.itemIdentifier(for: indexPath), let (viewModel, showInWebView) = model.preview(for: item) else {
             return nil
         }

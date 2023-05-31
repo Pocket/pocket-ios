@@ -39,15 +39,15 @@ public extension Mock where O == Mutation {
     upsertSavedItem: Mock<SavedItem>? = nil
   ) {
     self.init()
-    self.deleteSavedItem = deleteSavedItem
-    self.deleteTag = deleteTag
-    self.deleteUser = deleteUser
-    self.replaceSavedItemTags = replaceSavedItemTags
-    self.updateSavedItemArchive = updateSavedItemArchive
-    self.updateSavedItemFavorite = updateSavedItemFavorite
-    self.updateSavedItemRemoveTags = updateSavedItemRemoveTags
-    self.updateSavedItemUnFavorite = updateSavedItemUnFavorite
-    self.updateTag = updateTag
-    self.upsertSavedItem = upsertSavedItem
+    _set(deleteSavedItem, for: \.deleteSavedItem)
+    _set(deleteTag, for: \.deleteTag)
+    _set(deleteUser, for: \.deleteUser)
+    _set(replaceSavedItemTags, for: \.replaceSavedItemTags)
+    _set(updateSavedItemArchive, for: \.updateSavedItemArchive)
+    _set(updateSavedItemFavorite, for: \.updateSavedItemFavorite)
+    _set(updateSavedItemRemoveTags, for: \.updateSavedItemRemoveTags)
+    _set(updateSavedItemUnFavorite, for: \.updateSavedItemUnFavorite)
+    _set(updateTag, for: \.updateTag)
+    _set(upsertSavedItem, for: \.upsertSavedItem)
   }
 }

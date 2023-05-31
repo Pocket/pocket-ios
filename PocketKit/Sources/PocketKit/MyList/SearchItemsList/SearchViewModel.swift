@@ -85,14 +85,16 @@ class SearchViewModel: ObservableObject {
     var bannerData: BannerModifier.BannerData {
         let offlineView = BannerModifier.BannerData(image: .looking, title: Localization.Search.limitedResults, detail: Localization.Search.offlineMessage)
         let errorView = BannerModifier.BannerData(
-            image: .warning, title: Localization.Search.limitedResults,
+            image: .warning,
+            title: Localization.Search.limitedResults,
             detail: Localization.Search.Banner.errorMessage,
             action: BannerModifier.BannerData.BannerAction(
                 text: Localization.General.Error.sendReport,
                 style: PocketButtonStyle(.primary, .small)
             ) {
                 self.isPresentingReportIssue.toggle()
-            })
+            }
+        )
         return isOffline ? offlineView : errorView
     }
 

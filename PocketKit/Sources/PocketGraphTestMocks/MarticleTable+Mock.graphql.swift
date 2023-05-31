@@ -19,6 +19,6 @@ public extension Mock where O == MarticleTable {
     html: String? = nil
   ) {
     self.init()
-    self.html = html
+    _set(html, for: \.html)
   }
 }

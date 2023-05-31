@@ -8,5 +8,4 @@ import CoreData
 
 @objc(SyndicatedArticle)
 public class SyndicatedArticle: NSManagedObject {
-
 }

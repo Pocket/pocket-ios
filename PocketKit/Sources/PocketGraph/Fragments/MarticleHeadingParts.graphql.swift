@@ -31,13 +31,15 @@ public struct MarticleHeadingParts: PocketGraph.SelectionSet, Fragment {
     content: PocketGraph.Markdown,
     level: Int
   ) {
-    self.init(_dataDict: DataDict(data: [
-      "__typename": PocketGraph.Objects.MarticleHeading.typename,
-      "content": content,
-      "level": level,
-      "__fulfilled": Set([
+    self.init(_dataDict: DataDict(
+      data: [
+        "__typename": PocketGraph.Objects.MarticleHeading.typename,
+        "content": content,
+        "level": level,
+      ],
+      fulfilledFragments: [
         ObjectIdentifier(Self.self)
-      ])
-    ]))
+      ]
+    ))
   }
 }

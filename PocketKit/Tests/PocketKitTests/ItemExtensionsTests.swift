@@ -11,11 +11,13 @@ class ItemExtensionsTests: XCTestCase {
     var space: Space!
 
     override func setUp() {
+        super.setUp()
         space = .testSpace()
     }
 
     override func tearDownWithError() throws {
         try space.clear()
+        try super.tearDownWithError()
     }
 
     func test_shouldOpenInWebView_andIsNotArticle_returnsTrue() throws {

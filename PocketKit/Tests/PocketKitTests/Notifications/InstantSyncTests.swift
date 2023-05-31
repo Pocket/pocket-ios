@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 @testable import PocketKit
 import Combine
@@ -15,6 +19,7 @@ final class InstantSyncTests: XCTestCase {
     private var subject: InstantSync!
 
     override func setUp() {
+        super.setUp()
         source = MockSource()
         appSession = AppSession(keychain: MockKeychain(), groupID: "test")
         session = SharedPocketKit.Session(guid: "test-guid", accessToken: "test-access-token", userIdentifier: "test-id")

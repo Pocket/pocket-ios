@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apollographql/apollo-ios.git",
       "state" : {
-        "revision" : "bdeff49547241d917ce670d9b7dfb0c5efca9cde",
-        "version" : "1.1.2"
+        "revision" : "c7d618adc40bc20e4f40651b8debbc3c9f6d2b6f",
+        "version" : "1.2.0"
       }
     },
     {
@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/braze-inc/braze-swift-sdk.git",
       "state" : {
-        "revision" : "4d2d441de844a4559f413a95c9dd752f52bc0ebb",
-        "version" : "6.0.0"
+        "revision" : "272b79f01d25e7afd49bd1a3ac324a79faa9ec11",
+        "version" : "6.2.0"
       }
     },
     {
@@ -59,8 +59,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/onevcat/Kingfisher.git",
       "state" : {
-        "revision" : "af4be924ad984cf4d16f4ae4df424e79a443d435",
-        "version" : "7.6.2"
+        "revision" : "e8625b80c413457b13ea9be75d07f6e9f5830c19",
+        "version" : "7.7.0"
       }
     },
     {
@@ -104,8 +104,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/getsentry/sentry-cocoa.git",
       "state" : {
-        "revision" : "e6dcfba32f2861438b82c7ad34e058b23c83daf6",
-        "version" : "8.6.0"
+        "revision" : "9cf7d2e514af1600cc2b3c5592e2848c6c5a76d6",
+        "version" : "8.7.3"
       }
     },
     {
@@ -113,8 +113,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/snowplow/snowplow-objc-tracker",
       "state" : {
-        "revision" : "45902de9182313909ec59d88a14ce759a0a2ab9d",
-        "version" : "5.0.1"
+        "revision" : "512cec70b72514002d01080428327d427251e006",
+        "version" : "5.1.0"
       }
     },
     {
@@ -158,8 +158,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio.git",
       "state" : {
-        "revision" : "546eaa261ec5028b9cc5c7fa883fba9dd5881a3b",
-        "version" : "2.52.0"
+        "revision" : "6213ba7a06febe8fef60563a4a7d26a4085783cf",
+        "version" : "2.54.0"
       }
     },
     {
@@ -176,8 +176,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SvenTiigi/YouTubePlayerKit.git",
       "state" : {
-        "revision" : "b81f962b87105fd5e6b2b02aecebe482b84d749b",
-        "version" : "1.4.0"
+        "revision" : "b2cf1e0c0b081594a51b229347d7c3b7d3aca5a1",
+        "version" : "1.5.0"
       }
     }
   ],

@@ -62,6 +62,5 @@ struct TagsSectionView_Previews: PreviewProvider {
         .previewLayout(.sizeThatFits)
         .previewDisplayName("Dark")
         .preferredColorScheme(.dark)
-
     }
 }

@@ -29,6 +29,8 @@ public struct System: Event, CustomStringConvertible {
             return userMigrationState.id(source)
         case .appPermission(let appPermissionType):
             return appPermissionType.id()
+        case .unableToSave:
+            return "ios.\(source).unableToSave"
         }
     }
 
@@ -37,7 +39,9 @@ public struct System: Event, CustomStringConvertible {
         case .userMigration(let userMigrationState):
             return userMigrationState.value(source)
         case .appPermission(let appPermissionType):
-            return "AppPermissionValue"
+            return nil
+        case .unableToSave:
+            return nil
         }
     }
 
@@ -58,6 +62,7 @@ extension System {
     public enum SystemLogType {
         case userMigration(UserMigrationState)
         case appPermission(AppPermissionType)
+        case unableToSave
     }
 
     public enum UserMigrationState {
