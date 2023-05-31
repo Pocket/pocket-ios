@@ -9,14 +9,14 @@ enum URLExtractor {
     static func url(from itemProvider: ItemProvider) async -> String? {
         if itemProvider.hasItemConformingToTypeIdentifier("public.url") { // We're handed a URL
             guard let url = try? await itemProvider.loadItem(forTypeIdentifier: "public.url", options: nil) as? URL else {
-                Log.capture(message: "Unable to load URL from itemProvider")
+                Log.breadcrumb(category: "urlExtractor", level: .error, message: "Unable to load item as URL from itemProvider for type identifier public.url")
                 return nil
             }
 
             return firstURL(in: url)
-        } else if itemProvider.hasItemConformingToTypeIdentifier("public.plain-text") { // We're handed a URL String
+        } else if itemProvider.hasItemConformingToTypeIdentifier("public.plain-text") { // We're handed a String that may contain a URL
             guard let string = try? await itemProvider.loadItem(forTypeIdentifier: "public.plain-text", options: nil) as? String else {
-                Log.capture(message: "Unable to load String from itemProvider")
+                Log.breadcrumb(category: "urlExtractor", level: .error, message: "Unable to load item as String from itemProvider for type identifier public.plain-text")
                 return nil
             }
 
@@ -24,7 +24,6 @@ enum URLExtractor {
                 return self.firstURL(in: url)
             }
 
-            Log.capture(message: "Unable to parse URL from from itemProvider String")
             return nil
         }
 
@@ -48,7 +47,7 @@ enum URLExtractor {
     ///     - string: The string from which to search for a URL
     private static func firstURL(in string: String) -> String? {
         guard let string = string.removingPercentEncoding, let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue) else {
-            Log.capture(message: "FirstURL setup failed")
+            Log.breadcrumb(category: "urlExtractor", level: .error, message: "firstURL setup for String failed")
             return nil
         }
 
@@ -60,7 +59,7 @@ enum URLExtractor {
             return string
         }
 
-        Log.breadcrumb(category: "urlExtractor", level: .warning, message: "Unable to find URL in \(string)")
+        Log.breadcrumb(category: "urlExtractor", level: .info, message: "Unable to find URL in \(string)")
         return nil
     }
 
@@ -79,7 +78,7 @@ enum URLExtractor {
     ///     - string: The string from which to search for a URL
     private static func firstURL(in url: URL) -> String? {
         guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
-            Log.capture(message: "Unable to generate URLComponents")
+            Log.breadcrumb(category: "urlExtractor", level: .error, message: "firstURL setup for URL failed")
             return nil
         }
 
@@ -94,7 +93,7 @@ enum URLExtractor {
         urlComponents.scheme = nil
 
         guard let inputString = urlComponents.string else {
-            Log.capture(message: "Unable to read URLComponents as String")
+            Log.breadcrumb(category: "urlExtractor", level: .error, message: "Unable to read URLComponents as String")
             return nil
         }
 
