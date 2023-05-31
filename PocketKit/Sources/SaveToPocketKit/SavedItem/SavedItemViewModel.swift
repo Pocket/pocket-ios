@@ -69,8 +69,7 @@ class SavedItemViewModel {
 
         for item in extensionItems {
             guard let url = try? await url(from: item) else {
-                // Breadcrumbs all the way down, but if we could genuinely not parse out a URL, capture that.
-                Log.capture(message: "Could not find URL in extensions items to save")
+                tracker.track(event: Events.SaveTo.unableToSave())
                 infoViewModel = .error
                 break
             }
