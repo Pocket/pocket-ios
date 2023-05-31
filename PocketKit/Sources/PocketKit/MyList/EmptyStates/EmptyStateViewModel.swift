@@ -8,7 +8,13 @@ protocol EmptyStateViewModel {
     var icon: ImageAsset? { get }
     var headline: String? { get }
     var detailText: String? { get }
-    var buttonText: String? { get }
+    var buttonType: ButtonType? { get }
     var webURL: URL? { get }
     var accessibilityIdentifier: String { get }
+}
+
+enum ButtonType {
+    case normal(String)
+    case premium(String)
+    case reportIssue(String)
 }

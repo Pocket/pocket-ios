@@ -6,7 +6,7 @@ import Kingfisher
 import Textile
 import SafariServices
 
-class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, UICollectionViewDelegate, UICollectionViewDataSourcePrefetching {
+class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, UICollectionViewDelegate, UICollectionViewDataSourcePrefetching, UICollectionViewDelegateFlowLayout {
     private let model: ViewModel
     private var subscriptions: [AnyCancellable] = []
     private var collectionView: UICollectionView!
@@ -17,124 +17,9 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
         self.model = model
         super.init(nibName: nil, bundle: nil)
 
-        let layout = UICollectionViewCompositionalLayout { [weak self] sectionIndex, env -> NSCollectionLayoutSection? in
-            guard let self = self,
-                  let section = self.dataSource.sectionIdentifier(for: sectionIndex) else {
-                return nil
-            }
-
-            switch section {
-            case .filters:
-                var totalWidth: CGFloat = 0
-                var maxHeight: CGFloat = 0
-                let layoutItems = self.dataSource.snapshot(for: .filters).items.compactMap { cellID -> NSCollectionLayoutItem? in
-                    guard case .filterButton(let filterID) = cellID else {
-                        return nil
-                    }
-
-                    let model = self.model.filterButton(with: filterID)
-                    let width = TopicChipCell.width(chip: model)
-                    let height = TopicChipCell.height(chip: model)
-                    maxHeight = max(height, maxHeight)
-
-                    totalWidth += width
-                    return NSCollectionLayoutItem(
-                        layoutSize: .init(
-                            widthDimension: .absolute(width),
-                            heightDimension: .absolute(height)
-                        )
-                    )
-                }
-
-                let spacing: CGFloat = 12
-                let group = NSCollectionLayoutGroup.horizontal(
-                    layoutSize: .init(
-                        widthDimension: .absolute(totalWidth + ((CGFloat(layoutItems.count) - 1) * spacing)),
-                        heightDimension: .absolute(maxHeight)
-                    ),
-                    subitems: layoutItems
-                )
-                group.interItemSpacing = .fixed(spacing)
-
-                let section = NSCollectionLayoutSection(group: group)
-                section.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16)
-                section.orthogonalScrollingBehavior = .continuous
-
-                return section
-            case .tags:
-                guard case .tag(let name) = self.dataSource.snapshot(for: .tags).items.first else { return nil }
-                let selectedTagModel = model.tagModel(with: name)
-                let width = SelectedTagChipCell.width(model: selectedTagModel)
-                let height = SelectedTagChipCell.height(model: selectedTagModel)
-                let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .absolute(width), heightDimension: .absolute(height)))
-
-                let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(height))
-                let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-
-                let section = NSCollectionLayoutSection(group: group)
-                section.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16)
-                return section
-            case .items:
-                var config = UICollectionLayoutListConfiguration(appearance: .plain)
-                config.backgroundColor = UIColor(.ui.white1)
-                config.trailingSwipeActionsConfigurationProvider = { [unowned self] indexPath in
-                    guard case .item(let objectID) = self.dataSource.itemIdentifier(for: indexPath) else {
-                        return nil
-                    }
-
-                    let actions = model.trailingSwipeActions(for: objectID)
-                    .compactMap(UIContextualAction.init)
-
-                    return UISwipeActionsConfiguration(actions: actions)
-                }
-
-                return NSCollectionLayoutSection.list(using: config, layoutEnvironment: env)
-            case .offline:
-                var config = UICollectionLayoutListConfiguration(appearance: .plain)
-                config.backgroundColor = UIColor(.ui.white1)
-                config.showsSeparators = false
-                let section = NSCollectionLayoutSection.list(using: config, layoutEnvironment: env)
-
-                // Update the section's contentInsets to center the offline cell
-                // within the full size of the collection view
-                let layoutHeight = env.container.contentSize.height
-                let availableWidth = env.container.contentSize.width
-                - ItemsListOfflineCell.Constants.padding
-                - ItemsListOfflineCell.Constants.padding
-                let offset = self.collectionView.safeAreaInsets.top
-                section.contentInsets = NSDirectionalEdgeInsets(
-                    top: (layoutHeight - ItemsListOfflineCell.height(fitting: availableWidth)) / 2 - offset,
-                    leading: 0,
-                    bottom: 0,
-                    trailing: 0
-                )
-
-                return section
-            case .emptyState:
-                let section = NSCollectionLayoutSection(
-                    group: .vertical(
-                        layoutSize: .init(
-                            widthDimension: .fractionalWidth(1),
-                            heightDimension: .fractionalHeight(0.65)
-                        ),
-                        subitems: [
-                            .init(
-                                layoutSize: .init(
-                                    widthDimension: .fractionalWidth(1),
-                                    heightDimension: .fractionalHeight(1)
-                                )
-                            )
-                        ]
-                    )
-                )
-                section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)
-                return section
-            }
-        }
-
         self.collectionView = UICollectionView(
             frame: .zero,
-            collectionViewLayout: layout
+            collectionViewLayout: collectionViewLayout()
         )
 
         collectionView.delegate = self
@@ -150,45 +35,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
         progressView.trackTintColor = UIColor(.ui.teal6)
         progressView.isHidden = false
 
-        let filterButtonRegistration: UICollectionView.CellRegistration<TopicChipCell, ItemsListFilter> = .init { [weak self] cell, indexPath, filterID in
-            self?.configure(cell: cell, indexPath: indexPath, filterID: filterID)
-        }
-
-        let tagButtonRegistration: UICollectionView.CellRegistration<SelectedTagChipCell, String> = .init { [weak self] cell, _, name in
-            self?.configure(cell: cell, name: name)
-        }
-
-        let itemCellRegistration: UICollectionView.CellRegistration<ItemsListItemCell, ViewModel.ItemIdentifier> = .init { [weak self] cell, indexPath, objectID in
-            self?.configure(cell: cell, indexPath: indexPath, objectID: objectID)
-        }
-
-        let emptyCellRegistration: UICollectionView.CellRegistration<EmptyStateCollectionViewCell, String> = .init { [weak self] cell, _, _ in
-            self?.configure(cell: cell)
-        }
-
-        let offlineCellRegistration: UICollectionView.CellRegistration<ItemsListOfflineCell, String> = .init { cell, _, _ in
-        }
-
-        let placeholderCellRegistration: UICollectionView.CellRegistration<ItemSkeletonCell, Int> = .init { cell, indexPath, itemIndex in
-            // no op
-        }
-
-        self.dataSource = .init(collectionView: collectionView) { collectionView, indexPath, item in
-            switch item {
-            case .filterButton(let filter):
-                return collectionView.dequeueConfiguredReusableCell(using: filterButtonRegistration, for: indexPath, item: filter)
-            case .tag(let name):
-                return collectionView.dequeueConfiguredReusableCell(using: tagButtonRegistration, for: indexPath, item: name)
-            case .item(let itemID):
-                return collectionView.dequeueConfiguredReusableCell(using: itemCellRegistration, for: indexPath, item: itemID)
-            case .emptyState:
-                return collectionView.dequeueConfiguredReusableCell(using: emptyCellRegistration, for: indexPath, item: "")
-            case .offline:
-                return collectionView.dequeueConfiguredReusableCell(using: offlineCellRegistration, for: indexPath, item: "")
-            case .placeholder(let index):
-                return collectionView.dequeueConfiguredReusableCell(using: placeholderCellRegistration, for: indexPath, item: index)
-            }
-        }
+        setupDataSourceFilters()
 
         model.events.receive(on: DispatchQueue.main).sink { [weak self] event in
             self?.handle(savesEvent: event)
@@ -209,19 +56,15 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func loadView() {
-        view = collectionView
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor(.ui.white1)
-        model.fetch()
 
+        model.fetch()
     }
 
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
+    override func loadView() {
+        view = collectionView
     }
 
     /// Whether or not we should show the progress bar.
@@ -275,6 +118,177 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
             self.collectionView.refreshControl?.endRefreshing()
         }
     }
+
+    // MARK: - Setup Views
+
+    private func setupDataSourceFilters() {
+        let filterButtonRegistration: UICollectionView.CellRegistration<TopicChipCell, ItemsListFilter> = .init { [weak self] cell, indexPath, filterID in
+            self?.configure(cell: cell, indexPath: indexPath, filterID: filterID)
+        }
+
+        let tagButtonRegistration: UICollectionView.CellRegistration<SelectedTagChipCell, String> = .init { [weak self] cell, _, name in
+            self?.configure(cell: cell, name: name)
+        }
+
+        let itemCellRegistration: UICollectionView.CellRegistration<ItemsListItemCell, ViewModel.ItemIdentifier> = .init { [weak self] cell, indexPath, objectID in
+            self?.configure(cell: cell, indexPath: indexPath, objectID: objectID)
+        }
+
+        let emptyCellRegistration: UICollectionView.CellRegistration<EmptyStateCollectionViewCell, String> = .init { [weak self] cell, _, _ in
+            self?.configure(cell: cell)
+        }
+
+        let offlineCellRegistration: UICollectionView.CellRegistration<ItemsListOfflineCell, String> = .init { cell, _, _ in
+        }
+
+        let placeholderCellRegistration: UICollectionView.CellRegistration<ItemSkeletonCell, Int> = .init { cell, indexPath, itemIndex in
+            // no op
+        }
+
+        self.dataSource = .init(collectionView: collectionView) { collectionView, indexPath, item in
+            switch item {
+            case .filterButton(let filter):
+                return collectionView.dequeueConfiguredReusableCell(using: filterButtonRegistration, for: indexPath, item: filter)
+            case .tag(let name):
+                return collectionView.dequeueConfiguredReusableCell(using: tagButtonRegistration, for: indexPath, item: name)
+            case .item(let itemID):
+                return collectionView.dequeueConfiguredReusableCell(using: itemCellRegistration, for: indexPath, item: itemID)
+            case .emptyState:
+                return collectionView.dequeueConfiguredReusableCell(using: emptyCellRegistration, for: indexPath, item: "")
+            case .offline:
+                return collectionView.dequeueConfiguredReusableCell(using: offlineCellRegistration, for: indexPath, item: "")
+            case .placeholder(let index):
+                return collectionView.dequeueConfiguredReusableCell(using: placeholderCellRegistration, for: indexPath, item: index)
+            }
+        }
+    }
+
+    private func collectionViewLayout() -> UICollectionViewLayout {
+        UICollectionViewCompositionalLayout { [weak self] sectionIndex, env -> NSCollectionLayoutSection? in
+            guard let self = self,
+                  let section = self.dataSource.sectionIdentifier(for: sectionIndex) else {
+                return nil
+            }
+
+            switch section {
+            case .filters:
+                var totalWidth: CGFloat = 0
+                var maxHeight: CGFloat = 0
+                let layoutItems = self.dataSource.snapshot(for: .filters).items.compactMap { cellID -> NSCollectionLayoutItem? in
+                    guard case .filterButton(let filterID) = cellID else {
+                        return nil
+                    }
+
+                    let model = self.model.filterButton(with: filterID)
+                    let width = TopicChipCell.width(chip: model)
+                    let height = TopicChipCell.height(chip: model)
+                    maxHeight = max(height, maxHeight)
+
+                    totalWidth += width
+                    return NSCollectionLayoutItem(
+                        layoutSize: .init(
+                            widthDimension: .absolute(width),
+                            heightDimension: .absolute(height)
+                        )
+                    )
+                }
+
+                let spacing: CGFloat = 12
+                let group = NSCollectionLayoutGroup.horizontal(
+                    layoutSize: .init(
+                        widthDimension: .absolute(totalWidth + ((CGFloat(layoutItems.count) - 1) * spacing)),
+                        heightDimension: .absolute(maxHeight)
+                    ),
+                    subitems: layoutItems
+                )
+                group.interItemSpacing = .fixed(spacing)
+
+                let section = NSCollectionLayoutSection(group: group)
+                section.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16)
+                section.orthogonalScrollingBehavior = .continuous
+
+                return section
+            case .tags:
+                guard case .tag(let name) = self.dataSource.snapshot(for: .tags).items.first else { return nil }
+                let selectedTagModel = self.model.tagModel(with: name)
+                let width = SelectedTagChipCell.width(model: selectedTagModel)
+                let height = SelectedTagChipCell.height(model: selectedTagModel)
+                let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .absolute(width), heightDimension: .absolute(height)))
+
+                let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(height))
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+
+                let section = NSCollectionLayoutSection(group: group)
+                section.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16)
+                return section
+            case .items:
+                var config = UICollectionLayoutListConfiguration(appearance: .plain)
+                config.backgroundColor = UIColor(.ui.white1)
+                config.trailingSwipeActionsConfigurationProvider = { [unowned self] indexPath in
+                    guard case .item(let objectID) = self.dataSource.itemIdentifier(for: indexPath) else {
+                        return nil
+                    }
+
+                    let actions = self.model.trailingSwipeActions(for: objectID)
+                    .compactMap(UIContextualAction.init)
+
+                    return UISwipeActionsConfiguration(actions: actions)
+                }
+
+                let section = NSCollectionLayoutSection.list(using: config, layoutEnvironment: env)
+                section.contentInsetsReference = .readableContent
+
+                var contentInsets = section.contentInsets
+                    contentInsets.leading = 0
+                    contentInsets.trailing = 0
+                    section.contentInsets = contentInsets
+
+                return section
+            case .offline:
+                var config = UICollectionLayoutListConfiguration(appearance: .plain)
+                config.backgroundColor = UIColor(.ui.white1)
+                config.showsSeparators = false
+                let section = NSCollectionLayoutSection.list(using: config, layoutEnvironment: env)
+
+                // Update the section's contentInsets to center the offline cell
+                // within the full size of the collection view
+                let layoutHeight = env.container.contentSize.height
+                let availableWidth = env.container.contentSize.width
+                - ItemsListOfflineCell.Constants.padding
+                - ItemsListOfflineCell.Constants.padding
+                let offset = self.collectionView.safeAreaInsets.top
+                section.contentInsets = NSDirectionalEdgeInsets(
+                    top: (layoutHeight - ItemsListOfflineCell.height(fitting: availableWidth)) / 2 - offset,
+                    leading: 0,
+                    bottom: 0,
+                    trailing: 0
+                )
+
+                return section
+            case .emptyState:
+                let section = NSCollectionLayoutSection(
+                    group: .vertical(
+                        layoutSize: .init(
+                            widthDimension: .fractionalWidth(1),
+                            heightDimension: .fractionalHeight(0.65)
+                        ),
+                        subitems: [
+                            .init(
+                                layoutSize: .init(
+                                    widthDimension: .fractionalWidth(1),
+                                    heightDimension: .fractionalHeight(1)
+                                )
+                            )
+                        ]
+                    )
+                )
+                section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)
+                return section
+            }
+        }
+    }
+
+    // MARK: - Cell Configuration
 
     private func configure(cell: ItemsListItemCell, indexPath: IndexPath, objectID: ViewModel.ItemIdentifier) {
         cell.backgroundConfiguration = .listPlainCell()
@@ -348,6 +362,8 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
             collectionView.deselectItem(at: selectedIndexPath, animated: false)
         }
     }
+
+    // MARK: - CollectionView Delegate Methods
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let itemID = dataSource.itemIdentifier(for: indexPath) else {

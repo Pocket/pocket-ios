@@ -78,6 +78,7 @@
 		8A4ECEF9287775F90007DB67 /* SectionHeaderElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A4ECEF8287775F90007DB67 /* SectionHeaderElement.swift */; };
 		8A7765A2288EE80900127BB4 /* RecentSavesCellElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A7765A1288EE80900127BB4 /* RecentSavesCellElement.swift */; };
 		8A8F5EFE28CB740000124B6D /* EditTagsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A8F5EFD28CB740000124B6D /* EditTagsTests.swift */; };
+		8A9C60232A1D12CC0079DD8B /* ReportIssueViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9C60222A1D12CC0079DD8B /* ReportIssueViewElement.swift */; };
 		8ADAC6B028AD4E7500DE9A62 /* AddTagsViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ADAC6AF28AD4E7500DE9A62 /* AddTagsViewElement.swift */; };
 		8ADD6A9F292C189C007F419D /* SearchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ADD6A9E292C189C007F419D /* SearchTests.swift */; };
 		8ADD6AA1292C1B2C007F419D /* SearchViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ADD6AA0292C1B2C007F419D /* SearchViewElement.swift */; };
@@ -247,6 +248,7 @@
 		8A4ECEF8287775F90007DB67 /* SectionHeaderElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeaderElement.swift; sourceTree = "<group>"; };
 		8A7765A1288EE80900127BB4 /* RecentSavesCellElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentSavesCellElement.swift; sourceTree = "<group>"; };
 		8A8F5EFD28CB740000124B6D /* EditTagsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTagsTests.swift; sourceTree = "<group>"; };
+		8A9C60222A1D12CC0079DD8B /* ReportIssueViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportIssueViewElement.swift; sourceTree = "<group>"; };
 		8ADAC6AF28AD4E7500DE9A62 /* AddTagsViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTagsViewElement.swift; sourceTree = "<group>"; };
 		8ADD6A9E292C189C007F419D /* SearchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTests.swift; sourceTree = "<group>"; };
 		8ADD6AA0292C1B2C007F419D /* SearchViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewElement.swift; sourceTree = "<group>"; };
@@ -459,6 +461,7 @@
 				8A7765A1288EE80900127BB4 /* RecentSavesCellElement.swift */,
 				8A4ECEF8287775F90007DB67 /* SectionHeaderElement.swift */,
 				F2843C1F2714D97000E03ED5 /* ReportViewElement.swift */,
+				8A9C60222A1D12CC0079DD8B /* ReportIssueViewElement.swift */,
 				1613B2B2275571940014F301 /* SettingsViewElement.swift */,
 				F20BB0382744542F00AE5E70 /* AlertElement.swift */,
 				16BB40A7279F436100FE8650 /* SelectionSwitcherElement.swift */,
@@ -858,6 +861,7 @@
 				3879243129BA816200C43F87 /* PremiumStatusViewElement.swift in Sources */,
 				8ADD6AA1292C1B2C007F419D /* SearchViewElement.swift in Sources */,
 				656BF0732A09A5EC008BA8E3 /* ErrorTests.swift in Sources */,
+				8A9C60232A1D12CC0079DD8B /* ReportIssueViewElement.swift in Sources */,
 				1612D7E426C32321009A5BFD /* ByteBuffer+read.swift in Sources */,
 				16FCADBF26CB04AC00906C03 /* ArchiveAnItemTests.swift in Sources */,
 				F2843C202714D97000E03ED5 /* ReportViewElement.swift in Sources */,
@@ -996,7 +1000,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MARKETING_VERSION = 8.0.3;
+				MARKETING_VERSION = 8.0.4;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1055,7 +1059,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MARKETING_VERSION = 8.0.3;
+				MARKETING_VERSION = 8.0.4;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				POCKET_API_BASE_URL = "https://api.getpocket.com/graphql";
@@ -1083,7 +1087,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 8.0.3;
+				MARKETING_VERSION = 8.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro;
 				PRODUCT_NAME = Pocket;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1113,7 +1117,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 8.0.3;
+				MARKETING_VERSION = 8.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro;
 				PRODUCT_NAME = Pocket;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1138,7 +1142,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 8.0.3;
+				MARKETING_VERSION = 8.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ideashower.ReadItLaterProAlphaNeue.Tests-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1163,7 +1167,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 8.0.3;
+				MARKETING_VERSION = 8.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ideashower.ReadItLaterProAlphaNeue.Tests-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1195,7 +1199,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 8.0.3;
+				MARKETING_VERSION = 8.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.PushNotificationServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1227,7 +1231,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 8.0.3;
+				MARKETING_VERSION = 8.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.PushNotificationServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1289,7 +1293,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MARKETING_VERSION = 8.0.3;
+				MARKETING_VERSION = 8.0.4;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				POCKET_API_BASE_URL = "https://api.getpocket.com/graphql";
@@ -1317,7 +1321,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 8.0.3;
+				MARKETING_VERSION = 8.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterProAlphaNeue;
 				PRODUCT_NAME = Pocket;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1343,7 +1347,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 8.0.3;
+				MARKETING_VERSION = 8.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ideashower.ReadItLaterProAlphaNeue.Tests-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1375,7 +1379,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 8.0.3;
+				MARKETING_VERSION = 8.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterProAlphaNeue.AddToPocketExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1408,7 +1412,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 8.0.3;
+				MARKETING_VERSION = 8.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterProAlphaNeue.PushNotificationServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1440,7 +1444,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 8.0.3;
+				MARKETING_VERSION = 8.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterProAlphaNeue.PushNotificationStoryExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1508,7 +1512,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MARKETING_VERSION = 8.0.3;
+				MARKETING_VERSION = 8.0.4;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1537,7 +1541,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 8.0.3;
+				MARKETING_VERSION = 8.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterProAlphaNeue;
 				PRODUCT_NAME = Pocket;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1563,7 +1567,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 8.0.3;
+				MARKETING_VERSION = 8.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ideashower.ReadItLaterProAlphaNeue.Tests-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1594,7 +1598,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 8.0.3;
+				MARKETING_VERSION = 8.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterProAlphaNeue.AddToPocketExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1627,7 +1631,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 8.0.3;
+				MARKETING_VERSION = 8.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterProAlphaNeue.PushNotificationServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1658,7 +1662,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 8.0.3;
+				MARKETING_VERSION = 8.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterProAlphaNeue.PushNotificationStoryExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1689,7 +1693,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 8.0.3;
+				MARKETING_VERSION = 8.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.PushNotificationStoryExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1720,7 +1724,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 8.0.3;
+				MARKETING_VERSION = 8.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.PushNotificationStoryExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1788,7 +1792,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MARKETING_VERSION = 8.0.3;
+				MARKETING_VERSION = 8.0.4;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1817,7 +1821,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 8.0.3;
+				MARKETING_VERSION = 8.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro;
 				PRODUCT_NAME = Pocket;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1842,7 +1846,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 8.0.3;
+				MARKETING_VERSION = 8.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ideashower.ReadItLaterProAlphaNeue.Tests-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1873,7 +1877,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 8.0.3;
+				MARKETING_VERSION = 8.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.AddToPocketExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1906,7 +1910,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 8.0.3;
+				MARKETING_VERSION = 8.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.PushNotificationServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1937,7 +1941,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 8.0.3;
+				MARKETING_VERSION = 8.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.PushNotificationStoryExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1969,7 +1973,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 8.0.3;
+				MARKETING_VERSION = 8.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.AddToPocketExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2002,7 +2006,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 8.0.3;
+				MARKETING_VERSION = 8.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.AddToPocketExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

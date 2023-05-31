@@ -23,7 +23,7 @@ struct OfflineEmptyState: EmptyStateViewModel {
             return detail.archive
         }
     }
-    let buttonText: String? = nil
+    let buttonType: ButtonType? = nil
     let webURL: URL? = nil
     let accessibilityIdentifier = "offline-empty-state"
 }
