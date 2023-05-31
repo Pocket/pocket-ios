@@ -9,7 +9,6 @@ import Textile
 
 /// Main view of the Recent Saves widget
 struct RecentSavesView: View {
-    @Environment(\.widgetFamily) private var widgetFamily
     /// The list of saved items to be displayed
     let entry: RecentSavesProvider.Entry
 
