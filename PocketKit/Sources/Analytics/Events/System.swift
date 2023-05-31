@@ -11,17 +11,24 @@ public struct System: Event, CustomStringConvertible {
     public static let schema = "iglu:com.pocket/system_log/jsonschema/1-0-0"
 
     let type: System.SystemLogType
-    let source: MigrationSource
+    let source: MigrationSource!
 
     public init(type: SystemLogType, source: MigrationSource) {
         self.type = type
         self.source = source
     }
 
+    public init(type: SystemLogType) {
+        self.type = type
+        self.source = nil
+    }
+
     public var description: String {
         switch type {
         case .userMigration(let userMigrationState):
             return userMigrationState.id(source)
+        case .appPermission(let appPermissionType):
+            return appPermissionType.id()
         }
     }
 
@@ -29,6 +36,8 @@ public struct System: Event, CustomStringConvertible {
         switch type {
         case .userMigration(let userMigrationState):
             return userMigrationState.value(source)
+        case .appPermission(let appPermissionType):
+            return "AppPermissionValue"
         }
     }
 
@@ -48,6 +57,7 @@ public struct System: Event, CustomStringConvertible {
 extension System {
     public enum SystemLogType {
         case userMigration(UserMigrationState)
+        case appPermission(AppPermissionType)
     }
 
     public enum UserMigrationState {
@@ -75,6 +85,17 @@ extension System {
                 return nil
             case UserMigrationState.failed(let error):
                 return error?.localizedDescription
+            }
+        }
+    }
+
+    public enum AppPermissionType {
+        case appBadge(Bool)
+
+        func id() -> String {
+            switch self {
+            case .appBadge(let enabled):
+                return "ios.appPermissions.appBadge." + (enabled ? "enabled" : "disabled")
             }
         }
     }

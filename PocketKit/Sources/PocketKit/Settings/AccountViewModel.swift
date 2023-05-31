@@ -96,6 +96,8 @@ class AccountViewModel: ObservableObject {
     }
 
     func toggleAppBadge(to isEnabled: Bool) {
+        tracker.track(event: Events.Settings.appBadgeToggled(newValue: isEnabled))
+
         UNUserNotificationCenter.current().requestAuthorization(options: .badge) { [weak self]
             (granted, error) in
             guard let self else { return }
@@ -104,6 +106,8 @@ class AccountViewModel: ObservableObject {
                 if let error {
                     Log.capture(error: error)
                 }
+
+                tracker.track(event: Events.Settings.appBadgePermissionDenied())
 
                 self.userDefaults.set(false, forKey: AccountViewModel.ToggleAppBadgeKey)
                 DispatchQueue.main.async { [weak self] in
