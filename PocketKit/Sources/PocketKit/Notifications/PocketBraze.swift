@@ -61,6 +61,14 @@ extension PocketBraze: BrazeProtocol {
             // Braze SDK docs say this needs to be called from the main thread.
             // https://www.braze.com/docs/developer_guide/platform_integration_guides/ios/analytics/setting_user_ids/#assigning-a-user-id
             self?.braze.changeUser(userId: session.userIdentifier)
+            // Was this build deployed through the App Store or through TestFlight?
+            var isTestFlight = false
+            if let receiptURL = Bundle.main.appStoreReceiptURL {
+                isTestFlight = receiptURL.path(percentEncoded: false).range(of: "sandboxreceipt") != nil
+            }
+            // Could expand to include "development"
+            let deployment = isTestFlight ? "testflight" : "app_store"
+            self?.braze.user.setCustomAttribute(key: "deployment", value: deployment)
         }
 
         let center = UNUserNotificationCenter.current()
