@@ -196,6 +196,27 @@ struct BannerModifier_PreviewProvider: PreviewProvider {
         .previewDisplayName("Action - Dark")
         .preferredColorScheme(.dark)
 
+        VStack {
+            Spacer()
+            Text("Some Screen!")
+            Spacer()
+        }
+        .banner(
+            data: BannerModifier.BannerData(
+                image: .warning, title: "Limited search results",
+                detail: "We're experiencing an error and can't show you full search results. Please try again later.",
+                action: BannerModifier.BannerData.BannerAction(
+                    text: "Send a report",
+                    style: PocketButtonStyle(.primary, .small)
+                ) {
+                }
+            ),
+            show: .constant(true),
+            bottomOffset: 0
+        )
+        .previewDisplayName("Error - Dark")
+        .preferredColorScheme(.dark)
+
         TabView {
             VStack {
             }

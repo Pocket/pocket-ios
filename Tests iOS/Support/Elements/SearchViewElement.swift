@@ -39,6 +39,10 @@ struct SearchViewElement: PocketUIElement {
         element.staticTexts["banner"].wait().exists && element.staticTexts[message].wait().exists
     }
 
+    func banner(with label: String) -> XCUIElement {
+        return element.buttons.element(matching: NSPredicate(format: "identifier = %@ && label == %@", "banner", label))
+    }
+
     func searchItemCell(matching identifier: String) -> ItemRowElement {
         ItemRowElement(searchResultsView.cells.containing(.staticText, identifier: identifier).element(boundBy: 0))
     }

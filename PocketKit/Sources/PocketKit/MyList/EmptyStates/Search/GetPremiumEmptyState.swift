@@ -8,7 +8,7 @@ struct GetPremiumEmptyState: EmptyStateViewModel {
     let icon: ImageAsset? = nil
     let headline: String? = Localization.Search.AllItems.Premium.header
     let detailText: String? = Localization.Search.AllItems.Premium.detail
-    let buttonText: String? = Localization.Search.AllItems.Premium.button
+    let buttonType: ButtonType? = .premium(Localization.Search.AllItems.Premium.button)
     let webURL: URL? = URL(string: "https://getpocket.com/premium")
     let accessibilityIdentifier = "get-premium-empty-state"
 }
