@@ -33,14 +33,16 @@ public struct CuratedInfoParts: PocketGraph.SelectionSet, Fragment {
     imageSrc: PocketGraph.Url? = nil,
     title: String? = nil
   ) {
-    self.init(_dataDict: DataDict(data: [
-      "__typename": PocketGraph.Objects.CuratedInfo.typename,
-      "excerpt": excerpt,
-      "imageSrc": imageSrc,
-      "title": title,
-      "__fulfilled": Set([
+    self.init(_dataDict: DataDict(
+      data: [
+        "__typename": PocketGraph.Objects.CuratedInfo.typename,
+        "excerpt": excerpt,
+        "imageSrc": imageSrc,
+        "title": title,
+      ],
+      fulfilledFragments: [
         ObjectIdentifier(Self.self)
-      ])
-    ]))
+      ]
+    ))
   }
 }

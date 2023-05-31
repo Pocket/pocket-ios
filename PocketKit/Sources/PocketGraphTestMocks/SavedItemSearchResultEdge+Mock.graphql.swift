@@ -21,7 +21,7 @@ public extension Mock where O == SavedItemSearchResultEdge {
     node: Mock<SavedItemSearchResult>? = nil
   ) {
     self.init()
-    self.cursor = cursor
-    self.node = node
+    _set(cursor, for: \.cursor)
+    _set(node, for: \.node)
   }
 }

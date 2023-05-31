@@ -30,13 +30,15 @@ public struct MarticleNumberedListParts: PocketGraph.SelectionSet, Fragment {
   public init(
     rows: [Row]
   ) {
-    self.init(_dataDict: DataDict(data: [
-      "__typename": PocketGraph.Objects.MarticleNumberedList.typename,
-      "rows": rows._fieldData,
-      "__fulfilled": Set([
+    self.init(_dataDict: DataDict(
+      data: [
+        "__typename": PocketGraph.Objects.MarticleNumberedList.typename,
+        "rows": rows._fieldData,
+      ],
+      fulfilledFragments: [
         ObjectIdentifier(Self.self)
-      ])
-    ]))
+      ]
+    ))
   }
 
   /// Row
@@ -66,15 +68,17 @@ public struct MarticleNumberedListParts: PocketGraph.SelectionSet, Fragment {
       level: Int,
       index: Int
     ) {
-      self.init(_dataDict: DataDict(data: [
-        "__typename": PocketGraph.Objects.NumberedListElement.typename,
-        "content": content,
-        "level": level,
-        "index": index,
-        "__fulfilled": Set([
+      self.init(_dataDict: DataDict(
+        data: [
+          "__typename": PocketGraph.Objects.NumberedListElement.typename,
+          "content": content,
+          "level": level,
+          "index": index,
+        ],
+        fulfilledFragments: [
           ObjectIdentifier(Self.self)
-        ])
-      ]))
+        ]
+      ))
     }
   }
 }
