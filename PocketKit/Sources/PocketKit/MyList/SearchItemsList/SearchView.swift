@@ -39,13 +39,14 @@ struct SearchView: View {
 struct ResultsView: View {
     enum Constants {
         static let indexToTriggerNextPage = 15
+        static let maxReadableWidth: CGFloat = 700
     }
 
+    @Environment(\.horizontalSizeClass) var sizeClass
     @ObservedObject var viewModel: SearchViewModel
+    @State private var showingAlert = false
 
     let results: [PocketItem]
-
-    @State private var showingAlert = false
 
     let swipeTintColor = Color(.ui.teal2)
 
@@ -78,6 +79,9 @@ struct ResultsView: View {
         })
         .alert(isPresented: $showingAlert) {
             Alert(title: Text(Localization.Search.Error.View.needsInternet), dismissButton: .default(Text("OK")))
+        }
+        .if(sizeClass == .regular) { view in
+            view.frame(width: Constants.maxReadableWidth, height: .infinity, alignment: .center)
         }
     }
 
