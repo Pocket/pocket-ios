@@ -65,6 +65,7 @@ public extension Text {
             .foregroundColor(Color(style.colorAsset))
             .multilineTextAlignment(SwiftUI.TextAlignment(style.paragraph.alignment))
             .lineSpacing(style.paragraph.lineSpacing ?? 0)
+            .italic(style.fontDescriptor.slant == .italic)
     }
 }
 

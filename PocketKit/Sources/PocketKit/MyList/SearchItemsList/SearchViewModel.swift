@@ -44,6 +44,7 @@ class SearchViewModel: ObservableObject {
     private let user: User
     private let store: SubscriptionStore
     private let userDefaults: UserDefaults
+    private var featureFlags: FeatureFlagServiceProtocol
     private let source: Source
     private let premiumUpgradeViewModelFactory: PremiumUpgradeViewModelFactory
     private let notificationCenter: NotificationCenter
@@ -109,6 +110,10 @@ class SearchViewModel: ObservableObject {
         SearchScope.allCases.map { $0.rawValue }
     }
 
+    var showReportIssueView: Bool {
+        featureFlags.isAssigned(flag: .reportIssue)
+    }
+
     private var recentSearches: [String] {
         get {
             userDefaults.stringArray(forKey: SearchViewModel.recentSearchesKey) ?? []
@@ -121,6 +126,7 @@ class SearchViewModel: ObservableObject {
     init(networkPathMonitor: NetworkPathMonitor,
          user: User,
          userDefaults: UserDefaults,
+         featureFlags: FeatureFlagServiceProtocol,
          source: Source,
          tracker: Tracker,
          store: SubscriptionStore,
@@ -129,6 +135,7 @@ class SearchViewModel: ObservableObject {
         self.networkPathMonitor = networkPathMonitor
         self.user = user
         self.userDefaults = userDefaults
+        self.featureFlags = featureFlags
         self.source = source
         self.tracker = tracker
         self.store = store
