@@ -14,7 +14,7 @@ struct ReportField: View {
     let height: CGFloat
 
     var body: some View {
-        Section(header: Text(header).style(.recommendation.textStyle).textCase(nil)) {
+        Section(header: ReportHeader(title: header)) {
             TextField("", text: userInput)
                 .style(.recommendation.textStyle)
                 .padding()
