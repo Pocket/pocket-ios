@@ -5,6 +5,15 @@
 "general.error.serverNotResponding.title" = "서버가 응답하지 않음";
 "general.error.serverNotResponding.detail" = "현재 서버가 응답하지 않습니다. 잠시만 기다려주세요. 한 시간 이내에 사용할 수 있습니다.";
 "general.error.serverError" = "요청에 문제가 발생했습니다. Pocket 팀에 알림이 전달되었습니다. 나중에 다시 시도하십시오.";
+"general.error.sendReport" = "보고서 보내기";
+
+// Report an Issue
+"reportIssue.header" = "문제 신고하기";
+"reportIssue.description" = "Pocket을 개선하는 데 도움을 주셔서 감사합니다! 발생한 문제에 대해 자세히 알려주세요.";
+"reportIssue.name" = "이름";
+"reportIssue.email" = "이메일";
+"reportIssue.comment" = "문제가 발생했나요?";
+"reportIssue.submitIssue.title" = "문제 제출";
 
 //Archive
 "archive.empty.header" = "목록을 깔끔하게 정리해 보세요";

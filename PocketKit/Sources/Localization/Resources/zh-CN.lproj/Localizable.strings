@@ -5,6 +5,15 @@
 "general.error.serverNotResponding.title" = "服务器无响应";
 "general.error.serverNotResponding.detail" = "我们的服务器现在没有响应。请耐心等待。它应该在一个小时内就可以使用。";
 "general.error.serverError" = "您的请求出错了。Pocket 团队已收到通知。请稍后重试。";
+"general.error.sendReport" = "发送报告";
+
+// Report an Issue
+"reportIssue.header" = "报告问题";
+"reportIssue.description" = "感谢您帮助我们改进 Pocket！请向我们提供有关您遇到的问题的更多详细信息。";
+"reportIssue.name" = "名称";
+"reportIssue.email" = "电子邮件";
+"reportIssue.comment" = "发生了什么事？";
+"reportIssue.submitIssue.title" = "提交问题";
 
 //Archive
 "archive.empty.header" = "保持您的列表清新整齐";
