@@ -89,6 +89,7 @@ extension ReadableViewModel {
     }
 
     func confirmDelete() {
+        trackDelete()
         presentedAlert = PocketAlert(
             title: Localization.areYouSureYouWantToDeleteThisItem,
             message: nil,
@@ -104,7 +105,6 @@ extension ReadableViewModel {
     }
 
     private func _delete() {
-        trackDelete()
         presentedAlert = nil
         delete()
     }
@@ -252,7 +252,7 @@ extension ReadableViewModel {
             Log.capture(message: "Reader item without an associated url, not logging analytics for openInWebView")
             return
         }
-        tracker.track(event: Events.Reader.openInWebView(url: url))
+        tracker.track(event: Events.ReaderToolbar.openInWebView(url: url))
     }
 
     func trackExternalLinkOpen(url: URL) {

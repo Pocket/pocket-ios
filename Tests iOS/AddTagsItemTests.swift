@@ -170,9 +170,16 @@ class AddTagsItemTests: XCTestCase {
         app.addTagsView.allTagSectionCells.element.wait()
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
-        let tagEvent = await snowplowMicro.getFirstEvent(with: "global-nav.addTags.allTags")
-        tagEvent!.getUIContext()!.assertHas(type: "screen")
-        tagEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
+
+        let events = await [snowplowMicro.getFirstEvent(with: "reader.toolbar.addTags"), snowplowMicro.getFirstEvent(with: "global-nav.addTags.allTags")]
+
+        let readerToolbarEvent = events[0]!
+        readerToolbarEvent.getUIContext()!.assertHas(type: "button")
+        readerToolbarEvent.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
+
+        let tagEvent = events[1]!
+        tagEvent.getUIContext()!.assertHas(type: "screen")
+        tagEvent.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
     }
 
     @MainActor
