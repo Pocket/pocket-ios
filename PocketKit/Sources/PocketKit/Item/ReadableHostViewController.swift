@@ -116,7 +116,12 @@ class ReadableHostViewController: UIViewController {
             image: nil,
             identifier: nil,
             options: [],
-            children: actions.compactMap(UIAction.init)
+            children: [
+                UIDeferredMenuElement.uncached { [weak self] completion in
+                    self?.readableViewModel.trackOverflow()
+                    completion(actions.compactMap(UIAction.init))
+                }
+            ]
         )
     }
 

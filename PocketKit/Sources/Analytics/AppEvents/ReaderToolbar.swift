@@ -37,6 +37,19 @@ public extension Events.ReaderToolbar {
     }
 
     /**
+     Fired when the user taps on the button to open item in web view  in the `Reader`
+     */
+    static func openInWebView(url: URL) -> ContentOpen {
+        return ContentOpen(
+            contentEntity: ContentEntity(url: url),
+            uiEntity: UiEntity(
+                .button,
+                identifier: "reader.view-original"
+            )
+        )
+    }
+
+    /**
      Fired when a user clicks the overflow button from within the reader toolbar
      */
     static func overflowClicked(url: URL) -> Engagement {
