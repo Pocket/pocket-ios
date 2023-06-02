@@ -23,6 +23,7 @@ class SearchViewModelTests: XCTestCase {
     private var subscriptionStore: SubscriptionStore!
     private var itemsController: MockSavedItemsController!
     private var notificationCenter: NotificationCenter!
+    private var featureFlags: MockFeatureFlagService!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
@@ -30,6 +31,7 @@ class SearchViewModelTests: XCTestCase {
         source = MockSource()
         tracker = MockTracker()
         userDefaults = UserDefaults(suiteName: "SearchViewModelTests")
+        featureFlags = MockFeatureFlagService()
         space = .testSpace()
         notificationCenter = .default
         searchService = MockSearchService()
@@ -61,6 +63,7 @@ class SearchViewModelTests: XCTestCase {
         networkPathMonitor: NetworkPathMonitor? = nil,
         user: User,
         userDefaults: UserDefaults? = nil,
+        featureFlags: FeatureFlagServiceProtocol? = nil,
         source: Source? = nil,
         tracker: Tracker? = nil,
         notificationCenter: NotificationCenter? = nil
@@ -75,6 +78,7 @@ class SearchViewModelTests: XCTestCase {
             networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor,
             user: user,
             userDefaults: userDefaults ?? self.userDefaults,
+            featureFlags: featureFlags ?? self.featureFlags,
             source: source ?? self.source,
             tracker: tracker ?? self.tracker,
             store: subscriptionStore ?? self.subscriptionStore,

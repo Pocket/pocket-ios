@@ -89,14 +89,22 @@ class SearchViewModel: ObservableObject {
             image: .warning,
             title: Localization.Search.limitedResults,
             detail: Localization.Search.Banner.errorMessage,
-            action: BannerModifier.BannerData.BannerAction(
+            action: reportButton(with: featureFlags)
+        )
+        return isOffline ? offlineView : errorView
+    }
+
+    /// Handles whether to show a report button for a banner
+    private func reportButton(with featureFlagsService: FeatureFlagServiceProtocol) -> BannerAction? {
+        if featureFlagsService.isAssigned(flag: .reportIssue) {
+            return BannerAction(
                 text: Localization.General.Error.sendReport,
                 style: PocketButtonStyle(.primary, .small)
             ) {
                 self.isPresentingReportIssue.toggle()
             }
-        )
-        return isOffline ? offlineView : errorView
+        }
+        return nil
     }
 
     var defaultState: SearchViewState {
@@ -108,10 +116,6 @@ class SearchViewModel: ObservableObject {
 
     var scopeTitles: [String] {
         SearchScope.allCases.map { $0.rawValue }
-    }
-
-    var showReportIssueView: Bool {
-        featureFlags.isAssigned(flag: .reportIssue)
     }
 
     private var recentSearches: [String] {
@@ -341,7 +345,7 @@ class SearchViewModel: ObservableObject {
                     self.trackSearchResultsPage(pageNumber: onlineSearch.pageNumberLoaded, scope: scope)
                 } else if case .failure(let error) = result {
                     guard case SearchServiceError.noInternet = error else {
-                        self.searchState = .emptyState(ErrorEmptyState())
+                        self.searchState = .emptyState(ErrorEmptyState(featureFlags: featureFlags))
                         return
                     }
                     self.searchState = .emptyState(OfflineEmptyState(type: scope))
