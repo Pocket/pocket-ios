@@ -26,12 +26,14 @@ public struct MarticleTableParts: PocketGraph.SelectionSet, Fragment {
   public init(
     html: String
   ) {
-    self.init(_dataDict: DataDict(data: [
-      "__typename": PocketGraph.Objects.MarticleTable.typename,
-      "html": html,
-      "__fulfilled": Set([
+    self.init(_dataDict: DataDict(
+      data: [
+        "__typename": PocketGraph.Objects.MarticleTable.typename,
+        "html": html,
+      ],
+      fulfilledFragments: [
         ObjectIdentifier(Self.self)
-      ])
-    ]))
+      ]
+    ))
   }
 }

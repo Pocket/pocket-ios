@@ -31,13 +31,15 @@ public struct TagParts: PocketGraph.SelectionSet, Fragment {
     name: String,
     id: PocketGraph.ID
   ) {
-    self.init(_dataDict: DataDict(data: [
-      "__typename": PocketGraph.Objects.Tag.typename,
-      "name": name,
-      "id": id,
-      "__fulfilled": Set([
+    self.init(_dataDict: DataDict(
+      data: [
+        "__typename": PocketGraph.Objects.Tag.typename,
+        "name": name,
+        "id": id,
+      ],
+      fulfilledFragments: [
         ObjectIdentifier(Self.self)
-      ])
-    ]))
+      ]
+    ))
   }
 }

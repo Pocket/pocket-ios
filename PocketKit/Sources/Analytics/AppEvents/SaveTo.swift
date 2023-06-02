@@ -38,6 +38,11 @@ public extension Events.SaveTo {
             ]
         )
     }
+
+    /// Fired when the extension was unable to find a URL to save
+    static func unableToSave() -> Event {
+        return System(type: .unableToSave, source: .saveToPocketKit)
+    }
 }
 
 public extension Events.SaveTo.Tags {

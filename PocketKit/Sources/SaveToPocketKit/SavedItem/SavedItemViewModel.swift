@@ -69,6 +69,7 @@ class SavedItemViewModel {
 
         for item in extensionItems {
             guard let url = try? await url(from: item) else {
+                tracker.track(event: Events.SaveTo.unableToSave())
                 infoViewModel = .error
                 break
             }

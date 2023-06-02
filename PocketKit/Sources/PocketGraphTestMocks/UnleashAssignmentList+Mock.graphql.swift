@@ -19,6 +19,6 @@ public extension Mock where O == UnleashAssignmentList {
     assignments: [Mock<UnleashAssignment>?]? = nil
   ) {
     self.init()
-    self.assignments = assignments
+    _set(assignments, for: \.assignments)
   }
 }

@@ -31,12 +31,12 @@ public extension Mock where O == Video {
     width: Int? = nil
   ) {
     self.init()
-    self.height = height
-    self.length = length
-    self.src = src
-    self.type = type
-    self.vid = vid
-    self.videoID = videoID
-    self.width = width
+    _set(height, for: \.height)
+    _set(length, for: \.length)
+    _set(src, for: \.src)
+    _set(type, for: \.type)
+    _set(vid, for: \.vid)
+    _set(videoID, for: \.videoID)
+    _set(width, for: \.width)
   }
 }

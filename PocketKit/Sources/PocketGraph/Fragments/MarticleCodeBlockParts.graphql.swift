@@ -31,13 +31,15 @@ public struct MarticleCodeBlockParts: PocketGraph.SelectionSet, Fragment {
     text: String,
     language: Int? = nil
   ) {
-    self.init(_dataDict: DataDict(data: [
-      "__typename": PocketGraph.Objects.MarticleCodeBlock.typename,
-      "text": text,
-      "language": language,
-      "__fulfilled": Set([
+    self.init(_dataDict: DataDict(
+      data: [
+        "__typename": PocketGraph.Objects.MarticleCodeBlock.typename,
+        "text": text,
+        "language": language,
+      ],
+      fulfilledFragments: [
         ObjectIdentifier(Self.self)
-      ])
-    ]))
+      ]
+    ))
   }
 }
