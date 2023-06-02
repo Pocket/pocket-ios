@@ -22,89 +22,92 @@ public struct ReportIssueView: View {
 
     private let email: String
     private var submitIssue: (String, String, String) -> Void
-    private let isEnabled: Bool
 
-    public init(email: String, submitIssue: @escaping (String, String, String) -> Void, isEnabled: Bool) {
+    public init(email: String, submitIssue: @escaping (String, String, String) -> Void) {
         self.email = email
         self.submitIssue = submitIssue
-        self.isEnabled = isEnabled
     }
 
     public var body: some View {
-        if isEnabled {
-            Text("Report an Issue has been disabled.")
-        } else {
-            Form {
-                Section(header: Text(Localization.ReportIssue.header)) {
-                    Text(Localization.ReportIssue.description)
-                        .style(.recommendation.textStyle)
-                        .padding([.top], Constants.padding)
-                        .listRowBackground(Color.clear)
-                }.listRowInsets(EdgeInsets())
+        Form {
+            Section(header: Text(Localization.ReportIssue.header)) {
+                Text(Localization.ReportIssue.description)
+                    .style(.recommendation.textStyle)
+                    .padding([.top], Constants.padding)
+                    .listRowBackground(Color.clear)
+            }.listRowInsets(EdgeInsets())
 
-                Section(
-                    header: ReportHeader(title: Localization.ReportIssue.email, isOptional: false)
-                ) {
-                    Text(email)
-                        .style(.recommendation.textStyle.with(color: .ui.grey5))
-                        .listRowBackground(Color.clear)
-                }.listRowInsets(EdgeInsets())
+            Section(
+                header: ReportHeader(title: Localization.ReportIssue.email, isOptional: false)
+            ) {
+                Text(email)
+                    .style(.recommendation.textStyle.with(color: .ui.grey5))
+                    .listRowBackground(Color.clear)
+            }.listRowInsets(EdgeInsets())
 
-                ReportField(
-                    userInput: $name,
-                    header: Localization.ReportIssue.name,
-                    height: Constants.defaultRowHeight
-                )
-                .accessibilityIdentifier("name-field")
+            ReportField(
+                userInput: $name,
+                header: Localization.ReportIssue.name,
+                height: Constants.defaultRowHeight
+            )
+            .accessibilityIdentifier("name-field")
 
-                Section(
-                    header: ReportHeader(title: Localization.ReportIssue.comment)
-                ) {
-                    TextEditor(text: $reportComment)
-                        .style(.recommendation.textStyle)
-                        .padding()
-                        .frame(height: Constants.commentRowHeight)
-                        .overlay(RoundedRectangle(cornerRadius: Constants.cornerRadius).strokeBorder(Color.black, style: StrokeStyle(lineWidth: Constants.lineWidth)))
-                        .accessibilityIdentifier("comment-section")
-                }.listRowInsets(EdgeInsets())
+            Section(
+                header: ReportHeader(title: Localization.ReportIssue.comment)
+            ) {
+                TextEditor(text: $reportComment)
+                    .style(.recommendation.textStyle)
+                    .padding()
+                    .frame(height: Constants.commentRowHeight)
+                    .overlay(RoundedRectangle(cornerRadius: Constants.cornerRadius).strokeBorder(Color.black, style: StrokeStyle(lineWidth: Constants.lineWidth)))
+                    .accessibilityIdentifier("comment-section")
+            }.listRowInsets(EdgeInsets())
 
-                Button(action: {
-                    submitIssue(name, email, reportComment)
-                    dismiss()
-                }) {
-                    Text(Localization.ReportIssue.SubmitIssue.title)
-                }
-                .listRowBackground(Rectangle().foregroundColor(.clear))
-                .listRowInsets(EdgeInsets())
-                .buttonStyle(PocketButtonStyle(.primary))
-                .accessibilityIdentifier("submit-issue")
+            Button(action: {
+                submitIssue(name, email, reportComment)
+                dismiss()
+            }) {
+                Text(Localization.ReportIssue.SubmitIssue.title)
             }
-            .padding([.top, .bottom], Constants.padding)
-            .formStyle(.grouped)
-            .scrollContentBackground(.hidden)
-            .background(Color.clear)
-            .accessibilityIdentifier("report-issue")
+            .listRowBackground(Rectangle().foregroundColor(.clear))
+            .listRowInsets(EdgeInsets())
+            .buttonStyle(PocketButtonStyle(.primary))
+            .accessibilityIdentifier("submit-issue")
         }
+        .padding([.top, .bottom], Constants.padding)
+        .formStyle(.grouped)
+        .scrollContentBackground(.hidden)
+        .background(Color.clear)
+        .accessibilityIdentifier("report-issue")
     }
 }
 
 struct ReportIssueView_PreviewProvider: PreviewProvider {
     static var previews: some View {
-        ReportIssueView(email: "user@email.com", submitIssue: { _, email, _ in
-            print(email)
-        }, isEnabled: true)
+        ReportIssueView(
+            email: "user@email.com",
+            submitIssue: { _, email, _ in
+                print(email)
+            }
+        )
         .previewDisplayName("Report Issue - Light")
         .preferredColorScheme(.light)
 
-        ReportIssueView(email: "user@email.com", submitIssue: { _, email, _ in
-            print(email)
-        }, isEnabled: true)
+        ReportIssueView(
+            email: "user@email.com",
+            submitIssue: { _, email, _ in
+                print(email)
+            }
+        )
         .previewDisplayName("Report Issue - Dark")
         .preferredColorScheme(.dark)
 
-        ReportIssueView(email: "user@email.com", submitIssue: { _, email, _ in
-            print(email)
-        }, isEnabled: false)
+        ReportIssueView(
+            email: "user@email.com",
+            submitIssue: { _, email, _ in
+                print(email)
+            }
+        )
         .previewDisplayName("Report Issue - Not Enabled")
         .preferredColorScheme(.light)
     }

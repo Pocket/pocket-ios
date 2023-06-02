@@ -62,7 +62,7 @@ struct LoggedOutView: View {
                 image: .accountDeleted,
                 title: Localization.Login.DeletedAccount.Banner.title,
                 detail: Localization.Login.DeletedAccount.Banner.detail,
-                action: BannerModifier.BannerData.BannerAction(
+                action: BannerAction(
                     text: Localization.Login.DeletedAccount.Banner.action,
                     style: PocketButtonStyle(.primary)
                 ) {

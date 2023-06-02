@@ -5,6 +5,10 @@
 import XCTest
 import Sails
 import NIO
+import Apollo
+import ApolloAPI
+import ApolloTestSupport
+import PocketGraphTestMocks
 
 class SearchTests: XCTestCase {
     var server: Application!
@@ -329,8 +333,8 @@ class SearchTests: XCTestCase {
     }
 
     // MARK: - Search Error State
-    func test_search_showsErrorView_andReportView() {
-        server.routes.post("/graphql") { request, eventLoop -> FutureResponse in
+    func test_search_showsErrorView() {
+        server.routes.post("/graphql") { request, eventLoop -> Response in
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isForSearch(.archive) {
                 return Response(status: .internalServerError)
@@ -344,10 +348,7 @@ class SearchTests: XCTestCase {
         let searchField = app.navigationBar.searchFields["Search"].wait()
         searchField.tap()
         searchField.typeText("item\n")
-
         app.saves.searchEmptyStateView(for: "error-empty-state").wait()
-        app.reportIssueButton.wait().tap()
-        openReportIssueView()
     }
 
     func test_search_forSaves_forPremiumUser_showsErrorBanner() {

@@ -76,7 +76,7 @@ struct ResultsView: View {
         .accessibilityIdentifier("search-results")
         .banner(data: viewModel.bannerData, show: $viewModel.showBanner, bottomOffset: 0)
         .sheet(isPresented: $viewModel.isPresentingReportIssue, content: {
-            ReportIssueView(email: viewModel.userEmail, submitIssue: viewModel.submitIssue, isEnabled: viewModel.showReportIssueView)
+            ReportIssueView(email: viewModel.userEmail, submitIssue: viewModel.submitIssue)
         })
         .alert(isPresented: $showingAlert) {
             Alert(title: Text(Localization.Search.Error.View.needsInternet), dismissButton: .default(Text("OK")))
@@ -125,11 +125,8 @@ struct SearchEmptyView: View {
                 EmptyView()
             }
         } else {
-            EmptyStateView(viewModel: viewModel) {
-                ReportIssueButton(text: "Welcome")
-            }.padding(Margins.normal.rawValue)
-//            EmptyStateView<EmptyView>(viewModel: viewModel)
-//                .padding(Margins.normal.rawValue)
+            EmptyStateView<EmptyView>(viewModel: viewModel)
+                .padding(Margins.normal.rawValue)
         }
     }
 }
@@ -156,7 +153,7 @@ struct ReportIssueButton: View {
                 .frame(maxWidth: Constants.maxWidth)
         }).buttonStyle(PocketButtonStyle(.primary))
         .sheet(isPresented: $searchViewModel.isPresentingReportIssue) {
-            ReportIssueView(email: searchViewModel.userEmail, submitIssue: searchViewModel.submitIssue, isEnabled: searchViewModel.showReportIssueView)
+            ReportIssueView(email: searchViewModel.userEmail, submitIssue: searchViewModel.submitIssue)
         }
         .accessibilityIdentifier("get-report-issue-button")
     }

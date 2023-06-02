@@ -5,6 +5,9 @@
 import SwiftUI
 import UIKit
 
+// Added for code convenience
+public typealias BannerAction = BannerModifier.BannerData.BannerAction
+
 public struct BannerModifier: ViewModifier {
     enum Constants {
         static let imageMaxWidth: CGFloat = 83
