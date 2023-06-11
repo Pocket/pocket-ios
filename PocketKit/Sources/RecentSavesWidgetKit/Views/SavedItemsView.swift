@@ -11,7 +11,8 @@ import WidgetKit
 
 /// Recent Saves widget - recent saves list view
 struct SavedItemsView: View {
-    @Environment(\.widgetFamily) private var widgetFamily
+    @Environment(\.widgetFamily)
+    private var widgetFamily
 
     let items: [SavedItemRowContent]
 
@@ -37,7 +38,8 @@ struct SavedItemsView: View {
 
 /// Recent Saves widget - saved item view
 struct SavedItemRow: View {
-    @Environment(\.widgetFamily) private var widgetFamily
+    @Environment(\.widgetFamily)
+    private var widgetFamily
 
     let title: String
     let domain: String
