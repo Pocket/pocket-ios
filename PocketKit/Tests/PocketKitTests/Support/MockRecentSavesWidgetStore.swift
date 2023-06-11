@@ -1,8 +1,16 @@
-//
-//  File.swift
-//  
-//
-//  Created by Giorgio Ruscigno on 6/11/23.
-//
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import Foundation
+import Sync
+import SharedPocketKit
+
+class MockRecentSavesWidgetStore: RecentSavesStore {
+    var isLoggedIn: Bool = false
+
+    func setLoggedIn(_ isLoggedIn: Bool) {}
+
+    var recentSaves: [SharedPocketKit.SavedItemContent] = []
+
+    func updateRecentSaves(_ items: [SharedPocketKit.SavedItemContent]) throws {}
+}
