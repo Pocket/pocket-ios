@@ -10,5 +10,6 @@ import RecentSavesWidgetKit
 struct RecentSavesWidgetBundle: WidgetBundle {
     var body: some Widget {
         RecentSavesWidget()
+        DiscoverWidget()
     }
 }

@@ -6,28 +6,23 @@ import WidgetKit
 import SwiftUI
 import Textile
 
-public struct RecentSavesWidget: Widget {
+public struct DiscoverWidget: Widget {
     let kind: String
 
     public init() {
-        self.kind = "RecentSavesWidget"
+        self.kind = "DiscoverWidget"
     }
 
     public var body: some WidgetConfiguration {
+        // TODO: Replace the provider
         StaticConfiguration(kind: kind, provider: RecentSavesProvider()) { entry in
-            RecentSavesView(entry: entry)
+            // TODO: add the actual view
+            Text("Discover Widget Coming Soon!")
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Color(.ui.homeCellBackground))
         }
-        .configurationDisplayName("Recent Saves")
-        .description("Access your most recently saved articles.")
+        .configurationDisplayName("Discover")
+        .description("Discover the most thought-provoking stories out there, curated by Pocket.")
         .supportedFamilies([.systemMedium, .systemLarge])
-    }
-}
-
-public struct RecentSavesWidget_Previews: PreviewProvider {
-    public static var previews: some View {
-        RecentSavesView(entry: RecentSavesEntry(date: Date(), contentType: .items([SavedItemRowContent(content: .placeHolder, image: nil)])))
-            .previewContext(WidgetPreviewContext(family: .systemSmall))
     }
 }
