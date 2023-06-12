@@ -70,7 +70,8 @@ class MainViewModel: ObservableObject {
                     networkPathMonitor: NWPathMonitor(),
                     userDefaults: Services.shared.userDefaults,
                     featureFlags: Services.shared.featureFlagService
-                )
+                ),
+                addSavedItemModel: AddSavedItemModel(source: Services.shared.source)
             ),
             home: HomeViewModel(
                 source: Services.shared.source,
