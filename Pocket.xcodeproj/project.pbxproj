@@ -277,6 +277,8 @@
 		AA2E890D2A0D8849004A27BD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AA2E89172A0D9391004A27BD /* libcmark-gfm.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libcmark-gfm.tbd"; path = "Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.4.sdk/usr/lib/libcmark-gfm.tbd"; sourceTree = DEVELOPER_DIR; };
 		AA69A28329B7FC6E00BBA644 /* SearchGetPremiumEmptyViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchGetPremiumEmptyViewElement.swift; sourceTree = "<group>"; };
+		AA704CB42A37C72900CE8DED /* RecentSavesWidgetDebug_AlphaNeue.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RecentSavesWidgetDebug_AlphaNeue.entitlements; sourceTree = "<group>"; };
+		AA704CB52A37C73500CE8DED /* RecentSavesWidgetRelease_AlphaNeue.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RecentSavesWidgetRelease_AlphaNeue.entitlements; sourceTree = "<group>"; };
 		AA7D6A2A2995F0A20094FD18 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.2.sdk/System/Library/Frameworks/StoreKit.framework; sourceTree = DEVELOPER_DIR; };
 		AA909AC8299EFD3A00F90FA7 /* secrets_test.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = secrets_test.xcconfig; sourceTree = "<group>"; };
 		AA909ACC299F4D5400F90FA7 /* Test_Subscriptions.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Test_Subscriptions.storekit; sourceTree = "<group>"; };
@@ -556,6 +558,8 @@
 		AA2E89062A0D8848004A27BD /* RecentSavesWidget */ = {
 			isa = PBXGroup;
 			children = (
+				AA704CB52A37C73500CE8DED /* RecentSavesWidgetRelease_AlphaNeue.entitlements */,
+				AA704CB42A37C72900CE8DED /* RecentSavesWidgetDebug_AlphaNeue.entitlements */,
 				AAE33A7F2A0ED5A600214652 /* RecentSavesWidget.entitlements */,
 				AA2E89072A0D8848004A27BD /* RecentSavesWidgetBundle.swift */,
 				AAE6AC382A13504400790E33 /* RecentSavesWidgetPreviewer.swift */,
@@ -2121,6 +2125,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = RecentSavesWidget/RecentSavesWidgetDebug_AlphaNeue.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -2136,7 +2141,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 8.0.1;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.ideashower.ReadItLaterPro.Widget-Extension";
+				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterProAlphaNeue.Widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -2185,6 +2190,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = RecentSavesWidget/RecentSavesWidgetRelease_AlphaNeue.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -2200,7 +2206,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 8.0.1;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.ideashower.ReadItLaterPro.Widget-Extension";
+				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterProAlphaNeue.Widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;

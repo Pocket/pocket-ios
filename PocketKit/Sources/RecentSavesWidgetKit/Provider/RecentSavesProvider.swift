@@ -94,10 +94,18 @@ extension RecentSavesProvider {
     /// Builds an instance of `RecentSavesWidgetService`
     /// - Returns: the instance
     private func makeService() throws -> RecentSavesWidgetService {
-        guard let defaults = UserDefaults(suiteName: "group.com.ideashower.ReadItLaterPro") else {
+        let defaults = try makeUserDefaults()
+        return RecentSavesWidgetService(store: RecentSavesWidgetStore(userDefaults: defaults))
+    }
+
+    /// Returns the shared `UserDefaults` for the given build configuration
+    private func makeUserDefaults() throws -> UserDefaults {
+        guard let info = Bundle.main.infoDictionary,
+                let groupID = info["GroupId"] as? String,
+                let defaults = UserDefaults(suiteName: groupID) else {
             throw RecentSavesProviderError.invalidStore
         }
-        return RecentSavesWidgetService(store: RecentSavesWidgetStore(userDefaults: defaults))
+        return defaults
     }
 }
 
