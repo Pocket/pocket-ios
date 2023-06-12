@@ -2073,7 +2073,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 8.0.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.RecentSavesWidget;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.ideashower.ReadItLaterPro.Widget-Extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -2105,7 +2105,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 8.0.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.RecentSavesWidget;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.ideashower.ReadItLaterPro.Widget-Extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -2136,7 +2136,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 8.0.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.RecentSavesWidget;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.ideashower.ReadItLaterPro.Widget-Extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -2168,7 +2168,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 8.0.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.RecentSavesWidget;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.ideashower.ReadItLaterPro.Widget-Extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -2200,7 +2200,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 8.0.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.RecentSavesWidget;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.ideashower.ReadItLaterPro.Widget-Extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
