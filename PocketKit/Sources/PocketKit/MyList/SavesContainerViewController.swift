@@ -90,6 +90,9 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonTapped))
+        navigationItem.rightBarButtonItem = addButton
+
         view.accessibilityIdentifier = "saves"
         select(child: viewControllers.first)
     }
@@ -101,6 +104,12 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         guard traitCollection.userInterfaceIdiom == .phone else { return .all }
         return .portrait
+    }
+
+    @objc
+    func addButtonTapped() {
+        let addItemView = UIHostingController(rootView: AddSavedItem(model: model.addSavedItemModel))
+        present(addItemView, animated: true)
     }
 
     private func resetTitleView() {
