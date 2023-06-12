@@ -26,6 +26,7 @@ public enum LegacyUserMigrationError: LoggableError {
 
 public class LegacyUserMigration {
     static let migrationKey = UserDefaults.Key.legacyUserMigration
+    static let orgTransferKey = UserDefaults.Key.orgTransferMigration
     // These are required for legacy migration as one-offs, and thus, should not be removed
     // from user defaults (since legacy user defaults are within the current app group)
     // So, you won't find these defined in UserDefaults.Key
@@ -104,19 +105,17 @@ public class LegacyUserMigration {
     @discardableResult
     public func attemptMigration(migrationWillBegin: () -> Void) throws -> Bool {
         // If we don't have a password, OR if we've already run the migration, end early.
-        guard let password = currentPassword, !previouslyRun else {
+        guard let password = currentPassword, (!previouslyRun || shouldForceForOrgTransfer) else {
             return false // If no password exists either the user never used v7 or has already migrated.
         }
 
         let userData = try decryptUserData(with: password)
         let legacyStore = try getLegacyStore(from: userData)
 
-        guard required(for: legacyStore.version) else {
+        guard required(for: legacyStore.version) || shouldForceForOrgTransfer else {
             updateUserDefaults()
             return false
         }
-
-        migrationWillBegin()
 
         guard let guid = legacyStore.guid,
               let accessToken = legacyStore.accessToken,
@@ -124,6 +123,8 @@ public class LegacyUserMigration {
         else {
             throw LegacyUserMigrationError.noSession
         }
+
+        migrationWillBegin()
 
         appSession.currentSession = Session(
             guid: guid,
@@ -142,6 +143,10 @@ public class LegacyUserMigration {
 }
 
 extension LegacyUserMigration {
+    private var shouldForceForOrgTransfer: Bool {
+        userDefaults.bool(forKey: Self.orgTransferKey) == false
+    }
+
     private var previouslyRun: Bool {
         userDefaults.bool(forKey: Self.migrationKey)
     }
@@ -149,6 +154,10 @@ extension LegacyUserMigration {
     private func updateUserDefaults() {
         if !userDefaults.bool(forKey: Self.migrationKey) {
             userDefaults.set(true, forKey: Self.migrationKey)
+        }
+
+        if !userDefaults.bool(forKey: Self.orgTransferKey) {
+            userDefaults.set(true, forKey: Self.orgTransferKey)
         }
     }
 
