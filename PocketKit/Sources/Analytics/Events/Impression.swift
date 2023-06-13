@@ -84,7 +84,7 @@ extension Impression {
     }
 
     public enum Requirement: String, Encodable {
-        case instant
-        case viewable
+        case instant // An impression triggered when a UI element is loaded by the app, but not guaranteed to be viewed by the user
+        case viewable // An impression triggered as soon as any pixel of that UI element is visible for any length of time
     }
 }

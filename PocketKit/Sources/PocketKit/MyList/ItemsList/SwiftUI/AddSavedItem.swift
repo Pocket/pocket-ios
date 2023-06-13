@@ -4,24 +4,6 @@
 
 import SwiftUI
 import Textile
-import Sync
-
-class AddSavedItemModel {
-    let source: Source
-
-    init(source: Source) {
-        self.source = source
-    }
-
-    func saveURL(_ urlString: String) -> Bool {
-        guard let url = URL(string: urlString) else {
-            return false
-        }
-
-        source.save(url: url)
-        return true
-    }
-}
 
 struct AddSavedItem: View {
     @Environment(\.dismiss) var dismiss
@@ -56,7 +38,7 @@ struct AddSavedItem: View {
                     }
                     .buttonStyle(PocketButtonStyle(.primary))
                     Button("Cancel") {
-                        dismiss()
+                        userDidDismissView()
                     }
                     .buttonStyle(PocketButtonStyle(.secondary))
                 }
@@ -65,7 +47,7 @@ struct AddSavedItem: View {
             .navigationBarItems(
                 trailing:
                 Button(action: {
-                    dismiss()
+                    userDidDismissView()
                 }) {
                     Text("Close")
                 }.accessibilityIdentifier("close")
@@ -81,6 +63,11 @@ struct AddSavedItem: View {
             return
         }
 
+        dismiss()
+    }
+
+    func userDidDismissView() {
+        model.trackUserDidDismissView()
         dismiss()
     }
 
