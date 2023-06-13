@@ -26,4 +26,22 @@ public extension Events.Saves {
             uiEntity: UiEntity(.card, identifier: "saves.card.open")
         )
     }
+
+    static func userDidOpenAddSavedItem() -> Impression {
+        Impression(
+            component: .screen,
+            requirement: .viewable,
+            uiEntity: UiEntity(.screen, identifier: "saves.addItem.open")
+        )
+    }
+
+    static func userDidDismissAddSavedItem() -> Engagement {
+        Engagement(uiEntity: UiEntity(.button, identifier: "save.addItem.dismiss"))
+    }
+
+    static func userDidSaveItem(saveSucceeded: Bool) -> Engagement {
+        let identifier = saveSucceeded ? "save.addItem.success" : "save.addItem.fail"
+        
+        return Engagement(uiEntity: UiEntity(.button, identifier: identifier))
+    }
 }
