@@ -4,6 +4,7 @@
 
 import SwiftUI
 import Textile
+import Localization
 
 struct AddSavedItem: View {
     @Environment(\.dismiss) var dismiss
@@ -19,13 +20,13 @@ struct AddSavedItem: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 50) {
-                Text("Add a URL")
+                Text(Localization.Saves.AddSavedItem.title)
                     .style(.header.sansSerif.title.with(weight: .semibold))
                 VStack {
                     URLEntryTextField()
                     if showError {
                         HStack {
-                            Text("Please enter a valid URL")
+                            Text(Localization.Saves.AddSavedItem.error)
                                 .foregroundColor(.red)
                                 .style(.header.sansSerif.p4.with(weight: .bold))
                             Spacer()
@@ -33,14 +34,16 @@ struct AddSavedItem: View {
                     }
                 }
                 VStack(spacing: 30) {
-                    Button("Save to Pocket") {
+                    Button(Localization.Saves.AddSavedItem.addButton) {
                         self.submitItem()
                     }
                     .buttonStyle(PocketButtonStyle(.primary))
-                    Button("Cancel") {
+                    .accessibilityIdentifier("add item")
+                    Button(Localization.Saves.AddSavedItem.cancel) {
                         userDidDismissView()
                     }
                     .buttonStyle(PocketButtonStyle(.secondary))
+                    .accessibilityIdentifier("cancel")
                 }
                 Spacer()
             }.padding(16)
@@ -49,7 +52,7 @@ struct AddSavedItem: View {
                 Button(action: {
                     userDidDismissView()
                 }) {
-                    Text("Close")
+                    Text(Localization.Saves.AddSavedItem.close)
                 }.accessibilityIdentifier("close")
             )
         }
