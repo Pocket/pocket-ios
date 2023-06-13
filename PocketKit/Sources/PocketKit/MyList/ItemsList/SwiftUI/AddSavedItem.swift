@@ -86,7 +86,7 @@ struct AddSavedItem: View {
             }
         })
 
-        return TextField("e.g. www.mozilla.com", text: binding)
+        return TextField(Localization.Saves.AddSavedItem.placeholder, text: binding)
             .textFieldStyle(.roundedBorder)
             .keyboardType(.URL)
             .textContentType(.URL)
