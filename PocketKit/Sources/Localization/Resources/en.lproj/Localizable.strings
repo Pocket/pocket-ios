@@ -80,6 +80,12 @@
 //Saves
 "saves.empty.header" = "Start building your Pocket list";
 "saves.empty.button" = "How to save";
+// - Add Saved Item
+"saves.addSavedItem.title" = "Add a URL";
+"saves.addSavedItem.error" = "Please enter a valid URL";
+"saves.addSavedItem.addButton" = "Save to Pocket";
+"saves.addSavedItem.cancel" = "Cancel";
+"saves.addSavedItem.close" = "Close";
 
 // Search
 "search.errorMessage" = "We’re experiencing an error and temporarily can’t get you what you need. Please try again later.";
