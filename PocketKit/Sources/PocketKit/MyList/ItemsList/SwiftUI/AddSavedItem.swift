@@ -39,6 +39,7 @@ struct AddSavedItem: View {
                     }
                     .buttonStyle(PocketButtonStyle(.primary))
                     .accessibilityIdentifier("add item")
+
                     Button(Localization.Saves.AddSavedItem.cancel) {
                         userDidDismissView()
                     }
@@ -46,7 +47,8 @@ struct AddSavedItem: View {
                     .accessibilityIdentifier("cancel")
                 }
                 Spacer()
-            }.padding(16)
+            }
+            .padding(16)
             .navigationBarItems(
                 trailing:
                 Button(action: {
