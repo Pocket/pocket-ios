@@ -15,8 +15,6 @@ final class AddSavedItemModelTests: XCTestCase {
 
     func test_URLParsing() {
         let sut = subject()
-        let goodURLs: [String] = ["www.mozilla.com", "mozilla.co.uk", "https://mozilla.ca", "http://www.mozilla.co.jp"]
-        let badURLs: [String] = ["not a real URL", "www. almost a real url .com", "fdsa$%#Q$%#fds%$#@FDs543"]
         var saveCount: Int = 0
 
         source.stubSaveURL { _ in
@@ -35,5 +33,21 @@ final class AddSavedItemModelTests: XCTestCase {
         }
 
         XCTAssertTrue(saveCount == 0)
+    }
+
+    private var goodURLs: [String] {
+        ["www.mozilla.com",
+         "mozilla.co.uk",
+         "https://mozilla.ca",
+         "http://www.mozilla.co.jp",
+         "https://getpocket.com/example?premium_user=true",
+         "https://getpocket.com/example?utm_source=foo&otherParam=some%20Encoded%20String"]
+    }
+
+    private var badURLs: [String] {
+        ["not a real URL",
+         "www. almost a real url .com",
+         "fdsa$%#Q$%#fds%$#@FDs543",
+         "https://getpocket.com/example?utm_source=things started off pretty good!"]
     }
 }
