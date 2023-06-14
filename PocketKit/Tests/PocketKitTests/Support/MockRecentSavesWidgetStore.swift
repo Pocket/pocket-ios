@@ -10,7 +10,7 @@ class MockRecentSavesWidgetStore: RecentSavesStore {
 
     func setLoggedIn(_ isLoggedIn: Bool) {}
 
-    var recentSaves: [SharedPocketKit.SavedItemContent] = []
+    var recentSaves: [SharedPocketKit.ItemContent] = []
 
-    func updateRecentSaves(_ items: [SharedPocketKit.SavedItemContent]) throws {}
+    func updateRecentSaves(_ items: [SharedPocketKit.ItemContent]) throws {}
 }

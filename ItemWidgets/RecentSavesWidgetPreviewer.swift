@@ -4,7 +4,7 @@
 
 import WidgetKit
 import SwiftUI
-import RecentSavesWidgetKit
+import ItemWidgetsKit
 
 struct RecentSavesWidgetPreviewer: PreviewProvider {
     public static var previews: some View {

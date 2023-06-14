@@ -21,7 +21,7 @@ let package = Package(
         .library(name: "Analytics", targets: ["Analytics"]),
         .library(name: "Localization", targets: ["Localization"]),
         .library(name: "PKTListen", targets: ["PKTListen"]),
-        .library(name: "RecentSavesWidgetKit", targets: ["RecentSavesWidgetKit"])
+        .library(name: "ItemWidgetsKit", targets: ["ItemWidgetsKit"])
     ],
     dependencies: [
         .package(url: "https://github.com/apollographql/apollo-ios.git", exact: "1.2.0"),
@@ -41,7 +41,7 @@ let package = Package(
             url: "https://github.com/Pocket/pocket-ios/releases/download/release%2Fv8.0.1.24700/PKTListen.xcframework.zip",
             checksum: "0e21242b5cdadf2da674de811476910a89b7046bd2f1282d23193695d9e61a05"
         ),
-        .target(name: "RecentSavesWidgetKit", dependencies: [
+        .target(name: "ItemWidgetsKit", dependencies: [
             "Analytics",
             "Localization",
             "SharedPocketKit",

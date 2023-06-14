@@ -5,8 +5,8 @@
 import Foundation
 import Localization
 
-/// Type representing the content of a Core Data `SavedItem`.
-public struct SavedItemContent: Codable, Equatable {
+/// Type representing the content of a Core Data `Item`.
+public struct ItemContent: Codable, Equatable {
     public let url: String
     public let title: String
     public let imageUrl: String?
@@ -44,9 +44,9 @@ public struct SavedItemContent: Codable, Equatable {
     }
 }
 
-extension SavedItemContent {
+extension ItemContent {
     /// Return a placeholder saved item
-    public static var placeHolder: SavedItemContent {
-        SavedItemContent(url: "https://getpocket.com", title: "Pocket Widget", imageUrl: nil, bestDomain: "", timeToRead: nil)
+    public static var placeHolder: ItemContent {
+        ItemContent(url: "https://getpocket.com", title: "Pocket Widget", imageUrl: nil, bestDomain: "", timeToRead: nil)
     }
 }
