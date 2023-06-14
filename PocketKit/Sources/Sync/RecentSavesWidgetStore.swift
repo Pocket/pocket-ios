@@ -20,15 +20,11 @@ public protocol RecentSavesStore {
 
 /// A concrete implementation of `RecentSavesStore` used for the recent saves widget
 public struct RecentSavesWidgetStore: RecentSavesStore {
-    private static let isLoggedInKey = "RecentSavesWidgetLoggedInKey"
-    private static let recentSavesKey = "RecentSavesWidgetKey"
-    private static let groupID = "group.com.ideashower.ReadItLaterPro"
-
     private var defaults: UserDefaults
 
     /// Current recent saves list
     public var recentSaves: [ItemContent] {
-        guard let encodedSaves = defaults.object(forKey: Self.recentSavesKey) as? Data,
+        guard let encodedSaves = defaults.object(forKey: .recentSavesWidget) as? Data,
                 let saves = try? JSONDecoder().decode([ItemContent].self, from: encodedSaves) else {
             return []
         }
@@ -37,7 +33,7 @@ public struct RecentSavesWidgetStore: RecentSavesStore {
 
     /// Current logged in status
     public var isLoggedIn: Bool {
-        defaults.bool(forKey: Self.isLoggedInKey)
+        defaults.bool(forKey: .widgetsLoggedIn)
     }
 
     public init(userDefaults: UserDefaults) {
@@ -48,13 +44,13 @@ public struct RecentSavesWidgetStore: RecentSavesStore {
     /// - Parameter items: the given list
     public func updateRecentSaves(_ items: [ItemContent]) throws {
         let encodedList = try JSONEncoder().encode(items)
-        defaults.setValue(encodedList, forKey: Self.recentSavesKey)
+        defaults.setValue(encodedList, forKey: .recentSavesWidget)
     }
 
     /// Sets the logged in status
     /// - Parameter isLoggedIn: the logged in status to set
     public func setLoggedIn(_ isLoggedIn: Bool) {
-        defaults.setValue(isLoggedIn, forKey: Self.isLoggedInKey)
+        defaults.setValue(isLoggedIn, forKey: .widgetsLoggedIn)
     }
 }
 

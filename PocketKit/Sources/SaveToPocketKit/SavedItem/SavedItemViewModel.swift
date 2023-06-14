@@ -94,10 +94,6 @@ class SavedItemViewModel {
         }
     }
 
-    func reloadRecentSavesWidget() {
-        let recentSavesWidgetUpdateService = RecentSavesWidgetUpdateService(store: RecentSavesWidgetStore(userDefaults: userDefaults))
-    }
-
     func showAddTagsView(from context: ExtensionContext?) {
         if let url = savedItem?.url {
             tracker.track(event: Events.SaveTo.addTagsEngagement(url: url))

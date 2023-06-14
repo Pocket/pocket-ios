@@ -31,6 +31,8 @@ public extension UserDefaults {
         case userEmail = "User.email"
         case userId = "User.userId"
         case startingAppSection = "MainViewModel.StartingAppSection"
+        case widgetsLoggedIn = "RecentSavesWidgetLoggedInKey"
+        case recentSavesWidget = "RecentSavesWidgetKey"
 
         var isRemovable: Bool {
             switch self {
