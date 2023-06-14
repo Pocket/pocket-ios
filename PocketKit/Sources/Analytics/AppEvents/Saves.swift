@@ -36,11 +36,11 @@ public extension Events.Saves {
     }
 
     static func userDidDismissAddSavedItem() -> Engagement {
-        Engagement(uiEntity: UiEntity(.button, identifier: "save.addItem.dismiss"))
+        Engagement(uiEntity: UiEntity(.button, identifier: "saves.addItem.dismiss"))
     }
 
     static func userDidSaveItem(saveSucceeded: Bool) -> Engagement {
-        let identifier = saveSucceeded ? "save.addItem.success" : "save.addItem.fail"
+        let identifier = saveSucceeded ? "saves.addItem.success" : "saves.addItem.fail"
 
         return Engagement(uiEntity: UiEntity(.button, identifier: identifier))
     }
