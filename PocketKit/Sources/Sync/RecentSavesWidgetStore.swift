@@ -75,7 +75,7 @@ public struct RecentSavesWidgetService {
         return limit > 0 ? Array(saves.prefix(min(saves.count, limit))) : saves
     }
 
-    /// True if the user is logged in, false otherwise
+    /// True if the user is logged in
     public var isLoggedIn: Bool {
         store.isLoggedIn
     }
