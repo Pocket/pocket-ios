@@ -29,6 +29,7 @@ struct AddSavedItem: View {
                             Text(Localization.Saves.AddSavedItem.error)
                                 .foregroundColor(.red)
                                 .style(.header.sansSerif.p4.with(weight: .bold))
+                                .accessibilityIdentifier("error_message")
                             Spacer()
                         }
                     }

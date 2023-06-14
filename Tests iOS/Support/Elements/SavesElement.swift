@@ -23,6 +23,10 @@ struct SavesElement: PocketUIElement {
         SearchViewElement(element.otherElements["search-view"])
     }
 
+    var addSavedItem: AddSavedItemElement {
+        AddSavedItemElement(element)
+    }
+
     private var collectionView: XCUIElement {
         element.otherElements["saves"].collectionViews.firstMatch
     }
@@ -42,6 +46,10 @@ struct SavesElement: PocketUIElement {
                 "topic-chip"
             )
         ).containing(.staticText, identifier: type).element(boundBy: 0)
+    }
+
+    func addSavedItemButton() -> XCUIElement {
+        element.buttons["add_saved_item_button"]
     }
 
     func selectedTagChip(for tag: String) -> XCUIElement {

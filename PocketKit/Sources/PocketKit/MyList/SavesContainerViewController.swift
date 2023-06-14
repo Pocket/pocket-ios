@@ -91,6 +91,7 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
         super.viewDidLoad()
 
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonTapped))
+        addButton.accessibilityIdentifier = "add_saved_item_button"
         navigationItem.rightBarButtonItem = addButton
 
         view.accessibilityIdentifier = "saves"
