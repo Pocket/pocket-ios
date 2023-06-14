@@ -6,15 +6,15 @@ import SharedPocketKit
 import SwiftUI
 import WidgetKit
 
-struct RecentSavesEntry: TimelineEntry {
+struct ItemsListEntry: TimelineEntry {
     let date: Date
-    let contentType: RecentSavesContentType
+    let contentType: ItemsListContentType
 }
 
 /// Determines which type of content to display in the Recent Saves widget.
-enum RecentSavesContentType {
+enum ItemsListContentType {
     case empty
     case loggedOut
     case error
-    case items([SavedItemRowContent])
+    case items([ItemRowContent])
 }

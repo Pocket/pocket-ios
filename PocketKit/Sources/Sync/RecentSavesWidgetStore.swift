@@ -14,8 +14,8 @@ enum RecentSavesStoreError: Error {
 public protocol RecentSavesStore {
     var isLoggedIn: Bool { get }
     func setLoggedIn(_ isLoggedIn: Bool)
-    var recentSaves: [SavedItemContent] { get }
-    func updateRecentSaves(_ items: [SavedItemContent]) throws
+    var recentSaves: [ItemContent] { get }
+    func updateRecentSaves(_ items: [ItemContent]) throws
 }
 
 /// A concrete implementation of `RecentSavesStore` used for the recent saves widget
@@ -27,9 +27,9 @@ public struct RecentSavesWidgetStore: RecentSavesStore {
     private var defaults: UserDefaults
 
     /// Current recent saves list
-    public var recentSaves: [SavedItemContent] {
+    public var recentSaves: [ItemContent] {
         guard let encodedSaves = defaults.object(forKey: Self.recentSavesKey) as? Data,
-                let saves = try? JSONDecoder().decode([SavedItemContent].self, from: encodedSaves) else {
+                let saves = try? JSONDecoder().decode([ItemContent].self, from: encodedSaves) else {
             return []
         }
         return saves
@@ -46,7 +46,7 @@ public struct RecentSavesWidgetStore: RecentSavesStore {
 
     /// Update the recent saves list with the given list
     /// - Parameter items: the given list
-    public func updateRecentSaves(_ items: [SavedItemContent]) throws {
+    public func updateRecentSaves(_ items: [ItemContent]) throws {
         let encodedList = try JSONEncoder().encode(items)
         defaults.setValue(encodedList, forKey: Self.recentSavesKey)
     }
@@ -70,7 +70,7 @@ public struct RecentSavesWidgetService {
     /// if limit is `0`, the full list is returned
     /// - Parameter limit: the specified limit
     /// - Returns: the list of items
-    public func getRecentSaves(limit: Int) -> [SavedItemContent] {
+    public func getRecentSaves(limit: Int) -> [ItemContent] {
         let saves = store.recentSaves
         return limit > 0 ? Array(saves.prefix(min(saves.count, limit))) : saves
     }
@@ -97,11 +97,11 @@ public struct RecentSavesWidgetUpdateService {
     public func setRecentSaves(_ items: [SavedItem]) {
         savesUpdateQueue.async {
             let saves = items.map {
-                SavedItemContent(url: $0.url.absoluteString,
-                                 title: $0.item?.title ?? $0.url.absoluteString,
-                                 imageUrl: $0.item?.topImageURL?.absoluteString,
-                                 bestDomain: $0.item?.domainMetadata?.name ?? $0.item?.domain ?? $0.url.host ?? "",
-                                 timeToRead: ($0.item?.timeToRead) != nil ? Int(truncating: ($0.item?.timeToRead)!) : nil)
+                ItemContent(url: $0.url.absoluteString,
+                            title: $0.item?.title ?? $0.url.absoluteString,
+                            imageUrl: $0.item?.topImageURL?.absoluteString,
+                            bestDomain: $0.item?.domainMetadata?.name ?? $0.item?.domain ?? $0.url.host ?? "",
+                            timeToRead: ($0.item?.timeToRead) != nil ? Int(truncating: ($0.item?.timeToRead)!) : nil)
             }
             // avoid triggering widget updates if stored data did not change
             guard store.recentSaves != saves else {

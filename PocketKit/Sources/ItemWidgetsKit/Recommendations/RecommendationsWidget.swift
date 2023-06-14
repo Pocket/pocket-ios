@@ -6,7 +6,7 @@ import WidgetKit
 import SwiftUI
 import Textile
 
-public struct DiscoverWidget: Widget {
+public struct RecommendationsWidget: Widget {
     let kind: String
 
     public init() {

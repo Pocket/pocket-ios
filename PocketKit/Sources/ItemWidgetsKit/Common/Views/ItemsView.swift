@@ -9,35 +9,47 @@ import SwiftUI
 import Textile
 import WidgetKit
 
-/// Recent Saves widget - recent saves list view
-struct SavedItemsView: View {
+/// Header for an item widget
+struct ItemsHeader: View {
+    let title: AttributedString
+
+    var body: some View {
+        HStack {
+            Text(title)
+            Spacer()
+            Image(asset: .saved)
+                .resizable()
+                .foregroundColor(Color(.ui.coral2))
+                .frame(width: 16, height: 14, alignment: .center)
+        }
+    }
+}
+
+/// Item widgets - list view
+struct ItemsView: View {
     @Environment(\.widgetFamily)
     private var widgetFamily
 
-    let items: [SavedItemRowContent]
+    let items: [ItemRowContent]
 
     var body: some View {
         VStack(alignment: .leading) {
-            Text(AttributedString(NSAttributedString(string: Localization.Widgets.RecentSaves.title, style: .widgetHeader(for: widgetFamily))))
-                .padding(.leading, 16)
-                .padding(.trailing, 16)
+            ItemsHeader(title: AttributedString(NSAttributedString(string: Localization.Widgets.RecentSaves.title, style: .widgetHeader(for: widgetFamily))))
                 .padding(.bottom, Size.bottomHeaderPadding(for: widgetFamily))
             ForEach(items) { entry in
-                SavedItemRow(title: entry.content.title.isEmpty ? entry.content.url : entry.content.title,
-                             domain: entry.content.bestDomain,
-                             readingTime: entry.content.readingTime,
-                             image: entry.image)
+                ItemRow(title: entry.content.title.isEmpty ? entry.content.url : entry.content.title,
+                        domain: entry.content.bestDomain,
+                        readingTime: entry.content.readingTime,
+                        image: entry.image)
                 .padding(.top, Size.cellPadding(for: widgetFamily))
                 .padding(.bottom, Size.cellPadding(for: widgetFamily))
-                .padding(.leading, 16)
-                .padding(.trailing, 16)
             }
         }
     }
 }
 
 /// Recent Saves widget - saved item view
-struct SavedItemRow: View {
+struct ItemRow: View {
     @Environment(\.widgetFamily)
     private var widgetFamily
 
@@ -105,7 +117,7 @@ private extension Style {
 }
 
 // MARK: formatting
-private extension SavedItemsView {
+private extension ItemsView {
     enum Size {
         static func cellPadding(for family: WidgetFamily) -> CGFloat {
             switch family {

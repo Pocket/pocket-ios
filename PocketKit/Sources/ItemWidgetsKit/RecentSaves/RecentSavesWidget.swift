@@ -15,19 +15,34 @@ public struct RecentSavesWidget: Widget {
 
     public var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: RecentSavesProvider()) { entry in
-            RecentSavesView(entry: entry)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color(.ui.homeCellBackground))
+            makeRecentSavesView(entry: entry)
         }
         .configurationDisplayName("Recent Saves")
         .description("Access your most recently saved articles.")
         .supportedFamilies([.systemMedium, .systemLarge])
     }
+
+    @ViewBuilder
+    private func makeRecentSavesView(entry: RecentSavesProvider.Entry) -> some View {
+        if #available(iOS 17.0, *) {
+            ItemsListView(entry: entry)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .containerBackground(for: .widget) {
+                    Color(.ui.homeCellBackground)
+                }
+        } else {
+            ItemsListView(entry: entry)
+                .padding(.leading, 16)
+                .padding(.trailing, 16)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color(.ui.homeCellBackground))
+        }
+    }
 }
 
 public struct RecentSavesWidget_Previews: PreviewProvider {
     public static var previews: some View {
-        RecentSavesView(entry: RecentSavesEntry(date: Date(), contentType: .items([SavedItemRowContent(content: .placeHolder, image: nil)])))
+        ItemsListView(entry: ItemsListEntry(date: Date(), contentType: .items([ItemRowContent(content: .placeHolder, image: nil)])))
             .previewContext(WidgetPreviewContext(family: .systemSmall))
     }
 }

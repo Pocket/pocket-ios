@@ -8,24 +8,24 @@ import SwiftUI
 import Textile
 
 /// Main view of the Recent Saves widget
-struct RecentSavesView: View {
+struct ItemsListView: View {
     /// The list of saved items to be displayed
-    let entry: RecentSavesProvider.Entry
+    let entry: ItemsListEntry
 
     var body: some View {
         if case let .items(items) = entry.contentType {
-            SavedItemsView(items: items)
+            ItemsView(items: items)
         } else {
             makeEmptyContentView(entry.contentType)
         }
     }
 
-    private func makeEmptyContentView(_ contentType: RecentSavesContentType) -> some View {
+    private func makeEmptyContentView(_ contentType: ItemsListContentType) -> some View {
         Text(emptyContentMessage(contentType))
         // TODO: add formatting and colors
     }
 
-    private func emptyContentMessage(_ contentType: RecentSavesContentType) -> String {
+    private func emptyContentMessage(_ contentType: ItemsListContentType) -> String {
         switch contentType {
         case .empty:
             return Localization.Widgets.RecentSaves.emptyMessage

@@ -4,12 +4,12 @@
 
 import WidgetKit
 import SwiftUI
-import RecentSavesWidgetKit
+import ItemWidgetsKit
 
 @main
-struct RecentSavesWidgetBundle: WidgetBundle {
+struct ItemWidgetsBundle: WidgetBundle {
     var body: some Widget {
         RecentSavesWidget()
-        DiscoverWidget()
+        RecommendationsWidget()
     }
 }

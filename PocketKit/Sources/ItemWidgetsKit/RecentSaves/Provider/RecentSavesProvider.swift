@@ -13,40 +13,40 @@ enum RecentSavesProviderError: Error {
 
 /// Timeline provider for the recent saves widget
 struct RecentSavesProvider: TimelineProvider {
-    func placeholder(in context: Context) -> RecentSavesEntry {
-        RecentSavesEntry(date: Date(), contentType: .items([SavedItemRowContent(content: .placeHolder, image: nil)]))
+    func placeholder(in context: Context) -> ItemsListEntry {
+        ItemsListEntry(date: Date(), contentType: .items([ItemRowContent(content: .placeHolder, image: nil)]))
     }
 
-    func getSnapshot(in context: Context, completion: @escaping (RecentSavesEntry) -> Void) {
+    func getSnapshot(in context: Context, completion: @escaping (ItemsListEntry) -> Void) {
         do {
             let service = try makeService()
             // logged out
             guard service.isLoggedIn else {
-                completion(RecentSavesEntry(date: Date(), contentType: .loggedOut))
+                completion(ItemsListEntry(date: Date(), contentType: .loggedOut))
                 return
             }
             let saves = service.getRecentSaves(limit: numberOfItems(for: context.family))
             // empty result
             guard !saves.isEmpty else {
-                completion(RecentSavesEntry(date: Date(), contentType: .empty))
+                completion(ItemsListEntry(date: Date(), contentType: .empty))
                 return
             }
             Task {
                 let contentWithImages = await getContentWithImages(content: saves)
-                completion(RecentSavesEntry(date: Date(), contentType: .items(contentWithImages)))
+                completion(ItemsListEntry(date: Date(), contentType: .items(contentWithImages)))
             }
         } catch {
             Log.capture(message: "Recent Saves widget: unable to initialize service - \(error)")
-            completion(RecentSavesEntry(date: Date(), contentType: .error))
+            completion(ItemsListEntry(date: Date(), contentType: .error))
         }
     }
 
-    func getTimeline(in context: Context, completion: @escaping (Timeline<RecentSavesEntry>) -> Void) {
+    func getTimeline(in context: Context, completion: @escaping (Timeline<ItemsListEntry>) -> Void) {
         do {
             let service = try makeService()
             // logged out
             guard service.isLoggedIn else {
-                let entries = [RecentSavesEntry(date: Date(), contentType: .loggedOut)]
+                let entries = [ItemsListEntry(date: Date(), contentType: .loggedOut)]
                 let timeline = Timeline(entries: entries, policy: .never)
                 completion(timeline)
                 return
@@ -54,20 +54,20 @@ struct RecentSavesProvider: TimelineProvider {
             let saves = service.getRecentSaves(limit: numberOfItems(for: context.family))
             // empty result
             guard !saves.isEmpty else {
-                let entries = [RecentSavesEntry(date: Date(), contentType: .empty)]
+                let entries = [ItemsListEntry(date: Date(), contentType: .empty)]
                 let timeline = Timeline(entries: entries, policy: .never)
                 completion(timeline)
                 return
             }
             Task {
                 let contentWithImages = await getContentWithImages(content: saves)
-                let entriesWithImages = [RecentSavesEntry(date: Date(), contentType: .items(contentWithImages))]
+                let entriesWithImages = [ItemsListEntry(date: Date(), contentType: .items(contentWithImages))]
                 let timeline = Timeline(entries: entriesWithImages, policy: .never)
                 completion(timeline)
             }
         } catch {
             Log.capture(message: "Recent Saves widget: unable to initialize service - \(error)")
-            let timeline = Timeline(entries: [RecentSavesEntry(date: Date(), contentType: .error)], policy: .never)
+            let timeline = Timeline(entries: [ItemsListEntry(date: Date(), contentType: .error)], policy: .never)
             completion(timeline)
         }
     }
@@ -117,8 +117,8 @@ extension RecentSavesProvider {
     /// Download thumbnails, attach them to the related item and return the updated list of recent `[SavedItemRowContent]`
     /// - Parameter content: the recent saves without thumbnails `[SavedItemContent]`
     /// - Returns: the updated list
-    private func getContentWithImages(content: [SavedItemContent]) async -> [SavedItemRowContent] {
-        return await withTaskGroup(of: SavedItemRowContent.self, returning: [SavedItemRowContent].self) { taskGroup in
+    private func getContentWithImages(content: [ItemContent]) async -> [ItemRowContent] {
+        return await withTaskGroup(of: ItemRowContent.self, returning: [ItemRowContent].self) { taskGroup in
             content.forEach { item in
                     taskGroup.addTask {
                         await downloadImage(for: item)
@@ -126,7 +126,7 @@ extension RecentSavesProvider {
             }
             // we need to update the content in the existing order,
             // because we don't know when each task will complete.
-            let orderedContent = content.map { SavedItemRowContent(content: $0, image: nil) }
+            let orderedContent = content.map { ItemRowContent(content: $0, image: nil) }
             return await taskGroup.reduce(into: orderedContent) { orderedContent, item in
                 if let index = orderedContent.firstIndex(where: { $0.content == item.content }) {
                     orderedContent[index] = item
@@ -138,19 +138,19 @@ extension RecentSavesProvider {
     /// Downloads the thumbnail for a given `SavedItemRowContent` item
     /// - Parameter item: the given item
     /// - Returns: the updated item with the downloaded image, or the original content, if no thumbnail was found.
-    private func downloadImage(for item: SavedItemContent) async -> SavedItemRowContent {
+    private func downloadImage(for item: ItemContent) async -> ItemRowContent {
         guard let imageUrl = item.imageUrl, let url = URL(string: imageUrl) else {
-            return SavedItemRowContent(content: item, image: nil)
+            return ItemRowContent(content: item, image: nil)
         }
         do {
             let (data, _) = try await URLSession.shared.data(from: bestURL(for: url))
             guard let uiImage = UIImage(data: data) else {
-                return SavedItemRowContent(content: item, image: nil)
+                return ItemRowContent(content: item, image: nil)
             }
-            return SavedItemRowContent(content: item, image: Image(uiImage: uiImage))
+            return ItemRowContent(content: item, image: Image(uiImage: uiImage))
         } catch {
             Log.capture(message: "Recent Saves widget: unable to download thumbnail - \(error)")
-            return SavedItemRowContent(content: item, image: nil)
+            return ItemRowContent(content: item, image: nil)
         }
     }
 
