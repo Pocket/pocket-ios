@@ -89,14 +89,14 @@ class SearchViewModel: ObservableObject {
             image: .warning,
             title: Localization.Search.limitedResults,
             detail: Localization.Search.Banner.errorMessage,
-            action: reportButton(with: featureFlags)
+            action: reportButton()
         )
         return isOffline ? offlineView : errorView
     }
 
     /// Handles whether to show a report button for a banner
-    private func reportButton(with featureFlagsService: FeatureFlagServiceProtocol) -> BannerAction? {
-        if featureFlagsService.isAssigned(flag: .reportIssue) {
+    private func reportButton() -> BannerAction? {
+        if featureFlags.isAssigned(flag: .reportIssue) {
             return BannerAction(
                 text: Localization.General.Error.sendReport,
                 style: PocketButtonStyle(.primary, .small)
