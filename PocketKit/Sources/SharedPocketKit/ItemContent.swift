@@ -25,7 +25,7 @@ public struct ItemContent: Codable, Equatable {
         self.timeToRead = timeToRead
     }
 
-    /// Humanly readable reading time, if `timeToRead` is not nil and greater than zero
+    /// Human-readable reading time, if `timeToRead` is not nil and greater than zero
     public var readingTime: String? {
             guard let timeToRead,
                   timeToRead > 0 else {
