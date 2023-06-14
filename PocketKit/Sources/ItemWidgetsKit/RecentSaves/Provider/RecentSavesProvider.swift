@@ -112,7 +112,7 @@ extension RecentSavesProvider {
 // MARK: download thumbnails
 extension RecentSavesProvider {
     /// Default size for downloaded thumbnails
-    static let defaultThumbnailSize = CGSize(width: 48, height: 36)
+    static let defaultThumbnailSize = CGSize(width: 80, height: 48)
 
     /// Download thumbnails, attach them to the related item and return the updated list of recent `[SavedItemRowContent]`
     /// - Parameter content: the recent saves without thumbnails `[SavedItemContent]`
@@ -157,9 +157,15 @@ extension RecentSavesProvider {
     /// Returns the CDN URL to download an image of a given size
     /// - Parameters:
     ///   - url: the original url
-    ///   - size: the given size
+    ///   - size: the given size. Defaults to 3 times the provider default size, to ensure a slightly higher resolution for better image quality
     /// - Returns: the CDN URL or the original URL, if no CDN URL was found
-    private func bestURL(for url: URL, size: CGSize = Self.defaultThumbnailSize) -> URL {
+    private func bestURL(
+        for url: URL,
+        size: CGSize = CGSize(
+            width: Self.defaultThumbnailSize.width * 3,
+            height: Self.defaultThumbnailSize.height * 3
+        )
+    ) -> URL {
         let builder = CDNURLBuilder()
         return builder.imageCacheURL(for: url, size: size) ?? url
     }

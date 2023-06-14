@@ -11,16 +11,25 @@ import WidgetKit
 
 /// Header for an item widget
 struct ItemsHeader: View {
-    let title: AttributedString
+    @Environment(\.widgetFamily)
+    private var widgetFamily
+
+    let title: String
+
+    var attributedTitle: AttributedString {
+        AttributedString(NSAttributedString(string: title, style: .widgetHeader(for: widgetFamily)))
+    }
 
     var body: some View {
-        HStack {
-            Text(title)
+        HStack(alignment: .top) {
+            Text(attributedTitle)
             Spacer()
             Image(asset: .saved)
                 .resizable()
                 .foregroundColor(Color(.ui.coral2))
-                .frame(width: 16, height: 14, alignment: .center)
+                .frame(width: ItemsView.Size.logoSize(for: widgetFamily).width,
+                       height: ItemsView.Size.logoSize(for: widgetFamily).height,
+                       alignment: .center)
         }
     }
 }
@@ -34,8 +43,7 @@ struct ItemsView: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            ItemsHeader(title: AttributedString(NSAttributedString(string: Localization.Widgets.RecentSaves.title, style: .widgetHeader(for: widgetFamily))))
-                .padding(.bottom, Size.bottomHeaderPadding(for: widgetFamily))
+            ItemsHeader(title: Localization.Widgets.RecentSaves.title)
             ForEach(items) { entry in
                 ItemRow(title: entry.content.title.isEmpty ? entry.content.url : entry.content.title,
                         domain: entry.content.bestDomain,
@@ -79,14 +87,17 @@ struct ItemRow: View {
 
 /// Recent Saves widget - saved item thumbnail
 struct ItemThumbnail: View {
+    @Environment(\.widgetFamily)
+    private var widgetFamily
+
     let image: Image
 
     var body: some View {
         image
             .resizable()
             .frame(
-                width: RecentSavesProvider.defaultThumbnailSize.width,
-                height: RecentSavesProvider.defaultThumbnailSize.height
+                width: ItemsView.Size.thumbnailSize(for: widgetFamily).width,
+                height: ItemsView.Size.thumbnailSize(for: widgetFamily).height
             )
             .cornerRadius(8)
     }
@@ -136,6 +147,29 @@ private extension ItemsView {
                 return 4
             default:
                 return 0
+            }
+        }
+
+        static func logoSize( for family: WidgetFamily) -> CGSize {
+            switch family {
+            case .systemLarge:
+                return CGSize(width: 18, height: 16)
+            case .systemMedium:
+                return CGSize(width: 16, height: 14)
+            default:
+                return .zero
+            }
+        }
+
+        static func thumbnailSize( for family: WidgetFamily) -> CGSize {
+            switch family {
+            case .systemLarge:
+                return RecentSavesProvider.defaultThumbnailSize
+            case .systemMedium:
+                return CGSize(width: RecentSavesProvider.defaultThumbnailSize.width * 0.8,
+                              height: RecentSavesProvider.defaultThumbnailSize.height * 0.8)
+            default:
+                return .zero
             }
         }
     }
