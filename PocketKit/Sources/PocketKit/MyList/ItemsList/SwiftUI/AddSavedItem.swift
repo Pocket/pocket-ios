@@ -38,13 +38,13 @@ struct AddSavedItem: View {
                         self.submitItem()
                     }
                     .buttonStyle(PocketButtonStyle(.primary))
-                    .accessibilityIdentifier("add item")
+                    .accessibilityIdentifier("add_item_button")
 
                     Button(Localization.Saves.AddSavedItem.cancel) {
                         userDidDismissView()
                     }
                     .buttonStyle(PocketButtonStyle(.secondary))
-                    .accessibilityIdentifier("cancel")
+                    .accessibilityIdentifier("cancel_button")
                 }
                 Spacer()
             }
@@ -55,7 +55,7 @@ struct AddSavedItem: View {
                     userDidDismissView()
                 }) {
                     Text(Localization.Saves.AddSavedItem.close)
-                }.accessibilityIdentifier("close")
+                }.accessibilityIdentifier("close_button")
             )
         }
     }
@@ -94,7 +94,7 @@ struct AddSavedItem: View {
             .textInputAutocapitalization(.never)
             .onSubmit {
                 self.submitItem()
-            }
+            }.accessibilityIdentifier("url_textfield")
     }
 }
 
