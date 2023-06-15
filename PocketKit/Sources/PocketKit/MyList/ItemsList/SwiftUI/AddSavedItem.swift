@@ -98,9 +98,3 @@ struct AddSavedItem: View {
             }.accessibilityIdentifier("url_textfield")
     }
 }
-
-// struct AddSavedItem_Preview: PreviewProvider {
-//    static var previews: some View {
-//        AddSavedItem(model: AddSavedItemModel(source: MockSource()))
-//    }
-// }
