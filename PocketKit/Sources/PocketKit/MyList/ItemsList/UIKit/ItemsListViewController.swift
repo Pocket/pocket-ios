@@ -16,6 +16,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
     private var collectionView: UICollectionView!
     private var progressView: UIProgressView!
     private var dataSource: UICollectionViewDiffableDataSource<ItemsListSection, ItemsListCell<ViewModel.ItemIdentifier>>!
+    private var itemSectionLayout: NSCollectionLayoutSection!
 
     init(model: ViewModel) {
         self.model = model
@@ -68,6 +69,20 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
 
     override func loadView() {
         view = collectionView
+    }
+
+    override func viewWillLayoutSubviews() {
+        if let itemSectionLayout {
+            setContentInsetReferecnce(for: itemSectionLayout)
+        }
+    }
+
+    private func setContentInsetReferecnce(for section: NSCollectionLayoutSection) {
+        if self.traitCollection.horizontalSizeClass == .regular {
+            section.contentInsetsReference = .readableContent
+        } else {
+            section.contentInsetsReference = .automatic
+        }
     }
 
     /// Whether or not we should show the progress bar.
@@ -238,15 +253,15 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
                     return UISwipeActionsConfiguration(actions: actions)
                 }
 
-                let section = NSCollectionLayoutSection.list(using: config, layoutEnvironment: env)
-                section.contentInsetsReference = .readableContent
+                itemSectionLayout = NSCollectionLayoutSection.list(using: config, layoutEnvironment: env)
+                setContentInsetReferecnce(for: itemSectionLayout)
 
-                var contentInsets = section.contentInsets
+                var contentInsets = itemSectionLayout.contentInsets
                     contentInsets.leading = 0
                     contentInsets.trailing = 0
-                    section.contentInsets = contentInsets
+                    itemSectionLayout.contentInsets = contentInsets
 
-                return section
+                return itemSectionLayout
             case .offline:
                 var config = UICollectionLayoutListConfiguration(appearance: .plain)
                 config.backgroundColor = UIColor(.ui.white1)
