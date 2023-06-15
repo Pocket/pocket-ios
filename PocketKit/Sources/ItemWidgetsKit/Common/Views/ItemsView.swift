@@ -16,13 +16,10 @@ struct ItemsHeader: View {
 
     let title: String
 
-    var attributedTitle: AttributedString {
-        AttributedString(NSAttributedString(string: title, style: .widgetHeader(for: widgetFamily)))
-    }
-
     var body: some View {
         HStack(alignment: .top) {
-            Text(attributedTitle)
+            Text(title)
+                .style(.widgetHeader)
             Spacer()
             Image(asset: .saved)
                 .resizable()
@@ -67,19 +64,23 @@ struct ItemRow: View {
     let image: Image?
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            HStack(alignment: .top) {
-                Text(AttributedString(NSAttributedString(string: title, style: .widgetTitle(for: widgetFamily))))
-                Spacer()
-                if let image {
-                    ItemThumbnail(image: image)
+        HStack(alignment: .top) {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .style(.header.sansSerif.w8)
+                    .lineLimit(ItemsView.Size.lineLimit(for: widgetFamily))
+                    .fixedSize(horizontal: false, vertical: true)
+                if let readingTime {
+                    Text(domain + " - " + readingTime)
+                        .style(.domain)
+                } else {
+                    Text(domain)
+                        .style(.domain)
                 }
             }
-            .lineLimit(3)
-            if let readingTime {
-                Text(AttributedString(NSAttributedString(string: domain + " - " + readingTime, style: .domain)))
-            } else {
-                Text(AttributedString(NSAttributedString(string: domain, style: .domain)))
+            Spacer()
+            if let image {
+                ItemThumbnail(image: image)
             }
         }
     }
@@ -104,27 +105,8 @@ struct ItemThumbnail: View {
 }
 
 private extension Style {
-    static let domain: Style = .header.sansSerif.p5.with(color: .ui.grey8).with { paragraph in
-        paragraph.with(lineBreakMode: .byTruncatingTail)
-    }
-    static func widgetHeader(for widgetFamily: WidgetFamily) -> Style {
-        if widgetFamily == .systemLarge {
-            return .header.sansSerif.h7.with(color: .ui.teal2)
-        }
-        return .header.sansSerif.p4.with(color: .ui.teal2)
-    }
-
-    static func widgetTitle(for widgetFamily: WidgetFamily) -> Style {
-        if widgetFamily == .systemLarge {
-            return .header.sansSerif.h7.with(color: .ui.black1).with { paragraph in
-                paragraph.with(lineBreakMode: .byTruncatingTail).with(lineSpacing: 4)
-            }
-        } else {
-            return .header.sansSerif.h8.with(color: .ui.black1).with { paragraph in
-                paragraph.with(lineBreakMode: .byTruncatingTail).with(lineSpacing: 4)
-            }
-        }
-    }
+    static let domain: Style = .header.sansSerif.p5.with(color: .ui.grey8)
+    static let widgetHeader: Style = .header.sansSerif.h8.with(color: .ui.teal2)
 }
 
 // MARK: formatting
@@ -158,6 +140,17 @@ private extension ItemsView {
                 return CGSize(width: 16, height: 14)
             default:
                 return .zero
+            }
+        }
+
+        static func lineLimit(for family: WidgetFamily) -> Int {
+            switch family {
+            case .systemLarge:
+                return 3
+            case .systemMedium:
+                return 2
+            default:
+                return 0
             }
         }
 
