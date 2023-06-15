@@ -53,6 +53,7 @@
         "HomeTests\/test_unfavoritingRecentSavesItem_shouldNotAppearForFavoriteInSaves()",
         "HomeWebViewTests",
         "PremiumTests",
+        "ReaderTests",
         "ReportARecommendationTests",
         "SaveToPocketTests",
         "SavesFiltersTests",

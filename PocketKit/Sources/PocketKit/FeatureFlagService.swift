@@ -73,6 +73,7 @@ public enum CurrentFeatureFlags: String, CaseIterable {
     case debugMenu = "perm.ios.debug.menu"
     case traceSampling = "perm.ios.sentry.traces"
     case profileSampling = "perm.ios.sentry.profile"
+    case reportIssue = "perm.ios.report_issue"
 
     /// Description to use in a debug menu
     var description: String {
@@ -87,6 +88,8 @@ public enum CurrentFeatureFlags: String, CaseIterable {
             return "Percentage to use to sample traces in Sentry"
         case .profileSampling:
             return "Percentage to use to sample profiles in Sentry"
+        case .reportIssue:
+            return "Enable the Report an Issue feature when users encounter an error"
         }
     }
 }

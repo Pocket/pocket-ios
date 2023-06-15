@@ -51,7 +51,7 @@ class ReaderTests: XCTestCase {
 
     func test_tappingSaves_dismissesReader_andShowsSaves() {
         launchApp_andOpenItem()
-        app.readerView.savesBackButton.tap()
+        app.readerView.backButton.tap()
         app.saves.wait()
     }
 
@@ -98,7 +98,8 @@ class ReaderTests: XCTestCase {
         moveFromArchiveToSavesEvent!.getContentContext()!.assertHas(url: "http://example.com/items/archived-item-1")
     }
 
-    func test_tappingOverflowMenu_showsOverflowOptions() {
+    @MainActor
+    func test_tappingOverflowMenu_showsOverflowOptions() async {
         launchApp_andOpenItem()
         openReaderOverflowMenu()
         XCTAssertTrue(app.readerView.displaySettingsButton.exists)
@@ -106,9 +107,14 @@ class ReaderTests: XCTestCase {
         XCTAssertTrue(app.readerView.addTagsButton.exists)
         XCTAssertTrue(app.readerView.deleteButton.exists)
         XCTAssertTrue(app.readerView.shareButton.exists)
+
+        let overflowEvent = await snowplowMicro.getFirstEvent(with: "reader.toolbar.overflow")
+        overflowEvent!.getUIContext()!.assertHas(type: "button")
+        overflowEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
     }
 
-    func test_tappingDisplaySettings_showsDisplaySettings() {
+    @MainActor
+    func test_tappingDisplaySettings_showsDisplaySettings() async {
         launchApp_andOpenItem()
         openReaderOverflowMenu()
         openDisplaySettings()
@@ -117,6 +123,33 @@ class ReaderTests: XCTestCase {
         openFontMenu()
         XCTAssertTrue(app.readerView.fontSelection(fontName: "Graphik LCG").exists)
         XCTAssertTrue(app.readerView.fontSelection(fontName: "Blanco OSF").exists)
+
+        let textSettingsEvent = await snowplowMicro.getFirstEvent(with: "reader.toolbar.text_settings")
+        textSettingsEvent!.getUIContext()!.assertHas(type: "button")
+        textSettingsEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
+    }
+
+    @MainActor
+    func test_tappingSave_savesItem() async {
+        app.launch()
+        app.homeView
+            .recommendationCell("Slate 1, Recommendation 1")
+            .wait()
+
+        // Swipe down to a syndicated item
+        scrollTo(element: app.homeView.recommendationCell("Syndicated Article Slate 2, Rec 2").element, in: app.homeView.element, direction: .up)
+        app.homeView.recommendationCell("Syndicated Article Slate 2, Rec 2").wait().tap()
+        app.readerView.readerToolbar.moreButton.wait().tap()
+        app.readerView.saveButton.wait().tap()
+
+        app.readerView.backButton.wait().tap()
+        app.tabBar.savesButton.wait().tap()
+        app.saves.itemView(matching: "Slate 2, Recommendation 2").wait()
+
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+        let reportEvent = await snowplowMicro.getFirstEvent(with: "reader.toolbar.save")
+        reportEvent!.getUIContext()!.assertHas(type: "button")
+        reportEvent!.getContentContext()!.assertHas(url: "https://getpocket.com/explore/item/article-4")
     }
 
 //  NOTE: Commented out for now, Daniel is unable to get these to fail locally, but they always fail in CI and on others computers.
@@ -194,7 +227,8 @@ class ReaderTests: XCTestCase {
         engagementEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
     }
 
-    func test_tappingDeleteNo_dismissesDeleteConfirmation() {
+    @MainActor
+    func test_tappingDeleteNo_dismissesDeleteConfirmation() async {
         launchApp_andOpenItem()
         openReaderOverflowMenu()
         app.readerView.wait().deleteButton.wait().tap()

@@ -44,6 +44,7 @@ class SearchViewModel: ObservableObject {
     private let user: User
     private let store: SubscriptionStore
     private let userDefaults: UserDefaults
+    private var featureFlags: FeatureFlagServiceProtocol
     private let source: Source
     private let premiumUpgradeViewModelFactory: PremiumUpgradeViewModelFactory
     private let notificationCenter: NotificationCenter
@@ -88,14 +89,22 @@ class SearchViewModel: ObservableObject {
             image: .warning,
             title: Localization.Search.limitedResults,
             detail: Localization.Search.Banner.errorMessage,
-            action: BannerModifier.BannerData.BannerAction(
+            action: reportButton()
+        )
+        return isOffline ? offlineView : errorView
+    }
+
+    /// Handles whether to show a report button for a banner
+    private func reportButton() -> BannerAction? {
+        if featureFlags.isAssigned(flag: .reportIssue) {
+            return BannerAction(
                 text: Localization.General.Error.sendReport,
                 style: PocketButtonStyle(.primary, .small)
             ) {
                 self.isPresentingReportIssue.toggle()
             }
-        )
-        return isOffline ? offlineView : errorView
+        }
+        return nil
     }
 
     var defaultState: SearchViewState {
@@ -121,6 +130,7 @@ class SearchViewModel: ObservableObject {
     init(networkPathMonitor: NetworkPathMonitor,
          user: User,
          userDefaults: UserDefaults,
+         featureFlags: FeatureFlagServiceProtocol,
          source: Source,
          tracker: Tracker,
          store: SubscriptionStore,
@@ -129,6 +139,7 @@ class SearchViewModel: ObservableObject {
         self.networkPathMonitor = networkPathMonitor
         self.user = user
         self.userDefaults = userDefaults
+        self.featureFlags = featureFlags
         self.source = source
         self.tracker = tracker
         self.store = store
@@ -334,7 +345,7 @@ class SearchViewModel: ObservableObject {
                     self.trackSearchResultsPage(pageNumber: onlineSearch.pageNumberLoaded, scope: scope)
                 } else if case .failure(let error) = result {
                     guard case SearchServiceError.noInternet = error else {
-                        self.searchState = .emptyState(ErrorEmptyState())
+                        self.searchState = .emptyState(ErrorEmptyState(featureFlags: featureFlags))
                         return
                     }
                     self.searchState = .emptyState(OfflineEmptyState(type: scope))

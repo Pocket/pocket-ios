@@ -3,7 +3,9 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import SwiftUI
-import UIKit
+
+// Added for code convenience
+public typealias BannerAction = BannerModifier.BannerData.BannerAction
 
 public struct BannerModifier: ViewModifier {
     enum Constants {

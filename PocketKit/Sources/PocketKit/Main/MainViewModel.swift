@@ -32,6 +32,7 @@ class MainViewModel: ObservableObject {
                     networkPathMonitor: NWPathMonitor(),
                     user: Services.shared.user,
                     userDefaults: Services.shared.userDefaults,
+                    featureFlags: Services.shared.featureFlagService,
                     source: Services.shared.source,
                     tracker: Services.shared.tracker.childTracker(hosting: .saves.search),
                     store: Services.shared.subscriptionStore,

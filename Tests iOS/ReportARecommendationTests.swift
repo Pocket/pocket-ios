@@ -111,5 +111,8 @@ class ReportARecommendationTests: XCTestCase {
         app.reportView.wait()
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
+        let reportEvent = await snowplowMicro.getFirstEvent(with: "reader.toolbar.report")
+        reportEvent!.getUIContext()!.assertHas(type: "button")
+        reportEvent!.getContentContext()!.assertHas(url: "https://getpocket.com/explore/item/article-4")
     }
 }

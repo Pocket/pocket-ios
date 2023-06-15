@@ -5,6 +5,15 @@
 "general.error.serverNotResponding.title" = "El servidor no responde";
 "general.error.serverNotResponding.detail" = "Nuestro servidor no responde en este momento. Agradecemos tu paciencia. El servicio debería estar disponible dentro de una hora.";
 "general.error.serverError" = "Se produjo un error con tu solicitud. Se ha avisado al equipo de Pocket. Inténtalo de nuevo más tarde.";
+"general.error.sendReport" = "Enviar un informe";
+
+// Report an Issue
+"reportIssue.header" = "Informar un problema";
+"reportIssue.description" = "¡Gracias por ayudarnos a mejorar Pocket! Bríndanos más detalles sobre el problema que has tenido.";
+"reportIssue.name" = "Nombre";
+"reportIssue.email" = "Correo electrónico";
+"reportIssue.comment" = "¿Qué sucedió?";
+"reportIssue.submitIssue.title" = "Enviar problema";
 
 //Archive
 "archive.empty.header" = "Mantén tu lista ordenada y prolija";
