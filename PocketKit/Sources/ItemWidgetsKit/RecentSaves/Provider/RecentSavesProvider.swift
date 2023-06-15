@@ -5,6 +5,7 @@
 import SharedPocketKit
 import Sync
 import SwiftUI
+import Textile
 import WidgetKit
 
 enum RecentSavesProviderError: Error {
@@ -13,6 +14,10 @@ enum RecentSavesProviderError: Error {
 
 /// Timeline provider for the recent saves widget
 struct RecentSavesProvider: TimelineProvider {
+    init() {
+        Textiles.initialize()
+    }
+
     func placeholder(in context: Context) -> ItemsListEntry {
         ItemsListEntry(date: Date(), contentType: .items([ItemRowContent(content: .placeHolder, image: nil)]))
     }
@@ -112,7 +117,7 @@ extension RecentSavesProvider {
 // MARK: download thumbnails
 extension RecentSavesProvider {
     /// Default size for downloaded thumbnails
-    static let defaultThumbnailSize = CGSize(width: 80, height: 48)
+    static let defaultThumbnailSize = CGSize(width: 80, height: 80)
 
     /// Download thumbnails, attach them to the related item and return the updated list of recent `[SavedItemRowContent]`
     /// - Parameter content: the recent saves without thumbnails `[SavedItemContent]`
