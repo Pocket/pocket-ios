@@ -2,9 +2,10 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import WidgetKit
+import Localization
 import SwiftUI
 import Textile
+import WidgetKit
 
 public struct RecentSavesWidget: Widget {
     let kind: String
@@ -17,8 +18,8 @@ public struct RecentSavesWidget: Widget {
         StaticConfiguration(kind: kind, provider: RecentSavesProvider()) { entry in
             makeRecentSavesView(entry: entry)
         }
-        .configurationDisplayName("Recent Saves")
-        .description("Access your most recently saved articles.")
+        .configurationDisplayName(Localization.Widgets.RecentSaves.title)
+        .description(Localization.Widget.RecentSaves.description)
         .supportedFamilies([.systemMedium, .systemLarge])
     }
 
