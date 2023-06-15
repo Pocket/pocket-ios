@@ -121,7 +121,6 @@ class AccountViewModel: ObservableObject {
             }
 
             self.userDefaults.setValue(isEnabled, forKey: AccountViewModel.ToggleAppBadgeKey)
-            self.userDefaults.synchronize()
             self.notificationCenter.post(name: .listUpdated, object: nil)
         }
     }
