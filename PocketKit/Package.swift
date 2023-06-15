@@ -41,13 +41,14 @@ let package = Package(
             url: "https://github.com/Pocket/pocket-ios/releases/download/release%2Fv8.0.1.24700/PKTListen.xcframework.zip",
             checksum: "0e21242b5cdadf2da674de811476910a89b7046bd2f1282d23193695d9e61a05"
         ),
-        .target(name: "ItemWidgetsKit", dependencies: [
-            "Analytics",
-            "Localization",
-            "SharedPocketKit",
-            "Sync",
-            "Textile"
-        ]),
+        .target(name: "ItemWidgetsKit",
+                dependencies: [
+                    "Analytics",
+                    "Localization",
+                    "SharedPocketKit",
+                    "Sync",
+                    "Textile"
+                ]),
         .target(
             name: "PocketKit",
             dependencies: [
