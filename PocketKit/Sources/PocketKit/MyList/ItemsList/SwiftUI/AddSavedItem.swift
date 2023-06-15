@@ -28,7 +28,7 @@ struct AddSavedItem: View {
                         HStack {
                             Text(Localization.Saves.AddSavedItem.error)
                                 .foregroundColor(.red)
-                                .style(.header.sansSerif.p4.with(weight: .bold))
+                                .style(.header.sansSerif.p4.with(weight: .medium))
                                 .accessibilityIdentifier("error_message")
                             Spacer()
                         }
