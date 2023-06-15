@@ -597,6 +597,12 @@ public enum Localization {
       public static let tagStoriesFasterThanEver = Localization.tr("Localizable", "tags.upsell.tagStoriesFasterThanEver", fallback: "Tag stories faster than ever—get your most recent tags with Pocket Premium.")
     }
   }
+  public enum Widget {
+    public enum RecentSaves {
+      /// Access your most recently saved articles.
+      public static let description = Localization.tr("Localizable", "widget.recentSaves.description", fallback: "Access your most recently saved articles.")
+    }
+  }
   public enum Widgets {
     public enum RecentSaves {
       /// Add saves to Pocket to see them in here.
