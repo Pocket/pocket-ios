@@ -10,17 +10,12 @@ import Foundation
 public struct System: Event, CustomStringConvertible {
     public static let schema = "iglu:com.pocket/system_log/jsonschema/1-0-0"
 
-    let type: System.SystemLogType
-    let source: MigrationSource!
+    let type: LogType
+    let source: EventSource
 
-    public init(type: SystemLogType, source: MigrationSource) {
+    public init(type: LogType, source: EventSource = .pocketKit) {
         self.type = type
         self.source = source
-    }
-
-    public init(type: SystemLogType) {
-        self.type = type
-        self.source = nil
     }
 
     public var description: String {
@@ -38,7 +33,7 @@ public struct System: Event, CustomStringConvertible {
         switch type {
         case .userMigration(let userMigrationState):
             return userMigrationState.value(source)
-        case .appPermission(let appPermissionType):
+        case .appPermission:
             return nil
         case .unableToSave:
             return nil
@@ -58,8 +53,14 @@ public struct System: Event, CustomStringConvertible {
     }
 }
 
+// MARK: - Enums
 extension System {
-    public enum SystemLogType {
+    public enum EventSource: String {
+        case pocketKit
+        case saveToPocketKit
+    }
+
+    public enum LogType {
         case userMigration(UserMigrationState)
         case appPermission(AppPermissionType)
         case unableToSave
@@ -70,7 +71,7 @@ extension System {
         case succeeded
         case failed(Error?)
 
-        func id(_ source: MigrationSource) -> String {
+        func id(_ source: EventSource) -> String {
             switch self {
             case .started:
                 return "ios.\(source).migration.to8.start"
@@ -84,7 +85,7 @@ extension System {
             }
         }
 
-        func value(_ source: MigrationSource) -> String? {
+        func value(_ source: EventSource) -> String? {
             switch self {
             case .started, .succeeded:
                 return nil
