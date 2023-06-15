@@ -29,14 +29,13 @@ public struct RecentSavesWidget: Widget {
             ItemsListView(entry: entry)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .containerBackground(for: .widget) {
-                    Color(.ui.homeCellBackground)
+                    Color(.ui.white1)
                 }
         } else {
             ItemsListView(entry: entry)
-                .padding(.leading, 16)
-                .padding(.trailing, 16)
+                .padding()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color(.ui.homeCellBackground))
+                .background(Color(.ui.white1))
         }
     }
 }
@@ -44,6 +43,6 @@ public struct RecentSavesWidget: Widget {
 public struct RecentSavesWidget_Previews: PreviewProvider {
     public static var previews: some View {
         ItemsListView(entry: ItemsListEntry(date: Date(), contentType: .items([ItemRowContent(content: .placeHolder, image: nil)])))
-            .previewContext(WidgetPreviewContext(family: .systemSmall))
+            .previewContext(WidgetPreviewContext(family: .systemLarge))
     }
 }

@@ -24,8 +24,8 @@ struct ItemsHeader: View {
             Image(asset: .saved)
                 .resizable()
                 .foregroundColor(Color(.ui.coral2))
-                .frame(width: ItemsView.Size.logoSize(for: widgetFamily).width,
-                       height: ItemsView.Size.logoSize(for: widgetFamily).height,
+                .frame(width: ItemsView.Size.logoSize.width,
+                       height: ItemsView.Size.logoSize.height,
                        alignment: .center)
         }
     }
@@ -41,6 +41,7 @@ struct ItemsView: View {
     var body: some View {
         VStack(alignment: .leading) {
             ItemsHeader(title: Localization.Widgets.RecentSaves.title)
+            Spacer()
             ForEach(items) { entry in
                 ItemRow(title: entry.content.title.isEmpty ? entry.content.url : entry.content.title,
                         domain: entry.content.bestDomain,
@@ -96,17 +97,17 @@ struct ItemThumbnail: View {
     var body: some View {
         image
             .resizable()
+            .aspectRatio(contentMode: .fill)
             .frame(
-                width: ItemsView.Size.thumbnailSize(for: widgetFamily).width,
-                height: ItemsView.Size.thumbnailSize(for: widgetFamily).height
+                width: ItemsView.Size.thumbnailSize(for: widgetFamily).width
             )
             .cornerRadius(8)
     }
 }
 
 private extension Style {
-    static let domain: Style = .header.sansSerif.p5.with(color: .ui.grey8)
-    static let widgetHeader: Style = .header.sansSerif.h8.with(color: .ui.teal2)
+    static let domain: Style = .header.sansSerif.p6.with(color: .ui.grey8)
+    static let widgetHeader: Style = .header.sansSerif.h8.with(color: .ui.coral2)
 }
 
 // MARK: formatting
@@ -132,16 +133,7 @@ private extension ItemsView {
             }
         }
 
-        static func logoSize( for family: WidgetFamily) -> CGSize {
-            switch family {
-            case .systemLarge:
-                return CGSize(width: 18, height: 16)
-            case .systemMedium:
-                return CGSize(width: 16, height: 14)
-            default:
-                return .zero
-            }
-        }
+        static let logoSize: CGSize = CGSize(width: 18, height: 16)
 
         static func lineLimit(for family: WidgetFamily) -> Int {
             switch family {
