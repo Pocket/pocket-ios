@@ -36,13 +36,21 @@ struct ItemsView: View {
     @Environment(\.widgetFamily)
     private var widgetFamily
 
+    @Environment (\.dynamicTypeSize)
+    private var textSize
+
     let items: [ItemRowContent]
+
+    /// Actual items to display: reduce by 1 for accessibility categories
+    private var actualItems: [ItemRowContent] {
+        textSize > .xLarge ? items.dropLast() : items
+    }
 
     var body: some View {
         VStack(alignment: .leading) {
             ItemsHeader(title: Localization.Widgets.RecentSaves.title)
             Spacer()
-            ForEach(items) { entry in
+            ForEach(actualItems) { entry in
                 ItemRow(title: entry.content.title.isEmpty ? entry.content.url : entry.content.title,
                         domain: entry.content.bestDomain,
                         readingTime: entry.content.readingTime,
