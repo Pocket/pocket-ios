@@ -26,13 +26,13 @@ public struct RecentSavesWidget: Widget {
     @ViewBuilder
     private func makeRecentSavesView(entry: RecentSavesProvider.Entry) -> some View {
         if #available(iOS 17.0, *) {
-            ItemsListView(entry: entry)
+            ItemsWidgetsContainerView(entry: entry)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .containerBackground(for: .widget) {
                     Color(.ui.white1)
                 }
         } else {
-            ItemsListView(entry: entry)
+            ItemsWidgetsContainerView(entry: entry)
                 .padding()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Color(.ui.white1))
@@ -42,7 +42,7 @@ public struct RecentSavesWidget: Widget {
 
 public struct RecentSavesWidget_Previews: PreviewProvider {
     public static var previews: some View {
-        ItemsListView(entry: ItemsListEntry(date: Date(), contentType: .items([ItemRowContent(content: .placeHolder, image: nil)])))
+        ItemsWidgetsContainerView(entry: ItemsListEntry(date: Date(), contentType: .items([ItemRowContent(content: .placeHolder, image: nil)])))
             .previewContext(WidgetPreviewContext(family: .systemLarge))
     }
 }
