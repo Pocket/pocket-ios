@@ -85,14 +85,13 @@ extension RecentSavesProvider {
     /// - Returns: the number of recent saves
     private func numberOfItems(for widgetFamily: WidgetFamily) -> Int {
         switch widgetFamily {
-        case .systemExtraLarge:
-            return 0
         case .systemLarge:
             return 4
         case .systemMedium:
             return 2
         default:
-            return 1
+            // We will need to add values if we support other categories in the future
+            return 0
         }
     }
 
@@ -162,7 +161,7 @@ extension RecentSavesProvider {
     /// Returns the CDN URL to download an image of a given size
     /// - Parameters:
     ///   - url: the original url
-    ///   - size: the given size. Defaults to 3 times the provider default size, to ensure a slightly higher resolution for better image quality
+    ///   - size: the given size. Defaults to 3 times the provider default size for better image quality
     /// - Returns: the CDN URL or the original URL, if no CDN URL was found
     private func bestURL(
         for url: URL,
