@@ -7,14 +7,18 @@ import SharedPocketKit
 import SwiftUI
 import Textile
 
-/// Main view of the Recent Saves widget
-struct ItemsListView: View {
+/// Main view of an Item widget
+struct ItemsWidgetsContainerView: View {
+    @Environment (\.dynamicTypeSize)
+    private var textSize
+
     /// The list of saved items to be displayed
     let entry: ItemsListEntry
 
     var body: some View {
         if case let .items(items) = entry.contentType {
-            ItemsView(items: items)
+            ItemWidgetsView(items: items)
+                .hasVeryLargeFonts(textSize > .xLarge)
         } else {
             makeEmptyContentView(entry.contentType)
         }
