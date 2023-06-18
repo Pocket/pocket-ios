@@ -605,8 +605,8 @@ public enum Localization {
   }
   public enum Widgets {
     public enum RecentSaves {
-      /// Add saves to Pocket to see them in here.
-      public static let emptyMessage = Localization.tr("Localizable", "widgets.recentSaves.emptyMessage", fallback: "Add saves to Pocket to see them in here.")
+      /// Start building your Pocket list.
+      public static let emptyMessage = Localization.tr("Localizable", "widgets.recentSaves.emptyMessage", fallback: "Start building your Pocket list.")
       /// Something went wrong.
       public static let errorMessage = Localization.tr("Localizable", "widgets.recentSaves.errorMessage", fallback: "Something went wrong.")
       /// Log in to Pocket to see your recent saves.
