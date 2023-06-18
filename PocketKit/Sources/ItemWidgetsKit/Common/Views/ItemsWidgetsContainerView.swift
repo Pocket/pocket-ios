@@ -20,25 +20,7 @@ struct ItemsWidgetsContainerView: View {
             ItemWidgetsView(items: items)
                 .hasVeryLargeFonts(textSize > .xLarge)
         } else {
-            makeEmptyContentView(entry.contentType)
-        }
-    }
-
-    private func makeEmptyContentView(_ contentType: ItemsListContentType) -> some View {
-        Text(emptyContentMessage(contentType))
-        // TODO: add formatting and colors
-    }
-
-    private func emptyContentMessage(_ contentType: ItemsListContentType) -> String {
-        switch contentType {
-        case .empty:
-            return Localization.Widgets.RecentSaves.emptyMessage
-        case .loggedOut:
-            return Localization.Widgets.RecentSaves.loggedOutMessage
-        case .error:
-            return Localization.Widgets.RecentSaves.errorMessage
-        default:
-            return ""
+            ItemWidgetsEmptyContentView(contentType: entry.contentType)
         }
     }
 }
