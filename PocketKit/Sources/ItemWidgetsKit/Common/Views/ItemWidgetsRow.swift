@@ -55,8 +55,8 @@ struct ItemThumbnail: View {
     @Environment(\.widgetFamily)
     private var widgetFamily
 
-    @Environment(\.maxThumbnailWidth)
-    private var maxThumbnailWidth
+    @Environment(\.maxThumbnailSize)
+    private var maxThumbnailSize
 
     let image: Image
 
@@ -65,7 +65,8 @@ struct ItemThumbnail: View {
             .resizable()
             .aspectRatio(contentMode: .fill)
             .frame(
-                maxWidth: maxThumbnailWidth
+                maxWidth: maxThumbnailSize,
+                maxHeight: maxThumbnailSize
             )
             .cornerRadius(8)
     }
