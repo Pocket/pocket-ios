@@ -21,7 +21,6 @@ struct ItemWidgetsView: View {
     /// Actual items to display: reduce by 1 for accessibility categories
     private var actualItems: [ItemRowContent] {
         hasVeryLargeFonts ? items.dropLast() : items
-        // [items.first!]
     }
 
     private var expectedNumberOfItems: Int {
