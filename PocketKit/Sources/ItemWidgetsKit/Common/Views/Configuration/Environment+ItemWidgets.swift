@@ -4,21 +4,21 @@
 
 import SwiftUI
 
-// MARK: max thumbnail width
-private struct MaxThumbnailWidthKey: EnvironmentKey {
+// MARK: max thumbnail size
+private struct MaxThumbnailSizeKey: EnvironmentKey {
     static let defaultValue: CGFloat = 0
 }
 
 extension EnvironmentValues {
-    var maxThumbnailWidth: CGFloat {
-        get { self[MaxThumbnailWidthKey.self] }
-        set { self[MaxThumbnailWidthKey.self] = newValue }
+    var maxThumbnailSize: CGFloat {
+        get { self[MaxThumbnailSizeKey.self] }
+        set { self[MaxThumbnailSizeKey.self] = newValue }
     }
 }
 
 extension View {
-    func maxThumbnailWidth(_ value: CGFloat) -> some View {
-        environment(\.maxThumbnailWidth, value)
+    func maxThumbnailSize(_ value: CGFloat) -> some View {
+        environment(\.maxThumbnailSize, value)
     }
 }
 
