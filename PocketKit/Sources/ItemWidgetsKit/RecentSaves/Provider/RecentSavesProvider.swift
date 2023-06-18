@@ -27,13 +27,13 @@ struct RecentSavesProvider: TimelineProvider {
             let service = try makeService()
             // logged out
             guard service.isLoggedIn else {
-                completion(ItemsListEntry(date: Date(), contentType: .loggedOut))
+                completion(ItemsListEntry(date: Date(), contentType: .recentSavesLoggedOut))
                 return
             }
             let saves = service.getRecentSaves(limit: numberOfItems(for: context.family))
             // empty result
             guard !saves.isEmpty else {
-                completion(ItemsListEntry(date: Date(), contentType: .empty))
+                completion(ItemsListEntry(date: Date(), contentType: .recentSavesEmpty))
                 return
             }
             Task {
@@ -51,7 +51,7 @@ struct RecentSavesProvider: TimelineProvider {
             let service = try makeService()
             // logged out
             guard service.isLoggedIn else {
-                let entries = [ItemsListEntry(date: Date(), contentType: .loggedOut)]
+                let entries = [ItemsListEntry(date: Date(), contentType: .recentSavesLoggedOut)]
                 let timeline = Timeline(entries: entries, policy: .never)
                 completion(timeline)
                 return
@@ -59,7 +59,7 @@ struct RecentSavesProvider: TimelineProvider {
             let saves = service.getRecentSaves(limit: numberOfItems(for: context.family))
             // empty result
             guard !saves.isEmpty else {
-                let entries = [ItemsListEntry(date: Date(), contentType: .empty)]
+                let entries = [ItemsListEntry(date: Date(), contentType: .recentSavesEmpty)]
                 let timeline = Timeline(entries: entries, policy: .never)
                 completion(timeline)
                 return
