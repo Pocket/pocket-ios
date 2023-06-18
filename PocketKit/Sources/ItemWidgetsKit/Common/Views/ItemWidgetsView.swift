@@ -50,7 +50,10 @@ struct ItemWidgetsView: View {
                 .padding(.top, cellPadding(for: widgetFamily))
                 .padding(.bottom, cellPadding(for: widgetFamily))
             }
-            Spacer()
+            // push the list up if it's partially empty
+            if items.count < expectedNumberOfItems {
+                Spacer()
+            }
         }
         .maxThumbnailSize(maxThumbnailSize(for: content.size.height))
         }
