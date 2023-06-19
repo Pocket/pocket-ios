@@ -114,7 +114,8 @@ class SavedItemViewModel: ReadableViewModel {
     // NSSet does not have an isEmpty property
     // swiftlint:disable empty_count
     var hasHighlights: Bool {
-        item.annotations?.highlights?.count != 0
+        let count = item.annotations?.highlights?.count ?? 0
+        return count != 0
     }
     // swiftlint:enable empty_count
 
