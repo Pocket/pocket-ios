@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 import Combine
 import Analytics
@@ -18,6 +22,7 @@ class PocketAddTagsViewModelTests: XCTestCase {
     private var networkPathMonitor: MockNetworkPathMonitor!
 
     override func setUp() {
+        super.setUp()
         source = MockSource()
         tracker = MockTracker()
         space = .testSpace()
@@ -34,6 +39,7 @@ class PocketAddTagsViewModelTests: XCTestCase {
         try space.clear()
         networkPathMonitor = nil
         subscriptionStore = nil
+        try await super.tearDown()
     }
 
     private func subject(

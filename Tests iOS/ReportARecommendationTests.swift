@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 import Sails
 
@@ -7,14 +11,12 @@ class ReportARecommendationTests: XCTestCase {
     var snowplowMicro = SnowplowMicro()
 
     override func setUp() async throws {
-        await snowplowMicro.resetSnowplowEvents()
-    }
-
-    override func setUpWithError() throws {
+        try await super.setUp()
         continueAfterFailure = false
 
         let uiApp = XCUIApplication()
         app = PocketAppElement(app: uiApp)
+        await snowplowMicro.resetSnowplowEvents()
 
         server = Application()
 
@@ -23,17 +25,17 @@ class ReportARecommendationTests: XCTestCase {
         }
 
         try server.start()
-
-        app.launch()
     }
 
     override func tearDownWithError() throws {
         try server.stop()
         app.terminate()
+        try super.tearDownWithError()
     }
 
     @MainActor
     func test_reportingARecommendationfromHero_asBrokenMeta_sendsEvent() async {
+        app.launch()
         app.homeView
             .recommendationCell("Slate 1, Recommendation 1")
             .overflowButton.wait().tap()
@@ -58,6 +60,7 @@ class ReportARecommendationTests: XCTestCase {
 
     @MainActor
     func test_reportingARecommendationFromCarousel_asBrokenMeta_sendsEvent() async {
+        app.launch()
         let coordinateToScroll = app.homeView
             .recommendationCell("Slate 1, Recommendation 1")
             .element.coordinate(
@@ -95,6 +98,7 @@ class ReportARecommendationTests: XCTestCase {
 
     @MainActor
     func test_reportingARecommendation_fromReader_showsReportView() async {
+        app.launch()
         app.homeView
             .recommendationCell("Slate 1, Recommendation 1")
             .wait()
@@ -107,5 +111,8 @@ class ReportARecommendationTests: XCTestCase {
         app.reportView.wait()
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
+        let reportEvent = await snowplowMicro.getFirstEvent(with: "reader.toolbar.report")
+        reportEvent!.getUIContext()!.assertHas(type: "button")
+        reportEvent!.getContentContext()!.assertHas(url: "https://getpocket.com/explore/item/article-4")
     }
 }

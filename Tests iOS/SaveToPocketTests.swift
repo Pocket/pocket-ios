@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 import Sails
 
@@ -6,6 +10,7 @@ class SaveToPocketTests: XCTestCase {
     var app: PocketAppElement!
 
     override func setUpWithError() throws {
+        try super.setUpWithError()
         self.continueAfterFailure = false
 
         server = Application()
@@ -31,6 +36,7 @@ class SaveToPocketTests: XCTestCase {
         app.terminate()
         let reminders = XCUIApplication(bundleIdentifier: "com.apple.reminders")
         reminders.terminate()
+        try super.tearDownWithError()
     }
 
     func test_whenLoggedOut_userTapsLogIn_opensApp() {

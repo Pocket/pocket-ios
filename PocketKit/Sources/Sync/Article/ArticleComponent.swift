@@ -1,4 +1,9 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import PocketGraph
+import SharedPocketKit
 
 public typealias Markdown = String
 
@@ -151,8 +156,8 @@ extension ArticleComponent {
         self = .codeBlock(CodeBlockComponent(marticle))
     }
 
-    init(_ marticle: VideoParts) {
-        self = .video(VideoComponent(marticle))
+    init(_ videoParts: VideoParts) throws {
+        self = .video(try VideoComponent(videoParts))
     }
 
     init(_ marticle: MarticleBulletedListParts) {
@@ -198,9 +203,13 @@ extension ArticleComponent {
             return
         }
 
-        if let parts = marticle.asVideo {
-            self.init(parts.fragments.videoParts)
-            return
+        if let videoParts = marticle.asVideo?.fragments.videoParts {
+            do {
+                try self.init(videoParts)
+                return
+            } catch {
+                Log.capture(message: "Invalid source URL for video: \(error)")
+            }
         }
 
         if let parts = marticle.asMarticleBulletedList {

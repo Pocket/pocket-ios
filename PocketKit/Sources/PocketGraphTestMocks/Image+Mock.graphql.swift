@@ -32,12 +32,12 @@ public extension Mock where O == Image {
     width: Int? = nil
   ) {
     self.init()
-    self.caption = caption
-    self.credit = credit
-    self.height = height
-    self.imageID = imageID
-    self.imageId = imageId
-    self.src = src
-    self.width = width
+    _set(caption, for: \.caption)
+    _set(credit, for: \.credit)
+    _set(height, for: \.height)
+    _set(imageID, for: \.imageID)
+    _set(imageId, for: \.imageId)
+    _set(src, for: \.src)
+    _set(width, for: \.width)
   }
 }

@@ -19,6 +19,6 @@ public extension Mock where O == SavedItemSearchResult {
     savedItem: Mock<SavedItem>? = nil
   ) {
     self.init()
-    self.savedItem = savedItem
+    _set(savedItem, for: \.savedItem)
   }
 }

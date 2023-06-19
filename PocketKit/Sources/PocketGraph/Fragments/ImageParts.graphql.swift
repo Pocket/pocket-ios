@@ -52,17 +52,19 @@ public struct ImageParts: PocketGraph.SelectionSet, Fragment {
     height: Int? = nil,
     width: Int? = nil
   ) {
-    self.init(_dataDict: DataDict(data: [
-      "__typename": PocketGraph.Objects.Image.typename,
-      "caption": caption,
-      "credit": credit,
-      "imageID": imageID,
-      "src": src,
-      "height": height,
-      "width": width,
-      "__fulfilled": Set([
+    self.init(_dataDict: DataDict(
+      data: [
+        "__typename": PocketGraph.Objects.Image.typename,
+        "caption": caption,
+        "credit": credit,
+        "imageID": imageID,
+        "src": src,
+        "height": height,
+        "width": width,
+      ],
+      fulfilledFragments: [
         ObjectIdentifier(Self.self)
-      ])
-    ]))
+      ]
+    ))
   }
 }

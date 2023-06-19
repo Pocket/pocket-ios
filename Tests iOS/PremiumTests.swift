@@ -14,6 +14,7 @@ class PremiumTests: XCTestCase {
     var snowplowMicro = SnowplowMicro()
 
     override func setUp() async throws {
+        try await super.setUp()
         continueAfterFailure = false
         storeSession = try SKTestSession(configurationFileNamed: "Test_Subscriptions")
         storeSession.resetToDefaultState()
@@ -32,24 +33,28 @@ class PremiumTests: XCTestCase {
         storeSession.resetToDefaultState()
         storeSession = nil
         app.terminate()
+        try super.tearDownWithError()
     }
 
     /// Test that tapping "Go Premium" in Settings presents the Premium Upgrade view
-    @MainActor func test_tapSettingsUpsellShowsUpgradeView() async {
+    @MainActor
+    func test_tapSettingsUpsellShowsUpgradeView() async {
         configureFreeUser()
         app.launch()
         await loadPremiumUpgradeViewFromSettings()
         await snowplowMicro.assertBaselineSnowplowExpectation()
     }
 
-    @MainActor func test_tapSearchPremiumUpsellShowsUpgradeView() async {
+    @MainActor
+    func test_tapSearchPremiumUpsellShowsUpgradeView() async {
         configureFreeUser()
         app.launch()
         await loadPremiumUpgradeViewFromSearch()
     }
 
     /// Test that Premium Upgrade view dismisses when tapping the dismiss button
-    @MainActor func test_tapDismissDismissPremiumView() async {
+    @MainActor
+    func test_tapDismissDismissPremiumView() async {
         // Given
         configureFreeUser()
         app.launch()
@@ -64,7 +69,8 @@ class PremiumTests: XCTestCase {
     }
 
     /// Test that monthly button tapped triggers the right event
-    @MainActor func test_monthlyButtonTapped() async {
+    @MainActor
+    func test_monthlyButtonTapped() async {
         // Given
         configureFreeUser()
         app.launch()
@@ -78,7 +84,8 @@ class PremiumTests: XCTestCase {
     }
 
     /// Test that annual button tapped triggers the right event
-    @MainActor func test_annualButtonTapped() async {
+    @MainActor
+    func test_annualButtonTapped() async {
         // Given
         configureFreeUser()
         app.launch()
@@ -92,7 +99,8 @@ class PremiumTests: XCTestCase {
     }
 
     /// Test that purchase monthly subscription succeeds
-    @MainActor func test_purchaseMonthlySubscriptionSuccess() async {
+    @MainActor
+    func test_purchaseMonthlySubscriptionSuccess() async {
         // Given
         configureFreeUser()
         app.launch()
@@ -108,7 +116,8 @@ class PremiumTests: XCTestCase {
     }
 
     /// Test that purchase annual subscription succeeds
-    @MainActor func test_purchaseAnnualSubscriptionSuccess() async {
+    @MainActor
+    func test_purchaseAnnualSubscriptionSuccess() async {
         // Given
         configureFreeUser()
         app.launch()
@@ -124,7 +133,8 @@ class PremiumTests: XCTestCase {
     }
 
     /// Set user to free
-    @MainActor private func configureFreeUser() {
+    @MainActor
+    private func configureFreeUser() {
         server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isForSavesContent {
@@ -135,7 +145,8 @@ class PremiumTests: XCTestCase {
     }
 
     /// Load premium upgrade view from Settings
-    @MainActor private func loadPremiumUpgradeViewFromSettings() async {
+    @MainActor
+    private func loadPremiumUpgradeViewFromSettings() async {
         app.tabBar.settingsButton.wait().tap()
         XCTAssertTrue(app.settingsView.exists)
 
@@ -155,7 +166,8 @@ class PremiumTests: XCTestCase {
     }
 
     /// Load premium upgrade view from Saves > Search > All Items
-    @MainActor private func loadPremiumUpgradeViewFromSearch() async {
+    @MainActor
+    private func loadPremiumUpgradeViewFromSearch() async {
         app.tabBar.savesButton.wait().tap()
         app.saves.element.swipeDown()
         app.navigationBar.searchFields["Search"].wait().tap()

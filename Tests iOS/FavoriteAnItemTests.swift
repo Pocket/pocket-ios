@@ -10,12 +10,15 @@ import NIO
 class FavoriteAnItemTests: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
+    var snowplowMicro = SnowplowMicro()
 
-    override func setUpWithError() throws {
+    override func setUp() async throws {
+        try await super.setUp()
         continueAfterFailure = false
 
         let uiApp = XCUIApplication()
         app = PocketAppElement(app: uiApp)
+        await snowplowMicro.resetSnowplowEvents()
 
         server = Application()
 
@@ -32,6 +35,7 @@ class FavoriteAnItemTests: XCTestCase {
     override func tearDownWithError() throws {
         try server.stop()
         app.terminate()
+        try super.tearDownWithError()
     }
 
     func test_favoritingAndUnfavoritingAnItemFromList_showsFavoritedIcon_andSyncsWithServer() {
@@ -68,7 +72,8 @@ class FavoriteAnItemTests: XCTestCase {
         XCTAssertFalse(itemCell.favoriteButton.isFilled)
     }
 
-    func test_favoritingAndUnfavoritingAnItemFromReader_togglesMenu_andSyncsWithServer() {
+    @MainActor
+    func test_favoritingAndUnfavoritingAnItemFromReader_togglesMenu_andSyncsWithServer() async {
         let expectUnfavoriteRequest = expectation(description: "A request to unfavorite")
         let expectFavoriteRequest = expectation(description: "A request to favorite")
         server.routes.post("/graphql") { request, _ -> Response in
@@ -114,6 +119,17 @@ class FavoriteAnItemTests: XCTestCase {
         moreButton.tap()
         app.favoriteButton.wait()
         XCTAssertFalse(app.unfavoriteButton.exists)
+
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+        let events = await [snowplowMicro.getFirstEvent(with: "reader.toolbar.favorite"), snowplowMicro.getFirstEvent(with: "reader.toolbar.unfavorite")]
+
+        let favoriteEvent = events[0]!
+        favoriteEvent.getUIContext()!.assertHas(type: "button")
+        favoriteEvent.getContentContext()!.assertHas(url: "https://example.com/item-2")
+
+        let unfavoriteEvent = events[1]!
+        unfavoriteEvent.getUIContext()!.assertHas(type: "button")
+        unfavoriteEvent.getContentContext()!.assertHas(url: "https://example.com/item-2")
     }
 
     func test_favoritingAndUnfavoritingAnItemFromArchive_togglesFavoritedIcon_andSyncsWithServer() {

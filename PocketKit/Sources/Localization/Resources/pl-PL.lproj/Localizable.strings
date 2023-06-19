@@ -1,6 +1,20 @@
 //General Messages
 "general.oops" = "Ups! Spróbować ponownie?";
 
+// - General Error Messages
+"general.error.serverNotResponding.title" = "Serwer nie odpowiada";
+"general.error.serverNotResponding.detail" = "Nasz serwer nie odpowiada w tej chwili. Prosimy o cierpliwość. Powinien być ponownie dostępny w ciągu godziny.";
+"general.error.serverError" = "Wystąpił problem z żądaniem. Zespół Pocket został powiadomiony. Spróbuj ponownie później.";
+"general.error.sendReport" = "Wyślij zgłoszenie";
+
+// Report an Issue
+"reportIssue.header" = "Zgłoś problem";
+"reportIssue.description" = "Dziękujemy za pomoc w ulepszaniu Pocket! Podaj nam więcej szczegółów na temat napotkanego problemu.";
+"reportIssue.name" = "Nazwa";
+"reportIssue.email" = "E-mail";
+"reportIssue.comment" = "Co się stało?";
+"reportIssue.submitIssue.title" = "Zgłoś problem";
+
 //Archive
 "archive.empty.header" = "Utrzymuj porządek na swojej liście";
 "archive.empty.detail" = "Zarchiwizuj nieużywane zapisane elementy za pomocą ikony archiwizowania.";
@@ -18,13 +32,14 @@
 
 //ItemAction
 "itemAction.addTags" = "Dodaj tagi";
+"itemAction.editTags" = "Edytuj tagi";
 "itemAction.archive" = "Archiwum";
 "itemAction.copyLink" = "Kopiuj łącze";
 "itemAction.delete" = "Usuń";
 "itemAction.displaySettings" = "Ustawienia wyświetlania";
-"itemAction.favorite" = "Ulubione";
+"itemAction.favorite" = "Dodaj do Ulubionych";
 "itemAction.unfavorite" = "Usuń z Ulubionych";
-"itemAction.moveToSaves" = "Przejdź do Zapisanych";
+"itemAction.moveToSaves" = "Przenieś do Zapisanych";
 "itemAction.open" = "Otwórz";
 "itemAction.report" = "Zgłoś";
 "itemAction.save" = "Zapisz";
@@ -33,7 +48,7 @@
 //ItemList
 "itemlist.filter.search" = "Wyszukaj";
 "itemlist.filter.all" = "Wszystkie";
-"itemlist.filter.tagged" = "Oznaczony tagiem";
+"itemlist.filter.tagged" = "Otagowane";
 "itemlist.filter.favorites" = "Ulubione";
 "itemlist.filter.sortFilter" = "Sortuj";
 "itemList.edit.banner" = "Edytowanie własnej listy nie jest dostępne w tej wersji Pocket, ale wróci już wkrótce!";
@@ -73,7 +88,7 @@
 "search.error.view.needsInternet" = "Aby wyświetlić ten element, musisz mieć połączenie z Internetem.";
 "search.recent" = "Ostatnie wyszukiwania";
 "search.recent.empty" = "Pojawią się tutaj ostatnie wyszukiwania, aby móc łatwo do nich wrócić.";
-"search.swipe.archive" = "Archiwum";
+"search.swipe.archive" = "Archiwizuj";
 "search.swipe.moveToSaves" = "Przejdź do Zapisanych";
 "search.edit.banner" = "Edytowanie wyników wyszukiwania nie jest dostępne w tej wersji Pocket, ale wróci już wkrótce!";
 "search.empty.header" = "Szukaj wg tytułu lub adresu URL";
@@ -97,7 +112,7 @@
 "settings.logout.areYouSureMessage" = "Nastąpi wylogowanie z Twojego konta, a wszelkie elementy, które zostały zapisane do przeglądania w trybie offline, zostaną usunięte z Twojego urządzenia.";
 "settings.logout.areyousure" = "Czy na pewno?";
 "settings.help" = "Uzyskaj pomoc i wsparcie";
-"settings.accountManagement" = "Zarządzanie kontami";
+"settings.accountManagement" = "Zarządzanie kontem";
 "settings.accountManagement.deleteAccount" = "Usuń konto";
 "settings.accountManagement.deleteYourAccount" = "Usuń swoje konto";
 
@@ -143,14 +158,14 @@
 "sortingOption.longestToRead" = "Najdłuższych";
 
 // Tags
-"tags.upsell.tagStoriesFasterThanEver" = "Oznaczaj historie szybciej niż dotąd — otrzymuj najnowsze tagi dzięki Pocket Premium.";
+"tags.upsell.tagStoriesFasterThanEver" = "Taguj artykuły szybciej niż dotąd — zobac ostatnio używane tagi dzięki Pocket Premium.";
 "tags.upsell.getPocketPremium" = "Uzyskaj Pocket Premium";
 "tags.section.recentTags" = "Ostatnie tagi";
 "tags.section.userTags" = "Moje tagi";
 
 "tags.empty.header" = "Brak zapisanych elementów z tym tagiem";
 "tags.empty.detail" = "Oznacz zapisane elementy według tematu, aby znaleźć je później.";
-"tags.empty.button" = "Jak oznaczyć";
+"tags.empty.button" = "Jak tagować";
 
 "tags.notTagged" = "Nieoznaczone tagiem";
 "tags.deleteTag" = "Usunąć tag?";
@@ -163,10 +178,10 @@
 "reader.activity.save" = "Zapisz";
 "reader.activity.report" = "Zgłoś";
 "reader.activity.delete" = "Usuń";
-"reader.activity.archive" = "Archiwum";
-"reader.activity.favorite" = "Ulubione";
+"reader.activity.archive" = "Archiwizuj";
+"reader.activity.favorite" = "Dodah do Ulubionych";
 "reader.activity.unfavorite" = "Usuń z Ulubionych";
-"reader.activity.moveToSaves" = "Przejdź do Zapisanych";
+"reader.activity.moveToSaves" = "Przenieś do Zapisanych";
 
 //Recommendation
 "recommendation.save" = "Zapisz";
@@ -250,7 +265,7 @@
 "Your quiet corner of the Internet" = "Twój cichy zakątek Internetu";
 "Pocket saves articles in a clean layout designed for reading—no interruptions, no popups—so you can sidestep the Internet's noise." = "Pocket zapisuje artykuły w przejrzystym układzie ułatwiającym czytanie – bez przerw, bez wyskakujących okien – omijając internetowy zgiełk.";
 
-"Log In" = "Zalogować się";
+"Log In" = "Zaloguj się";
 "Sign Up" = "Zarejestruj się";
 
 "Tell us more" = "Powiedz nam więcej";
@@ -289,3 +304,5 @@
 "Hooray!" = "Hurra!";
 
 "back.to.pocket" = "Powrót do Pocket";
+
+"saveToPocket.tapToDismiss" = "Dotknij, aby odrzucić";

@@ -13,7 +13,8 @@ struct ReaderSettingsView: View {
         static let allowedFontFamilies: [FontDescriptor.Family] = [.graphik, .blanco]
     }
 
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.presentationMode)
+    private var presentationMode
 
     @ObservedObject private var settings: ReaderSettings
 

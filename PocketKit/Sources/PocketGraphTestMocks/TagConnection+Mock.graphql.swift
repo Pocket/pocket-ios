@@ -23,8 +23,8 @@ public extension Mock where O == TagConnection {
     totalCount: Int? = nil
   ) {
     self.init()
-    self.edges = edges
-    self.pageInfo = pageInfo
-    self.totalCount = totalCount
+    _set(edges, for: \.edges)
+    _set(pageInfo, for: \.pageInfo)
+    _set(totalCount, for: \.totalCount)
   }
 }

@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 import Analytics
 import Combine
@@ -20,6 +24,7 @@ class SavedItemViewModelTests: XCTestCase {
     private var subscriptions: Set<AnyCancellable> = []
 
     override func setUp() {
+        super.setUp()
         source = MockSource()
         tracker = MockTracker()
         pasteboard = MockPasteboard()
@@ -31,11 +36,12 @@ class SavedItemViewModelTests: XCTestCase {
         notificationCenter = .default
     }
 
-    override func tearDown() async throws {
+    override func tearDownWithError() throws {
         subscriptions = []
         try space.clear()
         networkPathMonitor = nil
         subscriptionStore = nil
+        try super.tearDownWithError()
     }
 
     func subject(
@@ -98,11 +104,14 @@ class SavedItemViewModelTests: XCTestCase {
     }
 
     func test_fetchDetailsIfNeeded_whenItemDetailsAreNotAvailable_fetchesItemDetails_andSendsEvent() throws {
-        source.stubFetchDetails { _ in }
-
         let savedItem = space.buildSavedItem()
         savedItem.item?.article = nil
         try space.save()
+
+        source.stubFetchDetails { _ in
+            savedItem.item?.article = .some(Article(components: [.text(TextComponent(content: "This article has components"))]))
+            return true
+        }
 
         let viewModel = subject(item: savedItem)
 
@@ -124,9 +133,38 @@ class SavedItemViewModelTests: XCTestCase {
         XCTAssertEqual(call?.savedItem, savedItem)
     }
 
+    func test_fetchDetailsIfNeeded_whenItemDetailsAreNotAvailable_afterFetching_doesNotSendEvent() throws {
+        let savedItem = space.buildSavedItem()
+        savedItem.item?.article = nil
+        try space.save()
+
+        source.stubFetchDetails { _ in
+            savedItem.item?.article = nil
+            return false
+        }
+
+        let viewModel = subject(item: savedItem)
+
+        let eventSent = expectation(description: "eventSent")
+        eventSent.isInverted = true
+        viewModel.events.sink { event in
+            eventSent.fulfill()
+        }.store(in: &subscriptions)
+
+        viewModel.fetchDetailsIfNeeded()
+        wait(for: [eventSent], timeout: 10)
+
+        let call = source.fetchDetailsCall(at: 0)
+        XCTAssertNotNil(call)
+        XCTAssertEqual(call?.savedItem, savedItem)
+        XCTAssertEqual(savedItem.item?.hasArticleComponents, false)
+        XCTAssertEqual(savedItem.item?.article, nil)
+    }
+
     func test_fetchDetailsIfNeeded_whenItemDetailsAreAlreadyAvailable_immediatelySendsContentUpdatedEvent() {
         source.stubFetchDetails { _ in
             XCTFail("Expected no calls to fetch details, but lo, it has been called.")
+            return false
         }
 
         let savedItem = space.buildSavedItem(
@@ -186,6 +224,24 @@ class SavedItemViewModelTests: XCTestCase {
         wait(for: [expectUnfavorite], timeout: 10)
     }
 
+    func test_tagsAction_withNoTags_isAddTags() throws {
+        let savedItem = space.buildSavedItem(tags: [])
+        try space.save()
+
+        let viewModel = subject(item: savedItem)
+        let hasCorrectTitle = viewModel._actions.contains { $0.title == "Add tags" }
+        XCTAssertTrue(hasCorrectTitle)
+    }
+
+    func test_tagsAction_withTags_isEditTags() throws {
+        let savedItem = space.buildSavedItem(tags: ["tag 1"])
+        try space.save()
+
+        let viewModel = subject(item: savedItem)
+        let hasCorrectTitle = viewModel._actions.contains { $0.title == "Edit tags" }
+        XCTAssertTrue(hasCorrectTitle)
+    }
+
     func test_addTagsAction_sendsAddTagsViewModel() {
         let viewModel = subject(item: space.buildSavedItem(tags: ["tag 1"]))
         source.stubRetrieveTags { _ in return nil }
@@ -196,7 +252,7 @@ class SavedItemViewModelTests: XCTestCase {
             XCTAssertEqual(viewModel?.tags, ["tag 1"])
         }.store(in: &subscriptions)
 
-        viewModel.invokeAction(title: "Add tags")
+        viewModel.invokeAction(title: "Edit tags")
 
         wait(for: [expectAddTags], timeout: 10)
     }

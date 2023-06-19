@@ -30,7 +30,6 @@ disabled_rules: # rule identifiers to exclude from running
   - nsobject_prefer_isequal
   - private_unit_test
   - reduce_boolean
-  - redundant_string_enum_value
   - self_in_property_initialization
   - shorthand_operator
   - todo
@@ -49,7 +48,6 @@ opt_in_rules: # some rules are only opt-in
   # These rules were originally opted into. Disabling for now to get
   # Swiftlint up and running.
   # - statement_position
-  # - file_header
   # - deployment_target
   # - discouraged_optional_collection
   # - prohibited_interface_builder
@@ -62,7 +60,6 @@ opt_in_rules: # some rules are only opt-in
   - anyobject_protocol
   - array_init
   - attributes
-  - capture_variable
   - closing_brace
   - closure_spacing
   - contains_over_filter_count
@@ -77,21 +74,28 @@ opt_in_rules: # some rules are only opt-in
   - explicit_init
   - duplicate_imports
   - duplicate_enum_cases
+  - file_header
   - last_where
   - multiline_arguments_brackets
   - multiline_arguments
   - opening_brace
   - optional_enum_case_matching
-  - overridden_super_call:
-      excluded:
-        - PocketKit/Tests
-        - Tests iOS/
+  - overridden_super_call
   - return_arrow_whitespace
-  - unused_import
   - vertical_parameter_alignment_on_call
   - vertical_whitespace_closing_braces
   - vertical_whitespace_opening_braces
   - yoda_condition
+
+file_header:
+  required_string: |
+                    // This Source Code Form is subject to the terms of the Mozilla Public
+                    // License, v. 2.0. If a copy of the MPL was not distributed with this
+                    // file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+analyzer_rules: # Rules run by `swiftlint analyze`
+  - capture_variable
+  - unused_import
 
 excluded: # paths to ignore during linting. Takes precedence over `included`.
   - build

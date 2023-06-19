@@ -24,6 +24,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     private let consumerKey: String
     private let subscriptionStore: SubscriptionStore
     private let notificationRelay: NotificationRelay
+    private let featureFlags: FeatureFlagServiceProtocol
 
     let notificationService: PushNotificationService
 
@@ -42,13 +43,35 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         self.sessionBackupUtility = services.sessionBackupUtility
         self.subscriptionStore = services.subscriptionStore
         self.notificationRelay = NotificationRelay(services.notificationCenter)
-
+        self.featureFlags = services.featureFlagService
         self.notificationService = services.notificationService
         self.consumerKey = Keys.shared.pocketApiConsumerKey
     }
 
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
-        Log.start(dsn: Keys.shared.sentryDSN)
+        Log.start(
+            dsn: Keys.shared.sentryDSN,
+            tracesSampler: { context in
+                guard self.featureFlags.isAssigned(flag: .traceSampling),
+                      // Get the sentry traces sample value from the feature flag
+                      let sample = self.featureFlags.getPayload(flag: .traceSampling)?.numberValue else {
+                    // Traces sampler is disabled or not set, so returning a 0
+                    return 0.0
+                }
+                return sample
+            },
+            profilesSampler: { context in
+                // NOTE: This is relative to the TracesSampler. IE. if tracesSampler responds with 100%, profilesSampler will be called 100% of the time,
+                // if traces responds with 50%, profileSamples will be called 50% of the time.
+                guard self.featureFlags.isAssigned(flag: .profileSampling),
+                      // Get the sentry profile sample value from the feature flag
+                      let sample = self.featureFlags.getPayload(flag: .profileSampling)?.numberValue else {
+                    // Profiles sampler is disabled or not set, so returning a 0
+                    return 0.0
+                }
+                return sample
+            }
+        )
 
         if CommandLine.arguments.contains("clearKeychain") {
             appSession.currentSession = nil
@@ -95,7 +118,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
             tracker.addPersistentEntity(UserEntity(guid: currentSession.guid, userID: currentSession.userIdentifier, adjustAdId: Adjust.adid()))
         }
 
-        self.refreshCoordinators.forEach({$0.initialize()})
+        self.refreshCoordinators.forEach({ $0.initialize() })
         DispatchQueue.global(qos: .background).async { [weak self] in
             self?.source.restore()
         }

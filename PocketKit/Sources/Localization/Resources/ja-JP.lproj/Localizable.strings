@@ -1,6 +1,20 @@
 //General Messages
 "general.oops" = "エラーが発生しました。もう一度お試しください。";
 
+// - General Error Messages
+"general.error.serverNotResponding.title" = "サーバーが応答していません";
+"general.error.serverNotResponding.detail" = "現在サーバーが応答していません。ご迷惑をおかけし、大変申し訳ございません。1時間以内に利用可能になる予定です。";
+"general.error.serverError" = "リクエストで問題が発生したため、Pocket チームに通知しました。後ほどもう一度お試しください。";
+"general.error.sendReport" = "レポートを送信";
+
+// Report an Issue
+"reportIssue.header" = "問題を報告";
+"reportIssue.description" = "Pocketの改善にご協力いただき、ありがとうございます！発生した問題の詳細を教えてください。";
+"reportIssue.name" = "名前";
+"reportIssue.email" = "メール";
+"reportIssue.comment" = "問題の内容";
+"reportIssue.submitIssue.title" = "問題を送信";
+
 //Archive
 "archive.empty.header" = "リストを最新に保ちながら整理";
 "archive.empty.detail" = "アーカイブアイコンを使用すると、読み終えた保存コンテンツをアーカイブできます。";
@@ -18,6 +32,7 @@
 
 //ItemAction
 "itemAction.addTags" = "タグを追加";
+"itemAction.editTags" = "タグを編集";
 "itemAction.archive" = "アーカイブ";
 "itemAction.copyLink" = "リンクをコピー";
 "itemAction.delete" = "削除";
@@ -289,3 +304,5 @@
 "Hooray!" = "やった～！";
 
 "back.to.pocket" = "Pocket に戻る";
+
+"saveToPocket.tapToDismiss" = "タップして閉じる";

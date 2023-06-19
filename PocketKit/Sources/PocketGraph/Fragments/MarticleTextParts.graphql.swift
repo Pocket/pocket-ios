@@ -26,12 +26,14 @@ public struct MarticleTextParts: PocketGraph.SelectionSet, Fragment {
   public init(
     content: PocketGraph.Markdown
   ) {
-    self.init(_dataDict: DataDict(data: [
-      "__typename": PocketGraph.Objects.MarticleText.typename,
-      "content": content,
-      "__fulfilled": Set([
+    self.init(_dataDict: DataDict(
+      data: [
+        "__typename": PocketGraph.Objects.MarticleText.typename,
+        "content": content,
+      ],
+      fulfilledFragments: [
         ObjectIdentifier(Self.self)
-      ])
-    ]))
+      ]
+    ))
   }
 }

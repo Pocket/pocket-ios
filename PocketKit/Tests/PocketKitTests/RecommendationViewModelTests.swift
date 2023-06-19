@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 import Analytics
 import Combine
@@ -17,6 +21,7 @@ class RecommendationViewModelTests: XCTestCase {
     private var subscriptions: Set<AnyCancellable> = []
 
     override func setUp() {
+        super.setUp()
         source = MockSource()
         tracker = MockTracker()
         pasteboard = MockPasteboard()
@@ -30,6 +35,7 @@ class RecommendationViewModelTests: XCTestCase {
     override func tearDownWithError() throws {
         subscriptions = []
         try space.clear()
+        try super.tearDownWithError()
     }
 
     func subject(
@@ -77,7 +83,6 @@ class RecommendationViewModelTests: XCTestCase {
 
         // favorited, archived
         do {
-
             let item = space.buildItem(remoteID: "item-3", givenURL: URL(string: "https://example.com/items/item-2"))
             let recommendation = space.buildRecommendation(remoteID: "rec-3", item: item)
 
@@ -343,7 +348,8 @@ class RecommendationViewModelTests: XCTestCase {
             item: space.buildItem()
         )
         source.stubFetchDetailsForRecommendation { rec in
-            rec.item.article = .some(Article(components: []))
+            rec.item.article = .some(Article(components: [.text(TextComponent(content: "This article has components"))]))
+            return true
         }
 
         let viewModel = subject(recommendation: recommendation)
@@ -361,6 +367,29 @@ class RecommendationViewModelTests: XCTestCase {
         XCTAssertNotNil(recommendation.item.article)
     }
 
+    func test_fetchDetailsIfNeeded_whenMarticleIsNilAfterFetching_returnsWebView() {
+        let recommendation = space.buildRecommendation(
+            item: space.buildItem()
+        )
+        source.stubFetchDetailsForRecommendation { rec in
+            rec.item.article = nil
+            return false
+        }
+
+        let viewModel = subject(recommendation: recommendation)
+        let receivedEvent = expectation(description: "receivedEvent")
+        receivedEvent.isInverted = true
+        viewModel.events.sink { event in
+            receivedEvent.fulfill()
+        }.store(in: &subscriptions)
+
+        viewModel.fetchDetailsIfNeeded()
+        wait(for: [receivedEvent], timeout: 10)
+
+        XCTAssertFalse(recommendation.item.hasArticleComponents)
+        XCTAssertNil(recommendation.item.article)
+    }
+
     func test_fetchDetailsIfNeeded_whenMarticleIsPresent_immediatelySendsContentUpdatedEvent() {
         let recommendation = space.buildRecommendation(
             item: space.buildItem(article: .init(components: []))
@@ -368,6 +397,7 @@ class RecommendationViewModelTests: XCTestCase {
 
         source.stubFetchDetailsForRecommendation { rec in
             XCTFail("Should not fetch details when article content is already available")
+            return false
         }
 
         let viewModel = subject(recommendation: recommendation)

@@ -41,5 +41,4 @@ class CoreDataSpotlightDelegate: NSCoreDataCoreSpotlightDelegate {
 
         return attributeSet
     }
-
 }

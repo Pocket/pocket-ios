@@ -8,12 +8,15 @@ import Sails
 class DeleteAnItemTests: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
+    var snowplowMicro = SnowplowMicro()
 
-    override func setUpWithError() throws {
+    override func setUp() async throws {
+        try await super.setUp()
         continueAfterFailure = false
 
         let uiApp = XCUIApplication()
         app = PocketAppElement(app: uiApp)
+        await snowplowMicro.resetSnowplowEvents()
 
         server = Application()
         try server.start()
@@ -22,6 +25,7 @@ class DeleteAnItemTests: XCTestCase {
     override func tearDownWithError() throws {
         try server.stop()
         app.terminate()
+        try super.tearDownWithError()
     }
 
     func test_deletingAnItemFromList_removesItFromList_andSyncsWithServer() {
@@ -54,7 +58,8 @@ class DeleteAnItemTests: XCTestCase {
         waitForDisappearance(of: itemCell)
     }
 
-    func test_deletingAnItemFromReader_deletesItem_andPopsBackToList() {
+    @MainActor
+    func test_deletingAnItemFromReader_deletesItem_andPopsBackToList() async {
         let deletionExpectation = expectation(description: "A delete request to the server")
         server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
@@ -91,6 +96,11 @@ class DeleteAnItemTests: XCTestCase {
 
         app.saves.wait()
         waitForDisappearance(of: itemCell)
+
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+        let deleteEvent = await snowplowMicro.getFirstEvent(with: "reader.toolbar.delete")
+        deleteEvent!.getUIContext()!.assertHas(type: "button")
+        deleteEvent!.getContentContext()!.assertHas(url: "https://example.com/item-2")
     }
 
     func test_deletingAnItem_fromArchive_removesItFromList_andSyncsWithServer() {

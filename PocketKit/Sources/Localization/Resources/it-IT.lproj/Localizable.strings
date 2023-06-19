@@ -1,6 +1,20 @@
 //General Messages
 "general.oops" = "Errore della ricerca. Riprovare?";
 
+// - General Error Messages
+"general.error.serverNotResponding.title" = "Il server non risponde";
+"general.error.serverNotResponding.detail" = "Al momento il nostro server non risponde, ma dovrebbe tornare disponibile entro un'ora. Ti ringraziamo per la pazienza.";
+"general.error.serverError" = "Qualcosa non ha funzionato con la tua richiesta e abbiamo avvisato il team Pocket. Riprova più tardi.";
+"general.error.sendReport" = "Invia una segnalazione";
+
+// Report an Issue
+"reportIssue.header" = "Segnala un problema";
+"reportIssue.description" = "Grazie per il tuo aiuto a migliorare Pocket! Fornisci maggiori dettagli sul problema che hai riscontrato.";
+"reportIssue.name" = "Nome";
+"reportIssue.email" = "E-mail";
+"reportIssue.comment" = "Cos'è successo?";
+"reportIssue.submitIssue.title" = "Invia problema";
+
 //Archive
 "archive.empty.header" = "Tieni in ordine il tuo elenco";
 "archive.empty.detail" = "Archivia i contenuti salvati già consultati facendo clic sull'icona dell'archivio.";
@@ -18,6 +32,7 @@
 
 //ItemAction
 "itemAction.addTags" = "Aggiungi tag";
+"itemAction.editTags" = "Modifica tag";
 "itemAction.archive" = "Archivio";
 "itemAction.copyLink" = "Copia link";
 "itemAction.delete" = "Elimina";
@@ -289,3 +304,5 @@
 "Hooray!" = "Evviva!";
 
 "back.to.pocket" = "Torna a Pocket";
+
+"saveToPocket.tapToDismiss" = "Tocca per ignorare";

@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 @testable import Textile
 @testable import PocketKit
@@ -30,7 +34,7 @@ extension ItemsListItemPresenterTests {
 
     func test_attributedTitle_whenItemIsPending_usesCorrectStyle() {
         let item = MockItemsListItem.build(title: "Pocket", isPending: true)
-        let presenter = ItemsListItemPresenter(item: item)
+        let presenter = ItemsListItemPresenter(item: item, isDisabled: true)
 
         let style = presenter.attributedTitle.attributes(at: 0, effectiveRange: nil)[.style] as! Style
         XCTAssertEqual(UIColor(style.colorAsset), UIColor(.ui.grey5))
@@ -114,7 +118,7 @@ extension ItemsListItemPresenterTests {
 
     func test_attributedDetail_whenItemIsPending_usesCorrectStyle() {
         let item = MockItemsListItem.build(domain: "Pocket", isPending: true)
-        let presenter = ItemsListItemPresenter(item: item)
+        let presenter = ItemsListItemPresenter(item: item, isDisabled: true)
 
         let style = presenter.attributedDetail.attributes(at: 0, effectiveRange: nil)[.style] as! Style
         XCTAssertEqual(UIColor(style.colorAsset), UIColor(.ui.grey5))

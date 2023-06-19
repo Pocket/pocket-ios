@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import SwiftUI
 import Sync
 import Combine
@@ -37,8 +41,7 @@ class ListOptions: ObservableObject {
 }
 
 class SavedListOptions: ObservableObject, ListOptionsHolder {
-    @AppStorage
-    var selectedSortOption: SortOption
+    @AppStorage var selectedSortOption: SortOption
 
     private var cancellable: AnyCancellable?
     private let _publisher: PassthroughSubject<Void, Never>
@@ -57,8 +60,7 @@ class SavedListOptions: ObservableObject, ListOptionsHolder {
 }
 
 class ArchiveListOptions: ObservableObject, ListOptionsHolder {
-    @AppStorage
-    var selectedSortOption: SortOption
+    @AppStorage var selectedSortOption: SortOption
 
     private var cancellable: AnyCancellable?
     private let _publisher: PassthroughSubject<Void, Never>

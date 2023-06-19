@@ -15,6 +15,7 @@ class ListenTests: XCTestCase {
     var snowplowMicro = SnowplowMicro()
 
     override func setUp() async throws {
+        try await super.setUp()
         continueAfterFailure = false
 
         let uiApp = XCUIApplication()
@@ -35,6 +36,7 @@ class ListenTests: XCTestCase {
         try server.stop()
         app.terminate()
         await snowplowMicro.assertNoBadEvents()
+        try await super.tearDown()
     }
 
     func test_listen_shows_whenInFlag() {

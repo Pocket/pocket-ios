@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Sync
 import Combine
 import Foundation
@@ -127,8 +131,22 @@ class SavedItemViewModel: ReadableViewModel {
         }
 
         Task {
-            try? await self.source.fetchDetails(for: self.item)
+            do {
+                let remoteHasArticle = try await self.source.fetchDetails(for: self.item)
+                displayArticle(with: remoteHasArticle)
+            } catch {
+                Log.capture(message: "Failed to fetch details for SavedItemViewModel: \(error)")
+            }
+        }
+    }
+
+    /// Check to see if item has article components to display in reader view, else display in web view
+    /// - Parameter remoteHasArticle: condition if the remote in `fetchDetails` has article data
+    private func displayArticle(with remoteHasArticle: Bool) {
+        if let itemDetails = item.item, itemDetails.hasArticleComponents || remoteHasArticle {
             _events.send(.contentUpdated)
+        } else {
+            showWebReader()
         }
     }
 
@@ -162,7 +180,7 @@ extension SavedItemViewModel {
         _actions = [
             .displaySettings { [weak self] _ in self?.displaySettings() },
             favoriteAction,
-            .addTags { [weak self] _ in self?.showAddTagsView() },
+            tagsAction(),
             .delete { [weak self] _ in self?.confirmDelete() },
             .share { [weak self] _ in self?.share() }
         ]
@@ -170,12 +188,12 @@ extension SavedItemViewModel {
 
     func favorite() {
         source.favorite(item: item)
-        track(identifier: .itemFavorite)
+        trackFavorite(url: item.url)
     }
 
     func unfavorite() {
         source.unfavorite(item: item)
-        track(identifier: .itemUnfavorite)
+        trackUnfavorite(url: item.url)
     }
 
     func moveFromArchiveToSaves(completion: (Bool) -> Void) {
@@ -214,6 +232,15 @@ extension SavedItemViewModel {
         notificationCenter.post(name: .bannerRequested, object: bannerData)
     }
 
+    private func tagsAction() -> ItemAction {
+        let hasTags = (item.tags?.count ?? 0) > 0
+        if hasTags {
+            return .editTags { [weak self] _ in self?.showAddTagsView() }
+        } else {
+            return .addTags { [weak self] _ in self?.showAddTagsView() }
+        }
+    }
+
     private func showAddTagsView() {
         presentedAddTags = PocketAddTagsViewModel(
             item: item,
@@ -227,7 +254,7 @@ extension SavedItemViewModel {
                 self?.fetchDetailsIfNeeded()
             }
         )
-        track(identifier: .itemAddTags)
+        trackAddTags(url: item.url)
     }
 
     private func saveExternalURL(_ url: URL) {

@@ -1,6 +1,11 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import UIKit
 import SharedPocketKit
 import Combine
+import Localization
 
 class LoggedOutViewModel {
     let infoViewModel = InfoView.Model(
@@ -15,7 +20,10 @@ class LoggedOutViewModel {
         )
     )
 
-    let dismissAttributedText = NSAttributedString(string: "Tap to Dismiss", style: .dismiss)
+    let dismissAttributedText = NSAttributedString(
+        string: Localization.SaveToPocket.tapToDismiss,
+        style: .dismiss
+    )
 
     @Published var actionButtonConfiguration: UIButton.Configuration?
 

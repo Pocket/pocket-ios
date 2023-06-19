@@ -11,7 +11,9 @@ struct PocketItem {
 
     init(item: ItemsListItem) {
         self.item = item
-        self.itemPresenter = ItemsListItemPresenter(item: item)
+        // `PocketItem` is used within the scope of search, so we can simply use isPending
+        // since archive is only available online, anyways, so there's no additional logic needed
+        self.itemPresenter = ItemsListItemPresenter(item: item, isDisabled: item.isPending)
     }
 
     var id: String? {
@@ -60,5 +62,9 @@ struct PocketItem {
 
     var cursor: String? {
         item.cursor
+    }
+
+    var hasTags: Bool {
+        (item.tagNames ?? []).isEmpty == false
     }
 }

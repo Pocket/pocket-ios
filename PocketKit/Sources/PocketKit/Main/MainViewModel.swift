@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Combine
 import Network
 import Sync
@@ -28,6 +32,7 @@ class MainViewModel: ObservableObject {
                     networkPathMonitor: NWPathMonitor(),
                     user: Services.shared.user,
                     userDefaults: Services.shared.userDefaults,
+                    featureFlags: Services.shared.featureFlagService,
                     source: Services.shared.source,
                     tracker: Services.shared.tracker.childTracker(hosting: .saves.search),
                     store: Services.shared.subscriptionStore,

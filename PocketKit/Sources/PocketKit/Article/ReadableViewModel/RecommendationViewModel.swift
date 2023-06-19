@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Combine
 import Sync
 import Foundation
@@ -113,8 +117,22 @@ class RecommendationViewModel: ReadableViewModel {
         }
 
         Task {
-            try await source.fetchDetails(for: recommendation)
+            do {
+                let remoteHasArticle = try await source.fetchDetails(for: recommendation)
+                displayArticle(with: remoteHasArticle)
+            } catch {
+                Log.capture(message: "Failed to fetch details for RecommendationViewModel: \(error)")
+            }
+        }
+    }
+
+    /// Check to see if item has article components to display in reader view, else display in web view
+    /// - Parameter remoteHasArticle: condition if the remote in `fetchDetails` has article data
+    private func displayArticle(with remoteHasArticle: Bool) {
+        if recommendation.item.hasArticleComponents || remoteHasArticle {
             _events.send(.contentUpdated)
+        } else {
+            showWebReader()
         }
     }
 
@@ -205,6 +223,7 @@ extension RecommendationViewModel {
 
     private func report() {
         selectedRecommendationToReport = recommendation
+        trackReport()
     }
 
     func favorite() {
@@ -213,7 +232,7 @@ extension RecommendationViewModel {
         }
 
         source.favorite(item: savedItem)
-        track(identifier: .itemFavorite)
+        trackFavorite(url: savedItem.url)
     }
 
     func unfavorite() {
@@ -222,7 +241,7 @@ extension RecommendationViewModel {
         }
 
         source.unfavorite(item: savedItem)
-        track(identifier: .itemUnfavorite)
+        trackUnfavorite(url: savedItem.url)
     }
 
     func openInWebView(url: URL?) {
@@ -262,12 +281,11 @@ extension RecommendationViewModel {
     }
 
     func beginBulkEdit() {
-
     }
 
     private func save() {
         source.save(recommendation: recommendation)
-        track(identifier: .itemSave)
+        trackSave()
     }
 
     private func saveExternalURL(_ url: URL) {

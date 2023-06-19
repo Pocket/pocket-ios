@@ -1,7 +1,12 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Analytics
 import Combine
 import SharedPocketKit
 import SwiftUI
+import StoreKit
 import Sync
 import Textile
 import Network
@@ -40,8 +45,7 @@ class AccountViewModel: ObservableObject {
     @Published var isPresentingHooray = false
     @Published var isPresentingDebugMenu = false
 
-    @AppStorage
-    public var appBadgeToggle: Bool
+    @AppStorage public var appBadgeToggle: Bool
 
     private var userStatusListener: AnyCancellable?
 
@@ -158,8 +162,12 @@ extension AccountViewModel {
                 try await self.restoreSubscription()
                 isPresentingRestoreSuccessful = true
             } catch {
-                Log.capture(message: "Manual purchase restore failed: \(error)")
                 isPresentingRestoreNotSuccessful = true
+                // do not send user cancellations as errors to Sentry
+                if let storeKitError = error as? StoreKitError, case .userCancelled = storeKitError {
+                    return
+                }
+                Log.capture(message: "Manual purchase restore failed: \(error)")
             }
         }
     }

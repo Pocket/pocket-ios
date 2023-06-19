@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 @testable import PocketKit
 import Combine
@@ -17,6 +21,7 @@ class LoggedOutViewModelTests: XCTestCase {
     private var subscriptions: Set<AnyCancellable>!
 
     override func setUp() {
+        super.setUp()
         authorizationClient = AuthorizationClient(consumerKey: "the-consumer-key", adjustSignupEventToken: "token") { (_, _, completion) in
             self.mockAuthenticationSession.completionHandler = completion
             return self.mockAuthenticationSession
@@ -40,6 +45,7 @@ class LoggedOutViewModelTests: XCTestCase {
 
     override func tearDown() {
         subscriptions = []
+        super.tearDown()
     }
 
     func subject(

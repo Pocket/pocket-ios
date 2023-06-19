@@ -44,6 +44,7 @@ class SearchViewModel: ObservableObject {
     private let user: User
     private let store: SubscriptionStore
     private let userDefaults: UserDefaults
+    private var featureFlags: FeatureFlagServiceProtocol
     private let source: Source
     private let premiumUpgradeViewModelFactory: PremiumUpgradeViewModelFactory
     private let notificationCenter: NotificationCenter
@@ -72,6 +73,7 @@ class SearchViewModel: ObservableObject {
     @Published var showBanner: Bool = false
     @Published var isPresentingPremiumUpgrade = false
     @Published var isPresentingHooray = false
+    @Published var isPresentingReportIssue = false
     @Published var searchState: SearchViewState?
     @Published var selectedItem: SelectedItem?
     @Published var searchText = "" {
@@ -80,10 +82,29 @@ class SearchViewModel: ObservableObject {
         }
     }
 
+    /// Create the banner details to populate the view
     var bannerData: BannerModifier.BannerData {
         let offlineView = BannerModifier.BannerData(image: .looking, title: Localization.Search.limitedResults, detail: Localization.Search.offlineMessage)
-        let errorView = BannerModifier.BannerData(image: .warning, title: Localization.Search.limitedResults, detail: Localization.Search.Banner.errorMessage)
+        let errorView = BannerModifier.BannerData(
+            image: .warning,
+            title: Localization.Search.limitedResults,
+            detail: Localization.Search.Banner.errorMessage,
+            action: reportButton()
+        )
         return isOffline ? offlineView : errorView
+    }
+
+    /// Handles whether to show a report button for a banner
+    private func reportButton() -> BannerAction? {
+        if featureFlags.isAssigned(flag: .reportIssue) {
+            return BannerAction(
+                text: Localization.General.Error.sendReport,
+                style: PocketButtonStyle(.primary, .small)
+            ) {
+                self.isPresentingReportIssue.toggle()
+            }
+        }
+        return nil
     }
 
     var defaultState: SearchViewState {
@@ -109,6 +130,7 @@ class SearchViewModel: ObservableObject {
     init(networkPathMonitor: NetworkPathMonitor,
          user: User,
          userDefaults: UserDefaults,
+         featureFlags: FeatureFlagServiceProtocol,
          source: Source,
          tracker: Tracker,
          store: SubscriptionStore,
@@ -117,6 +139,7 @@ class SearchViewModel: ObservableObject {
         self.networkPathMonitor = networkPathMonitor
         self.user = user
         self.userDefaults = userDefaults
+        self.featureFlags = featureFlags
         self.source = source
         self.tracker = tracker
         self.store = store
@@ -322,7 +345,7 @@ class SearchViewModel: ObservableObject {
                     self.trackSearchResultsPage(pageNumber: onlineSearch.pageNumberLoaded, scope: scope)
                 } else if case .failure(let error) = result {
                     guard case SearchServiceError.noInternet = error else {
-                        self.searchState = .emptyState(ErrorEmptyState())
+                        self.searchState = .emptyState(ErrorEmptyState(featureFlags: featureFlags))
                         return
                     }
                     self.searchState = .emptyState(OfflineEmptyState(type: scope))
@@ -406,7 +429,18 @@ class SearchViewModel: ObservableObject {
 
 extension SearchViewModel: SearchResultActionDelegate {
     func itemViewModel(_ searchItem: PocketItem, index: Int) -> PocketItemViewModel {
-        return PocketItemViewModel(item: searchItem, index: index, source: source, tracker: tracker, userDefaults: userDefaults, scope: selectedScope, user: user, store: store, networkPathMonitor: networkPathMonitor, searchActionDelegate: self)
+        return PocketItemViewModel(
+            item: searchItem,
+            index: index,
+            source: source,
+            tracker: tracker,
+            userDefaults: userDefaults,
+            scope: selectedScope,
+            user: user,
+            store: store,
+            networkPathMonitor: networkPathMonitor,
+            searchActionDelegate: self
+        )
     }
 
     func select(_ searchItem: PocketItem, index: Int) {
@@ -616,5 +650,16 @@ extension SearchViewModel {
     /// Ttoggle the presentation of `PremiumUpgradeView`
     func showPremiumUpgrade() {
         self.isPresentingPremiumUpgrade = true
+    }
+}
+
+// MARK: Sentry User Feedback Reporting
+extension SearchViewModel {
+    var userEmail: String {
+        user.email
+    }
+
+    func submitIssue(name: String, email: String, comments: String) {
+        Log.captureUserFeedback(message: "Report an issue", name: name, email: email, comments: comments)
     }
 }

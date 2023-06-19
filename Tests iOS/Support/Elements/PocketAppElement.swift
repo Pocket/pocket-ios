@@ -88,6 +88,13 @@ struct PocketAppElement {
         return ReportViewElement(query["report-recommendation"])
     }
 
+    var reportIssueView: ReportIssueViewElement {
+        let query: XCUIElementQuery
+        query = app.collectionViews
+
+        return ReportIssueViewElement(query["report-issue"])
+    }
+
     var sortMenu: SortMenuElement {
         return SortMenuElement(app.tables["sort-menu"])
     }
@@ -140,6 +147,10 @@ struct PocketAppElement {
         app.buttons["Report"]
     }
 
+    var reportIssueButton: XCUIElement {
+        app.buttons["get-report-issue-button"]
+    }
+
     var alert: AlertElement {
         AlertElement(app.alerts.element(boundBy: 0))
     }
@@ -177,7 +188,6 @@ struct PocketAppElement {
 /// Listen
 /// Hacky helper extenstion until we add accessibility identifier helpers to Listen
 extension PocketAppElement {
-
     var listenPlay: XCUIElement {
         app.buttons["Play"]
     }
@@ -186,5 +196,4 @@ extension PocketAppElement {
     var listenList: XCUIElement {
         app.collectionViews.element(boundBy: 0)
     }
-
 }

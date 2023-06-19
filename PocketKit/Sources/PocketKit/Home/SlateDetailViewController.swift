@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import UIKit
 import Sync
 import Analytics
@@ -182,7 +186,8 @@ private extension SlateDetailViewController {
             return NSCollectionLayoutSection(group: group)
         case .slate(let slate):
             let width = environment.container.effectiveContentSize.width
-            let margin: CGFloat = Margins.normal.rawValue
+            let margin: CGFloat = environment.traitCollection.shouldUseWideLayout() ? Margins.iPadNormal.rawValue : Margins.normal.rawValue
+
             let recommendations = slate.recommendations?.compactMap { $0 as? Recommendation } ?? []
 
             let components = recommendations.reduce((CGFloat(0), [NSCollectionLayoutItem]())) { result, recommendation in

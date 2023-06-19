@@ -12,6 +12,7 @@ class HomeTests: XCTestCase {
     var snowplowMicro = SnowplowMicro()
 
     override func setUp() async throws {
+        try await super.setUp()
         continueAfterFailure = false
 
         let uiApp = XCUIApplication()
@@ -37,6 +38,7 @@ class HomeTests: XCTestCase {
         app.terminate()
         try server.stop()
         await snowplowMicro.assertBaselineSnowplowExpectation()
+        try await super.tearDown()
     }
 
     @MainActor

@@ -19,6 +19,6 @@ public extension Mock where O == Publisher {
     name: String? = nil
   ) {
     self.init()
-    self.name = name
+    _set(name, for: \.name)
   }
 }

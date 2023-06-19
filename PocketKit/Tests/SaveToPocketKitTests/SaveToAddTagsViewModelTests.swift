@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 import Combine
 import Analytics
@@ -21,15 +25,17 @@ class SaveToAddTagsViewModelTests: XCTestCase {
     }
 
     override func setUp() {
+        super.setUp()
         tracker = MockTracker()
         user = MockUser()
         userDefaults = UserDefaults(suiteName: "SaveToAddTagsViewModelTests")
         space = .testSpace()
     }
 
-    override func tearDown() async throws {
+    override func tearDownWithError() throws {
         UserDefaults.standard.removePersistentDomain(forName: "SaveToAddTagsViewModelTests")
         try space.clear()
+        try super.tearDownWithError()
     }
 
     private func subject(

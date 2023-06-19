@@ -49,17 +49,19 @@ public struct SyndicatedArticleParts: PocketGraph.SelectionSet, Fragment {
     excerpt: String? = nil,
     publisher: Publisher? = nil
   ) {
-    self.init(_dataDict: DataDict(data: [
-      "__typename": PocketGraph.Objects.SyndicatedArticle.typename,
-      "itemId": itemId,
-      "mainImage": mainImage,
-      "title": title,
-      "excerpt": excerpt,
-      "publisher": publisher._fieldData,
-      "__fulfilled": Set([
+    self.init(_dataDict: DataDict(
+      data: [
+        "__typename": PocketGraph.Objects.SyndicatedArticle.typename,
+        "itemId": itemId,
+        "mainImage": mainImage,
+        "title": title,
+        "excerpt": excerpt,
+        "publisher": publisher._fieldData,
+      ],
+      fulfilledFragments: [
         ObjectIdentifier(Self.self)
-      ])
-    ]))
+      ]
+    ))
   }
 
   /// Publisher
@@ -81,13 +83,15 @@ public struct SyndicatedArticleParts: PocketGraph.SelectionSet, Fragment {
     public init(
       name: String? = nil
     ) {
-      self.init(_dataDict: DataDict(data: [
-        "__typename": PocketGraph.Objects.Publisher.typename,
-        "name": name,
-        "__fulfilled": Set([
+      self.init(_dataDict: DataDict(
+        data: [
+          "__typename": PocketGraph.Objects.Publisher.typename,
+          "name": name,
+        ],
+        fulfilledFragments: [
           ObjectIdentifier(Self.self)
-        ])
-      ]))
+        ]
+      ))
     }
   }
 }

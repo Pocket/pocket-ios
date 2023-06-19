@@ -7,7 +7,8 @@ import Foundation
 import CoreData
 
 extension Author {
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<Author> {
+    @nonobjc
+    public class func fetchRequest() -> NSFetchRequest<Author> {
         return NSFetchRequest<Author>(entityName: "Author")
     }
 

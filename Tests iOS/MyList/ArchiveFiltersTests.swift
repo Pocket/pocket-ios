@@ -13,6 +13,7 @@ class ArchiveFiltersTests: XCTestCase {
     var snowplowMicro = SnowplowMicro()
 
     override func setUp() async throws {
+        try await super.setUp()
         continueAfterFailure = false
 
         let uiApp = XCUIApplication()
@@ -33,6 +34,7 @@ class ArchiveFiltersTests: XCTestCase {
         try server.stop()
         app.terminate()
         await snowplowMicro.assertBaselineSnowplowExpectation()
+        try await super.tearDown()
     }
 
     func test_archiveView_tappingFavoritesPill_togglesDisplayingFavoritedArchivedContent() {

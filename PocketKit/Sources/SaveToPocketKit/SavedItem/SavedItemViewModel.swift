@@ -1,8 +1,13 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Foundation
 import SharedPocketKit
 import Sync
 import Combine
 import Analytics
+import Localization
 
 class SavedItemViewModel {
     private let appSession: AppSession
@@ -21,7 +26,19 @@ class SavedItemViewModel {
 
     var savedItem: SavedItem?
 
-    let dismissAttributedText = NSAttributedString(string: "Tap to Dismiss", style: .dismiss)
+    var tagsActionAttributedText: NSAttributedString {
+        let tagCount = savedItem?.tags?.count ?? 0
+        let hasTags = tagCount > 0
+        return NSAttributedString(
+            string: hasTags ? Localization.ItemAction.editTags : Localization.ItemAction.addTags,
+            style: .buttonText
+        )
+    }
+
+    let dismissAttributedText = NSAttributedString(
+        string: Localization.SaveToPocket.tapToDismiss,
+        style: .dismiss
+    )
 
     init(appSession: AppSession,
          saveService: SaveService,
@@ -52,6 +69,7 @@ class SavedItemViewModel {
 
         for item in extensionItems {
             guard let url = try? await url(from: item) else {
+                tracker.track(event: Events.SaveTo.unableToSave())
                 infoViewModel = .error
                 break
             }
@@ -137,45 +155,11 @@ extension SavedItemViewModel {
         }
 
         for provider in providers {
-            let plainTextUTI = "public.plain-text"
-            let urlUTI = "public.url"
-
-            if provider.hasItemConformingToTypeIdentifier(plainTextUTI) {
-                guard let string = try? await provider.loadItem(forTypeIdentifier: plainTextUTI, options: nil) as? String,
-                      let url = retrieveURLFromString(with: string) else {
-                    continue
-                }
-
-                return url
-            } else if provider.hasItemConformingToTypeIdentifier(urlUTI) {
-                guard let url = try? await provider.loadItem(forTypeIdentifier: urlUTI, options: nil) as? URL else {
-                    continue
-                }
-
-                return url
-            } else {
-                continue
+            if let url = await URLExtractor.url(from: provider) {
+                return URL(string: url)
             }
         }
 
-        return nil
-    }
-
-    /// Modified from https://www.hackingwithswift.com/example-code/strings/how-to-detect-a-url-in-a-string-using-nsdatadetector
-    /// - Parameter inputString: string input used to search for a URL
-    /// - Returns: URL found within the string
-    private func retrieveURLFromString(with inputString: String) -> URL? {
-        guard let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue) else {
-            Log.capture(message: "Unable to initialize detector")
-            return nil
-        }
-        let matches = detector.matches(in: inputString, options: [], range: NSRange(location: 0, length: inputString.utf16.count))
-
-        for match in matches {
-            guard let range = Range(match.range, in: inputString) else { continue }
-            let string = String(inputString[range])
-            return URL(string: string)
-        }
         return nil
     }
 }

@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import UIKit
 import Textile
 import SwiftUI
@@ -58,7 +62,7 @@ struct LoggedOutView: View {
                 image: .accountDeleted,
                 title: Localization.Login.DeletedAccount.Banner.title,
                 detail: Localization.Login.DeletedAccount.Banner.detail,
-                action: BannerModifier.BannerData.BannerAction(
+                action: BannerAction(
                     text: Localization.Login.DeletedAccount.Banner.action,
                     style: PocketButtonStyle(.primary)
                 ) {

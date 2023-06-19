@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Foundation
 import Textile
 import UIKit
@@ -69,6 +73,19 @@ extension ItemAction {
     static func addTags(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
             title: Localization.ItemAction.addTags,
+            identifier: .addTagsItem,
+            accessibilityIdentifier: "item-action-add-tags",
+            image: UIImage(asset: .tag),
+            handler: { sender in
+                Haptics.addTagsTap()
+                handler(sender)
+            }
+        )
+    }
+
+    static func editTags(_ handler: @escaping (Any?) -> Void) -> ItemAction {
+        return ItemAction(
+            title: Localization.ItemAction.editTags,
             identifier: .addTagsItem,
             accessibilityIdentifier: "item-action-add-tags",
             image: UIImage(asset: .tag),

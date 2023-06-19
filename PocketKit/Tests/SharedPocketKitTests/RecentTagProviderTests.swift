@@ -8,13 +8,15 @@ import XCTest
 class RecentTagProviderTests: XCTestCase {
     private var userDefaults: UserDefaults!
 
-    override func setUpWithError() throws {
+    override func setUp() {
+        super.setUp()
         userDefaults = UserDefaults(suiteName: "PocketUserTests")
     }
 
-    override func tearDownWithError() throws {
+    override func tearDown() {
         // Is this better than removing the suite?
         userDefaults.resetKeys()
+        super.tearDown()
     }
 
     func subject(
