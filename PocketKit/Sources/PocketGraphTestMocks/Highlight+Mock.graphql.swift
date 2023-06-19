@@ -23,8 +23,8 @@ public extension Mock where O == Highlight {
     quote: String? = nil
   ) {
     self.init()
-    self.id = id
-    self.patch = patch
-    self.quote = quote
+    _set(id, for: \.id)
+    _set(patch, for: \.patch)
+    _set(quote, for: \.quote)
   }
 }

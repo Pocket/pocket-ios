@@ -111,9 +111,12 @@ class SavedItemViewModel: ReadableViewModel {
         pocketPremiumURL(url, user: user)
     }
 
+    // NSSet does not have an isEmpty property
+    // swiftlint:disable empty_count
     var hasHighlights: Bool {
         item.annotations?.highlights?.count != 0
     }
+    // swiftlint:enable empty_count
 
     func moveToSaves() {
         source.unarchive(item: item)

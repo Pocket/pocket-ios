@@ -8,5 +8,4 @@ import CoreData
 
 @objc(Annotations)
 public class Annotations: NSManagedObject {
-
 }

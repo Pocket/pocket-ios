@@ -7,8 +7,8 @@ import Foundation
 import CoreData
 
 extension Highlight {
-
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<Highlight> {
+    @nonobjc
+    public class func fetchRequest() -> NSFetchRequest<Highlight> {
         return NSFetchRequest<Highlight>(entityName: "Highlight")
     }
 
@@ -16,5 +16,4 @@ extension Highlight {
     @NSManaged public var patch: String?
     @NSManaged public var quote: String?
     @NSManaged public var annotations: Annotations?
-
 }

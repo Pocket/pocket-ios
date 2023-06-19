@@ -7,19 +7,17 @@ import Foundation
 import CoreData
 
 extension Annotations {
-
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<Annotations> {
+    @nonobjc
+    public class func fetchRequest() -> NSFetchRequest<Annotations> {
         return NSFetchRequest<Annotations>(entityName: "Annotations")
     }
 
     @NSManaged public var highlights: NSSet?
     @NSManaged public var savedItem: SavedItem?
-
 }
 
 // MARK: Generated accessors for highlights
 extension Annotations {
-
     @objc(addHighlightsObject:)
     @NSManaged public func addToHighlights(_ value: Highlight)
 
@@ -31,5 +29,4 @@ extension Annotations {
 
     @objc(removeHighlights:)
     @NSManaged public func removeFromHighlights(_ values: NSSet)
-
 }

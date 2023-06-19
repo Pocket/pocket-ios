@@ -41,6 +41,7 @@ public extension Mock where O == SavedItem {
     self.init()
     _set(_createdAt, for: \._createdAt)
     _set(_deletedAt, for: \._deletedAt)
+    _set(annotations, for: \.annotations)
     _set(archivedAt, for: \.archivedAt)
     _set(id, for: \.id)
     _set(isArchived, for: \.isArchived)

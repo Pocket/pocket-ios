@@ -25,7 +25,6 @@ extension SavedItem {
     @NSManaged public var tags: NSOrderedSet?
     @NSManaged public var unresolvedSavedItem: UnresolvedSavedItem?
     @NSManaged public var annotations: Annotations?
-
 }
 
 // MARK: Generated accessors for tags
@@ -59,5 +58,4 @@ extension SavedItem {
 
     @objc(removeTags:)
     @NSManaged public func removeFromTags(_ values: NSOrderedSet)
-
 }

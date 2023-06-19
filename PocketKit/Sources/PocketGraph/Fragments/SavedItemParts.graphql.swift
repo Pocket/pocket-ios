@@ -98,6 +98,7 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
         "archivedAt": archivedAt,
         "tags": tags._fieldData,
         "item": item._fieldData,
+        "annotations": annotations._fieldData,
       ],
       fulfilledFragments: [
         ObjectIdentifier(Self.self)
@@ -945,13 +946,15 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
     public init(
       highlights: [Highlight?]? = nil
     ) {
-      self.init(_dataDict: DataDict(data: [
-        "__typename": PocketGraph.Objects.SavedItemAnnotations.typename,
-        "highlights": highlights._fieldData,
-        "__fulfilled": Set([
+      self.init(_dataDict: DataDict(
+        data: [
+          "__typename": PocketGraph.Objects.SavedItemAnnotations.typename,
+          "highlights": highlights._fieldData,
+        ],
+        fulfilledFragments: [
           ObjectIdentifier(Self.self)
-        ])
-      ]))
+        ]
+      ))
     }
 
     /// Annotations.Highlight
@@ -989,15 +992,17 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
         patch: String,
         quote: String
       ) {
-        self.init(_dataDict: DataDict(data: [
-          "__typename": PocketGraph.Objects.Highlight.typename,
-          "id": id,
-          "patch": patch,
-          "quote": quote,
-          "__fulfilled": Set([
+        self.init(_dataDict: DataDict(
+          data: [
+            "__typename": PocketGraph.Objects.Highlight.typename,
+            "id": id,
+            "patch": patch,
+            "quote": quote,
+          ],
+          fulfilledFragments: [
             ObjectIdentifier(Self.self)
-          ])
-        ]))
+          ]
+        ))
       }
     }
   }

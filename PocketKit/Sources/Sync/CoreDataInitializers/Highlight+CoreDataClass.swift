@@ -8,5 +8,4 @@ import CoreData
 
 @objc(Highlight)
 public class Highlight: NSManagedObject {
-
 }
