@@ -98,19 +98,29 @@ class AccountViewModel: ObservableObject {
         userManagementService.logout()
     }
 
-    func toggleAppBadge() {
-        UNUserNotificationCenter.current().requestAuthorization(options: .badge) {
+    func toggleAppBadge(to isEnabled: Bool) {
+        tracker.track(event: Events.Settings.appBadgeToggled(newValue: isEnabled))
+
+        UNUserNotificationCenter.current().requestAuthorization(options: .badge) { [weak self]
             (granted, error) in
+            guard let self else { return }
+
             guard error == nil && granted == true else {
+                if let error {
+                    Log.capture(error: error)
+                }
+
+                tracker.track(event: Events.Settings.appBadgePermissionDenied())
+
                 self.userDefaults.set(false, forKey: AccountViewModel.ToggleAppBadgeKey)
                 DispatchQueue.main.async { [weak self] in
                     self?.appBadgeToggle = false
                 }
+
                 return
             }
 
-            let currentValue = self.userDefaults.bool(forKey: AccountViewModel.ToggleAppBadgeKey)
-            self.userDefaults.setValue(!currentValue, forKey: AccountViewModel.ToggleAppBadgeKey)
+            self.userDefaults.setValue(isEnabled, forKey: AccountViewModel.ToggleAppBadgeKey)
             self.notificationCenter.post(name: .listUpdated, object: nil)
         }
     }

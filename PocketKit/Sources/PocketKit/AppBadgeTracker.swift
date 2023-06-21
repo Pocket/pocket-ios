@@ -52,8 +52,8 @@ class AppBadgeSetup {
 
     func manualCheckForSavedCount() {
         var numberOfSaves: Int = 0
-        let currentValue = userDefaults.bool(forKey: Self.toggleAppBadgeKey)
-        if currentValue != false {
+        let badgeEnabled = userDefaults.bool(forKey: Self.toggleAppBadgeKey)
+        if badgeEnabled {
             do {
                 numberOfSaves = try source.unreadSaves()
             } catch {

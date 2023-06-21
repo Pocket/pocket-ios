@@ -147,4 +147,19 @@ public extension Events.Settings {
             )
         )
     }
+
+    static func appBadgeToggled(newValue: Bool) -> Engagement {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "global-nav.settings.appBadgeToggle",
+                componentDetail: newValue ? "Badge Enabled" : "Badge Disabled"
+            )
+        )
+    }
+
+    static func appBadgePermissionDenied() -> System {
+        return System(type: .appPermission(.appBadge(false)))
+    }
 }

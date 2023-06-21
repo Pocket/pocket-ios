@@ -45,8 +45,8 @@ struct SettingsForm: View {
                 topSectionWithLeadingDivider()
                     .textCase(nil)
                 Section(header: Text(Localization.appCustomization).style(.settings.header)) {
-                    SettingsRowToggle(title: Localization.showAppBadgeCount, model: model) {
-                        model.toggleAppBadge()
+                    SettingsRowToggle(title: Localization.showAppBadgeCount, model: model) { newValue in
+                        model.toggleAppBadge(to: newValue)
                     }
                 }
                 .textCase(nil)
