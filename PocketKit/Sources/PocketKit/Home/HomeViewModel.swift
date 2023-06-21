@@ -97,6 +97,12 @@ class HomeViewModel: NSObject {
 
     @Published var tappedSeeAll: SeeAll?
 
+    var numberOfHeroItems: Int = 1 {
+        didSet {
+            self.snapshot = buildSnapshot()
+        }
+    }
+
     private let source: Source
     let tracker: Tracker
     private let user: User
@@ -232,6 +238,14 @@ extension HomeViewModel {
                 [.recommendationHero(hero.objectID)],
                 toSection: .slateHero(slateId)
             )
+
+            if numberOfHeroItems == 2 {
+                let hero2 = recommendations.removeFirst()
+                snapshot.appendItems(
+                    [.recommendationHero(hero2.objectID)],
+                    toSection: .slateHero(slateId)
+                )
+            }
 
             guard !recommendations.isEmpty else {
                 continue
@@ -465,21 +479,6 @@ extension HomeViewModel {
         }
 
         return HomeRecommendationCellViewModel(
-            recommendation: recommendation,
-            overflowActions: overflowActions(for: recommendation, at: indexPath),
-            primaryAction: primaryAction(for: recommendation, at: indexPath)
-        )
-    }
-
-    func recommendationHeroWideViewModel(
-        for objectID: NSManagedObjectID,
-        at indexPath: IndexPath? = nil
-    ) -> HomeRecommendationCellHeroWideViewModel? {
-        guard let recommendation = source.viewObject(id: objectID) as? Recommendation else {
-            return nil
-        }
-
-        return HomeRecommendationCellHeroWideViewModel(
             recommendation: recommendation,
             overflowActions: overflowActions(for: recommendation, at: indexPath),
             primaryAction: primaryAction(for: recommendation, at: indexPath)
