@@ -6,8 +6,12 @@ import SharedPocketKit
 import SwiftUI
 
 /// Wrapper type for an ItemContent instance with its thumbnail image (if any)
-struct ItemRowContent: Identifiable {
+struct ItemRowContent: Identifiable, Equatable {
     let id = UUID()
     let content: ItemContent
     var image: Image?
+
+    public static var empty: ItemRowContent {
+        ItemRowContent(content: .empty)
+    }
 }

@@ -24,8 +24,6 @@ struct ItemWidgetsRow: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
                     .style(.header.sansSerif.w8)
-                    .lineLimit(lineLimit(for: widgetFamily))
-                    .fixedSize(horizontal: false, vertical: true)
                 if let readingTime {
                     Text(domain + " - " + readingTime)
                         .style(.domain)
@@ -40,14 +38,6 @@ struct ItemWidgetsRow: View {
             }
         }
     }
-
-    private func lineLimit(for family: WidgetFamily) -> Int {
-        if case .systemMedium = family {
-            return hasVeryLargeFonts ? 3 : 2
-        }
-        // We might need to handle other widget categories when supported
-        return 3
-    }
 }
 
 /// Thumbnail view of an Item widget row
@@ -55,7 +45,7 @@ struct ItemThumbnail: View {
     @Environment(\.widgetFamily)
     private var widgetFamily
 
-    @Environment(\.maxThumbnailSize)
+    @Environment(\.thumbnailWidth)
     private var maxThumbnailSize
 
     let image: Image
@@ -64,10 +54,7 @@ struct ItemThumbnail: View {
         image
             .resizable()
             .aspectRatio(contentMode: .fill)
-            .frame(
-                maxWidth: maxThumbnailSize,
-                maxHeight: maxThumbnailSize
-            )
-            .cornerRadius(8)
+            .frame(width: maxThumbnailSize)
+            .cornerRadius(16)
     }
 }

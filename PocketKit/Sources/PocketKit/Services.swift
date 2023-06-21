@@ -44,7 +44,9 @@ struct Services {
     let bannerPresenter: BannerPresenter
     let notificationCenter: NotificationCenter
     let sessionBackupUtility: SessionBackupUtility
+    let widgetsSessionService: WidgetsSessionService
     let recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService
+    let editorsPicksWidgetUpdateService: RecommendationsWidgetUpdateService
 
     private let persistentContainer: PersistentContainer
 
@@ -211,7 +213,9 @@ struct Services {
             notificationCenter: notificationCenter
         )
 
-        recentSavesWidgetUpdateService = RecentSavesWidgetUpdateService(store: RecentSavesWidgetStore(userDefaults: userDefaults))
+        recentSavesWidgetUpdateService = RecentSavesWidgetUpdateService(store: UserDefaultsItemWidgetsStore(userDefaults: userDefaults, key: .recentSavesWidget))
+        editorsPicksWidgetUpdateService = RecommendationsWidgetUpdateService(store: UserDefaultsItemWidgetsStore(userDefaults: userDefaults, key: .editorsPicksWidget))
+        widgetsSessionService = UserDefaultsWidgetSessionService(defaults: userDefaults)
     }
 }
 

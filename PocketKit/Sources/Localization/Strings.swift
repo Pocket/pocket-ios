@@ -597,14 +597,10 @@ public enum Localization {
       public static let tagStoriesFasterThanEver = Localization.tr("Localizable", "tags.upsell.tagStoriesFasterThanEver", fallback: "Tag stories faster than ever—get your most recent tags with Pocket Premium.")
     }
   }
-  public enum Widget {
-    public enum RecentSaves {
-      /// Access your most recently saved articles.
-      public static let description = Localization.tr("Localizable", "widget.recentSaves.description", fallback: "Access your most recently saved articles.")
-    }
-  }
   public enum Widgets {
     public enum RecentSaves {
+      /// Access your most recently saved articles.
+      public static let description = Localization.tr("Localizable", "widgets.recentSaves.description", fallback: "Access your most recently saved articles.")
       /// Start building your Pocket list.
       public static let emptyMessage = Localization.tr("Localizable", "widgets.recentSaves.emptyMessage", fallback: "Start building your Pocket list.")
       /// Something went wrong.
@@ -613,6 +609,16 @@ public enum Localization {
       public static let loggedOutMessage = Localization.tr("Localizable", "widgets.recentSaves.loggedOutMessage", fallback: "Log in to Pocket to see your recent saves.")
       /// Recent Saves
       public static let title = Localization.tr("Localizable", "widgets.recentSaves.title", fallback: "Recent Saves")
+    }
+    public enum Recommendations {
+      /// Recommendations
+      public static let fallbackTitle = Localization.tr("Localizable", "widgets.recommendations.fallbackTitle", fallback: "Recommendations")
+      public enum EditorsPicks {
+        /// Discover the most thought-provoking stories out there, curated by Pocket.
+        public static let description = Localization.tr("Localizable", "widgets.recommendations.editorsPicks.description", fallback: "Discover the most thought-provoking stories out there, curated by Pocket.")
+        /// Editor's Picks
+        public static let title = Localization.tr("Localizable", "widgets.recommendations.editorsPicks.title", fallback: "Editor's Picks")
+      }
     }
   }
 }

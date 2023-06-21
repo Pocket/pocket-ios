@@ -5,7 +5,7 @@
 import Sync
 import SharedPocketKit
 
-class MockRecentSavesWidgetStore: RecentSavesStore {
+class MockRecentSavesWidgetStore: ItemWidgetsStore {
     var isLoggedIn: Bool = false
 
     func setLoggedIn(_ isLoggedIn: Bool) {}

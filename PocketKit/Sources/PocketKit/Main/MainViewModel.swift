@@ -80,6 +80,7 @@ class MainViewModel: ObservableObject {
                 user: Services.shared.user,
                 store: Services.shared.subscriptionStore,
                 recentSavesWidgetUpdateService: Services.shared.recentSavesWidgetUpdateService,
+                editorsPicksWidgetUpdateService: Services.shared.editorsPicksWidgetUpdateService,
                 userDefaults: Services.shared.userDefaults,
                 notificationCenter: Services.shared.notificationCenter
             ),

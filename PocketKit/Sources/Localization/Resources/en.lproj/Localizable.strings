@@ -312,4 +312,7 @@
 "widgets.recentSaves.loggedOutMessage" = "Log in to Pocket to see your recent saves.";
 "widgets.recentSaves.errorMessage" = "Something went wrong.";
 "widgets.recentSaves.title" = "Recent Saves";
-"widget.recentSaves.description" = "Access your most recently saved articles.";
+"widgets.recentSaves.description" = "Access your most recently saved articles.";
+"widgets.recommendations.fallbackTitle" = "Recommendations";
+"widgets.recommendations.editorsPicks.title" = "Editor's Picks";
+"widgets.recommendations.editorsPicks.description" = "Discover the most thought-provoking stories out there, curated by Pocket.";

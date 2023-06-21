@@ -108,6 +108,7 @@ class HomeViewModel: NSObject {
     private var recentSavesCount: Int = 0
     private let store: SubscriptionStore
     private let recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService
+    private let editorsPicksWidgetUpdateService: RecommendationsWidgetUpdateService
 
     private let recentSavesController: NSFetchedResultsController<SavedItem>
     private let recomendationsController: RichFetchedResultsController<Recommendation>
@@ -120,6 +121,7 @@ class HomeViewModel: NSObject {
         user: User,
         store: SubscriptionStore,
         recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService,
+        editorsPicksWidgetUpdateService: RecommendationsWidgetUpdateService,
         userDefaults: UserDefaults,
         notificationCenter: NotificationCenter
     ) {
@@ -131,6 +133,7 @@ class HomeViewModel: NSObject {
         self.user = user
         self.store = store
         self.recentSavesWidgetUpdateService = recentSavesWidgetUpdateService
+        self.editorsPicksWidgetUpdateService = editorsPicksWidgetUpdateService
         self.userDefaults = userDefaults
         self.notificationCenter = notificationCenter
 
@@ -712,6 +715,7 @@ extension HomeViewModel: NSFetchedResultsControllerDelegate {
             reconfiguredItemIdentifiers = reconfiguredItemIdentifiers.filter({ existingItemIdentifiers.contains($0) })
             // Tell the new snapshot to reconfigure just the ones that exist
             newSnapshot.reconfigureItems(reconfiguredItemIdentifiers)
+            updateEditorsPicksWidget()
         }
 
         self.snapshot = newSnapshot
@@ -722,10 +726,21 @@ extension HomeViewModel: NSFetchedResultsControllerDelegate {
 private extension HomeViewModel {
     func updateRecentSavesWidget() {
         guard let items = recentSavesController.fetchedObjects else {
-            recentSavesWidgetUpdateService.setRecentSaves([])
+            recentSavesWidgetUpdateService.update([], "")
             return
         }
         // because we might still end up with more items, slice the first n elements anyway.
-        recentSavesWidgetUpdateService.setRecentSaves(Array(items.prefix(SyncConstants.Home.recentSaves)))
+        recentSavesWidgetUpdateService.update(Array(items.prefix(SyncConstants.Home.recentSaves)), Localization.recentSaves)
+    }
+}
+
+// MARK: Recommendations - Editor's Picks widget
+private extension HomeViewModel {
+    func updateEditorsPicksWidget() {
+        guard let firstSection = recomendationsController.sections?.first, let recommendations = firstSection.objects as? [Recommendation] else {
+            editorsPicksWidgetUpdateService.update([])
+            return
+        }
+        editorsPicksWidgetUpdateService.update(Array(recommendations.prefix(SyncConstants.Home.recentSaves)))
     }
 }
