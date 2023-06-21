@@ -93,10 +93,8 @@ class HomeViewControllerSectionProvider {
         return section
     }
 
+    /// Handles hero section for both regular and compact layout. For wide layout, the hero section display two hero cards, otherwise, it displays a single hero card
     func heroSection(for slateID: NSManagedObjectID, in viewModel: HomeViewModel, env: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? {
-        let heroItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1))
-        let heroItem = NSCollectionLayoutItem(layoutSize: heroItemSize)
-
         let slate = viewModel.slateModel(for: slateID)
         let recommendations: [Recommendation] = slate?.recommendations?.compactMap { $0 as? Recommendation } ?? []
 
@@ -104,20 +102,36 @@ class HomeViewControllerSectionProvider {
               let hero = viewModel.recommendationHeroViewModel(for: recommendations[0].objectID) else {
             return nil
         }
-
         let width = env.container.effectiveContentSize.width
         let heroHeight: CGFloat
         let sideMargin: CGFloat
+        let heroGroup: NSCollectionLayoutGroup
+
         if env.traitCollection.shouldUseWideLayout() {
             sideMargin = Constants.iPadSideMargin
-            heroHeight = width * 0.28
+            let firstCard = RecommendationCell.fullHeight(viewModel: hero, availableWidth: width / 2 - (sideMargin * 2))
+            let secondCard = RecommendationCell.fullHeight(viewModel: viewModel.recommendationHeroViewModel(for: recommendations[1].objectID) ?? hero, availableWidth: width / 2 - (sideMargin * 2))
+            heroHeight = max(firstCard, secondCard)
+            heroGroup = NSCollectionLayoutGroup.horizontal(layoutSize: .init(
+                widthDimension: .fractionalWidth(1),
+                heightDimension: .absolute(heroHeight)
+            ), repeatingSubitem: .init(
+                layoutSize: .init(
+                    widthDimension: .fractionalWidth(0.5),
+                    heightDimension: .fractionalHeight(1)
+                )
+            ), count: 2)
+
+            heroGroup.interItemSpacing = .fixed(Constants.spacing)
         } else {
             sideMargin = Constants.sideMargin
             heroHeight = RecommendationCell.fullHeight(viewModel: hero, availableWidth: width - (Constants.sideMargin * 2))
+            let heroItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1))
+            let heroItem = NSCollectionLayoutItem(layoutSize: heroItemSize)
+            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(heroHeight))
+            heroGroup = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [heroItem])
         }
 
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(heroHeight))
-        let heroGroup = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [heroItem])
         let sectionHeaderViewModel = viewModel.sectionHeaderViewModel(for: .slateHero(slateID))
 
         let headerItem = NSCollectionLayoutBoundarySupplementaryItem(

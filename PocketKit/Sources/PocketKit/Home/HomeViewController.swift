@@ -19,6 +19,7 @@ struct HomeViewControllerSwiftUI: UIViewControllerRepresentable {
 
     func makeUIViewController(context: UIViewControllerRepresentableContext<Self>) -> UINavigationController {
         let homeViewController = HomeViewController(model: model)
+        homeViewController.updateHeroCardCount()
         let navigationController = UINavigationController(rootViewController: homeViewController)
         navigationController.navigationBar.prefersLargeTitles = true
         navigationController.navigationBar.barTintColor = UIColor(.ui.white1)
@@ -99,7 +100,6 @@ class HomeViewController: UIViewController {
         collectionView.register(cellClass: RecentSavesItemCell.self)
         collectionView.register(cellClass: RecommendationCarouselCell.self)
         collectionView.register(cellClass: ItemsListOfflineCell.self)
-        collectionView.register(cellClass: RecommendationCellHeroWide.self)
         collectionView.register(viewClass: SectionHeaderView.self, forSupplementaryViewOfKind: SectionHeaderView.kind)
         collectionView.delegate = self
 
@@ -188,6 +188,18 @@ class HomeViewController: UIViewController {
         guard traitCollection.userInterfaceIdiom == .phone else { return .all }
         return .portrait
     }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        updateHeroCardCount()
+    }
+
+    func updateHeroCardCount() {
+        if traitCollection.shouldUseWideLayout() {
+            self.model.numberOfHeroItems = 2
+        } else {
+            self.model.numberOfHeroItems = 1
+        }
+    }
 }
 
 extension HomeViewController {
@@ -205,23 +217,13 @@ extension HomeViewController {
             cell.configure(model: viewModel)
             return cell
         case .recommendationHero(let objectID):
-            if traitCollection.shouldUseWideLayout() {
-                let cell: RecommendationCellHeroWide = collectionView.dequeueCell(for: indexPath)
-                guard let viewModel = model.recommendationHeroWideViewModel(for: objectID, at: indexPath) else {
-                    return cell
-                }
-
-                cell.configure(model: viewModel)
-                return cell
-            } else {
-                let cell: RecommendationCell = collectionView.dequeueCell(for: indexPath)
-                guard let viewModel = model.recommendationHeroViewModel(for: objectID, at: indexPath) else {
-                    return cell
-                }
-
-                cell.configure(model: viewModel)
+            let cell: RecommendationCell = collectionView.dequeueCell(for: indexPath)
+            guard let viewModel = model.recommendationHeroViewModel(for: objectID, at: indexPath) else {
                 return cell
             }
+
+            cell.configure(model: viewModel)
+            return cell
         case .recommendationCarousel(let objectID):
             let cell: RecommendationCarouselCell = collectionView.dequeueCell(for: indexPath)
             guard let viewModel = model.recommendationCarouselViewModel(for: objectID, at: indexPath) else {
