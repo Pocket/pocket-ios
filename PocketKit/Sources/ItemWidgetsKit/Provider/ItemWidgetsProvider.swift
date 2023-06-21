@@ -29,7 +29,7 @@ struct ItemWidgetsProvider: TimelineProvider {
         }
         // logged out
         guard service.isLoggedIn else {
-            completion(ItemsListEntry(date: Date(), name: "", contentType: .recentSavesLoggedOut))
+            completion(ItemsListEntry(date: Date(), name: "", contentType: .loggedOut))
             return
         }
         let saves = service.getItems(limit: numberOfItems(for: context.family))
@@ -52,7 +52,7 @@ struct ItemWidgetsProvider: TimelineProvider {
             return
         }
         guard service.isLoggedIn else {
-            let entries = [ItemsListEntry(date: Date(), name: "", contentType: .recentSavesLoggedOut)]
+            let entries = [ItemsListEntry(date: Date(), name: "", contentType: .loggedOut)]
             let timeline = Timeline(entries: entries, policy: .never)
             completion(timeline)
             return

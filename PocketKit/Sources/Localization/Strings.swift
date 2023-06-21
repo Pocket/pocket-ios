@@ -256,6 +256,30 @@ public enum Localization {
       public static let banner = Localization.tr("Localizable", "itemList.edit.banner", fallback: "Editing your list is not available in this version of Pocket, but will be returning soon!")
     }
   }
+  public enum ItemWidgets {
+    /// Something went wrong.
+    public static let errorMessage = Localization.tr("Localizable", "itemWidgets.errorMessage", fallback: "Something went wrong.")
+    /// Log in to Pocket to see your content.
+    public static let loggedOutMessage = Localization.tr("Localizable", "itemWidgets.loggedOutMessage", fallback: "Log in to Pocket to see your content.")
+    public enum RecentSaves {
+      /// Access your most recently saved articles.
+      public static let description = Localization.tr("Localizable", "itemWidgets.recentSaves.description", fallback: "Access your most recently saved articles.")
+      /// Start building your Pocket list.
+      public static let emptyMessage = Localization.tr("Localizable", "itemWidgets.recentSaves.emptyMessage", fallback: "Start building your Pocket list.")
+      /// Recent Saves
+      public static let title = Localization.tr("Localizable", "itemWidgets.recentSaves.title", fallback: "Recent Saves")
+    }
+    public enum Recommendations {
+      /// Recommendations
+      public static let fallbackTitle = Localization.tr("Localizable", "itemWidgets.recommendations.fallbackTitle", fallback: "Recommendations")
+      public enum EditorsPicks {
+        /// Discover the most thought-provoking stories out there, curated by Pocket.
+        public static let description = Localization.tr("Localizable", "itemWidgets.recommendations.editorsPicks.description", fallback: "Discover the most thought-provoking stories out there, curated by Pocket.")
+        /// Editor's Picks
+        public static let title = Localization.tr("Localizable", "itemWidgets.recommendations.editorsPicks.title", fallback: "Editor's Picks")
+      }
+    }
+  }
   public enum Itemlist {
     public enum Filter {
       /// All
@@ -595,30 +619,6 @@ public enum Localization {
       public static let getPocketPremium = Localization.tr("Localizable", "tags.upsell.getPocketPremium", fallback: "Get Pocket Premium")
       /// Tag stories faster than ever—get your most recent tags with Pocket Premium.
       public static let tagStoriesFasterThanEver = Localization.tr("Localizable", "tags.upsell.tagStoriesFasterThanEver", fallback: "Tag stories faster than ever—get your most recent tags with Pocket Premium.")
-    }
-  }
-  public enum Widgets {
-    public enum RecentSaves {
-      /// Access your most recently saved articles.
-      public static let description = Localization.tr("Localizable", "widgets.recentSaves.description", fallback: "Access your most recently saved articles.")
-      /// Start building your Pocket list.
-      public static let emptyMessage = Localization.tr("Localizable", "widgets.recentSaves.emptyMessage", fallback: "Start building your Pocket list.")
-      /// Something went wrong.
-      public static let errorMessage = Localization.tr("Localizable", "widgets.recentSaves.errorMessage", fallback: "Something went wrong.")
-      /// Log in to Pocket to see your recent saves.
-      public static let loggedOutMessage = Localization.tr("Localizable", "widgets.recentSaves.loggedOutMessage", fallback: "Log in to Pocket to see your recent saves.")
-      /// Recent Saves
-      public static let title = Localization.tr("Localizable", "widgets.recentSaves.title", fallback: "Recent Saves")
-    }
-    public enum Recommendations {
-      /// Recommendations
-      public static let fallbackTitle = Localization.tr("Localizable", "widgets.recommendations.fallbackTitle", fallback: "Recommendations")
-      public enum EditorsPicks {
-        /// Discover the most thought-provoking stories out there, curated by Pocket.
-        public static let description = Localization.tr("Localizable", "widgets.recommendations.editorsPicks.description", fallback: "Discover the most thought-provoking stories out there, curated by Pocket.")
-        /// Editor's Picks
-        public static let title = Localization.tr("Localizable", "widgets.recommendations.editorsPicks.title", fallback: "Editor's Picks")
-      }
     }
   }
 }

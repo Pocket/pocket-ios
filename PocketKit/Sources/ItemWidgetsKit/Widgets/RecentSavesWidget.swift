@@ -21,8 +21,8 @@ public struct RecentSavesWidget: Widget {
             ItemsWidgetsContainerView(entry: entry)
                 .titleColor(.ui.coral2)
         }
-        .configurationDisplayName(Localization.Widgets.RecentSaves.title)
-        .description(Localization.Widgets.RecentSaves.description)
+        .configurationDisplayName(Localization.ItemWidgets.RecentSaves.title)
+        .description(Localization.ItemWidgets.RecentSaves.description)
         .supportedFamilies([.systemMedium, .systemLarge])
     }
 }
