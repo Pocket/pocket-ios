@@ -4,6 +4,7 @@
 
 import Foundation
 import Apollo
+import Localization
 import PocketGraph
 import SharedPocketKit
 
@@ -208,7 +209,7 @@ public class PocketSaveService: SaveService {
     private func reloadRecentSavesWidget() {
         do {
             let recentSaves = try space.fetchSavedItems(limit: SyncConstants.Home.recentSaves)
-            recentSavesWidgetUpdateService.setRecentSaves(recentSaves)
+            recentSavesWidgetUpdateService.update(recentSaves, Localization.recentSaves)
         } catch {
             Log.capture(message: "Unable to update the Recent Saves widget after saving an item from the Save extension - \(error)")
         }

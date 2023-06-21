@@ -5,6 +5,25 @@
 import Foundation
 import Localization
 
+/// Type containing a named collection of `ItemContent`
+public struct ItemContentContainer: Codable, Equatable {
+    public let name: String
+    public let items: [ItemContent]
+
+    public var isEmpty: Bool {
+        self == .empty
+    }
+
+    public init(name: String, items: [ItemContent]) {
+        self.name = name
+        self.items = items
+    }
+
+    public static var empty: ItemContentContainer {
+        ItemContentContainer(name: "", items: [])
+    }
+}
+
 /// Type representing the content of a Core Data `Item`.
 public struct ItemContent: Codable, Equatable {
     public let url: String
@@ -48,5 +67,10 @@ extension ItemContent {
     /// Return a placeholder saved item
     public static var placeHolder: ItemContent {
         ItemContent(url: "https://getpocket.com", title: "Pocket Widget", imageUrl: nil, bestDomain: "", timeToRead: nil)
+    }
+
+    /// Represents an empty item, used as placeHolder
+    public static var empty: ItemContent {
+        ItemContent(url: "", title: "", imageUrl: nil, bestDomain: "", timeToRead: nil)
     }
 }

@@ -7,16 +7,19 @@ import Textile
 
 /// Header of an item widget
 struct ItemWidgetsHeader: View {
+    @Environment(\.titleColor)
+    private var titleColor
+
     let title: String
 
     var body: some View {
         HStack(alignment: .top) {
             Text(title)
-                .style(.widgetHeader)
+                .style(.widgetHeader(titleColor))
             Spacer()
             Image(asset: .saved)
                 .resizable()
-                .foregroundColor(Color(.ui.coral2))
+                .foregroundColor(Color(titleColor))
                 .frame(width: Appearance.logoWidth, height: Appearance.logoHeight, alignment: .center)
         }
     }
