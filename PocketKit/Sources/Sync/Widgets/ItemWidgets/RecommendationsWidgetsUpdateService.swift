@@ -32,7 +32,7 @@ public struct RecommendationsWidgetUpdateService {
                     timeToRead: ($0.item.timeToRead) != nil ? Int(truncating: ($0.item.timeToRead)!) : nil
                 )
             }
-            var name = Localization.Widgets.Recommendations.fallbackTitle
+            var name = Localization.ItemWidgets.Recommendations.fallbackTitle
             if let item = items.first, let slateName = item.slate?.name {
                 name = slateName
             }

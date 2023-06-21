@@ -28,11 +28,11 @@ struct ItemWidgetsEmptyContentView: View {
     private func emptyContentMessage(_ contentType: ItemsListContentType) -> String {
         switch contentType {
         case .recentSavesEmpty:
-            return Localization.Widgets.RecentSaves.emptyMessage
-        case .recentSavesLoggedOut:
-            return Localization.Widgets.RecentSaves.loggedOutMessage
+            return Localization.ItemWidgets.RecentSaves.emptyMessage
+        case .loggedOut:
+            return Localization.ItemWidgets.loggedOutMessage
         case .error:
-            return Localization.Widgets.RecentSaves.errorMessage
+            return Localization.ItemWidgets.errorMessage
         default:
             return ""
         }
