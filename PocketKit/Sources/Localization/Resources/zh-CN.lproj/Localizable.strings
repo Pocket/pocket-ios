@@ -13,6 +13,7 @@
 "reportIssue.name" = "名称";
 "reportIssue.email" = "电子邮件";
 "reportIssue.comment" = "发生了什么事？";
+"reportIssue.optional" = "可选";
 "reportIssue.submitIssue.title" = "提交问题";
 
 //Archive
