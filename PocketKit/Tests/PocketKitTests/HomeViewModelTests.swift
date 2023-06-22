@@ -656,7 +656,7 @@ class HomeViewModelTests: XCTestCase {
             XCTFail("Unknown feature flag")
             return false
         }
-        
+
         viewModel.$selectedReadableType.dropFirst().sink { readableType in
             switch readableType {
             case .savedItem, .webViewSavedItem:
