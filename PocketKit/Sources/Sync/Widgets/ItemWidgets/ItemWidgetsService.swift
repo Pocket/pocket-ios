@@ -38,7 +38,7 @@ public struct ItemWidgetsService {
 
 // MARK: Widget-specific services
 extension ItemWidgetsService {
-    private static func makeUserDefaults() -> UserDefaults? {
+    public static func makeUserDefaults() -> UserDefaults? {
         guard let info = Bundle.main.infoDictionary,
               let groupID = info["GroupId"] as? String,
               let defaults = UserDefaults(suiteName: groupID) else {

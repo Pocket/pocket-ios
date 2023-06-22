@@ -13,8 +13,7 @@ struct PocketApp: App {
         WindowGroup {
             RootView(model: RootViewModel())
                 .onOpenURL { url in
-                    guard url.scheme == "widget-deeplink" else { return }
-                    delegate.trackWidgetOpen()
+                    delegate.handle(url: url)
                 }
         }
     }

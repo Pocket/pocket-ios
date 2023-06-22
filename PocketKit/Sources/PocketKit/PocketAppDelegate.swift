@@ -217,7 +217,13 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         Adjust.appDidLaunch(adjustConfig)
     }
 
-    public func trackWidgetOpen() {
-        tracker.track(event: Events.Widget.widgetOpenEngagement())
+    // Handles the reception of the url that the app receives
+    public func handle(url: URL) {
+        guard url.scheme == "widget-deeplink" else { return }
+        trackWidgetTapped()
+    }
+
+    private func trackWidgetTapped() {
+        tracker.track(event: Events.Widget.widgetTappedEngagement())
     }
 }

@@ -11,9 +11,11 @@ import WidgetKit
 /// Timeline provider for the recent saves widget
 struct ItemWidgetsProvider: TimelineProvider {
     let service: ItemWidgetsService?
+    let tracker: WidgetTracker?
 
-    init(service: ItemWidgetsService?) {
+    init(service: ItemWidgetsService?, tracker: WidgetTracker?) {
         self.service = service
+        self.tracker = tracker
         Textiles.initialize()
     }
 
@@ -89,6 +91,9 @@ struct ItemWidgetsProvider: TimelineProvider {
             let timeline = Timeline(entries: entriesWithImages, policy: policy(date: date))
             completion(timeline)
         }
+
+        // TODO: Gets triggered when installing, but not removing a widget
+        tracker?.getWidgetConfigurations()
     }
 }
 

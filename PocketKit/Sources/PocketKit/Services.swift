@@ -216,8 +216,6 @@ struct Services {
         recentSavesWidgetUpdateService = RecentSavesWidgetUpdateService(store: UserDefaultsItemWidgetsStore(userDefaults: userDefaults, key: .recentSavesWidget))
         editorsPicksWidgetUpdateService = RecommendationsWidgetUpdateService(store: UserDefaultsItemWidgetsStore(userDefaults: userDefaults, key: .recommendationsWidget))
         widgetsSessionService = UserDefaultsWidgetSessionService(defaults: userDefaults)
-
-        tracker.track(event: Events.Widget.widgetCountEngagement(details: widgetsSessionService.widgetsDetails))
     }
 }
 

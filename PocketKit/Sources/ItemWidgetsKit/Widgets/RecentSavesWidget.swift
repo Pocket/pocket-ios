@@ -17,7 +17,10 @@ public struct RecentSavesWidget: Widget {
     }
 
     public var body: some WidgetConfiguration {
-        StaticConfiguration(kind: kind, provider: ItemWidgetsProvider(service: ItemWidgetsService.makeRecentSavesService())) { entry in
+        StaticConfiguration(kind: kind, provider: ItemWidgetsProvider(
+            service: ItemWidgetsService.makeRecentSavesService(),
+            tracker: WidgetTracker(defaults: ItemWidgetsService.makeUserDefaults())
+        )) { entry in
             ItemsWidgetsContainerView(entry: entry)
                 .titleColor(.ui.coral2)
         }
