@@ -107,7 +107,7 @@ class HomeViewModel: NSObject {
     private var subscriptions: [AnyCancellable] = []
     private var recentSavesCount: Int = 0
     private var store: SubscriptionStore
-    private let featureFlags: FeatureFlagService
+    private let featureFlags: FeatureFlagServiceProtocol
 
     private let recentSavesController: NSFetchedResultsController<SavedItem>
     private let recomendationsController: RichFetchedResultsController<Recommendation>
@@ -121,7 +121,7 @@ class HomeViewModel: NSObject {
         store: SubscriptionStore,
         userDefaults: UserDefaults,
         notificationCenter: NotificationCenter,
-        featureFlags: FeatureFlagService
+        featureFlags: FeatureFlagServiceProtocol
     ) {
         self.source = source
         self.tracker = tracker

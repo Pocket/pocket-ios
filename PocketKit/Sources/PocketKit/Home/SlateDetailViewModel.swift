@@ -33,9 +33,9 @@ class SlateDetailViewModel {
     private let user: User
     private let userDefaults: UserDefaults
     private var subscriptions: [AnyCancellable] = []
-    private let featureFlags: FeatureFlagService
+    private let featureFlags: FeatureFlagServiceProtocol
 
-    init(slate: Slate, source: Source, tracker: Tracker, user: User, userDefaults: UserDefaults, featureFlags: FeatureFlagService) {
+    init(slate: Slate, source: Source, tracker: Tracker, user: User, userDefaults: UserDefaults, featureFlags: FeatureFlagServiceProtocol) {
         self.slate = slate
         self.source = source
         self.tracker = tracker
