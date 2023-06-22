@@ -216,4 +216,8 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         )
         Adjust.appDidLaunch(adjustConfig)
     }
+
+    public func trackWidgetOpen() {
+        tracker.track(event: Events.Widget.widgetOpenEngagement())
+    }
 }

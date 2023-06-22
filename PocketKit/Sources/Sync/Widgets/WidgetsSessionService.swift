@@ -9,6 +9,7 @@ import WidgetKit
 public protocol WidgetsSessionService {
     var isLoggedIn: Bool { get }
     func setLoggedIn(_ isLoggedIn: Bool)
+    var widgetsDetails: [String] { get }
 }
 
 /// A concrete implementation of `WidgetSessionService` using `UserDefaults`
@@ -20,8 +21,13 @@ public struct UserDefaultsWidgetSessionService: WidgetsSessionService {
         defaults.bool(forKey: .widgetsLoggedIn)
     }
 
+    public var widgetsDetails: [String] {
+        defaults.object(forKey: .widgetsDetails) as? [String] ?? []
+    }
+
     public init(defaults: UserDefaults) {
         self.defaults = defaults
+        getWidgetConfigurations()
     }
 
     /// Sets the logged in status and reloads all widgets
@@ -29,5 +35,15 @@ public struct UserDefaultsWidgetSessionService: WidgetsSessionService {
     public func setLoggedIn(_ isLoggedIn: Bool) {
         defaults.setValue(isLoggedIn, forKey: .widgetsLoggedIn)
         WidgetCenter.shared.reloadAllTimelines()
+    }
+
+    // Retreives current widget configurations for tracking
+    private func getWidgetConfigurations() {
+        WidgetCenter.shared.getCurrentConfigurations { widgetInfo in
+            if let widgets = try? widgetInfo.get() {
+                let widgetsDetails = widgets.compactMap { $0.kind + " " + $0.family.description }
+                defaults.setValue(widgetsDetails, forKey: .widgetsDetails)
+            }
+        }
     }
 }

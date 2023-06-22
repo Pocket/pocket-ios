@@ -32,19 +32,22 @@ struct ItemsWidgetsContainerView: View {
         }
     }
 
+    private static let deeplinkURL: URL = URL(string: "widget-deeplink://")!
+
     var body: some View {
-        if #available(iOS 17.0, *) {
-            makeContainerView()
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .containerBackground(for: .widget) {
-                    Color(.ui.white1)
-                }
-        } else {
+//        if #available(iOS 17.0, *) {
+//            makeContainerView()
+//                .frame(maxWidth: .infinity, maxHeight: .infinity)
+//                .containerBackground(for: .widget) {
+//                    Color(.ui.white1)
+//                }
+//        } else {
             makeContainerView()
                 .padding()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Color(.ui.white1))
-        }
+                .widgetURL(ItemsWidgetsContainerView.deeplinkURL)
+//        }
     }
 
     @ViewBuilder

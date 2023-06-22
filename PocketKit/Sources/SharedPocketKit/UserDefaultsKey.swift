@@ -32,6 +32,7 @@ public extension UserDefaults {
         case userId = "User.userId"
         case startingAppSection = "MainViewModel.StartingAppSection"
         case widgetsLoggedIn = "RecentSavesWidgetLoggedInKey"
+        case widgetsDetails = "WidgetsDetailsKey"
         case recentSavesWidget = "RecentSavesWidgetKey"
         case recommendationsWidget = "RecommendationsWidgetKey"
 

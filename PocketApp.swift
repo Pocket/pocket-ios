@@ -12,6 +12,10 @@ struct PocketApp: App {
     var body: some Scene {
         WindowGroup {
             RootView(model: RootViewModel())
+                .onOpenURL { url in
+                    guard url.scheme == "widget-deeplink" else { return }
+                    delegate.trackWidgetOpen()
+                }
         }
     }
 }
