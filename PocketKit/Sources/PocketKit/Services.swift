@@ -214,7 +214,7 @@ struct Services {
         )
 
         recentSavesWidgetUpdateService = RecentSavesWidgetUpdateService(store: UserDefaultsItemWidgetsStore(userDefaults: userDefaults, key: .recentSavesWidget))
-        editorsPicksWidgetUpdateService = RecommendationsWidgetUpdateService(store: UserDefaultsItemWidgetsStore(userDefaults: userDefaults, key: .editorsPicksWidget))
+        editorsPicksWidgetUpdateService = RecommendationsWidgetUpdateService(store: UserDefaultsItemWidgetsStore(userDefaults: userDefaults, key: .recommendationsWidget))
         widgetsSessionService = UserDefaultsWidgetSessionService(defaults: userDefaults)
     }
 }

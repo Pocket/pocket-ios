@@ -13,6 +13,7 @@ struct ItemsListEntry: TimelineEntry {
 /// Determines which type of content to display in the Recent Saves widget.
 enum ItemsListContentType {
     case recentSavesEmpty
+    case recommendationsEmpty
     case loggedOut
     case error
     case items([ItemRowContent])
