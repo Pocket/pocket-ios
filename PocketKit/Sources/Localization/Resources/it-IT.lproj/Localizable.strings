@@ -13,6 +13,7 @@
 "reportIssue.name" = "Nome";
 "reportIssue.email" = "E-mail";
 "reportIssue.comment" = "Cos'è successo?";
+"reportIssue.optional" = "facoltativo";
 "reportIssue.submitIssue.title" = "Invia problema";
 
 //Archive
