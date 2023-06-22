@@ -21,8 +21,8 @@ public struct EditorsPicksWidget: Widget {
                 ItemsWidgetsContainerView(entry: entry)
                 .titleColor(.ui.lapis1)
         }
-        .configurationDisplayName(Localization.ItemWidgets.Recommendations.EditorsPicks.title)
-        .description(Localization.ItemWidgets.Recommendations.EditorsPicks.description)
+        .configurationDisplayName(Localization.ItemWidgets.Recommendations.title)
+        .description(Localization.ItemWidgets.Recommendations.description)
         .supportedFamilies([.systemMedium, .systemLarge])
     }
 }

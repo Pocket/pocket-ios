@@ -11,6 +11,10 @@ public struct ItemWidgetsService {
     private let store: ItemWidgetsStore
     private let sessionService: WidgetsSessionService
 
+    public var kind: ItemWidgetKind {
+        store.kind
+    }
+
     public init(store: ItemWidgetsStore, sessionStore: WidgetsSessionService) {
         self.store = store
         self.sessionService = sessionStore
@@ -56,6 +60,6 @@ extension ItemWidgetsService {
     }
 
     public static func makeEditorsPicksService() -> ItemWidgetsService? {
-        makeWidgetService(key: .editorsPicksWidget)
+        makeWidgetService(key: .recommendationsWidget)
     }
 }

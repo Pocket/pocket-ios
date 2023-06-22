@@ -33,7 +33,7 @@ public extension UserDefaults {
         case startingAppSection = "MainViewModel.StartingAppSection"
         case widgetsLoggedIn = "RecentSavesWidgetLoggedInKey"
         case recentSavesWidget = "RecentSavesWidgetKey"
-        case editorsPicksWidget = "EditorsPicksWidgetKey"
+        case recommendationsWidget = "RecommendationsWidgetKey"
 
         var isRemovable: Bool {
             switch self {

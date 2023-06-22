@@ -17,6 +17,21 @@ struct ItemWidgetsProvider: TimelineProvider {
         Textiles.initialize()
     }
 
+    var kind: ItemWidgetKind {
+        service?.kind ?? .unknown
+    }
+
+    private var emptyContentType: ItemsListContentType {
+        switch kind {
+        case .recentSaves:
+            return .recentSavesEmpty
+        case .recommendations:
+            return .recommendationsEmpty
+        case .unknown:
+            return .error
+        }
+    }
+
     func placeholder(in context: Context) -> ItemsListEntry {
         ItemsListEntry(date: Date(), name: "", contentType: .items([ItemRowContent(content: .placeHolder, image: nil)]))
     }
@@ -32,15 +47,15 @@ struct ItemWidgetsProvider: TimelineProvider {
             completion(ItemsListEntry(date: Date(), name: "", contentType: .loggedOut))
             return
         }
-        let saves = service.getItems(limit: numberOfItems(for: context.family))
+        let items = service.getItems(limit: numberOfItems(for: context.family))
         // empty result
-        guard !saves.isEmpty else {
-            completion(ItemsListEntry(date: Date(), name: "", contentType: .recentSavesEmpty))
+        guard !items.isEmpty else {
+            completion(ItemsListEntry(date: Date(), name: "", contentType: emptyContentType))
             return
         }
         Task {
-            let contentWithImages = await getContentWithImages(content: saves.items)
-            completion(ItemsListEntry(date: Date(), name: saves.name, contentType: .items(contentWithImages)))
+            let contentWithImages = await getContentWithImages(content: items.items)
+            completion(ItemsListEntry(date: Date(), name: items.name, contentType: .items(contentWithImages)))
         }
     }
 
@@ -57,17 +72,17 @@ struct ItemWidgetsProvider: TimelineProvider {
             completion(timeline)
             return
         }
-        let saves = service.getItems(limit: numberOfItems(for: context.family))
+        let items = service.getItems(limit: numberOfItems(for: context.family))
         // empty result
-        guard !saves.isEmpty else {
-            let entries = [ItemsListEntry(date: Date(), name: "", contentType: .recentSavesEmpty)]
+        guard !items.isEmpty else {
+            let entries = [ItemsListEntry(date: Date(), name: "", contentType: emptyContentType)]
             let timeline = Timeline(entries: entries, policy: .never)
             completion(timeline)
             return
         }
         Task {
-            let contentWithImages = await getContentWithImages(content: saves.items)
-            let entriesWithImages = [ItemsListEntry(date: Date(), name: saves.name, contentType: .items(contentWithImages))]
+            let contentWithImages = await getContentWithImages(content: items.items)
+            let entriesWithImages = [ItemsListEntry(date: Date(), name: items.name, contentType: .items(contentWithImages))]
             let timeline = Timeline(entries: entriesWithImages, policy: .never)
             completion(timeline)
         }
