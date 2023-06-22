@@ -13,6 +13,7 @@
 "reportIssue.name" = "Имя";
 "reportIssue.email" = "Электронная почта";
 "reportIssue.comment" = "Опишите проблему";
+"reportIssue.optional" = "необязательно";
 "reportIssue.submitIssue.title" = "Отправить отчет о проблеме";
 
 //Archive
