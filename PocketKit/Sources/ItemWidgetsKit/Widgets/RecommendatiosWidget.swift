@@ -9,11 +9,11 @@ import Sync
 import SharedPocketKit
 import Localization
 
-public struct EditorsPicksWidget: Widget {
+public struct RecommendatiosWidget: Widget {
     let kind: String
 
     public init() {
-        self.kind = WidgetKind.editorsPicks
+        self.kind = WidgetKind.recommendations
     }
 
     public var body: some WidgetConfiguration {

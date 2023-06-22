@@ -10,6 +10,6 @@ import ItemWidgetsKit
 struct ItemWidgetsBundle: WidgetBundle {
     var body: some Widget {
         RecentSavesWidget()
-        EditorsPicksWidget()
+        RecommendatiosWidget()
     }
 }
