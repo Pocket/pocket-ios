@@ -13,6 +13,7 @@
 "reportIssue.name" = "名前";
 "reportIssue.email" = "メール";
 "reportIssue.comment" = "問題の内容";
+"reportIssue.optional" = "オプション";
 "reportIssue.submitIssue.title" = "問題を送信";
 
 //Archive
