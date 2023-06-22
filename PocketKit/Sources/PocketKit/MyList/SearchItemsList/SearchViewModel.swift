@@ -467,7 +467,7 @@ extension SearchViewModel: SearchResultActionDelegate {
             notificationCenter: notificationCenter
         )
 
-        if savedItem.shouldOpenInWebView {
+        if savedItem.shouldOpenInWebView(override: featureFlags.isAssigned(flag: .disableReader)) {
             trackOpenSearchItem(url: savedItem.url, index: index, destination: .internal)
             selectedItem = .webView(readable)
         } else {

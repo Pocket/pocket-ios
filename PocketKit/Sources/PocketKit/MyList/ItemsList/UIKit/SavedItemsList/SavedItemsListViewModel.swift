@@ -252,7 +252,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             notificationCenter: notificationCenter
         )
 
-        if savedItem.shouldOpenInWebView {
+        if savedItem.shouldOpenInWebView(override: featureFlags.isAssigned(flag: .disableReader)) {
             return (readable, true)
         } else {
             return (readable, false)
@@ -628,7 +628,7 @@ extension SavedItemsListViewModel {
             notificationCenter: notificationCenter
         )
 
-        if savedItem.shouldOpenInWebView {
+        if savedItem.shouldOpenInWebView(override: featureFlags.isAssigned(flag: .disableReader)) {
             selectedItem = .webView(readable)
 
             trackContentOpen(destination: .external, item: savedItem)

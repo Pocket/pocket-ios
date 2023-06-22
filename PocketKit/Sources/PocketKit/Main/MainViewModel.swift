@@ -80,7 +80,8 @@ class MainViewModel: ObservableObject {
                 user: Services.shared.user,
                 store: Services.shared.subscriptionStore,
                 userDefaults: Services.shared.userDefaults,
-                notificationCenter: Services.shared.notificationCenter
+                notificationCenter: Services.shared.notificationCenter,
+                featureFlags: Services.shared.featureFlagService
             ),
             account: AccountViewModel(
                 appSession: Services.shared.appSession,
