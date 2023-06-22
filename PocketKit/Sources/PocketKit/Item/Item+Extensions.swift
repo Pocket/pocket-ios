@@ -19,8 +19,8 @@ public extension SavedItem {
         item == nil
     }
 
-    var shouldOpenInWebView: Bool {
-        item?.shouldOpenInWebView == true
+    func shouldOpenInWebView(override: Bool) -> Bool {
+        item?.shouldOpenInWebView(override: override) == true
     }
 
     var isSyndicated: Bool {
@@ -29,7 +29,11 @@ public extension SavedItem {
 }
 
 public extension Item {
-    var shouldOpenInWebView: Bool {
+    func shouldOpenInWebView(override: Bool) -> Bool {
+        if override == true {
+            return true
+        }
+
         if isSaved || isSyndicated {
             // We are legally allowed to open the item in reader view
             // BUT: if any of the following are true...

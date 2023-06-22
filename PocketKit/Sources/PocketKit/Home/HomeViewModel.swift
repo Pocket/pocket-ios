@@ -107,6 +107,7 @@ class HomeViewModel: NSObject {
     private var subscriptions: [AnyCancellable] = []
     private var recentSavesCount: Int = 0
     private var store: SubscriptionStore
+    private let featureFlags: FeatureFlagServiceProtocol
 
     private let recentSavesController: NSFetchedResultsController<SavedItem>
     private let recomendationsController: RichFetchedResultsController<Recommendation>
@@ -119,7 +120,8 @@ class HomeViewModel: NSObject {
         user: User,
         store: SubscriptionStore,
         userDefaults: UserDefaults,
-        notificationCenter: NotificationCenter
+        notificationCenter: NotificationCenter,
+        featureFlags: FeatureFlagServiceProtocol
     ) {
         self.source = source
         self.tracker = tracker
@@ -130,6 +132,7 @@ class HomeViewModel: NSObject {
         self.store = store
         self.userDefaults = userDefaults
         self.notificationCenter = notificationCenter
+        self.featureFlags = featureFlags
 
         self.snapshot = {
             return Self.loadingSnapshot()
@@ -266,7 +269,8 @@ extension HomeViewModel {
             source: source,
             tracker: tracker.childTracker(hosting: .slateDetail.screen),
             user: user,
-            userDefaults: userDefaults
+            userDefaults: userDefaults,
+            featureFlags: featureFlags
         ))
     }
 
@@ -282,7 +286,7 @@ extension HomeViewModel {
         let item = recommendation.item
 
         var destination: ContentOpen.Destination = .internal
-        if item.shouldOpenInWebView {
+        if item.shouldOpenInWebView(override: featureFlags.isAssigned(flag: .disableReader)) {
             selectedReadableType = .webViewRecommendation(viewModel)
             destination = .external
         } else {
@@ -314,7 +318,7 @@ extension HomeViewModel {
             notificationCenter: notificationCenter
         )
 
-        if let item = savedItem.item, item.shouldOpenInWebView {
+        if let item = savedItem.item, item.shouldOpenInWebView(override: featureFlags.isAssigned(flag: .disableReader)) {
             selectedReadableType = .webViewSavedItem(viewModel)
         } else {
             selectedReadableType = .savedItem(viewModel)
