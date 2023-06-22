@@ -17,7 +17,7 @@ struct ItemWidgetsProvider: TimelineProvider {
         Textiles.initialize()
     }
 
-    var kind: ItemWidgetKind {
+    private var kind: ItemWidgetKind {
         service?.kind ?? .unknown
     }
 
@@ -49,6 +49,7 @@ struct ItemWidgetsProvider: TimelineProvider {
         }
         let items = service.getItems(limit: numberOfItems(for: context.family))
         // empty result
+        // TODO: pick the first item in the array once we refactor
         guard !items.isEmpty else {
             completion(ItemsListEntry(date: Date(), name: "", contentType: emptyContentType))
             return
@@ -82,19 +83,21 @@ struct ItemWidgetsProvider: TimelineProvider {
         }
         Task {
             let contentWithImages = await getContentWithImages(content: items.items)
-            let entriesWithImages = [ItemsListEntry(date: Date(), name: items.name, contentType: .items(contentWithImages))]
-            let timeline = Timeline(entries: entriesWithImages, policy: .never)
+            // TODO: add logic to calculate the dates for each entry and the date to pass to the policy
+            var date = Date()
+            let entriesWithImages = [ItemsListEntry(date: date, name: items.name, contentType: .items(contentWithImages))]
+            let timeline = Timeline(entries: entriesWithImages, policy: policy(date: date))
             completion(timeline)
         }
     }
 }
 
-// MARK: read recent saves
-extension ItemWidgetsProvider {
+// MARK: content configuration
+private extension ItemWidgetsProvider {
     /// Returns the number of recent saves to display for a given widget family
     /// - Parameter widgetFamily: the given widget family
     /// - Returns: the number of recent saves
-    private func numberOfItems(for widgetFamily: WidgetFamily) -> Int {
+    func numberOfItems(for widgetFamily: WidgetFamily) -> Int {
         switch widgetFamily {
         case .systemLarge:
             return 4
@@ -105,17 +108,26 @@ extension ItemWidgetsProvider {
             return SyncConstants.Home.recentSaves
         }
     }
+
+    func policy(date: Date) -> TimelineReloadPolicy {
+        switch kind {
+        case .recentSaves, .unknown:
+            return .never
+        case .recommendations:
+            return .after(date)
+        }
+    }
 }
 
 // MARK: download thumbnails
-extension ItemWidgetsProvider {
+private extension ItemWidgetsProvider {
     /// Default resolution for downloaded thumbnails, with native aspect ratio of 4/3
-    private static let defaultThumbnailResolution = CGSize(width: 320, height: 240)
+    static let defaultThumbnailResolution = CGSize(width: 320, height: 240)
 
     /// Download thumbnails, attach them to the related item and return the updated list of recent `[SavedItemRowContent]`
     /// - Parameter content: the recent saves without thumbnails `[SavedItemContent]`
     /// - Returns: the updated list
-    private func getContentWithImages(content: [ItemContent]) async -> [ItemRowContent] {
+    func getContentWithImages(content: [ItemContent]) async -> [ItemRowContent] {
         return await withTaskGroup(of: ItemRowContent.self, returning: [ItemRowContent].self) { taskGroup in
             content.forEach { item in
                 taskGroup.addTask {
@@ -136,7 +148,7 @@ extension ItemWidgetsProvider {
     /// Downloads the thumbnail for a given `SavedItemRowContent` item
     /// - Parameter item: the given item
     /// - Returns: the updated item with the downloaded image, or the original content, if no thumbnail was found.
-    private func downloadImage(for item: ItemContent) async -> ItemRowContent {
+    func downloadImage(for item: ItemContent) async -> ItemRowContent {
         guard let imageUrl = item.imageUrl, let url = URL(string: imageUrl) else {
             return ItemRowContent(content: item, image: nil)
         }
@@ -157,7 +169,7 @@ extension ItemWidgetsProvider {
     ///   - url: the original url
     ///   - size: the given size. Defaults to the provider default resolution
     /// - Returns: the CDN URL or the original URL, if no CDN URL was found
-    private func bestURL(
+    func bestURL(
         for url: URL,
         size: CGSize = CGSize(
             width: Self.defaultThumbnailResolution.width,

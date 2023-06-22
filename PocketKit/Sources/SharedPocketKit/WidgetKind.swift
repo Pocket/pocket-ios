@@ -5,5 +5,5 @@
 /// Keys of all widget kinds in this target
 public enum WidgetKind {
     public static let recentSaves = "RecentSavesWidget"
-    public static let editorsPicks = "DiscoverWidget"
+    public static let recommendations = "DiscoverWidget"
 }

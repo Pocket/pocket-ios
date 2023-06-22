@@ -29,11 +29,14 @@ struct ItemWidgetsEmptyContentView: View {
         switch contentType {
         case .recentSavesEmpty:
             return Localization.ItemWidgets.RecentSaves.emptyMessage
+        case .recommendationsEmpty:
+            return Localization.ItemWidgets.Recommendations.emptyMessage
         case .loggedOut:
             return Localization.ItemWidgets.loggedOutMessage
         case .error:
             return Localization.ItemWidgets.errorMessage
-        default:
+        case .items:
+            // content is not empty
             return ""
         }
     }
