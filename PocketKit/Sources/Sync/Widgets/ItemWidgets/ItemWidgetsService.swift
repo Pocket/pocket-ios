@@ -63,7 +63,7 @@ extension ItemWidgetsService {
         makeWidgetService(key: .recentSavesWidget)
     }
 
-    public static func makeEditorsPicksService() -> ItemWidgetsService? {
+    public static func makeRecommendationsService() -> ItemWidgetsService? {
         makeWidgetService(key: .recommendationsWidget)
     }
 }

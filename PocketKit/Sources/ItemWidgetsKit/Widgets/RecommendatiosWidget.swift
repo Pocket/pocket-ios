@@ -17,7 +17,7 @@ public struct RecommendatiosWidget: Widget {
     }
 
     public var body: some WidgetConfiguration {
-        StaticConfiguration(kind: kind, provider: ItemWidgetsProvider(service: ItemWidgetsService.makeEditorsPicksService())) { entry in
+        StaticConfiguration(kind: kind, provider: ItemWidgetsProvider(service: ItemWidgetsService.makeRecommendationsService())) { entry in
                 ItemsWidgetsContainerView(entry: entry)
                 .titleColor(.ui.lapis1)
         }

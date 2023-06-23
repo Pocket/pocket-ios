@@ -122,7 +122,7 @@ class HomeViewModel: NSObject {
         user: User,
         store: SubscriptionStore,
         recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService,
-        editorsPicksWidgetUpdateService: RecommendationsWidgetUpdateService,
+        recommendationsWidgetUpdateService: RecommendationsWidgetUpdateService,
         userDefaults: UserDefaults,
         notificationCenter: NotificationCenter,
         featureFlags: FeatureFlagServiceProtocol
@@ -135,7 +135,7 @@ class HomeViewModel: NSObject {
         self.user = user
         self.store = store
         self.recentSavesWidgetUpdateService = recentSavesWidgetUpdateService
-        self.recommendationsWidgetUpdateService = editorsPicksWidgetUpdateService
+        self.recommendationsWidgetUpdateService = recommendationsWidgetUpdateService
         self.userDefaults = userDefaults
         self.notificationCenter = notificationCenter
         self.featureFlags = featureFlags

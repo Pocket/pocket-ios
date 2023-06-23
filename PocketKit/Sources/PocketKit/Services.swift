@@ -46,7 +46,7 @@ struct Services {
     let sessionBackupUtility: SessionBackupUtility
     let widgetsSessionService: WidgetsSessionService
     let recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService
-    let editorsPicksWidgetUpdateService: RecommendationsWidgetUpdateService
+    let recommendationsWidgetUpdateService: RecommendationsWidgetUpdateService
 
     private let persistentContainer: PersistentContainer
 
@@ -214,7 +214,7 @@ struct Services {
         )
 
         recentSavesWidgetUpdateService = RecentSavesWidgetUpdateService(store: UserDefaultsItemWidgetsStore(userDefaults: userDefaults, key: .recentSavesWidget))
-        editorsPicksWidgetUpdateService = RecommendationsWidgetUpdateService(store: UserDefaultsItemWidgetsStore(userDefaults: userDefaults, key: .recommendationsWidget))
+        recommendationsWidgetUpdateService = RecommendationsWidgetUpdateService(store: UserDefaultsItemWidgetsStore(userDefaults: userDefaults, key: .recommendationsWidget))
         widgetsSessionService = UserDefaultsWidgetSessionService(defaults: userDefaults)
     }
 }
