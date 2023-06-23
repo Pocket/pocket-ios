@@ -114,6 +114,21 @@ private extension ItemWidgetsProvider {
             return .after(date)
         }
     }
+
+    func titleColor(index: Int) -> ColorAsset {
+        switch kind {
+        case .recentSaves, .unknown:
+            return .ui.coral2
+        case .recommendations:
+            var newIndex = index
+            let maxIndex = Self.rotatingTitleColors.count
+            while newIndex >= maxIndex {
+                newIndex -= maxIndex
+            }
+            newIndex = max(0, newIndex)
+            return Self.rotatingTitleColors[newIndex]
+        }
+    }
 }
 
 // MARK: Timeline builder
@@ -134,8 +149,7 @@ private extension ItemWidgetsProvider {
             var index = 0
             return await taskGroup.reduce(into: [ItemsListEntry]()) {
                 let date = Date().addingTimeInterval(TimeInterval(index) * Self.refreshInterval)
-                let colorIndex = index < Self.rotatingTitleColors.count ? index : index - Self.rotatingTitleColors.count
-                $0.append(ItemsListEntry(date: date, name: $1.0, titleColor: Self.rotatingTitleColors[colorIndex], contentType: .items($1.1)))
+                $0.append(ItemsListEntry(date: date, name: $1.0, titleColor: titleColor(index: index), contentType: .items($1.1)))
                 index += 1
             }
         }
