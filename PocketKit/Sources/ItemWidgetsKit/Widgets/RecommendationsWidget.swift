@@ -9,7 +9,7 @@ import Sync
 import SharedPocketKit
 import Localization
 
-public struct RecommendatiosWidget: Widget {
+public struct RecommendationsWidget: Widget {
     let kind: String
 
     public init() {
