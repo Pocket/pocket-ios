@@ -49,7 +49,7 @@ struct ItemWidgetsProvider: TimelineProvider {
         }
         let topics = service.getTopics(limit: numberOfItems(for: context.family))
         // empty result
-        guard let topic = topics.first, topic.isEmpty else {
+        guard let topic = topics.first, !topic.isEmpty else {
             completion(ItemsListEntry(date: Date(), name: "", contentType: emptyContentType))
             return
         }
@@ -90,6 +90,7 @@ struct ItemWidgetsProvider: TimelineProvider {
 
 // MARK: content configuration
 private extension ItemWidgetsProvider {
+    static let rotatingTitleColors: [ColorAsset] = [.ui.coral2, .ui.lapis1, .ui.apricot1, .ui.teal2]
     /// Returns the number of recent saves to display for a given widget family
     /// - Parameter widgetFamily: the given widget family
     /// - Returns: the number of recent saves
@@ -133,8 +134,9 @@ private extension ItemWidgetsProvider {
             var index = 0
             return await taskGroup.reduce(into: [ItemsListEntry]()) {
                 let date = Date().addingTimeInterval(TimeInterval(index) * Self.refreshInterval)
+                let colorIndex = index < Self.rotatingTitleColors.count ? index : index - Self.rotatingTitleColors.count
+                $0.append(ItemsListEntry(date: date, name: $1.0, titleColor: Self.rotatingTitleColors[colorIndex], contentType: .items($1.1)))
                 index += 1
-                $0.append(ItemsListEntry(date: date, name: $1.0, contentType: .items($1.1)))
             }
         }
     }

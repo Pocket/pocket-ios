@@ -19,7 +19,7 @@ public struct RecommendatiosWidget: Widget {
     public var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: ItemWidgetsProvider(service: ItemWidgetsService.makeRecommendationsService())) { entry in
                 ItemsWidgetsContainerView(entry: entry)
-                .titleColor(.ui.lapis1)
+                .titleColor(entry.titleColor)
         }
         .configurationDisplayName(Localization.ItemWidgets.Recommendations.title)
         .description(Localization.ItemWidgets.Recommendations.description)

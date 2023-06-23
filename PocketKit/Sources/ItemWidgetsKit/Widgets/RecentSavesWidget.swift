@@ -19,7 +19,7 @@ public struct RecentSavesWidget: Widget {
     public var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: ItemWidgetsProvider(service: ItemWidgetsService.makeRecentSavesService())) { entry in
             ItemsWidgetsContainerView(entry: entry)
-                .titleColor(.ui.coral2)
+                .titleColor(entry.titleColor)
         }
         .configurationDisplayName(Localization.ItemWidgets.RecentSaves.title)
         .description(Localization.ItemWidgets.RecentSaves.description)
