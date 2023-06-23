@@ -6,11 +6,7 @@ import Sync
 import SharedPocketKit
 
 class MockRecentSavesWidgetStore: ItemWidgetsStore {
-    var isLoggedIn: Bool = false
-
-    func setLoggedIn(_ isLoggedIn: Bool) {}
-
-    var recentSaves: [SharedPocketKit.ItemContent] = []
-
-    func updateRecentSaves(_ items: [SharedPocketKit.ItemContent]) throws {}
+    var topics: [SharedPocketKit.ItemContentContainer] = []
+    var kind: Sync.ItemWidgetKind = .unknown
+    func updateTopics(_ topics: [SharedPocketKit.ItemContentContainer]) throws { }
 }
