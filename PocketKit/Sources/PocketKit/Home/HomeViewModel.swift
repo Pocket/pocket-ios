@@ -109,7 +109,7 @@ class HomeViewModel: NSObject {
     private let featureFlags: FeatureFlagServiceProtocol
     private let store: SubscriptionStore
     private let recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService
-    private let editorsPicksWidgetUpdateService: RecommendationsWidgetUpdateService
+    private let recommendationsWidgetUpdateService: RecommendationsWidgetUpdateService
 
     private let recentSavesController: NSFetchedResultsController<SavedItem>
     private let recomendationsController: RichFetchedResultsController<Recommendation>
@@ -135,7 +135,7 @@ class HomeViewModel: NSObject {
         self.user = user
         self.store = store
         self.recentSavesWidgetUpdateService = recentSavesWidgetUpdateService
-        self.editorsPicksWidgetUpdateService = editorsPicksWidgetUpdateService
+        self.recommendationsWidgetUpdateService = editorsPicksWidgetUpdateService
         self.userDefaults = userDefaults
         self.notificationCenter = notificationCenter
         self.featureFlags = featureFlags
@@ -719,7 +719,7 @@ extension HomeViewModel: NSFetchedResultsControllerDelegate {
             reconfiguredItemIdentifiers = reconfiguredItemIdentifiers.filter({ existingItemIdentifiers.contains($0) })
             // Tell the new snapshot to reconfigure just the ones that exist
             newSnapshot.reconfigureItems(reconfiguredItemIdentifiers)
-            updateEditorsPicksWidget()
+            updateRecommendationsWidget()
         }
 
         self.snapshot = newSnapshot
@@ -740,11 +740,17 @@ private extension HomeViewModel {
 
 // MARK: Recommendations - Editor's Picks widget
 private extension HomeViewModel {
-    func updateEditorsPicksWidget() {
-        guard let firstSection = recomendationsController.sections?.first, let recommendations = firstSection.objects as? [Recommendation] else {
-            editorsPicksWidgetUpdateService.update([])
+    func updateRecommendationsWidget() {
+        guard let sections = recomendationsController.sections, !sections.isEmpty else {
+            recommendationsWidgetUpdateService.update([:])
             return
         }
-        editorsPicksWidgetUpdateService.update(Array(recommendations.prefix(SyncConstants.Home.recentSaves)))
+
+        let topics = sections.reduce(into: [String: [Recommendation]]()) {
+            if let recommendations = $1.objects as? [Recommendation], let name = recommendations.first?.slate?.name {
+                $0[name] = recommendations
+            }
+        }
+        recommendationsWidgetUpdateService.update(topics)
     }
 }

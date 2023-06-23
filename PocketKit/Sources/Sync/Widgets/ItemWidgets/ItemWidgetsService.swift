@@ -24,10 +24,14 @@ public struct ItemWidgetsService {
     /// if limit is `0`, the full list is returned
     /// - Parameter limit: the specified limit
     /// - Returns: the list of items
-    public func getItems(limit: Int) -> ItemContentContainer {
-        let saves = store.Items
-        let items = limit > 0 ? Array(saves.items.prefix(min(saves.items.count, limit))) : saves.items
-        return ItemContentContainer(name: saves.name, items: items)
+    public func getTopics(limit: Int) -> [ItemContentContainer] {
+        let topics = store.topics
+        guard limit > 0 else {
+            return topics
+        }
+        return topics.reduce(into: [ItemContentContainer]()) {
+            $0.append(ItemContentContainer(name: $1.name, items: Array($1.items.prefix(limit))))
+        }
     }
 
     /// True if the user is logged in

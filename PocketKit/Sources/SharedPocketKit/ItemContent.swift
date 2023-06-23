@@ -5,7 +5,7 @@
 import Foundation
 import Localization
 
-/// Type containing a named collection of `ItemContent`
+/// A Core Data agnostic version of a `Slate`
 public struct ItemContentContainer: Codable, Equatable {
     public let name: String
     public let items: [ItemContent]
@@ -24,7 +24,7 @@ public struct ItemContentContainer: Codable, Equatable {
     }
 }
 
-/// Type representing the content of a Core Data `Item`.
+/// A Core Data agnostic version of an `Item`.
 public struct ItemContent: Codable, Equatable {
     public let url: String
     public let title: String

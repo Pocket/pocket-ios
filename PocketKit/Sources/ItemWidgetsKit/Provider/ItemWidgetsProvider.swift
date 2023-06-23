@@ -47,16 +47,15 @@ struct ItemWidgetsProvider: TimelineProvider {
             completion(ItemsListEntry(date: Date(), name: "", contentType: .loggedOut))
             return
         }
-        let items = service.getItems(limit: numberOfItems(for: context.family))
+        let topics = service.getTopics(limit: numberOfItems(for: context.family))
         // empty result
-        // TODO: pick the first item in the array once we refactor
-        guard !items.isEmpty else {
+        guard let topic = topics.first, topic.isEmpty else {
             completion(ItemsListEntry(date: Date(), name: "", contentType: emptyContentType))
             return
         }
         Task {
-            let contentWithImages = await getContentWithImages(content: items.items)
-            completion(ItemsListEntry(date: Date(), name: items.name, contentType: .items(contentWithImages)))
+            let contentWithImages = await getContentWithImages(content: topic.items)
+            completion(ItemsListEntry(date: Date(), name: topic.name, contentType: .items(contentWithImages)))
         }
     }
 
@@ -73,20 +72,17 @@ struct ItemWidgetsProvider: TimelineProvider {
             completion(timeline)
             return
         }
-        let items = service.getItems(limit: numberOfItems(for: context.family))
+        let topics = service.getTopics(limit: numberOfItems(for: context.family))
         // empty result
-        guard !items.isEmpty else {
+        guard !topics.isEmpty else {
             let entries = [ItemsListEntry(date: Date(), name: "", contentType: emptyContentType)]
             let timeline = Timeline(entries: entries, policy: .never)
             completion(timeline)
             return
         }
         Task {
-            let contentWithImages = await getContentWithImages(content: items.items)
-            // TODO: add logic to calculate the dates for each entry and the date to pass to the policy
-            var date = Date()
-            let entriesWithImages = [ItemsListEntry(date: date, name: items.name, contentType: .items(contentWithImages))]
-            let timeline = Timeline(entries: entriesWithImages, policy: policy(date: date))
+            let entriesWithImages = await getEntriesWithImages(topics)
+            let timeline = Timeline(entries: entriesWithImages, policy: policy(date: entriesWithImages.last?.date.addingTimeInterval(Self.refreshInterval) ?? Date()))
             completion(timeline)
         }
     }
@@ -119,10 +115,34 @@ private extension ItemWidgetsProvider {
     }
 }
 
-// MARK: download thumbnails
+// MARK: Timeline builder
 private extension ItemWidgetsProvider {
+    /// Refresh interval for all those Item widgets that refresh periodically
+    /// (Recommendations widget, at this time). It  is set to 1 hour
+    static let refreshInterval: TimeInterval = 60 * 60
     /// Default resolution for downloaded thumbnails, with native aspect ratio of 4/3
     static let defaultThumbnailResolution = CGSize(width: 320, height: 240)
+
+    func getEntriesWithImages(_ topics: [ItemContentContainer]) async -> [ItemsListEntry] {
+        return await withTaskGroup(of: (String, [ItemRowContent]).self, returning: [ItemsListEntry].self) { taskGroup in
+            topics.forEach { topic in
+                taskGroup.addTask {
+                    await getTopicWithImages(topic)
+                }
+            }
+            var index = 0
+            return await taskGroup.reduce(into: [ItemsListEntry]()) {
+                let date = Date().addingTimeInterval(TimeInterval(index) * Self.refreshInterval)
+                index += 1
+                $0.append(ItemsListEntry(date: date, name: $1.0, contentType: .items($1.1)))
+            }
+        }
+    }
+
+    func getTopicWithImages(_ topic: ItemContentContainer) async -> (String, [ItemRowContent]) {
+        let contentWithImages = await getContentWithImages(content: topic.items)
+        return (topic.name, contentWithImages)
+    }
 
     /// Download thumbnails, attach them to the related item and return the updated list of recent `[SavedItemRowContent]`
     /// - Parameter content: the recent saves without thumbnails `[SavedItemContent]`

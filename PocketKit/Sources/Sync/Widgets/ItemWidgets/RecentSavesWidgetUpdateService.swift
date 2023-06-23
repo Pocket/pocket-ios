@@ -30,14 +30,14 @@ public struct RecentSavesWidgetUpdateService {
                     timeToRead: ($0.item?.timeToRead) != nil ? Int(truncating: ($0.item?.timeToRead)!) : nil
                 )
             }
-            let savesContainer = ItemContentContainer(name: name, items: saves)
+            let saveTopic = [ItemContentContainer(name: name, items: saves)]
             // avoid triggering widget updates if stored data did not change
-            guard store.Items != savesContainer else {
+            guard store.topics != saveTopic else {
                 return
             }
 
             do {
-                try store.updateItems(saves, name)
+                try store.updateTopics(saveTopic)
                 reloadWidget()
             } catch {
                 Log.capture(message: "Failed to update recent saves for widget: \(error)")

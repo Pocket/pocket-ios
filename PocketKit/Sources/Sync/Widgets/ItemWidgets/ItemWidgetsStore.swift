@@ -12,11 +12,13 @@ public enum ItemWidgetKind {
     case unknown
 }
 
-/// A store that provides a list of recent saves
+/// A store that provides a list of topics for the item widgets
 public protocol ItemWidgetsStore {
-    var Items: ItemContentContainer { get }
+    // a topic is a collection of items,
+    // like recent saves or any recommendation's slate
+    var topics: [ItemContentContainer] { get }
     var kind: ItemWidgetKind { get }
-    func updateItems(_ items: [ItemContent], _ name: String) throws
+    func updateTopics(_ topics: [ItemContentContainer]) throws
 }
 
 /// A concrete implementation of `ItemWidgetsStore` that uses `UserDefaults` as local storage
@@ -36,12 +38,12 @@ public struct UserDefaultsItemWidgetsStore: ItemWidgetsStore {
     }
 
     /// Current recent saves list
-    public var Items: ItemContentContainer {
-        guard let encodedSaves = defaults.object(forKey: key) as? Data,
-                let saves = try? JSONDecoder().decode(ItemContentContainer.self, from: encodedSaves) else {
-            return ItemContentContainer.empty
+    public var topics: [ItemContentContainer] {
+        guard let encodedTopics = defaults.object(forKey: key) as? Data,
+                let topics = try? JSONDecoder().decode([ItemContentContainer].self, from: encodedTopics) else {
+            return []
         }
-        return saves
+        return topics
     }
 
     public init(userDefaults: UserDefaults, key: UserDefaults.Key) {
@@ -51,9 +53,8 @@ public struct UserDefaultsItemWidgetsStore: ItemWidgetsStore {
 
     /// Update the recent saves list with the given list
     /// - Parameter items: the given list
-    public func updateItems(_ items: [ItemContent], _ name: String) throws {
-        let itemsContainer = ItemContentContainer(name: name, items: items)
-        let encodedList = try JSONEncoder().encode(itemsContainer)
+    public func updateTopics(_ topics: [ItemContentContainer]) throws {
+        let encodedList = try JSONEncoder().encode(topics)
         defaults.setValue(encodedList, forKey: key)
     }
 }

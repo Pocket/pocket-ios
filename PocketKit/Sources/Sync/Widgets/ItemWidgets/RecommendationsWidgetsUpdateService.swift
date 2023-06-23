@@ -19,11 +19,26 @@ public struct RecommendationsWidgetUpdateService {
         self.store = store
     }
 
-    /// Updates the recommendations using the given array of `Recommendation`
-    /// - Parameter items: the given array
-    public func update(_ items: [Recommendation]) {
+    /// Update the recommendations using a collection of slates, normalized to `[String: [Recommendation]]`
+    /// - Parameter items: the given collection of normalized slates
+    public func update(_ topics: [String: [Recommendation]]) {
         recommendationsUpdateQueue.async {
-            let recommendations = items.map {
+            let newTopics: [ItemContentContainer] = topics.map { makeItemContentContainer($0.key, $0.value) }
+            // avoid triggering widget updates if stored data did not change
+            guard store.topics != newTopics else {
+                return
+            }
+            do {
+                try store.updateTopics(newTopics)
+                reloadWidget()
+            } catch {
+                Log.capture(message: "Failed to update recommendations for widget: \(error)")
+            }
+        }
+    }
+
+    private func makeItemContentContainer(_ name: String, _ recommendations: [Recommendation]) -> ItemContentContainer {
+            let itemContent = recommendations.map {
                 ItemContent(
                     url: $0.item.givenURL.absoluteString,
                     title: $0.item.title ?? $0.item.givenURL.absoluteString,
@@ -32,23 +47,7 @@ public struct RecommendationsWidgetUpdateService {
                     timeToRead: ($0.item.timeToRead) != nil ? Int(truncating: ($0.item.timeToRead)!) : nil
                 )
             }
-            var name = Localization.ItemWidgets.Recommendations.title
-            if let item = items.first, let slateName = item.slate?.name {
-                name = slateName
-            }
-            let savesContainer = ItemContentContainer(name: name, items: recommendations)
-            // avoid triggering widget updates if stored data did not change
-            guard store.Items != savesContainer else {
-                return
-            }
-
-            do {
-                try store.updateItems(recommendations, name)
-                reloadWidget()
-            } catch {
-                Log.capture(message: "Failed to update recommendations for widget: \(error)")
-            }
-        }
+            return ItemContentContainer(name: name, items: itemContent)
     }
 
     /// Reloads the widget
