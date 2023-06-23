@@ -90,7 +90,7 @@ struct ItemWidgetsProvider: TimelineProvider {
 
 // MARK: content configuration
 private extension ItemWidgetsProvider {
-    static let rotatingTitleColors: [ColorAsset] = [.ui.coral2, .ui.lapis1, .ui.apricot1, .ui.teal2]
+    static let rotatingTitleColors: [ColorAsset] = [.ui.lapis1, .ui.apricot1, .ui.coral2, .ui.teal2]
     /// Returns the number of recent saves to display for a given widget family
     /// - Parameter widgetFamily: the given widget family
     /// - Returns: the number of recent saves
