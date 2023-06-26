@@ -8,6 +8,7 @@ import Sync
 import Combine
 import Analytics
 import Localization
+import WidgetKit
 
 class SavedItemViewModel {
     private let appSession: AppSession

@@ -97,6 +97,8 @@ class HomeViewModelTests: XCTestCase {
             homeRefreshCoordinator: homeRefreshCoordinator ?? self.homeRefreshCoordinator,
             user: user ?? self.user,
             store: subscriptionStore ?? self.subscriptionStore,
+            recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService(store: MockRecentSavesWidgetStore()),
+            recommendationsWidgetUpdateService: RecommendationsWidgetUpdateService(store: MockRecentSavesWidgetStore()),
             userDefaults: userDefaults ?? self.userDefaults,
             notificationCenter: notificationCenter ?? self.notificationCenter,
             featureFlags: featureFlags

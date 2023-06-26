@@ -44,7 +44,8 @@ struct Services {
             space: persistentContainer.rootSpace,
             sessionProvider: appSession,
             consumerKey: Keys.shared.pocketApiConsumerKey,
-            expiringActivityPerformer: ProcessInfo.processInfo
+            expiringActivityPerformer: ProcessInfo.processInfo,
+            recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService(store: UserDefaultsItemWidgetsStore(userDefaults: userDefaults, key: .recentSavesWidget))
         )
 
         braze = SaveToBraze(

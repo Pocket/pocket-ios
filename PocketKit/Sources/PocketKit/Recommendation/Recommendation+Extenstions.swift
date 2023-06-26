@@ -3,6 +3,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import Foundation
+import SharedPocketKit
 import Sync
 
 extension Recommendation {
@@ -11,7 +12,7 @@ extension Recommendation {
             return nil
         }
 
-        return imageCacheURL(for: topImageURL)
+        return CDNURLBuilder().imageCacheURL(for: topImageURL)
     }
 
     var bestDomain: String? {

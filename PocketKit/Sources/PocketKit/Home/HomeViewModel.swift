@@ -106,8 +106,10 @@ class HomeViewModel: NSObject {
     private let notificationCenter: NotificationCenter
     private var subscriptions: [AnyCancellable] = []
     private var recentSavesCount: Int = 0
-    private var store: SubscriptionStore
     private let featureFlags: FeatureFlagServiceProtocol
+    private let store: SubscriptionStore
+    private let recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService
+    private let recommendationsWidgetUpdateService: RecommendationsWidgetUpdateService
 
     private let recentSavesController: NSFetchedResultsController<SavedItem>
     private let recomendationsController: RichFetchedResultsController<Recommendation>
@@ -119,6 +121,8 @@ class HomeViewModel: NSObject {
         homeRefreshCoordinator: RefreshCoordinator,
         user: User,
         store: SubscriptionStore,
+        recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService,
+        recommendationsWidgetUpdateService: RecommendationsWidgetUpdateService,
         userDefaults: UserDefaults,
         notificationCenter: NotificationCenter,
         featureFlags: FeatureFlagServiceProtocol
@@ -130,6 +134,8 @@ class HomeViewModel: NSObject {
         self.homeRefreshCoordinator = homeRefreshCoordinator
         self.user = user
         self.store = store
+        self.recentSavesWidgetUpdateService = recentSavesWidgetUpdateService
+        self.recommendationsWidgetUpdateService = recommendationsWidgetUpdateService
         self.userDefaults = userDefaults
         self.notificationCenter = notificationCenter
         self.featureFlags = featureFlags
@@ -686,6 +692,7 @@ extension HomeViewModel: NSFetchedResultsControllerDelegate {
             let reconfiguredItemdIdentifiers: [Cell] = snapshot.reloadedItemIdentifiers.compactMap({ .recentSaves($0 as! NSManagedObjectID) })
             newSnapshot.reloadItems(reloadedItemIdentifiers)
             newSnapshot.reconfigureItems(reconfiguredItemdIdentifiers)
+            updateRecentSavesWidget()
         }
 
         if isOffline {
@@ -712,8 +719,38 @@ extension HomeViewModel: NSFetchedResultsControllerDelegate {
             reconfiguredItemIdentifiers = reconfiguredItemIdentifiers.filter({ existingItemIdentifiers.contains($0) })
             // Tell the new snapshot to reconfigure just the ones that exist
             newSnapshot.reconfigureItems(reconfiguredItemIdentifiers)
+            updateRecommendationsWidget()
         }
 
         self.snapshot = newSnapshot
+    }
+}
+
+// MARK: recent saves widget
+private extension HomeViewModel {
+    func updateRecentSavesWidget() {
+        guard let items = recentSavesController.fetchedObjects else {
+            recentSavesWidgetUpdateService.update([], "")
+            return
+        }
+        // because we might still end up with more items, slice the first n elements anyway.
+        recentSavesWidgetUpdateService.update(Array(items.prefix(SyncConstants.Home.recentSaves)), Localization.recentSaves)
+    }
+}
+
+// MARK: Recommendations - Editor's Picks widget
+private extension HomeViewModel {
+    func updateRecommendationsWidget() {
+        guard let sections = recomendationsController.sections, !sections.isEmpty else {
+            recommendationsWidgetUpdateService.update([:])
+            return
+        }
+
+        let topics = sections.reduce(into: [String: [Recommendation]]()) {
+            if let recommendations = $1.objects as? [Recommendation], let name = recommendations.first?.slate?.name {
+                $0[name] = recommendations
+            }
+        }
+        recommendationsWidgetUpdateService.update(topics)
     }
 }

@@ -256,6 +256,28 @@ public enum Localization {
       public static let banner = Localization.tr("Localizable", "itemList.edit.banner", fallback: "Editing your list is not available in this version of Pocket, but will be returning soon!")
     }
   }
+  public enum ItemWidgets {
+    /// Something went wrong.
+    public static let errorMessage = Localization.tr("Localizable", "itemWidgets.errorMessage", fallback: "Something went wrong.")
+    /// Log in to Pocket to see your content.
+    public static let loggedOutMessage = Localization.tr("Localizable", "itemWidgets.loggedOutMessage", fallback: "Log in to Pocket to see your content.")
+    public enum RecentSaves {
+      /// Access your most recently saved articles.
+      public static let description = Localization.tr("Localizable", "itemWidgets.recentSaves.description", fallback: "Access your most recently saved articles.")
+      /// Start building your Pocket list.
+      public static let emptyMessage = Localization.tr("Localizable", "itemWidgets.recentSaves.emptyMessage", fallback: "Start building your Pocket list.")
+      /// Recent Saves
+      public static let title = Localization.tr("Localizable", "itemWidgets.recentSaves.title", fallback: "Recent Saves")
+    }
+    public enum Recommendations {
+      /// Discover the most thought-provoking stories out there, curated by Pocket.
+      public static let description = Localization.tr("Localizable", "itemWidgets.recommendations.description", fallback: "Discover the most thought-provoking stories out there, curated by Pocket.")
+      /// You might be offline. Please check recommendations in your Pocket app
+      public static let emptyMessage = Localization.tr("Localizable", "itemWidgets.recommendations.emptyMessage", fallback: "You might be offline. Please check recommendations in your Pocket app")
+      /// Recommendations
+      public static let title = Localization.tr("Localizable", "itemWidgets.recommendations.title", fallback: "Recommendations")
+    }
+  }
   public enum Itemlist {
     public enum Filter {
       /// All

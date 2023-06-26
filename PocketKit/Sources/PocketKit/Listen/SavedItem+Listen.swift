@@ -5,6 +5,7 @@
 import Foundation
 import Sync
 import PKTListen
+import SharedPocketKit
 
 extension SavedItem: PKTListenItem {
     public var albumID: String? {
@@ -45,7 +46,7 @@ extension SavedItem: PKTListenItem {
     }
 
     public var albumArtRemoteURL: URL? {
-        imageCacheURL(for: self.topImageURL)
+        CDNURLBuilder().imageCacheURL(for: self.topImageURL)
     }
 
     public var canArchiveAlbum: Bool {
@@ -84,7 +85,7 @@ extension SavedItem: PKTImageResource {
     }
 
     public var imageResourceURL: URL? {
-        imageCacheURL(for: self.topImageURL) ?? fallbackResourceURL
+        CDNURLBuilder().imageCacheURL(for: self.topImageURL) ?? fallbackResourceURL
     }
 
     public var fallbackResourceURL: URL? {
