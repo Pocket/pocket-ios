@@ -307,3 +307,12 @@
 "back.to.pocket" = "返回 Pocket";
 
 "saveToPocket.tapToDismiss" = "点击以取消";
+
+"itemWidgets.loggedOutMessage" = "登录 Pocket 以查看您的内容。";
+"itemWidgets.errorMessage" = "出错了。";
+"itemWidgets.recentSaves.emptyMessage" = "开始建立您的 Pocket 列表。";
+"itemWidgets.recentSaves.title" = "最近保存";
+"itemWidgets.recentSaves.description" = "访问您最近保存的文章。";
+"itemWidgets.recommendations.emptyMessage" = "您可能处于离线状态。请检查您的 Pocket 应用程序中的推荐";
+"itemWidgets.recommendations.title" = "推荐";
+"itemWidgets.recommendations.description" = "探索由 Pocket 策划的最发人深省的故事。";
