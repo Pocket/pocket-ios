@@ -307,3 +307,12 @@
 "back.to.pocket" = "Terug naar Pocket";
 
 "saveToPocket.tapToDismiss" = "Tik om af te wijzen";
+
+"itemWidgets.loggedOutMessage" = "Log in bij Pocket om je content te zien.";
+"itemWidgets.errorMessage" = "Er is iets misgegaan.";
+"itemWidgets.recentSaves.emptyMessage" = "Begin met het samenstellen van je Pocket-lijst.";
+"itemWidgets.recentSaves.title" = "Recent opgeslagen";
+"itemWidgets.recentSaves.description" = "Krijg toegang tot je meest recent opgeslagen artikelen.";
+"itemWidgets.recommendations.emptyMessage" = "Je bent wellicht offline. Bekijk aanbevelingen in je Pocket-app";
+"itemWidgets.recommendations.title" = "Aanbevelingen";
+"itemWidgets.recommendations.description" = "Ontdek de meest prikkelende verhalen, geselecteerd door Pocket.";
