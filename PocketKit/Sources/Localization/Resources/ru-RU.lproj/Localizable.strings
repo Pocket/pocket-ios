@@ -307,3 +307,12 @@
 "back.to.pocket" = "Назад к Pocket";
 
 "saveToPocket.tapToDismiss" = "Нажмите, чтобы закрыть";
+
+"itemWidgets.loggedOutMessage" = "Войдите в Pocket, чтобы просмотреть свои материалы.";
+"itemWidgets.errorMessage" = "К сожалению, что-то пошло не так.";
+"itemWidgets.recentSaves.emptyMessage" = "Начните создавать свой список Pocket.";
+"itemWidgets.recentSaves.title" = "Недавно сохраненное";
+"itemWidgets.recentSaves.description" = "Получите доступ к последним сохраненным статьям.";
+"itemWidgets.recommendations.emptyMessage" = "Возможно, вы не в сети. Проверьте рекомендации в приложении Pocket.";
+"itemWidgets.recommendations.title" = "Рекомендации";
+"itemWidgets.recommendations.description" = "Откройте для себя самые интересные и поучительные истории, рекомендованные Pocket.";
