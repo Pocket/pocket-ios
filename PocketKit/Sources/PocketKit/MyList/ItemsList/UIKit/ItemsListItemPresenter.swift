@@ -11,6 +11,7 @@ import CoreData
 import UIKit
 import Kingfisher
 import Localization
+import SharedPocketKit
 
 private extension Style {
     static let title: Style = .header.sansSerif.h8
@@ -63,7 +64,7 @@ class ItemsListItemPresenter {
     }
 
     var thumbnailURL: URL? {
-        return imageCacheURL(for: item.topImageURL)
+        return CDNURLBuilder().imageCacheURL(for: item.topImageURL)
     }
 
     private var title: String {

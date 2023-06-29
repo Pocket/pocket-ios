@@ -33,14 +33,16 @@ class SlateDetailViewModel {
     private let user: User
     private let userDefaults: UserDefaults
     private var subscriptions: [AnyCancellable] = []
+    private let featureFlags: FeatureFlagServiceProtocol
 
-    init(slate: Slate, source: Source, tracker: Tracker, user: User, userDefaults: UserDefaults) {
+    init(slate: Slate, source: Source, tracker: Tracker, user: User, userDefaults: UserDefaults, featureFlags: FeatureFlagServiceProtocol) {
         self.slate = slate
         self.source = source
         self.tracker = tracker
         self.user = user
         self.userDefaults = userDefaults
         self.snapshot = Self.loadingSnapshot()
+        self.featureFlags = featureFlags
 
         NotificationCenter.default.publisher(
             for: NSManagedObjectContext.didSaveObjectsNotification,
@@ -114,7 +116,7 @@ extension SlateDetailViewModel {
 
         let item = recommendation.item
         var destination: ContentOpen.Destination = .internal
-        if item.shouldOpenInWebView {
+        if item.shouldOpenInWebView(override: featureFlags.isAssigned(flag: .disableReader)) {
             let url = pocketPremiumURL(item.bestURL, user: user)
             presentedWebReaderURL = url
             destination = .external

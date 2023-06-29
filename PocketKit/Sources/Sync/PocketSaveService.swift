@@ -4,6 +4,7 @@
 
 import Foundation
 import Apollo
+import Localization
 import PocketGraph
 import SharedPocketKit
 
@@ -13,12 +14,14 @@ public class PocketSaveService: SaveService {
     private let queue: OperationQueue
     private let space: Space
     private let osNotifications: OSNotificationCenter
+    private let recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService
 
     public convenience init(
         space: Space,
         sessionProvider: SessionProvider,
         consumerKey: String,
-        expiringActivityPerformer: ExpiringActivityPerformer
+        expiringActivityPerformer: ExpiringActivityPerformer,
+        recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService
     ) {
         self.init(
             apollo: ApolloClient.createDefault(
@@ -29,7 +32,8 @@ public class PocketSaveService: SaveService {
             space: space,
             osNotifications: OSNotificationCenter(
                 notifications: CFNotificationCenterGetDarwinNotifyCenter()
-            )
+            ),
+            recentSavesWidgetUpdateService: recentSavesWidgetUpdateService
         )
     }
 
@@ -37,18 +41,23 @@ public class PocketSaveService: SaveService {
         apollo: ApolloClientProtocol,
         expiringActivityPerformer: ExpiringActivityPerformer,
         space: Space,
-        osNotifications: OSNotificationCenter
+        osNotifications: OSNotificationCenter,
+        recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService
     ) {
         self.apollo = apollo
         self.expiringActivityPerformer = expiringActivityPerformer
         self.space = space
         self.osNotifications = osNotifications
+        self.recentSavesWidgetUpdateService = recentSavesWidgetUpdateService
 
         self.queue = OperationQueue()
     }
 
     public func save(url: URL) -> SaveServiceStatus {
-        space.performAndWait {
+        defer {
+            reloadRecentSavesWidget()
+        }
+        return space.performAndWait {
             let result = fetchOrCreateSavedItem(url: url)
 
             expiringActivityPerformer.performExpiringActivity(withReason: "com.mozilla.pocket.next.save") { [weak self] expiring in
@@ -195,6 +204,15 @@ public class PocketSaveService: SaveService {
             queue.addOperation(operation)
         }
         queue.waitUntilAllOperationsAreFinished()
+    }
+
+    private func reloadRecentSavesWidget() {
+        do {
+            let recentSaves = try space.fetchSavedItems(limit: SyncConstants.Home.recentSaves)
+            recentSavesWidgetUpdateService.update(recentSaves, Localization.recentSaves)
+        } catch {
+            Log.capture(message: "Unable to update the Recent Saves widget after saving an item from the Save extension - \(error)")
+        }
     }
 }
 

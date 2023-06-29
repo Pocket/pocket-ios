@@ -6,6 +6,7 @@ import Foundation
 import UIKit
 import Textile
 import Localization
+import SharedPocketKit
 
 class RecentSavesItemCell: HomeCarouselItemCell {
     struct Model: HomeCarouselItemCellModel {
@@ -26,7 +27,7 @@ class RecentSavesItemCell: HomeCarouselItemCell {
             self.item = item
             self.favoriteAction = favoriteAction
             self.overflowActions = overflowActions
-            self.thumbnailURL = imageCacheURL(for: item.topImageURL)
+            self.thumbnailURL = CDNURLBuilder().imageCacheURL(for: item.topImageURL)
         }
 
         var attributedTitle: NSAttributedString {

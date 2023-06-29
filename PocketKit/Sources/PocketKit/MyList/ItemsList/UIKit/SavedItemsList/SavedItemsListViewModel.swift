@@ -172,28 +172,13 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             case .favorites:
                 return NSPredicate(format: "isFavorite = true")
             case .tagged:
-                presentedTagsFilter = TagsFilterViewModel(
-                    source: source,
-                    tracker: tracker,
-                    userDefaults: userDefaults,
-                    user: user,
-                    selectAllAction: { [weak self] in
-                        self?.selectCell(with: .filterButton(.all))
-                    }
-                )
                 presentedTagsFilter?.$selectedTag.sink { [weak self] selectedTag in
-                    guard let selectedTag = selectedTag else { return }
-                    let predicate: NSPredicate
-                    switch selectedTag {
-                    case .notTagged:
-                        predicate = NSPredicate(format: "tags.@count = 0")
-                    case .tag(let name), .recent(let name):
-                        predicate = NSPredicate(format: "%@ IN tags.name", name)
-                    }
+                    guard let selectedTag, let predicate = self?.getPredicate(for: selectedTag) else { return }
                     self?.fetchItems(with: [predicate])
                     self?.updateSnapshotForTagFilter(with: selectedTag.name)
                 }.store(in: &subscriptions)
-                return nil
+
+                return getPredicate(for: presentedTagsFilter?.selectedTag)
             case .all:
                 return nil
             case .sortAndFilter:
@@ -202,9 +187,23 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         }
         applySorting()
         fetchItems(with: filters)
+        updateSnapshotForTagFilter(with: presentedTagsFilter?.selectedTag?.name)
     }
 
-    private func updateSnapshotForTagFilter(with name: String) {
+    private func getPredicate(for selectedTag: TagType?) -> NSPredicate? {
+        guard let selectedTag else { return nil }
+        switch selectedTag {
+        case .notTagged:
+            return NSPredicate(format: "tags.@count = 0")
+        case .tag(let name), .recent(let name):
+            return NSPredicate(format: "%@ IN tags.name", name)
+        }
+    }
+
+    /// Updates snapshot to add the selected tag chip cell under filters section
+    /// - Parameter name: tag name the user is using to filter their list
+    private func updateSnapshotForTagFilter(with name: String?) {
+        guard let name, selectedFilters.contains(.tagged) else { return }
         var snapshot = _snapshot
         let cells = snapshot.itemIdentifiers(inSection: .filters)
         snapshot.reloadItems(cells)
@@ -253,7 +252,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             notificationCenter: notificationCenter
         )
 
-        if savedItem.shouldOpenInWebView {
+        if savedItem.shouldOpenInWebView(override: featureFlags.isAssigned(flag: .disableReader)) {
             return (readable, true)
         } else {
             return (readable, false)
@@ -629,7 +628,7 @@ extension SavedItemsListViewModel {
             notificationCenter: notificationCenter
         )
 
-        if savedItem.shouldOpenInWebView {
+        if savedItem.shouldOpenInWebView(override: featureFlags.isAssigned(flag: .disableReader)) {
             selectedItem = .webView(readable)
 
             trackContentOpen(destination: .external, item: savedItem)
@@ -670,9 +669,6 @@ extension SavedItemsListViewModel {
     }
 
     private func handleFilterSelection(with filter: ItemsListFilter, sender: Any? = nil) {
-        let reTappedTagFilter = selectedFilters.contains(.tagged) && filter == .tagged
-        guard !reTappedTagFilter else { return }
-
         switch filter {
         case .listen:
             var title: String = ""
@@ -712,6 +708,15 @@ extension SavedItemsListViewModel {
                 sender: sender
             )
         case .tagged:
+            presentedTagsFilter = TagsFilterViewModel(
+                source: source,
+                tracker: tracker,
+                userDefaults: userDefaults,
+                user: user,
+                selectAllAction: { [weak self] in
+                    self?.selectCell(with: .filterButton(.all))
+                }
+            )
             filterTagAnalytics()
             selectedFilters.removeAll()
             selectedFilters.insert(filter)

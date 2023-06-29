@@ -28,6 +28,7 @@ class HomeViewModelTests: XCTestCase {
     var userDefaults: UserDefaults!
     var lastRefresh: UserDefaultsLastRefresh!
     var notificationCenter: NotificationCenter!
+    var featureFlags: MockFeatureFlagService!
 
     override func setUp() async throws {
         try await super.setUp()
@@ -36,6 +37,7 @@ class HomeViewModelTests: XCTestCase {
         source = MockSource()
         networkPathMonitor = MockNetworkPathMonitor()
         notificationCenter = .default
+        featureFlags = MockFeatureFlagService()
 
         taskScheduler = MockBGTaskScheduler()
         userDefaults = .standard
@@ -95,8 +97,11 @@ class HomeViewModelTests: XCTestCase {
             homeRefreshCoordinator: homeRefreshCoordinator ?? self.homeRefreshCoordinator,
             user: user ?? self.user,
             store: subscriptionStore ?? self.subscriptionStore,
+            recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService(store: MockRecentSavesWidgetStore()),
+            recommendationsWidgetUpdateService: RecommendationsWidgetUpdateService(store: MockRecentSavesWidgetStore()),
             userDefaults: userDefaults ?? self.userDefaults,
-            notificationCenter: notificationCenter ?? self.notificationCenter
+            notificationCenter: notificationCenter ?? self.notificationCenter,
+            featureFlags: featureFlags
         )
     }
 
@@ -541,6 +546,14 @@ class HomeViewModelTests: XCTestCase {
 
         let viewModel = subject()
 
+        featureFlags.stubIsAssigned { flag, variant in
+            if flag == .disableReader {
+                return false
+            }
+            XCTFail("Unknown feature flag")
+            return false
+        }
+
         let readableExpectation = expectation(description: "expected to update selected readable")
         readableExpectation.expectedFulfillmentCount = 2
         viewModel.$selectedReadableType.dropFirst().sink { readableType in
@@ -579,6 +592,14 @@ class HomeViewModelTests: XCTestCase {
         let viewModel = subject()
         let urlExpectation = expectation(description: "expected to update presented URL")
         urlExpectation.expectedFulfillmentCount = 3
+
+        featureFlags.stubIsAssigned { flag, variant in
+            if flag == .disableReader {
+                return false
+            }
+            XCTFail("Unknown feature flag")
+            return false
+        }
 
         viewModel.$selectedReadableType.dropFirst().sink { readableType in
             urlExpectation.fulfill()
@@ -629,6 +650,15 @@ class HomeViewModelTests: XCTestCase {
 
         let viewModel = subject()
         let readableExpectation = expectation(description: "expected to update selected readable")
+
+        featureFlags.stubIsAssigned { flag, variant in
+            if flag == .disableReader {
+                return false
+            }
+            XCTFail("Unknown feature flag")
+            return false
+        }
+
         viewModel.$selectedReadableType.dropFirst().sink { readableType in
             switch readableType {
             case .savedItem, .webViewSavedItem:
@@ -659,6 +689,14 @@ class HomeViewModelTests: XCTestCase {
         let viewModel = subject()
         let urlExpectation = expectation(description: "expected to update presented URL")
         urlExpectation.expectedFulfillmentCount = 3
+
+        featureFlags.stubIsAssigned { flag, variant in
+            if flag == .disableReader {
+                return false
+            }
+            XCTFail("Unknown feature flag")
+            return false
+        }
 
         viewModel.$selectedReadableType.dropFirst().sink { readableType in
             urlExpectation.fulfill()

@@ -19,6 +19,7 @@ class SlateDetailViewModelTests: XCTestCase {
     var subscriptions: Set<AnyCancellable> = []
     var user: User!
     var userDefaults: UserDefaults!
+    var featureFlags: MockFeatureFlagService!
 
     override func setUp() {
         super.setUp()
@@ -34,6 +35,8 @@ class SlateDetailViewModelTests: XCTestCase {
         source.stubViewRefresh { object, flag in
             self.space.viewContext.refresh(object, mergeChanges: flag)
         }
+
+        featureFlags = MockFeatureFlagService()
     }
 
     override func tearDownWithError() throws {
@@ -54,7 +57,8 @@ class SlateDetailViewModelTests: XCTestCase {
             source: source ?? self.source,
             tracker: tracker ?? self.tracker,
             user: user ?? self.user,
-            userDefaults: userDefaults ?? self.userDefaults
+            userDefaults: userDefaults ?? self.userDefaults,
+            featureFlags: featureFlags
         )
     }
 
@@ -153,6 +157,14 @@ class SlateDetailViewModelTests: XCTestCase {
             readableExpectation.fulfill()
         }.store(in: &subscriptions)
 
+        featureFlags.stubIsAssigned { flag, variant in
+            if flag == .disableReader {
+                return false
+            }
+            XCTFail("Unknown feature flag")
+            return false
+        }
+
         viewModel.select(
             cell: .recommendation(recommendation.objectID),
             at: IndexPath(item: 0, section: 0)
@@ -173,6 +185,14 @@ class SlateDetailViewModelTests: XCTestCase {
         viewModel.$presentedWebReaderURL.filter { $0 != nil }.sink { readable in
             urlExpectation.fulfill()
         }.store(in: &subscriptions)
+
+        featureFlags.stubIsAssigned { flag, variant in
+            if flag == .disableReader {
+                return false
+            }
+            XCTFail("Unknown feature flag")
+            return false
+        }
 
         do {
             item.isArticle = false

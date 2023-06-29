@@ -21,23 +21,26 @@ public class RootViewModel: ObservableObject {
     private let tracker: Tracker
     private let source: Source
     private let userDefaults: UserDefaults
+    private let widgetsSessionService: WidgetsSessionService
 
     private var subscriptions: Set<AnyCancellable> = []
 
     public convenience init() {
-        self.init(appSession: Services.shared.appSession, tracker: Services.shared.tracker, source: Services.shared.source, userDefaults: Services.shared.userDefaults)
+        self.init(appSession: Services.shared.appSession, tracker: Services.shared.tracker, source: Services.shared.source, userDefaults: Services.shared.userDefaults, widgetsSessionService: Services.shared.widgetsSessionService)
     }
 
     init(
         appSession: AppSession,
         tracker: Tracker,
         source: Source,
-        userDefaults: UserDefaults
+        userDefaults: UserDefaults,
+        widgetsSessionService: WidgetsSessionService
     ) {
         self.appSession = appSession
         self.tracker = tracker
         self.source = source
         self.userDefaults = userDefaults
+        self.widgetsSessionService = widgetsSessionService
 
         // Register for login notifications
         NotificationCenter.default.publisher(
@@ -80,13 +83,15 @@ public class RootViewModel: ObservableObject {
             APIUserEntity(consumerKey: Keys.shared.pocketApiConsumerKey),
             UserEntity(guid: session.guid, userID: session.userIdentifier, adjustAdId: Adjust.adid())
         ])
+        widgetsSessionService.setLoggedIn(true)
         Log.setUserID(session.userIdentifier)
     }
 
     private func tearDownSession() {
         source.clear()
-
+        widgetsSessionService.setLoggedIn(false)
         userDefaults.resetKeys()
+
         tracker.resetPersistentEntities([
             APIUserEntity(consumerKey: Keys.shared.pocketApiConsumerKey)
         ])
