@@ -79,8 +79,11 @@ class MainViewModel: ObservableObject {
                 homeRefreshCoordinator: Services.shared.homeRefreshCoordinator,
                 user: Services.shared.user,
                 store: Services.shared.subscriptionStore,
+                recentSavesWidgetUpdateService: Services.shared.recentSavesWidgetUpdateService,
+                recommendationsWidgetUpdateService: Services.shared.recommendationsWidgetUpdateService,
                 userDefaults: Services.shared.userDefaults,
-                notificationCenter: Services.shared.notificationCenter
+                notificationCenter: Services.shared.notificationCenter,
+                featureFlags: Services.shared.featureFlagService
             ),
             account: AccountViewModel(
                 appSession: Services.shared.appSession,

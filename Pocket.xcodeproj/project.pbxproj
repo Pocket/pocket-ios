@@ -84,9 +84,16 @@
 		8ADD6AA1292C1B2C007F419D /* SearchViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ADD6AA0292C1B2C007F419D /* SearchViewElement.swift */; };
 		9367E9E82A05B6A10052DF47 /* Launch Screen.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9367E9E72A05B6A10052DF47 /* Launch Screen.xcassets */; };
 		938D45322A05B87D00E68B0B /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 938D45312A05B87D00E68B0B /* Launch Screen.storyboard */; };
+		AA2E89032A0D8847004A27BD /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2E89022A0D8847004A27BD /* WidgetKit.framework */; };
+		AA2E89052A0D8847004A27BD /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2E89042A0D8847004A27BD /* SwiftUI.framework */; };
+		AA2E89082A0D8848004A27BD /* ItemWidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2E89072A0D8848004A27BD /* ItemWidgetsBundle.swift */; };
+		AA2E890C2A0D8849004A27BD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA2E890B2A0D8849004A27BD /* Assets.xcassets */; };
+		AA2E89102A0D8849004A27BD /* ItemWidgets.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = AA2E89012A0D8847004A27BD /* ItemWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		AA69A28429B7FC6E00BBA644 /* SearchGetPremiumEmptyViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA69A28329B7FC6E00BBA644 /* SearchGetPremiumEmptyViewElement.swift */; };
 		AA7D6A2B2995F0A20094FD18 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA7D6A2A2995F0A20094FD18 /* StoreKit.framework */; };
 		AA9DB97429B6E6480046AEF6 /* Test_Subscriptions.storekit in Resources */ = {isa = PBXBuildFile; fileRef = AA909ACC299F4D5400F90FA7 /* Test_Subscriptions.storekit */; };
+		AAA3EF842A3A3976000117BE /* ItemWidgetsKit in Frameworks */ = {isa = PBXBuildFile; productRef = AAA3EF832A3A3976000117BE /* ItemWidgetsKit */; };
+		AAE6AC392A13504400790E33 /* RecentSavesWidgetPreviewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAE6AC382A13504400790E33 /* RecentSavesWidgetPreviewer.swift */; };
 		AAEE908229B69BA70028587D /* PremiumTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAEE908129B69BA70028587D /* PremiumTests.swift */; };
 		AAEE908429B69E9F0028587D /* PremiumUpgradeViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAEE908329B69E9F0028587D /* PremiumUpgradeViewElement.swift */; };
 		D26A5EF4297F1D8400FA5A88 /* ReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D26A5EF3297F1D8400FA5A88 /* ReaderTests.swift */; };
@@ -131,6 +138,13 @@
 			remoteGlobalIDString = 65EC272428BA8AD50075E1DF;
 			remoteInfo = PushNotificationStoryExtension;
 		};
+		AA2E890E2A0D8849004A27BD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 166A81A42637406B0015AA1D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AA2E89002A0D8847004A27BD;
+			remoteInfo = RecentSavesWidgetExtension;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -140,6 +154,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
+				AA2E89102A0D8849004A27BD /* ItemWidgets.appex in Embed App Extensions */,
 				166DF27427E9160A00C03BF4 /* SaveToPocket.appex in Embed App Extensions */,
 				65EC273328BA8AD50075E1DF /* PushNotificationStoryExtension.appex in Embed App Extensions */,
 				650FECD228BA85F300A3CB0C /* PushNotificationServiceExtension.appex in Embed App Extensions */,
@@ -254,10 +269,21 @@
 		8ADD6AA0292C1B2C007F419D /* SearchViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewElement.swift; sourceTree = "<group>"; };
 		9367E9E72A05B6A10052DF47 /* Launch Screen.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Launch Screen.xcassets"; sourceTree = "<group>"; };
 		938D45312A05B87D00E68B0B /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		AA2E89012A0D8847004A27BD /* ItemWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ItemWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA2E89022A0D8847004A27BD /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		AA2E89042A0D8847004A27BD /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		AA2E89072A0D8848004A27BD /* ItemWidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemWidgetsBundle.swift; sourceTree = "<group>"; };
+		AA2E890B2A0D8849004A27BD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		AA2E890D2A0D8849004A27BD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AA2E89172A0D9391004A27BD /* libcmark-gfm.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libcmark-gfm.tbd"; path = "Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.4.sdk/usr/lib/libcmark-gfm.tbd"; sourceTree = DEVELOPER_DIR; };
 		AA69A28329B7FC6E00BBA644 /* SearchGetPremiumEmptyViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchGetPremiumEmptyViewElement.swift; sourceTree = "<group>"; };
+		AA704CB42A37C72900CE8DED /* ItemWidgetsDebug_AlphaNeue.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ItemWidgetsDebug_AlphaNeue.entitlements; sourceTree = "<group>"; };
+		AA704CB52A37C73500CE8DED /* ItemWidgetsRelease_AlphaNeue.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ItemWidgetsRelease_AlphaNeue.entitlements; sourceTree = "<group>"; };
 		AA7D6A2A2995F0A20094FD18 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.2.sdk/System/Library/Frameworks/StoreKit.framework; sourceTree = DEVELOPER_DIR; };
 		AA909AC8299EFD3A00F90FA7 /* secrets_test.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = secrets_test.xcconfig; sourceTree = "<group>"; };
 		AA909ACC299F4D5400F90FA7 /* Test_Subscriptions.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Test_Subscriptions.storekit; sourceTree = "<group>"; };
+		AAE33A7F2A0ED5A600214652 /* ItemWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ItemWidgets.entitlements; sourceTree = "<group>"; };
+		AAE6AC382A13504400790E33 /* RecentSavesWidgetPreviewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentSavesWidgetPreviewer.swift; sourceTree = "<group>"; };
 		AAEE908129B69BA70028587D /* PremiumTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremiumTests.swift; sourceTree = "<group>"; };
 		AAEE908329B69E9F0028587D /* PremiumUpgradeViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremiumUpgradeViewElement.swift; sourceTree = "<group>"; };
 		D26A5EF3297F1D8400FA5A88 /* ReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderTests.swift; sourceTree = "<group>"; };
@@ -320,6 +346,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AA2E88FE2A0D8847004A27BD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AAA3EF842A3A3976000117BE /* ItemWidgetsKit in Frameworks */,
+				AA2E89052A0D8847004A27BD /* SwiftUI.framework in Frameworks */,
+				AA2E89032A0D8847004A27BD /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F204A75D27E22EC50010E155 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -375,6 +411,7 @@
 				F204A76127E22EC50010E155 /* SaveToPocket */,
 				650FECCC28BA85F300A3CB0C /* PushNotificationServiceExtension */,
 				65EC272A28BA8AD50075E1DF /* PushNotificationStoryExtension */,
+				AA2E89062A0D8848004A27BD /* ItemWidgets */,
 				F220F2B8264DC2750064D272 /* Frameworks */,
 				166A81B12637406C0015AA1D /* Products */,
 			);
@@ -388,6 +425,7 @@
 				F204A76027E22EC50010E155 /* SaveToPocket.appex */,
 				650FECCB28BA85F300A3CB0C /* PushNotificationServiceExtension.appex */,
 				65EC272528BA8AD50075E1DF /* PushNotificationStoryExtension.appex */,
+				AA2E89012A0D8847004A27BD /* ItemWidgets.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -517,6 +555,20 @@
 			path = "Launch Screen";
 			sourceTree = "<group>";
 		};
+		AA2E89062A0D8848004A27BD /* ItemWidgets */ = {
+			isa = PBXGroup;
+			children = (
+				AA704CB52A37C73500CE8DED /* ItemWidgetsRelease_AlphaNeue.entitlements */,
+				AA704CB42A37C72900CE8DED /* ItemWidgetsDebug_AlphaNeue.entitlements */,
+				AAE33A7F2A0ED5A600214652 /* ItemWidgets.entitlements */,
+				AA2E89072A0D8848004A27BD /* ItemWidgetsBundle.swift */,
+				AAE6AC382A13504400790E33 /* RecentSavesWidgetPreviewer.swift */,
+				AA2E890B2A0D8849004A27BD /* Assets.xcassets */,
+				AA2E890D2A0D8849004A27BD /* Info.plist */,
+			);
+			path = ItemWidgets;
+			sourceTree = "<group>";
+		};
 		F204A76127E22EC50010E155 /* SaveToPocket */ = {
 			isa = PBXGroup;
 			children = (
@@ -531,10 +583,13 @@
 		F220F2B8264DC2750064D272 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AA2E89172A0D9391004A27BD /* libcmark-gfm.tbd */,
 				AA7D6A2A2995F0A20094FD18 /* StoreKit.framework */,
 				F227F0C3265E96290031F985 /* CoreText.framework */,
 				65EC272628BA8AD50075E1DF /* UserNotifications.framework */,
 				65EC272828BA8AD50075E1DF /* UserNotificationsUI.framework */,
+				AA2E89022A0D8847004A27BD /* WidgetKit.framework */,
+				AA2E89042A0D8847004A27BD /* SwiftUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -560,6 +615,7 @@
 				166DF27627E9160A00C03BF4 /* PBXTargetDependency */,
 				650FECD128BA85F300A3CB0C /* PBXTargetDependency */,
 				65EC273228BA8AD50075E1DF /* PBXTargetDependency */,
+				AA2E890F2A0D8849004A27BD /* PBXTargetDependency */,
 			);
 			name = "Pocket (iOS)";
 			packageProductDependencies = (
@@ -638,6 +694,26 @@
 			productReference = 65EC272528BA8AD50075E1DF /* PushNotificationStoryExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		AA2E89002A0D8847004A27BD /* ItemWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AA2E89162A0D884A004A27BD /* Build configuration list for PBXNativeTarget "ItemWidgets" */;
+			buildPhases = (
+				AA2E88FD2A0D8847004A27BD /* Sources */,
+				AA2E88FE2A0D8847004A27BD /* Frameworks */,
+				AA2E88FF2A0D8847004A27BD /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ItemWidgets;
+			packageProductDependencies = (
+				AAA3EF832A3A3976000117BE /* ItemWidgetsKit */,
+			);
+			productName = RecentSavesWidgetExtension;
+			productReference = AA2E89012A0D8847004A27BD /* ItemWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		F204A75F27E22EC50010E155 /* SaveToPocket */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = F204A76E27E22EC50010E155 /* Build configuration list for PBXNativeTarget "SaveToPocket" */;
@@ -664,7 +740,7 @@
 		166A81A42637406B0015AA1D /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1340;
+				LastSwiftUpdateCheck = 1430;
 				LastUpgradeCheck = 1300;
 				TargetAttributes = {
 					166A81AF2637406C0015AA1D = {
@@ -680,6 +756,9 @@
 					};
 					65EC272428BA8AD50075E1DF = {
 						CreatedOnToolsVersion = 13.4.1;
+					};
+					AA2E89002A0D8847004A27BD = {
+						CreatedOnToolsVersion = 14.3;
 					};
 					F204A75F27E22EC50010E155 = {
 						CreatedOnToolsVersion = 13.3;
@@ -726,6 +805,7 @@
 				F204A75F27E22EC50010E155 /* SaveToPocket */,
 				650FECCA28BA85F300A3CB0C /* PushNotificationServiceExtension */,
 				65EC272428BA8AD50075E1DF /* PushNotificationStoryExtension */,
+				AA2E89002A0D8847004A27BD /* ItemWidgets */,
 			);
 		};
 /* End PBXProject section */
@@ -762,6 +842,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA2E88FF2A0D8847004A27BD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA2E890C2A0D8849004A27BD /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -911,6 +999,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AA2E88FD2A0D8847004A27BD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA2E89082A0D8848004A27BD /* ItemWidgetsBundle.swift in Sources */,
+				AAE6AC392A13504400790E33 /* RecentSavesWidgetPreviewer.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F204A75C27E22EC50010E155 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -941,6 +1038,11 @@
 			isa = PBXTargetDependency;
 			target = 65EC272428BA8AD50075E1DF /* PushNotificationStoryExtension */;
 			targetProxy = 65EC273128BA8AD50075E1DF /* PBXContainerItemProxy */;
+		};
+		AA2E890F2A0D8849004A27BD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AA2E89002A0D8847004A27BD /* ItemWidgets */;
+			targetProxy = AA2E890E2A0D8849004A27BD /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1000,7 +1102,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MARKETING_VERSION = 8.0.4;
+				MARKETING_VERSION = 8.0.5;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1059,7 +1161,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MARKETING_VERSION = 8.0.4;
+				MARKETING_VERSION = 8.0.5;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				POCKET_API_BASE_URL = "https://api.getpocket.com/graphql";
@@ -1087,7 +1189,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 8.0.4;
+				MARKETING_VERSION = 8.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro;
 				PRODUCT_NAME = Pocket;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1117,7 +1219,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 8.0.4;
+				MARKETING_VERSION = 8.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro;
 				PRODUCT_NAME = Pocket;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1142,7 +1244,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 8.0.4;
+				MARKETING_VERSION = 8.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ideashower.ReadItLaterProAlphaNeue.Tests-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1167,7 +1269,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 8.0.4;
+				MARKETING_VERSION = 8.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ideashower.ReadItLaterProAlphaNeue.Tests-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1199,7 +1301,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 8.0.4;
+				MARKETING_VERSION = 8.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.PushNotificationServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1231,7 +1333,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 8.0.4;
+				MARKETING_VERSION = 8.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.PushNotificationServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1293,7 +1395,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MARKETING_VERSION = 8.0.4;
+				MARKETING_VERSION = 8.0.5;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				POCKET_API_BASE_URL = "https://api.getpocket.com/graphql";
@@ -1321,7 +1423,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 8.0.4;
+				MARKETING_VERSION = 8.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterProAlphaNeue;
 				PRODUCT_NAME = Pocket;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1347,7 +1449,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 8.0.4;
+				MARKETING_VERSION = 8.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ideashower.ReadItLaterProAlphaNeue.Tests-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1379,7 +1481,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 8.0.4;
+				MARKETING_VERSION = 8.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterProAlphaNeue.AddToPocketExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1412,7 +1514,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 8.0.4;
+				MARKETING_VERSION = 8.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterProAlphaNeue.PushNotificationServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1444,7 +1546,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 8.0.4;
+				MARKETING_VERSION = 8.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterProAlphaNeue.PushNotificationStoryExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1512,7 +1614,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MARKETING_VERSION = 8.0.4;
+				MARKETING_VERSION = 8.0.5;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1541,7 +1643,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 8.0.4;
+				MARKETING_VERSION = 8.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterProAlphaNeue;
 				PRODUCT_NAME = Pocket;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1567,7 +1669,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 8.0.4;
+				MARKETING_VERSION = 8.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ideashower.ReadItLaterProAlphaNeue.Tests-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1598,7 +1700,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 8.0.4;
+				MARKETING_VERSION = 8.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterProAlphaNeue.AddToPocketExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1631,7 +1733,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 8.0.4;
+				MARKETING_VERSION = 8.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterProAlphaNeue.PushNotificationServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1662,7 +1764,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 8.0.4;
+				MARKETING_VERSION = 8.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterProAlphaNeue.PushNotificationStoryExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1693,7 +1795,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 8.0.4;
+				MARKETING_VERSION = 8.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.PushNotificationStoryExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1724,7 +1826,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 8.0.4;
+				MARKETING_VERSION = 8.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.PushNotificationStoryExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1792,7 +1894,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MARKETING_VERSION = 8.0.4;
+				MARKETING_VERSION = 8.0.5;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1821,7 +1923,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 8.0.4;
+				MARKETING_VERSION = 8.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro;
 				PRODUCT_NAME = Pocket;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1846,7 +1948,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 8.0.4;
+				MARKETING_VERSION = 8.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ideashower.ReadItLaterProAlphaNeue.Tests-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1877,7 +1979,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 8.0.4;
+				MARKETING_VERSION = 8.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.AddToPocketExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1910,7 +2012,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 8.0.4;
+				MARKETING_VERSION = 8.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.PushNotificationServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1941,7 +2043,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 8.0.4;
+				MARKETING_VERSION = 8.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.PushNotificationStoryExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1952,6 +2054,168 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug_Tests;
+		};
+		AA2E89112A0D884A004A27BD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = ItemWidgets/ItemWidgets.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = EX3VH4YFCH;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ItemWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ItemWidgets;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 8.0.5;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.ideashower.ReadItLaterPro.Widget-Extension";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AA2E89122A0D884A004A27BD /* Debug_Tests */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = ItemWidgets/ItemWidgets.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = EX3VH4YFCH;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ItemWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ItemWidgets;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 8.0.5;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.ideashower.ReadItLaterPro.Widget-Extension";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug_Tests;
+		};
+		AA2E89132A0D884A004A27BD /* Debug_AlphaNeue */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = ItemWidgets/ItemWidgetsDebug_AlphaNeue.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = EX3VH4YFCH;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ItemWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ItemWidgets;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 8.0.5;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterProAlphaNeue.Widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug_AlphaNeue;
+		};
+		AA2E89142A0D884A004A27BD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = ItemWidgets/ItemWidgets.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = EX3VH4YFCH;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ItemWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ItemWidgets;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 8.0.5;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.ideashower.ReadItLaterPro.Widget-Extension";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		AA2E89152A0D884A004A27BD /* Release_AlphaNeue */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = ItemWidgets/ItemWidgetsRelease_AlphaNeue.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = EX3VH4YFCH;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ItemWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ItemWidgets;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 8.0.5;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterProAlphaNeue.Widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release_AlphaNeue;
 		};
 		F204A76C27E22EC50010E155 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -1973,7 +2237,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 8.0.4;
+				MARKETING_VERSION = 8.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.AddToPocketExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2006,7 +2270,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 8.0.4;
+				MARKETING_VERSION = 8.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.AddToPocketExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2078,6 +2342,18 @@
 				653DA73529C3BBE800123847 /* Debug_AlphaNeue */,
 				65EC273728BA8AD50075E1DF /* Release */,
 				653DA72B29C3BB0C00123847 /* Release_AlphaNeue */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AA2E89162A0D884A004A27BD /* Build configuration list for PBXNativeTarget "ItemWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA2E89112A0D884A004A27BD /* Debug */,
+				AA2E89122A0D884A004A27BD /* Debug_Tests */,
+				AA2E89132A0D884A004A27BD /* Debug_AlphaNeue */,
+				AA2E89142A0D884A004A27BD /* Release */,
+				AA2E89152A0D884A004A27BD /* Release_AlphaNeue */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -2188,6 +2464,10 @@
 		8A3B77BC29E0AEEB00AD71D0 /* PocketKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = PocketKit;
+		};
+		AAA3EF832A3A3976000117BE /* ItemWidgetsKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ItemWidgetsKit;
 		};
 		F2687E7227E28F0F00E43F09 /* SaveToPocketKit */ = {
 			isa = XCSwiftPackageProductDependency;

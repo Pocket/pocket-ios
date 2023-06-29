@@ -44,6 +44,9 @@ struct Services {
     let bannerPresenter: BannerPresenter
     let notificationCenter: NotificationCenter
     let sessionBackupUtility: SessionBackupUtility
+    let widgetsSessionService: WidgetsSessionService
+    let recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService
+    let recommendationsWidgetUpdateService: RecommendationsWidgetUpdateService
 
     private let persistentContainer: PersistentContainer
 
@@ -152,7 +155,8 @@ struct Services {
         imageManager = ImageManager(
             imagesController: source.makeImagesController(),
             imageRetriever: KingfisherManager.shared,
-            source: source
+            source: source,
+            cdnURLBuilder: CDNURLBuilder()
         )
         imageManager.start()
 
@@ -208,6 +212,10 @@ struct Services {
             store: PocketEncryptedStore(),
             notificationCenter: notificationCenter
         )
+
+        recentSavesWidgetUpdateService = RecentSavesWidgetUpdateService(store: UserDefaultsItemWidgetsStore(userDefaults: userDefaults, key: .recentSavesWidget))
+        recommendationsWidgetUpdateService = RecommendationsWidgetUpdateService(store: UserDefaultsItemWidgetsStore(userDefaults: userDefaults, key: .recommendationsWidget))
+        widgetsSessionService = UserDefaultsWidgetSessionService(defaults: userDefaults)
     }
 }
 

@@ -10,9 +10,9 @@ struct SettingsRowToggle: View {
 
     @ObservedObject private var model: AccountViewModel
 
-    let action: () -> Void
+    let action: (Bool) -> Void
 
-    init(title: String, model: AccountViewModel, action: @escaping () -> Void) {
+    init(title: String, model: AccountViewModel, action: @escaping (Bool) -> Void) {
         self.title = title
         self.model = model
         self.action = action
@@ -22,7 +22,7 @@ struct SettingsRowToggle: View {
         VStack {
             Toggle(title, isOn: model.$appBadgeToggle)
                 .onChange(of: model.appBadgeToggle) { newValue in
-                    self.action()
+                    self.action(newValue)
                 }
         }
     }

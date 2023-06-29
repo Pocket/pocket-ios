@@ -4,6 +4,7 @@
 
 import Foundation
 import Kingfisher
+import SharedPocketKit
 import Sync
 import CoreData
 
@@ -44,15 +45,18 @@ class ImageManager {
     private let imagesController: ImagesController
     private let imageRetriever: ImageRetriever
     private let source: Sync.Source
+    private let cdnURLBuilder: CDNURLBuilder
 
     init(
         imagesController: ImagesController,
         imageRetriever: ImageRetriever,
-        source: Sync.Source
+        source: Sync.Source,
+        cdnURLBuilder: CDNURLBuilder
     ) {
         self.imagesController = imagesController
         self.imageRetriever = imageRetriever
         self.source = source
+        self.cdnURLBuilder = cdnURLBuilder
     }
 
     func start() {
@@ -68,7 +72,7 @@ private extension ImageManager {
         // 1. Check if we have a valid image cache url
         // 2. Check if the image is already cached
         // If the image has a valid url and is already cached, skip; else, retrieve
-        guard let cachedURL = imageCacheURL(for: url),
+        guard let cachedURL = cdnURLBuilder.imageCacheURL(for: url),
         imageRetriever.imageCache.isCached(
             forKey: cachedURL.cacheKey,
             processorIdentifier: DefaultImageProcessor.default.identifier
@@ -95,7 +99,7 @@ private extension ImageManager {
         // 1. Check if we have a valid image cache url
         // 2. Check if the image is already cached
         // If the image has a valid url and is not already cached, skip; else, delete
-        guard let cachedURL = imageCacheURL(for: url),
+        guard let cachedURL = cdnURLBuilder.imageCacheURL(for: url),
         imageRetriever.imageCache.isCached(
             forKey: cachedURL.cacheKey,
             processorIdentifier: DefaultImageProcessor.default.identifier

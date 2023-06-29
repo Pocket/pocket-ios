@@ -24,14 +24,14 @@ class ItemExtensionsTests: XCTestCase {
         let savedItem: SavedItem = try space.createSavedItem()
         savedItem.item?.isArticle = false
 
-        XCTAssertEqual(savedItem.shouldOpenInWebView, true)
+        XCTAssertEqual(savedItem.shouldOpenInWebView(override: false), true)
     }
 
     func test_shouldOpenInWebView_andIsArticle_returnsFalse() throws {
         let savedItem: SavedItem = try space.createSavedItem()
         savedItem.item?.isArticle = true
 
-        XCTAssertEqual(savedItem.shouldOpenInWebView, false)
+        XCTAssertEqual(savedItem.shouldOpenInWebView(override: false), false)
     }
 
     func test_shouldOpenInWebView_withArticleComponents_returnsTrue() throws {

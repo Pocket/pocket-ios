@@ -13,6 +13,7 @@
 "reportIssue.name" = "이름";
 "reportIssue.email" = "이메일";
 "reportIssue.comment" = "문제가 발생했나요?";
+"reportIssue.optional" = "선택 사항";
 "reportIssue.submitIssue.title" = "문제 제출";
 
 //Archive
