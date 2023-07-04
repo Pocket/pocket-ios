@@ -11,6 +11,16 @@ import Analytics
 import SharedPocketKit
 
 class RecommendationViewModel: ReadableViewModel {
+    func trackReadingProgress(index: IndexPath) {
+        print("===Track")
+    }
+
+    func readingProgress() -> IndexPath? {
+        print("===progress")
+
+        return nil
+    }
+
     @Published private(set) var _actions: [ItemAction] = []
     var actions: Published<[ItemAction]>.Publisher { $_actions }
 

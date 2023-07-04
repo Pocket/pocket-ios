@@ -12,6 +12,31 @@ import SharedPocketKit
 import Localization
 
 class SavedItemViewModel: ReadableViewModel {
+    func trackReadingProgress(index: IndexPath) {
+        let baseKey = readingProgressKeyBase(url: item.url)
+
+        userDefaults.setValue(index.section, forKey: baseKey + "section")
+        userDefaults.setValue(index.row, forKey: baseKey + "row")
+    }
+
+    func readingProgress() -> IndexPath? {
+        let baseKey = readingProgressKeyBase(url: item.url)
+
+        print(userDefaults.object(forKey: baseKey + "section"))
+        print(userDefaults.object(forKey: baseKey + "key"))
+
+        guard let section = userDefaults.object(forKey: baseKey + "section") as? Int,
+              let row = userDefaults.object(forKey: baseKey + "row") as? Int else {
+            return nil
+        }
+
+        return IndexPath(row: row, section: section)
+    }
+
+    private func readingProgressKeyBase(url: URL) -> String {
+        "readingProgress.\(url.absoluteString)."
+    }
+
     let tracker: Tracker
 
     @Published private(set) var _actions: [ItemAction] = []
