@@ -12,13 +12,11 @@ import SharedPocketKit
 
 class RecommendationViewModel: ReadableViewModel {
     func trackReadingProgress(index: IndexPath) {
-        print("===Track")
+        fatalError("Not Implemented")
     }
 
     func readingProgress() -> IndexPath? {
-        print("===progress")
-
-        return nil
+        fatalError("Not Implemented")
     }
 
     @Published private(set) var _actions: [ItemAction] = []
