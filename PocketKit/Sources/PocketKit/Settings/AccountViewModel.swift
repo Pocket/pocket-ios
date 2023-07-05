@@ -95,6 +95,7 @@ class AccountViewModel: ObservableObject {
 
     /// Calls the user management service to sign the user out.
     func signOut() {
+        Log.breadcrumb(category: "auth" , level: .error, message: "User did log out")
         userManagementService.logout()
     }
 
