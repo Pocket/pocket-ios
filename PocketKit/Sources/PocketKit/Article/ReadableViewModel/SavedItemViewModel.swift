@@ -22,15 +22,19 @@ class SavedItemViewModel: ReadableViewModel {
     func readingProgress() -> IndexPath? {
         let baseKey = readingProgressKeyBase(url: item.url)
 
-        print(userDefaults.object(forKey: baseKey + "section"))
-        print(userDefaults.object(forKey: baseKey + "key"))
-
         guard let section = userDefaults.object(forKey: baseKey + "section") as? Int,
               let row = userDefaults.object(forKey: baseKey + "row") as? Int else {
             return nil
         }
 
         return IndexPath(row: row, section: section)
+    }
+
+    func deleteReadingProgress() {
+        let baseKey = readingProgressKeyBase(url: item.url)
+
+        userDefaults.removeObject(forKey: baseKey + "section")
+        userDefaults.removeObject(forKey: baseKey + "row")
     }
 
     private func readingProgressKeyBase(url: URL) -> String {
@@ -141,6 +145,7 @@ class SavedItemViewModel: ReadableViewModel {
     }
 
     func delete() {
+        deleteReadingProgress()
         source.delete(item: item)
         _events.send(.delete)
     }
