@@ -7,7 +7,9 @@ import Textile
 import Localization
 
 struct AddSavedItem: View {
-    @Environment(\.dismiss) var dismiss
+    @Environment(\.dismiss)
+    private var dismiss
+
     @State private var urlString: String = ""
     @State private var showError: Bool = false
 
