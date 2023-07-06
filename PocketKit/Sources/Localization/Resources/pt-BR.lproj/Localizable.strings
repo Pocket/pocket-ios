@@ -307,3 +307,12 @@
 "back.to.pocket" = "Voltar ao Pocket";
 
 "saveToPocket.tapToDismiss" = "Toque para cancelar";
+
+"itemWidgets.loggedOutMessage" = "Faça login no Pocket para ver o seu conteúdo.";
+"itemWidgets.errorMessage" = "Ocorreu um erro.";
+"itemWidgets.recentSaves.emptyMessage" = "Comece a criar sua lista do Pocket.";
+"itemWidgets.recentSaves.title" = "Salvos recentemente";
+"itemWidgets.recentSaves.description" = "Acesse seus artigos salvos mais recentes.";
+"itemWidgets.recommendations.emptyMessage" = "Talvez você esteja offline. Veja recomendações no aplicativo do Pocket";
+"itemWidgets.recommendations.title" = "Recomendações";
+"itemWidgets.recommendations.description" = "Leia matérias inspiradoras selecionadas pelo Pocket.";

@@ -12,22 +12,6 @@ struct LaunchArguments {
     let disableSentry: Bool
     let disableSnowplow: Bool
 
-    init(
-        clearKeychain: Bool,
-        clearUserDefaults: Bool,
-        clearCoreData: Bool,
-        clearImageCache: Bool,
-        disableSentry: Bool,
-        disableSnowplow: Bool
-    ) {
-        self.clearKeychain = clearKeychain
-        self.clearUserDefaults = clearUserDefaults
-        self.clearCoreData = clearCoreData
-        self.clearImageCache = clearImageCache
-        self.disableSentry = disableSentry
-        self.disableSnowplow = disableSnowplow
-    }
-
     func toArray() -> [String] {
         var args: [String] = []
         if clearKeychain {

@@ -307,3 +307,12 @@
 "back.to.pocket" = "Revenir à Pocket";
 
 "saveToPocket.tapToDismiss" = "Appuyez pour ignorer";
+
+"itemWidgets.loggedOutMessage" = "Connectez-vous à Pocket pour voir votre contenu.";
+"itemWidgets.errorMessage" = "Un problème est survenu.";
+"itemWidgets.recentSaves.emptyMessage" = "Commencez à créer votre liste Pocket.";
+"itemWidgets.recentSaves.title" = "Sauvegardes récentes";
+"itemWidgets.recentSaves.description" = "Accédez à vos derniers articles sauvegardés.";
+"itemWidgets.recommendations.emptyMessage" = "Il est possible que vous soyez hors ligne. Veuillez vérifier les recommandations dans votre application Pocket.";
+"itemWidgets.recommendations.title" = "Recommandations";
+"itemWidgets.recommendations.description" = "Découvrez les histoires les plus stimulantes qui soient, sélectionnées avec soin par Pocket.";

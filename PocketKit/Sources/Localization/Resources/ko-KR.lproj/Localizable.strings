@@ -307,3 +307,12 @@
 "back.to.pocket" = "Pocket으로 돌아가기";
 
 "saveToPocket.tapToDismiss" = "해제하려면 누르십시오";
+
+"itemWidgets.loggedOutMessage" = "콘텐츠를 확인하려면 Pocket에 로그인하십시오.";
+"itemWidgets.errorMessage" = "문제가 발생했습니다.";
+"itemWidgets.recentSaves.emptyMessage" = "지금 Pocket 목록 구축을 시작하세요.";
+"itemWidgets.recentSaves.title" = "최근 저장한 내용";
+"itemWidgets.recentSaves.description" = "가장 최근에 저장한 아티클에 액세스합니다.";
+"itemWidgets.recommendations.emptyMessage" = "오프라인 상태일 수 있습니다. Pocket 앱에서 권장 사항을 확인하십시오";
+"itemWidgets.recommendations.title" = "권장 사항";
+"itemWidgets.recommendations.description" = "Pocket에서 선정한 가장 생각을 자극하는 스토리를 확인해 보십시오.";

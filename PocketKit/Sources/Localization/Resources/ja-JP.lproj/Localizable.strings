@@ -307,3 +307,12 @@
 "back.to.pocket" = "Pocket に戻る";
 
 "saveToPocket.tapToDismiss" = "タップして閉じる";
+
+"itemWidgets.loggedOutMessage" = "コンテンツを表示するには、Pocket にログインしてください。";
+"itemWidgets.errorMessage" = "エラーが発生したようです。";
+"itemWidgets.recentSaves.emptyMessage" = "Pocket リストを作成しましょう。";
+"itemWidgets.recentSaves.title" = "最近保存したアイテム";
+"itemWidgets.recentSaves.description" = "最近保存した記事にアクセスしましょう。";
+"itemWidgets.recommendations.emptyMessage" = "オフラインになっている可能性があります。Pocket アプリで推奨事項を確認してください。";
+"itemWidgets.recommendations.title" = "おすすめ";
+"itemWidgets.recommendations.description" = "Pocket が厳選！色々と考えさせられる興味深いストーリーをお届けします。";
