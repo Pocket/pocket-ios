@@ -158,10 +158,10 @@ class RecommendationViewModel: ReadableViewModel {
         userDefaults.removeObject(forKey: baseKey + "row")
     }
 
-    private func readingProgressKeyBase(url: URL?) -> String? {
+    private func readingProgressKeyBase(url: String?) -> String? {
         guard let url else { return nil }
 
-        return "readingProgress.\(url.absoluteString)."
+        return "readingProgress.\(url)."
     }
 
     /// Check to see if item has article components to display in reader view, else display in web view

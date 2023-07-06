@@ -11,7 +11,7 @@ public extension Events.ReaderToolbar {
     /**
      Fired when a user un-archives/adds an article to Saves via the top toolbar on Reader
      */
-    static func moveFromArchiveToSavesClicked(url: URL) -> Engagement {
+    static func moveFromArchiveToSavesClicked(url: String) -> Engagement {
         return Engagement(
             .save(contentEntity: ContentEntity(url: url)),
             uiEntity: UiEntity(
@@ -24,7 +24,7 @@ public extension Events.ReaderToolbar {
     /**
      Fired when a user archives an article via the top toolbar on Reader
      */
-    static func archiveClicked(url: URL) -> Engagement {
+    static func archiveClicked(url: String) -> Engagement {
         return Engagement(
             uiEntity: UiEntity(
                 .button,
@@ -39,7 +39,7 @@ public extension Events.ReaderToolbar {
     /**
      Fired when the user taps on the button to open item in web view  in the `Reader`
      */
-    static func openInWebView(url: URL) -> ContentOpen {
+    static func openInWebView(url: String) -> ContentOpen {
         return ContentOpen(
             contentEntity: ContentEntity(url: url),
             uiEntity: UiEntity(
@@ -52,7 +52,7 @@ public extension Events.ReaderToolbar {
     /**
      Fired when a user clicks the overflow button from within the reader toolbar
      */
-    static func overflowClicked(url: URL) -> Engagement {
+    static func overflowClicked(url: String) -> Engagement {
         return Engagement(
             uiEntity: UiEntity(
                 .button,
@@ -67,7 +67,7 @@ public extension Events.ReaderToolbar {
     /**
      Fired when a user clicks the text settings button from within the reader toolbar overflow menu
      */
-    static func textSettingsClicked(url: URL) -> Engagement {
+    static func textSettingsClicked(url: String) -> Engagement {
         return Engagement(
             uiEntity: UiEntity(
                 .button,
@@ -82,7 +82,7 @@ public extension Events.ReaderToolbar {
     /**
      Fired when a user clicks the favorite button from within the reader toolbar overflow menu
      */
-    static func favoriteClicked(url: URL) -> Engagement {
+    static func favoriteClicked(url: String) -> Engagement {
         return Engagement(
             uiEntity: UiEntity(
                 .button,
@@ -97,7 +97,7 @@ public extension Events.ReaderToolbar {
     /**
      Fired when a user clicks the unfavorite button from within the reader toolbar overflow menu
      */
-    static func unfavoriteClicked(url: URL) -> Engagement {
+    static func unfavoriteClicked(url: String) -> Engagement {
         return Engagement(
             uiEntity: UiEntity(
                 .button,
@@ -112,7 +112,7 @@ public extension Events.ReaderToolbar {
     /**
      Fired when a user clicks the add tags button from within the reader toolbar overflow menu
      */
-    static func addTagsClicked(url: URL) -> Engagement {
+    static func addTagsClicked(url: String) -> Engagement {
         return Engagement(
             uiEntity: UiEntity(
                 .button,
@@ -127,7 +127,7 @@ public extension Events.ReaderToolbar {
     /**
      Fired when a user clicks the delete button from within the reader toolbar overflow menu
      */
-    static func deleteClicked(url: URL) -> Engagement {
+    static func deleteClicked(url: String) -> Engagement {
         return Engagement(
             uiEntity: UiEntity(
                 .button,
@@ -142,7 +142,7 @@ public extension Events.ReaderToolbar {
     /**
      Fired when a user clicks the save button from within the reader toolbar
      */
-    static func saveClicked(url: URL) -> Engagement {
+    static func saveClicked(url: String) -> Engagement {
         return Engagement(
             .save(contentEntity: ContentEntity(url: url)),
             uiEntity: UiEntity(
@@ -155,7 +155,7 @@ public extension Events.ReaderToolbar {
     /**
      Fired when a user clicks the share button from within the reader toolbar
      */
-    static func shareClicked(url: URL) -> Engagement {
+    static func shareClicked(url: String) -> Engagement {
         return Engagement(
             uiEntity: UiEntity(
                 .button,
@@ -170,7 +170,7 @@ public extension Events.ReaderToolbar {
     /**
      Fired when a user clicks the report button from within the reader toolbar
      */
-    static func reportClicked(url: URL) -> Engagement {
+    static func reportClicked(url: String) -> Engagement {
         return Engagement(
             uiEntity: UiEntity(
                 .button,

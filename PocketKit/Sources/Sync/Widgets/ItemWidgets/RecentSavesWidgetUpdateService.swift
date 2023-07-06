@@ -23,10 +23,10 @@ public struct RecentSavesWidgetUpdateService {
         savesUpdateQueue.async {
             let saves = items.map {
                 ItemContent(
-                    url: $0.url.absoluteString,
-                    title: $0.item?.title ?? $0.url.absoluteString,
+                    url: $0.url,
+                    title: $0.item?.title ?? $0.url,
                     imageUrl: $0.item?.topImageURL?.absoluteString,
-                    bestDomain: $0.item?.domainMetadata?.name ?? $0.item?.domain ?? $0.url.host ?? "",
+                    bestDomain: $0.item?.domainMetadata?.name ?? $0.item?.domain ?? URL(percentEncoding: $0.url)?.host ?? "",
                     timeToRead: ($0.item?.timeToRead) != nil ? Int(truncating: ($0.item?.timeToRead)!) : nil
                 )
             }

@@ -37,8 +37,8 @@ class SavedItemViewModel: ReadableViewModel {
         userDefaults.removeObject(forKey: baseKey + "row")
     }
 
-    private func readingProgressKeyBase(url: URL) -> String {
-        "readingProgress.\(url.absoluteString)."
+    private func readingProgressKeyBase(url: String) -> String {
+        "readingProgress.\(url)."
     }
 
     let tracker: Tracker

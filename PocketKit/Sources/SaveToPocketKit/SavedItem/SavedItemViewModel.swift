@@ -157,7 +157,7 @@ extension SavedItemViewModel {
 
         for provider in providers {
             if let url = await URLExtractor.url(from: provider) {
-                return URL(string: url)
+                return URL(string: url)?.absoluteString
             }
         }
 
