@@ -14,6 +14,8 @@ protocol FeatureFlagServiceProtocol {
     func trackFeatureFlagFelt(flag: CurrentFeatureFlags, variant: String?)
 
     func getPayload(flag: CurrentFeatureFlags) -> String?
+
+    var shouldDisableReader: Bool { get }
 }
 
 /// Extension for default values https://medium.com/@georgetsifrikas/swift-protocols-with-default-values-b7278d3eef22
@@ -31,10 +33,16 @@ extension FeatureFlagServiceProtocol {
 class FeatureFlagService: FeatureFlagServiceProtocol {
     private let source: Source
     private let tracker: Tracker
+    private let userDefaults: UserDefaults
 
-    init(source: Source, tracker: Tracker) {
+    init(source: Source, tracker: Tracker, userDefaults: UserDefaults) {
         self.source = source
         self.tracker = tracker
+        self.userDefaults = userDefaults
+    }
+
+    var shouldDisableReader: Bool {
+        isAssigned(flag: .disableReader) || userDefaults.bool(forKey: UserDefaults.Key.toggleOriginalView)
     }
 
     /// Determine if a user is assigned to a test and a variant.

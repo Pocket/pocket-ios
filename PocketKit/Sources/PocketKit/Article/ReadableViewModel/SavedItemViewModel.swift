@@ -37,8 +37,8 @@ class SavedItemViewModel: ReadableViewModel {
         userDefaults.removeObject(forKey: baseKey + "row")
     }
 
-    private func readingProgressKeyBase(url: URL) -> String {
-        "readingProgress.\(url.absoluteString)."
+    private func readingProgressKeyBase(url: String) -> String {
+        "readingProgress.\(url)."
     }
 
     let tracker: Tracker
@@ -128,7 +128,7 @@ class SavedItemViewModel: ReadableViewModel {
         item.item?.datePublished
     }
 
-    var url: URL? {
+    var url: String {
         item.bestURL
     }
 
@@ -136,7 +136,7 @@ class SavedItemViewModel: ReadableViewModel {
         item.isArchived
     }
 
-    var premiumURL: URL? {
+    var premiumURL: String? {
         pocketPremiumURL(url, user: user)
     }
 
@@ -186,7 +186,7 @@ class SavedItemViewModel: ReadableViewModel {
     }
 
     func webViewActivityItems(url: URL) -> [UIActivity] {
-        guard let item = source.fetchItem(url), let savedItem = item.savedItem else {
+        guard let item = source.fetchItem(url.absoluteString), let savedItem = item.savedItem else {
             return []
         }
 
@@ -228,7 +228,8 @@ extension SavedItemViewModel {
         completion(true)
     }
 
-    func openInWebView(url: URL?) {
+    func openInWebView(url: String) {
+        guard let url = URL(percentEncoding: url) else { return }
         let updatedURL = pocketPremiumURL(url, user: user)
         presentedWebReaderURL = updatedURL
 
@@ -239,7 +240,7 @@ extension SavedItemViewModel {
         let updatedURL = pocketPremiumURL(url, user: user)
         presentedWebReaderURL = updatedURL
 
-        trackExternalLinkOpen(url: url)
+        trackExternalLinkOpen(url: url.absoluteString)
     }
 
     func archive() {
@@ -284,7 +285,7 @@ extension SavedItemViewModel {
     }
 
     private func saveExternalURL(_ url: URL) {
-        source.save(url: url)
+        source.save(url: url.absoluteString)
     }
 
     private func copyExternalURL(_ url: URL) {
@@ -293,7 +294,7 @@ extension SavedItemViewModel {
 
     private func shareExternalURL(_ url: URL) {
         // This view model is used within the context of a view that is presented within the reader
-        sharedActivity = PocketItemActivity.fromReader(url: url)
+        sharedActivity = PocketItemActivity.fromReader(url: url.absoluteString)
     }
 }
 

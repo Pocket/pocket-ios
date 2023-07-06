@@ -11,6 +11,7 @@ public extension UserDefaults {
         case recentSearches = "Search.recentSearches"
         case recentTags = "Search.recentTags"
         case toggleAppBadge = "AccountViewModel.ToggleAppBadge"
+        case toggleOriginalView = "AccountViewModel.ToggleOriginalView"
         case appBadgeToggle = "Settings.ToggleAppBadge"
         case legacyUserMigration = "com.mozilla.pocket.next.migration.legacyUser"
         case dateLastRefresh = "HomeRefreshCoordinator.dateLastRefreshKey"

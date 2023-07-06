@@ -1056,9 +1056,9 @@ extension MockSource {
 // MARK: - Save URL
 extension MockSource {
     private static let saveURL = "saveURL"
-    typealias SaveURLImpl = (URL) -> Void
+    typealias SaveURLImpl = (String) -> Void
     struct SaveURLCall {
-        let url: URL
+        let url: String
     }
 
     func stubSaveURL(_ impl: @escaping SaveURLImpl) {
@@ -1075,7 +1075,7 @@ extension MockSource {
         return call
     }
 
-    func save(url: URL) {
+    func save(url: String) {
         guard let impl = implementations[Self.saveURL] as? SaveURLImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
@@ -1157,17 +1157,17 @@ extension MockSource {
 // MARK: - Fetch item by URL
 extension MockSource {
     private static let fetchItem = "fetchItem"
-    typealias FetchItemImpl = (URL) -> Item?
+    typealias FetchItemImpl = (String) -> Item?
 
     struct FetchItemCall {
-        let url: URL
+        let url: String
     }
 
     func stubFetchItem(impl: @escaping FetchItemImpl) {
         implementations[Self.fetchItem] = impl
     }
 
-    func fetchItem(_ url: URL) -> Item? {
+    func fetchItem(_ url: String) -> Item? {
         guard let impl = implementations[Self.fetchItem] as? FetchItemImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
@@ -1212,17 +1212,17 @@ extension MockSource {
 // MARK: - Fetch SavedItem by Remote ID
 extension MockSource {
     private static let fetchSavedItem = "fetchSavedItem"
-    typealias FetchSavedItemImpl = (URL) -> SavedItem?
+    typealias FetchSavedItemImpl = (String) -> SavedItem?
 
     struct FetchSavedItemCall {
-        let url: URL
+        let url: String
     }
 
     func stubFetchSavedItem(impl: @escaping FetchSavedItemImpl) {
         implementations[Self.fetchSavedItem] = impl
     }
 
-    func fetchOrCreateSavedItem(with url: URL, and remoteParts: SavedItem.RemoteSavedItem?) -> SavedItem? {
+    func fetchOrCreateSavedItem(with url: String, and remoteParts: SavedItem.RemoteSavedItem?) -> SavedItem? {
         guard let impl = implementations[Self.fetchSavedItem] as? FetchSavedItemImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }

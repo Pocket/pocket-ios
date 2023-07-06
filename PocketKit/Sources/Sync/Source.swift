@@ -82,13 +82,13 @@ public protocol Source {
 
     func fetchDetails(for recommendation: Recommendation) async throws -> Bool
 
-    func save(url: URL)
+    func save(url: String)
 
-    func fetchItem(_ url: URL) -> Item?
+    func fetchItem(_ url: String) -> Item?
 
     func searchSaves(search: String) -> [SavedItem]?
 
-    func fetchOrCreateSavedItem(with url: URL, and remoteParts: SavedItem.RemoteSavedItem?) -> SavedItem?
+    func fetchOrCreateSavedItem(with url: String, and remoteParts: SavedItem.RemoteSavedItem?) -> SavedItem?
 
     /// Get the count of unread saves
     /// - Returns: Int of unread saves

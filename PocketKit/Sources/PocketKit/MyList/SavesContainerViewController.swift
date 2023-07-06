@@ -334,7 +334,7 @@ extension SavesContainerViewController {
                 }
             }.store(in: &readableSubscriptions)
 
-            guard let url = readable?.premiumURL else { return }
+            guard let premiumURL = readable?.premiumURL, let url = URL(percentEncoding: premiumURL) else { return }
             self.present(url: url)
         }
     }

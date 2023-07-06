@@ -12,15 +12,10 @@ extension Item {
     func update(remote: ItemParts, with space: Space) {
         remoteID = remote.remoteID
 
-        guard let url = URL(string: remote.givenUrl) else {
-            Log.breadcrumb(category: "sync", level: .warning, message: "Skipping updating of Item \(remoteID) because \(givenURL) is not valid url")
-            return
-        }
-
-        givenURL = url
-        resolvedURL = remote.resolvedUrl.flatMap(URL.init)
+        givenURL = remote.givenUrl
+        resolvedURL = remote.resolvedUrl
         title = remote.title
-        topImageURL = remote.topImageUrl.flatMap(URL.init)
+        topImageURL = remote.topImageUrl.flatMap(URL.init(string:))
         domain = remote.domain
         language = remote.language
 
@@ -88,26 +83,16 @@ extension Item {
     func update(remote: PendingItemParts, with space: Space) {
         remoteID = remote.remoteID
 
-        guard let url = URL(string: remote.givenUrl) else {
-            Log.breadcrumb(category: "sync", level: .warning, message: "Skipping updating of Pending Item \(remoteID) because \(givenURL) is not valid url")
-            return
-        }
-
-        givenURL = url
+        givenURL = remote.givenUrl
     }
 
     func update(from summary: ItemSummary, with space: Space) {
         remoteID = summary.remoteID
 
-        guard let url = URL(string: summary.givenUrl) else {
-            Log.breadcrumb(category: "sync", level: .warning, message: "Skipping updating of Item \(remoteID) because \(summary.givenUrl) is not valid url")
-            return
-        }
-
-        givenURL = url
-        resolvedURL = summary.resolvedUrl.flatMap(URL.init)
+        givenURL = summary.givenUrl
+        resolvedURL = summary.resolvedUrl
         title = summary.title
-        topImageURL = summary.topImageUrl.flatMap(URL.init)
+        topImageURL = summary.topImageUrl.flatMap(URL.init(string:))
         domain = summary.domain
         language = summary.language
         if let readTime = summary.timeToRead {
@@ -169,7 +154,7 @@ extension Item {
             self.syndicatedArticle?.publisherName = syndicatedArticle.publisher?.name
             self.syndicatedArticle?.title = syndicatedArticle.title
             self.syndicatedArticle?.excerpt = syndicatedArticle.excerpt
-            self.syndicatedArticle?.imageURL = syndicatedArticle.mainImage.flatMap(URL.init)
+            self.syndicatedArticle?.imageURL = syndicatedArticle.mainImage.flatMap(URL.init(string:))
             if let imageSrc = syndicatedArticle.mainImage {
                 self.syndicatedArticle?.image = Image(src: imageSrc, context: context)
             }

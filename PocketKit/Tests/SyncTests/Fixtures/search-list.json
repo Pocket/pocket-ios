@@ -59,6 +59,7 @@
                     "name": "WIRED",
                     "logo": "http://example.com/item-1/domain-logo.jpg"
                   },
+                  "collection": null,
                   "images": [
                     {
                       "__typename": "[type-name-here]",
@@ -125,6 +126,7 @@
                       "url": "https://example.com/authors/david"
                     }
                   ],
+                  "collection": null,
                   "domainMetadata": {
                     "__typename": "[type-name-here]",
                     "name": "WIRED",

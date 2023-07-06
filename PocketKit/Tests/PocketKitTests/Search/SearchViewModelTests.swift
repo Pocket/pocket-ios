@@ -730,12 +730,12 @@ class SearchViewModelTests: XCTestCase {
         await fulfillment(of: [searchExpectation], timeout: 10)
     }
 
-    private func setupLocalSavesSearch(with url: URL? = nil) throws {
+    private func setupLocalSavesSearch() throws {
         let savedItems = (1...2).map {
             space.buildSavedItem(
                 remoteID: "saved-item-\($0)",
                 createdAt: Date(timeIntervalSince1970: TimeInterval($0)),
-                item: space.buildItem(title: "saved-item-\($0)", givenURL: url)
+                item: space.buildItem(title: "saved-item-\($0)", givenURL: "item-\($0)")
             )
         }
 

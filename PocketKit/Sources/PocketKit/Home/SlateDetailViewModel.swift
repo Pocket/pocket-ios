@@ -93,7 +93,8 @@ class SlateDetailViewModel {
                 return
             }
 
-            tracker.track(event: Events.ExpandedSlate.SlateArticleImpression(url: item.givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
+            let givenURL = item.givenURL
+            tracker.track(event: Events.ExpandedSlate.SlateArticleImpression(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
         }
     }
 }
@@ -116,8 +117,10 @@ extension SlateDetailViewModel {
 
         let item = recommendation.item
         var destination: ContentOpen.Destination = .internal
-        if item.shouldOpenInWebView(override: featureFlags.isAssigned(flag: .disableReader)) {
-            let url = pocketPremiumURL(item.bestURL, user: user)
+
+        if item.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
+            guard let bestURL = URL(percentEncoding: item.bestURL) else { return }
+            let url = pocketPremiumURL(bestURL, user: user)
             presentedWebReaderURL = url
             destination = .external
         } else {
@@ -140,7 +143,8 @@ extension SlateDetailViewModel {
             return
         }
 
-        tracker.track(event: Events.ExpandedSlate.SlateArticleContentOpen(url: item.givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID, destination: destination))
+        let givenURL = item.givenURL
+        tracker.track(event: Events.ExpandedSlate.SlateArticleContentOpen(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID, destination: destination))
     }
 }
 
@@ -193,7 +197,8 @@ extension SlateDetailViewModel {
             return
         }
 
-        tracker.track(event: Events.ExpandedSlate.SlateArticleSave(url: item.givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
+        let givenURL = item.givenURL
+        tracker.track(event: Events.ExpandedSlate.SlateArticleSave(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
     }
 
     private func archive(_ recommendation: Recommendation, at indexPath: IndexPath) {
@@ -207,7 +212,8 @@ extension SlateDetailViewModel {
             return
         }
 
-        tracker.track(event: Events.ExpandedSlate.SlateArticleArchive(url: item.givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
+        let givenURL = item.givenURL
+        tracker.track(event: Events.ExpandedSlate.SlateArticleArchive(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
     }
 
     private func report(_ recommendation: Recommendation, at indexPath: IndexPath) {

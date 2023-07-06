@@ -209,6 +209,8 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
       public var wordCount: Int? { __data["wordCount"] }
       /// List of Authors involved with this article
       public var authors: [ItemParts.Author?]? { __data["authors"] }
+      /// If the item is a collection allow them to get the collection information
+      public var collection: ItemParts.Collection? { __data["collection"] }
       /// The Marticle format of the article, used by clients for native article view.
       public var marticle: [Marticle]? { __data["marticle"] }
       /// A snippet of text from the article
@@ -242,6 +244,7 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
         hasVideo: GraphQLEnum<PocketGraph.Videoness>? = nil,
         wordCount: Int? = nil,
         authors: [ItemParts.Author?]? = nil,
+        collection: ItemParts.Collection? = nil,
         marticle: [Marticle]? = nil,
         excerpt: String? = nil,
         domainMetadata: DomainMetadata? = nil,
@@ -265,6 +268,7 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
             "hasVideo": hasVideo,
             "wordCount": wordCount,
             "authors": authors._fieldData,
+            "collection": collection._fieldData,
             "marticle": marticle._fieldData,
             "excerpt": excerpt,
             "domainMetadata": domainMetadata._fieldData,

@@ -11,14 +11,6 @@ import Analytics
 import SharedPocketKit
 
 class RecommendationViewModel: ReadableViewModel {
-    func trackReadingProgress(index: IndexPath) {
-        fatalError("Not Implemented")
-    }
-
-    func readingProgress() -> IndexPath? {
-        fatalError("Not Implemented")
-    }
-
     @Published private(set) var _actions: [ItemAction] = []
     var actions: Published<[ItemAction]>.Publisher { $_actions }
 
@@ -87,7 +79,8 @@ class RecommendationViewModel: ReadableViewModel {
         recommendation.item.datePublished
     }
 
-    var url: URL? {
+    // TODO: Can this be converted from URL? -> String?
+    var url: String {
         recommendation.item.bestURL
     }
 
@@ -95,7 +88,7 @@ class RecommendationViewModel: ReadableViewModel {
         return recommendation.item.savedItem?.isArchived ?? false
     }
 
-    var premiumURL: URL? {
+    var premiumURL: String? {
         pocketPremiumURL(url, user: user)
     }
 
@@ -132,6 +125,45 @@ class RecommendationViewModel: ReadableViewModel {
         }
     }
 
+    // MARK: Reader Progress
+
+    func trackReadingProgress(index: IndexPath) {
+        guard let baseKey = readingProgressKeyBase(url: url) else {
+            return
+        }
+
+        userDefaults.setValue(index.section, forKey: baseKey + "section")
+        userDefaults.setValue(index.row, forKey: baseKey + "row")
+    }
+
+    func readingProgress() -> IndexPath? {
+        guard let baseKey = readingProgressKeyBase(url: url) else {
+            return nil
+        }
+
+        guard let section = userDefaults.object(forKey: baseKey + "section") as? Int,
+              let row = userDefaults.object(forKey: baseKey + "row") as? Int else {
+            return nil
+        }
+
+        return IndexPath(row: row, section: section)
+    }
+
+    func deleteReadingProgress() {
+        guard let baseKey = readingProgressKeyBase(url: url) else {
+            return
+        }
+
+        userDefaults.removeObject(forKey: baseKey + "section")
+        userDefaults.removeObject(forKey: baseKey + "row")
+    }
+
+    private func readingProgressKeyBase(url: String?) -> String? {
+        guard let url else { return nil }
+
+        return "readingProgress.\(url)."
+    }
+
     /// Check to see if item has article components to display in reader view, else display in web view
     /// - Parameter remoteHasArticle: condition if the remote in `fetchDetails` has article data
     private func displayArticle(with remoteHasArticle: Bool) {
@@ -152,7 +184,7 @@ class RecommendationViewModel: ReadableViewModel {
     }
 
     func webViewActivityItems(url: URL) -> [UIActivity] {
-        guard let item = source.fetchItem(url) else {
+        guard let item = source.fetchItem(url.absoluteString) else {
             return []
         }
 
@@ -250,7 +282,8 @@ extension RecommendationViewModel {
         trackUnfavorite(url: savedItem.url)
     }
 
-    func openInWebView(url: URL?) {
+    func openInWebView(url: String) {
+        guard let url = URL(percentEncoding: url) else { return }
         let updatedURL = pocketPremiumURL(url, user: user)
         presentedWebReaderURL = updatedURL
 
@@ -261,7 +294,7 @@ extension RecommendationViewModel {
         let updatedURL = pocketPremiumURL(url, user: user)
         presentedWebReaderURL = updatedURL
 
-        trackExternalLinkOpen(url: url)
+        trackExternalLinkOpen(url: url.absoluteString)
     }
 
     func moveFromArchiveToSaves(completion: (Bool) -> Void) {
@@ -295,7 +328,7 @@ extension RecommendationViewModel {
     }
 
     private func saveExternalURL(_ url: URL) {
-        source.save(url: url)
+        source.save(url: url.absoluteString)
     }
 
     private func copyExternalURL(_ url: URL) {
@@ -304,7 +337,7 @@ extension RecommendationViewModel {
 
     private func shareExternalURL(_ url: URL) {
         // This view model is used within the context of a view that is presented within the reader
-        sharedActivity = PocketItemActivity.fromReader(url: url)
+        sharedActivity = PocketItemActivity.fromReader(url: url.absoluteString)
     }
 }
 

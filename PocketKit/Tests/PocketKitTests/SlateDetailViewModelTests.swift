@@ -26,7 +26,7 @@ class SlateDetailViewModelTests: XCTestCase {
         source = MockSource()
         tracker = MockTracker()
         space = .testSpace()
-        userDefaults = .standard
+        userDefaults = UserDefaults(suiteName: "SlateDetailViewModelTests")
         user = PocketUser(userDefaults: userDefaults)
         source.stubViewObject { identifier in
             self.space.viewObject(with: identifier)
@@ -40,6 +40,7 @@ class SlateDetailViewModelTests: XCTestCase {
     }
 
     override func tearDownWithError() throws {
+        userDefaults.removePersistentDomain(forName: "SlateDetailViewModelTests")
         subscriptions = []
         try space.clear()
         try super.tearDownWithError()
@@ -219,6 +220,35 @@ class SlateDetailViewModelTests: XCTestCase {
         }
 
         wait(for: [urlExpectation], timeout: 10)
+    }
+
+    func test_selectCell_whenSelectingRecommendation_withSettingsOriginalViewEnabled_setsWebViewURL() throws {
+        let savedItem = try space.createSavedItem(item: space.buildItem())
+        let recommendation = space.buildRecommendation(item: savedItem.item!)
+        let slate = try space.createSlate(recommendations: [recommendation])
+        try space.save()
+        let viewModel = subject(slate: space.viewObject(with: slate.objectID) as! Slate)
+        featureFlags.shouldDisableReader = true
+
+        let webViewExpectation = expectation(description: "expected to set web view url")
+        viewModel.$presentedWebReaderURL.dropFirst().sink { readable in
+            webViewExpectation.fulfill()
+        }.store(in: &subscriptions)
+
+        featureFlags.stubIsAssigned { flag, variant in
+            if flag == .disableReader {
+                return false
+            }
+            XCTFail("Unknown feature flag")
+            return false
+        }
+
+        viewModel.select(
+            cell: .recommendation(recommendation.objectID),
+            at: IndexPath(item: 0, section: 0)
+        )
+
+        wait(for: [webViewExpectation], timeout: 10)
     }
 
     func test_reportAction_forRecommendation_updatesSelectedRecommendationToReport() throws {

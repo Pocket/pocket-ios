@@ -37,7 +37,7 @@ public enum Requests {
         return request
     }
 
-    public static func fetchSavedItem(byURL url: URL) -> NSFetchRequest<SavedItem> {
+    public static func fetchSavedItem(byURL url: String) -> NSFetchRequest<SavedItem> {
         let request = SavedItem.fetchRequest()
         request.predicate = NSPredicate(format: "url = %@", url as CVarArg)
         request.fetchLimit = 1
@@ -202,9 +202,9 @@ public enum Requests {
         return request
     }
 
-    public static func fetchItem(byURL url: URL) -> NSFetchRequest<Item> {
+    public static func fetchItem(byURL url: String) -> NSFetchRequest<Item> {
         let request = fetchItems()
-        request.predicate = NSPredicate(format: "givenURL = %@", url as CVarArg)
+        request.predicate = NSPredicate(format: "givenURL = %@", url)
         request.fetchLimit = 1
         return request
     }

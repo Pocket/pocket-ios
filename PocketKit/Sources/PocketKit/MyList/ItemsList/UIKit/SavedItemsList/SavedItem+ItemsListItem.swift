@@ -25,7 +25,7 @@ extension SavedItem: ItemsListItem {
 
     var displayTitle: String {
         let itemTitle = item?.title?.isEmpty == false ? item?.title : nil
-        return itemTitle ?? item?.bestURL.absoluteString ?? url.absoluteString
+        return itemTitle ?? item?.bestURL ?? url
     }
 
     var displayDomain: String? {
@@ -50,7 +50,8 @@ extension SavedItem: ItemsListItem {
     }
 
     var host: String? {
-        bestURL?.host
+        guard let url = URL(percentEncoding: bestURL) else { return nil }
+        return url.host
     }
 
     var tagNames: [String]? {
@@ -61,7 +62,7 @@ extension SavedItem: ItemsListItem {
         item?.savedItem?.cursor
     }
 
-    var savedItemURL: URL? {
+    var savedItemURL: String {
         url
     }
 }

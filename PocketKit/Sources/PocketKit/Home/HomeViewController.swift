@@ -19,6 +19,7 @@ struct HomeViewControllerSwiftUI: UIViewControllerRepresentable {
 
     func makeUIViewController(context: UIViewControllerRepresentableContext<Self>) -> UINavigationController {
         let homeViewController = HomeViewController(model: model)
+        homeViewController.updateHeroCardCount()
         let navigationController = UINavigationController(rootViewController: homeViewController)
         navigationController.navigationBar.prefersLargeTitles = true
         navigationController.navigationBar.barTintColor = UIColor(.ui.white1)
@@ -99,7 +100,6 @@ class HomeViewController: UIViewController {
         collectionView.register(cellClass: RecentSavesItemCell.self)
         collectionView.register(cellClass: RecommendationCarouselCell.self)
         collectionView.register(cellClass: ItemsListOfflineCell.self)
-        collectionView.register(cellClass: RecommendationCellHeroWide.self)
         collectionView.register(viewClass: SectionHeaderView.self, forSupplementaryViewOfKind: SectionHeaderView.kind)
         collectionView.delegate = self
 
@@ -188,6 +188,18 @@ class HomeViewController: UIViewController {
         guard traitCollection.userInterfaceIdiom == .phone else { return .all }
         return .portrait
     }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        updateHeroCardCount()
+    }
+
+    func updateHeroCardCount() {
+        if traitCollection.shouldUseWideLayout() {
+            self.model.numberOfHeroItems = 2
+        } else {
+            self.model.numberOfHeroItems = 1
+        }
+    }
 }
 
 extension HomeViewController {
@@ -205,23 +217,13 @@ extension HomeViewController {
             cell.configure(model: viewModel)
             return cell
         case .recommendationHero(let objectID):
-            if traitCollection.shouldUseWideLayout() {
-                let cell: RecommendationCellHeroWide = collectionView.dequeueCell(for: indexPath)
-                guard let viewModel = model.recommendationHeroWideViewModel(for: objectID, at: indexPath) else {
-                    return cell
-                }
-
-                cell.configure(model: viewModel)
-                return cell
-            } else {
-                let cell: RecommendationCell = collectionView.dequeueCell(for: indexPath)
-                guard let viewModel = model.recommendationHeroViewModel(for: objectID, at: indexPath) else {
-                    return cell
-                }
-
-                cell.configure(model: viewModel)
+            let cell: RecommendationCell = collectionView.dequeueCell(for: indexPath)
+            guard let viewModel = model.recommendationHeroViewModel(for: objectID, at: indexPath) else {
                 return cell
             }
+
+            cell.configure(model: viewModel)
+            return cell
         case .recommendationCarousel(let objectID):
             let cell: RecommendationCarouselCell = collectionView.dequeueCell(for: indexPath)
             guard let viewModel = model.recommendationCarouselViewModel(for: objectID, at: indexPath) else {
@@ -375,7 +377,7 @@ extension HomeViewController {
         }.store(in: &slateDetailSubscriptions)
 
         viewModel.$presentedWebReaderURL.sink { [weak self] url in
-            self?.present(url: url)
+            self?.present(url: url?.absoluteString)
         }.store(in: &slateDetailSubscriptions)
 
         viewModel.$sharedActivity.sink { [weak self] activity in
@@ -403,7 +405,7 @@ extension HomeViewController {
         }.store(in: &readerSubscriptions)
 
         recommendation.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
-            self?.present(url: url)
+            self?.present(url: url?.absoluteString)
         }.store(in: &readerSubscriptions)
 
         recommendation.$isPresentingReaderSettings.receive(on: DispatchQueue.main).sink { [weak self] isPresenting in
@@ -441,7 +443,7 @@ extension HomeViewController {
         }.store(in: &readerSubscriptions)
 
         savedItem.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
-            self?.present(url: url)
+            self?.present(url: url?.absoluteString)
         }.store(in: &readerSubscriptions)
 
         savedItem.$isPresentingReaderSettings.receive(on: DispatchQueue.main).sink { [weak self] isPresenting in
@@ -537,8 +539,8 @@ extension HomeViewController {
         self.present(activityVC, animated: true)
     }
 
-    private func present(url: URL?) {
-        guard true, let url = url else { return }
+    private func present(url: String?) {
+        guard let string = url, let url = URL(percentEncoding: string) else { return }
 
         let safariVC = SFSafariViewController(url: url)
         safariVC.delegate = self

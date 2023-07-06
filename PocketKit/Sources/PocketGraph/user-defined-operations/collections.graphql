@@ -1,0 +1,29 @@
+query getCollectionBySlug ($slug: String!) {
+    collection: collectionBySlug(slug: $slug) {
+        externalId
+        slug
+        title
+        excerpt
+        intro
+        imageUrl
+        publishedAt
+        authors {
+            name
+            bio
+            imageUrl
+        }
+        stories {
+            url
+            title
+            excerpt
+            imageUrl
+            authors {
+                name
+            }
+            publisher
+            item {
+                ...ItemParts
+            }
+        }
+    }
+}

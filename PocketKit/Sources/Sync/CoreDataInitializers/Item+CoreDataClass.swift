@@ -21,9 +21,11 @@ public class Item: NSManagedObject {
         super.init(entity: entity, insertInto: context)
     }
 
-    public init(context: NSManagedObjectContext,
-                givenURL: URL,
-                remoteID: String) {
+    public init(
+        context: NSManagedObjectContext,
+        givenURL: String,
+        remoteID: String
+    ) {
         let entity = NSEntityDescription.entity(forEntityName: "Item", in: context)!
         super.init(entity: entity, insertInto: context)
         self.givenURL = givenURL

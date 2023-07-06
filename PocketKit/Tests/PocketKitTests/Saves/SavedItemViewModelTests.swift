@@ -335,15 +335,15 @@ class SavedItemViewModelTests: XCTestCase {
         let viewModel = subject(item: item)
         viewModel.showWebReader()
 
-        XCTAssertEqual(viewModel.presentedWebReaderURL, item.bestURL)
+        XCTAssertEqual(viewModel.presentedWebReaderURL?.absoluteString, item.bestURL)
     }
 
     func test_externalSave_forwardsToSource() {
         source.stubSaveURL { _ in }
 
         let viewModel = subject(item: space.buildSavedItem())
-        let url = URL(string: "https://getpocket.com")!
-        let actions = viewModel.externalActions(for: url)
+        let url = "https://getpocket.com"
+        let actions = viewModel.externalActions(for: URL(string: url)!)
         viewModel.invokeAction(from: actions, title: "Save")
         XCTAssertEqual(source.saveURLCall(at: 0)?.url, url)
     }
@@ -383,7 +383,7 @@ class SavedItemViewModelTests: XCTestCase {
             return savedItem.item
         }
 
-        let webViewActivityList = viewModel.webViewActivityItems(url: savedItem.url)
+        let webViewActivityList = viewModel.webViewActivityItems(url: URL(string: savedItem.url)!)
         XCTAssertEqual(webViewActivityList[0].activityTitle, "Archive")
         XCTAssertEqual(webViewActivityList[1].activityTitle, "Delete")
         XCTAssertEqual(webViewActivityList[2].activityTitle, "Favorite")
@@ -403,7 +403,7 @@ class SavedItemViewModelTests: XCTestCase {
             return savedItem.item
         }
 
-        let webViewActivityList = viewModel.webViewActivityItems(url: savedItem.url)
+        let webViewActivityList = viewModel.webViewActivityItems(url: URL(string: savedItem.url)!)
         XCTAssertEqual(webViewActivityList[0].activityTitle, "Move to Saves")
         XCTAssertEqual(webViewActivityList[1].activityTitle, "Delete")
         XCTAssertEqual(webViewActivityList[2].activityTitle, "Favorite")

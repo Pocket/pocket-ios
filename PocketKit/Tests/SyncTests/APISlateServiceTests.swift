@@ -86,8 +86,8 @@ extension APISlateServiceTests {
                 let item = recommendation.item
                 XCTAssertNotNil(item)
                 XCTAssertEqual(item.remoteID, "item-1")
-                XCTAssertEqual(item.givenURL.absoluteString, "https://given.example.com/slate-1-rec-1")
-                XCTAssertEqual(item.resolvedURL?.absoluteString, "https://resolved.example.com/rec-1")
+                XCTAssertEqual(item.givenURL, "https://given.example.com/slate-1-rec-1")
+                XCTAssertEqual(item.resolvedURL, "https://resolved.example.com/rec-1")
                 XCTAssertEqual(item.title, "Slate 1, Recommendation 1")
                 XCTAssertEqual(item.language, "en")
                 XCTAssertEqual(item.topImageURL?.absoluteString, "http://example.com/slate-1-rec-1/top-image.png")
@@ -190,7 +190,7 @@ extension APISlateServiceTests {
 
         // fetchSlateLineup "cleans" all unsaved items before fetching,
         // so we have to fake a saved item for the item to update
-        let item = space.buildItem(title: "Item 1 Seed", givenURL: URL(string: "https://given.example.com/slate-1-rec-1")!)
+        let item = space.buildItem(title: "Item 1 Seed", givenURL: "https://given.example.com/slate-1-rec-1")
         space.buildSavedItem(item: item)
         try self.space.save()
 

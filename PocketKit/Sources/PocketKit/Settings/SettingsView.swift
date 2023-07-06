@@ -45,8 +45,11 @@ struct SettingsForm: View {
                 topSectionWithLeadingDivider()
                     .textCase(nil)
                 Section(header: Text(Localization.appCustomization).style(.settings.header)) {
-                    SettingsRowToggle(title: Localization.showAppBadgeCount, model: model) { newValue in
-                        model.toggleAppBadge(to: newValue)
+                    VStack {
+                        Toggle(Localization.showAppBadgeCount, isOn: model.$appBadgeToggle)
+                            .accessibilityIdentifier("app-badge-toggle")
+                        Toggle(Localization.Settings.alwaysOpenOriginalView, isOn: model.$originalViewToggle)
+                            .accessibilityIdentifier("original-view-toggle")
                     }
                 }
                 .textCase(nil)
@@ -78,6 +81,12 @@ struct SettingsForm: View {
             }
             .listRowBackground(Color(.ui.grey7))
             settingsCredits()
+        }
+        .onChange(of: model.appBadgeToggle) { newValue in
+            model.toggleAppBadge(to: newValue)
+        }
+        .onChange(of: model.originalViewToggle) { newValue in
+            model.toggleOriginalView(to: newValue)
         }
     }
 

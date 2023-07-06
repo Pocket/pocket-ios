@@ -50,7 +50,7 @@ extension Space {
         item: Item? = nil
     ) -> SavedItem {
         backgroundContext.performAndWait {
-            let savedItem: SavedItem = SavedItem(context: backgroundContext, url: URL(string: url)!, remoteID: remoteID)
+            let savedItem: SavedItem = SavedItem(context: backgroundContext, url: url, remoteID: remoteID)
             let tags: [Tag]? = tags?.map { tag -> Tag in
                 let newTag: Tag = Tag(context: backgroundContext)
                 newTag.name = tag
@@ -62,10 +62,10 @@ extension Space {
             savedItem.isArchived = isArchived
             savedItem.createdAt = createdAt
             savedItem.archivedAt = archivedAt
-            savedItem.url = URL(string: url)!
+            savedItem.url = url
             savedItem.cursor = cursor
             savedItem.tags = NSOrderedSet(array: tags ?? [])
-            savedItem.item = item ?? Item(context: backgroundContext, givenURL: URL(string: url)!, remoteID: remoteID)
+            savedItem.item = item ?? Item(context: backgroundContext, givenURL: url, remoteID: remoteID)
 
             return savedItem
         }
@@ -78,7 +78,7 @@ extension Space {
     func createItem(
         remoteID: String = "item-1",
         title: String = "Item 1",
-        givenURL: URL? = URL(string: "https://example.com/items/item-1"),
+        givenURL: String = "https://example.com/items/item-1",
         isArticle: Bool = true,
         article: Article? = nil
     ) throws -> Item {
@@ -100,13 +100,13 @@ extension Space {
     func buildItem(
         remoteID: String = "item-1",
         title: String = "Item 1",
-        givenURL: URL? = URL(string: "https://example.com/items/item-1"),
-        resolvedURL: URL? = nil,
+        givenURL: String = "https://example.com/items/item-1",
+        resolvedURL: String? = nil,
         isArticle: Bool = true,
         article: Article? = nil
     ) -> Item {
         backgroundContext.performAndWait {
-            let item: Item = Item(context: backgroundContext, givenURL: givenURL!, remoteID: remoteID)
+            let item: Item = Item(context: backgroundContext, givenURL: givenURL, remoteID: remoteID)
             item.remoteID = remoteID
             item.title = title
             item.resolvedURL = resolvedURL

@@ -53,7 +53,7 @@ public class PocketSaveService: SaveService {
         self.queue = OperationQueue()
     }
 
-    public func save(url: URL) -> SaveServiceStatus {
+    public func save(url: String) -> SaveServiceStatus {
         defer {
             reloadRecentSavesWidget()
         }
@@ -106,7 +106,7 @@ public class PocketSaveService: SaveService {
         }
     }
 
-    private func fetchOrCreateSavedItem(url: URL) -> SaveServiceStatus {
+    private func fetchOrCreateSavedItem(url: String) -> SaveServiceStatus {
         return space.performAndWait {
             if let existingItem = try? space.fetchSavedItem(byURL: url) {
                 existingItem.createdAt = Date()
@@ -189,7 +189,7 @@ public class PocketSaveService: SaveService {
                 return
             }
 
-            let mutation =  SaveItemMutation(input: SavedItemUpsertInput(url: savedItem.url.absoluteString))
+            let mutation =  SaveItemMutation(input: SavedItemUpsertInput(url: savedItem.url))
 
             let operation = SaveOperation<SaveItemMutation>(
                 apollo: apollo,

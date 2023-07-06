@@ -150,14 +150,14 @@ extension SavedItemViewModel {
         }
     }
 
-    private func url(from item: ExtensionItem) async throws -> URL? {
+    private func url(from item: ExtensionItem) async throws -> String? {
         guard let providers = item.itemProviders else {
             return nil
         }
 
         for provider in providers {
             if let url = await URLExtractor.url(from: provider) {
-                return URL(string: url)
+                return URL(string: url)?.absoluteString
             }
         }
 

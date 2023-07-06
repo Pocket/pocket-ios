@@ -486,6 +486,8 @@ public enum Localization {
   public enum Settings {
     /// Account management
     public static let accountManagement = Localization.tr("Localizable", "settings.accountManagement", fallback: "Account management")
+    /// Always open original view
+    public static let alwaysOpenOriginalView = Localization.tr("Localizable", "settings.alwaysOpenOriginalView", fallback: "Always open original view")
     /// Go Premium
     public static let goPremiumRow = Localization.tr("Localizable", "settings.goPremiumRow", fallback: "Go Premium")
     /// Get help and support

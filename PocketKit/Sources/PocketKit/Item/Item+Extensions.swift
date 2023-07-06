@@ -11,7 +11,7 @@ public extension SavedItem {
         TextAlignment(language: item?.language)
     }
 
-    var bestURL: URL? {
+    var bestURL: String {
         item?.bestURL ?? url
     }
 

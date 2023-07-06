@@ -80,13 +80,14 @@ extension DerivedSpace: SavedItemSpace {
     func updateSavedItems(edges: [SavedItem.SavedItemEdge?], cursor: String) throws {
         updateCursor(cursor)
         for edge in edges {
-            guard let edge = edge, let node = edge.node, let url = URL(string: node.url) else {
+            guard let edge = edge, let node = edge.node else {
                 return
             }
 
             logItemUpdated(itemID: node.remoteID)
 
             context.performAndWait {
+                let url = node.url
                 let item = (try? space.fetchSavedItem(byURL: url, context: context)) ?? SavedItem(context: context, url: url, remoteID: node.remoteID)
                 item.update(from: edge, with: space)
 
@@ -105,13 +106,14 @@ extension DerivedSpace: ArchivedItemSpace {
         updateCursor(cursor)
 
         for edge in edges {
-            guard let edge = edge, let node = edge.node, let url = URL(string: node.url) else {
+            guard let edge = edge, let node = edge.node else {
                 return
             }
 
             logItemUpdated(itemID: node.remoteID)
 
             context.performAndWait {
+                let url = node.url
                 let item = (try? space.fetchSavedItem(byURL: url, context: context)) ?? SavedItem(context: context, url: url, remoteID: node.remoteID)
                 item.update(from: node.fragments.savedItemSummary, with: space)
                 item.cursor = edge.cursor

@@ -54,6 +54,7 @@
                       "url": "https://example.com/authors/david"
                     }
                   ],
+                  "collection": null,
                   "domainMetadata": {
                     "__typename": "[type-name-here]",
                     "name": "WIRED",

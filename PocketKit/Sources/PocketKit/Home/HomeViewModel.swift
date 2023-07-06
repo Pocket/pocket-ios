@@ -97,6 +97,12 @@ class HomeViewModel: NSObject {
 
     @Published var tappedSeeAll: SeeAll?
 
+    var numberOfHeroItems: Int = 1 {
+        didSet {
+            self.snapshot = buildSnapshot()
+        }
+    }
+
     private let source: Source
     let tracker: Tracker
     private let user: User
@@ -233,6 +239,14 @@ extension HomeViewModel {
                 toSection: .slateHero(slateId)
             )
 
+            if numberOfHeroItems == 2 {
+                let hero2 = recommendations.removeFirst()
+                snapshot.appendItems(
+                    [.recommendationHero(hero2.objectID)],
+                    toSection: .slateHero(slateId)
+                )
+            }
+
             guard !recommendations.isEmpty else {
                 continue
             }
@@ -292,7 +306,8 @@ extension HomeViewModel {
         let item = recommendation.item
 
         var destination: ContentOpen.Destination = .internal
-        if item.shouldOpenInWebView(override: featureFlags.isAssigned(flag: .disableReader)) {
+
+        if item.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
             selectedReadableType = .webViewRecommendation(viewModel)
             destination = .external
         } else {
@@ -308,7 +323,8 @@ extension HomeViewModel {
             return
         }
 
-        tracker.track(event: Events.Home.SlateArticleContentOpen(url: item.givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID, destination: destination))
+        let givenURL = item.givenURL
+        tracker.track(event: Events.Home.SlateArticleContentOpen(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID, destination: destination))
     }
 
     private func select(savedItem: SavedItem, at indexPath: IndexPath) {
@@ -324,7 +340,7 @@ extension HomeViewModel {
             notificationCenter: notificationCenter
         )
 
-        if let item = savedItem.item, item.shouldOpenInWebView(override: featureFlags.isAssigned(flag: .disableReader)) {
+        if let item = savedItem.item, item.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
             selectedReadableType = .webViewSavedItem(viewModel)
         } else {
             selectedReadableType = .savedItem(viewModel)
@@ -457,29 +473,14 @@ extension HomeViewModel {
     }
 
     func recommendationHeroViewModel(
-        for objectID: NSManagedObjectID,
+        for objectID: NSManagedObjectID? = nil,
         at indexPath: IndexPath? = nil
     ) -> HomeRecommendationCellViewModel? {
-        guard let recommendation = source.viewObject(id: objectID) as? Recommendation else {
+        guard let objectID = objectID, let recommendation = source.viewObject(id: objectID) as? Recommendation else {
             return nil
         }
 
         return HomeRecommendationCellViewModel(
-            recommendation: recommendation,
-            overflowActions: overflowActions(for: recommendation, at: indexPath),
-            primaryAction: primaryAction(for: recommendation, at: indexPath)
-        )
-    }
-
-    func recommendationHeroWideViewModel(
-        for objectID: NSManagedObjectID,
-        at indexPath: IndexPath? = nil
-    ) -> HomeRecommendationCellHeroWideViewModel? {
-        guard let recommendation = source.viewObject(id: objectID) as? Recommendation else {
-            return nil
-        }
-
-        return HomeRecommendationCellHeroWideViewModel(
             recommendation: recommendation,
             overflowActions: overflowActions(for: recommendation, at: indexPath),
             primaryAction: primaryAction(for: recommendation, at: indexPath)
@@ -542,7 +543,8 @@ extension HomeViewModel {
             return
         }
 
-        tracker.track(event: Events.Home.SlateArticleShare(url: item.givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
+        let givenURL = item.givenURL
+        tracker.track(event: Events.Home.SlateArticleShare(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
     }
 
     private func share(_ savedItem: SavedItem, at indexPath: IndexPath, with sender: Any?) {
@@ -563,7 +565,8 @@ extension HomeViewModel {
             return
         }
 
-        tracker.track(event: Events.Home.SlateArticleSave(url: item.givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
+        let givenURL = item.givenURL
+        tracker.track(event: Events.Home.SlateArticleSave(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
     }
 
     private func archive(_ recommendation: Recommendation, at indexPath: IndexPath) {
@@ -577,7 +580,8 @@ extension HomeViewModel {
             return
         }
 
-        tracker.track(event: Events.Home.SlateArticleArchive(url: item.givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
+        let givenURL = item.givenURL
+        tracker.track(event: Events.Home.SlateArticleArchive(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
     }
 
     private func archive(_ savedItem: SavedItem, at indexPath: IndexPath) {
@@ -611,11 +615,12 @@ extension HomeViewModel {
                 let slate = recommendation.slate,
                 let slateLineup = slate.slateLineup
             else {
-                Log.capture(message: "Tried to display recommendation without slate and slatelineup, not logging analytics")
+                Log.breadcrumb(category: "home", level: .debug, message: "Tried to display recommendation without slate and slatelineup, not logging analytics")
                 return
             }
 
-            tracker.track(event: Events.Home.SlateArticleImpression(url: item.givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
+            let givenURL = item.givenURL
+            tracker.track(event: Events.Home.SlateArticleImpression(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
         }
     }
 }
