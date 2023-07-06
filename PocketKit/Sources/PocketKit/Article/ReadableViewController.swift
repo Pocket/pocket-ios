@@ -41,6 +41,8 @@ class ReadableViewController: UIViewController {
 
     private var subscriptions: [AnyCancellable] = []
 
+    private var userScrollProgress: IndexPath?
+
     private lazy var collectionView: UICollectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: layout
@@ -97,10 +99,28 @@ class ReadableViewController: UIViewController {
         readableViewModel.fetchDetailsIfNeeded()
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        guard let userProgress = readableViewModel.readingProgress() else {
+            return
+        }
+
+        collectionView.selectItem(at: userProgress, animated: true, scrollPosition: .centeredVertically)
+    }
+
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         // ensure on device rotate and change the view re-draws
         collectionView.collectionViewLayout.invalidateLayout()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        if let userScrollProgress {
+            readableViewModel.trackReadingProgress(index: userScrollProgress)
+        }
     }
 
     required init?(coder: NSCoder) {
@@ -138,6 +158,10 @@ extension ReadableViewController: UICollectionViewDelegate {
         if let cell = cell as? YouTubeVideoComponentCell {
             cell.pause()
         }
+    }
+
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        userScrollProgress = collectionView.indexPathsForVisibleItems.sorted().first
     }
 }
 
