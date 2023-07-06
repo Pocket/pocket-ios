@@ -55,6 +55,8 @@ protocol ReadableViewModel: ReadableViewControllerDelegate {
     func unfavorite()
     func favorite()
     func beginBulkEdit()
+    func trackReadingProgress(index: IndexPath)
+    func readingProgress() -> IndexPath?
 }
 
 // MARK: - ReadableViewControllerDelegate

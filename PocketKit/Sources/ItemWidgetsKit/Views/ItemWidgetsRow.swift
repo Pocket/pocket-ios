@@ -54,7 +54,7 @@ struct ItemThumbnail: View {
         image
             .resizable()
             .aspectRatio(contentMode: .fill)
-            .frame(width: maxThumbnailSize)
+            .frame(width: maxThumbnailSize, height: maxThumbnailSize / 1.4)
             .cornerRadius(16)
     }
 }
