@@ -158,94 +158,66 @@ extension ReadableViewModel {
 
     /// track archive button tapped in reader toolbar
     /// - Parameter url: url of saved item
-    func trackArchiveButtonTapped(url: URL) {
+    func trackArchiveButtonTapped(url: String) {
         tracker.track(event: Events.ReaderToolbar.archiveClicked(url: url))
     }
 
     /// track move to saves from archive button tapped in reader toolbar
     /// - Parameter url: url of saved item
-    func trackMoveFromArchiveToSavesButtonTapped(url: URL) {
+    func trackMoveFromArchiveToSavesButtonTapped(url: String) {
         tracker.track(event: Events.ReaderToolbar.moveFromArchiveToSavesClicked(url: url))
     }
 
     /// track overflow menu tapped in reader toolbar
     func trackOverflow() {
-        guard let url else {
-            Log.capture(message: "Reader item without an associated url, not logging analytics for overflowClicked")
-            return
-        }
         tracker.track(event: Events.ReaderToolbar.overflowClicked(url: url))
     }
 
     /// track display settings in reader toolbar overflow menu
     func trackDisplaySettings() {
-        guard let url else {
-            Log.capture(message: "Reader item without an associated url, not logging analytics for textSettingsClicked")
-            return
-        }
         tracker.track(event: Events.ReaderToolbar.textSettingsClicked(url: url))
     }
 
     /// track favorite button tapped in reader toolbar overflow menu
     /// - Parameter url: url of saved item
-    func trackFavorite(url: URL) {
+    func trackFavorite(url: String) {
         tracker.track(event: Events.ReaderToolbar.favoriteClicked(url: url))
     }
 
     /// track unfavorite button tapped in reader toolbar overflow menu
     /// - Parameter url: url of saved item
-    func trackUnfavorite(url: URL) {
+    func trackUnfavorite(url: String) {
         tracker.track(event: Events.ReaderToolbar.unfavoriteClicked(url: url))
     }
 
     /// track add tags button tapped in reader toolbar overflow menu
     /// - Parameter url: url of saved item
-    func trackAddTags(url: URL) {
+    func trackAddTags(url: String) {
         tracker.track(event: Events.ReaderToolbar.addTagsClicked(url: url))
     }
 
     /// track delete button tapped in reader toolbar overflow menu
     func trackDelete() {
-        guard let url else {
-            Log.capture(message: "Reader item without an associated url, not logging analytics for deleteClicked")
-            return
-        }
         tracker.track(event: Events.ReaderToolbar.deleteClicked(url: url))
     }
 
     /// track share button tapped in reader toolbar overflow menu
     func trackShare() {
-        guard let url else {
-            Log.capture(message: "Reader item without an associated url, not logging analytics for shareClicked")
-            return
-        }
         tracker.track(event: Events.ReaderToolbar.shareClicked(url: url))
     }
 
     /// track save button tapped in reader toolbar overflow menu
     func trackSave() {
-        guard let url else {
-            Log.capture(message: "Reader item without an associated url, not logging analytics for saveClicked")
-            return
-        }
         tracker.track(event: Events.ReaderToolbar.saveClicked(url: url))
     }
 
     /// track report button tapped in reader toolbar overflow menu
     func trackReport() {
-        guard let url else {
-            Log.capture(message: "Reader item without an associated url, not logging analytics for reportClicked")
-            return
-        }
         tracker.track(event: Events.ReaderToolbar.reportClicked(url: url))
     }
 
     /// track when user taps on the safari button to open content in web view
     func trackWebViewOpen() {
-        guard let url else {
-            Log.capture(message: "Reader item without an associated url, not logging analytics for openInWebView")
-            return
-        }
         tracker.track(event: Events.ReaderToolbar.openInWebView(url: url))
     }
 

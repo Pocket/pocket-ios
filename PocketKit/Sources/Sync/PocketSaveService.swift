@@ -53,7 +53,7 @@ public class PocketSaveService: SaveService {
         self.queue = OperationQueue()
     }
 
-    public func save(url: URL) -> SaveServiceStatus {
+    public func save(url: String) -> SaveServiceStatus {
         defer {
             reloadRecentSavesWidget()
         }

@@ -40,10 +40,10 @@ public struct RecommendationsWidgetUpdateService {
     private func makeItemContentContainer(_ name: String, _ recommendations: [Recommendation]) -> ItemContentContainer {
             let itemContent = recommendations.map {
                 ItemContent(
-                    url: $0.item.givenURL.absoluteString,
-                    title: $0.item.title ?? $0.item.givenURL.absoluteString,
+                    url: $0.item.givenURL,
+                    title: $0.item.title ?? $0.item.givenURL,
                     imageUrl: $0.item.topImageURL?.absoluteString,
-                    bestDomain: $0.item.domainMetadata?.name ?? $0.item.domain ?? $0.item.givenURL.host ?? "",
+                    bestDomain: $0.item.domainMetadata?.name ?? $0.item.domain ?? URL(percentEncoding: $0.item.bestURL)?.host ?? "",
                     timeToRead: ($0.item.timeToRead) != nil ? Int(truncating: ($0.item.timeToRead)!) : nil
                 )
             }
