@@ -11,14 +11,6 @@ import Analytics
 import SharedPocketKit
 
 class RecommendationViewModel: ReadableViewModel {
-    func trackReadingProgress(index: IndexPath) {
-        fatalError("Not Implemented")
-    }
-
-    func readingProgress() -> IndexPath? {
-        fatalError("Not Implemented")
-    }
-
     @Published private(set) var _actions: [ItemAction] = []
     var actions: Published<[ItemAction]>.Publisher { $_actions }
 
@@ -130,6 +122,45 @@ class RecommendationViewModel: ReadableViewModel {
                 Log.capture(message: "Failed to fetch details for RecommendationViewModel: \(error)")
             }
         }
+    }
+
+    // MARK: Reader Progress
+
+    func trackReadingProgress(index: IndexPath) {
+        guard let baseKey = readingProgressKeyBase(url: url) else {
+            return
+        }
+
+        userDefaults.setValue(index.section, forKey: baseKey + "section")
+        userDefaults.setValue(index.row, forKey: baseKey + "row")
+    }
+
+    func readingProgress() -> IndexPath? {
+        guard let baseKey = readingProgressKeyBase(url: url) else {
+            return nil
+        }
+
+        guard let section = userDefaults.object(forKey: baseKey + "section") as? Int,
+              let row = userDefaults.object(forKey: baseKey + "row") as? Int else {
+            return nil
+        }
+
+        return IndexPath(row: row, section: section)
+    }
+
+    func deleteReadingProgress() {
+        guard let baseKey = readingProgressKeyBase(url: url) else {
+            return
+        }
+
+        userDefaults.removeObject(forKey: baseKey + "section")
+        userDefaults.removeObject(forKey: baseKey + "row")
+    }
+
+    private func readingProgressKeyBase(url: URL?) -> String? {
+        guard let url else { return nil }
+
+        return "readingProgress.\(url.absoluteString)."
     }
 
     /// Check to see if item has article components to display in reader view, else display in web view

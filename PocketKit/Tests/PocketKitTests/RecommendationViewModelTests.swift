@@ -452,6 +452,29 @@ class RecommendationViewModelTests: XCTestCase {
 
         wait(for: [webActivitiesExpectation], timeout: 10)
     }
+
+    func test_readerProgress() throws {
+        let item = space.buildItem()
+        let recommendation = space.buildRecommendation(
+            item: item
+        )
+
+        try space.save()
+
+        let viewModel = subject(recommendation: recommendation)
+        let progress = IndexPath(row: 2, section: 4)
+        viewModel.trackReadingProgress(index: progress)
+
+        let savedProgress = viewModel.readingProgress()
+
+        XCTAssertEqual(progress, savedProgress)
+
+        viewModel.deleteReadingProgress()
+
+        let deletedProgress = viewModel.readingProgress()
+
+        XCTAssertNil(deletedProgress)
+    }
 }
 
 extension RecommendationViewModel {
