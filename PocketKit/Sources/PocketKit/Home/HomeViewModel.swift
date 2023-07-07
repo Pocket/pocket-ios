@@ -471,10 +471,10 @@ extension HomeViewModel {
     }
 
     func recommendationHeroViewModel(
-        for objectID: NSManagedObjectID,
+        for objectID: NSManagedObjectID? = nil,
         at indexPath: IndexPath? = nil
     ) -> HomeRecommendationCellViewModel? {
-        guard let recommendation = source.viewObject(id: objectID) as? Recommendation else {
+        guard let objectID = objectID, let recommendation = source.viewObject(id: objectID) as? Recommendation else {
             return nil
         }
 

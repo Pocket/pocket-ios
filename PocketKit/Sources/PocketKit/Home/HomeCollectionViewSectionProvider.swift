@@ -99,7 +99,7 @@ class HomeViewControllerSectionProvider {
         let recommendations: [Recommendation] = slate?.recommendations?.compactMap { $0 as? Recommendation } ?? []
 
         guard !recommendations.isEmpty,
-              let hero = viewModel.recommendationHeroViewModel(for: recommendations[0].objectID) else {
+              let hero = viewModel.recommendationHeroViewModel(for: recommendations[safe: 0]?.objectID) else {
             return nil
         }
         let width = env.container.effectiveContentSize.width
@@ -110,7 +110,7 @@ class HomeViewControllerSectionProvider {
         if env.traitCollection.shouldUseWideLayout() {
             sideMargin = Constants.iPadSideMargin
             let firstCard = RecommendationCell.fullHeight(viewModel: hero, availableWidth: width / 2 - (sideMargin * 2))
-            let secondCard = RecommendationCell.fullHeight(viewModel: viewModel.recommendationHeroViewModel(for: recommendations[1].objectID) ?? hero, availableWidth: width / 2 - (sideMargin * 2))
+            let secondCard = RecommendationCell.fullHeight(viewModel: viewModel.recommendationHeroViewModel(for: recommendations[safe: 1]?.objectID) ?? hero, availableWidth: width / 2 - (sideMargin * 2))
             heroHeight = max(firstCard, secondCard)
             heroGroup = NSCollectionLayoutGroup.horizontal(layoutSize: .init(
                 widthDimension: .fractionalWidth(1),
