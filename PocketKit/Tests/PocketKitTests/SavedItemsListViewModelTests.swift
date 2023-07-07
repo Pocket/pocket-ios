@@ -41,7 +41,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         viewType = .saves
         networkPathMonitor = MockNetworkPathMonitor()
         subscriptionStore = MockSubscriptionStore()
-        userDefaults = .standard
+        userDefaults = UserDefaults(suiteName: "SavedItemsListViewModelTests")
         user = PocketUser(userDefaults: userDefaults)
         listOptions = .saved(userDefaults: userDefaults)
         listOptions.selectedSortOption = .newest
@@ -76,6 +76,7 @@ class SavedItemsListViewModelTests: XCTestCase {
     }
 
     override func tearDownWithError() throws {
+        userDefaults.removePersistentDomain(forName: "SavedItemsListViewModelTests")
         subscriptions = []
         try space.clear()
         try space.save()
@@ -177,6 +178,28 @@ class SavedItemsListViewModelTests: XCTestCase {
         let item = space.buildItem(isArticle: false)
         let savedItem = space.buildSavedItem(item: item)
         try space.save()
+
+        viewModel.selectCell(with: .item(savedItem.objectID), sender: UIView())
+
+        guard let selectedItem = viewModel.selectedItem else {
+            XCTFail("Received nil for selectedItem")
+            return
+        }
+
+        guard case .webView(let url) = selectedItem else {
+            XCTFail("Received unexpected selectedItem: \(selectedItem)")
+            return
+        }
+
+        XCTAssertNotNil(url)
+    }
+
+    func test_selectCell_whenItemIsArticle_withSettingsOriginalViewEnabled_setsSelectedItemToWebView() throws {
+        let viewModel = subject()
+        let savedItem = space.buildPendingSavedItem()
+        savedItem.item = space.buildItem()
+        try space.save()
+        userDefaults.setValue(true, forKey: UserDefaults.Key.toggleOriginalView)
 
         viewModel.selectCell(with: .item(savedItem.objectID), sender: UIView())
 

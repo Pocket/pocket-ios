@@ -40,7 +40,7 @@ class HomeViewModelTests: XCTestCase {
         featureFlags = MockFeatureFlagService()
 
         taskScheduler = MockBGTaskScheduler()
-        userDefaults = .standard
+        userDefaults = UserDefaults(suiteName: "HomeViewModelTests")
         lastRefresh = UserDefaultsLastRefresh(defaults: userDefaults)
         lastRefresh.reset()
 
@@ -50,7 +50,6 @@ class HomeViewModelTests: XCTestCase {
         homeController = space.makeRecomendationsSlateLineupController(by: SyncConstants.Home.slateLineupIdentifier)
         recentSavesController = space.makeRecentSavesController(limit: 5)
         subscriptionStore = MockSubscriptionStore()
-        userDefaults = .standard
         user = PocketUser(userDefaults: userDefaults)
 
         tracker = MockTracker()
@@ -75,6 +74,7 @@ class HomeViewModelTests: XCTestCase {
     }
 
     override func tearDownWithError() throws {
+        userDefaults.removePersistentDomain(forName: "HomeViewModelTests")
         subscriptions = []
         try space.clear()
         subscriptionStore = nil
@@ -638,6 +638,55 @@ class HomeViewModelTests: XCTestCase {
         wait(for: [urlExpectation], timeout: 10)
     }
 
+    func test_selectCell_whenSelectingRecommendation_withSettingsOriginalViewEnabled_showsWebViewType() throws {
+        let item = space.buildItem()
+        let heroRec = space.buildRecommendation(item: item)
+        let carouselRec = space.buildRecommendation(remoteID: "carousel-rec", item: space.buildItem(remoteID: "item-2", givenURL: URL(string: "https://example.com/items/item-2")))
+        let recommendations = [heroRec, carouselRec]
+        try space.createSlateLineup(
+            remoteID: SyncConstants.Home.slateLineupIdentifier,
+            slates: [space.buildSlate(recommendations: recommendations)]
+        )
+
+        let viewModel = subject()
+
+        featureFlags.stubIsAssigned { flag, variant in
+            if flag == .disableReader {
+                return false
+            }
+            XCTFail("Unknown feature flag")
+            return false
+        }
+
+        userDefaults.setValue(true, forKey: UserDefaults.Key.toggleOriginalView)
+
+        let readableExpectation = expectation(description: "expected a web view type")
+        readableExpectation.expectedFulfillmentCount = 2
+
+        viewModel.$selectedReadableType.dropFirst().sink { readableType in
+            switch readableType {
+            case .webViewRecommendation:
+                readableExpectation.fulfill()
+            case .savedItem, .webViewSavedItem, .recommendation, .none:
+                XCTFail("Expected web view saved item, but got \(String(describing: readableType))")
+            }
+        }.store(in: &subscriptions)
+
+        let cells: [HomeViewModel.Cell] = [
+            .recommendationHero(heroRec.objectID),
+            .recommendationCarousel(carouselRec.objectID),
+        ]
+
+        for cell in cells {
+            viewModel.select(
+                cell: cell,
+                at: IndexPath(item: 0, section: 0)
+            )
+        }
+
+        wait(for: [readableExpectation], timeout: 10)
+    }
+
     func test_selectCell_whenSelectingRecentSave_recentSaveIsReadable_updatesSelectedReadable() throws {
         let item = space.buildItem(isArticle: true)
         let savedItem = space.buildSavedItem(item: item)
@@ -732,6 +781,46 @@ class HomeViewModelTests: XCTestCase {
         }
 
         wait(for: [urlExpectation], timeout: 10)
+    }
+
+    func test_selectCell_whenSelectingRecentSave_withSettingsOriginalViewEnabled_showsWebViewType() throws {
+        let item = space.buildItem(isArticle: true)
+        let savedItem = space.buildSavedItem(item: item)
+        let recommendation = space.buildRecommendation(item: item)
+        let recommendations = [recommendation]
+        try space.createSlateLineup(
+            remoteID: SyncConstants.Home.slateLineupIdentifier,
+            slates: [space.buildSlate(recommendations: recommendations)]
+        )
+
+        userDefaults.setValue(true, forKey: UserDefaults.Key.toggleOriginalView)
+
+        let viewModel = subject()
+        let readableExpectation = expectation(description: "expected a web view type")
+
+        featureFlags.stubIsAssigned { flag, variant in
+            if flag == .disableReader {
+                return false
+            }
+            XCTFail("Unknown feature flag")
+            return false
+        }
+
+        viewModel.$selectedReadableType.dropFirst().sink { readableType in
+            switch readableType {
+            case .webViewSavedItem:
+                readableExpectation.fulfill()
+            case .savedItem, .webViewRecommendation, .recommendation, .none:
+                XCTFail("Expected web view saved item, but got \(String(describing: readableType))")
+            }
+        }.store(in: &subscriptions)
+
+        viewModel.select(
+            cell: .recentSaves(savedItem.objectID),
+            at: IndexPath(item: 0, section: 0)
+        )
+
+        wait(for: [readableExpectation], timeout: 10)
     }
 
     func test_selectSection_whenSelectingSlateSection_updatesSelectedSlateDetailViewModel() throws {
