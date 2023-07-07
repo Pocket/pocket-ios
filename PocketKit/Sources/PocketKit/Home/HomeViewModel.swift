@@ -610,7 +610,7 @@ extension HomeViewModel {
                 let slate = recommendation.slate,
                 let slateLineup = slate.slateLineup
             else {
-                Log.capture(message: "Tried to display recommendation without slate and slatelineup, not logging analytics")
+                Log.breadcrumb(category: "home", level: .debug, message: "Tried to display recommendation without slate and slatelineup, not logging analytics")
                 return
             }
 
