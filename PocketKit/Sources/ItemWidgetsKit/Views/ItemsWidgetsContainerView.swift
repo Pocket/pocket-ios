@@ -33,10 +33,18 @@ struct ItemsWidgetsContainerView: View {
     }
 
     var body: some View {
-        makeContainerView()
-            .padding()
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color(.ui.white1))
+        if #available(iOS 17.0, *) {
+            makeContainerView()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .containerBackground(for: .widget) {
+                    Color(.ui.white1)
+                }
+        } else {
+            makeContainerView()
+                .padding()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color(.ui.white1))
+        }
     }
 
     @ViewBuilder
