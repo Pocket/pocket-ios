@@ -6,7 +6,7 @@ import Sync
 import SwiftUI
 
 /// Main view of an Item widget
-struct ItemsWidgetsContainerView: View {
+struct ItemWidgetsContainerView: View {
     @Environment(\.widgetFamily)
     private var widgetFamily
 
