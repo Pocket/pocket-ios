@@ -25,7 +25,8 @@ platform :ios do
       skip_waiting_for_build_processing: false,
       groups: ['Nightly Internal Builds'],
       submit_beta_review: false,
-      ipa: BITRISE_IPA_PATH
+      ipa: BITRISE_IPA_PATH,
+      expire_previous_builds: true
     )
   end
 end
