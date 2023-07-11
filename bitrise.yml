@@ -100,11 +100,9 @@ stages:
   release-build:
     workflows:
       - release-build: {}
-      - alpha-neue-release-build: {}
   deploy-internal-testflight:
     workflows:
       - internal-testflight-release: {}
-      - alpha-neue-internal-testflight-release: {}
 
 workflows:
   #Reusable workflow that is ran before each workflow to setup the necessary information
@@ -220,55 +218,6 @@ workflows:
                 java -jar snowplow-micro-1.6.0.jar &
 
   #Builds a release build that could be uploaded to App Store Connect
-  alpha-neue-release-build:
-    steps:
-      - file-downloader@1:
-          inputs:
-            - source: '$BITRISEIO_SECRETS_ALPHA_NEUE_XCCONFIG_URL'
-            - destination: '$BITRISE_SOURCE_DIR/Config/secrets_alpha_neue.xcconfig'
-          title: Install production secrets_alpha_neue.xcconfig
-      - xcode-archive@4:
-          title: Build an alpha neue app store release build
-          inputs:
-            - project_path: '$BITRISE_PROJECT_PATH'
-            - scheme: '$BITRISE_SCHEME'
-            - distribution_method: app-store
-            - configuration: Release_AlphaNeue
-            - xcconfig_content: CURRENT_PROJECT_VERSION = $BITRISE_BUILD_NUMBER
-            - export_method: app-store
-            - automatic_code_signing: api-key
-            - api_key_path: "$BITRISEIO_APP_STORE_CONNECT_API_ID_URL"
-            - api_key_id: "$APP_STORE_API_ID"
-            - api_key_issuer_id: "$APP_STORE_API_ISSUER_ID"
-      - deploy-to-bitrise-io@2: {}
-      - deploy-to-bitrise-io@2:
-          inputs:
-            - pipeline_intermediate_files: '$BITRISE_IPA_PATH:BITRISE_IPA_PATH'
-      - cache-push@2: {}
-    before_run:
-      - _setup
-    after_run:
-      - _upload_sentry
-
-  # Uses artifacts from the release build stage and workflow to ship the build to testflight.
-  alpha-neue-internal-testflight-release:
-    steps:
-      - activate-ssh-key@4: {}
-      #clone the repo so we can get our fastlane files.
-      - git-clone@6: {}
-      - pull-intermediate-files@1:
-          inputs:
-            - artifact_sources: release-build.alpha-neue-release-build
-      - fastlane@3:
-          inputs:
-            - automatic_code_signing: api-key
-            - api_key_path: "$BITRISEIO_APP_STORE_CONNECT_API_ID_URL"
-            - api_key_id: "$APP_STORE_API_ID"
-            - api_key_issuer_id: "$APP_STORE_API_ISSUER_ID"
-            - verbose_log: 'yes'
-            - lane: beta_internal
-
-  #Builds a release build that could be uploaded to App Store Connect
   release-build:
     steps:
       - xcode-archive@4:
@@ -316,15 +265,15 @@ workflows:
     steps:
       - file-downloader@1:
           inputs:
-            - source: '$BITRISEIO_SECRETS_ALPHA_NEUE_XCCONFIG_URL'
-            - destination: '$BITRISE_SOURCE_DIR/Config/secrets_alpha_neue.xcconfig'
+            - source: '$BITRISEIO_SECRETS_DEVELOPMENT_XCCONFIG_URL'
+            - destination: '$BITRISE_SOURCE_DIR/Config/secrets.xcconfig'
           title: Install development secrets.xcconfig
       - xcode-archive@4:
           inputs:
             - xcconfig_content: |-
                 COMPILER_INDEX_STORE_ENABLE = NO
                 CURRENT_PROJECT_VERSION = $BITRISE_BUILD_NUMBER
-            - configuration: Debug_AlphaNeue
+            - configuration: Debug
             - automatic_code_signing: api-key
             - api_key_path: "$BITRISEIO_APP_STORE_CONNECT_API_ID_URL"
             - api_key_id: "$APP_STORE_API_ID"
