@@ -3,10 +3,9 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import Foundation
-import SharedPocketKit
 
-enum URLExtractor {
-    static func url(from itemProvider: ItemProvider) async -> String? {
+public enum URLExtractor {
+    public static func url(from itemProvider: ItemProvider) async -> String? {
         if itemProvider.hasItemConformingToTypeIdentifier("public.url") { // We're handed a URL
             guard let url = try? await itemProvider.loadItem(forTypeIdentifier: "public.url", options: nil) as? URL else {
                 Log.breadcrumb(category: "urlExtractor", level: .error, message: "Unable to load item as URL from itemProvider for type identifier public.url")
