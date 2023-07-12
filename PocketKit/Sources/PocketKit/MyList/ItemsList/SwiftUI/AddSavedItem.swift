@@ -38,7 +38,7 @@ struct AddSavedItem: View {
                 }
                 VStack(spacing: 30) {
                     Button(Localization.Saves.AddSavedItem.addButton) {
-                        self.submitItem()
+                        Task { await self.submitItem() }
                     }
                     .buttonStyle(PocketButtonStyle(.primary))
                     .accessibilityIdentifier("add_item_button")
@@ -63,8 +63,10 @@ struct AddSavedItem: View {
         }
     }
 
-    func submitItem() {
-        guard model.saveURL(urlString) else {
+    @MainActor
+    func submitItem() async {
+        let saved = await model.saveURL(urlString)
+        guard saved == true else {
             withAnimation {
                 showError = true
             }
@@ -96,7 +98,7 @@ struct AddSavedItem: View {
             .disableAutocorrection(true)
             .textInputAutocapitalization(.never)
             .onSubmit {
-                self.submitItem()
+                Task { await self.submitItem() }
             }.accessibilityIdentifier("url_textfield")
     }
 }

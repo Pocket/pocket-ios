@@ -29,7 +29,7 @@ public enum URLExtractor {
         return nil
     }
 
-    private static func isValidScheme(_ scheme: String) -> Bool {
+    public static func isValidScheme(_ scheme: String) -> Bool {
         let validSchemes = ["http", "https", "file", "ftp"]
         return validSchemes.contains(scheme)
     }
