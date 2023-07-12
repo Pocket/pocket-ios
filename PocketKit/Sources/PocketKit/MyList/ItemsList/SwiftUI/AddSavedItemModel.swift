@@ -5,6 +5,23 @@
 import Foundation
 import Sync
 import Analytics
+import SharedPocketKit
+
+class AddSavedItemItemProvider: ItemProvider {
+    private let string: String
+
+    init(string: String) {
+        self.string = string
+    }
+
+    func hasItemConformingToTypeIdentifier(_ typeIdentifier: String) -> Bool {
+        return typeIdentifier == "public.plain-text"
+    }
+
+    func loadItem(forTypeIdentifier typeIdentifier: String, options: [AnyHashable: Any]?) async throws -> NSSecureCoding {
+        return string as NSSecureCoding
+    }
+}
 
 class AddSavedItemModel {
     let tracker: Tracker
@@ -15,8 +32,11 @@ class AddSavedItemModel {
         self.tracker = tracker
     }
 
-    func saveURL(_ urlString: String) -> Bool {
-        guard let url = URL(string: urlString) else {
+    func saveURL(_ urlString: String) async -> Bool {
+        let itemProvider = AddSavedItemItemProvider(string: urlString)
+        let extracted = await URLExtractor.url(from: itemProvider)
+
+        guard let extractedURL = extracted, let url = URL(string: extractedURL), hasValidScheme(url) else {
            trackUserDidSaveItem(success: false)
             return false
         }
@@ -36,5 +56,17 @@ class AddSavedItemModel {
 
     func trackUserDidDismissView() {
         tracker.track(event: Events.Saves.userDidDismissAddSavedItem())
+    }
+
+    private func hasValidScheme(_ url: URL) -> Bool {
+        guard let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+            return false
+        }
+
+        if let scheme = urlComponents.scheme {
+            return URLExtractor.isValidScheme(scheme)
+        }
+
+        return false
     }
 }
