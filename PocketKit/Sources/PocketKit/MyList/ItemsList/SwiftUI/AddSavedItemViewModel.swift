@@ -23,7 +23,7 @@ class AddSavedItemItemProvider: ItemProvider {
     }
 }
 
-class AddSavedItemModel {
+class AddSavedItemViewModel {
     let tracker: Tracker
     private let source: Source
 

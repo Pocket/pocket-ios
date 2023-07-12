@@ -109,7 +109,7 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
 
     @objc
     func addButtonTapped() {
-        let addItemView = UIHostingController(rootView: AddSavedItem(model: model.addSavedItemModel))
+        let addItemView = UIHostingController(rootView: AddSavedItemView(model: model.addSavedItemModel))
         present(addItemView, animated: true)
         model.addSavedItemModel.trackShowView()
     }
