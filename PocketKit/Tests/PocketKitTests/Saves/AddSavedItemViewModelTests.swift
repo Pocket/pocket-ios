@@ -13,7 +13,7 @@ final class AddSavedItemViewModelTests: XCTestCase {
         return AddSavedItemViewModel(source: source, tracker: MockTracker())
     }
 
-    func test_URLParsing() {
+    func test_URLParsing() async {
         let sut = subject()
         var saveCount: Int = 0
 
@@ -21,33 +21,38 @@ final class AddSavedItemViewModelTests: XCTestCase {
             saveCount += 1
         }
 
-        goodURLs.forEach {
-            XCTAssertTrue(sut.saveURL($0))
+        for url in goodURLs {
+            let isValid = await sut.saveURL(url)
+            XCTAssertTrue(isValid)
         }
 
         XCTAssertTrue(saveCount == goodURLs.count)
         saveCount = 0
 
-        badURLs.forEach {
-            XCTAssertFalse(sut.saveURL($0))
+        for url in badURLs {
+            let isValid = await sut.saveURL(url)
+            XCTAssertFalse(isValid)
         }
 
         XCTAssertTrue(saveCount == 0)
     }
 
     private var goodURLs: [String] {
-        ["www.mozilla.com",
-         "mozilla.co.uk",
-         "https://mozilla.ca",
-         "http://www.mozilla.co.jp",
-         "https://getpocket.com/example?premium_user=true",
-         "https://getpocket.com/example?utm_source=foo&otherParam=some%20Encoded%20String"]
+        [
+            "https://mozilla.ca",
+            "http://www.mozilla.co.jp",
+            "https://getpocket.com/example?premium_user=true",
+            "this is a valid site: https://example.com"
+        ]
     }
 
     private var badURLs: [String] {
-        ["not a real URL",
-         "www. almost a real url .com",
-         "fdsa$%#Q$%#fds%$#@FDs543",
-         "https://getpocket.com/example?utm_source=things started off pretty good!"]
+        [
+            "www.mozilla.com",
+            "mozilla.co.uk",
+            "not a real URL",
+            "www. almost a real url .com",
+            "fdsa$%#Q$%#fds%$#@FDs543",
+        ]
     }
 }
