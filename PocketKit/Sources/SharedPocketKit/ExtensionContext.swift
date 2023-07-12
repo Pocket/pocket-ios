@@ -3,25 +3,25 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import Foundation
-import SharedPocketKit
 
-protocol ExtensionContext {
+public protocol ExtensionContext {
     var extensionItems: [ExtensionItem] { get }
 
     func completeRequest(returningItems items: [Any]?, completionHandler: ((Bool) -> Void)?)
 }
 
 extension NSExtensionContext: ExtensionContext {
-    var extensionItems: [ExtensionItem] {
+    public var extensionItems: [ExtensionItem] {
         inputItems.compactMap { $0 as? ExtensionItem }
     }
 }
 
-protocol ExtensionItem {
+public protocol ExtensionItem {
     var itemProviders: [ItemProvider]? { get }
 }
+
 extension NSExtensionItem: ExtensionItem {
-    var itemProviders: [ItemProvider]? {
+    public var itemProviders: [ItemProvider]? {
         attachments?.compactMap { $0 as ItemProvider }
     }
 }
