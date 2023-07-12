@@ -71,7 +71,7 @@ class MainViewModel: ObservableObject {
                     userDefaults: Services.shared.userDefaults,
                     featureFlags: Services.shared.featureFlagService
                 ),
-                addSavedItemModel: AddSavedItemModel(
+                addSavedItemModel: AddSavedItemViewModel(
                     source: Services.shared.source,
                     tracker: Services.shared.tracker.childTracker(hosting: .saves.saves)
                 )

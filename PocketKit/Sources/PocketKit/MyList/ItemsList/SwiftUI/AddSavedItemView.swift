@@ -6,16 +6,16 @@ import SwiftUI
 import Textile
 import Localization
 
-struct AddSavedItem: View {
+struct AddSavedItemView: View {
     @Environment(\.dismiss)
     private var dismiss
 
     @State private var urlString: String = ""
     @State private var showError: Bool = false
 
-    private let model: AddSavedItemModel
+    private let model: AddSavedItemViewModel
 
-    init(model: AddSavedItemModel) {
+    init(model: AddSavedItemViewModel) {
         self.model = model
     }
 

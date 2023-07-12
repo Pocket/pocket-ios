@@ -5,12 +5,12 @@
 import XCTest
 @testable import PocketKit
 
-final class AddSavedItemModelTests: XCTestCase {
+final class AddSavedItemViewModelTests: XCTestCase {
     var source: MockSource!
 
-    func subject() -> AddSavedItemModel {
+    func subject() -> AddSavedItemViewModel {
         source = MockSource()
-        return AddSavedItemModel(source: source, tracker: MockTracker())
+        return AddSavedItemViewModel(source: source, tracker: MockTracker())
     }
 
     func test_URLParsing() {
