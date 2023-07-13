@@ -405,8 +405,8 @@ public enum Localization {
       public static let close = Localization.tr("Localizable", "saves.addSavedItem.close", fallback: "Close")
       /// Please enter a valid URL
       public static let error = Localization.tr("Localizable", "saves.addSavedItem.error", fallback: "Please enter a valid URL")
-      /// e.g. www.mozilla.com
-      public static let placeholder = Localization.tr("Localizable", "saves.addSavedItem.placeholder", fallback: "e.g. www.mozilla.com")
+      /// e.g. https://getpocket.com
+      public static let placeholder = Localization.tr("Localizable", "saves.addSavedItem.placeholder", fallback: "e.g. https://getpocket.com")
       /// Add a URL
       public static let title = Localization.tr("Localizable", "saves.addSavedItem.title", fallback: "Add a URL")
     }
