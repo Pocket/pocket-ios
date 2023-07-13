@@ -86,7 +86,7 @@
 "saves.addSavedItem.addButton" = "Save to Pocket";
 "saves.addSavedItem.cancel" = "Cancel";
 "saves.addSavedItem.close" = "Close";
-"saves.addSavedItem.placeholder" = "e.g. www.mozilla.com";
+"saves.addSavedItem.placeholder" = "e.g. https://getpocket.com";
 
 // Search
 "search.errorMessage" = "We’re experiencing an error and temporarily can’t get you what you need. Please try again later.";
