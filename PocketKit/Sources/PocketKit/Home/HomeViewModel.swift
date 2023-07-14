@@ -120,6 +120,10 @@ class HomeViewModel: NSObject {
     private let recentSavesController: NSFetchedResultsController<SavedItem>
     private let recomendationsController: RichFetchedResultsController<Recommendation>
 
+    private var shouldDisableReader: Bool {
+        featureFlags.isAssigned(flag: .disableReader) || userDefaults.bool(forKey: UserDefaults.Key.toggleOriginalView)
+    }
+
     init(
         source: Source,
         tracker: Tracker,
@@ -306,7 +310,8 @@ extension HomeViewModel {
         let item = recommendation.item
 
         var destination: ContentOpen.Destination = .internal
-        if item.shouldOpenInWebView(override: featureFlags.isAssigned(flag: .disableReader)) {
+
+        if item.shouldOpenInWebView(override: shouldDisableReader) {
             selectedReadableType = .webViewRecommendation(viewModel)
             destination = .external
         } else {
@@ -339,7 +344,7 @@ extension HomeViewModel {
             notificationCenter: notificationCenter
         )
 
-        if let item = savedItem.item, item.shouldOpenInWebView(override: featureFlags.isAssigned(flag: .disableReader)) {
+        if let item = savedItem.item, item.shouldOpenInWebView(override: shouldDisableReader) {
             selectedReadableType = .webViewSavedItem(viewModel)
         } else {
             selectedReadableType = .savedItem(viewModel)

@@ -46,6 +46,7 @@ class AccountViewModel: ObservableObject {
     @Published var isPresentingDebugMenu = false
 
     @AppStorage public var appBadgeToggle: Bool
+    @AppStorage public var originalViewToggle: Bool
 
     private var userStatusListener: AnyCancellable?
 
@@ -84,6 +85,8 @@ class AccountViewModel: ObservableObject {
         self.featureFlags = featureFlags
 
         _appBadgeToggle = AppStorage(wrappedValue: false, UserDefaults.Key.toggleAppBadge, store: userDefaults)
+
+        _originalViewToggle = AppStorage(wrappedValue: false, UserDefaults.Key.toggleOriginalView, store: userDefaults)
 
         userStatusListener = user
             .statusPublisher
@@ -124,6 +127,11 @@ class AccountViewModel: ObservableObject {
             self.userDefaults.setValue(isEnabled, forKey: AccountViewModel.ToggleAppBadgeKey)
             self.notificationCenter.post(name: .listUpdated, object: nil)
         }
+    }
+
+    func toggleOriginalView(to isEnabled: Bool) {
+        tracker.track(event: Events.Settings.originalViewToggled(newValue: isEnabled))
+        self.userDefaults.setValue(isEnabled, forKey: UserDefaults.Key.toggleOriginalView)
     }
 
     var showDebugMenu: Bool {
