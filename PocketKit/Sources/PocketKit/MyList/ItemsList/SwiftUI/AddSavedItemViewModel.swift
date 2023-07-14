@@ -41,7 +41,7 @@ class AddSavedItemViewModel {
             return false
         }
 
-        source.save(url: url)
+        source.save(url: url.absoluteString)
         trackUserDidSaveItem(success: true)
         return true
     }
