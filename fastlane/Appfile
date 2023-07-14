@@ -1,2 +1,3 @@
 team_id(ENV["APPLE_DEVELOPER_PORTAL_ID"]) # Developer Portal Team ID
 itc_team_id(ENV["APPLE_APP_STORE_CONNECT_ID"]) # App Store Connect Team ID'
+FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD = ENV["APPLE_ACCOUNT_PW"] # App-specific password
