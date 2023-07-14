@@ -20,10 +20,12 @@ struct AddSavedItemView: View {
     }
 
     var body: some View {
-        NavigationView {
-            VStack(spacing: 50) {
-                Text(Localization.Saves.AddSavedItem.title)
-                    .style(.header.sansSerif.title.with(weight: .semibold))
+        NavigationStack {
+            VStack(spacing: 32) {
+                Group {
+                    Text(Localization.Saves.AddSavedItem.title)
+                        .style(.header.sansSerif.h2.with(weight: .semibold))
+                }
                 VStack {
                     URLEntryTextField()
                     if showError {
@@ -36,7 +38,7 @@ struct AddSavedItemView: View {
                         }
                     }
                 }
-                VStack(spacing: 30) {
+                VStack(spacing: 16) {
                     Button(Localization.Saves.AddSavedItem.addButton) {
                         Task { await self.submitItem() }
                     }
@@ -60,6 +62,7 @@ struct AddSavedItemView: View {
                     Text(Localization.Saves.AddSavedItem.close)
                 }.accessibilityIdentifier("close_button")
             )
+            .toolbarBackground(.hidden, for: .navigationBar)
         }
     }
 
@@ -92,7 +95,12 @@ struct AddSavedItemView: View {
         })
 
         return TextField(Localization.Saves.AddSavedItem.placeholder, text: binding)
-            .textFieldStyle(.roundedBorder)
+            .frame(height: 44)
+            .background(Color(.ui.grey7))
+            .padding([.leading, .trailing], 16)
+            .background(
+                RoundedRectangle(cornerRadius: 4).fill(Color(.ui.grey7))
+            )
             .keyboardType(.URL)
             .textContentType(.URL)
             .disableAutocorrection(true)
