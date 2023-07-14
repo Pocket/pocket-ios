@@ -7,21 +7,19 @@ import Textile
 
 struct SettingsRowToggle: View {
     private var title: String
+    private let action: (Bool) -> Void
+    private let isOn: Binding<Bool>
 
-    @ObservedObject private var model: AccountViewModel
-
-    let action: (Bool) -> Void
-
-    init(title: String, model: AccountViewModel, action: @escaping (Bool) -> Void) {
+    init(title: String, isOn: Binding<Bool>, action: @escaping (Bool) -> Void) {
         self.title = title
-        self.model = model
+        self.isOn = isOn
         self.action = action
     }
 
     var body: some View {
         VStack {
-            Toggle(title, isOn: model.$appBadgeToggle)
-                .onChange(of: model.appBadgeToggle) { newValue in
+            Toggle(title, isOn: isOn)
+                .onChange(of: isOn.wrappedValue) { newValue in
                     self.action(newValue)
                 }
         }

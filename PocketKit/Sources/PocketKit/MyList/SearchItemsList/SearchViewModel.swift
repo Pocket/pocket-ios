@@ -127,6 +127,10 @@ class SearchViewModel: ObservableObject {
         }
     }
 
+    private var shouldDisableReader: Bool {
+        featureFlags.isAssigned(flag: .disableReader) || userDefaults.bool(forKey: UserDefaults.Key.toggleOriginalView)
+    }
+
     init(networkPathMonitor: NetworkPathMonitor,
          user: User,
          userDefaults: UserDefaults,
@@ -466,7 +470,7 @@ extension SearchViewModel: SearchResultActionDelegate {
             notificationCenter: notificationCenter
         )
 
-        if savedItem.shouldOpenInWebView(override: featureFlags.isAssigned(flag: .disableReader)) {
+        if savedItem.shouldOpenInWebView(override: shouldDisableReader) {
             trackOpenSearchItem(url: savedItem.url, index: index, destination: .internal)
             selectedItem = .webView(readable)
         } else {

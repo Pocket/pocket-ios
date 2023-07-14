@@ -162,4 +162,15 @@ public extension Events.Settings {
     static func appBadgePermissionDenied() -> System {
         return System(type: .appPermission(.appBadge(false)))
     }
+
+    static func originalViewToggled(newValue: Bool) -> Engagement {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "global-nav.settings.originalViewToggle",
+                componentDetail: newValue ? "Original View Enabled" : "Original View Disabled"
+            )
+        )
+    }
 }
