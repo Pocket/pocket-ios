@@ -91,10 +91,6 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     private let notificationCenter: NotificationCenter
     private let viewType: SavesViewType
 
-    private var shouldDisableReader: Bool {
-        featureFlags.isAssigned(flag: .disableReader) || userDefaults.bool(forKey: UserDefaults.Key.toggleOriginalView)
-    }
-
     init(source: Source, tracker: Tracker, viewType: SavesViewType, listOptions: ListOptions, notificationCenter: NotificationCenter, user: User, store: SubscriptionStore, refreshCoordinator: RefreshCoordinator, networkPathMonitor: NetworkPathMonitor, userDefaults: UserDefaults, featureFlags: FeatureFlagServiceProtocol) {
         self.source = source
         self.refreshCoordinator = refreshCoordinator
@@ -256,7 +252,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             notificationCenter: notificationCenter
         )
 
-        if savedItem.shouldOpenInWebView(override: shouldDisableReader) {
+        if savedItem.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
             return (readable, true)
         } else {
             return (readable, false)
@@ -624,7 +620,7 @@ extension SavedItemsListViewModel {
             notificationCenter: notificationCenter
         )
 
-        if savedItem.shouldOpenInWebView(override: shouldDisableReader) {
+        if savedItem.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
             selectedItem = .webView(readable)
 
             trackContentOpen(destination: .external, item: savedItem)
