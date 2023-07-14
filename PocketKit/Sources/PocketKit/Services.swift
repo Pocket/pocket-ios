@@ -194,7 +194,7 @@ struct Services {
             source: source
         )
 
-        featureFlagService = FeatureFlagService(source: source, tracker: tracker)
+        featureFlagService = FeatureFlagService(source: source, tracker: tracker, userDefaults: userDefaults)
 
         listen = Listen(
             appSession: appSession,

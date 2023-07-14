@@ -35,10 +35,6 @@ class SlateDetailViewModel {
     private var subscriptions: [AnyCancellable] = []
     private let featureFlags: FeatureFlagServiceProtocol
 
-    private var shouldDisableReader: Bool {
-        featureFlags.isAssigned(flag: .disableReader) || userDefaults.bool(forKey: UserDefaults.Key.toggleOriginalView)
-    }
-
     init(slate: Slate, source: Source, tracker: Tracker, user: User, userDefaults: UserDefaults, featureFlags: FeatureFlagServiceProtocol) {
         self.slate = slate
         self.source = source
@@ -122,7 +118,7 @@ extension SlateDetailViewModel {
         let item = recommendation.item
         var destination: ContentOpen.Destination = .internal
 
-        if item.shouldOpenInWebView(override: featureFlags.isAssigned(flag: .disableReader)) {
+        if item.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
             guard let bestURL = URL(percentEncoding: item.bestURL) else { return }
             let url = pocketPremiumURL(bestURL, user: user)
             presentedWebReaderURL = url
