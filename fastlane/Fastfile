@@ -14,6 +14,7 @@
 # update_fastlane
 
 BITRISE_IPA_PATH = ENV["BITRISE_IPA_PATH"]
+APPLE_ID = ENV["APP_ID"]
 default_platform(:ios)
 
 platform :ios do
@@ -22,6 +23,7 @@ platform :ios do
 
     #upload to testflight for our internal apps store connect nightly builds.
     upload_to_testflight(
+      apple_id: APPLE_ID,
       skip_waiting_for_build_processing: false,
       groups: ['Nightly Internal Builds'],
       submit_beta_review: false,
