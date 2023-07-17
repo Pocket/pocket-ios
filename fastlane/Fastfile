@@ -21,14 +21,14 @@ platform :ios do
   desc "Push a new beta build to TestFlight Internal Testers via CI"
   lane :beta_internal do
 
-    #upload to testflight for our internal apps store connect nightly builds.
+    # Upload to testflight for our internal apps store connect nightly builds.
     upload_to_testflight(
-      apple_id: APPLE_ID,
       skip_waiting_for_build_processing: false,
-      groups: ['Nightly Internal Builds'],
-      submit_beta_review: false,
-      ipa: BITRISE_IPA_PATH,
-      expire_previous_builds: true
+      ipa: BITRISE_IPA_PATH
+      apple_id: APPLE_ID,
+      # groups: ['Nightly Internal Builds'], # Temporarily disable until another solution is available, as this doesn't work with app-specific passwords
+      # submit_beta_review: false,
+      # expire_previous_builds: true
     )
   end
 end
