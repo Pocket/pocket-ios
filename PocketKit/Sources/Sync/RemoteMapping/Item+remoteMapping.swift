@@ -92,7 +92,7 @@ extension Item {
         title = corpusItem.title
         topImageURL = URL(string: corpusItem.imageUrl)
         domain = corpusItem.publisher
-        // TODO: add language
+        // TODO: UNIFIEDHOME - add language
         excerpt = corpusItem.excerpt
 
         guard let context = managedObjectContext else {
@@ -103,7 +103,7 @@ extension Item {
             addToImages(Image(url: topImageURL, context: context))
         }
 
-        // TODO: add authors
+        // TODO: UNIFIEDHOME - add authors
 
         if let syndicatedArticle = corpusItem.target?.asSyndicatedArticle, let itemId = syndicatedArticle.itemId {
             self.syndicatedArticle = (try? space.fetchSyndicatedArticle(byItemId: itemId, context: context)) ?? SyndicatedArticle(context: context)
