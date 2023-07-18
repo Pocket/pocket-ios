@@ -228,7 +228,7 @@ class SlateDetailViewModelTests: XCTestCase {
         let slate = try space.createSlate(recommendations: [recommendation])
         try space.save()
         let viewModel = subject(slate: space.viewObject(with: slate.objectID) as! Slate)
-        userDefaults.setValue(true, forKey: UserDefaults.Key.toggleOriginalView)
+        featureFlags.shouldDisableReader = true
 
         let webViewExpectation = expectation(description: "expected to set web view url")
         viewModel.$presentedWebReaderURL.dropFirst().sink { readable in
