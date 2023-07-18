@@ -641,7 +641,7 @@ class HomeViewModelTests: XCTestCase {
     func test_selectCell_whenSelectingRecommendation_withSettingsOriginalViewEnabled_showsWebViewType() throws {
         let item = space.buildItem()
         let heroRec = space.buildRecommendation(item: item)
-        let carouselRec = space.buildRecommendation(remoteID: "carousel-rec", item: space.buildItem(remoteID: "item-2", givenURL: URL(string: "https://example.com/items/item-2")))
+        let carouselRec = space.buildRecommendation(remoteID: "carousel-rec", item: space.buildItem(remoteID: "item-2", givenURL: "https://example.com/items/item-2"))
         let recommendations = [heroRec, carouselRec]
         try space.createSlateLineup(
             remoteID: SyncConstants.Home.slateLineupIdentifier,
@@ -658,7 +658,7 @@ class HomeViewModelTests: XCTestCase {
             return false
         }
 
-        userDefaults.setValue(true, forKey: UserDefaults.Key.toggleOriginalView)
+        featureFlags.shouldDisableReader = true
 
         let readableExpectation = expectation(description: "expected a web view type")
         readableExpectation.expectedFulfillmentCount = 2
@@ -793,8 +793,6 @@ class HomeViewModelTests: XCTestCase {
             slates: [space.buildSlate(recommendations: recommendations)]
         )
 
-        userDefaults.setValue(true, forKey: UserDefaults.Key.toggleOriginalView)
-
         let viewModel = subject()
         let readableExpectation = expectation(description: "expected a web view type")
 
@@ -805,6 +803,8 @@ class HomeViewModelTests: XCTestCase {
             XCTFail("Unknown feature flag")
             return false
         }
+
+        featureFlags.shouldDisableReader = true
 
         viewModel.$selectedReadableType.dropFirst().sink { readableType in
             switch readableType {

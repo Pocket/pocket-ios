@@ -199,7 +199,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         let savedItem = space.buildPendingSavedItem()
         savedItem.item = space.buildItem()
         try space.save()
-        userDefaults.setValue(true, forKey: UserDefaults.Key.toggleOriginalView)
+        featureFlags.shouldDisableReader = true
 
         viewModel.selectCell(with: .item(savedItem.objectID), sender: UIView())
 

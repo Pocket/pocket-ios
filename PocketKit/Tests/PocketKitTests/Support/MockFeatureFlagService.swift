@@ -10,6 +10,8 @@ import UIKit
 class MockFeatureFlagService: FeatureFlagServiceProtocol {
     private var implementations: [String: Any] = [:]
     private var calls: [String: [Any]] = [:]
+
+    var shouldDisableReader: Bool = false
 }
 
 // MARK: isAssigned
