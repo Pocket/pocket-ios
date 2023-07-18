@@ -41,7 +41,7 @@
                                 "domain": null,
                                 "language": "en",
                                 "timeToRead": 6,
-                    "wordCount": 500,
+                                "wordCount": 500,
                                 "marticle": #MARTICLE#,
                                 "excerpt": "Cursus Aenean Elit",
                                 "datePublished": "2021-01-01 12:01:01",
@@ -59,6 +59,7 @@
                                         "url": "https://example.com/authors/david"
                                     }
                                 ],
+                                "collection": null,
                                 "domainMetadata": {
                                     "__typename": "[type-name-here]",
                                     "name": "WIRED",
@@ -129,10 +130,11 @@
                                 "domain": "wired.com",
                                 "language": "en",
                                 "timeToRead": 6,
-                    "wordCount": 500,
+                                "wordCount": 500,
                                 "domainMetadata": null,
                                 "marticle": [],
                                 "authors": [],
+                                "collection": null,
                                 "datePublished": "2021-01-01 12:01:01",
                                 "excerpt": "Cursus Aenean Elit",
                                 "images": [
