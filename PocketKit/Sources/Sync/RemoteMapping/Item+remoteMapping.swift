@@ -86,6 +86,38 @@ extension Item {
         givenURL = remote.givenUrl
     }
 
+    func update(from corpusItem: CorpusSlateParts.Recommendation.CorpusItem, in space: Space) {
+        remoteID = corpusItem.id
+        givenURL = corpusItem.url
+        title = corpusItem.title
+        topImageURL = URL(string: corpusItem.imageUrl)
+        domain = corpusItem.publisher
+        // TODO: add language
+        excerpt = corpusItem.excerpt
+
+        guard let context = managedObjectContext else {
+            return
+        }
+
+        if let topImageURL {
+            addToImages(Image(url: topImageURL, context: context))
+        }
+
+        // TODO: add authors
+
+        if let syndicatedArticle = corpusItem.target?.asSyndicatedArticle, let itemId = syndicatedArticle.itemId {
+            self.syndicatedArticle = (try? space.fetchSyndicatedArticle(byItemId: itemId, context: context)) ?? SyndicatedArticle(context: context)
+            self.syndicatedArticle?.itemID = itemId
+            self.syndicatedArticle?.publisherName = syndicatedArticle.publisher?.name
+            self.syndicatedArticle?.title = syndicatedArticle.title
+            self.syndicatedArticle?.excerpt = syndicatedArticle.excerpt
+            self.syndicatedArticle?.imageURL = syndicatedArticle.mainImage.flatMap(URL.init(string:))
+            if let imageSrc = syndicatedArticle.mainImage {
+                self.syndicatedArticle?.image = Image(src: imageSrc, context: context)
+            }
+        }
+    }
+
     func update(from summary: ItemSummary, with space: Space) {
         remoteID = summary.remoteID
 

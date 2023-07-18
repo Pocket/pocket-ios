@@ -8,7 +8,7 @@ import PocketGraph
 import SharedPocketKit
 
 protocol SlateService {
-    func fetchSlateLineup(_ identifier: String) async throws
+    func fetchHomeSlateLineup() async throws
 }
 
 class APISlateService: SlateService {
@@ -23,13 +23,14 @@ class APISlateService: SlateService {
         self.space = space
     }
 
-    func fetchSlateLineup(_ identifier: String) async throws {
-        let query = GetSlateLineupQuery(lineupID: identifier, maxRecommendations: SyncConstants.Home.recomendationsPerSlateFromSlateLineup)
+    func fetchHomeSlateLineup() async throws {
+        let query = HomeSlateLineupQuery(locale: Locale.preferredLanguages.first ?? "en-US")
 
-        guard let remote = try await apollo.fetch(query: query).data?.getSlateLineup else {
-            Log.capture(message: "Error loading slate lineup")
+        guard let remote = try await apollo.fetch(query: query).data?.homeSlateLineup else {
+            Log.capture(message: "Error loading unified home lineup")
             return
         }
-        try space.updateLineup(from: remote)
+
+        try space.updateHomeLineup(from: remote)
     }
 }

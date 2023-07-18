@@ -9,11 +9,12 @@ import SharedPocketKit
 
 extension SlateLineup {
     public typealias RemoteSlateLineup = GetSlateLineupQuery.Data.GetSlateLineup
+    public typealias RemoteHomeLineup = HomeSlateLineupQuery.Data.HomeSlateLineup
 
-    func update(from remote: RemoteSlateLineup, in space: Space, context: NSManagedObjectContext) {
+    func update(from remote: RemoteHomeLineup, in space: Space, context: NSManagedObjectContext) {
         slates = try? NSOrderedSet(array: remote.slates.enumerated().map {
-            let slate = try space.fetchSlate(byRemoteID: $0.element.id, context: context) ?? Slate(context: context, remoteID: $0.element.id, expermimentID: $0.element.experimentId, requestID: $0.element.requestId)
-            slate.update(from: $0.element.fragments.slateParts, in: space, context: context)
+            let slate = try space.fetchSlate(byRemoteID: $0.element.id, context: context) ?? Slate(context: context, remoteID: $0.element.id, expermimentID: "", requestID: "")
+            slate.update(from: $0.element.fragments.corpusSlateParts, in: space, context: context)
             slate.sortIndex = NSNumber(value: $0.offset + 1)
             return slate
         })
@@ -22,13 +23,12 @@ extension SlateLineup {
 
 extension Slate {
     public typealias RemoteSlate = SlateParts
+    public typealias RemoteCorpusSlate = CorpusSlateParts
 
-    func update(from remoteSlate: RemoteSlate, in space: Space, context: NSManagedObjectContext) {
-        experimentID = remoteSlate.experimentId
+    func update(from remoteSlate: RemoteCorpusSlate, in space: Space, context: NSManagedObjectContext) {
         remoteID = remoteSlate.id
-        name = remoteSlate.displayName
-        requestID = remoteSlate.requestId
-        slateDescription = remoteSlate.description
+        name = remoteSlate.headline
+        slateDescription = remoteSlate.subheadline
 
         var i = 1
         recommendations = NSOrderedSet(array: remoteSlate.recommendations.compactMap { remote in
@@ -37,7 +37,7 @@ extension Slate {
             let remoteID = remote.id + remoteSlate.id
             let analyticsID = remote.id
             guard let recommendation = try? space.fetchRecommendation(byRemoteID: remoteID, context: context) ?? Recommendation(context: context, remoteID: remoteID, analyticsID: analyticsID) else {
-                return nil
+                return
             }
             recommendation.update(from: remote, in: space, context: context)
             recommendation.sortIndex = NSNumber(value: i)
@@ -51,18 +51,16 @@ extension Slate {
 
 extension Recommendation {
     public typealias RemoteRecommendation = SlateParts.Recommendation
+    public typealias RemoteCorpusRecommendation = CorpusSlateParts.Recommendation
 
-    func update(from remote: RemoteRecommendation, in space: Space, context: NSManagedObjectContext) {
-        title = remote.curatedInfo?.title
-        excerpt = remote.curatedInfo?.excerpt
-        imageURL = remote.curatedInfo?.imageSrc.flatMap(URL.init(string:))
-        if let imageSrc = remote.curatedInfo?.imageSrc {
-            image = Image(src: imageSrc, context: context)
-        }
-
-        let url = remote.item.givenUrl
+    func update(from remote: RemoteCorpusRecommendation, in space: Space, context: NSManagedObjectContext) {
+        title = remote.corpusItem.title
+        excerpt = remote.corpusItem.excerpt
+        imageURL = URL(string: remote.corpusItem.imageUrl)
+        image = Image(src: remote.corpusItem.imageUrl, context: context)
+        let url = remote.corpusItem.url
         let recommendationItem = (try? space.fetchItem(byURL: url, context: context)) ?? Item(context: context, givenURL: url, remoteID: remoteID)
-        recommendationItem.update(from: remote.item.fragments.itemSummary, with: space)
+        recommendationItem.update(from: remote.corpusItem, in: space)
         item = recommendationItem
     }
 }
