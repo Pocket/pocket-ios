@@ -17,6 +17,9 @@ fragment ItemParts on Item {
     name
     url
   }
+  collection {
+    slug
+  }
   marticle {
     __typename
     ...MarticleTextParts
