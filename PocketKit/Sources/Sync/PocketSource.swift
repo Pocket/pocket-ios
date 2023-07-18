@@ -608,7 +608,8 @@ extension PocketSource {
 // MARK: - Slates/Recommendations
 extension PocketSource {
     public func fetchSlateLineup(_ identifier: String) async throws {
-        try await slateService.fetchSlateLineup(identifier)
+        // try await slateService.fetchSlateLineup(identifier)
+        try await slateService.fetchHomeSlateLineup()
     }
 
     public func fetchDetails(for recommendation: Recommendation) async throws -> Bool {

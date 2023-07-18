@@ -274,8 +274,8 @@ extension Space {
 
 // MARK: Slate/SlateLineUp
 extension Space {
-    func fetchSlateLineups() throws -> [SlateLineup] {
-        return try fetch(Requests.fetchSlateLineups())
+    func fetchSlateLineups(context: NSManagedObjectContext? = nil) throws -> [SlateLineup] {
+        return try fetch(Requests.fetchSlateLineups(), context: context)
     }
 
     func fetchSlateLineup(byRemoteID id: String, context: NSManagedObjectContext? = nil) throws -> SlateLineup? {
@@ -328,19 +328,24 @@ extension Space {
         }
     }
 
-    /// Updates a `SlateLineup` from the specified remote object, on a child background context
+    /// Updates unified home lineup from the specified remote object
     /// - Parameter remote: the specified remote object
-    func updateLineup(from remote: SlateLineup.RemoteSlateLineup) throws {
+    func updateHomeLineup(from remote: SlateLineup.RemoteHomeLineup) throws {
         let context = makeChildBackgroundContext()
 
-        context.performAndWait { [weak self] in
+        try context.performAndWait { [weak self] in
             guard let self else { return }
+            let lineups = try self.fetchSlateLineups(context: context)
 
-            let lineup = (try? self.fetchSlateLineup(byRemoteID: remote.id, context: context)) ??
-            SlateLineup(context: context, remoteID: remote.id, expermimentID: remote.experimentId, requestID: remote.requestId)
+            lineups.forEach {
+                context.delete($0)
+            }
+
+            let lineup = SlateLineup(context: context, remoteID: remote.id, expermimentID: "", requestID: "")
 
             lineup.update(from: remote, in: self, context: context)
         }
+
         // save the child context
         try context.performAndWait {
             guard context.hasChanges else {
