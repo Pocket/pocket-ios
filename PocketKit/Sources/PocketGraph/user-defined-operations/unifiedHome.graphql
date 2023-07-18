@@ -1,0 +1,42 @@
+fragment CorpusItemParts on CorpusItem {
+    id
+    url
+    title
+    excerpt
+    imageUrl
+    publisher
+    target {
+        ... on SyndicatedArticle {
+            __typename
+            ...SyndicatedArticleParts
+        }
+    }
+}
+
+fragment CorpusRecommendationParts on CorpusRecommendation {
+    id
+    corpusItem {
+        __typename
+        ...CorpusItemParts
+    }
+}
+
+fragment CorpusSlateParts on CorpusSlate {
+    id
+    headline
+    subheadline
+    recommendations {
+        __typename
+        ...CorpusRecommendationParts
+    }
+}
+
+query HomeSlateLineup($locale: String!) {
+    homeSlateLineup(locale: $locale) {
+        id
+        slates {
+            __typename
+            ...CorpusSlateParts
+        }
+    }
+}
