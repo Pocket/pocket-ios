@@ -11,6 +11,7 @@ public class Query: MockObject {
 
   public struct MockFields {
     @Field<UnleashAssignmentList>("assignments") public var assignments
+    @Field<Collection>("collection") public var collection
     @available(*, deprecated, message: "Please use queries specific to the surface ex. setMomentSlate. If a named query for your surface does not yet exit please reach out to the Data Products team and they will happily provide you with a named query.")
     @Field<Slate>("getSlate") public var getSlate
     @available(*, deprecated, message: "Please use queries specific to the surface ex. setMomentSlate. If a named query for your surface does not yet exit please reach out to the Data Products team and they will happily provide you with a named query.")
@@ -23,6 +24,7 @@ public class Query: MockObject {
 public extension Mock where O == Query {
   convenience init(
     assignments: Mock<UnleashAssignmentList>? = nil,
+    collection: Mock<Collection>? = nil,
     getSlate: Mock<Slate>? = nil,
     getSlateLineup: Mock<SlateLineup>? = nil,
     itemByItemId: Mock<Item>? = nil,
@@ -30,6 +32,7 @@ public extension Mock where O == Query {
   ) {
     self.init()
     _set(assignments, for: \.assignments)
+    _set(collection, for: \.collection)
     _set(getSlate, for: \.getSlate)
     _set(getSlateLineup, for: \.getSlateLineup)
     _set(itemByItemId, for: \.itemByItemId)
