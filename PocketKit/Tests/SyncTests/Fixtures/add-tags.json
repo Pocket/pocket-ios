@@ -37,6 +37,7 @@
           "excerpt": "Cursus Aenean Elit",
           "datePublished": "2021-01-01 12:01:01",
           "authors": [],
+          "collection": null,
           "domainMetadata": {
             "__typename": "[type-name-here]",
             "name": "WIRED",

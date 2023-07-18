@@ -61,6 +61,7 @@
                     "url": "https://example.com/authors/socrates"
                   }
                 ],
+                "collection": null,
                 "domainMetadata": null,
                 "images": [],
                 "isArticle": true,
@@ -96,6 +97,7 @@
                 "wordCount": 500,
                 "domainMetadata": null,
                 "authors": [],
+                "collection": null,
                 "datePublished": "1999-01-01 12:01:01",
                 "excerpt": "Vehicula Nibh Ligula Porta Magna",
                 "images": [],

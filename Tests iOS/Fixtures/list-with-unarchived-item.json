@@ -46,6 +46,7 @@
                                         "url": "https://example.com/authors/socrates"
                                     }
                                 ],
+                                "collection": null,
                                 "domainMetadata": null,
                                 "images": [],
                                 "isArticle": true,
