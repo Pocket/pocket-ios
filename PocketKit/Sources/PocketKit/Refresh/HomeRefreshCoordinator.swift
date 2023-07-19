@@ -45,7 +45,7 @@ class HomeRefreshCoordinator: RefreshCoordinator {
                 }
                 do {
                     self.isRefreshing = true
-                    try await self.source.fetchSlateLineup()
+                    try await self.source.fetchUnifiedHomeLineup()
                     self.lastRefresh.refreshedHome()
                     Log.breadcrumb(category: "refresh", level: .info, message: "Home Refresh Occur")
                 } catch {
