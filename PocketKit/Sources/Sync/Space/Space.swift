@@ -171,6 +171,18 @@ extension Space {
         return try fetch(Requests.fetchUnsavedItems())
     }
 
+    func deleteOrphanedRecommendations(context: NSManagedObjectContext) throws {
+        let fetchRequest = Recommendation.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "slate = NULL")
+
+        try context.performAndWait {
+            let orphans = try context.fetch(fetchRequest)
+            orphans.forEach {
+                context.delete($0)
+            }
+        }
+    }
+
     func deleteOrphanedItems(context: NSManagedObjectContext) throws {
         let fetchRequest: NSFetchRequest<Item> = Item.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "recommendation = NULL && savedItem = NULL")
@@ -353,6 +365,7 @@ extension Space {
             }
             // purge orphaned slates and items due to recommentation changes
             try deleteOrphanedSlates(context: context)
+            try deleteOrphanedRecommendations(context: context)
             try deleteOrphanedItems(context: context)
             try context.save()
             // then save the parent context
