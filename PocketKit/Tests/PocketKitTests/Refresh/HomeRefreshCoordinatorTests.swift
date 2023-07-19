@@ -122,8 +122,7 @@ class HomeRefreshCoordinatorTests: XCTestCase {
         coordinator.refresh(isForced: true) { }
 
         wait(for: [fetchExpectation], timeout: 10)
-
-        XCTAssertEqual(source.fetchSlateLineupCall(at: 0)?.identifier, "e39bc22a-6b70-4ed2-8247-4b3f1a516bd1")
+        XCTAssertNotNil(source.fetchSlateLineupCall(at: 0))
     }
 // TODO: Renable once we fix our singleton use in tests
 //    func test_coordinator_whenEnterForeground_whenDataIsNotStale_doesNotRefreshHome() {

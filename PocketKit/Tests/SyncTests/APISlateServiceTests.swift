@@ -39,31 +39,28 @@ class APISlateServiceTests: XCTestCase {
 extension APISlateServiceTests {
     @MainActor
     func test_fetchSlateLineup_performsCorrectQuery() async throws {
-        apollo.stubFetch(toReturnFixtureNamed: "slates", asResultType: GetSlateLineupQuery.self)
+        apollo.stubFetch(toReturnFixtureNamed: "corpusSlates", asResultType: HomeSlateLineupQuery.self)
 
         let service = subject()
-        try await service.fetchSlateLineup("slate-lineup-identifier")
+        try await service.fetchHomeSlateLineup()
 
-        let fetchCall: MockApolloClient.FetchCall<GetSlateLineupQuery>? = apollo.fetchCall(at: 0)
+        let fetchCall: MockApolloClient.FetchCall<HomeSlateLineupQuery>? = apollo.fetchCall(at: 0)
         XCTAssertNotNil(fetchCall)
-        XCTAssertEqual(fetchCall?.query.lineupID, "slate-lineup-identifier")
-        XCTAssertEqual(fetchCall?.query.maxRecommendations, SyncConstants.Home.recomendationsPerSlateFromSlateLineup)
+        XCTAssertEqual(fetchCall?.query.locale, Locale.preferredLanguages.first)
     }
 
     @MainActor
     func test_fetchSlateLineup_emptySpace_savesLineupInSpace() async throws {
-        apollo.stubFetch(toReturnFixtureNamed: "slates", asResultType: GetSlateLineupQuery.self)
+        apollo.stubFetch(toReturnFixtureNamed: "corpusSlates", asResultType: HomeSlateLineupQuery.self)
 
         let service = subject()
-        try await service.fetchSlateLineup("slate-lineup-identifier")
+        try await service.fetchHomeSlateLineup()
 
         let lineups = try space.fetchSlateLineups()
         XCTAssertEqual(lineups.count, 1)
 
-        let lineup = lineups[0]
+        let lineup = lineups.first!
         XCTAssertEqual(lineup.remoteID, "slate-lineup-1")
-        XCTAssertEqual(lineup.requestID, "slate-lineup-1-request")
-        XCTAssertEqual(lineup.experimentID, "slate-lineup-1-experiment")
 
         let slates = lineup.slates?.compactMap { $0 as? Slate } ?? []
         XCTAssertEqual(slates.count, 2)
@@ -71,8 +68,6 @@ extension APISlateServiceTests {
         do {
             let slate = slates[0]
             XCTAssertEqual(slate.remoteID, "slate-1")
-            XCTAssertEqual(slate.requestID, "slate-1-request")
-            XCTAssertEqual(slate.experimentID, "slate-1-experiment")
             XCTAssertEqual(slate.name, "Slate 1")
             XCTAssertEqual(slate.slateDescription, "The description of slate 1")
 
@@ -87,22 +82,10 @@ extension APISlateServiceTests {
                 XCTAssertNotNil(item)
                 XCTAssertEqual(item.remoteID, "item-1")
                 XCTAssertEqual(item.givenURL, "https://given.example.com/slate-1-rec-1")
-                XCTAssertEqual(item.resolvedURL, "https://resolved.example.com/rec-1")
                 XCTAssertEqual(item.title, "Slate 1, Recommendation 1")
-                XCTAssertEqual(item.language, "en")
                 XCTAssertEqual(item.topImageURL?.absoluteString, "http://example.com/slate-1-rec-1/top-image.png")
-                XCTAssertEqual(item.timeToRead, 1)
                 XCTAssertEqual(item.excerpt, "Cursus Aenean Elit")
-                XCTAssertEqual(item.datePublished?.timeIntervalSince1970, 1609502461)
                 XCTAssertEqual(item.domain, "slate-1-rec-1.example.com")
-                XCTAssertEqual(item.domainMetadata?.name, "Lifehacker")
-                XCTAssertEqual(item.domainMetadata?.logo?.absoluteString, "https://slate-1-rec-1.example.com/logo.png")
-                XCTAssertEqual(item.isArticle, true)
-                XCTAssertEqual(item.hasImage, .hasImages)
-                XCTAssertEqual(item.hasVideo, .hasVideos)
-
-                let images = item.images?.compactMap { $0 as? Image } ?? []
-                XCTAssertEqual(images[0].source, URL(string: "http://example.com/rec-1/image-1.jpg"))
             }
 
             do {
@@ -115,8 +98,6 @@ extension APISlateServiceTests {
         do {
             let slate = slates[1]
             XCTAssertEqual(slate.remoteID, "slate-2")
-            XCTAssertEqual(slate.requestID, "slate-2-request")
-            XCTAssertEqual(slate.experimentID, "slate-2-experiment")
             XCTAssertEqual(slate.name, "Slate 2")
             XCTAssertEqual(slate.slateDescription, "The description of slate 2")
 
@@ -132,7 +113,7 @@ extension APISlateServiceTests {
 
     @MainActor
     func test_fetchSlateLineup_existingSlateLineup_updatesExistingSpace() async throws {
-        apollo.stubFetch(toReturnFixtureNamed: "slates", asResultType: GetSlateLineupQuery.self)
+        apollo.stubFetch(toReturnFixtureNamed: "corpusSlates", asResultType: HomeSlateLineupQuery.self)
 
         let item = space.buildItem(remoteID: "item-1-seed")
         let recommendation = space.buildRecommendation(remoteID: "slate-1-recommendation-1-seed", item: item)
@@ -141,7 +122,7 @@ extension APISlateServiceTests {
         try self.space.save()
 
         let service = subject()
-        try await service.fetchSlateLineup("slate-lineup-identifier")
+        try await service.fetchHomeSlateLineup()
 
         // 1. Update existing slate lineup
         let lineups = try space.fetchSlateLineups()
@@ -168,7 +149,7 @@ extension APISlateServiceTests {
 
     @MainActor
     func test_fetchSlateLineup_existingSlateLineup_hasSavedItems_keepsItems() async throws {
-        apollo.stubFetch(toReturnFixtureNamed: "slates", asResultType: GetSlateLineupQuery.self)
+        apollo.stubFetch(toReturnFixtureNamed: "corpusSlates", asResultType: HomeSlateLineupQuery.self)
 
         let item = space.buildItem(remoteID: "item-1-seed")
         space.buildSavedItem(item: item)
@@ -178,7 +159,7 @@ extension APISlateServiceTests {
         try self.space.save()
 
         let service = subject()
-        try await service.fetchSlateLineup("slate-lineup-identifier")
+        try await service.fetchHomeSlateLineup()
 
         let items = try space.fetchItems()
         XCTAssertEqual(items.count, 4)
@@ -186,16 +167,16 @@ extension APISlateServiceTests {
 
     @MainActor
     func test_fetchSlateLineup_existingItem_updatesExistingItem() async throws {
-        apollo.stubFetch(toReturnFixtureNamed: "slates", asResultType: GetSlateLineupQuery.self)
+        apollo.stubFetch(toReturnFixtureNamed: "corpusSlates", asResultType: HomeSlateLineupQuery.self)
 
-        // fetchSlateLineup "cleans" all unsaved items before fetching,
+        // fetchUnifiedHomeLineup "cleans" all unsaved items before fetching,
         // so we have to fake a saved item for the item to update
         let item = space.buildItem(title: "Item 1 Seed", givenURL: "https://given.example.com/slate-1-rec-1")
         space.buildSavedItem(item: item)
         try self.space.save()
 
         let service = subject()
-        try await service.fetchSlateLineup("slate-lineup-identifier")
+        try await service.fetchHomeSlateLineup()
 
         XCTAssertEqual(item.title, "Slate 1, Recommendation 1")
     }

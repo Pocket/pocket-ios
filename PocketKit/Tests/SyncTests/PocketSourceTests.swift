@@ -291,8 +291,8 @@ class PocketSourceTests: XCTestCase {
         slateService.stubFetchSlateLineup { _ in }
 
         let source = subject()
-        try await source.fetchSlateLineup("slate-lineup-identifier")
-        XCTAssertEqual(slateService.fetchSlateLineupCall(at: 0)?.identifier, "slate-lineup-identifier")
+        try await source.fetchUnifiedHomeLineup()
+        XCTAssertNotNil(slateService.fetchSlateLineupCall(at: 0))
     }
 
     func test_savesController_returnsAFetchedResultsController() throws {

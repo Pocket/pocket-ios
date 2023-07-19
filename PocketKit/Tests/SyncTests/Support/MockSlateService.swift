@@ -21,16 +21,16 @@ extension MockSlateService {
         implementations[Self.fetchSlateLineup] = impl
     }
 
-    func fetchSlateLineup(_ identifier: String) async throws {
+    func fetchHomeSlateLineup() async throws {
         guard let impl = implementations[Self.fetchSlateLineup] as? FetchSlateLineupImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
 
         calls[Self.fetchSlateLineup] = (calls[Self.fetchSlateLineup] ?? []) + [
-            FetchSlateLineupCall(identifier: identifier)
+            FetchSlateLineupCall(identifier: "")
         ]
 
-        try await impl(identifier)
+        try await impl("")
     }
 
     func fetchSlateLineupCall(at index: Int) -> FetchSlateLineupCall? {
