@@ -23,8 +23,8 @@ platform :ios do
 
     # Upload to testflight for our internal apps store connect nightly builds.
     upload_to_testflight(
-      skip_waiting_for_build_processing: false,
-      ipa: BITRISE_IPA_PATH
+      skip_waiting_for_build_processing: true,
+      ipa: BITRISE_IPA_PATH,
       apple_id: APPLE_ID,
       # groups: ['Nightly Internal Builds'], # Temporarily disable until another solution is available, as this doesn't work with app-specific passwords
       # submit_beta_review: false,
