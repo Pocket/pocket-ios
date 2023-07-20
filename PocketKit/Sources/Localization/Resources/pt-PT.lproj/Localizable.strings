@@ -113,6 +113,9 @@
 "settings.logout.areYouSureMessage" = "Vai terminar a sessão na sua conta e todos os itens guardados para visualização offline serão removidos do seu dispositivo.";
 "settings.logout.areyousure" = "Tem a certeza?";
 "settings.help" = "Obter ajuda e assistência";
+
+"settings.alwaysOpenOriginalView" = "Abra sempre a vista original";
+
 "settings.accountManagement" = "Gestão de contas";
 "settings.accountManagement.deleteAccount" = "Eliminar a conta";
 "settings.accountManagement.deleteYourAccount" = "Elimina a tua conta";
