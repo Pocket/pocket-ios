@@ -113,6 +113,9 @@
 "settings.logout.areYouSureMessage" = "Vous serez déconnecté de votre compte et tous les éléments qui ont été sauvegardés pour être consultés hors ligne seront supprimés de votre appareil.";
 "settings.logout.areyousure" = "Êtes-vous certain?";
 "settings.help" = "Obtenir de l'aide et du soutien";
+
+"settings.alwaysOpenOriginalView" = "Toujours ouvrir l'affichage original";
+
 "settings.accountManagement" = "Gestion des comptes";
 "settings.accountManagement.deleteAccount" = "Supprimer le compte";
 "settings.accountManagement.deleteYourAccount" = "Supprimer votre compte";
