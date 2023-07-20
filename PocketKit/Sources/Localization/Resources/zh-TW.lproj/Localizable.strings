@@ -113,6 +113,9 @@
 "settings.logout.areYouSureMessage" = "您將登出您的帳戶，並且會從您的裝置移除所有已儲存以供離線檢視的項目。";
 "settings.logout.areyousure" = "您確定嗎？";
 "settings.help" = "獲取協助與支援";
+
+"settings.alwaysOpenOriginalView" = "始終開啟原始視圖";
+
 "settings.accountManagement" = "帳戶管理";
 "settings.accountManagement.deleteAccount" = "刪除帳號";
 "settings.accountManagement.deleteYourAccount" = "刪除您的帳號";
