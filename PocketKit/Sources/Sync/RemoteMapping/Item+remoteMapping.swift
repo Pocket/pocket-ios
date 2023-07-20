@@ -87,7 +87,6 @@ extension Item {
     }
 
     func update(from corpusItem: CorpusSlateParts.Recommendation.CorpusItem, in space: Space) {
-        remoteID = corpusItem.id
         givenURL = corpusItem.url
         title = corpusItem.title
         topImageURL = URL(string: corpusItem.imageUrl)
