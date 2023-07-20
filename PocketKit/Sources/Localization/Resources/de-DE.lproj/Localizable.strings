@@ -113,6 +113,9 @@
 "settings.logout.areYouSureMessage" = "Du wirst aus deinem Konto ausgeloggt und sämtliche Elemente, die du zur Offline-Anzeige gespeichert hast, werden von deinem Gerät entfernt.";
 "settings.logout.areyousure" = "Bist du sicher?";
 "settings.help" = "Hilfe und Support erhalten";
+
+"settings.alwaysOpenOriginalView" = "Öffnet immer die ursprüngliche Ansicht.";
+
 "settings.accountManagement" = "Kontoverwaltung";
 "settings.accountManagement.deleteAccount" = "Konto löschen";
 "settings.accountManagement.deleteYourAccount" = "Lösche dein Konto";
