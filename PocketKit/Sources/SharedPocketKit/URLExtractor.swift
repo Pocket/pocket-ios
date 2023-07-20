@@ -5,6 +5,13 @@
 import Foundation
 
 public enum URLExtractor {
+    /// Extracts a URL as a String from an `ItemProvider`. An `ItemProvider` should be one that returns an item
+    /// conforming to `public.url`, or `public.plain-text`.
+    ///
+    /// - Parameter itemProvider: The item provider that provides either a `public.url` `URL`, or
+    /// a `public.plain-text` `String`.
+    /// - Returns: A `String` representing a URL returned by the `ItemProvider`.
+    /// - Discussion:
     public static func url(from itemProvider: ItemProvider) async -> String? {
         if itemProvider.hasItemConformingToTypeIdentifier("public.url") { // We're handed a URL
             guard let url = try? await itemProvider.loadItem(forTypeIdentifier: "public.url", options: nil) as? URL else {

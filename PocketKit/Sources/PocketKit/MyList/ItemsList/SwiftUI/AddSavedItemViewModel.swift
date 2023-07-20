@@ -7,6 +7,7 @@ import Sync
 import Analytics
 import SharedPocketKit
 
+/// An ItemProvider that can return a given string as its value, as plain text.
 class AddSavedItemItemProvider: ItemProvider {
     private let string: String
 
@@ -15,10 +16,18 @@ class AddSavedItemItemProvider: ItemProvider {
     }
 
     func hasItemConformingToTypeIdentifier(_ typeIdentifier: String) -> Bool {
+        // By returning ourself as a plain-text item provider, our URLExtractor can be reused
+        // to extract a URL from a given string. In this case, the string is being set at initialization.
+        // This means that "Hello, world: https://example.com" can extract "https://example.com",
+        // and "some-extension://url?=https://example.com" can also extract "https://example.com". "Normal"
+        // urls such as "https://example.com" will be extracted, since the full text _is_ a url.
         return typeIdentifier == "public.plain-text"
     }
 
     func loadItem(forTypeIdentifier typeIdentifier: String, options: [AnyHashable: Any]?) async throws -> NSSecureCoding {
+        // The expectation of URLExtractor is that a public.plain-text ItemProvider will return a String.
+        // Since we know this concrete implementation _is_ that of a `public.plain-text` UTI, we can safely
+        // ignore the type identifier and options, and return exactly what is needed by the URLExtractor.
         return string as NSSecureCoding
     }
 }
