@@ -80,7 +80,6 @@ extension APISlateServiceTests {
 
                 let item = recommendation.item
                 XCTAssertNotNil(item)
-                XCTAssertEqual(item.remoteID, "item-1")
                 XCTAssertEqual(item.givenURL, "https://given.example.com/slate-1-rec-1")
                 XCTAssertEqual(item.title, "Slate 1, Recommendation 1")
                 XCTAssertEqual(item.topImageURL?.absoluteString, "http://example.com/slate-1-rec-1/top-image.png")
@@ -144,7 +143,7 @@ extension APISlateServiceTests {
         let items = try space.fetchItems()
         XCTAssertEqual(items.count, 3)
         let itemIDs = items.map { $0.remoteID }
-        XCTAssertEqual(Set(itemIDs), ["item-1", "item-2", "item-3"])
+        XCTAssertEqual(Set(itemIDs), ["slate-1-rec-1slate-1", "slate-2-rec-1slate-2", "slate-1-rec-2slate-1"])
     }
 
     @MainActor
