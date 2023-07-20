@@ -113,6 +113,9 @@
 "settings.logout.areYouSureMessage" = "Будет выполнен выход из учетной записи, и все элементы, сохраненные для офлайн-просмотра, удалятся с вашего устройства.";
 "settings.logout.areyousure" = "Вы уверены?";
 "settings.help" = "Получить помощь и поддержку";
+
+"settings.alwaysOpenOriginalView" = "Всегда открывать просмотр оригинала";
+
 "settings.accountManagement" = "Управление учетной записью";
 "settings.accountManagement.deleteAccount" = "Удалить аккаунт";
 "settings.accountManagement.deleteYourAccount" = "Удалить ваш аккаунт";
