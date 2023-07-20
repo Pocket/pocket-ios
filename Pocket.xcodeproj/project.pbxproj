@@ -96,6 +96,8 @@
 		AAE6AC392A13504400790E33 /* RecentSavesWidgetPreviewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAE6AC382A13504400790E33 /* RecentSavesWidgetPreviewer.swift */; };
 		AAEE908229B69BA70028587D /* PremiumTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAEE908129B69BA70028587D /* PremiumTests.swift */; };
 		AAEE908429B69E9F0028587D /* PremiumUpgradeViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAEE908329B69E9F0028587D /* PremiumUpgradeViewElement.swift */; };
+		C8E6161E2A3A075000324777 /* AddSavedItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8E6161D2A3A075000324777 /* AddSavedItemTests.swift */; };
+		C8E616202A3A230E00324777 /* AddSavedItemElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8E6161F2A3A230E00324777 /* AddSavedItemElement.swift */; };
 		D26A5EF4297F1D8400FA5A88 /* ReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D26A5EF3297F1D8400FA5A88 /* ReaderTests.swift */; };
 		F20BB0392744542F00AE5E70 /* AlertElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = F20BB0382744542F00AE5E70 /* AlertElement.swift */; };
 		F24B1E1C27ECB55600C75487 /* SaveToPocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = F24B1E1B27ECB55600C75487 /* SaveToPocket.swift */; };
@@ -279,6 +281,8 @@
 		AAE6AC382A13504400790E33 /* RecentSavesWidgetPreviewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentSavesWidgetPreviewer.swift; sourceTree = "<group>"; };
 		AAEE908129B69BA70028587D /* PremiumTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremiumTests.swift; sourceTree = "<group>"; };
 		AAEE908329B69E9F0028587D /* PremiumUpgradeViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremiumUpgradeViewElement.swift; sourceTree = "<group>"; };
+		C8E6161D2A3A075000324777 /* AddSavedItemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddSavedItemTests.swift; sourceTree = "<group>"; };
+		C8E6161F2A3A230E00324777 /* AddSavedItemElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddSavedItemElement.swift; sourceTree = "<group>"; };
 		D26A5EF3297F1D8400FA5A88 /* ReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderTests.swift; sourceTree = "<group>"; };
 		D2A8AF0F29D3A0E60042BC97 /* UITestsFlaky.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = UITestsFlaky.xctestplan; sourceTree = "<group>"; };
 		F204A76027E22EC50010E155 /* SaveToPocket.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SaveToPocket.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -370,6 +374,7 @@
 				164FB66D278F7ECC002959D6 /* SavesFiltersTests.swift */,
 				16D76882279F3C73004A3694 /* ArchiveTests.swift */,
 				F2FC070227A9B749009F8D98 /* ArchiveFiltersTests.swift */,
+				C8E6161D2A3A075000324777 /* AddSavedItemTests.swift */,
 			);
 			path = MyList;
 			sourceTree = "<group>";
@@ -478,6 +483,7 @@
 				166EFAE7268281F300A027CD /* ReaderToolbarElement.swift */,
 				166BAD052656E76B00E401F0 /* SignInFormElement.swift */,
 				166BAD072656E76B00E401F0 /* SavesElement.swift */,
+				C8E6161F2A3A230E00324777 /* AddSavedItemElement.swift */,
 				3E8283A328B65ECF00C1DC4A /* SortMenuElement.swift */,
 				166EFAE92682821300A027CD /* WebReaderElement.swift */,
 				166F8F2626D0488900F898E3 /* XCUIElement+wait.swift */,
@@ -958,6 +964,8 @@
 				16C2B03F270CF82700D194AA /* RecommendationCellElement.swift in Sources */,
 				AAEE908429B69E9F0028587D /* PremiumUpgradeViewElement.swift in Sources */,
 				16A6808126EBC78800A64545 /* HomeViewElement.swift in Sources */,
+				C8E6161E2A3A075000324777 /* AddSavedItemTests.swift in Sources */,
+				C8E616202A3A230E00324777 /* AddSavedItemElement.swift in Sources */,
 				16A6807F26EBC71300A64545 /* TabBarElement.swift in Sources */,
 				168292C826CC64C300830140 /* ShareAnItemTests.swift in Sources */,
 				166BACF82656E3C600E401F0 /* Fixture.swift in Sources */,

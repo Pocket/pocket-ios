@@ -14,6 +14,7 @@ public extension UserDefaults {
         case toggleOriginalView = "AccountViewModel.ToggleOriginalView"
         case appBadgeToggle = "Settings.ToggleAppBadge"
         case legacyUserMigration = "com.mozilla.pocket.next.migration.legacyUser"
+        case orgTransferMigration = "com.mozilla.pocket.next.migration.org"
         case dateLastRefresh = "HomeRefreshCoordinator.dateLastRefreshKey"
         case lastRefreshedTagsAt = "lastRefreshedTagsAt"
         case lastRefreshedArchiveAt = "lastRefreshedArchiveAt"

@@ -70,6 +70,10 @@ class MainViewModel: ObservableObject {
                     networkPathMonitor: NWPathMonitor(),
                     userDefaults: Services.shared.userDefaults,
                     featureFlags: Services.shared.featureFlagService
+                ),
+                addSavedItemModel: AddSavedItemViewModel(
+                    source: Services.shared.source,
+                    tracker: Services.shared.tracker.childTracker(hosting: .saves.saves)
                 )
             ),
             home: HomeViewModel(

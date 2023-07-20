@@ -26,6 +26,10 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
         name
         url
       }
+      collection {
+        __typename
+        slug
+      }
       marticle {
         __typename
         ...MarticleTextParts
@@ -78,6 +82,7 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
     .field("hasVideo", GraphQLEnum<PocketGraph.Videoness>?.self),
     .field("wordCount", Int?.self),
     .field("authors", [Author?]?.self),
+    .field("collection", Collection?.self),
     .field("marticle", [Marticle]?.self),
     .field("excerpt", String?.self),
     .field("domainMetadata", DomainMetadata?.self),
@@ -116,6 +121,8 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
   public var wordCount: Int? { __data["wordCount"] }
   /// List of Authors involved with this article
   public var authors: [Author?]? { __data["authors"] }
+  /// If the item is a collection allow them to get the collection information
+  public var collection: Collection? { __data["collection"] }
   /// The Marticle format of the article, used by clients for native article view.
   public var marticle: [Marticle]? { __data["marticle"] }
   /// A snippet of text from the article
@@ -142,6 +149,7 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
     hasVideo: GraphQLEnum<PocketGraph.Videoness>? = nil,
     wordCount: Int? = nil,
     authors: [Author?]? = nil,
+    collection: Collection? = nil,
     marticle: [Marticle]? = nil,
     excerpt: String? = nil,
     domainMetadata: DomainMetadata? = nil,
@@ -165,6 +173,7 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
         "hasVideo": hasVideo,
         "wordCount": wordCount,
         "authors": authors._fieldData,
+        "collection": collection._fieldData,
         "marticle": marticle._fieldData,
         "excerpt": excerpt,
         "domainMetadata": domainMetadata._fieldData,
@@ -210,6 +219,36 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
           "id": id,
           "name": name,
           "url": url,
+        ],
+        fulfilledFragments: [
+          ObjectIdentifier(Self.self)
+        ]
+      ))
+    }
+  }
+
+  /// Collection
+  ///
+  /// Parent Type: `Collection`
+  public struct Collection: PocketGraph.SelectionSet {
+    public let __data: DataDict
+    public init(_dataDict: DataDict) { __data = _dataDict }
+
+    public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Collection }
+    public static var __selections: [ApolloAPI.Selection] { [
+      .field("__typename", String.self),
+      .field("slug", String.self),
+    ] }
+
+    public var slug: String { __data["slug"] }
+
+    public init(
+      slug: String
+    ) {
+      self.init(_dataDict: DataDict(
+        data: [
+          "__typename": PocketGraph.Objects.Collection.typename,
+          "slug": slug,
         ],
         fulfilledFragments: [
           ObjectIdentifier(Self.self)

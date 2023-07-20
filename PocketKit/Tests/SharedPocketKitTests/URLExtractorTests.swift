@@ -3,7 +3,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import XCTest
-@testable import SaveToPocketKit
+import SharedPocketKit
 
 class URLExtractorTests: XCTestCase {
     func test_extract_whenItemProviderHasURL_returnsURL() async {

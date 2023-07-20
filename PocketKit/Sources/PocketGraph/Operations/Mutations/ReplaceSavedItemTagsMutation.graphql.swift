@@ -162,6 +162,8 @@ public class ReplaceSavedItemTagsMutation: GraphQLMutation {
           public var wordCount: Int? { __data["wordCount"] }
           /// List of Authors involved with this article
           public var authors: [ItemParts.Author?]? { __data["authors"] }
+          /// If the item is a collection allow them to get the collection information
+          public var collection: ItemParts.Collection? { __data["collection"] }
           /// The Marticle format of the article, used by clients for native article view.
           public var marticle: [Marticle]? { __data["marticle"] }
           /// A snippet of text from the article

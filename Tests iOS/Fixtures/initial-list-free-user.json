@@ -59,6 +59,7 @@
                                         "url": "https://example.com/authors/david"
                                     }
                                 ],
+                                "collection": null,
                                 "domainMetadata": {
                                     "__typename": "[type-name-here]",
                                     "name": "WIRED",
@@ -123,6 +124,7 @@
                                 "domainMetadata": null,
                                 "marticle": [],
                                 "authors": [],
+                                "collection": null,
                                 "datePublished": "2021-01-01 12:01:01",
                                 "excerpt": "Cursus Aenean Elit",
                                 "images": [

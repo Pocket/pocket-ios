@@ -396,6 +396,20 @@ public enum Localization {
     public static let tapToDismiss = Localization.tr("Localizable", "saveToPocket.tapToDismiss", fallback: "Tap to dismiss")
   }
   public enum Saves {
+    public enum AddSavedItem {
+      /// Save to Pocket
+      public static let addButton = Localization.tr("Localizable", "saves.addSavedItem.addButton", fallback: "Save to Pocket")
+      /// Cancel
+      public static let cancel = Localization.tr("Localizable", "saves.addSavedItem.cancel", fallback: "Cancel")
+      /// Close
+      public static let close = Localization.tr("Localizable", "saves.addSavedItem.close", fallback: "Close")
+      /// Please enter a valid URL
+      public static let error = Localization.tr("Localizable", "saves.addSavedItem.error", fallback: "Please enter a valid URL")
+      /// e.g. https://getpocket.com
+      public static let placeholder = Localization.tr("Localizable", "saves.addSavedItem.placeholder", fallback: "e.g. https://getpocket.com")
+      /// Add a URL
+      public static let title = Localization.tr("Localizable", "saves.addSavedItem.title", fallback: "Add a URL")
+    }
     public enum Empty {
       /// How to save
       public static let button = Localization.tr("Localizable", "saves.empty.button", fallback: "How to save")

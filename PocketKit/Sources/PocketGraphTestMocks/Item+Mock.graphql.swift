@@ -11,31 +11,33 @@ public class Item: MockObject {
 
   public struct MockFields {
     @Field<[Author?]>("authors") public var authors
-    @Field<PocketGraph.DateString?>("datePublished") public var datePublished
-    @Field<String?>("domain") public var domain
-    @Field<DomainMetadata?>("domainMetadata") public var domainMetadata
-    @Field<String?>("excerpt") public var excerpt
+    @Field<Collection>("collection") public var collection
+    @Field<PocketGraph.DateString>("datePublished") public var datePublished
+    @Field<String>("domain") public var domain
+    @Field<DomainMetadata>("domainMetadata") public var domainMetadata
+    @Field<String>("excerpt") public var excerpt
     @Field<PocketGraph.Url>("givenUrl") public var givenUrl
-    @Field<GraphQLEnum<PocketGraph.Imageness>?>("hasImage") public var hasImage
-    @Field<GraphQLEnum<PocketGraph.Videoness>?>("hasVideo") public var hasVideo
+    @Field<GraphQLEnum<PocketGraph.Imageness>>("hasImage") public var hasImage
+    @Field<GraphQLEnum<PocketGraph.Videoness>>("hasVideo") public var hasVideo
     @Field<[Image?]>("images") public var images
-    @Field<Bool?>("isArticle") public var isArticle
-    @Field<String?>("language") public var language
-    @Field<[MarticleComponent]?>("marticle") public var marticle
+    @Field<Bool>("isArticle") public var isArticle
+    @Field<String>("language") public var language
+    @Field<[MarticleComponent]>("marticle") public var marticle
     @Field<String>("remoteID") public var remoteID
-    @Field<PocketGraph.Url?>("resolvedUrl") public var resolvedUrl
-    @Field<SyndicatedArticle?>("syndicatedArticle") public var syndicatedArticle
-    @Field<Int?>("timeToRead") public var timeToRead
-    @Field<String?>("title") public var title
+    @Field<PocketGraph.Url>("resolvedUrl") public var resolvedUrl
+    @Field<SyndicatedArticle>("syndicatedArticle") public var syndicatedArticle
+    @Field<Int>("timeToRead") public var timeToRead
+    @Field<String>("title") public var title
     @available(*, deprecated, message: "use the topImage object")
-    @Field<PocketGraph.Url?>("topImageUrl") public var topImageUrl
-    @Field<Int?>("wordCount") public var wordCount
+    @Field<PocketGraph.Url>("topImageUrl") public var topImageUrl
+    @Field<Int>("wordCount") public var wordCount
   }
 }
 
 public extension Mock where O == Item {
   convenience init(
     authors: [Mock<Author>?]? = nil,
+    collection: Mock<Collection>? = nil,
     datePublished: PocketGraph.DateString? = nil,
     domain: String? = nil,
     domainMetadata: Mock<DomainMetadata>? = nil,
@@ -57,6 +59,7 @@ public extension Mock where O == Item {
   ) {
     self.init()
     _set(authors, for: \.authors)
+    _set(collection, for: \.collection)
     _set(datePublished, for: \.datePublished)
     _set(domain, for: \.domain)
     _set(domainMetadata, for: \.domainMetadata)

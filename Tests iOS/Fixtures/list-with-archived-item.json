@@ -38,6 +38,7 @@
                 "wordCount": 500,
                 "marticle": [],
                 "authors": [],
+                "collection": null,
                 "datePublished": "2021-01-01 12:01:01",
                 "excerpt": "Cursus Aenean Elit",
                 "domainMetadata": {
@@ -89,6 +90,7 @@
                 "excerpt": "Cursus Aenean Elit",
                 "marticle": [],
                 "authors": [],
+                "collection": null,
                 "datePublished": "2021-01-01 12:01:01",
                 "images": [
                   {
@@ -134,6 +136,7 @@
                 "excerpt": "Cursus Aenean Elit",
                 "marticle": [],
                 "authors": [],
+                "collection": null,
                 "datePublished": "2021-01-01 12:01:01",
                 "images": [
                   {
