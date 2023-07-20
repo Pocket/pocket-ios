@@ -113,6 +113,9 @@
 "settings.logout.areYouSureMessage" = "您的帐号将被注销，所有已保存供脱机阅读的项目都将从您的设备中删除。";
 "settings.logout.areyousure" = "您确定吗？";
 "settings.help" = "获取帮助和支持";
+
+"settings.alwaysOpenOriginalView" = "始终打开原始视图";
+
 "settings.accountManagement" = "帐号管理";
 "settings.accountManagement.deleteAccount" = "删除帐号";
 "settings.accountManagement.deleteYourAccount" = "删除帐号";
