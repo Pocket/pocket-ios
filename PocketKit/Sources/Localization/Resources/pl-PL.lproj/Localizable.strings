@@ -113,6 +113,9 @@
 "settings.logout.areYouSureMessage" = "Nastąpi wylogowanie z Twojego konta, a wszelkie elementy, które zostały zapisane do przeglądania w trybie offline, zostaną usunięte z Twojego urządzenia.";
 "settings.logout.areyousure" = "Czy na pewno?";
 "settings.help" = "Uzyskaj pomoc i wsparcie";
+
+"settings.alwaysOpenOriginalView" = "Zawsze otwieraj oryginalny widok";
+
 "settings.accountManagement" = "Zarządzanie kontem";
 "settings.accountManagement.deleteAccount" = "Usuń konto";
 "settings.accountManagement.deleteYourAccount" = "Usuń swoje konto";
