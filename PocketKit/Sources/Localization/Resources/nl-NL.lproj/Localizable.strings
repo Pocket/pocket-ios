@@ -113,6 +113,9 @@
 "settings.logout.areYouSureMessage" = "Je wordt afgemeld bij je account en alle items die zijn opgeslagen voor offline weergave worden verwijderd van je apparaat.";
 "settings.logout.areyousure" = "Weet je het zeker?";
 "settings.help" = "Hulp en ondersteuning";
+
+"settings.alwaysOpenOriginalView" = "Open altijd de originele weergave";
+
 "settings.accountManagement" = "Accountbeheer";
 "settings.accountManagement.deleteAccount" = "Account verwijderen";
 "settings.accountManagement.deleteYourAccount" = "Verwijder je account";
