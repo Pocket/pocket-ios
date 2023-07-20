@@ -4,10 +4,8 @@
 
 import Foundation
 
-
 /// Similar to NSItemProvider, simplified: an item provider for conveying data from a host app to an app extension.
 public protocol ItemProvider {
-
     /// Similar to NSItemProvider: returns a Boolean value indicating whether an item provider contains a data
     ///  representation conforming to a specified universal type identifier file options parameter with a value of zero.
     ///  For our use-case, this should return true for public.plain-text, or public.url.
@@ -15,7 +13,6 @@ public protocol ItemProvider {
     /// - Returns: For our use-case, implementations of this protocol
     /// should return true for public.plain-text, or public.url.
     func hasItemConformingToTypeIdentifier(_ typeIdentifier: String) -> Bool
-
 
     /// Similar to NSItemProvider: loads the item’s data and coerces it to the specified type.
     /// - Parameters:
