@@ -113,6 +113,9 @@
 "settings.logout.areYouSureMessage" = "アカウントからログアウトされ、オフライン表示用に保存されたアイテムがすべてデバイスから削除されます。";
 "settings.logout.areyousure" = "よろしいですか？";
 "settings.help" = "サポートに問い合わせる";
+
+"settings.alwaysOpenOriginalView" = "常に元のビューを開く";
+
 "settings.accountManagement" = "アカウント管理";
 "settings.accountManagement.deleteAccount" = "アカウントを削除";
 "settings.accountManagement.deleteYourAccount" = "アカウントを削除";
