@@ -113,6 +113,9 @@
 "settings.logout.areYouSureMessage" = "Tu sesión finalizará y cualquier elemento que se haya guardado para verse sin conexión se eliminará de tu dispositivo.";
 "settings.logout.areyousure" = "¿Estás seguro?";
 "settings.help" = "Obtener ayuda y soporte técnico";
+
+"settings.alwaysOpenOriginalView" = "Abrir siempre la vista original";
+
 "settings.accountManagement" = "Administración de cuenta";
 "settings.accountManagement.deleteAccount" = "Eliminar cuenta";
 "settings.accountManagement.deleteYourAccount" = "Elimina Tu Cuenta";
