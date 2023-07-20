@@ -92,6 +92,7 @@ public enum Requests {
 
     public static func fetchRecomendations(by lineupIdentifier: String) -> RichFetchRequest<Recommendation> {
         let request = RichFetchRequest<Recommendation>(entityName: "Recommendation")
+        // We only search for valid recommendations without specifying a lineup, since the lineup will be only 1 (from unified home)
         request.predicate = NSPredicate(format: "item != NULL")
         request.sortDescriptors = [
             NSSortDescriptor(keyPath: \Recommendation.slate?.sortIndex, ascending: true),
