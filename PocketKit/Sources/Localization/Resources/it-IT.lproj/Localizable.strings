@@ -113,6 +113,9 @@
 "settings.logout.areYouSureMessage" = "Verrai disconnesso dal tuo account. Qualunque elemento salvato per la visualizzazione offline sarà eliminato dal tuo dispositivo.";
 "settings.logout.areyousure" = "Vuoi procedere?";
 "settings.help" = "Ottieni assistenza e supporto";
+
+"settings.alwaysOpenOriginalView" = "Apri sempre visualizzazione originale";
+
 "settings.accountManagement" = "Gestione account";
 "settings.accountManagement.deleteAccount" = "Elimina account";
 "settings.accountManagement.deleteYourAccount" = "Elimina il tuo account";
