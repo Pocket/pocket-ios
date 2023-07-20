@@ -113,6 +113,9 @@
 "settings.logout.areYouSureMessage" = "계정이 로그아웃되고 오프라인 보기용으로 저장된 모든 항목이 장치에서 제거됩니다.";
 "settings.logout.areyousure" = "계속하시겠습니까?";
 "settings.help" = "도움말 및 지원 받기";
+
+"settings.alwaysOpenOriginalView" = "항상 원본 보기 열기";
+
 "settings.accountManagement" = "계정 관리";
 "settings.accountManagement.deleteAccount" = "계정 삭제";
 "settings.accountManagement.deleteYourAccount" = "계정 삭제";
