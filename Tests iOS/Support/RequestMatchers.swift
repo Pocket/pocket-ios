@@ -50,7 +50,7 @@ struct ClientAPIRequest {
     }
 
     var isForSlateLineup: Bool {
-        self.operationName == "GetSlateLineup"
+        self.operationName == "HomeSlateLineup"
     }
 
     var isToArchiveAnItem: Bool {
