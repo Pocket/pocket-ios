@@ -15,6 +15,7 @@ public class CollectionStory: MockObject {
     @Field<PocketGraph.Url>("imageUrl") public var imageUrl
     @Field<Item>("item") public var item
     @Field<String>("publisher") public var publisher
+    @Field<Int>("sortOrder") public var sortOrder
     @Field<String>("title") public var title
     @Field<PocketGraph.Url>("url") public var url
   }
@@ -27,6 +28,7 @@ public extension Mock where O == CollectionStory {
     imageUrl: PocketGraph.Url? = nil,
     item: Mock<Item>? = nil,
     publisher: String? = nil,
+    sortOrder: Int? = nil,
     title: String? = nil,
     url: PocketGraph.Url? = nil
   ) {
@@ -36,6 +38,7 @@ public extension Mock where O == CollectionStory {
     _set(imageUrl, for: \.imageUrl)
     _set(item, for: \.item)
     _set(publisher, for: \.publisher)
+    _set(sortOrder, for: \.sortOrder)
     _set(title, for: \.title)
     _set(url, for: \.url)
   }
