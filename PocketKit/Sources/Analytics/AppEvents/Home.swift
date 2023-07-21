@@ -103,9 +103,8 @@ public extension Events.Home {
                 index: positionInList
             ),
             extraEntities: [
-                SlateEntity(id: slateId, requestID: slateRequestId, experiment: slateExperimentId, index: slateIndex),
-                SlateLineupEntity(id: slateLineupId, requestID: slateLineupRequestId, experiment: slateExperimentId),
-                RecommendationEntity(id: recommendationId, index: UInt(positionInList))
+                ContentEntity(url: url),
+                CorpusRecommendationEntity(id: recommendationId)
             ]
         )
     }
@@ -124,9 +123,7 @@ public extension Events.Home {
             ),
             extraEntities: [
                 ContentEntity(url: url),
-                SlateEntity(id: slateId, requestID: slateRequestId, experiment: slateExperimentId, index: slateIndex),
-                SlateLineupEntity(id: slateLineupId, requestID: slateLineupRequestId, experiment: slateExperimentId),
-                RecommendationEntity(id: recommendationId, index: UInt(positionInList))
+                CorpusRecommendationEntity(id: recommendationId)
             ]
         )
     }
