@@ -20,7 +20,6 @@ public class EndOfFeedAnimationView: UIView {
 
     private lazy var animationView: LottieAnimationView = {
         let view = LottieAnimationView(animation: nil, configuration: LottieConfiguration(renderingEngine: .automatic))
-        view.animation = PocketAnimation.endOfFeed.animation()
         return view
     }()
 
@@ -42,6 +41,7 @@ public class EndOfFeedAnimationView: UIView {
     private(set) public var didFinishPreviousAnimation: Bool = false
 
     override public init(frame: CGRect) {
+        defer { loadAnimation() }
         super.init(frame: frame)
 
         textLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
@@ -97,6 +97,18 @@ public class EndOfFeedAnimationView: UIView {
         } else {
             // Resets the value providers since there is no explicit "remove" API
             animationView.animation = animationView.animation
+        }
+    }
+
+    private func loadAnimation() {
+        // Load the end-of-feed animation on a background thread, and update the animation view once available.
+        // This should mitigate some main thread file IO messages in Sentry.
+        // Details: https://github.com/airbnb/lottie-ios/issues/872#issuecomment-1176773074
+        DispatchQueue.global(qos: .userInitiated).async {
+            let animation = PocketAnimation.endOfFeed.animation()
+            DispatchQueue.main.async { [weak self] in
+                self?.animationView.animation = animation
+            }
         }
     }
 }
