@@ -47,7 +47,7 @@ extension Response {
         saves("archived-favorite-items")
     }
 
-    static func slateLineup(_ fixtureName: String = "slates") -> Response {
+    static func slateLineup(_ fixtureName: String = "corpusSlates") -> Response {
         fixture(named: fixtureName)
     }
 
