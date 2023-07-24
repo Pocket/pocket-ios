@@ -73,4 +73,14 @@ public extension Item {
     var hasArticleComponents: Bool {
         article?.components.isEmpty == false
     }
+
+    var isCollection: Bool {
+        // TODO: Refactor when working on opening a collection tickets
+        guard let url = URL(string: givenURL), url.host == "getpocket.com",
+              url.pathComponents.count >= 3,
+              url.pathComponents[safe: 1] == "collections" else {
+            return false
+        }
+        return true
+    }
 }

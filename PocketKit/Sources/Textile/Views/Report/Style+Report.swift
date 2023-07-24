@@ -3,8 +3,8 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 public extension Style {
-    static let recommendation = RecommendationStyle()
-    struct RecommendationStyle {
+    static let report = ReportStyle()
+    struct ReportStyle {
         let textStyle = Style.header.sansSerif.p3.with { paragraph in
             paragraph.with(lineSpacing: 4)
         }
