@@ -86,6 +86,13 @@ struct SnowplowMicroEvent: Codable {
     }
 
     /**
+     Pulls the recommendation out of the event
+     */
+    func getCorpusRecommendationContext() -> SnowplowMicroContext? {
+        return getContext(of: "iglu:com.pocket/corpus_recommendation/jsonschema/1-0-0")
+    }
+
+    /**
      Pulls the report out of the event
      */
     func getReportContext() -> SnowplowMicroContext? {
@@ -150,6 +157,10 @@ struct SnowplowMicroContext: Codable {
 
     func has(recomendationId: String) -> Bool {
         return (self.dataDict()["recommendation_id"] as? String) == recomendationId
+    }
+
+    func has(corpusRecomendationID: String) -> Bool {
+        return (self.dataDict()["corpus_recommendation_id"] as? String) == corpusRecomendationID
     }
 
     func has(slateId: String) -> Bool {
@@ -272,6 +283,20 @@ class SnowplowMicro {
             }
 
             return uiContext.has(identifier: uiIdentifier) && recommendationContext.has(recomendationId: recommendationId)
+        })
+    }
+
+    /**
+     Gets the first event we can find with the given UI Identifier and recommendation ID in the recommendation context
+     */
+    func getFirstEvent(with uiIdentifier: String, corpusRecommendationID: String) async -> SnowplowMicroEvent? {
+        let events = await getGoodSnowplowEvents()
+        return events.first(where: {
+            guard let uiContext = $0.getUIContext(), let recommendationContext = $0.getCorpusRecommendationContext() else {
+                return false
+            }
+
+            return uiContext.has(identifier: uiIdentifier) && recommendationContext.has(corpusRecomendationID: corpusRecommendationID)
         })
     }
 
