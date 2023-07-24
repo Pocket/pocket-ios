@@ -124,7 +124,9 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         }
         Textiles.initialize()
 
-        migrateLegacyAccount()
+        if CommandLine.arguments.contains("skipLegacyAccountMigration") == false {
+            migrateLegacyAccount()
+        }
 
         // The session backup utility can be started after user migration since
         // the session can possibly already be backed up, i.e if used for user migration
