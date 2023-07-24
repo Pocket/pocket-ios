@@ -4,7 +4,7 @@
 import class SnowplowTracker.SelfDescribingJson
 
 public struct CorpusRecommendationEntity: Entity {
-    public static let schema = "iglu:com.pocket/recommendation/jsonschema/1-0-0"
+    public static let schema = "iglu:com.pocket/corpus_recommendation/jsonschema/1-0-0"
 
     let id: String
 
