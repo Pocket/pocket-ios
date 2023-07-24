@@ -10,6 +10,7 @@ import Localization
 enum SelectedItem {
     case readable(SavedItemViewModel?)
     case webView(SavedItemViewModel?)
+    case collection(CollectionViewModel?)
 
     func clearPresentedWebReaderURL() {
         switch self {
@@ -33,7 +34,7 @@ enum SelectedItem {
         switch self {
         case .readable(let readable):
             readable?.clearIsPresentingReaderSettings()
-        case .webView:
+        case .webView, .collection:
             break
         }
     }

@@ -19,6 +19,7 @@ class PocketSourceTests: XCTestCase {
     var operations: MockOperationFactory!
     var lastRefresh: MockLastRefresh!
     var slateService: MockSlateService!
+    var collectionService: MockCollectionService!
     var networkMonitor: MockNetworkPathMonitor!
     var sessionProvider: MockSessionProvider!
     var backgroundTaskManager: MockBackgroundTaskManager!
@@ -36,6 +37,7 @@ class PocketSourceTests: XCTestCase {
         operations = MockOperationFactory()
         lastRefresh = MockLastRefresh()
         slateService = MockSlateService()
+        collectionService = MockCollectionService()
         networkMonitor = MockNetworkPathMonitor()
         sessionProvider = MockSessionProvider(session: nil)
         backgroundTaskManager = MockBackgroundTaskManager()
@@ -65,6 +67,7 @@ class PocketSourceTests: XCTestCase {
         operations: OperationFactory? = nil,
         lastRefresh: LastRefresh? = nil,
         slateService: SlateService? = nil,
+        collectionService: CollectionService? = nil,
         networkMonitor: NetworkPathMonitor? = nil,
         sessionProvider: SessionProvider? = nil,
         osNotificationCenter: OSNotificationCenter? = nil,
@@ -78,6 +81,7 @@ class PocketSourceTests: XCTestCase {
             operations: operations ?? self.operations,
             lastRefresh: lastRefresh ?? self.lastRefresh,
             slateService: slateService ?? self.slateService,
+            collectionService: collectionService ?? self.collectionService,
             featureFlagService: featureFlagService ?? self.featureFlagService,
             networkMonitor: networkMonitor ?? self.networkMonitor,
             sessionProvider: sessionProvider ?? self.sessionProvider,

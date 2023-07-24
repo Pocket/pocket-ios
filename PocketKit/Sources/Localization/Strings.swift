@@ -181,6 +181,12 @@ public enum Localization {
   public enum Collection {
     /// Collection
     public static let title = Localization.tr("Localizable", "collection.title", fallback: "Collection")
+    public enum Stories {
+      /// %@ items
+      public static func count(_ p1: Any) -> String {
+        return Localization.tr("Localizable", "collection.stories.count", String(describing: p1), fallback: "%@ items")
+      }
+    }
   }
   public enum Favourites {
     public enum Empty {
