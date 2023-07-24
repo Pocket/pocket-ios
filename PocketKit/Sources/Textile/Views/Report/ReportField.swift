@@ -16,7 +16,7 @@ struct ReportField: View {
     var body: some View {
         Section(header: ReportHeader(title: header)) {
             TextField("", text: userInput)
-                .style(.recommendation.textStyle)
+                .style(.report.textStyle)
                 .padding()
                 .frame(height: height)
                 .overlay(RoundedRectangle(cornerRadius: Constants.cornerRadius).strokeBorder(Color.black, style: StrokeStyle(lineWidth: Constants.lineWidth)))

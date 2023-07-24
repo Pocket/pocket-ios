@@ -11,11 +11,11 @@ struct ReportHeader: View {
     var body: some View {
         HStack(spacing: 0) {
             Text(title)
-                .style(.recommendation.textStyle)
+                .style(.report.textStyle)
                 .textCase(nil)
             if isOptional {
                 Text(" - \(Localization.ReportIssue.optional)")
-                    .style(.recommendation.textStyle.with(slant: .italic))
+                    .style(.report.textStyle.with(slant: .italic))
                     .textCase(nil)
             }
         }

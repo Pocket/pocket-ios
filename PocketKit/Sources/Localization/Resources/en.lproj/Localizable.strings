@@ -218,6 +218,8 @@
 "premium.upgradeView.unlimitedHighlights" = "Unlimited highlights";
 "premium.upgradeView.premiumFonts" = "Premium fonts";
 
+// Collection
+ "collection.title" = "Collection";
 
 //=======================
 //Old format

@@ -5,6 +5,7 @@
 import Foundation
 import UIKit
 import Textile
+import Localization
 
 class RecommendationCarouselCell: HomeCarouselItemCell {
     struct Model: HomeCarouselItemCellModel {
@@ -35,30 +36,21 @@ class RecommendationCarouselCell: HomeCarouselItemCell {
             viewModel.primaryAction
         }
 
+        var attributedCollection: NSAttributedString? {
+            guard viewModel.recommendation.item.isCollection else { return nil }
+            return NSAttributedString(string: Localization.Collection.title, style: .recommendation.collection)
+        }
+
         var attributedTitle: NSAttributedString {
-            return NSAttributedString(string: viewModel.title ?? "", style: .title)
+            return NSAttributedString(string: viewModel.title ?? "", style: .recommendation.title)
         }
 
         var attributedDomain: NSAttributedString {
-            return NSAttributedString(string: viewModel.domain ?? "", style: .domain)
+            return NSAttributedString(string: viewModel.domain ?? "", style: .recommendation.domain)
         }
 
         var attributedTimeToRead: NSAttributedString {
-            return NSAttributedString(string: viewModel.timeToRead ?? "", style: .timeToRead)
+            return NSAttributedString(string: viewModel.timeToRead ?? "", style: .recommendation.timeToRead)
         }
     }
-}
-
-private extension Style {
-    static let title: Style = .header.sansSerif.h8.with(color: .ui.black1).with { paragraph in
-        paragraph.with(lineSpacing: 4).with(lineBreakMode: .byTruncatingTail)
-    }
-
-    static let domain: Style = .header.sansSerif.p4.with(color: .ui.grey8).with(weight: .medium).with { paragraph in
-        paragraph.with(lineBreakMode: .byTruncatingTail)
-    }
-
-    static let timeToRead: Style = .header.sansSerif.p4.with(color: .ui.grey8).with { paragraph in
-        paragraph.with(lineBreakMode: .byTruncatingTail)
-    }.with(maxScaleSize: 22)
 }

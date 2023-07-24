@@ -7,6 +7,7 @@ import Kingfisher
 import Textile
 
 protocol RecommendationCellViewModel {
+    var attributedCollection: NSAttributedString? { get }
     var attributedTitle: NSAttributedString { get }
     var attributedDomain: NSAttributedString { get }
     var attributedTimeToRead: NSAttributedString { get }
@@ -24,6 +25,14 @@ class RecommendationCell: UICollectionViewCell {
         imageView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         imageView.backgroundColor = UIColor(.ui.grey6)
         return imageView
+    }()
+
+    private let collectionLabel: UILabel = {
+        let label = UILabel()
+        label.numberOfLines = Constants.numberOfCollectionLines
+        label.setContentCompressionResistancePriority(.required, for: .vertical)
+        label.adjustsFontForContentSizeCategory = true
+        return label
     }()
 
     private let titleLabel: UILabel = {
@@ -86,11 +95,13 @@ class RecommendationCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.addSubview(thumbnailImageView)
+        contentView.addSubview(collectionLabel)
         contentView.addSubview(titleLabel)
         contentView.addSubview(bottomStack)
         contentView.layoutMargins = Constants.layoutMargins
 
         thumbnailImageView.translatesAutoresizingMaskIntoConstraints = false
+        collectionLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         bottomStack.translatesAutoresizingMaskIntoConstraints = false
         contentView.translatesAutoresizingMaskIntoConstraints = false
@@ -101,7 +112,11 @@ class RecommendationCell: UICollectionViewCell {
             thumbnailImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             thumbnailImageView.heightAnchor.constraint(equalTo: thumbnailImageView.widthAnchor, multiplier: Constants.imageAspectRatio),
 
-            titleLabel.topAnchor.constraint(equalTo: thumbnailImageView.bottomAnchor, constant: Constants.textStackTopMargin),
+            collectionLabel.topAnchor.constraint(equalTo: thumbnailImageView.bottomAnchor, constant: Constants.textStackTopMargin),
+            collectionLabel.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
+            collectionLabel.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
+
+            titleLabel.topAnchor.constraint(equalTo: collectionLabel.bottomAnchor, constant: Constants.stackSpacing),
             titleLabel.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
             titleLabel.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
 
@@ -130,6 +145,13 @@ class RecommendationCell: UICollectionViewCell {
         timeToReadLabel.attributedText = model.attributedTimeToRead
 
         saveButton.mode = model.saveButtonMode
+
+        if let attributedCollection = model.attributedCollection {
+            collectionLabel.isHidden = false
+            collectionLabel.attributedText = attributedCollection
+        } else {
+            collectionLabel.isHidden = true
+        }
 
         if model.attributedTimeToRead.string.isEmpty {
             timeToReadLabel.isHidden = true
@@ -190,6 +212,7 @@ extension RecommendationCell {
         static let cornerRadius: CGFloat = 16
         static let textStackTopMargin: CGFloat = 16
         static let imageAspectRatio: CGFloat = 9/16
+        static let numberOfCollectionLines = 1
         static let numberOfTitleLines = 3
         static let numberOfSubtitleLines = 2
         static let numberOfTimeToReadLines = 1
@@ -203,6 +226,15 @@ extension RecommendationCell {
     static func fullHeight(viewModel: HomeRecommendationCellViewModel, availableWidth: CGFloat) -> CGFloat {
         let adjustedWidth = availableWidth - Constants.layoutMargins.left - Constants.layoutMargins.right
         let imageHeight = (availableWidth * Constants.imageAspectRatio).rounded(.up)
+
+        var collectionHeight: CGFloat = 0
+        if let attributedCollection = viewModel.attributedCollection {
+            collectionHeight = adjustedHeight(
+                of: attributedCollection,
+                availableWidth: adjustedWidth,
+                numberOfLines: Constants.numberOfTitleLines
+            )
+        }
 
         let titleHeight = adjustedHeight(
             of: viewModel.attributedTitle,
@@ -227,6 +259,8 @@ extension RecommendationCell {
         return Constants.layoutMargins.top
         + imageHeight
         + Constants.textStackTopMargin
+        + collectionHeight
+        + Constants.stackSpacing
         + titleHeight
         + Constants.textStackBottomMargin
         + stackHeight
