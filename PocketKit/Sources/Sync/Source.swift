@@ -5,6 +5,7 @@
 import Combine
 import CoreData
 import Foundation
+import PocketGraph
 
 public enum InitialDownloadState {
     case unknown
@@ -67,6 +68,8 @@ public protocol Source {
     func filterTags(with input: String, excluding tags: [String]) -> [Tag]?
 
     func fetchUnifiedHomeLineup() async throws
+
+    func fetchCollection(by slug: String) async throws -> CollectionModel
 
     func restore()
 

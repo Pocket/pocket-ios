@@ -319,6 +319,8 @@ extension SavesContainerViewController {
 
     private func navigate(selectedItem: SelectedItem) {
         switch selectedItem {
+        case .collection(let collection):
+            self.push(collection: collection)
         case .readable(let readable):
             self.push(savedItem: readable)
         case .webView(let readable):
@@ -377,6 +379,18 @@ extension SavesContainerViewController {
 
         navigationController?.pushViewController(
             ReadableHostViewController(readableViewModel: readable),
+            animated: true
+        )
+    }
+
+    private func push(collection: CollectionViewModel?) {
+        guard let collection else {
+            readableSubscriptions = []
+            return
+        }
+
+        navigationController?.pushViewController(
+            CollectionViewController(model: collection),
             animated: true
         )
     }

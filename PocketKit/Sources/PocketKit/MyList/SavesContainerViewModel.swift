@@ -45,6 +45,8 @@ class SavesContainerViewModel {
             return readableViewModel?.webViewActivityItems(url: url) ?? []
         case .none:
             return []
+        case .some(.collection):
+            return []
         }
     }
 
