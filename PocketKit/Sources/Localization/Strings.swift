@@ -178,6 +178,10 @@ public enum Localization {
     /// Listen
     public static let listen = Localization.tr("Localizable", "carousel.listen", fallback: "Listen")
   }
+  public enum Collection {
+    /// Collection
+    public static let title = Localization.tr("Localizable", "collection.title", fallback: "Collection")
+  }
   public enum Favourites {
     public enum Empty {
       /// Hit the star icon to favorite an article and find it faster.

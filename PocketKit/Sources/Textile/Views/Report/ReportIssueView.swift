@@ -32,7 +32,7 @@ public struct ReportIssueView: View {
         Form {
             Section(header: Text(Localization.ReportIssue.header)) {
                 Text(Localization.ReportIssue.description)
-                    .style(.recommendation.textStyle)
+                    .style(.report.textStyle)
                     .padding([.top], Constants.padding)
                     .listRowBackground(Color.clear)
             }.listRowInsets(EdgeInsets())
@@ -41,7 +41,7 @@ public struct ReportIssueView: View {
                 header: ReportHeader(title: Localization.ReportIssue.email, isOptional: false)
             ) {
                 Text(email)
-                    .style(.recommendation.textStyle.with(color: .ui.grey5))
+                    .style(.report.textStyle.with(color: .ui.grey5))
                     .listRowBackground(Color.clear)
             }.listRowInsets(EdgeInsets())
 
@@ -56,7 +56,7 @@ public struct ReportIssueView: View {
                 header: ReportHeader(title: Localization.ReportIssue.comment)
             ) {
                 TextEditor(text: $reportComment)
-                    .style(.recommendation.textStyle)
+                    .style(.report.textStyle)
                     .padding()
                     .frame(height: Constants.commentRowHeight)
                     .overlay(RoundedRectangle(cornerRadius: Constants.cornerRadius).strokeBorder(Color.black, style: StrokeStyle(lineWidth: Constants.lineWidth)))
