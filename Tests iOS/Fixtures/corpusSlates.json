@@ -12,7 +12,7 @@
                     "recommendations": [
                         {
                             "__typename": "[some-type-name]",
-                            "id": "slate-1-rec-1",
+                            "id": "7eb25abf-39f6-4d04-91e9-7485bbf7333b",
                             "corpusItem": {
                                 "__typename": "[some-type-name]",
                                 "id": "item-1",
@@ -35,7 +35,7 @@
                         },
                         {
                             "__typename": "[some-type-name]",
-                            "id": "slate-1-rec-2",
+                            "id": "d88c1280-0128-4767-84e2-a6fa0d2832fa",
                             "corpusItem": {
                                 "__typename": "[some-type-name]",
                                 "id": "item-2",
@@ -66,7 +66,7 @@
                     "recommendations": [
                         {
                             "__typename": "[some-type-name]",
-                            "id": "slate-2-rec-1",
+                            "id": "619b6058-49e5-40b8-af43-dcca6048e61e",
                             "corpusItem": {
                                 "__typename": "[some-type-name]",
                                 "id": "item-3",
