@@ -8,6 +8,10 @@ import CoreData
 import Combine
 
 class MockSource: Source {
+    func fetchCollection(by slug: String) async throws -> Sync.CollectionModel {
+        return CollectionModel(title: "", authors: [], intro: "", stories: [])
+    }
+
     var _events: SyncEvents = SyncEvents()
     var events: AnyPublisher<SyncEvent, Never> {
         _events.eraseToAnyPublisher()

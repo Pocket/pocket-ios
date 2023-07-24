@@ -40,6 +40,10 @@ extension HomeRecommendationCellViewModel: RecommendationCellViewModel {
         NSAttributedString(string: title ?? "", style: .recommendation.heroTitle)
     }
 
+    var attributedExcerpt: NSAttributedString? {
+        return nil
+    }
+
     var attributedDomain: NSAttributedString {
         NSAttributedString(string: domain ?? "", style: .recommendation.domain)
     }
