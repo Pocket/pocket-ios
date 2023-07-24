@@ -620,7 +620,11 @@ extension SavedItemsListViewModel {
             notificationCenter: notificationCenter
         )
 
-        if savedItem.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
+        // TODO: Refactor when working on opening a collection, rather than several checks, we may be able to do one
+        if readable.isCollection, let slug = readable.slug, featureFlags.isAssigned(flag: .nativeCollections) {
+            let collectionViewModel = CollectionViewModel(slug: slug, source: source)
+            selectedItem = .collection(collectionViewModel)
+        } else if savedItem.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
             selectedItem = .webView(readable)
 
             trackContentOpen(destination: .external, item: savedItem)
@@ -823,6 +827,8 @@ extension SavedItemsListViewModel {
             readable?.clearPresentedWebReaderURL()
         case .webView:
             selectedItem = nil
+        case .collection:
+            break
         case .none:
             break
         }

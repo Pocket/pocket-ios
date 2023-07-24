@@ -27,6 +27,7 @@ public class PocketSource: Source {
     private let apollo: ApolloClientProtocol
     private let lastRefresh: LastRefresh
     private let slateService: SlateService
+    private let collectionService: CollectionService
     private let featureFlagService: FeatureFlagLoadingService
     private let networkMonitor: NetworkPathMonitor
     private let retrySignal: PassthroughSubject<Void, Never>
@@ -90,6 +91,7 @@ public class PocketSource: Source {
             operations: OperationFactory(),
             lastRefresh: UserDefaultsLastRefresh(defaults: defaults),
             slateService: APISlateService(apollo: apollo, space: space),
+            collectionService: APICollectionService(apollo: apollo),
             featureFlagService: APIFeatureFlagService(apollo: apollo, space: space, appSession: appSession),
             networkMonitor: NWPathMonitor(),
             sessionProvider: appSession as! SessionProvider,
@@ -108,6 +110,7 @@ public class PocketSource: Source {
         operations: SyncOperationFactory,
         lastRefresh: LastRefresh,
         slateService: SlateService,
+        collectionService: CollectionService,
         featureFlagService: FeatureFlagLoadingService,
         networkMonitor: NetworkPathMonitor,
         sessionProvider: SessionProvider,
@@ -121,6 +124,7 @@ public class PocketSource: Source {
         self.operations = operations
         self.lastRefresh = lastRefresh
         self.slateService = slateService
+        self.collectionService = collectionService
         self.featureFlagService = featureFlagService
         self.networkMonitor = networkMonitor
         self.retrySignal = .init()
@@ -699,6 +703,13 @@ extension PocketSource {
 
             return remoteItem.marticle?.isEmpty == false
         }
+    }
+}
+
+// MARK: - Collections
+extension PocketSource {
+    public func fetchCollection(by slug: String) async throws -> CollectionModel {
+        try await collectionService.fetchCollection(by: slug)
     }
 }
 

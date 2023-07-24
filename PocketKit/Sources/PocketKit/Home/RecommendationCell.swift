@@ -9,6 +9,7 @@ import Textile
 protocol RecommendationCellViewModel {
     var attributedCollection: NSAttributedString? { get }
     var attributedTitle: NSAttributedString { get }
+    var attributedExcerpt: NSAttributedString? { get }
     var attributedDomain: NSAttributedString { get }
     var attributedTimeToRead: NSAttributedString { get }
     var imageURL: URL? { get }
@@ -92,18 +93,27 @@ class RecommendationCell: UICollectionViewCell {
         return stack
     }()
 
+    lazy var excerptTextView: UILabel = {
+        let textView = UILabel()
+        textView.numberOfLines = 0
+        return textView
+    }()
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.addSubview(thumbnailImageView)
         contentView.addSubview(collectionLabel)
         contentView.addSubview(titleLabel)
+        contentView.addSubview(excerptTextView)
         contentView.addSubview(bottomStack)
         contentView.layoutMargins = Constants.layoutMargins
 
         thumbnailImageView.translatesAutoresizingMaskIntoConstraints = false
         collectionLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        excerptTextView.translatesAutoresizingMaskIntoConstraints = false
         bottomStack.translatesAutoresizingMaskIntoConstraints = false
+
         contentView.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
@@ -119,6 +129,10 @@ class RecommendationCell: UICollectionViewCell {
             titleLabel.topAnchor.constraint(equalTo: collectionLabel.bottomAnchor, constant: Constants.stackSpacing),
             titleLabel.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
             titleLabel.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
+
+            excerptTextView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: Constants.textStackMiddleMargin),
+            excerptTextView.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
+            excerptTextView.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
 
             bottomStack.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
             bottomStack.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
@@ -143,6 +157,7 @@ class RecommendationCell: UICollectionViewCell {
         titleLabel.attributedText = model.attributedTitle
         domainLabel.attributedText = model.attributedDomain
         timeToReadLabel.attributedText = model.attributedTimeToRead
+        excerptTextView.attributedText = model.attributedExcerpt
 
         saveButton.mode = model.saveButtonMode
 
@@ -218,12 +233,13 @@ extension RecommendationCell {
         static let numberOfTimeToReadLines = 1
         static let layoutMargins = UIEdgeInsets(top: 0, left: Margins.normal.rawValue, bottom: Margins.normal.rawValue, right: Margins.normal.rawValue)
         static let stackSpacing: CGFloat = 4
+        static let textStackMiddleMargin: CGFloat = 12
         static let textStackBottomMargin: CGFloat = 12
     }
 }
 
 extension RecommendationCell {
-    static func fullHeight(viewModel: HomeRecommendationCellViewModel, availableWidth: CGFloat) -> CGFloat {
+    static func fullHeight(viewModel: RecommendationCellViewModel, availableWidth: CGFloat) -> CGFloat {
         let adjustedWidth = availableWidth - Constants.layoutMargins.left - Constants.layoutMargins.right
         let imageHeight = (availableWidth * Constants.imageAspectRatio).rounded(.up)
 
@@ -241,6 +257,15 @@ extension RecommendationCell {
             availableWidth: adjustedWidth,
             numberOfLines: Constants.numberOfTitleLines
         )
+
+        var excerptHeight: CGFloat = 0
+        if let excerpt = viewModel.attributedExcerpt {
+            excerptHeight = height(
+                of: excerpt,
+                width: adjustedWidth,
+                numberOfLines: nil
+            )
+        }
 
         let domainHeight = adjustedHeight(
             of: viewModel.attributedDomain,
@@ -262,18 +287,20 @@ extension RecommendationCell {
         + collectionHeight
         + Constants.stackSpacing
         + titleHeight
+        + Constants.textStackMiddleMargin
+        + excerptHeight
         + Constants.textStackBottomMargin
         + stackHeight
         + Constants.layoutMargins.bottom
     }
 
-    static func height(of attributedString: NSAttributedString, width: CGFloat, numberOfLines: Int) -> CGFloat {
+    static func height(of attributedString: NSAttributedString, width: CGFloat, numberOfLines: Int? = nil) -> CGFloat {
         guard !attributedString.string.isEmpty else {
             return 0
         }
 
         let maxHeight: CGFloat
-        if let font = attributedString.attribute(.font, at: 0, effectiveRange: nil) as? UIFont {
+        if let font = attributedString.attribute(.font, at: 0, effectiveRange: nil) as? UIFont, let numberOfLines {
             let lineSpacing: CGFloat
             if let paragraphStyle = attributedString.attribute(.paragraphStyle, at: 0, effectiveRange: nil) as? NSParagraphStyle {
                 lineSpacing = paragraphStyle.lineSpacing
@@ -298,7 +325,7 @@ extension RecommendationCell {
     private static func adjustedHeight(
         of string: NSAttributedString,
         availableWidth: CGFloat,
-        numberOfLines: Int
+        numberOfLines: Int?
     ) -> CGFloat {
         guard !string.string.isEmpty else {
             return 0

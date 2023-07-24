@@ -25,5 +25,11 @@ public extension Style {
         public let timeToRead: Style = .header.sansSerif.p4.with(color: .ui.grey8).with { paragraph in
             paragraph.with(lineBreakMode: .byTruncatingTail)
         }.with(maxScaleSize: 22)
+
+        public let excerpt: Style = .header.sansSerif.p4
+            .with(color: .ui.black1)
+            .with { (paragraph: ParagraphStyle) -> ParagraphStyle in
+                paragraph.with(lineSpacing: 4)
+            }
     }
 }

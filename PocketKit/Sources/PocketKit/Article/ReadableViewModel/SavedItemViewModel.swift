@@ -136,6 +136,21 @@ class SavedItemViewModel: ReadableViewModel {
         item.isArchived
     }
 
+    var isCollection: Bool {
+        item.isCollection
+    }
+
+    var slug: String? {
+        // TODO: Add check for slug and use this as fallback
+        // Returns the slug from a collection url by validating that it is in the proper url format (ie. 0 represents "/", 1 represents "collections" and 2 represents the slug)
+        guard let url = URL(string: url), url.host == "getpocket.com",
+              url.pathComponents.count >= 3,
+              url.pathComponents[safe: 1] == "collections" else {
+                 return nil
+             }
+        return url.pathComponents[safe: 2]
+    }
+
     var premiumURL: String? {
         pocketPremiumURL(url, user: user)
     }
