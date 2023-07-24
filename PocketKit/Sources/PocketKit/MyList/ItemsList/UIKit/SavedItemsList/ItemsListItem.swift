@@ -23,6 +23,7 @@ protocol ItemsListItem {
     var remoteItemParts: SavedItemParts? { get }
     var savedItemURL: String { get }
     var cursor: String? { get }
+    var isCollection: Bool { get }
 }
 
 extension ItemsListItem {
