@@ -118,6 +118,7 @@ public struct CorpusRecommendationParts: PocketGraph.SelectionSet, Fragment {
       public static var __parentType: ApolloAPI.ParentType { PocketGraph.Unions.CorpusTarget }
 
       public var asSyndicatedArticle: AsSyndicatedArticle? { _asInlineFragment() }
+      public var asCollection: AsCollection? { _asInlineFragment() }
 
       public init(
         __typename: String
@@ -184,6 +185,46 @@ public struct CorpusRecommendationParts: PocketGraph.SelectionSet, Fragment {
               ObjectIdentifier(Self.self),
               ObjectIdentifier(CorpusRecommendationParts.CorpusItem.Target.self),
               ObjectIdentifier(SyndicatedArticleParts.self)
+            ]
+          ))
+        }
+      }
+
+      /// CorpusItem.Target.AsCollection
+      ///
+      /// Parent Type: `Collection`
+      public struct AsCollection: PocketGraph.InlineFragment, ApolloAPI.CompositeInlineFragment {
+        public let __data: DataDict
+        public init(_dataDict: DataDict) { __data = _dataDict }
+
+        public typealias RootEntityType = CorpusRecommendationParts.CorpusItem.Target
+        public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Collection }
+        public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
+          CollectionSummary.self,
+          CorpusItemParts.Target.AsCollection.self
+        ] }
+
+        public var slug: String { __data["slug"] }
+
+        public struct Fragments: FragmentContainer {
+          public let __data: DataDict
+          public init(_dataDict: DataDict) { __data = _dataDict }
+
+          public var collectionSummary: CollectionSummary { _toFragment() }
+        }
+
+        public init(
+          slug: String
+        ) {
+          self.init(_dataDict: DataDict(
+            data: [
+              "__typename": PocketGraph.Objects.Collection.typename,
+              "slug": slug,
+            ],
+            fulfilledFragments: [
+              ObjectIdentifier(Self.self),
+              ObjectIdentifier(CorpusRecommendationParts.CorpusItem.Target.self),
+              ObjectIdentifier(CollectionSummary.self)
             ]
           ))
         }
