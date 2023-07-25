@@ -100,7 +100,6 @@
     </entity>
     <entity name="Recommendation" representedClassName="Recommendation" syncable="YES">
         <attribute name="analyticsID" attributeType="String"/>
-        <attribute name="collectionSlug" optional="YES" attributeType="String"/>
         <attribute name="excerpt" optional="YES" attributeType="String"/>
         <attribute name="imageURL" optional="YES" attributeType="URI"/>
         <attribute name="remoteID" attributeType="String"/>
