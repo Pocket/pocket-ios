@@ -5,6 +5,7 @@
 import Sync
 import UIKit
 import SharedPocketKit
+import Combine
 
 // View model that holds logic for the native collection view
 class CollectionViewModel {
@@ -12,14 +13,28 @@ class CollectionViewModel {
 
     @Published var snapshot: Snapshot
 
+    @Published private(set) var _events: ReadableEvent?
+    var events: Published<ReadableEvent?>.Publisher { $_events }
+
+    @Published private(set) var _actions: [ItemAction] = []
+    var actions: Published<[ItemAction]>.Publisher { $_actions }
+
     private let slug: String
     private let source: Source
     private var collection: CollectionModel?
+    private var url: String
+
+    private var collectionItemSubscriptions: Set<AnyCancellable> = []
 
     init(slug: String, source: Source) {
         self.slug = slug
         self.source = source
         self.snapshot = Self.loadingSnapshot()
+        url = "https://getpocket.com/collections/\(slug)"
+
+        item?.savedItem?.publisher(for: \.isFavorite).sink { [weak self] _ in
+            self?.buildActions()
+        }.store(in: &collectionItemSubscriptions)
     }
 
     var title: String {
@@ -38,6 +53,15 @@ class CollectionViewModel {
         collection?.intro
     }
 
+    var item: Item? {
+        return source.fetchItem(url)
+    }
+
+    var isArchived: Bool? {
+        guard let item else { return nil }
+        return item.savedItem?.isArchived
+    }
+
     func fetch() {
         Task {
             do {
@@ -48,6 +72,58 @@ class CollectionViewModel {
             } catch {
                 Log.capture(message: "Failed to fetch details for CollectionViewModel: \(error)")
             }
+        }
+    }
+
+    func archive() {
+        guard let savedItem = item?.savedItem else {
+            Log.capture(message: "Failed to archive item due to savedItem being nil")
+            return
+        }
+
+        source.archive(item: savedItem)
+        _events = .archive
+    }
+
+    // If savedItem exists, then unarchive the item to appear in Saves, otherwise save the item
+    func moveToSaves(completion: (Bool) -> Void) {
+        guard let savedItem = item?.savedItem else {
+            source.save(url: url)
+            completion(true)
+            return
+        }
+        source.unarchive(item: savedItem)
+        completion(true)
+    }
+
+    // TODO: Update actions for Collections
+    private func buildActions() {
+        guard let savedItem = item?.savedItem else {
+            _actions = []
+            return
+        }
+
+        let favoriteAction: ItemAction
+        if savedItem.isFavorite {
+            favoriteAction = .unfavorite { _ in }
+        } else {
+            favoriteAction = .favorite { _ in }
+        }
+
+        _actions = [
+            favoriteAction,
+            tagsAction(for: savedItem),
+            .delete { _ in },
+            .share { _ in }
+        ]
+    }
+
+    private func tagsAction(for item: SavedItem) -> ItemAction {
+        let hasTags = (item.tags?.count ?? 0) > 0
+        if hasTags {
+            return .editTags { _ in }
+        } else {
+            return .addTags { _ in }
         }
     }
 }
