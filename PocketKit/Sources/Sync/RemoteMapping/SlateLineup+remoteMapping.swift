@@ -56,6 +56,7 @@ extension Recommendation {
     func update(from remote: RemoteCorpusRecommendation, in space: Space, context: NSManagedObjectContext) {
         title = remote.corpusItem.title
         excerpt = remote.corpusItem.excerpt
+        collectionSlug = remote.corpusItem.target?.asCollection?.slug
         imageURL = URL(string: remote.corpusItem.imageUrl)
         image = Image(src: remote.corpusItem.imageUrl, context: context)
         let url = remote.corpusItem.url
