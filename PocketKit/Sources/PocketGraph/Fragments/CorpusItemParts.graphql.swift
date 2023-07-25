@@ -19,6 +19,10 @@ public struct CorpusItemParts: PocketGraph.SelectionSet, Fragment {
           __typename
           ...SyndicatedArticleParts
         }
+        ... on Collection {
+          __typename
+          ...CollectionSummary
+        }
       }
     }
     """ }
@@ -90,9 +94,11 @@ public struct CorpusItemParts: PocketGraph.SelectionSet, Fragment {
     public static var __selections: [ApolloAPI.Selection] { [
       .field("__typename", String.self),
       .inlineFragment(AsSyndicatedArticle.self),
+      .inlineFragment(AsCollection.self),
     ] }
 
     public var asSyndicatedArticle: AsSyndicatedArticle? { _asInlineFragment() }
+    public var asCollection: AsCollection? { _asInlineFragment() }
 
     public init(
       __typename: String
@@ -158,6 +164,45 @@ public struct CorpusItemParts: PocketGraph.SelectionSet, Fragment {
             ObjectIdentifier(Self.self),
             ObjectIdentifier(CorpusItemParts.Target.self),
             ObjectIdentifier(SyndicatedArticleParts.self)
+          ]
+        ))
+      }
+    }
+
+    /// Target.AsCollection
+    ///
+    /// Parent Type: `Collection`
+    public struct AsCollection: PocketGraph.InlineFragment {
+      public let __data: DataDict
+      public init(_dataDict: DataDict) { __data = _dataDict }
+
+      public typealias RootEntityType = CorpusItemParts.Target
+      public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Collection }
+      public static var __selections: [ApolloAPI.Selection] { [
+        .fragment(CollectionSummary.self),
+      ] }
+
+      public var slug: String { __data["slug"] }
+
+      public struct Fragments: FragmentContainer {
+        public let __data: DataDict
+        public init(_dataDict: DataDict) { __data = _dataDict }
+
+        public var collectionSummary: CollectionSummary { _toFragment() }
+      }
+
+      public init(
+        slug: String
+      ) {
+        self.init(_dataDict: DataDict(
+          data: [
+            "__typename": PocketGraph.Objects.Collection.typename,
+            "slug": slug,
+          ],
+          fulfilledFragments: [
+            ObjectIdentifier(Self.self),
+            ObjectIdentifier(CorpusItemParts.Target.self),
+            ObjectIdentifier(CollectionSummary.self)
           ]
         ))
       }
