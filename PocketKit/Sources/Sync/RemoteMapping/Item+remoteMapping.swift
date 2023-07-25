@@ -115,6 +115,10 @@ extension Item {
                 self.syndicatedArticle?.image = Image(src: imageSrc, context: context)
             }
         }
+
+        if let slug = corpusItem.target?.asCollection?.slug {
+            self.collection = (try? space.fetchCollection(by: slug, context: context)) ?? Collection(context: context, slug: slug, title: "", authors: [], stories: [])
+        }
     }
 
     func update(from summary: ItemSummary, with space: Space) {
