@@ -139,6 +139,13 @@ public class Space {
     }
 }
 
+// MARK: Collection
+extension Space {
+    func fetchCollection(by slug: String, context: NSManagedObjectContext? = nil) throws -> Collection? {
+        return try fetch(Requests.fetchCollection(by: slug), context: context).first
+    }
+}
+
 // MARK: Image
 extension Space {
     func makeImagesController() -> NSFetchedResultsController<Image> {
