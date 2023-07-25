@@ -353,6 +353,9 @@ extension HomeViewController {
             present(url: viewModel.premiumURL)
         case .none:
             readerSubscriptions = []
+        case .collection(let viewModel):
+            let controller = CollectionViewController(model: viewModel)
+            navigationController?.pushViewController(controller, animated: true)
         }
     }
 

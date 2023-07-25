@@ -15,6 +15,7 @@ enum ReadableType {
     case savedItem(SavedItemViewModel)
     case webViewRecommendation(RecommendationViewModel)
     case webViewSavedItem(SavedItemViewModel)
+    case collection(CollectionViewModel)
 
     func clearIsPresentingReaderSettings() {
         switch self {
@@ -26,6 +27,9 @@ enum ReadableType {
             recommendationViewModel.clearPresentedWebReaderURL()
         case .webViewSavedItem(let savedItemViewModel):
             savedItemViewModel.clearPresentedWebReaderURL()
+        case .collection:
+            // TODO: NATIVECOLLECTIONS - we might need to do some additional cleanup here
+            break
         }
     }
 }
@@ -295,6 +299,10 @@ extension HomeViewModel {
     }
 
     private func select(recommendation: Recommendation, at indexPath: IndexPath) {
+        if let slug = recommendation.collectionSlug {
+            selectedReadableType = .collection(CollectionViewModel(slug: slug, source: source))
+            return
+        }
         let viewModel = RecommendationViewModel(
             recommendation: recommendation,
             source: source,
@@ -682,7 +690,7 @@ extension HomeViewModel {
         case .savedItem(let viewModel),
                 .webViewSavedItem(let viewModel):
             return viewModel.webViewActivityItems(url: url)
-        case .none:
+        case .collection, .none:
             return []
         }
     }
