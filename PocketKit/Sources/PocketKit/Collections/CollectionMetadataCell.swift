@@ -24,13 +24,13 @@ class CollectionMetadataCell: UICollectionViewCell {
     private let titleTextView = ArticleComponentTextView()
     private let introTextView = ArticleComponentTextView()
 
-    private var metaStack: UIStackView = {
+    private var metaStackView: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
         return stack
     }()
 
-    private var textStack: UIStackView = {
+    private var textStackView: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
         return stack
@@ -39,20 +39,20 @@ class CollectionMetadataCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        contentView.addSubview(textStack)
-        textStack.addArrangedSubview(metaStack)
-        textStack.addArrangedSubview(titleTextView)
-        textStack.addArrangedSubview(introTextView)
-        metaStack.addArrangedSubview(bylineTextView)
-        metaStack.addArrangedSubview(itemCountView)
+        contentView.addSubview(textStackView)
+        textStackView.addArrangedSubview(metaStackView)
+        textStackView.addArrangedSubview(titleTextView)
+        textStackView.addArrangedSubview(introTextView)
+        metaStackView.addArrangedSubview(bylineTextView)
+        metaStackView.addArrangedSubview(itemCountView)
 
         contentView.layoutMargins = Constants.layoutMargins
-        textStack.translatesAutoresizingMaskIntoConstraints = false
+        textStackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            textStack.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
-            textStack.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
-            textStack.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor),
-            textStack.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor),
+            textStackView.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
+            textStackView.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
+            textStackView.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor),
+            textStackView.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor),
         ])
     }
 
@@ -72,9 +72,9 @@ class CollectionMetadataCell: UICollectionViewCell {
         introTextView.isHidden = model.intro == nil
 
         if model.byline == nil && model.itemCount == nil {
-            textStack.spacing = 0
+            textStackView.spacing = 0
         } else {
-            textStack.spacing = Constants.stackSpacing
+            textStackView.spacing = Constants.stackSpacing
         }
     }
 }
