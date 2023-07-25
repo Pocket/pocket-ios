@@ -61,6 +61,9 @@ struct CollectionMetadataPresenter {
         return mutable
     }
 
+    /// Calculates the size of the section for the collection metadata
+    /// - Parameter availableItemWidth: width that the section takes
+    /// - Returns: height to be used in calculating section height
     func size(for availableItemWidth: CGFloat) -> CGSize {
         var height: CGFloat = 0
 
@@ -95,6 +98,11 @@ struct CollectionMetadataPresenter {
         )
     }
 
+    /// Helper method that calculates the height of an attributed string
+    /// - Parameters:
+    ///   - attributedString: string that will be used to determine how much height it occupies
+    ///   - width: available width that the string will occupy
+    /// - Returns: calculated height that the string will take up based on width and attributed string
     private static func height(of attributedString: NSAttributedString, width: CGFloat) -> CGFloat {
         guard !attributedString.string.isEmpty else {
             return 0
