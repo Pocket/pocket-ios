@@ -562,6 +562,9 @@ class HomeViewModelTests: XCTestCase {
                 readableExpectation.fulfill()
             case .savedItem, .webViewSavedItem, .none:
                 XCTFail("Expected recommendation, but got \(String(describing: readableType))")
+            default:
+                // TODO: we might want to add a check here
+                break
             }
         }.store(in: &subscriptions)
 
@@ -669,6 +672,9 @@ class HomeViewModelTests: XCTestCase {
                 readableExpectation.fulfill()
             case .savedItem, .webViewSavedItem, .recommendation, .none:
                 XCTFail("Expected web view saved item, but got \(String(describing: readableType))")
+            default:
+                // TODO: we might want to add a check here
+                break
             }
         }.store(in: &subscriptions)
 
@@ -714,6 +720,9 @@ class HomeViewModelTests: XCTestCase {
                 readableExpectation.fulfill()
             case .webViewRecommendation, .recommendation, .none:
                 XCTFail("Expected recommendation, but got \(String(describing: readableType))")
+            default:
+                // TODO: we might want to add a check here
+                break
             }
         }.store(in: &subscriptions)
 
@@ -812,6 +821,9 @@ class HomeViewModelTests: XCTestCase {
                 readableExpectation.fulfill()
             case .savedItem, .webViewRecommendation, .recommendation, .none:
                 XCTFail("Expected web view saved item, but got \(String(describing: readableType))")
+            default:
+                // TODO: we might want to add a check here
+                break
             }
         }.store(in: &subscriptions)
 
