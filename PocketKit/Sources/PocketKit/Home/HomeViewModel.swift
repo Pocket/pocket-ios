@@ -299,28 +299,27 @@ extension HomeViewModel {
     }
 
     private func select(recommendation: Recommendation, at indexPath: IndexPath) {
-        if let slug = recommendation.collectionSlug {
-            selectedReadableType = .collection(CollectionViewModel(slug: slug, source: source))
-            return
-        }
-        let viewModel = RecommendationViewModel(
-            recommendation: recommendation,
-            source: source,
-            tracker: tracker.childTracker(hosting: .articleView.screen),
-            pasteboard: UIPasteboard.general,
-            user: user,
-            userDefaults: userDefaults
-        )
+        var destination: ContentOpen.Destination = .internal
         let item = recommendation.item
 
-        var destination: ContentOpen.Destination = .internal
-
-        if item.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
-            selectedReadableType = .webViewRecommendation(viewModel)
-            destination = .external
+        if let slug = recommendation.collectionSlug {
+            selectedReadableType = .collection(CollectionViewModel(slug: slug, source: source))
         } else {
-            selectedReadableType = .recommendation(viewModel)
-            destination = .internal
+            let viewModel = RecommendationViewModel(
+                recommendation: recommendation,
+                source: source,
+                tracker: tracker.childTracker(hosting: .articleView.screen),
+                pasteboard: UIPasteboard.general,
+                user: user,
+                userDefaults: userDefaults
+            )
+
+            if item.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
+                selectedReadableType = .webViewRecommendation(viewModel)
+                destination = .external
+            } else {
+                selectedReadableType = .recommendation(viewModel)
+            }
         }
 
         guard
