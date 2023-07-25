@@ -12,6 +12,40 @@ import Localization
 
 // Main view for native collections which includes metadata on a collection and list of stories
 class CollectionViewController: UIViewController {
+    private lazy var getArchiveButton: UIBarButtonItem = {
+        let archiveNavButton = UIBarButtonItem(
+            image: UIImage(asset: .archive),
+            style: .plain,
+            target: self,
+            action: #selector(archive)
+        )
+
+        archiveNavButton.accessibilityIdentifier = "archiveNavButton"
+        return archiveNavButton
+    }()
+
+    private lazy var getSavesButton: UIBarButtonItem = {
+        let savesNavButton = UIBarButtonItem(
+            image: UIImage(asset: .save),
+            style: .plain,
+            target: self,
+            action: #selector(moveToSaves)
+        )
+
+        savesNavButton.accessibilityIdentifier = "savesNavButton"
+        return savesNavButton
+    }()
+
+    private lazy var moreButtonItem: UIBarButtonItem = {
+        let moreButton = UIBarButtonItem(
+            image: UIImage(systemName: "ellipsis"),
+            menu: nil
+        )
+
+        moreButton.accessibilityIdentifier = "moreButton"
+        return moreButton
+    }()
+
     private lazy var layoutConfiguration = UICollectionViewCompositionalLayout { [weak self] index, env in
         return self?.section(for: index, environment: env)
     }
@@ -44,6 +78,12 @@ class CollectionViewController: UIViewController {
 
         hidesBottomBarWhenPushed = true
 
+        navigationItem.rightBarButtonItems = [
+            moreButtonItem,
+            // If item is saved, show archive button; otherwise if it is not saved or it is archived, show saves button.
+            model.isArchived == false ? getArchiveButton : getSavesButton
+        ]
+
         collectionView.backgroundColor = UIColor(.ui.white1)
         collectionView.dataSource = dataSource
 
@@ -54,10 +94,46 @@ class CollectionViewController: UIViewController {
         model.$snapshot.receive(on: DispatchQueue.main).sink { [weak self] snapshot in
             self?.dataSource.apply(snapshot)
         }.store(in: &subscriptions)
+
+        model.actions.receive(on: DispatchQueue.main).sink { [weak self] actions in
+            self?.buildOverflowMenu(from: actions)
+        }.store(in: &subscriptions)
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) is not implemented")
+    }
+
+    func buildOverflowMenu(from actions: [ItemAction]) {
+        moreButtonItem.menu = UIMenu(
+            image: nil,
+            identifier: nil,
+            options: [],
+            children: [
+                UIDeferredMenuElement.uncached {
+                    completion in
+                    completion(actions.compactMap(UIAction.init))
+                }
+            ]
+        )
+    }
+
+    @objc
+    private func archive() {
+        model.archive()
+    }
+
+    @objc
+    private func moveToSaves() {
+        model.moveToSaves { [weak self] success in
+            if success,
+               let items = self?.navigationItem.rightBarButtonItems,
+               let getSavesButton = self?.getSavesButton,
+               let index = items.firstIndex(of: getSavesButton),
+               let archiveButton = self?.getArchiveButton {
+                self?.navigationItem.rightBarButtonItems?[index] = archiveButton
+            }
+        }
     }
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
