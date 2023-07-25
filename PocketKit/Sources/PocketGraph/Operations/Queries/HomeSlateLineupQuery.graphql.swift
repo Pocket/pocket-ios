@@ -19,7 +19,7 @@ public class HomeSlateLineupQuery: GraphQLQuery {
         }
       }
       """#,
-      fragments: [CorpusSlateParts.self, CorpusRecommendationParts.self, CorpusItemParts.self, SyndicatedArticleParts.self]
+      fragments: [CorpusSlateParts.self, CorpusRecommendationParts.self, CorpusItemParts.self, SyndicatedArticleParts.self, CollectionSummary.self]
     ))
 
   public var locale: String
@@ -152,6 +152,7 @@ public class HomeSlateLineupQuery: GraphQLQuery {
               public static var __parentType: ApolloAPI.ParentType { PocketGraph.Unions.CorpusTarget }
 
               public var asSyndicatedArticle: AsSyndicatedArticle? { _asInlineFragment() }
+              public var asCollection: AsCollection? { _asInlineFragment() }
 
               /// HomeSlateLineup.Slate.Recommendation.CorpusItem.Target.AsSyndicatedArticle
               ///
@@ -183,6 +184,30 @@ public class HomeSlateLineupQuery: GraphQLQuery {
                   public init(_dataDict: DataDict) { __data = _dataDict }
 
                   public var syndicatedArticleParts: SyndicatedArticleParts { _toFragment() }
+                }
+              }
+
+              /// HomeSlateLineup.Slate.Recommendation.CorpusItem.Target.AsCollection
+              ///
+              /// Parent Type: `Collection`
+              public struct AsCollection: PocketGraph.InlineFragment, ApolloAPI.CompositeInlineFragment {
+                public let __data: DataDict
+                public init(_dataDict: DataDict) { __data = _dataDict }
+
+                public typealias RootEntityType = HomeSlateLineupQuery.Data.HomeSlateLineup.Slate.Recommendation.CorpusItem.Target
+                public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Collection }
+                public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
+                  CollectionSummary.self,
+                  CorpusItemParts.Target.AsCollection.self
+                ] }
+
+                public var slug: String { __data["slug"] }
+
+                public struct Fragments: FragmentContainer {
+                  public let __data: DataDict
+                  public init(_dataDict: DataDict) { __data = _dataDict }
+
+                  public var collectionSummary: CollectionSummary { _toFragment() }
                 }
               }
             }
