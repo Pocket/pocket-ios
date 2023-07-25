@@ -17,9 +17,15 @@ extension Recommendation {
     @NSManaged public var remoteID: String
     @NSManaged public var title: String?
     @NSManaged public var analyticsID: String
-    @NSManaged public var collectionSlug: String?
     @NSManaged public var item: Item
     @NSManaged public var slate: Slate?
     @NSManaged public var image: Image?
     @NSManaged public var sortIndex: NSNumber?
+}
+
+extension Recommendation {
+    /// The slug of the associated collection
+    public var collectionSlug: String? {
+        self.item.collection?.slug
+    }
 }
