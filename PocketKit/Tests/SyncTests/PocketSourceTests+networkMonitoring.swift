@@ -126,7 +126,7 @@ extension PocketSourceTests {
         // NOTE: We need to await after each attempt because it takes a few ms for the
         // retrySubscritpion to get setup after the attempt is fullfilled.
         // TODO: Refactor retrySignal to keep track of its number of subscribers and instead wait for that to become 1 instead of this random wait.
-        _ = XCTWaiter.wait(for: [expectation(description: "wait for subscriber")], timeout: 10)
+        _ = XCTWaiter.wait(for: [expectation(description: "wait for subscriber")], timeout: 1)
         source.favorite(item: item)
         wait(for: [retrySignalSent, attemptFavorite], timeout: 10, enforceOrder: true)
     }
@@ -197,7 +197,7 @@ extension PocketSourceTests {
         // NOTE: We need to await after each attempt because it takes a few ms for the
         // retrySubscritpion to get setup after the attempt is fullfilled.
         // TODO: Refactor retrySignal to keep track of its number of subscribers and instead wait for that to become 1 instead of this random wait.
-        _ = XCTWaiter.wait(for: [expectation(description: "wait for subscriber")], timeout: 10)
+        _ = XCTWaiter.wait(for: [expectation(description: "wait for subscriber")], timeout: 1)
         source.retryImmediately()
         wait(for: [retrySignalSent], timeout: 10)
     }
