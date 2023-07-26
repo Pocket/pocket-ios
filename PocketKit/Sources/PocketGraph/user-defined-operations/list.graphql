@@ -103,8 +103,8 @@ query SavedItemByID($id: ID!) {
   }
 }
 
-query ItemByID($id: ID!) {
-  itemByItemId(id: $id) {
+query ItemByURL($url: String!) {
+  itemByUrl(url: $url) {
     ...ItemParts
   }
 }
