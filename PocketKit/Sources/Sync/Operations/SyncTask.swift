@@ -10,7 +10,7 @@ enum SyncTask: Codable {
     case fetchTags
     case favorite(givenURL: String)
     case unfavorite(givenURL: String)
-    case delete(remoteID: String)
+    case delete(givenURL: String)
     case archive(givenURL: String)
     case save(localID: URL, url: String)
     case addTags(givenURL: String, tags: [String])

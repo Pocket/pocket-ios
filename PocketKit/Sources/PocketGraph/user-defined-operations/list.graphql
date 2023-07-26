@@ -66,8 +66,8 @@ mutation ArchiveItem($givenUrl: Url!, $timestamp: ISOString!) {
   }
 }
 
-mutation DeleteItem($itemID: ID!) {
-  deleteSavedItem(id: $itemID)
+mutation DeleteItem($givenUrl: Url!, $timestamp: ISOString!) {
+  savedItemDelete(givenUrl: $givenUrl, timestamp: $timestamp)
 }
 
 mutation DeleteTag($id: ID!) {

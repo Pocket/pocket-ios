@@ -358,12 +358,14 @@ extension PocketSource {
     public func delete(item savedItem: SavedItem) {
         Log.breadcrumb(category: "sync", level: .debug, message: "Deleting item with id \(String(describing: savedItem.remoteID))")
         space.performAndWait {
-            guard let savedItem = space.backgroundObject(with: savedItem.objectID) as? SavedItem,
-                  let remoteID = savedItem.remoteID else {
+            guard let savedItem = space.backgroundObject(with: savedItem.objectID) as? SavedItem else {
                 Log.capture(message: "Could not retreive item from background context for mutation")
                 return
             }
 
+            // Fall back to SavedItem.url if a nested item.givenURL does not exist
+            // This may occur when an item has been saved offline, but not yet archived
+            let givenURL = savedItem.item?.givenURL ?? savedItem.url
             let item = savedItem.item
 
             space.delete(savedItem)
@@ -381,10 +383,13 @@ extension PocketSource {
             let operation = operations.savedItemMutationOperation(
                 apollo: apollo,
                 events: _events,
-                mutation: DeleteItemMutation(itemID: remoteID)
+                mutation: DeleteItemMutation(
+                    givenUrl: givenURL,
+                    timestamp: ISO8601DateFormatter.pocketGraphFormatter.string(from: .now)
+                )
             )
 
-            enqueue(operation: operation, task: .delete(remoteID: remoteID), queue: saveQueue)
+            enqueue(operation: operation, task: .delete(givenURL: givenURL), queue: saveQueue)
         }
     }
 
@@ -802,11 +807,14 @@ extension PocketSource {
                     )
                 )
                 enqueue(operation: operation, persistentTask: persistentTask, queue: self.saveQueue)
-            case .delete(let remoteID):
+            case .delete(let givenURL):
                 let operation = operations.savedItemMutationOperation(
                     apollo: apollo,
                     events: _events,
-                    mutation: DeleteItemMutation(itemID: remoteID)
+                    mutation: DeleteItemMutation(
+                        givenUrl: givenURL,
+                        timestamp: ISO8601DateFormatter.pocketGraphFormatter.string(from: .now)
+                    )
                 )
                 enqueue(operation: operation, persistentTask: persistentTask, queue: self.saveQueue)
             case .unfavorite(let givenURL):
