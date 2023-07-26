@@ -6,12 +6,14 @@ import Sync
 import UIKit
 import SharedPocketKit
 import Combine
+import Localization
 
 // View model that holds logic for the native collection view
 class CollectionViewModel {
     typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Cell>
 
     @Published var snapshot: Snapshot
+    @Published var presentedAlert: PocketAlert?
 
     @Published private(set) var _events: ReadableEvent?
     var events: Published<ReadableEvent?>.Publisher { $_events }
@@ -96,24 +98,24 @@ class CollectionViewModel {
         completion(true)
     }
 
-    // TODO: Update actions for Collections
     private func buildActions() {
         guard let savedItem = item?.savedItem else {
+            // TODO: Handle actions for when collection is not saved
             _actions = []
             return
         }
 
         let favoriteAction: ItemAction
         if savedItem.isFavorite {
-            favoriteAction = .unfavorite { _ in }
+            favoriteAction = .unfavorite { [weak self] _ in self?.unfavorite(savedItem) }
         } else {
-            favoriteAction = .favorite { _ in }
+            favoriteAction = .favorite { [weak self] _ in self?.favorite(savedItem) }
         }
 
         _actions = [
             favoriteAction,
             tagsAction(for: savedItem),
-            .delete { _ in },
+            .delete { [weak self] _ in self?.confirmDelete(for: savedItem) },
             .share { _ in }
         ]
     }
@@ -125,6 +127,35 @@ class CollectionViewModel {
         } else {
             return .addTags { _ in }
         }
+    }
+
+    private func favorite(_ savedItem: SavedItem) {
+        source.favorite(item: savedItem)
+    }
+
+    private func unfavorite(_ savedItem: SavedItem) {
+        source.unfavorite(item: savedItem)
+    }
+
+    private func confirmDelete(for savedItem: SavedItem) {
+        presentedAlert = PocketAlert(
+            title: Localization.areYouSureYouWantToDeleteThisItem,
+            message: nil,
+            preferredStyle: .alert,
+            actions: [
+                UIAlertAction(title: Localization.no, style: .default) { [weak self] _ in
+                    self?.presentedAlert = nil
+                },
+                UIAlertAction(title: Localization.yes, style: .destructive) { [weak self] _ in self?.delete(savedItem) },
+            ],
+            preferredAction: nil
+        )
+    }
+
+    private func delete(_ savedItem: SavedItem) {
+        presentedAlert = nil
+        source.delete(item: savedItem)
+        _events = .delete
     }
 }
 

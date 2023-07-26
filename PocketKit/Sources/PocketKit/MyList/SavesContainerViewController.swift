@@ -389,6 +389,10 @@ extension SavesContainerViewController {
             return
         }
 
+        collection.$presentedAlert.sink { [weak self] alert in
+            self?.present(alert: alert)
+        }.store(in: &subscriptions)
+
         collection.events.receive(on: DispatchQueue.main).sink { [weak self] event in
             switch event {
             case .contentUpdated, .none:
