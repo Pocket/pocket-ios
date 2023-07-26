@@ -7,6 +7,7 @@ import UIKit
 import SharedPocketKit
 import Combine
 import Localization
+import Analytics
 
 // View model that holds logic for the native collection view
 class CollectionViewModel {
@@ -14,6 +15,8 @@ class CollectionViewModel {
 
     @Published var snapshot: Snapshot
     @Published var presentedAlert: PocketAlert?
+    @Published var presentedAddTags: PocketAddTagsViewModel?
+    @Published var sharedActivity: PocketActivity?
 
     @Published private(set) var _events: ReadableEvent?
     var events: Published<ReadableEvent?>.Publisher { $_events }
@@ -23,14 +26,33 @@ class CollectionViewModel {
 
     private let slug: String
     private let source: Source
+    private let tracker: Tracker
+    private let user: User
+    private let store: SubscriptionStore
+    private let networkPathMonitor: NetworkPathMonitor
+    private let userDefaults: UserDefaults
+
     private var collection: CollectionModel?
     private var url: String
-
     private var collectionItemSubscriptions: Set<AnyCancellable> = []
 
-    init(slug: String, source: Source) {
+    init(
+        slug: String,
+        source: Source,
+        tracker: Tracker,
+        user: User,
+        store: SubscriptionStore,
+        networkPathMonitor: NetworkPathMonitor,
+        userDefaults: UserDefaults
+    ) {
         self.slug = slug
         self.source = source
+        self.tracker = tracker
+        self.user = user
+        self.store = store
+        self.networkPathMonitor = networkPathMonitor
+        self.userDefaults = userDefaults
+
         self.snapshot = Self.loadingSnapshot()
         url = "https://getpocket.com/collections/\(slug)"
 
@@ -116,17 +138,30 @@ class CollectionViewModel {
             favoriteAction,
             tagsAction(for: savedItem),
             .delete { [weak self] _ in self?.confirmDelete(for: savedItem) },
-            .share { _ in }
+            .share { [weak self] _ in self?.share() }
         ]
     }
 
     private func tagsAction(for item: SavedItem) -> ItemAction {
         let hasTags = (item.tags?.count ?? 0) > 0
         if hasTags {
-            return .editTags { _ in }
+            return .editTags { [weak self] _ in self?.showAddTagsView(for: item) }
         } else {
-            return .addTags { _ in }
+            return .addTags { [weak self] _ in self?.showAddTagsView(for: item) }
         }
+    }
+
+    private func showAddTagsView(for item: SavedItem) {
+        presentedAddTags = PocketAddTagsViewModel(
+            item: item,
+            source: source,
+            tracker: tracker,
+            userDefaults: userDefaults,
+            user: user,
+            store: store,
+            networkPathMonitor: networkPathMonitor,
+            saveAction: { }
+        )
     }
 
     private func favorite(_ savedItem: SavedItem) {
@@ -156,6 +191,10 @@ class CollectionViewModel {
         presentedAlert = nil
         source.delete(item: savedItem)
         _events = .delete
+    }
+
+    func share(additionalText: String? = nil) {
+        sharedActivity = PocketItemActivity.fromCollection(url: url, additionalText: additionalText)
     }
 }
 
