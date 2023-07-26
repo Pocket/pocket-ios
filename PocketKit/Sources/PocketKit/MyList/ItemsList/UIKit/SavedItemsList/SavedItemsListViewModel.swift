@@ -622,7 +622,7 @@ extension SavedItemsListViewModel {
 
         // TODO: Refactor when working on opening a collection, rather than several checks, we may be able to do one
         if readable.isCollection, let slug = readable.slug, featureFlags.isAssigned(flag: .nativeCollections) {
-            let collectionViewModel = CollectionViewModel(slug: slug, source: source)
+            let collectionViewModel = CollectionViewModel(slug: slug, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults)
             selectedItem = .collection(collectionViewModel)
         } else if savedItem.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
             selectedItem = .webView(readable)
