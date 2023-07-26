@@ -303,7 +303,7 @@ extension HomeViewModel {
         let item = recommendation.item
 
         if let slug = recommendation.collectionSlug {
-            selectedReadableType = .collection(CollectionViewModel(slug: slug, source: source))
+            selectedReadableType = .collection(CollectionViewModel(slug: slug, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults))
         } else {
             let viewModel = RecommendationViewModel(
                 recommendation: recommendation,
