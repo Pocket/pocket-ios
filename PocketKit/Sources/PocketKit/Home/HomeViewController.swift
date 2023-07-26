@@ -354,8 +354,7 @@ extension HomeViewController {
         case .none:
             readerSubscriptions = []
         case .collection(let viewModel):
-            let controller = CollectionViewController(model: viewModel)
-            navigationController?.pushViewController(controller, animated: true)
+            showCollection(viewModel)
         }
     }
 
@@ -386,6 +385,13 @@ extension HomeViewController {
         viewModel.$sharedActivity.sink { [weak self] activity in
             self?.present(activity: activity)
         }.store(in: &slateDetailSubscriptions)
+        viewModel.$selectedCollectionViewModel
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] viewModel in
+            guard let viewModel else { return }
+                self?.showCollection(viewModel)
+            }
+            .store(in: &slateDetailSubscriptions)
     }
 
     func show(_ recommendation: RecommendationViewModel?) {
@@ -465,6 +471,11 @@ extension HomeViewController {
                 self?.popToPreviousScreen()
             }
         }.store(in: &readerSubscriptions)
+    }
+
+    private func showCollection(_ viewModel: CollectionViewModel) {
+        let controller = CollectionViewController(model: viewModel)
+        navigationController?.pushViewController(controller, animated: true)
     }
 
     private func showRecommendation(forWebView viewModel: RecommendationViewModel) {
