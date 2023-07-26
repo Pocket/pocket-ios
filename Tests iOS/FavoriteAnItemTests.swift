@@ -45,11 +45,11 @@ class FavoriteAnItemTests: XCTestCase {
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isToUnfavoriteAnItem {
                 defer { expectUnfavoriteRequest.fulfill() }
-                XCTAssertEqual(apiRequest.variableItemId, "saved-item-2")
+                XCTAssertEqual(apiRequest.variableGivenURL, "https://example.com/item-2")
                 return .unfavorite(apiRequest: apiRequest)
             } else if apiRequest.isToFavoriteAnItem {
                 defer { expectFavoriteRequest.fulfill() }
-                XCTAssertEqual(apiRequest.variableItemId, "saved-item-2")
+                XCTAssertEqual(apiRequest.variableGivenURL, "https://example.com/item-2")
                 return .favorite(apiRequest: apiRequest)
             }
             return .fallbackResponses(apiRequest: apiRequest)
@@ -80,11 +80,11 @@ class FavoriteAnItemTests: XCTestCase {
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isToUnfavoriteAnItem {
                 defer { expectUnfavoriteRequest.fulfill() }
-                XCTAssertEqual(apiRequest.variableItemId, "saved-item-2")
+                XCTAssertEqual(apiRequest.variableGivenURL, "https://example.com/item-2")
                 return .unfavorite(apiRequest: apiRequest)
             } else if apiRequest.isToFavoriteAnItem {
                 defer { expectFavoriteRequest.fulfill() }
-                XCTAssertEqual(apiRequest.variableItemId, "saved-item-2")
+                XCTAssertEqual(apiRequest.variableGivenURL, "https://example.com/item-2")
                 return .favorite(apiRequest: apiRequest)
             }
             return .fallbackResponses(apiRequest: apiRequest)
@@ -139,11 +139,11 @@ class FavoriteAnItemTests: XCTestCase {
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isToUnfavoriteAnItem {
                 defer { expectUnfavoriteRequest.fulfill() }
-                XCTAssertEqual(apiRequest.variableItemId, "archived-item-1")
+                XCTAssertEqual(apiRequest.variableGivenURL, "http://example.com/items/archived-item-1")
                 return .unfavorite(apiRequest: apiRequest)
             } else if apiRequest.isToFavoriteAnItem {
                 defer { expectFavoriteRequest.fulfill() }
-                XCTAssertEqual(apiRequest.variableItemId, "archived-item-1")
+                XCTAssertEqual(apiRequest.variableGivenURL, "http://example.com/items/archived-item-1")
                 return .favorite(apiRequest: apiRequest)
             }
             return .fallbackResponses(apiRequest: apiRequest)
