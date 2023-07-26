@@ -60,8 +60,8 @@ mutation UnfavoriteItem($itemID: ID!) {
   }
 }
 
-mutation ArchiveItem($itemID: ID!) {
-  updateSavedItemArchive(id: $itemID) {
+mutation ArchiveItem($givenUrl: Url!, $timestamp: ISOString!) {
+  savedItemArchive(givenUrl: $givenUrl, timestamp: $timestamp) {
     id
   }
 }

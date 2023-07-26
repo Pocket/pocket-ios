@@ -381,14 +381,13 @@ extension PocketSource {
     public func archive(item: SavedItem) {
         Log.breadcrumb(category: "sync", level: .debug, message: "Archiving item with id \(String(describing: item.remoteID))")
         space.performAndWait {
-            guard let item = space.backgroundObject(with: item.objectID) as? SavedItem,
-                  let remoteID = item.remoteID else {
+            guard let savedItem = space.backgroundObject(with: item.objectID) as? SavedItem else {
                 Log.capture(message: "Could not retreive item from background context for mutation")
                 return
             }
 
-            item.isArchived = true
-            item.archivedAt = Date()
+            savedItem.isArchived = true
+            savedItem.archivedAt = Date()
 
             do {
                 try space.save()
@@ -396,25 +395,31 @@ extension PocketSource {
                 Log.capture(error: error)
             }
 
+            // Fall back to SavedItem.url if a nested item.givenURL does not exist
+            // This may occur when an item has been saved offline, but not yet archived
+            let givenURL = savedItem.item?.givenURL ?? savedItem.url
             let operation = operations.savedItemMutationOperation(
                 apollo: apollo,
                 events: _events,
-                mutation: ArchiveItemMutation(itemID: remoteID)
+                mutation: ArchiveItemMutation(
+                    givenUrl: givenURL,
+                    timestamp: ISO8601DateFormatter.pocketGraphFormatter.string(from: .now)
+                )
             )
 
-            enqueue(operation: operation, task: .archive(remoteID: remoteID), queue: saveQueue)
+            enqueue(operation: operation, task: .archive(givenURL: givenURL), queue: saveQueue)
         }
     }
 
     public func unarchive(item: SavedItem) {
         Log.breadcrumb(category: "sync", level: .debug, message: "Unarchiving item with id \(String(describing: item.remoteID))")
         space.performAndWait {
-            guard let item = space.backgroundObject(with: item.objectID) as? SavedItem else {
+            guard let savedItem = space.backgroundObject(with: item.objectID) as? SavedItem else {
                 Log.capture(message: "Could not retreive item from background context for mutation")
                 return
             }
-            item.isArchived = false
-            item.createdAt = Date()
+            savedItem.isArchived = false
+            savedItem.createdAt = Date()
 
             do {
                 try space.save()
@@ -423,14 +428,14 @@ extension PocketSource {
             }
 
             let operation = operations.saveItemOperation(
-                managedItemID: item.objectID,
-                url: item.url,
+                managedItemID: savedItem.objectID,
+                url: savedItem.url,
                 events: _events,
                 apollo: apollo,
                 space: space
             )
 
-            enqueue(operation: operation, task: .save(localID: item.objectID.uriRepresentation(), url: item.url), queue: saveQueue)
+            enqueue(operation: operation, task: .save(localID: savedItem.objectID.uriRepresentation(), url: item.url), queue: saveQueue)
         }
     }
 
@@ -774,11 +779,14 @@ extension PocketSource {
                     lastRefresh: lastRefresh
                 )
                 enqueue(operation: operation, persistentTask: persistentTask, queue: self.fetchTagsQueue)
-            case .archive(let remoteID):
+            case .archive(let givenURL):
                 let operation = operations.savedItemMutationOperation(
                     apollo: apollo,
                     events: _events,
-                    mutation: ArchiveItemMutation(itemID: remoteID)
+                    mutation: ArchiveItemMutation(
+                        givenUrl: givenURL,
+                        timestamp: ISO8601DateFormatter.pocketGraphFormatter.string(from: .now)
+                    )
                 )
                 enqueue(operation: operation, persistentTask: persistentTask, queue: self.saveQueue)
             case .delete(let remoteID):

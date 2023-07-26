@@ -121,7 +121,7 @@ extension Response {
     static func archive(apiRequest: ClientAPIRequest) -> Response {
         return .init(
             mock: Mock<Mutation>(
-                updateSavedItemArchive: Mock<SavedItem>(
+                savedItemArchive: Mock<SavedItem>(
                     id: apiRequest.variableItemId
                 )
             )
