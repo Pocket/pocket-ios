@@ -131,7 +131,7 @@ extension Response {
     static func favorite(apiRequest: ClientAPIRequest) -> Response {
         return .init(
             mock: Mock<Mutation>(
-                updateSavedItemFavorite: Mock<SavedItem>(
+                savedItemFavorite: Mock<SavedItem>(
                     id: apiRequest.variableItemId
                 )
             )
@@ -141,7 +141,7 @@ extension Response {
     static func unfavorite(apiRequest: ClientAPIRequest) -> Response {
         return .init(
             mock: Mock<Mutation>(
-                updateSavedItemUnFavorite: Mock<SavedItem>(
+                savedItemUnFavorite: Mock<SavedItem>(
                     id: apiRequest.variableItemId
                 )
             )
