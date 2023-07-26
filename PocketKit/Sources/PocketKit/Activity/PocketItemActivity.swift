@@ -71,4 +71,17 @@ extension PocketItemActivity {
             sender: sender
         )
     }
+
+    static func fromCollection(
+        url: String,
+        additionalText: String? = nil,
+        sender: Any? = nil
+    ) -> PocketItemActivity {
+        return PocketItemActivity(
+            url: url,
+            additionalText: additionalText,
+            source: "pocket_collection",
+            sender: sender
+        )
+    }
 }
