@@ -8,19 +8,27 @@ public class DeleteItemMutation: GraphQLMutation {
   public static let document: ApolloAPI.DocumentType = .notPersisted(
     definition: .init(
       #"""
-      mutation DeleteItem($itemID: ID!) {
-        deleteSavedItem(id: $itemID)
+      mutation DeleteItem($givenUrl: Url!, $timestamp: ISOString!) {
+        savedItemDelete(givenUrl: $givenUrl, timestamp: $timestamp)
       }
       """#
     ))
 
-  public var itemID: ID
+  public var givenUrl: Url
+  public var timestamp: ISOString
 
-  public init(itemID: ID) {
-    self.itemID = itemID
+  public init(
+    givenUrl: Url,
+    timestamp: ISOString
+  ) {
+    self.givenUrl = givenUrl
+    self.timestamp = timestamp
   }
 
-  public var __variables: Variables? { ["itemID": itemID] }
+  public var __variables: Variables? { [
+    "givenUrl": givenUrl,
+    "timestamp": timestamp
+  ] }
 
   public struct Data: PocketGraph.SelectionSet {
     public let __data: DataDict
@@ -28,11 +36,13 @@ public class DeleteItemMutation: GraphQLMutation {
 
     public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Mutation }
     public static var __selections: [ApolloAPI.Selection] { [
-      .field("deleteSavedItem", PocketGraph.ID.self, arguments: ["id": .variable("itemID")]),
+      .field("savedItemDelete", PocketGraph.Url?.self, arguments: [
+        "givenUrl": .variable("givenUrl"),
+        "timestamp": .variable("timestamp")
+      ]),
     ] }
 
-    /// Deletes a SavedItem from the users list. Returns ID of the
-    /// deleted SavedItem
-    public var deleteSavedItem: PocketGraph.ID { __data["deleteSavedItem"] }
+    /// 'Soft-delete' a SavedItem (identified by URL)
+    public var savedItemDelete: PocketGraph.Url? { __data["savedItemDelete"] }
   }
 }

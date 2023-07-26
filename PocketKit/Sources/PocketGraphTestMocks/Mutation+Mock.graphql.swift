@@ -10,10 +10,10 @@ public class Mutation: MockObject {
   public typealias MockValueCollectionType = Array<Mock<Mutation>>
 
   public struct MockFields {
-    @Field<PocketGraph.ID>("deleteSavedItem") public var deleteSavedItem
     @Field<PocketGraph.ID>("deleteTag") public var deleteTag
     @Field<PocketGraph.ID>("deleteUser") public var deleteUser
     @Field<SavedItem>("savedItemArchive") public var savedItemArchive
+    @Field<PocketGraph.Url>("savedItemDelete") public var savedItemDelete
     @Field<SavedItem>("savedItemFavorite") public var savedItemFavorite
     @Field<SavedItem>("savedItemTag") public var savedItemTag
     @Field<SavedItem>("savedItemUnFavorite") public var savedItemUnFavorite
@@ -26,10 +26,10 @@ public class Mutation: MockObject {
 
 public extension Mock where O == Mutation {
   convenience init(
-    deleteSavedItem: PocketGraph.ID? = nil,
     deleteTag: PocketGraph.ID? = nil,
     deleteUser: PocketGraph.ID? = nil,
     savedItemArchive: Mock<SavedItem>? = nil,
+    savedItemDelete: PocketGraph.Url? = nil,
     savedItemFavorite: Mock<SavedItem>? = nil,
     savedItemTag: Mock<SavedItem>? = nil,
     savedItemUnFavorite: Mock<SavedItem>? = nil,
@@ -38,10 +38,10 @@ public extension Mock where O == Mutation {
     upsertSavedItem: Mock<SavedItem>? = nil
   ) {
     self.init()
-    _set(deleteSavedItem, for: \.deleteSavedItem)
     _set(deleteTag, for: \.deleteTag)
     _set(deleteUser, for: \.deleteUser)
     _set(savedItemArchive, for: \.savedItemArchive)
+    _set(savedItemDelete, for: \.savedItemDelete)
     _set(savedItemFavorite, for: \.savedItemFavorite)
     _set(savedItemTag, for: \.savedItemTag)
     _set(savedItemUnFavorite, for: \.savedItemUnFavorite)

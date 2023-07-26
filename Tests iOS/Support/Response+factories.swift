@@ -76,7 +76,7 @@ extension Response {
     static func delete(apiRequest: ClientAPIRequest) -> Response {
         return .init(
             mock: Mock<Mutation>(
-                deleteSavedItem: apiRequest.variableItemId
+                savedItemDelete: apiRequest.variableItemId
             )
         )
     }
