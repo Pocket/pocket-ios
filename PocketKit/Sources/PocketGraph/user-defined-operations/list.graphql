@@ -48,14 +48,14 @@ mutation SaveItem($input: SavedItemUpsertInput!) {
   }
 }
 
-mutation FavoriteItem($itemID: ID!) {
-  updateSavedItemFavorite(id: $itemID) {
+mutation FavoriteItem($givenUrl: Url!, $timestamp: ISOString!) {
+  savedItemFavorite(givenUrl: $givenUrl, timestamp: $timestamp) {
     id
   }
 }
 
-mutation UnfavoriteItem($itemID: ID!) {
-  updateSavedItemUnFavorite(id: $itemID) {
+mutation UnfavoriteItem($givenUrl: Url!, $timestamp: ISOString!) {
+  savedItemUnFavorite(givenUrl: $givenUrl, timestamp: $timestamp) {
     id
   }
 }
