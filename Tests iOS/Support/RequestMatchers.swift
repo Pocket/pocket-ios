@@ -165,4 +165,8 @@ extension ClientAPIRequest {
     var givenURL: URL {
         URL(string: self.apolloRequestBody!.inputDict["givenUrl"] as! String)!
     }
+
+    var variableGivenURL: String {
+        apolloRequestBody!.variableDict["givenUrl"] as! String
+    }
 }

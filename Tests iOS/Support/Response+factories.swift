@@ -76,7 +76,7 @@ extension Response {
     static func delete(apiRequest: ClientAPIRequest) -> Response {
         return .init(
             mock: Mock<Mutation>(
-                savedItemDelete: apiRequest.variableItemId
+                savedItemDelete: apiRequest.variableGivenURL
             )
         )
     }
@@ -122,7 +122,7 @@ extension Response {
         return .init(
             mock: Mock<Mutation>(
                 savedItemArchive: Mock<SavedItem>(
-                    id: apiRequest.variableItemId
+                    id: apiRequest.variableGivenURL
                 )
             )
         )
@@ -132,7 +132,7 @@ extension Response {
         return .init(
             mock: Mock<Mutation>(
                 savedItemFavorite: Mock<SavedItem>(
-                    id: apiRequest.variableItemId
+                    id: apiRequest.variableGivenURL
                 )
             )
         )
@@ -142,7 +142,7 @@ extension Response {
         return .init(
             mock: Mock<Mutation>(
                 savedItemUnFavorite: Mock<SavedItem>(
-                    id: apiRequest.variableItemId
+                    id: apiRequest.variableGivenURL
                 )
             )
         )
