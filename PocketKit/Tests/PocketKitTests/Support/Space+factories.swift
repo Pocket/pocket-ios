@@ -132,6 +132,38 @@ extension Space {
     }
 }
 
+// MARK: - Collection
+extension Space {
+    @discardableResult
+    func buildCollection(
+        slug: String = "slug-1",
+        title: String = "collection-title",
+        authors: [String] = [],
+        stories: [CollectionStory] = []
+    ) -> Collection {
+        backgroundContext.performAndWait {
+            let collection: Collection = Collection(context: backgroundContext, slug: slug, title: title, authors: NSOrderedSet(array: authors), stories: NSOrderedSet(array: stories))
+
+            return collection
+        }
+    }
+
+    @discardableResult
+    func buildCollectionStory(
+        url: String = "story-url",
+        title: String = "story-title",
+        excerpt: String = "",
+        authors: [String] = [],
+        item: Item? = nil
+    ) -> CollectionStory {
+        backgroundContext.performAndWait {
+            let collectionStory: CollectionStory = CollectionStory(context: backgroundContext, url: url, title: title, excerpt: excerpt, authors: NSOrderedSet(array: authors))
+            collectionStory.item = item
+            return collectionStory
+        }
+    }
+}
+
 // MARK: - SlateLineup
 extension Space {
     @discardableResult
