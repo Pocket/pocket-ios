@@ -228,6 +228,37 @@ class CollectionViewModelTests: XCTestCase {
         wait(for: [expectDelete, expectDeleteEvent], timeout: 1)
     }
 
+    func test_report_updatesSelectedRecommendationToReport() {
+        let item = space.buildItem()
+        let collection = setupCollection(with: item)
+        let viewModel = subject(slug: collection.slug)
+
+        let reportExpectation = expectation(description: "expected item to be reported")
+        viewModel.$selectedItemToReport.dropFirst().sink { recommendation in
+            XCTAssertNotNil(recommendation)
+            reportExpectation.fulfill()
+        }.store(in: &subscriptions)
+
+        viewModel.invokeAction(title: "Report")
+        wait(for: [reportExpectation], timeout: 1)
+    }
+
+    func test_share_updatesSharedActivity() throws {
+        let item = space.buildItem()
+        let collection = setupCollection(with: item)
+        let viewModel = subject(slug: collection.slug)
+
+        let shareExpectation = expectation(description: "expected item to be shared")
+        viewModel.$sharedActivity.dropFirst().sink { item in
+            XCTAssertNotNil(item)
+            shareExpectation.fulfill()
+        }.store(in: &subscriptions)
+
+        viewModel.invokeAction(title: "Share")
+
+        wait(for: [shareExpectation], timeout: 1)
+    }
+
     private func setupCollection(with item: Item?) -> Collection {
         let story = space.buildCollectionStory(item: item)
 

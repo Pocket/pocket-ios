@@ -19,7 +19,7 @@ struct ReportRecommendationView: View {
         static let commentRowHeight: CGFloat = 92
     }
 
-    private let recommendation: Recommendation
+    private let givenURL: String
     private let tracker: Tracker
 
     private var submitAccessibilityIdentifier: String {
@@ -37,8 +37,8 @@ struct ReportRecommendationView: View {
 
     @FocusState private var isCommentFocused: Bool
 
-    init(recommendation: Recommendation, tracker: Tracker) {
-        self.recommendation = recommendation
+    init(givenURL: String, tracker: Tracker) {
+        self.givenURL = givenURL
         self.tracker = tracker
     }
 
@@ -95,10 +95,9 @@ struct ReportRecommendationView: View {
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
             dismiss()
         }
-        let item = recommendation.item
 
         // NOTE: As of 2/17/2023 The report view can only be called from the Home screen, so we assume that the SlateArticleReport event is the correct one.
-        tracker.track(event: Events.Home.SlateArticleReport(url: item.givenURL, reason: reason, comment: comment))
+        tracker.track(event: Events.Home.SlateArticleReport(url: givenURL, reason: reason, comment: comment))
     }
 
     private func selectionColor(for reason: ReportEntity.Reason) -> Color {
