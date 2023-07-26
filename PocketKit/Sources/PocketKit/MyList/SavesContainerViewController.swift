@@ -391,15 +391,15 @@ extension SavesContainerViewController {
 
         collection.$presentedAlert.sink { [weak self] alert in
             self?.present(alert: alert)
-        }.store(in: &subscriptions)
+        }.store(in: &readableSubscriptions)
 
         collection.$presentedAddTags.sink { [weak self] addTagsViewModel in
             self?.present(viewModel: addTagsViewModel)
-        }.store(in: &subscriptions)
+        }.store(in: &readableSubscriptions)
 
         collection.$sharedActivity.sink { [weak self] activity in
             self?.present(activity: activity)
-        }.store(in: &subscriptions)
+        }.store(in: &readableSubscriptions)
 
         collection.events.receive(on: DispatchQueue.main).sink { [weak self] event in
             switch event {
