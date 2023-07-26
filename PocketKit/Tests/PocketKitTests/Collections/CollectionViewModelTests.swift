@@ -3,14 +3,19 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import XCTest
-import Sync
 import Combine
+import SharedPocketKit
 
 @testable import PocketKit
 @testable import Sync
 
 class CollectionViewModelTests: XCTestCase {
     private var source: MockSource!
+    private var tracker: MockTracker!
+    private var user: User!
+    private var subscriptionStore: SubscriptionStore!
+    private var networkPathMonitor: MockNetworkPathMonitor!
+    private var userDefaults: UserDefaults!
     private var space: Space!
 
     private var subscriptions: Set<AnyCancellable> = []
@@ -18,10 +23,17 @@ class CollectionViewModelTests: XCTestCase {
     override func setUp() {
         super.setUp()
         source = MockSource()
+        tracker = MockTracker()
+        user = PocketUser(userDefaults: UserDefaults())
+        networkPathMonitor = MockNetworkPathMonitor()
+        subscriptionStore = MockSubscriptionStore()
+        userDefaults = UserDefaults(suiteName: "CollectionViewModelTests")
         space = .testSpace()
     }
 
     override func tearDownWithError() throws {
+        userDefaults.removePersistentDomain(forName: "CollectionViewModelTests")
+        subscriptions = []
         try space.clear()
         try super.tearDownWithError()
     }
@@ -30,7 +42,15 @@ class CollectionViewModelTests: XCTestCase {
         slug: String,
         source: Source? = nil
     ) -> CollectionViewModel {
-        CollectionViewModel(slug: slug, source: source ?? self.source)
+        CollectionViewModel(
+            slug: slug,
+            source: source ?? self.source,
+            tracker: tracker ?? self.tracker,
+            user: user ?? self.user,
+            store: subscriptionStore ?? self.subscriptionStore,
+            networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor,
+            userDefaults: userDefaults ?? self.userDefaults
+        )
     }
 
     func test_archive_sendsRequestToSource_andSendsArchiveEvent() {
@@ -143,6 +163,42 @@ class CollectionViewModelTests: XCTestCase {
         viewModel.invokeAction(title: "Unfavorite")
 
         wait(for: [expectUnfavorite], timeout: 1)
+    }
+
+    func test_tagsAction_withNoTags_isAddTags() throws {
+        let item = space.buildSavedItem(tags: []).item
+        let collection = setupCollection(with: item)
+
+        let viewModel = subject(slug: collection.slug)
+        let hasCorrectTitle = viewModel._actions.contains { $0.title == "Add tags" }
+        XCTAssertTrue(hasCorrectTitle)
+    }
+
+    func test_tagsAction_withTags_isEditTags() throws {
+        let item = space.buildSavedItem(tags: ["tag 1"]).item
+        let collection = setupCollection(with: item)
+
+        let viewModel = subject(slug: collection.slug)
+        let hasCorrectTitle = viewModel._actions.contains { $0.title == "Edit tags" }
+        XCTAssertTrue(hasCorrectTitle)
+    }
+
+    func test_addTagsAction_sendsAddTagsViewModel() {
+        let item = space.buildSavedItem(tags: ["tag 1"]).item
+        let collection = setupCollection(with: item)
+        let viewModel = subject(slug: collection.slug)
+
+        source.stubRetrieveTags { _ in return nil }
+        source.stubFetchAllTags { return [] }
+        let expectAddTags = expectation(description: "expect add tags to present")
+        viewModel.$presentedAddTags.dropFirst().sink { viewModel in
+            expectAddTags.fulfill()
+            XCTAssertEqual(viewModel?.tags, ["tag 1"])
+        }.store(in: &subscriptions)
+
+        viewModel.invokeAction(title: "Edit tags")
+
+        wait(for: [expectAddTags], timeout: 10)
     }
 
     func test_delete_delegatesToSource_andSendsDeleteEvent() {
