@@ -75,7 +75,8 @@ class CollectionViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
 
         view.accessibilityIdentifier = "collection-view"
-
+        title = nil
+        navigationItem.largeTitleDisplayMode = .never
         hidesBottomBarWhenPushed = true
 
         navigationItem.rightBarButtonItems = [
@@ -145,6 +146,12 @@ class CollectionViewController: UIViewController {
         super.viewWillAppear(animated)
         model.fetch()
         metadata = CollectionMetadataPresenter(collectionViewModel: model)
+        self.tabBarController?.tabBar.isHidden = true
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.tabBarController?.tabBar.isHidden = false
     }
 
     override func viewDidLoad() {

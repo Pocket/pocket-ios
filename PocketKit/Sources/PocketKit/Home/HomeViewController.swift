@@ -319,7 +319,7 @@ extension HomeViewController {
         }.store(in: &subscriptions)
 
         model.$selectedRecommendationToReport.sink { [weak self] recommendation in
-            self?.report(recommendation)
+            self?.report(recommendation?.item.givenURL)
         }.store(in: &subscriptions)
 
         model.$presentedAlert.sink { [weak self] alert in
@@ -375,7 +375,7 @@ extension HomeViewController {
         }.store(in: &slateDetailSubscriptions)
 
         viewModel.$selectedRecommendationToReport.sink { [weak self] recommendation in
-            self?.report(recommendation)
+            self?.report(recommendation?.item.givenURL)
         }.store(in: &slateDetailSubscriptions)
 
         viewModel.$presentedWebReaderURL.sink { [weak self] url in
@@ -422,7 +422,7 @@ extension HomeViewController {
         }.store(in: &readerSubscriptions)
 
         recommendation.$selectedRecommendationToReport.receive(on: DispatchQueue.main).sink { [weak self] selected in
-            self?.report(selected)
+            self?.report(selected?.item.givenURL)
         }.store(in: &readerSubscriptions)
 
         recommendation.events.receive(on: DispatchQueue.main).sink { [weak self] event in
@@ -476,6 +476,31 @@ extension HomeViewController {
     private func showCollection(_ viewModel: CollectionViewModel) {
         let controller = CollectionViewController(model: viewModel)
         navigationController?.pushViewController(controller, animated: true)
+
+        viewModel.$presentedAlert.sink { [weak self] alert in
+            self?.present(alert: alert)
+        }.store(in: &readerSubscriptions)
+
+        viewModel.$presentedAddTags.sink { [weak self] addTagsViewModel in
+            self?.present(addTagsViewModel)
+        }.store(in: &readerSubscriptions)
+
+        viewModel.$sharedActivity.sink { [weak self] activity in
+            self?.present(activity: activity)
+        }.store(in: &readerSubscriptions)
+
+        viewModel.$selectedItemToReport.sink { [weak self] item in
+            self?.report(item?.givenURL)
+        }.store(in: &readerSubscriptions)
+
+        viewModel.events.receive(on: DispatchQueue.main).sink { [weak self] event in
+            switch event {
+            case .contentUpdated, .none:
+                break
+            case .archive, .delete:
+                self?.popToPreviousScreen()
+            }
+        }.store(in: &readerSubscriptions)
     }
 
     private func showRecommendation(forWebView viewModel: RecommendationViewModel) {
@@ -484,7 +509,7 @@ extension HomeViewController {
         }.store(in: &readerSubscriptions)
 
         viewModel.$selectedRecommendationToReport.receive(on: DispatchQueue.main).sink { [weak self] recommendation in
-            self?.report(recommendation)
+            self?.report(recommendation?.item.givenURL)
         }.store(in: &readerSubscriptions)
 
         viewModel.events.receive(on: DispatchQueue.main).sink { [weak self] event in
@@ -512,13 +537,13 @@ extension HomeViewController {
         }.store(in: &readerSubscriptions)
     }
 
-    func report(_ recommendation: Recommendation?) {
-        guard true, let recommendation = recommendation else {
+    func report(_ givenURL: String?) {
+        guard let givenURL else {
             return
         }
 
         let host = ReportRecommendationHostingController(
-            recommendation: recommendation,
+            givenURL: givenURL,
             tracker: model.tracker.childTracker(hosting: .reportDialog),
             onDismiss: { [weak self] in self?.model.clearRecommendationToReport() }
         )

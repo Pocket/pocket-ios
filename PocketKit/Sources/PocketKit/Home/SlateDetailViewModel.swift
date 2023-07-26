@@ -33,18 +33,22 @@ class SlateDetailViewModel {
     private let source: Source
     private let tracker: Tracker
     private let user: User
+    private let store: SubscriptionStore
     private let userDefaults: UserDefaults
+    private let networkPathMonitor: NetworkPathMonitor
     private var subscriptions: [AnyCancellable] = []
     private let featureFlags: FeatureFlagServiceProtocol
 
-    init(slate: Slate, source: Source, tracker: Tracker, user: User, userDefaults: UserDefaults, featureFlags: FeatureFlagServiceProtocol) {
+    init(slate: Slate, source: Source, tracker: Tracker, user: User, store: SubscriptionStore, userDefaults: UserDefaults, networkPathMonitor: NetworkPathMonitor, featureFlags: FeatureFlagServiceProtocol) {
         self.slate = slate
         self.source = source
         self.tracker = tracker
         self.user = user
+        self.store = store
         self.userDefaults = userDefaults
         self.snapshot = Self.loadingSnapshot()
         self.featureFlags = featureFlags
+        self.networkPathMonitor = networkPathMonitor
 
         NotificationCenter.default.publisher(
             for: NSManagedObjectContext.didSaveObjectsNotification,
@@ -120,8 +124,8 @@ extension SlateDetailViewModel {
         let item = recommendation.item
         var destination: ContentOpen.Destination = .internal
 
-        if let slug = recommendation.collectionSlug {
-            selectedCollectionViewModel = CollectionViewModel(slug: slug, source: source)
+        if let slug = recommendation.collectionSlug, featureFlags.isAssigned(flag: .nativeCollections) {
+            selectedCollectionViewModel = CollectionViewModel(slug: slug, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults)
         } else if item.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
             guard let bestURL = URL(percentEncoding: item.bestURL) else { return }
             let url = pocketPremiumURL(bestURL, user: user)

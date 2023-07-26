@@ -17,6 +17,7 @@ class CollectionViewModel {
     @Published var presentedAlert: PocketAlert?
     @Published var presentedAddTags: PocketAddTagsViewModel?
     @Published var sharedActivity: PocketActivity?
+    @Published var selectedItemToReport: Item?
 
     @Published private(set) var _events: ReadableEvent?
     var events: Published<ReadableEvent?>.Publisher { $_events }
@@ -55,6 +56,7 @@ class CollectionViewModel {
 
         self.snapshot = Self.loadingSnapshot()
         url = "https://getpocket.com/collections/\(slug)"
+        self.buildActions()
 
         item?.savedItem?.publisher(for: \.isFavorite).sink { [weak self] _ in
             self?.buildActions()
@@ -87,6 +89,7 @@ class CollectionViewModel {
     }
 
     func fetch() {
+        // TODO: NATIVE COLLECTIONS - Update to fetch locally first
         Task {
             do {
                 self.collection = try await source.fetchCollection(by: slug)
@@ -122,8 +125,10 @@ class CollectionViewModel {
 
     private func buildActions() {
         guard let savedItem = item?.savedItem else {
-            // TODO: Handle actions for when collection is not saved
-            _actions = []
+            _actions = [
+                .share { [weak self] _ in self?.share() },
+                .report { [weak self] _ in self?.report() }
+            ]
             return
         }
 
@@ -193,8 +198,12 @@ class CollectionViewModel {
         _events = .delete
     }
 
-    func share(additionalText: String? = nil) {
+    private func share(additionalText: String? = nil) {
         sharedActivity = PocketItemActivity.fromCollection(url: url, additionalText: additionalText)
+    }
+
+    private func report() {
+        selectedItemToReport = item
     }
 }
 
