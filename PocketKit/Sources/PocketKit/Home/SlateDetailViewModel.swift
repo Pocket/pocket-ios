@@ -17,6 +17,8 @@ class SlateDetailViewModel {
 
     @Published var selectedReadableViewModel: RecommendationViewModel?
 
+    @Published var selectedCollectionViewModel: CollectionViewModel?
+
     @Published var presentedWebReaderURL: URL?
 
     @Published var selectedRecommendationToReport: Recommendation?
@@ -118,7 +120,9 @@ extension SlateDetailViewModel {
         let item = recommendation.item
         var destination: ContentOpen.Destination = .internal
 
-        if item.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
+        if let slug = recommendation.collectionSlug {
+            selectedCollectionViewModel = CollectionViewModel(slug: slug, source: source)
+        } else if item.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
             guard let bestURL = URL(percentEncoding: item.bestURL) else { return }
             let url = pocketPremiumURL(bestURL, user: user)
             presentedWebReaderURL = url
