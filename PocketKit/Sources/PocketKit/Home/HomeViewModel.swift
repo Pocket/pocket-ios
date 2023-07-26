@@ -335,22 +335,26 @@ extension HomeViewModel {
     }
 
     private func select(savedItem: SavedItem, at indexPath: IndexPath) {
-        let viewModel = SavedItemViewModel(
-            item: savedItem,
-            source: source,
-            tracker: tracker.childTracker(hosting: .articleView.screen),
-            pasteboard: UIPasteboard.general,
-            user: user,
-            store: store,
-            networkPathMonitor: networkPathMonitor,
-            userDefaults: userDefaults,
-            notificationCenter: notificationCenter
-        )
-
-        if let item = savedItem.item, item.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
-            selectedReadableType = .webViewSavedItem(viewModel)
+        if let slug = savedItem.item?.collection?.slug {
+            selectedReadableType = .collection(CollectionViewModel(slug: slug, source: source))
         } else {
-            selectedReadableType = .savedItem(viewModel)
+            let viewModel = SavedItemViewModel(
+                item: savedItem,
+                source: source,
+                tracker: tracker.childTracker(hosting: .articleView.screen),
+                pasteboard: UIPasteboard.general,
+                user: user,
+                store: store,
+                networkPathMonitor: networkPathMonitor,
+                userDefaults: userDefaults,
+                notificationCenter: notificationCenter
+            )
+
+            if let item = savedItem.item, item.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
+                selectedReadableType = .webViewSavedItem(viewModel)
+            } else {
+                selectedReadableType = .savedItem(viewModel)
+            }
         }
         tracker.track(event: Events.Home.RecentSavesCardContentOpen(url: savedItem.url, positionInList: indexPath.item))
     }
