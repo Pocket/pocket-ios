@@ -3,13 +3,13 @@
 
 @_exported import ApolloAPI
 
-public class ItemByIDQuery: GraphQLQuery {
-  public static let operationName: String = "ItemByID"
+public class ItemByURLQuery: GraphQLQuery {
+  public static let operationName: String = "ItemByURL"
   public static let document: ApolloAPI.DocumentType = .notPersisted(
     definition: .init(
       #"""
-      query ItemByID($id: ID!) {
-        itemByItemId(id: $id) {
+      query ItemByURL($url: String!) {
+        itemByUrl(url: $url) {
           __typename
           ...ItemParts
         }
@@ -18,13 +18,13 @@ public class ItemByIDQuery: GraphQLQuery {
       fragments: [ItemParts.self, MarticleTextParts.self, ImageParts.self, MarticleDividerParts.self, MarticleTableParts.self, MarticleHeadingParts.self, MarticleCodeBlockParts.self, VideoParts.self, MarticleBulletedListParts.self, MarticleNumberedListParts.self, MarticleBlockquoteParts.self, DomainMetadataParts.self, SyndicatedArticleParts.self]
     ))
 
-  public var id: ID
+  public var url: String
 
-  public init(id: ID) {
-    self.id = id
+  public init(url: String) {
+    self.url = url
   }
 
-  public var __variables: Variables? { ["id": id] }
+  public var __variables: Variables? { ["url": url] }
 
   public struct Data: PocketGraph.SelectionSet {
     public let __data: DataDict
@@ -32,16 +32,16 @@ public class ItemByIDQuery: GraphQLQuery {
 
     public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Query }
     public static var __selections: [ApolloAPI.Selection] { [
-      .field("itemByItemId", ItemByItemId?.self, arguments: ["id": .variable("id")]),
+      .field("itemByUrl", ItemByUrl?.self, arguments: ["url": .variable("url")]),
     ] }
 
-    /// Look up Item info by ID.
-    public var itemByItemId: ItemByItemId? { __data["itemByItemId"] }
+    /// Look up Item info by a url.
+    public var itemByUrl: ItemByUrl? { __data["itemByUrl"] }
 
-    /// ItemByItemId
+    /// ItemByUrl
     ///
     /// Parent Type: `Item`
-    public struct ItemByItemId: PocketGraph.SelectionSet {
+    public struct ItemByUrl: PocketGraph.SelectionSet {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 
@@ -102,7 +102,7 @@ public class ItemByIDQuery: GraphQLQuery {
         public var itemParts: ItemParts { _toFragment() }
       }
 
-      /// ItemByItemId.Marticle
+      /// ItemByUrl.Marticle
       ///
       /// Parent Type: `MarticleComponent`
       public struct Marticle: PocketGraph.SelectionSet {
@@ -122,14 +122,14 @@ public class ItemByIDQuery: GraphQLQuery {
         public var asMarticleNumberedList: AsMarticleNumberedList? { _asInlineFragment() }
         public var asMarticleBlockquote: AsMarticleBlockquote? { _asInlineFragment() }
 
-        /// ItemByItemId.Marticle.AsMarticleText
+        /// ItemByUrl.Marticle.AsMarticleText
         ///
         /// Parent Type: `MarticleText`
         public struct AsMarticleText: PocketGraph.InlineFragment, ApolloAPI.CompositeInlineFragment {
           public let __data: DataDict
           public init(_dataDict: DataDict) { __data = _dataDict }
 
-          public typealias RootEntityType = ItemByIDQuery.Data.ItemByItemId.Marticle
+          public typealias RootEntityType = ItemByURLQuery.Data.ItemByUrl.Marticle
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleText }
           public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
             MarticleTextParts.self,
@@ -147,14 +147,14 @@ public class ItemByIDQuery: GraphQLQuery {
           }
         }
 
-        /// ItemByItemId.Marticle.AsImage
+        /// ItemByUrl.Marticle.AsImage
         ///
         /// Parent Type: `Image`
         public struct AsImage: PocketGraph.InlineFragment, ApolloAPI.CompositeInlineFragment {
           public let __data: DataDict
           public init(_dataDict: DataDict) { __data = _dataDict }
 
-          public typealias RootEntityType = ItemByIDQuery.Data.ItemByItemId.Marticle
+          public typealias RootEntityType = ItemByURLQuery.Data.ItemByUrl.Marticle
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Image }
           public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
             ImageParts.self,
@@ -183,14 +183,14 @@ public class ItemByIDQuery: GraphQLQuery {
           }
         }
 
-        /// ItemByItemId.Marticle.AsMarticleDivider
+        /// ItemByUrl.Marticle.AsMarticleDivider
         ///
         /// Parent Type: `MarticleDivider`
         public struct AsMarticleDivider: PocketGraph.InlineFragment, ApolloAPI.CompositeInlineFragment {
           public let __data: DataDict
           public init(_dataDict: DataDict) { __data = _dataDict }
 
-          public typealias RootEntityType = ItemByIDQuery.Data.ItemByItemId.Marticle
+          public typealias RootEntityType = ItemByURLQuery.Data.ItemByUrl.Marticle
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleDivider }
           public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
             MarticleDividerParts.self,
@@ -208,14 +208,14 @@ public class ItemByIDQuery: GraphQLQuery {
           }
         }
 
-        /// ItemByItemId.Marticle.AsMarticleTable
+        /// ItemByUrl.Marticle.AsMarticleTable
         ///
         /// Parent Type: `MarticleTable`
         public struct AsMarticleTable: PocketGraph.InlineFragment, ApolloAPI.CompositeInlineFragment {
           public let __data: DataDict
           public init(_dataDict: DataDict) { __data = _dataDict }
 
-          public typealias RootEntityType = ItemByIDQuery.Data.ItemByItemId.Marticle
+          public typealias RootEntityType = ItemByURLQuery.Data.ItemByUrl.Marticle
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleTable }
           public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
             MarticleTableParts.self,
@@ -233,14 +233,14 @@ public class ItemByIDQuery: GraphQLQuery {
           }
         }
 
-        /// ItemByItemId.Marticle.AsMarticleHeading
+        /// ItemByUrl.Marticle.AsMarticleHeading
         ///
         /// Parent Type: `MarticleHeading`
         public struct AsMarticleHeading: PocketGraph.InlineFragment, ApolloAPI.CompositeInlineFragment {
           public let __data: DataDict
           public init(_dataDict: DataDict) { __data = _dataDict }
 
-          public typealias RootEntityType = ItemByIDQuery.Data.ItemByItemId.Marticle
+          public typealias RootEntityType = ItemByURLQuery.Data.ItemByUrl.Marticle
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleHeading }
           public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
             MarticleHeadingParts.self,
@@ -260,14 +260,14 @@ public class ItemByIDQuery: GraphQLQuery {
           }
         }
 
-        /// ItemByItemId.Marticle.AsMarticleCodeBlock
+        /// ItemByUrl.Marticle.AsMarticleCodeBlock
         ///
         /// Parent Type: `MarticleCodeBlock`
         public struct AsMarticleCodeBlock: PocketGraph.InlineFragment, ApolloAPI.CompositeInlineFragment {
           public let __data: DataDict
           public init(_dataDict: DataDict) { __data = _dataDict }
 
-          public typealias RootEntityType = ItemByIDQuery.Data.ItemByItemId.Marticle
+          public typealias RootEntityType = ItemByURLQuery.Data.ItemByUrl.Marticle
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleCodeBlock }
           public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
             MarticleCodeBlockParts.self,
@@ -287,14 +287,14 @@ public class ItemByIDQuery: GraphQLQuery {
           }
         }
 
-        /// ItemByItemId.Marticle.AsVideo
+        /// ItemByUrl.Marticle.AsVideo
         ///
         /// Parent Type: `Video`
         public struct AsVideo: PocketGraph.InlineFragment, ApolloAPI.CompositeInlineFragment {
           public let __data: DataDict
           public init(_dataDict: DataDict) { __data = _dataDict }
 
-          public typealias RootEntityType = ItemByIDQuery.Data.ItemByItemId.Marticle
+          public typealias RootEntityType = ItemByURLQuery.Data.ItemByUrl.Marticle
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Video }
           public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
             VideoParts.self,
@@ -324,14 +324,14 @@ public class ItemByIDQuery: GraphQLQuery {
           }
         }
 
-        /// ItemByItemId.Marticle.AsMarticleBulletedList
+        /// ItemByUrl.Marticle.AsMarticleBulletedList
         ///
         /// Parent Type: `MarticleBulletedList`
         public struct AsMarticleBulletedList: PocketGraph.InlineFragment, ApolloAPI.CompositeInlineFragment {
           public let __data: DataDict
           public init(_dataDict: DataDict) { __data = _dataDict }
 
-          public typealias RootEntityType = ItemByIDQuery.Data.ItemByItemId.Marticle
+          public typealias RootEntityType = ItemByURLQuery.Data.ItemByUrl.Marticle
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleBulletedList }
           public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
             MarticleBulletedListParts.self,
@@ -348,14 +348,14 @@ public class ItemByIDQuery: GraphQLQuery {
           }
         }
 
-        /// ItemByItemId.Marticle.AsMarticleNumberedList
+        /// ItemByUrl.Marticle.AsMarticleNumberedList
         ///
         /// Parent Type: `MarticleNumberedList`
         public struct AsMarticleNumberedList: PocketGraph.InlineFragment, ApolloAPI.CompositeInlineFragment {
           public let __data: DataDict
           public init(_dataDict: DataDict) { __data = _dataDict }
 
-          public typealias RootEntityType = ItemByIDQuery.Data.ItemByItemId.Marticle
+          public typealias RootEntityType = ItemByURLQuery.Data.ItemByUrl.Marticle
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleNumberedList }
           public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
             MarticleNumberedListParts.self,
@@ -372,14 +372,14 @@ public class ItemByIDQuery: GraphQLQuery {
           }
         }
 
-        /// ItemByItemId.Marticle.AsMarticleBlockquote
+        /// ItemByUrl.Marticle.AsMarticleBlockquote
         ///
         /// Parent Type: `MarticleBlockquote`
         public struct AsMarticleBlockquote: PocketGraph.InlineFragment, ApolloAPI.CompositeInlineFragment {
           public let __data: DataDict
           public init(_dataDict: DataDict) { __data = _dataDict }
 
-          public typealias RootEntityType = ItemByIDQuery.Data.ItemByItemId.Marticle
+          public typealias RootEntityType = ItemByURLQuery.Data.ItemByUrl.Marticle
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleBlockquote }
           public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
             MarticleBlockquoteParts.self,
@@ -398,7 +398,7 @@ public class ItemByIDQuery: GraphQLQuery {
         }
       }
 
-      /// ItemByItemId.DomainMetadata
+      /// ItemByUrl.DomainMetadata
       ///
       /// Parent Type: `DomainMetadata`
       public struct DomainMetadata: PocketGraph.SelectionSet {
@@ -420,7 +420,7 @@ public class ItemByIDQuery: GraphQLQuery {
         }
       }
 
-      /// ItemByItemId.SyndicatedArticle
+      /// ItemByUrl.SyndicatedArticle
       ///
       /// Parent Type: `SyndicatedArticle`
       public struct SyndicatedArticle: PocketGraph.SelectionSet {

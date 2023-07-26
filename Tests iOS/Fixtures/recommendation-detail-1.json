@@ -1,7 +1,7 @@
 {
     "data": {
         "__typename": "[type-name-here]",
-        "itemByItemId": {
+        "itemByUrl": {
             "__typename": "[some-type-name]",
             "remoteID": "recommended-item-1",
             "givenUrl": "https://example.com/item-1",

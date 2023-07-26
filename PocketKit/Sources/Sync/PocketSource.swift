@@ -680,8 +680,8 @@ extension PocketSource {
         Log.breadcrumb(category: "recommendations", level: .debug, message: "Loading details for Recomendation: \(String(describing: recommendation.remoteID))")
 
         guard let remoteItem = try await apollo
-            .fetch(query: ItemByIDQuery(id: recommendation.item.remoteID))
-            .data?.itemByItemId?.fragments.itemParts else {
+            .fetch(query: ItemByURLQuery(url: recommendation.item.givenURL))
+            .data?.itemByUrl?.fragments.itemParts else {
             return false
         }
 

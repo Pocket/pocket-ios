@@ -461,7 +461,7 @@ class PocketSourceTests: XCTestCase {
 
         apollo.stubFetch(
             toReturnFixtureNamed: "recommendation-detail",
-            asResultType: ItemByIDQuery.self
+            asResultType: ItemByURLQuery.self
         )
 
         let source = subject()
