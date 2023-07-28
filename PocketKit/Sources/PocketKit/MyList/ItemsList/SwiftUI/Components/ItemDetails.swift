@@ -8,14 +8,21 @@ struct ItemDetails: View {
     private let constants = ListItem.Constants.self
     private let title: String
     private let detail: String
+    private let collection: String?
 
-    init(attributedTitle: NSAttributedString, attributedDetail: NSAttributedString) {
+    init(attributedTitle: NSAttributedString, attributedDetail: NSAttributedString, attributedCollection: NSAttributedString?) {
         self.title = attributedTitle.string
         self.detail = attributedDetail.string
+        self.collection = attributedCollection?.string
     }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
+            if let collection {
+                Text(collection)
+                    .style(.recommendation.collection)
+                    .padding(.bottom, constants.collection.padding)
+            }
             Text(title)
                 .style(.listItem.title)
                 .lineLimit(constants.title.maxLines)

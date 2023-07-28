@@ -31,13 +31,23 @@ class ItemsListItemCell: UICollectionViewListCell {
         static let thumbnailSize = CGSize(width: 90, height: 60)
         static let maxTitleLines = 3
         static let maxDetailLines = 2
+        static let maxCollectionLines = 1
         static let textStackSpacing: CGFloat = 8
         static let topLevelStackSpacing: CGFloat = 14
         static let actionButtonHeight: CGFloat = 28
         static let actionButtonImageSize = CGSize(width: 20, height: 20)
         static let mainStackSpacing: CGFloat = 8
+        static var collectionLabelSpacing: CGFloat = 4
         static let margins = UIEdgeInsets(top: Margins.normal.rawValue, left: Margins.normal.rawValue, bottom: Margins.normal.rawValue, right: Margins.normal.rawValue)
     }
+
+    private let collectionLabel: UILabel = {
+        let label = UILabel()
+        label.numberOfLines = Constants.maxCollectionLines
+        label.setContentCompressionResistancePriority(.required, for: .vertical)
+        label.adjustsFontForContentSizeCategory = true
+        return label
+    }()
 
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -132,6 +142,7 @@ class ItemsListItemCell: UICollectionViewListCell {
     }
 
     private var thumbnailWidthConstraint: NSLayoutConstraint!
+    private var titleSectionConstraint: NSLayoutConstraint!
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -143,6 +154,7 @@ class ItemsListItemCell: UICollectionViewListCell {
         buttonStack.addArrangedSubview(shareButton)
         buttonStack.addArrangedSubview(menuButton)
 
+        mainContentView.addSubview(collectionLabel)
         mainContentView.addSubview(titleLabel)
         mainContentView.addSubview(detailLabel)
         mainContentView.addSubview(thumbnailView)
@@ -155,6 +167,7 @@ class ItemsListItemCell: UICollectionViewListCell {
 
         listContentView.translatesAutoresizingMaskIntoConstraints = false
         mainContentView.translatesAutoresizingMaskIntoConstraints = false
+        collectionLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         detailLabel.translatesAutoresizingMaskIntoConstraints = false
         buttonStack.translatesAutoresizingMaskIntoConstraints = false
@@ -176,6 +189,8 @@ class ItemsListItemCell: UICollectionViewListCell {
             }
         )
 
+        titleSectionConstraint = titleLabel.topAnchor.constraint(equalTo: collectionLabel.bottomAnchor, constant: 0)
+
         NSLayoutConstraint.activate([
             listContentView.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor),
             listContentView.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
@@ -189,13 +204,16 @@ class ItemsListItemCell: UICollectionViewListCell {
             mainContentView.bottomAnchor.constraint(greaterThanOrEqualTo: thumbnailView.bottomAnchor),
             mainContentView.bottomAnchor.constraint(greaterThanOrEqualTo: detailLabel.bottomAnchor),
 
-            titleLabel.topAnchor.constraint(equalTo: mainContentView.topAnchor),
+            collectionLabel.topAnchor.constraint(equalTo: mainContentView.topAnchor),
+            collectionLabel.leadingAnchor.constraint(equalTo: mainContentView.leadingAnchor),
+
+            titleSectionConstraint,
             titleLabel.leadingAnchor.constraint(equalTo: mainContentView.leadingAnchor),
             detailLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
             detailLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
             detailLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
 
-            thumbnailView.topAnchor.constraint(equalTo: titleLabel.topAnchor),
+            thumbnailView.topAnchor.constraint(equalTo: mainContentView.topAnchor),
             thumbnailView.trailingAnchor.constraint(equalTo: mainContentView.trailingAnchor),
             thumbnailView.leadingAnchor.constraint(equalTo: titleLabel.trailingAnchor, constant: 20),
             thumbnailView.heightAnchor.constraint(equalToConstant: Constants.thumbnailSize.height).with(priority: .required),
@@ -222,6 +240,7 @@ extension ItemsListItemCell {
         let attributedDetail: NSAttributedString
         let attributedTags: [NSAttributedString]?
         let attributedTagCount: NSAttributedString?
+        let attributedCollection: NSAttributedString?
 
         let thumbnailURL: URL?
 
@@ -242,6 +261,15 @@ extension ItemsListItemCell {
             state.isSelected ? UIColor(.ui.grey6) : UIColor(.ui.white1)
         }
         backgroundConfiguration = bgConfig
+
+        if let attributedCollection = model?.attributedCollection {
+            titleSectionConstraint.constant = 4
+            collectionLabel.isHidden = false
+            collectionLabel.attributedText = attributedCollection
+        } else {
+            titleSectionConstraint.constant = 0
+            collectionLabel.isHidden = true
+        }
 
         titleLabel.attributedText = state.model?.attributedTitle
         detailLabel.attributedText = state.model?.attributedDetail

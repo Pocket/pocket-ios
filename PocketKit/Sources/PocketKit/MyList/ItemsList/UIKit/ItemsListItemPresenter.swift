@@ -46,6 +46,11 @@ class ItemsListItemPresenter {
         self.isDisabled = isDisabled
     }
 
+    var attributedCollection: NSAttributedString? {
+        guard item.isCollection else { return nil }
+        return NSAttributedString(string: Localization.Collection.title, style: .recommendation.collection)
+    }
+
     var attributedTitle: NSAttributedString {
         NSAttributedString(string: title, style: isDisabled ? .pendingTitle : .title)
     }

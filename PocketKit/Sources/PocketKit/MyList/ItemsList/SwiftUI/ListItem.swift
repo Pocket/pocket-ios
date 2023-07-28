@@ -15,7 +15,7 @@ struct ListItem: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack(alignment: .top, spacing: 0) {
-                ItemDetails(attributedTitle: viewModel.item.title, attributedDetail: viewModel.item.detail)
+                ItemDetails(attributedTitle: viewModel.item.title, attributedDetail: viewModel.item.detail, attributedCollection: viewModel.item.collection)
 
                 KFImage(viewModel.item.thumbnailURL)
                     .resizable()
