@@ -28,6 +28,10 @@ struct PocketItem {
         item.isArchived
     }
 
+    var collection: NSAttributedString? {
+        itemPresenter.attributedCollection
+    }
+
     var title: NSAttributedString {
         itemPresenter.attributedTitle
     }
