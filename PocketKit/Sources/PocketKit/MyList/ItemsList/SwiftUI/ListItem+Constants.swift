@@ -9,6 +9,11 @@ extension ListItem {
         static let verticalPadding: CGFloat = 15
         static let objectSpacing: CGFloat = 10
 
+        static let collection = Collection()
+        struct Collection {
+            let padding: CGFloat = 4
+        }
+
         static let title = Title()
         struct Title {
             let maxLines = 3
