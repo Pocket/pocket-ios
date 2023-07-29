@@ -4,21 +4,16 @@
 
 import Foundation
 
-public struct CollectionModel: Equatable, Hashable {
-    public let title: String
-    public let authors: [String]
-    public let intro: Markdown?
-    public let stories: [Story]
-
-    public init(title: String, authors: [String], intro: Markdown?, stories: [Story]) {
+public struct StoryModel: Equatable, Hashable {
+    public init(title: String, publisher: String?, imageURL: String?, excerpt: Markdown, timeToRead: Int?, isCollection: Bool) {
         self.title = title
-        self.authors = authors
-        self.intro = intro
-        self.stories = stories
+        self.publisher = publisher
+        self.imageURL = imageURL
+        self.excerpt = excerpt
+        self.timeToRead = timeToRead
+        self.isCollection = isCollection
     }
-}
 
-public struct Story: Equatable, Hashable {
     public let title: String
     public let publisher: String?
     public let imageURL: String?

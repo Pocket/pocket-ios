@@ -144,6 +144,37 @@ extension Space {
     func fetchCollection(by slug: String, context: NSManagedObjectContext? = nil) throws -> Collection? {
         return try fetch(Requests.fetchCollection(by: slug), context: context).first
     }
+
+    func fetchCollectionAuthor(by name: String, context: NSManagedObjectContext? = nil) throws -> CollectionAuthor? {
+        return try fetch(Requests.fetchCollectionAuthor(by: name), context: context).first
+    }
+
+    func fetchCollectionStory(by url: String, context: NSManagedObjectContext? = nil) throws -> CollectionStory? {
+        return try fetch(Requests.fetchCollectionStory(by: url), context: context).first
+    }
+
+    func updateCollection(from remote: Collection.RemoteCollection) throws {
+        let context = makeChildBackgroundContext()
+
+        context.performAndWait { [weak self] in
+            guard let self else { return }
+
+            let collection = (try? fetchCollection(by: remote.slug, context: context)) ??
+            Collection(context: context, slug: remote.slug, title: remote.title, authors: [], stories: [])
+
+            collection.update(from: remote, in: self, context: context)
+        }
+
+        // save the child context
+        try context.performAndWait {
+            guard context.hasChanges else {
+                return
+            }
+            try context.save()
+            // then save the parent context
+            try save()
+        }
+    }
 }
 
 // MARK: Image

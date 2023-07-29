@@ -140,6 +140,10 @@ class SavedItemViewModel: ReadableViewModel {
         item.isCollection
     }
 
+    var collection: Collection? {
+        item.item?.collection
+    }
+
     var slug: String? {
         // TODO: Add check for slug and use this as fallback
         // Returns the slug from a collection url by validating that it is in the proper url format (ie. 0 represents "/", 1 represents "collections" and 2 represents the slug)

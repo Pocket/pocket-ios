@@ -91,7 +91,7 @@ public class PocketSource: Source {
             operations: OperationFactory(),
             lastRefresh: UserDefaultsLastRefresh(defaults: defaults),
             slateService: APISlateService(apollo: apollo, space: space),
-            collectionService: APICollectionService(apollo: apollo),
+            collectionService: APICollectionService(apollo: apollo, space: space),
             featureFlagService: APIFeatureFlagService(apollo: apollo, space: space, appSession: appSession),
             networkMonitor: NWPathMonitor(),
             sessionProvider: appSession as! SessionProvider,
@@ -704,7 +704,7 @@ extension PocketSource {
 
 // MARK: - Collections
 extension PocketSource {
-    public func fetchCollection(by slug: String) async throws -> CollectionModel {
+    public func fetchCollection(by slug: String) async throws {
         try await collectionService.fetchCollection(by: slug)
     }
 }
