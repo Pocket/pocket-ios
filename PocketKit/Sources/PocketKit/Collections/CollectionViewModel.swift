@@ -6,6 +6,7 @@ import Sync
 import UIKit
 import SharedPocketKit
 import Combine
+import CoreData
 import Localization
 import Analytics
 
@@ -25,7 +26,7 @@ class CollectionViewModel {
     @Published private(set) var _actions: [ItemAction] = []
     var actions: Published<[ItemAction]>.Publisher { $_actions }
 
-    private let slug: String
+    private let collection: Collection
     private let source: Source
     private let tracker: Tracker
     private let user: User
@@ -38,7 +39,7 @@ class CollectionViewModel {
     private var collectionItemSubscriptions: Set<AnyCancellable> = []
 
     init(
-        slug: String,
+        collection: Collection,
         source: Source,
         tracker: Tracker,
         user: User,
@@ -46,7 +47,7 @@ class CollectionViewModel {
         networkPathMonitor: NetworkPathMonitor,
         userDefaults: UserDefaults
     ) {
-        self.slug = slug
+        self.collection = collection
         self.source = source
         self.tracker = tracker
         self.user = user
@@ -64,11 +65,11 @@ class CollectionViewModel {
     }
 
     var title: String {
-        collection?.title ?? ""
+        collection.title ?? ""
     }
 
     var authors: [String] {
-        collection?.authors ?? []
+        source.fetchCollectionAuthors(by: collection.slug).map { $0.name }
     }
 
     var storiesCount: Int? {
@@ -76,11 +77,11 @@ class CollectionViewModel {
     }
 
     var intro: Markdown? {
-        collection?.intro
+        collection.intro
     }
 
     var item: Item? {
-        return source.fetchItem(url)
+        return collection.item
     }
 
     var isArchived: Bool? {
@@ -254,7 +255,7 @@ extension CollectionViewModel {
     enum Section: Hashable {
         case loading
         case collectionHeader
-        case collection(CollectionModel)
+        case collection(Collection)
     }
 
     enum Cell: Hashable {

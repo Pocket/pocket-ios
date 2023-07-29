@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22189.1" systemVersion="23A5286i" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22203.2" systemVersion="23A5301g" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Author" representedClassName="Author" syncable="YES">
         <attribute name="id" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
@@ -12,6 +12,7 @@
         <attribute name="slug" attributeType="String"/>
         <attribute name="title" attributeType="String"/>
         <relationship name="authors" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="CollectionAuthor" inverseName="collection" inverseEntity="CollectionAuthor"/>
+        <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="collection" inverseEntity="Item"/>
         <relationship name="stories" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="CollectionStory" inverseName="collection" inverseEntity="CollectionStory"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
@@ -80,7 +81,7 @@
         <attribute name="videoness" optional="YES" attributeType="String"/>
         <attribute name="wordCount" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="authors" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Author" inverseName="item" inverseEntity="Author"/>
-        <relationship name="collection" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Collection"/>
+        <relationship name="collection" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Collection" inverseName="item" inverseEntity="Collection"/>
         <relationship name="collectionStory" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CollectionStory" inverseName="item" inverseEntity="CollectionStory"/>
         <relationship name="domainMetadata" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="DomainMetadata" inverseName="item" inverseEntity="DomainMetadata"/>
         <relationship name="images" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Image" inverseName="item" inverseEntity="Image"/>

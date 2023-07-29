@@ -91,7 +91,6 @@ extension Item {
         title = corpusItem.title
         topImageURL = URL(string: corpusItem.imageUrl)
         domain = corpusItem.publisher
-        // TODO: UNIFIEDHOME - add language
         excerpt = corpusItem.excerpt
 
         guard let context = managedObjectContext else {
@@ -101,8 +100,6 @@ extension Item {
         if let topImageURL {
             addToImages(Image(url: topImageURL, context: context))
         }
-
-        // TODO: UNIFIEDHOME - add authors
 
         if let syndicatedArticle = corpusItem.target?.asSyndicatedArticle, let itemId = syndicatedArticle.itemId {
             self.syndicatedArticle = (try? space.fetchSyndicatedArticle(byItemId: itemId, context: context)) ?? SyndicatedArticle(context: context)
@@ -118,6 +115,76 @@ extension Item {
 
         if let slug = corpusItem.target?.asCollection?.slug {
             self.collection = (try? space.fetchCollection(by: slug, context: context)) ?? Collection(context: context, slug: slug, title: "", authors: [], stories: [])
+        }
+    }
+
+    func update(from storyItem: GetCollectionBySlugQuery.Data.Collection.Story.Item, in space: Space) {
+        title = storyItem.title
+        domain = storyItem.domain
+        excerpt = storyItem.excerpt
+        language = storyItem.language
+
+        if let readTime = storyItem.timeToRead {
+            timeToRead = NSNumber(value: readTime)
+        } else {
+            timeToRead = 0
+        }
+
+        if let words = storyItem.wordCount {
+            wordCount = NSNumber(value: words)
+        } else {
+            wordCount = 0
+        }
+
+        datePublished = storyItem.datePublished.flatMap { DateFormatter.clientAPI.date(from: $0) }
+        isArticle = storyItem.isArticle ?? false
+        imageness = storyItem.hasImage?.rawValue
+        videoness = storyItem.hasVideo?.rawValue
+
+        guard let context = managedObjectContext else {
+            return
+        }
+        if let imageUrl = storyItem.topImageUrl, let url = URL(string: imageUrl) {
+            topImageURL = url
+            addToImages(Image(url: url, context: context))
+        }
+
+        if let metaParts = storyItem.domainMetadata?.fragments.domainMetadataParts {
+            domainMetadata = domainMetadata ?? DomainMetadata(context: context)
+            domainMetadata?.update(remote: metaParts)
+        }
+
+        article = storyItem.marticle.flatMap { remoteComponents in
+            let components = remoteComponents.map(ArticleComponent.init)
+            return Article(components: components)
+        }
+
+        if let authors = authors {
+            removeFromAuthors(authors)
+        }
+        storyItem.authors?.forEach { remoteAuthor in
+            guard let remoteAuthor = remoteAuthor else {
+                return
+            }
+
+            addToAuthors(Author(remote: remoteAuthor, context: context))
+        }
+
+        if let images = images {
+            removeFromImages(images)
+        }
+        storyItem.images?.forEach { remoteImage in
+            guard let remoteImage = remoteImage else {
+                return
+            }
+
+            addToImages(Image(remote: remoteImage, context: context))
+        }
+
+        if let syndicatedArticle = storyItem.syndicatedArticle, let itemId = syndicatedArticle.itemId {
+            self.syndicatedArticle = (try? space.fetchSyndicatedArticle(byItemId: itemId, context: context)) ?? SyndicatedArticle(context: context)
+            self.syndicatedArticle?.itemID = itemId
+            self.syndicatedArticle?.title = syndicatedArticle.title
         }
     }
 
