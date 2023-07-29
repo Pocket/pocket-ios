@@ -143,6 +143,20 @@ public enum Requests {
         return request
     }
 
+    public static func fetchCollectionAuthor(by name: String) -> NSFetchRequest<CollectionAuthor> {
+        let request = CollectionAuthor.fetchRequest()
+        request.predicate = NSPredicate(format: "name = %@", name)
+        request.fetchLimit = 1
+        return request
+    }
+
+    public static func fetchCollectionStory(by url: String) -> NSFetchRequest<CollectionStory> {
+        let request = CollectionStory.fetchRequest()
+        request.predicate = NSPredicate(format: "url = %@", url)
+        request.fetchLimit = 1
+        return request
+    }
+
     public static func fetchTags() -> NSFetchRequest<Tag> {
         return Tag.fetchRequest()
     }
