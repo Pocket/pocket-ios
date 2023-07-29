@@ -71,7 +71,7 @@ public protocol Source {
 
     func fetchUnifiedHomeLineup() async throws
 
-    func fetchCollection(by slug: String) async throws -> CollectionModel
+    func fetchCollection(by slug: String) async throws
 
     func restore()
 
