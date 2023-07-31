@@ -11,7 +11,7 @@ class MockCollectionService: CollectionService {
 
 extension MockCollectionService {
     static let fetchCollection = "fetchCollection"
-    typealias FetchCollectionImpl = (String) async throws -> Sync.CollectionModel
+    typealias FetchCollectionImpl = (String) async throws -> Sync.CollectionStoryModel
 
     struct FetchCollectionCall {
         let slug: String
@@ -21,7 +21,7 @@ extension MockCollectionService {
         implementations[Self.fetchCollection] = impl
     }
 
-    func fetchCollection(by slug: String) async throws -> Sync.CollectionModel {
+    func fetchCollection(by slug: String) async throws {
         guard let impl = implementations[Self.fetchCollection] as? FetchCollectionImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
@@ -30,7 +30,7 @@ extension MockCollectionService {
             FetchCollectionCall(slug: slug)
         ]
 
-        return try await impl(slug)
+        try await impl(slug)
     }
 
     func fetchCollectionCall(at index: Int) -> FetchCollectionCall? {

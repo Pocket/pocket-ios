@@ -8,8 +8,7 @@ import CoreData
 import Combine
 
 class MockSource: Source {
-    func fetchCollection(by slug: String) async throws -> Sync.CollectionModel {
-        return CollectionModel(title: "", authors: [], intro: "", stories: [])
+    func fetchCollection(by slug: String) async throws {
     }
 
     var _events: SyncEvents = SyncEvents()
@@ -225,6 +224,48 @@ extension MockSource {
         }
 
         return calls[index] as? MakeRecentSavesControllerCall
+    }
+}
+
+// MARK: - Make collection stories controller
+extension MockSource {
+    private static let makeCollectionStoriesController = "makeCollectionStoriesController"
+    typealias MakeCollectionStoriesControllerImpl = () -> RichFetchedResultsController<Sync.CollectionStory>
+
+    struct MakeCollectionStoriesControllerCall {}
+
+    func stubMakeCollectionStoriesController(impl: @escaping MakeCollectionStoriesControllerImpl) {
+        implementations[Self.makeCollectionStoriesController] = impl
+    }
+
+    func makeCollectionStoriesController(slug: String) -> Sync.RichFetchedResultsController<Sync.CollectionStory> {
+        guard let impl = implementations[Self.makeCollectionStoriesController] as? MakeCollectionStoriesControllerImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.makeCollectionStoriesController] = (calls[Self.makeCollectionStoriesController] ?? []) + [MakeCollectionStoriesControllerCall()]
+
+        return impl()
+    }
+}
+
+// MARK: fetch collection authors
+extension MockSource {
+    private static let fetchCollectionAuthors = "fetchCollectionAuthors"
+    typealias FetchCollectionAuthorsImpl = (String) -> [Sync.CollectionAuthor]
+
+    struct FetchCollectionAuthorsCall {}
+
+    func stubFetchCollectionAuthors(impl: @escaping FetchCollectionAuthorsImpl) {
+        implementations[Self.fetchCollectionAuthors] = impl
+    }
+
+    func fetchCollectionAuthors(by slug: String) -> [Sync.CollectionAuthor] {
+        guard let impl = implementations[Self.fetchCollectionAuthors] as? FetchCollectionAuthorsImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+        calls[Self.fetchCollectionAuthors] = (calls[Self.fetchCollectionAuthors] ?? []) + [FetchCollectionAuthorsCall()]
+        return impl(slug)
     }
 }
 
