@@ -201,6 +201,10 @@ public class PocketSource: Source {
         space.makeRecomendationsSlateLineupController(by: SyncConstants.Home.slateLineupIdentifier)
     }
 
+    public func makeCollectionStoriesController(slug: String) -> RichFetchedResultsController<CollectionStory> {
+        space.makeCollectionStoriesController(slug: slug)
+    }
+
     public func viewObject<T: NSManagedObject>(id: NSManagedObjectID) -> T? {
         space.viewObject(with: id)
     }
@@ -706,6 +710,10 @@ extension PocketSource {
 extension PocketSource {
     public func fetchCollection(by slug: String) async throws {
         try await collectionService.fetchCollection(by: slug)
+    }
+
+    public func fetchCollectionAuthors(by slug: String) -> [CollectionAuthor] {
+        (try? space.fetchCollectionAuthors(by: slug)) ?? []
     }
 }
 

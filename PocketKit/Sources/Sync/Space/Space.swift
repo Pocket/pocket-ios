@@ -149,6 +149,10 @@ extension Space {
         return try fetch(Requests.fetchCollectionAuthor(by: name), context: context).first
     }
 
+    func fetchCollectionAuthors(by slug: String, context: NSManagedObjectContext? = nil) throws -> [CollectionAuthor] {
+        return try fetch(Requests.fetchCollectionAuthors(by: slug))
+    }
+
     func fetchCollectionStory(by url: String, context: NSManagedObjectContext? = nil) throws -> CollectionStory? {
         return try fetch(Requests.fetchCollectionStory(by: url), context: context).first
     }
@@ -174,6 +178,15 @@ extension Space {
             // then save the parent context
             try save()
         }
+    }
+
+    func makeCollectionStoriesController(slug: String) -> RichFetchedResultsController<CollectionStory> {
+        RichFetchedResultsController(
+            fetchRequest: Requests.fetchCollectionStories(by: slug),
+            managedObjectContext: viewContext,
+            sectionNameKeyPath: nil,
+            cacheName: nil
+        )
     }
 }
 
