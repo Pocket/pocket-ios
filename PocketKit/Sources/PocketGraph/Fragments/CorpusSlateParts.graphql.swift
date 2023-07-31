@@ -255,6 +255,7 @@ public struct CorpusSlateParts: PocketGraph.SelectionSet, Fragment {
           ] }
 
           public var slug: String { __data["slug"] }
+          public var authors: [Author] { __data["authors"] }
 
           public struct Fragments: FragmentContainer {
             public let __data: DataDict
@@ -264,12 +265,14 @@ public struct CorpusSlateParts: PocketGraph.SelectionSet, Fragment {
           }
 
           public init(
-            slug: String
+            slug: String,
+            authors: [Author]
           ) {
             self.init(_dataDict: DataDict(
               data: [
                 "__typename": PocketGraph.Objects.Collection.typename,
                 "slug": slug,
+                "authors": authors._fieldData,
               ],
               fulfilledFragments: [
                 ObjectIdentifier(Self.self),
@@ -277,6 +280,40 @@ public struct CorpusSlateParts: PocketGraph.SelectionSet, Fragment {
                 ObjectIdentifier(CollectionSummary.self)
               ]
             ))
+          }
+
+          /// Recommendation.CorpusItem.Target.AsCollection.Author
+          ///
+          /// Parent Type: `CollectionAuthor`
+          public struct Author: PocketGraph.SelectionSet {
+            public let __data: DataDict
+            public init(_dataDict: DataDict) { __data = _dataDict }
+
+            public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.CollectionAuthor }
+
+            public var name: String { __data["name"] }
+
+            public struct Fragments: FragmentContainer {
+              public let __data: DataDict
+              public init(_dataDict: DataDict) { __data = _dataDict }
+
+              public var collectionAuthorSummary: CollectionAuthorSummary { _toFragment() }
+            }
+
+            public init(
+              name: String
+            ) {
+              self.init(_dataDict: DataDict(
+                data: [
+                  "__typename": PocketGraph.Objects.CollectionAuthor.typename,
+                  "name": name,
+                ],
+                fulfilledFragments: [
+                  ObjectIdentifier(Self.self),
+                  ObjectIdentifier(CollectionAuthorSummary.self)
+                ]
+              ))
+            }
           }
         }
       }
