@@ -7,6 +7,7 @@ import PocketGraph
 
 extension Collection {
     public typealias RemoteCollection = GetCollectionBySlugQuery.Data.Collection
+    public typealias RemoteAuthor = CorpusSlateParts.Recommendation.CorpusItem.Target.AsCollection.Author
 
     func update(from remote: RemoteCollection, in space: Space, context: NSManagedObjectContext) {
         intro = remote.intro
@@ -35,6 +36,12 @@ extension Collection {
                 story.item = item
             }
             return story
+        })
+    }
+
+    func updateAuthors(from remoteAuthors: [RemoteAuthor], in space: Space, context: NSManagedObjectContext) {
+        authors = try? NSOrderedSet(array: remoteAuthors.map {
+            try space.fetchCollectionAuthor(by: $0.name, context: context) ?? CollectionAuthor(context: context, name: $0.name)
         })
     }
 
