@@ -4,7 +4,7 @@
 
 import Foundation
 
-public struct StoryModel: Equatable, Hashable {
+public struct CollectionStoryModel: Equatable, Hashable {
     public init(title: String, publisher: String?, imageURL: String?, excerpt: Markdown, timeToRead: Int?, isCollection: Bool) {
         self.title = title
         self.publisher = publisher
