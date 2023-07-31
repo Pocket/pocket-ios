@@ -14,11 +14,11 @@ extension Collection {
         title = remote.title
 
         authors = try? NSOrderedSet(array: remote.authors.map {
-            try space.fetchCollectionAuthor(by: $0.name) ?? CollectionAuthor(context: context, name: $0.name)
+            try space.fetchCollectionAuthor(by: $0.name, context: context) ?? CollectionAuthor(context: context, name: $0.name)
         })
 
         stories = try? NSOrderedSet(array: remote.stories.enumerated().map {
-            let story = try space.fetchCollectionStory(by: $0.element.url) ??
+            let story = try space.fetchCollectionStory(by: $0.element.url, context: context) ??
             CollectionStory(
                 context: context,
                 url: $0.element.url,
@@ -40,7 +40,7 @@ extension Collection {
 
     private func makeStoryAuthors(space: Space, context: NSManagedObjectContext, authors: [RemoteCollection.Story.Author]) throws -> NSOrderedSet {
         try NSOrderedSet(array: authors.map {
-            try space.fetchCollectionAuthor(by: $0.name) ?? CollectionAuthor(context: context, name: $0.name)
+            try space.fetchCollectionAuthor(by: $0.name, context: context) ?? CollectionAuthor(context: context, name: $0.name)
         })
     }
 }
