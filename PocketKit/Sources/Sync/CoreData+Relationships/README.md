@@ -1,6 +1,6 @@
 #  CoreData Relationships
 
-At Pocket we use NSFetchedResultsControllers to power our data views. These work great and update our views only when the object they are observing updates it's values. However it has a downside where CoreData will not tell NSFetchedResultsController to update if the object it is montioring has an update to any of its related objects.
+At Pocket we use NSFetchedResultsControllers to power our data views. These work great and update our views only when the object they are observing updates its values. However it has a downside where Core Data will not tell NSFetchedResultsController to update if the object it is montioring has an update to any of its related objects.
 
 For Pocket this causes problem for our Home screen where our root object is Recommendation, but we need to display changes to the Recommendation if the user clicks Save, which in itself is a completely different object.
 
