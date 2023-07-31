@@ -11,6 +11,10 @@ protocol CollectionService {
     func fetchCollection(by identifier: String) async throws
 }
 
+enum CollectionServiceError: Error {
+    case nullCollection
+}
+
 class APICollectionService: CollectionService {
     private let apollo: ApolloClientProtocol
     private let space: Space
@@ -24,8 +28,8 @@ class APICollectionService: CollectionService {
         let query = GetCollectionBySlugQuery(slug: slug)
 
         guard let remote = try await apollo.fetch(query: query).data?.collection else {
-            Log.capture(message: "Error loading collection")
-            return
+            Log.capture(message: "CollectionService Error - the request returned a null collection")
+            throw CollectionServiceError.nullCollection
         }
         try space.updateCollection(from: remote)
     }
