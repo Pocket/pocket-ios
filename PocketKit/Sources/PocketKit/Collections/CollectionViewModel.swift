@@ -74,7 +74,7 @@ class CollectionViewModel: NSObject {
     }
 
     var authors: [String] {
-        source.fetchCollectionAuthors(by: collection.slug).map { $0.name }
+        ((collection.authors?.compactMap { $0 as? CollectionAuthor }) ?? [CollectionAuthor]()).map { $0.name }
     }
 
     var storiesCount: Int? {
