@@ -22,8 +22,8 @@
     </entity>
     <entity name="CollectionAuthor" representedClassName="CollectionAuthor" syncable="YES">
         <attribute name="name" attributeType="String"/>
-        <relationship name="collection" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Collection" inverseName="authors" inverseEntity="Collection"/>
-        <relationship name="collectionStory" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CollectionStory" inverseName="authors" inverseEntity="CollectionStory"/>
+        <relationship name="collection" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Collection" inverseName="authors" inverseEntity="Collection"/>
+        <relationship name="collectionStory" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CollectionStory" inverseName="authors" inverseEntity="CollectionStory"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="name"/>
