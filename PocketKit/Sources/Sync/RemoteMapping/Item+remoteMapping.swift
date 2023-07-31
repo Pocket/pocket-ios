@@ -114,8 +114,13 @@ extension Item {
         }
 
         if let slug = corpusItem.target?.asCollection?.slug {
-            self.collection = (try? space.fetchCollection(by: slug, context: context)) ?? Collection(context: context, slug: slug, title: "", authors: [], stories: [])
-            collection?.item = self
+            let collection = (try? space.fetchCollection(by: slug, context: context)) ?? Collection(context: context, slug: slug, title: "", authors: [], stories: [])
+            collection.item = self
+
+            if let authors = corpusItem.target?.asCollection?.authors {
+                collection.updateAuthors(from: authors, in: space, context: context)
+            }
+            self.collection = collection
         }
     }
 
