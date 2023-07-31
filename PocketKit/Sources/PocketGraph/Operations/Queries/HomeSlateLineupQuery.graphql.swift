@@ -19,7 +19,7 @@ public class HomeSlateLineupQuery: GraphQLQuery {
         }
       }
       """#,
-      fragments: [CorpusSlateParts.self, CorpusRecommendationParts.self, CorpusItemParts.self, SyndicatedArticleParts.self, CollectionSummary.self]
+      fragments: [CorpusSlateParts.self, CorpusRecommendationParts.self, CorpusItemParts.self, SyndicatedArticleParts.self, CollectionSummary.self, CollectionAuthorSummary.self]
     ))
 
   public var locale: String
@@ -202,12 +202,32 @@ public class HomeSlateLineupQuery: GraphQLQuery {
                 ] }
 
                 public var slug: String { __data["slug"] }
+                public var authors: [Author] { __data["authors"] }
 
                 public struct Fragments: FragmentContainer {
                   public let __data: DataDict
                   public init(_dataDict: DataDict) { __data = _dataDict }
 
                   public var collectionSummary: CollectionSummary { _toFragment() }
+                }
+
+                /// HomeSlateLineup.Slate.Recommendation.CorpusItem.Target.AsCollection.Author
+                ///
+                /// Parent Type: `CollectionAuthor`
+                public struct Author: PocketGraph.SelectionSet {
+                  public let __data: DataDict
+                  public init(_dataDict: DataDict) { __data = _dataDict }
+
+                  public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.CollectionAuthor }
+
+                  public var name: String { __data["name"] }
+
+                  public struct Fragments: FragmentContainer {
+                    public let __data: DataDict
+                    public init(_dataDict: DataDict) { __data = _dataDict }
+
+                    public var collectionAuthorSummary: CollectionAuthorSummary { _toFragment() }
+                  }
                 }
               }
             }
