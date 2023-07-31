@@ -219,11 +219,24 @@ private extension CollectionViewController {
         case .collection(let collection):
             let width = environment.container.effectiveContentSize.width
             let margin: CGFloat = environment.traitCollection.shouldUseWideLayout() ? Margins.iPadNormal.rawValue : Margins.normal.rawValue
-            let stories = collection.stories.compactMap { CollectionStoryViewModel(story: $0) }
+            let stories = collection.stories?.compactMap { $0 as? CollectionStory } ?? []
+            let storyModels = stories.map { CollectionStoryModel(
+                title: $0.title,
+                publisher: $0.publisher,
+                imageURL: $0.imageUrl,
+                excerpt: $0.excerpt,
+                timeToRead: $0.item?.timeToRead != nil ? Int(truncating: ($0.item?.timeToRead)!) : nil,
+                isCollection: $0.item?.collection != nil
+            )}
 
-            let components = stories.reduce((CGFloat(0), [NSCollectionLayoutItem]())) { result, viewModel in
+            let components = storyModels.reduce((CGFloat(0), [NSCollectionLayoutItem]())) { result, storyModel in
                 let currentHeight = result.0
-                let height = RecommendationCell.fullHeight(viewModel: viewModel, availableWidth: width - (margin * 2)) + margin
+
+                let height = RecommendationCell.fullHeight(
+                    viewModel: CollectionStoryViewModel(storyModel: storyModel),
+                    availableWidth: width - (margin * 2)
+                ) + margin
+
                 var items = result.1
                 let item = NSCollectionLayoutItem(
                     layoutSize: NSCollectionLayoutSize(
@@ -278,7 +291,7 @@ private extension CollectionViewController {
                 intro: metadata?.attributedIntro
             ))
             return metaCell
-        case .stories(let story):
+        case .story(let story):
             let cell: RecommendationCell = collectionView.dequeueCell(for: indexPath)
             cell.configure(model: story)
             return cell
