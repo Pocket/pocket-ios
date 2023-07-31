@@ -14,7 +14,7 @@ extension Collection {
 
     @NSManaged public var intro: String?
     @NSManaged public var publishedAt: Date?
-    @NSManaged public var slug: String?
+    @NSManaged public var slug: String
     @NSManaged public var title: String?
     @NSManaged public var authors: NSOrderedSet?
     @NSManaged public var stories: NSOrderedSet?
