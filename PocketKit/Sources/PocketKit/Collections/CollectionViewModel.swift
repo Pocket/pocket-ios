@@ -244,8 +244,8 @@ private extension CollectionViewModel {
         collectionSnapshot.appendSections([.collectionHeader, storiesSection])
         collectionSnapshot.appendItems([.collectionHeader], toSection: .collectionHeader)
 
-        let entities = IDs.map {
-            source.viewObject(id: $0) as! CollectionStory
+        let entities: [CollectionStory] = IDs.compactMap {
+            source.viewObject(id: $0) as? CollectionStory
         }
 
         let models = entities.map {
