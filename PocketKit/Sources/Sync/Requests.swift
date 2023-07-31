@@ -163,13 +163,6 @@ public enum Requests {
         return request
     }
 
-    public static func fetchCollectionStories(by slug: String) -> NSFetchRequest<CollectionStory> {
-        let request = CollectionStory.fetchRequest()
-        request.predicate = NSPredicate(format: "collection.slug = %@", slug)
-        request.sortDescriptors = [NSSortDescriptor(keyPath: \CollectionStory.sortOrder, ascending: true)]
-        return request
-    }
-
     public static func fetchCollectionStories(by slug: String) -> RichFetchRequest<CollectionStory> {
         let request = RichFetchRequest<CollectionStory>(entityName: "CollectionStory")
         request.predicate = NSPredicate(format: "collection.slug = %@", slug)
