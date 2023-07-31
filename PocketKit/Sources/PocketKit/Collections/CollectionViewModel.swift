@@ -105,6 +105,7 @@ class CollectionViewModel: NSObject {
                 try await source.fetchCollection(by: collection.slug)
             } catch {
                 Log.capture(message: "Failed to fetch details for CollectionViewModel: \(error)")
+                // TODO: NATIVECOLLECTIONS - handle remote error here
             }
         }
     }
@@ -236,6 +237,7 @@ private extension CollectionViewModel {
         return snapshot
     }
 
+    /// Builds a snapshot when collection stories are found in Core Data
     func buildCollectionSnapshot(_ IDs: [NSManagedObjectID]) -> Snapshot {
         var collectionSnapshot = Snapshot()
         let storiesSection = Section.collection(collection)
