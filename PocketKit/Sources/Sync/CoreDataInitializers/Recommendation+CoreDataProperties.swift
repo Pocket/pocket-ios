@@ -26,6 +26,10 @@ extension Recommendation {
 extension Recommendation {
     /// The slug of the associated collection
     public var collectionSlug: String? {
-        self.item.collection?.slug
+        item.collection?.slug
+    }
+
+    public var collection: Collection? {
+        item.collection
     }
 }
