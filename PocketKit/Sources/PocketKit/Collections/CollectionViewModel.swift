@@ -10,8 +10,8 @@ import CoreData
 import Localization
 import Analytics
 
-// View model that holds logic for the native collection view
-class CollectionViewModel {
+/// View model that holds logic for the native collection view
+class CollectionViewModel: NSObject {
     typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Cell>
 
     @Published var snapshot: Snapshot
@@ -34,7 +34,8 @@ class CollectionViewModel {
     private let networkPathMonitor: NetworkPathMonitor
     private let userDefaults: UserDefaults
 
-    private var collection: CollectionModel?
+    private let collectionController: RichFetchedResultsController<CollectionStory>
+
     private var url: String
     private var collectionItemSubscriptions: Set<AnyCancellable> = []
 
@@ -55,9 +56,13 @@ class CollectionViewModel {
         self.networkPathMonitor = networkPathMonitor
         self.userDefaults = userDefaults
 
+        self.collectionController = source.makeCollectionStoriesController(slug: collection.slug)
+
         self.snapshot = Self.loadingSnapshot()
-        url = "https://getpocket.com/collections/\(slug)"
-        self.buildActions()
+        self.url = "https://getpocket.com/collections/\(collection.slug)"
+        super.init()
+        collectionController.delegate = self
+        buildActions()
 
         item?.savedItem?.publisher(for: \.isFavorite).sink { [weak self] _ in
             self?.buildActions()
@@ -73,7 +78,7 @@ class CollectionViewModel {
     }
 
     var storiesCount: Int? {
-        collection?.stories.count
+        collectionController.fetchedObjects?.count
     }
 
     var intro: Markdown? {
@@ -90,13 +95,14 @@ class CollectionViewModel {
     }
 
     func fetch() {
-        // TODO: NATIVE COLLECTIONS - Update to fetch locally first
+        do {
+            try collectionController.performFetch()
+        } catch {
+            // TODO: NATIVECOLLECTIONS - handle core data error here
+        }
         Task {
             do {
-                self.collection = try await source.fetchCollection(by: slug)
-                let snapshot = buildSnapshot()
-                guard snapshot.numberOfItems != 0 else { return }
-                self.snapshot = snapshot
+                try await source.fetchCollection(by: collection.slug)
             } catch {
                 Log.capture(message: "Failed to fetch details for CollectionViewModel: \(error)")
             }
@@ -216,7 +222,7 @@ extension CollectionViewModel {
             return
         case .collectionHeader:
             return
-        case .stories:
+        case .story:
             return
         }
     }
@@ -230,24 +236,31 @@ private extension CollectionViewModel {
         return snapshot
     }
 
-    func buildSnapshot() -> Snapshot {
-        var snapshot = Snapshot()
+    func buildCollectionSnapshot(_ IDs: [NSManagedObjectID]) -> Snapshot {
+        var collectionSnapshot = Snapshot()
+        let storiesSection = Section.collection(collection)
+        collectionSnapshot.appendSections([.collectionHeader, storiesSection])
+        collectionSnapshot.appendItems([.collectionHeader], toSection: .collectionHeader)
 
-        guard let collection else { return snapshot }
-
-        let section: CollectionViewModel.Section = .collection(collection)
-        snapshot.appendSections([.collectionHeader, section])
-        snapshot.appendItems([.collectionHeader], toSection: .collectionHeader)
-
-        collection.stories.forEach { story in
-            let storyViewModel = CollectionStoryViewModel(story: story)
-            snapshot.appendItems(
-                [.stories(storyViewModel)],
-                toSection: section
-            )
+        let entities = IDs.map {
+            source.viewObject(id: $0) as! CollectionStory
         }
 
-        return snapshot
+        let models = entities.map {
+            CollectionStoryModel(
+                title: $0.title,
+                publisher: $0.publisher,
+                imageURL: $0.imageUrl,
+                excerpt: $0.excerpt,
+                timeToRead: $0.item?.timeToRead != nil ? Int(truncating: ($0.item?.timeToRead)!) : nil,
+                isCollection: $0.item?.collection != nil
+            )
+        }
+        let cells = models.map {
+            Cell.story(CollectionStoryViewModel(storyModel: $0))
+        }
+        collectionSnapshot.appendItems(cells, toSection: storiesSection)
+        return collectionSnapshot
     }
 }
 
@@ -261,6 +274,20 @@ extension CollectionViewModel {
     enum Cell: Hashable {
         case loading
         case collectionHeader
-        case stories(CollectionStoryViewModel)
+        case story(CollectionStoryViewModel)
+    }
+}
+
+extension CollectionViewModel: NSFetchedResultsControllerDelegate {
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
+        let IDs: [NSManagedObjectID] = snapshot.itemIdentifiers.compactMap {
+            $0 as? NSManagedObjectID
+        }
+
+        guard !IDs.isEmpty else {
+            return
+        }
+
+        self.snapshot = buildCollectionSnapshot(IDs)
     }
 }

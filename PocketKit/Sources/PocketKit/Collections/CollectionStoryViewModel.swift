@@ -11,23 +11,23 @@ import Sync
 // Contains logic to present story data in RecommendationCell
 struct CollectionStoryViewModel: Hashable {
     public func hash(into hasher: inout Hasher) {
-        return hasher.combine(story)
+        return hasher.combine(storyModel)
     }
 
     public static func == (lhs: CollectionStoryViewModel, rhs: CollectionStoryViewModel) -> Bool {
-        return lhs.story == rhs.story
+        return lhs.storyModel == rhs.storyModel
     }
 
-    private let story: Story
+    private let storyModel: CollectionStoryModel
 
-    init(story: Story) {
-        self.story = story
+    init(storyModel: CollectionStoryModel) {
+        self.storyModel = storyModel
     }
 }
 
 extension CollectionStoryViewModel: RecommendationCellViewModel {
     var attributedCollection: NSAttributedString? {
-        guard story.isCollection else { return nil }
+        guard storyModel.isCollection else { return nil }
         return NSAttributedString(string: Localization.Collection.title, style: .recommendation.collection)
     }
 
@@ -59,11 +59,11 @@ extension CollectionStoryViewModel: RecommendationCellViewModel {
     }
 
     var title: String? {
-        story.title
+        storyModel.title
     }
 
     var imageURL: URL? {
-        guard let imageURL = story.imageURL else { return nil }
+        guard let imageURL = storyModel.imageURL else { return nil }
         return URL(string: imageURL)
     }
 
@@ -72,15 +72,15 @@ extension CollectionStoryViewModel: RecommendationCellViewModel {
     }
 
     var excerpt: Markdown {
-        story.excerpt
+        storyModel.excerpt
     }
 
     var domain: String? {
-        story.publisher
+        storyModel.publisher
     }
 
     var timeToRead: String? {
-        guard let timeToRead = story.timeToRead,
+        guard let timeToRead = storyModel.timeToRead,
               timeToRead > 0 else {
             return nil
         }
