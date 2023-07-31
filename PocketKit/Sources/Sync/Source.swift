@@ -37,6 +37,8 @@ public protocol Source {
 
     func makeSearchService() -> SearchService
 
+    func makeCollectionStoriesController(slug: String) -> RichFetchedResultsController<CollectionStory>
+
     func makeImagesController() -> ImagesController
 
     func makeFeatureFlagsController() -> NSFetchedResultsController<FeatureFlag>
@@ -72,6 +74,8 @@ public protocol Source {
     func fetchUnifiedHomeLineup() async throws
 
     func fetchCollection(by slug: String) async throws
+
+    func fetchCollectionAuthors(by slug: String) -> [CollectionAuthor]
 
     func restore()
 
