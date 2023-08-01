@@ -305,7 +305,7 @@ class CollectionViewModelTests: XCTestCase {
         source.stubMakeCollectionStoriesController {
             self.collectionController
         }
-        
+
         let viewModel = subject(collection: collection)
 
         let shareExpectation = expectation(description: "expected item to be shared")
