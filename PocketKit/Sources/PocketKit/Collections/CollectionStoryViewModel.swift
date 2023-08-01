@@ -11,19 +11,25 @@ import Sync
 // Contains logic to present story data in RecommendationCell
 struct CollectionStoryViewModel: Hashable {
     public func hash(into hasher: inout Hasher) {
-        return hasher.combine(storyModel)
+        return hasher.combine(collectionStory)
     }
 
     public static func == (lhs: CollectionStoryViewModel, rhs: CollectionStoryViewModel) -> Bool {
-        return lhs.storyModel == rhs.storyModel
+        return lhs.collectionStory == rhs.collectionStory
     }
 
-    let storyModel: CollectionStoryModel
+    private(set) var collectionStory: CollectionStory
+    private let source: Source?
+
+    init(collectionStory: CollectionStory, source: Source? = nil) {
+        self.collectionStory = collectionStory
+        self.source = source
+    }
 }
 
 extension CollectionStoryViewModel: RecommendationCellViewModel {
     var attributedCollection: NSAttributedString? {
-        guard storyModel.isCollection else { return nil }
+        guard collectionStory.item?.isCollection == true else { return nil }
         return NSAttributedString(string: Localization.Collection.title, style: .recommendation.collection)
     }
 
@@ -55,29 +61,29 @@ extension CollectionStoryViewModel: RecommendationCellViewModel {
     }
 
     var title: String? {
-        storyModel.title
+        collectionStory.title
     }
 
     var imageURL: URL? {
-        guard let imageURL = storyModel.imageURL else { return nil }
+        guard let imageURL = collectionStory.imageUrl else { return nil }
         return URL(string: imageURL)
     }
 
     var saveButtonMode: RecommendationSaveButton.Mode {
-        .save
+        collectionStory.isSaved ? .saved : .save
     }
 
     var excerpt: Markdown {
-        storyModel.excerpt
+        collectionStory.excerpt
     }
 
     var domain: String? {
-        storyModel.publisher
+        collectionStory.publisher
     }
 
     var timeToRead: String? {
-        guard let timeToRead = storyModel.timeToRead,
-              timeToRead > 0 else {
+        guard let timeToRead = collectionStory.item?.timeToRead,
+              Int(truncating: timeToRead) > 0 else {
             return nil
         }
 
@@ -89,6 +95,12 @@ extension CollectionStoryViewModel: RecommendationCellViewModel {
     }
 
     var primaryAction: ItemAction? {
-        return nil
+        .recommendationPrimary { _ in
+            if !self.collectionStory.isSaved {
+                self.source?.save(collectionStory: self.collectionStory)
+            } else {
+            self.source?.archive(collectionStory: self.collectionStory)
+            }
+        }
     }
 }
