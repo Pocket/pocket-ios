@@ -8,6 +8,12 @@ import CoreData
 import Combine
 
 class MockSource: Source {
+    func save(collectionStory: Sync.CollectionStory) {
+    }
+
+    func archive(collectionStory: Sync.CollectionStory) {
+    }
+
     func fetchCollection(by slug: String) async throws {
     }
 
