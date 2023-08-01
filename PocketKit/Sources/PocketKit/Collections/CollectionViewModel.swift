@@ -245,11 +245,11 @@ extension CollectionViewModel {
         case .loading, .collectionHeader:
             return
         case .story(let storyViewModel):
-            selectItem(with: storyViewModel.storyModel)
+            selectItem(with: storyViewModel.collectionStory)
         }
     }
 
-    private func selectItem(with story: CollectionStoryModel) {
+    private func selectItem(with story: CollectionStory) {
         // Check if item is a saved item
         if let item = story.item, !item.shouldOpenInWebView(override: featureFlags.shouldDisableReader), let savedItem = item.savedItem {
             selectedReadableViewModel = SavedItemViewModel(
@@ -291,25 +291,43 @@ private extension CollectionViewModel {
         return snapshot
     }
 
-    /// Builds a snapshot when collection stories are found in Core Data
-    func buildCollectionSnapshot(_ IDs: [NSManagedObjectID]) -> Snapshot {
+    /// Builds and sets snapshot when collection stories are found in Core Data
+    func setCollectionSnapshot(_ identifiers: [NSManagedObjectID]) {
         var collectionSnapshot = Snapshot()
         let storiesSection = Section.collection(collection)
         collectionSnapshot.appendSections([.collectionHeader, storiesSection])
         collectionSnapshot.appendItems([.collectionHeader], toSection: .collectionHeader)
 
-        let entities: [CollectionStory] = IDs.compactMap {
+        let cells = buildStoryCells(from: identifiers)
+        collectionSnapshot.appendItems(cells, toSection: storiesSection)
+        self.snapshot = collectionSnapshot
+    }
+
+    /// Reloads and/or reconfigures items in the existing snapshot
+    func updateCollectionSnapshot(_ reloadableIdentifiers: [NSManagedObjectID], reconfigurableIentifiers: [NSManagedObjectID]) {
+        var updatedSnapshot = self.snapshot
+
+        let reloadableCells = buildStoryCells(from: reloadableIdentifiers)
+        let reconfigurableCells = buildStoryCells(from: reconfigurableIentifiers)
+
+        updatedSnapshot.reloadItems(reloadableCells)
+        updatedSnapshot.reconfigureItems(reconfigurableCells)
+        self.snapshot = updatedSnapshot
+    }
+
+    func buildStoryCells( from identifiers: [NSManagedObjectID]) -> [Cell] {
+        let collectionStories: [CollectionStory] = identifiers.compactMap {
             source.viewObject(id: $0) as? CollectionStory
         }
 
-        let models = entities.map {
-            createStoryViewModel(with: $0)
+        let cells = collectionStories.map {
+            Cell.story(CollectionStoryViewModel(collectionStory: $0, source: source))
         }
-        let cells = models.map {
-            Cell.story(CollectionStoryViewModel(storyModel: $0))
-        }
-        collectionSnapshot.appendItems(cells, toSection: storiesSection)
-        return collectionSnapshot
+        return cells
+    }
+
+    func convertToManagedObjectIds(_ identifiers: [Any]) -> [NSManagedObjectID] {
+        identifiers.compactMap { $0 as? NSManagedObjectID }
     }
 }
 
@@ -329,14 +347,16 @@ extension CollectionViewModel {
 
 extension CollectionViewModel: NSFetchedResultsControllerDelegate {
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
-        let IDs: [NSManagedObjectID] = snapshot.itemIdentifiers.compactMap {
-            $0 as? NSManagedObjectID
-        }
-
-        guard !IDs.isEmpty else {
+        guard !snapshot.itemIdentifiers.isEmpty else {
             return
         }
-
-        self.snapshot = buildCollectionSnapshot(IDs)
+        if snapshot.reloadedItemIdentifiers.isEmpty && snapshot.reconfiguredItemIdentifiers.isEmpty {
+            setCollectionSnapshot(convertToManagedObjectIds(snapshot.itemIdentifiers))
+        } else {
+            updateCollectionSnapshot(
+                convertToManagedObjectIds(snapshot.reloadedItemIdentifiers),
+                reconfigurableIentifiers: convertToManagedObjectIds(snapshot.reconfiguredItemIdentifiers)
+            )
+        }
     }
 }

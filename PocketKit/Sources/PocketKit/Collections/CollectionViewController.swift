@@ -221,15 +221,12 @@ private extension CollectionViewController {
             let width = environment.container.effectiveContentSize.width
             let margin: CGFloat = environment.traitCollection.shouldUseWideLayout() ? Margins.iPadNormal.rawValue : Margins.normal.rawValue
             let stories = collection.stories?.compactMap { $0 as? CollectionStory } ?? []
-            let storyModels = stories.map {
-                model.createStoryViewModel(with: $0)
-            }
 
-            let components = storyModels.reduce((CGFloat(0), [NSCollectionLayoutItem]())) { result, storyModel in
+            let components = stories.reduce((CGFloat(0), [NSCollectionLayoutItem]())) { result, story in
                 let currentHeight = result.0
 
                 let height = RecommendationCell.fullHeight(
-                    viewModel: CollectionStoryViewModel(storyModel: storyModel),
+                    viewModel: CollectionStoryViewModel(collectionStory: story),
                     availableWidth: width - (margin * 2)
                 ) + margin
 
