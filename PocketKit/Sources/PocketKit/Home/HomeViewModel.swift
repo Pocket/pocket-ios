@@ -296,7 +296,8 @@ extension HomeViewModel {
             store: store,
             userDefaults: userDefaults,
             networkPathMonitor: networkPathMonitor,
-            featureFlags: featureFlags
+            featureFlags: featureFlags,
+            notificationCenter: notificationCenter
         ))
     }
 
@@ -305,7 +306,7 @@ extension HomeViewModel {
         let item = recommendation.item
 
         if let collection = recommendation.collection, featureFlags.isAssigned(flag: .nativeCollections) {
-            selectedReadableType = .collection(CollectionViewModel(collection: collection, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults))
+            selectedReadableType = .collection(CollectionViewModel(collection: collection, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults, featureFlags: featureFlags, notificationCenter: notificationCenter))
         } else {
             let viewModel = RecommendationViewModel(
                 recommendation: recommendation,
@@ -338,7 +339,7 @@ extension HomeViewModel {
 
     private func select(savedItem: SavedItem, at indexPath: IndexPath) {
         if let collection = savedItem.item?.collection, featureFlags.isAssigned(flag: .nativeCollections) {
-            selectedReadableType = .collection(CollectionViewModel(collection: collection, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults))
+            selectedReadableType = .collection(CollectionViewModel(collection: collection, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults, featureFlags: featureFlags, notificationCenter: notificationCenter))
         } else {
             let viewModel = SavedItemViewModel(
                 item: savedItem,

@@ -5,6 +5,7 @@
 import XCTest
 import Combine
 import SharedPocketKit
+import Analytics
 
 @testable import PocketKit
 @testable import Sync
@@ -17,6 +18,8 @@ class CollectionViewModelTests: XCTestCase {
     private var networkPathMonitor: MockNetworkPathMonitor!
     private var userDefaults: UserDefaults!
     private var space: Space!
+    private var featureFlags: FeatureFlagServiceProtocol!
+    private var notificationCenter: NotificationCenter!
     private var collectionController: RichFetchedResultsController<CollectionStory>!
 
     private var subscriptions: Set<AnyCancellable> = []
@@ -28,6 +31,9 @@ class CollectionViewModelTests: XCTestCase {
         user = PocketUser(userDefaults: UserDefaults())
         networkPathMonitor = MockNetworkPathMonitor()
         subscriptionStore = MockSubscriptionStore()
+        featureFlags = MockFeatureFlagService()
+        notificationCenter = .default
+
         userDefaults = UserDefaults(suiteName: "CollectionViewModelTests")
         space = .testSpace()
         self.collectionController = space.makeCollectionStoriesController(slug: "slug")
@@ -42,16 +48,25 @@ class CollectionViewModelTests: XCTestCase {
 
     func subject(
         collection: Collection,
-        source: Source? = nil
+        source: Source? = nil,
+        tracker: Tracker? = nil,
+        user: User? = nil,
+        store: SubscriptionStore? = nil,
+        networkPathMonitor: NetworkPathMonitor? = nil,
+        userDefaults: UserDefaults? = nil,
+        featureFlags: FeatureFlagServiceProtocol? = nil,
+        notificationCenter: NotificationCenter? = nil
     ) -> CollectionViewModel {
         CollectionViewModel(
             collection: collection,
             source: source ?? self.source,
             tracker: tracker ?? self.tracker,
             user: user ?? self.user,
-            store: subscriptionStore ?? self.subscriptionStore,
+            store: store ?? self.subscriptionStore,
             networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor,
-            userDefaults: userDefaults ?? self.userDefaults
+            userDefaults: userDefaults ?? self.userDefaults,
+            featureFlags: featureFlags ?? self.featureFlags,
+            notificationCenter: notificationCenter ?? self.notificationCenter
         )
     }
 
@@ -317,6 +332,152 @@ class CollectionViewModelTests: XCTestCase {
         viewModel.invokeAction(title: "Share")
 
         wait(for: [shareExpectation], timeout: 1)
+    }
+
+    // MARK: - Cell Selection
+    func test_select_withSavedItem_andIsArticle_setsReadableViewModel() {
+        let item = space.buildItem()
+        let savedItem = space.buildSavedItem().item
+        savedItem?.isArticle = true
+
+        let story = space.buildCollectionStory(item: savedItem)
+
+        source.stubFetchItem { url in
+            return item
+        }
+        let collection = space.buildCollection(stories: [story], item: item)
+
+        source.stubMakeCollectionStoriesController {
+            self.collectionController
+        }
+
+        let viewModel = subject(collection: collection)
+
+        let readableExpectation = expectation(description: "expected readable to be called")
+        viewModel.$selectedReadableViewModel.dropFirst().sink { readable in
+            XCTAssertNotNil(readable)
+            XCTAssertTrue(readable is SavedItemViewModel)
+            readableExpectation.fulfill()
+        }.store(in: &subscriptions)
+
+        viewModel.select(cell: .story(CollectionStoryViewModel(storyModel: viewModel.createStoryViewModel(with: story))))
+
+        wait(for: [readableExpectation], timeout: 1)
+    }
+
+    func test_select_withSavedItem_andIsNotArticle_setsWebView() {
+        let item = space.buildItem()
+        let savedItem = space.buildSavedItem().item
+        savedItem?.isArticle = false
+
+        let story = space.buildCollectionStory(item: savedItem)
+
+        source.stubFetchItem { url in
+            return item
+        }
+        let collection = space.buildCollection(stories: [story], item: item)
+
+        source.stubMakeCollectionStoriesController {
+            self.collectionController
+        }
+
+        let viewModel = subject(collection: collection)
+
+        let webExpectation = expectation(description: "expected web view to be called")
+        viewModel.$presentedStoryWebReaderURL.dropFirst().sink { url in
+            XCTAssertNotNil(url)
+            XCTAssertEqual(url?.absoluteString, "story-url")
+            webExpectation.fulfill()
+        }.store(in: &subscriptions)
+
+        viewModel.select(cell: .story(CollectionStoryViewModel(storyModel: viewModel.createStoryViewModel(with: story))))
+
+        wait(for: [webExpectation], timeout: 1)
+    }
+
+    func test_select_withRecommendation_andIsSyndicated_setsReadableViewModel() {
+        let item = space.buildItem(syndicatedArticle: space.buildSyndicatedArticle())
+        let savedItem = space.buildRecommendation(item: item).item
+
+        let story = space.buildCollectionStory(item: savedItem)
+
+        source.stubFetchItem { url in
+            return item
+        }
+        let collection = space.buildCollection(stories: [story], item: item)
+
+        source.stubMakeCollectionStoriesController {
+            self.collectionController
+        }
+
+        let viewModel = subject(collection: collection)
+
+        let readableExpectation = expectation(description: "expected readable to be called")
+        viewModel.$selectedReadableViewModel.dropFirst().sink { readable in
+            XCTAssertNotNil(readable)
+            XCTAssertTrue(readable is RecommendationViewModel)
+            readableExpectation.fulfill()
+        }.store(in: &subscriptions)
+
+        viewModel.select(cell: .story(CollectionStoryViewModel(storyModel: viewModel.createStoryViewModel(with: story))))
+
+        wait(for: [readableExpectation], timeout: 1)
+    }
+
+    func test_select_withRecommendation_andIsNotSyndicated_setsWebView() {
+        let item = space.buildItem()
+        let savedItem = space.buildRecommendation(item: item).item
+
+        let story = space.buildCollectionStory(item: savedItem)
+
+        source.stubFetchItem { url in
+            return item
+        }
+        let collection = space.buildCollection(stories: [story], item: item)
+
+        source.stubMakeCollectionStoriesController {
+            self.collectionController
+        }
+
+        let viewModel = subject(collection: collection)
+
+        let webExpectation = expectation(description: "expected web view to be called")
+        viewModel.$presentedStoryWebReaderURL.dropFirst().sink { url in
+            XCTAssertNotNil(url)
+            XCTAssertEqual(url?.absoluteString, "story-url")
+            webExpectation.fulfill()
+        }.store(in: &subscriptions)
+
+        viewModel.select(cell: .story(CollectionStoryViewModel(storyModel: viewModel.createStoryViewModel(with: story))))
+
+        wait(for: [webExpectation], timeout: 1)
+    }
+
+    func test_select_withNotSyndicated_andIsNotSaved_setsWebView() {
+        let item = space.buildItem()
+        let story = space.buildCollectionStory(item: item)
+
+        source.stubFetchItem { url in
+            return item
+        }
+        let collection = space.buildCollection(stories: [story], item: item)
+
+        source.stubMakeCollectionStoriesController {
+            self.collectionController
+        }
+
+        let viewModel = subject(collection: collection)
+
+        let webExpectation = expectation(description: "expected web view to be called")
+        viewModel.$presentedStoryWebReaderURL.dropFirst().sink { url in
+            XCTAssertNotNil(url)
+            XCTAssertEqual(url?.absoluteString, "story-url")
+            webExpectation.fulfill()
+        }.store(in: &subscriptions)
+
+        viewModel.select(cell: .story(CollectionStoryViewModel(storyModel: viewModel.createStoryViewModel(with: story))))
+
+        wait(for: [webExpectation], timeout: 1)
     }
 
     private func setupCollection(with item: Item?) -> Collection {
