@@ -139,10 +139,12 @@ extension Space {
         slug: String = "slug-1",
         title: String = "collection-title",
         authors: [String] = [],
-        stories: [CollectionStory] = []
+        stories: [CollectionStory] = [],
+        item: Item? = nil
     ) -> Collection {
         backgroundContext.performAndWait {
             let collection: Collection = Collection(context: backgroundContext, slug: slug, title: title, authors: NSOrderedSet(array: authors), stories: NSOrderedSet(array: stories))
+            collection.item = item
 
             return collection
         }
