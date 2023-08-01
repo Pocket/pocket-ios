@@ -79,7 +79,11 @@ public protocol Source {
 
     func save(recommendation: Recommendation)
 
+    func save(collectionStory: CollectionStory)
+
     func archive(recommendation: Recommendation)
+
+    func archive(collectionStory: CollectionStory)
 
     func remove(recommendation: Recommendation)
 
