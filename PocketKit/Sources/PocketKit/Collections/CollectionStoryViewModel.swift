@@ -18,11 +18,7 @@ struct CollectionStoryViewModel: Hashable {
         return lhs.storyModel == rhs.storyModel
     }
 
-    private let storyModel: CollectionStoryModel
-
-    init(storyModel: CollectionStoryModel) {
-        self.storyModel = storyModel
-    }
+    let storyModel: CollectionStoryModel
 }
 
 extension CollectionStoryViewModel: RecommendationCellViewModel {

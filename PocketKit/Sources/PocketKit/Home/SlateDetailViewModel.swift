@@ -38,8 +38,9 @@ class SlateDetailViewModel {
     private let networkPathMonitor: NetworkPathMonitor
     private var subscriptions: [AnyCancellable] = []
     private let featureFlags: FeatureFlagServiceProtocol
+    private let notificationCenter: NotificationCenter
 
-    init(slate: Slate, source: Source, tracker: Tracker, user: User, store: SubscriptionStore, userDefaults: UserDefaults, networkPathMonitor: NetworkPathMonitor, featureFlags: FeatureFlagServiceProtocol) {
+    init(slate: Slate, source: Source, tracker: Tracker, user: User, store: SubscriptionStore, userDefaults: UserDefaults, networkPathMonitor: NetworkPathMonitor, featureFlags: FeatureFlagServiceProtocol, notificationCenter: NotificationCenter) {
         self.slate = slate
         self.source = source
         self.tracker = tracker
@@ -49,6 +50,7 @@ class SlateDetailViewModel {
         self.snapshot = Self.loadingSnapshot()
         self.featureFlags = featureFlags
         self.networkPathMonitor = networkPathMonitor
+        self.notificationCenter = notificationCenter
 
         NotificationCenter.default.publisher(
             for: NSManagedObjectContext.didSaveObjectsNotification,
@@ -125,7 +127,7 @@ extension SlateDetailViewModel {
         var destination: ContentOpen.Destination = .internal
 
         if let collection = recommendation.collection, featureFlags.isAssigned(flag: .nativeCollections) {
-            selectedCollectionViewModel = CollectionViewModel(collection: collection, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults)
+            selectedCollectionViewModel = CollectionViewModel(collection: collection, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults, featureFlags: featureFlags, notificationCenter: notificationCenter)
         } else if item.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
             guard let bestURL = URL(percentEncoding: item.bestURL) else { return }
             let url = pocketPremiumURL(bestURL, user: user)
