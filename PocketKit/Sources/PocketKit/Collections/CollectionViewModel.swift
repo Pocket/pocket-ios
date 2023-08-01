@@ -304,7 +304,7 @@ private extension CollectionViewModel {
     }
 
     /// Reloads and/or reconfigures items in the existing snapshot
-    func updateCollectionSnapshot(_ reloadableIdentifiers: [NSManagedObjectID], reconfigurableIentifiers: [NSManagedObjectID]) {
+    func updateCollectionSnapshot(_ reloadableIdentifiers: [NSManagedObjectID], reconfigurableIdentifiers: [NSManagedObjectID]) {
         var updatedSnapshot = self.snapshot
 
         let reloadableCells = buildStoryCells(from: reloadableIdentifiers)
