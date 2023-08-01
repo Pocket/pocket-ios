@@ -11,7 +11,7 @@ class MockCollectionService: CollectionService {
 
 extension MockCollectionService {
     static let fetchCollection = "fetchCollection"
-    typealias FetchCollectionImpl = (String) async throws -> Sync.CollectionStoryModel
+    typealias FetchCollectionImpl = (String) async throws -> Void
 
     struct FetchCollectionCall {
         let slug: String
