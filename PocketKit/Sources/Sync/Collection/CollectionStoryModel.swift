@@ -5,19 +5,23 @@
 import Foundation
 
 public struct CollectionStoryModel: Equatable, Hashable {
-    public init(title: String, publisher: String?, imageURL: String?, excerpt: Markdown, timeToRead: Int?, isCollection: Bool) {
+    public init(url: String, title: String, publisher: String?, imageURL: String?, excerpt: Markdown, timeToRead: Int?, isCollection: Bool, item: Item?) {
+        self.url = url
         self.title = title
         self.publisher = publisher
         self.imageURL = imageURL
         self.excerpt = excerpt
         self.timeToRead = timeToRead
         self.isCollection = isCollection
+        self.item = item
     }
 
+    public let url: String
     public let title: String
     public let publisher: String?
     public let imageURL: String?
     public let excerpt: Markdown
     public let timeToRead: Int?
+    public let item: Item?
     public let isCollection: Bool
 }

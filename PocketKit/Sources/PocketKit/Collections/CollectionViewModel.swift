@@ -15,10 +15,14 @@ class CollectionViewModel: NSObject {
     typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Cell>
 
     @Published var snapshot: Snapshot
+
     @Published var presentedAlert: PocketAlert?
     @Published var presentedAddTags: PocketAddTagsViewModel?
     @Published var sharedActivity: PocketActivity?
     @Published var selectedItemToReport: Item?
+
+    @Published var selectedReadableViewModel: ReadableViewModel?
+    @Published var presentedStoryWebReaderURL: URL?
 
     @Published private(set) var _events: ReadableEvent?
     var events: Published<ReadableEvent?>.Publisher { $_events }
@@ -33,6 +37,8 @@ class CollectionViewModel: NSObject {
     private let store: SubscriptionStore
     private let networkPathMonitor: NetworkPathMonitor
     private let userDefaults: UserDefaults
+    private let featureFlags: FeatureFlagServiceProtocol
+    private let notificationCenter: NotificationCenter
 
     private let collectionController: RichFetchedResultsController<CollectionStory>
 
@@ -46,7 +52,9 @@ class CollectionViewModel: NSObject {
         user: User,
         store: SubscriptionStore,
         networkPathMonitor: NetworkPathMonitor,
-        userDefaults: UserDefaults
+        userDefaults: UserDefaults,
+        featureFlags: FeatureFlagServiceProtocol,
+        notificationCenter: NotificationCenter
     ) {
         self.collection = collection
         self.source = source
@@ -55,6 +63,8 @@ class CollectionViewModel: NSObject {
         self.store = store
         self.networkPathMonitor = networkPathMonitor
         self.userDefaults = userDefaults
+        self.featureFlags = featureFlags
+        self.notificationCenter = notificationCenter
 
         self.collectionController = source.makeCollectionStoriesController(slug: collection.slug)
 
@@ -108,6 +118,19 @@ class CollectionViewModel: NSObject {
                 // TODO: NATIVECOLLECTIONS - handle remote error here
             }
         }
+    }
+
+    func createStoryViewModel(with story: CollectionStory) -> CollectionStoryModel {
+        CollectionStoryModel(
+            url: story.url,
+            title: story.title,
+            publisher: story.publisher,
+            imageURL: story.imageUrl,
+            excerpt: story.excerpt,
+            timeToRead: story.item?.timeToRead != nil ? Int(truncating: (story.item?.timeToRead)!) : nil,
+            isCollection: story.item?.collection != nil,
+            item: story.item
+        )
     }
 
     func archive() {
@@ -217,14 +240,45 @@ class CollectionViewModel: NSObject {
 
 // MARK: - Cell Selection
 extension CollectionViewModel {
-    func select(cell: CollectionViewModel.Cell, at indexPath: IndexPath) {
+    func select(cell: CollectionViewModel.Cell) {
         switch cell {
-        case .loading:
+        case .loading, .collectionHeader:
             return
-        case .collectionHeader:
-            return
-        case .story:
-            return
+        case .story(let storyViewModel):
+            selectItem(with: storyViewModel.storyModel)
+        }
+    }
+
+    private func selectItem(with story: CollectionStoryModel) {
+        // Check if item is a saved item
+        if let item = story.item, !item.shouldOpenInWebView(override: featureFlags.shouldDisableReader), let savedItem = item.savedItem {
+            selectedReadableViewModel = SavedItemViewModel(
+                item: savedItem,
+                source: source,
+                tracker: tracker.childTracker(hosting: .articleView.screen),
+                pasteboard: UIPasteboard.general,
+                user: user,
+                store: store,
+                networkPathMonitor: networkPathMonitor,
+                userDefaults: userDefaults,
+                notificationCenter: notificationCenter
+            )
+        // Check if item has an associated recommendation
+        } else if let item = story.item, !item.shouldOpenInWebView(override: featureFlags.shouldDisableReader), let recommendation = item.recommendation {
+            selectedReadableViewModel =
+            RecommendationViewModel(
+                recommendation: recommendation,
+                source: source,
+                tracker: tracker,
+                pasteboard: UIPasteboard.general,
+                user: user,
+                userDefaults: userDefaults
+            )
+        // Else open item in webview
+        } else {
+            guard let bestURL = URL(percentEncoding: story.url) else { return }
+            let url = pocketPremiumURL(bestURL, user: user)
+            presentedStoryWebReaderURL = url
         }
     }
 }
@@ -249,14 +303,7 @@ private extension CollectionViewModel {
         }
 
         let models = entities.map {
-            CollectionStoryModel(
-                title: $0.title,
-                publisher: $0.publisher,
-                imageURL: $0.imageUrl,
-                excerpt: $0.excerpt,
-                timeToRead: $0.item?.timeToRead != nil ? Int(truncating: ($0.item?.timeToRead)!) : nil,
-                isCollection: $0.item?.collection != nil
-            )
+            createStoryViewModel(with: $0)
         }
         let cells = models.map {
             Cell.story(CollectionStoryViewModel(storyModel: $0))

@@ -87,6 +87,7 @@ class CollectionViewController: UIViewController {
 
         collectionView.backgroundColor = UIColor(.ui.white1)
         collectionView.dataSource = dataSource
+        collectionView.delegate = self
 
         collectionView.register(cellClass: LoadingCell.self)
         collectionView.register(cellClass: CollectionMetadataCell.self)
@@ -220,14 +221,9 @@ private extension CollectionViewController {
             let width = environment.container.effectiveContentSize.width
             let margin: CGFloat = environment.traitCollection.shouldUseWideLayout() ? Margins.iPadNormal.rawValue : Margins.normal.rawValue
             let stories = collection.stories?.compactMap { $0 as? CollectionStory } ?? []
-            let storyModels = stories.map { CollectionStoryModel(
-                title: $0.title,
-                publisher: $0.publisher,
-                imageURL: $0.imageUrl,
-                excerpt: $0.excerpt,
-                timeToRead: $0.item?.timeToRead != nil ? Int(truncating: ($0.item?.timeToRead)!) : nil,
-                isCollection: $0.item?.collection != nil
-            )}
+            let storyModels = stories.map {
+                model.createStoryViewModel(with: $0)
+            }
 
             let components = storyModels.reduce((CGFloat(0), [NSCollectionLayoutItem]())) { result, storyModel in
                 let currentHeight = result.0
@@ -296,5 +292,15 @@ private extension CollectionViewController {
             cell.configure(model: story)
             return cell
         }
+    }
+}
+
+extension CollectionViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let cell = dataSource.itemIdentifier(for: indexPath) else {
+            return
+        }
+
+        model.select(cell: cell)
     }
 }
