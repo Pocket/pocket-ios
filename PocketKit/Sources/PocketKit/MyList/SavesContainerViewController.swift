@@ -383,21 +383,42 @@ extension SavesContainerViewController {
         )
     }
 
+    func show(_ recommendation: RecommendationViewModel?) {
+        readableSubscriptions = []
+        guard let recommendation = recommendation else {
+            return
+        }
+
+        navigationController?.pushViewController(
+            ReadableHostViewController(readableViewModel: recommendation),
+            animated: true
+        )
+
+        recommendation.events.receive(on: DispatchQueue.main).sink { [weak self] event in
+            switch event {
+            case .contentUpdated:
+                break
+            case .archive, .delete:
+                self?.popToPreviousScreen(navigationController: self?.navigationController)
+            }
+        }.store(in: &readableSubscriptions)
+    }
+
     private func push(collection: CollectionViewModel?) {
         guard let collection else {
             readableSubscriptions = []
             return
         }
 
-        collection.$presentedAlert.sink { [weak self] alert in
+        collection.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
             self?.present(alert: alert)
         }.store(in: &readableSubscriptions)
 
-        collection.$presentedAddTags.sink { [weak self] addTagsViewModel in
+        collection.$presentedAddTags.receive(on: DispatchQueue.main).sink { [weak self] addTagsViewModel in
             self?.present(viewModel: addTagsViewModel)
         }.store(in: &readableSubscriptions)
 
-        collection.$sharedActivity.sink { [weak self] activity in
+        collection.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
             self?.present(activity: activity)
         }.store(in: &readableSubscriptions)
 
@@ -408,6 +429,18 @@ extension SavesContainerViewController {
             case .archive, .delete:
                 self?.popToPreviousScreen(navigationController: self?.navigationController)
             }
+        }.store(in: &readableSubscriptions)
+
+        collection.$selectedReadableViewModel.receive(on: DispatchQueue.main).sink { [weak self] readableType in
+            if let savedItem = readableType as? SavedItemViewModel {
+                self?.push(savedItem: savedItem)
+            } else if let recommendation = readableType as? RecommendationViewModel {
+                self?.show(recommendation)
+            }
+        }.store(in: &readableSubscriptions)
+
+        collection.$presentedStoryWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
+            self?.present(url: url)
         }.store(in: &readableSubscriptions)
 
         navigationController?.pushViewController(
