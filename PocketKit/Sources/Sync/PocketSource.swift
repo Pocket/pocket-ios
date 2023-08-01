@@ -951,6 +951,25 @@ extension PocketSource {
         }
     }
 
+    public func save(collectionStory: CollectionStory) {
+        space.performAndWait {
+            guard let collectionStory = space.backgroundObject(with: collectionStory.objectID) as? CollectionStory,
+            let givenURL = collectionStory.item?.givenURL else {
+                return
+            }
+            if let savedItem = try? space.fetchSavedItem(byURL: givenURL) {
+                unarchive(item: savedItem)
+            } else {
+                let savedItem: SavedItem = SavedItem(context: space.backgroundContext, url: givenURL)
+                savedItem.createdAt = Date()
+                savedItem.item = collectionStory.item
+                try? space.save()
+
+                save(item: savedItem)
+            }
+        }
+    }
+
     public func archive(recommendation: Recommendation) {
         space.performAndWait {
             guard let recommendation = space.backgroundObject(with: recommendation.objectID) as? Recommendation,
@@ -958,6 +977,16 @@ extension PocketSource {
                 return
             }
 
+            archive(item: savedItem)
+        }
+    }
+
+    public func archive(collectionStory: CollectionStory) {
+        space.performAndWait {
+            guard let collectionStory = space.backgroundObject(with: collectionStory.objectID) as? CollectionStory,
+                  let savedItem = collectionStory.item?.savedItem, savedItem.isArchived == false else {
+                return
+            }
             archive(item: savedItem)
         }
     }
