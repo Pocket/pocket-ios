@@ -590,7 +590,7 @@ class CollectionViewModelTests: XCTestCase {
     func test_snapshot_whenNetworkIsUnavailable_andHasLocalData_hasCorrectSnapshot() throws {
         networkPathMonitor.update(status: .unsatisfied)
 
-        let collection =         let item = space.buildItem()
+        let item = space.buildItem()
         let collection = setupCollection(with: item)
 
         source.stubMakeCollectionStoriesController {
@@ -602,8 +602,8 @@ class CollectionViewModelTests: XCTestCase {
         let snapshotExpectation = expectation(description: "expect a snapshot")
 
         viewModel.$snapshot.dropFirst().sink { snapshot in
-            XCTAssertNotNil(snapshot.indexOfSection(.error))
-            XCTAssertEqual(snapshot.itemIdentifiers(inSection: .error), [.error])
+            XCTAssertNotNil(snapshot.indexOfSection(.collectionHeader))
+            XCTAssertEqual(snapshot.itemIdentifiers(inSection: .collectionHeader), [.collectionHeader])
             snapshotExpectation.fulfill()
         }.store(in: &subscriptions)
 
