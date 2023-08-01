@@ -30,6 +30,7 @@ extension Collection {
 
             story.sortOrder = NSNumber(value: $0.offset + 1)
             story.publisher = $0.element.publisher
+            story.imageUrl = $0.element.imageUrl
             if let remoteItem = $0.element.item {
                 let item = (try? space.fetchItem(byURL: remoteItem.givenUrl, context: context)) ??
                 Item(context: context, givenURL: remoteItem.givenUrl, remoteID: remoteItem.remoteID)
