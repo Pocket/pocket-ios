@@ -17,6 +17,7 @@ class CollectionViewModelTests: XCTestCase {
     private var networkPathMonitor: MockNetworkPathMonitor!
     private var userDefaults: UserDefaults!
     private var space: Space!
+    private var collectionController: RichFetchedResultsController<CollectionStory>!
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -29,6 +30,10 @@ class CollectionViewModelTests: XCTestCase {
         subscriptionStore = MockSubscriptionStore()
         userDefaults = UserDefaults(suiteName: "CollectionViewModelTests")
         space = .testSpace()
+        self.collectionController = space.makeCollectionStoriesController(slug: "slug")
+        source.stubMakeCollectionStoriesController {
+            self.collectionController
+        }
     }
 
     override func tearDownWithError() throws {
@@ -43,7 +48,7 @@ class CollectionViewModelTests: XCTestCase {
         source: Source? = nil
     ) -> CollectionViewModel {
         CollectionViewModel(
-            slug: slug,
+            collection: space.buildCollection(),
             source: source ?? self.source,
             tracker: tracker ?? self.tracker,
             user: user ?? self.user,
@@ -88,7 +93,10 @@ class CollectionViewModelTests: XCTestCase {
             defer { expectMoveToSaves.fulfill() }
             XCTAssertTrue(unarchivedSavedItem === item?.savedItem)
         }
-
+        source.stubSaveURL { url in
+            defer { expectMoveToSaves.fulfill() }
+            XCTAssertEqual(url, "https://getpocket.com/collections/slug-1")
+        }
         viewModel.moveToSaves { _ in }
 
         wait(for: [expectMoveToSaves], timeout: 1)
