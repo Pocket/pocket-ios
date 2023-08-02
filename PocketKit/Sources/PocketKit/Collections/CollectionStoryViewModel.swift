@@ -7,6 +7,7 @@ import PocketGraph
 import Textile
 import Localization
 import Sync
+import Analytics
 
 // Contains logic to present story data in RecommendationCell
 struct CollectionStoryViewModel: Hashable {
@@ -20,11 +21,13 @@ struct CollectionStoryViewModel: Hashable {
 
     private(set) var collectionStory: CollectionStory
     private let source: Source?
+    private let tracker: Tracker
     let overflowActions: [ItemAction]?
 
-    init(collectionStory: CollectionStory, source: Source? = nil, overflowActions: [ItemAction]?) {
+    init(collectionStory: CollectionStory, source: Source? = nil, tracker: Tracker, overflowActions: [ItemAction]?) {
         self.collectionStory = collectionStory
         self.source = source
+        self.tracker = tracker
         self.overflowActions = overflowActions
     }
 }
@@ -95,10 +98,25 @@ extension CollectionStoryViewModel: RecommendationCellViewModel {
     var primaryAction: ItemAction? {
         .recommendationPrimary { _ in
             if !self.collectionStory.isSaved {
+                trackStorySave()
                 self.source?.save(collectionStory: self.collectionStory)
             } else {
+                trackStoryUnSave()
                 self.source?.archive(collectionStory: self.collectionStory)
             }
         }
+    }
+}
+
+// MARK: - Analytics
+private extension CollectionStoryViewModel {
+    /// track user saving a story
+    func trackStorySave() {
+        tracker.track(event: Events.Collection.storySaveClicked(url: collectionStory.url))
+    }
+
+    /// track user unsaving a story
+    func trackStoryUnSave() {
+        tracker.track(event: Events.Collection.storyUnSaveClicked(url: collectionStory.url))
     }
 }
