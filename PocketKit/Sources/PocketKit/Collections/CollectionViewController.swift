@@ -226,7 +226,7 @@ private extension CollectionViewController {
                 let currentHeight = result.0
 
                 let height = RecommendationCell.fullHeight(
-                    viewModel: CollectionStoryViewModel(collectionStory: story),
+                    viewModel: model.storyViewModel(for: story),
                     availableWidth: width - (margin * 2)
                 ) + margin
 

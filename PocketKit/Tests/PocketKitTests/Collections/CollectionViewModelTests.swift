@@ -70,6 +70,7 @@ class CollectionViewModelTests: XCTestCase {
         )
     }
 
+    // MARK: - Collection Actions
     func test_archive_sendsRequestToSource_andSendsArchiveEvent() {
         let item = space.buildSavedItem().item
         let collection = setupCollection(with: item)
@@ -304,7 +305,7 @@ class CollectionViewModelTests: XCTestCase {
         let viewModel = subject(collection: collection)
 
         let reportExpectation = expectation(description: "expected item to be reported")
-        viewModel.$selectedItemToReport.dropFirst().sink { recommendation in
+        viewModel.$selectedCollectionItemToReport.dropFirst().sink { recommendation in
             XCTAssertNotNil(recommendation)
             reportExpectation.fulfill()
         }.store(in: &subscriptions)
@@ -360,7 +361,7 @@ class CollectionViewModelTests: XCTestCase {
             readableExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        viewModel.select(cell: .story(CollectionStoryViewModel(collectionStory: story)))
+        viewModel.select(cell: .story(viewModel.storyViewModel(for: story)))
 
         wait(for: [readableExpectation], timeout: 1)
     }
@@ -390,7 +391,7 @@ class CollectionViewModelTests: XCTestCase {
             webExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        viewModel.select(cell: .story(CollectionStoryViewModel(collectionStory: story)))
+        viewModel.select(cell: .story(viewModel.storyViewModel(for: story)))
 
         wait(for: [webExpectation], timeout: 1)
     }
@@ -419,7 +420,7 @@ class CollectionViewModelTests: XCTestCase {
             readableExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        viewModel.select(cell: .story(CollectionStoryViewModel(collectionStory: story)))
+        viewModel.select(cell: .story(viewModel.storyViewModel(for: story)))
 
         wait(for: [readableExpectation], timeout: 1)
     }
@@ -448,7 +449,7 @@ class CollectionViewModelTests: XCTestCase {
             webExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        viewModel.select(cell: .story(CollectionStoryViewModel(collectionStory: story)))
+        viewModel.select(cell: .story(viewModel.storyViewModel(for: story)))
 
         wait(for: [webExpectation], timeout: 1)
     }
@@ -475,9 +476,68 @@ class CollectionViewModelTests: XCTestCase {
             webExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        viewModel.select(cell: .story(CollectionStoryViewModel(collectionStory: story)))
+        viewModel.select(cell: .story(viewModel.storyViewModel(for: story)))
 
         wait(for: [webExpectation], timeout: 1)
+    }
+
+    // MARK: - Story Actions
+    func test_reportAction_forStories_updatesSelectedStoryToReport() throws {
+        let item = space.buildItem()
+        let story = space.buildCollectionStory(item: item)
+
+        source.stubFetchItem { url in
+            return item
+        }
+        let collection = space.buildCollection(stories: [story], item: item)
+
+        source.stubMakeCollectionStoriesController {
+            self.collectionController
+        }
+
+        let viewModel = subject(collection: collection)
+
+        let reportExpectation = expectation(description: "expected to update selected story to report")
+        viewModel.$selectedStoryToReport.dropFirst().sink { story in
+            XCTAssertNotNil(story)
+            reportExpectation.fulfill()
+        }.store(in: &subscriptions)
+
+        let storyViewModel = viewModel.storyViewModel(for: story)
+        let action = storyViewModel.overflowActions?.first { $0.identifier == .report }
+        XCTAssertNotNil(action)
+        action?.handler?(nil)
+
+        wait(for: [reportExpectation], timeout: 1)
+    }
+
+    func test_shareAction_forStories_updatesSelectedStoryToShare() throws {
+        let item = space.buildItem()
+        let story = space.buildCollectionStory(item: item)
+
+        source.stubFetchItem { url in
+            return item
+        }
+        let collection = space.buildCollection(stories: [story], item: item)
+
+        source.stubMakeCollectionStoriesController {
+            self.collectionController
+        }
+
+        let viewModel = subject(collection: collection)
+
+        let reportExpectation = expectation(description: "expected to update selected story to report")
+        viewModel.$sharedStoryActivity.dropFirst().sink { story in
+            XCTAssertNotNil(story)
+            reportExpectation.fulfill()
+        }.store(in: &subscriptions)
+
+        let storyViewModel = viewModel.storyViewModel(for: story)
+        let action = storyViewModel.overflowActions?.first { $0.identifier == .shareItem }
+        XCTAssertNotNil(action)
+        action?.handler?(nil)
+
+        wait(for: [reportExpectation], timeout: 1)
     }
 
     private func setupCollection(with item: Item?) -> Collection {

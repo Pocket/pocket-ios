@@ -6,6 +6,7 @@ import Combine
 import Sync
 import UIKit
 import SharedPocketKit
+import Analytics
 
 @MainActor
 class SavesContainerViewModel {
@@ -16,17 +17,20 @@ class SavesContainerViewModel {
 
     @Published var selection: Selection = .saves
 
+    let tracker: Tracker
     let searchList: SearchViewModel
     let savedItemsList: SavedItemsListViewModel
     let archivedItemsList: SavedItemsListViewModel
     let addSavedItemModel: AddSavedItemViewModel
 
     init(
+        tracker: Tracker,
         searchList: SearchViewModel,
         savedItemsList: SavedItemsListViewModel,
         archivedItemsList: SavedItemsListViewModel,
         addSavedItemModel: AddSavedItemViewModel
     ) {
+        self.tracker = tracker
         self.searchList = searchList
         self.savedItemsList = savedItemsList
         self.archivedItemsList = archivedItemsList
