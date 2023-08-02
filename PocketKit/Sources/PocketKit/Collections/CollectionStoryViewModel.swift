@@ -9,7 +9,7 @@ import Localization
 import Sync
 
 // Contains logic to present story data in RecommendationCell
-class CollectionStoryViewModel: Hashable {
+struct CollectionStoryViewModel: Hashable {
     public func hash(into hasher: inout Hasher) {
         return hasher.combine(collectionStory)
     }

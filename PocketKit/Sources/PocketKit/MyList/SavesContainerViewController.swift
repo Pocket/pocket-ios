@@ -475,11 +475,11 @@ extension SavesContainerViewController {
         )
 
         host.modalPresentationStyle = .formSheet
-        guard let presentedVC = self.presentedViewController else {
+        guard let presentedViewController else {
             self.present(host, animated: true)
             return
         }
-        presentedVC.present(host, animated: true)
+        presentedViewController.present(host, animated: true)
     }
 
     private func present(alert: PocketAlert?) {
