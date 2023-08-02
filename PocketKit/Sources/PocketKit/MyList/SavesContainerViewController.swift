@@ -422,6 +422,10 @@ extension SavesContainerViewController {
             self?.present(activity: activity)
         }.store(in: &readableSubscriptions)
 
+        collection.$selectedCollectionItemToReport.receive(on: DispatchQueue.main).sink { [weak self] item in
+            self?.report(item?.givenURL)
+        }.store(in: &readableSubscriptions)
+
         collection.events.receive(on: DispatchQueue.main).sink { [weak self] event in
             switch event {
             case .contentUpdated, .none:
@@ -439,14 +443,43 @@ extension SavesContainerViewController {
             }
         }.store(in: &readableSubscriptions)
 
+        // MARK: Story Presentation
         collection.$presentedStoryWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
             self?.present(url: url)
+        }.store(in: &readableSubscriptions)
+
+        collection.$sharedStoryActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
+            self?.present(activity: activity)
+        }.store(in: &readableSubscriptions)
+
+        collection.$selectedStoryToReport.receive(on: DispatchQueue.main).sink { [weak self] item in
+            self?.report(item?.givenURL)
         }.store(in: &readableSubscriptions)
 
         navigationController?.pushViewController(
             CollectionViewController(model: collection),
             animated: true
         )
+    }
+
+    private func report(_ givenURL: String?) {
+        guard let givenURL else {
+            Log.capture(message: "Unable to report item from Saves")
+            return
+        }
+
+        let host = ReportRecommendationHostingController(
+            givenURL: givenURL,
+            tracker: model.tracker.childTracker(hosting: .reportDialog),
+            onDismiss: { }
+        )
+
+        host.modalPresentationStyle = .formSheet
+        guard let presentedVC = self.presentedViewController else {
+            self.present(host, animated: true)
+            return
+        }
+        presentedVC.present(host, animated: true)
     }
 
     private func present(alert: PocketAlert?) {

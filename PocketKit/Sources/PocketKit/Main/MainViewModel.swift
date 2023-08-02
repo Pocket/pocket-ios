@@ -28,6 +28,7 @@ class MainViewModel: ObservableObject {
     convenience init() {
         self.init(
             saves: SavesContainerViewModel(
+                tracker: Services.shared.tracker,
                 searchList: SearchViewModel(
                     networkPathMonitor: NWPathMonitor(),
                     user: Services.shared.user,
