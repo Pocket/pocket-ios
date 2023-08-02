@@ -99,7 +99,7 @@ extension CollectionStoryViewModel: RecommendationCellViewModel {
             if !self.collectionStory.isSaved {
                 self.source?.save(collectionStory: self.collectionStory)
             } else {
-            self.source?.archive(collectionStory: self.collectionStory)
+                self.source?.archive(collectionStory: self.collectionStory)
             }
         }
     }
