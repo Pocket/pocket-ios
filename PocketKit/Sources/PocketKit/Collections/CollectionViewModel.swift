@@ -120,19 +120,6 @@ class CollectionViewModel: NSObject {
         }
     }
 
-    func createStoryViewModel(with story: CollectionStory) -> CollectionStoryModel {
-        CollectionStoryModel(
-            url: story.url,
-            title: story.title,
-            publisher: story.publisher,
-            imageURL: story.imageUrl,
-            excerpt: story.excerpt,
-            timeToRead: story.item?.timeToRead != nil ? Int(truncating: (story.item?.timeToRead)!) : nil,
-            isCollection: story.item?.collection != nil,
-            item: story.item
-        )
-    }
-
     func archive() {
         guard let savedItem = item?.savedItem else {
             Log.capture(message: "Failed to archive item due to savedItem being nil")
