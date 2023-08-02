@@ -495,7 +495,7 @@ extension HomeViewController {
             self?.present(activity: activity)
         }.store(in: &collectionSubscriptions)
 
-        viewModel.$selectedItemToReport.receive(on: DispatchQueue.main).sink { [weak self] item in
+        viewModel.$selectedCollectionItemToReport.receive(on: DispatchQueue.main).sink { [weak self] item in
             self?.report(item?.givenURL)
         }.store(in: &collectionSubscriptions)
 
@@ -516,8 +516,17 @@ extension HomeViewController {
             }
         }.store(in: &collectionSubscriptions)
 
+        // MARK: Story Presentation
         viewModel.$presentedStoryWebReaderURL.sink { [weak self] url in
             self?.present(url: url?.absoluteString)
+        }.store(in: &collectionSubscriptions)
+
+        viewModel.$sharedStoryActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
+            self?.present(activity: activity)
+        }.store(in: &collectionSubscriptions)
+
+        viewModel.$selectedStoryToReport.receive(on: DispatchQueue.main).sink { [weak self] item in
+            self?.report(item?.givenURL)
         }.store(in: &collectionSubscriptions)
     }
 

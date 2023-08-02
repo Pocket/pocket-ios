@@ -9,7 +9,7 @@ import Localization
 import Sync
 
 // Contains logic to present story data in RecommendationCell
-struct CollectionStoryViewModel: Hashable {
+class CollectionStoryViewModel: Hashable {
     public func hash(into hasher: inout Hasher) {
         return hasher.combine(collectionStory)
     }
@@ -20,10 +20,12 @@ struct CollectionStoryViewModel: Hashable {
 
     private(set) var collectionStory: CollectionStory
     private let source: Source?
+    let overflowActions: [ItemAction]?
 
-    init(collectionStory: CollectionStory, source: Source? = nil) {
+    init(collectionStory: CollectionStory, source: Source? = nil, overflowActions: [ItemAction]?) {
         self.collectionStory = collectionStory
         self.source = source
+        self.overflowActions = overflowActions
     }
 }
 
@@ -88,10 +90,6 @@ extension CollectionStoryViewModel: RecommendationCellViewModel {
         }
 
         return Localization.Home.Recommendation.readTime(timeToRead)
-    }
-
-    var overflowActions: [ItemAction]? {
-        return nil
     }
 
     var primaryAction: ItemAction? {
