@@ -308,7 +308,7 @@ private extension CollectionViewModel {
         var updatedSnapshot = self.snapshot
 
         let reloadableCells = buildStoryCells(from: reloadableIdentifiers)
-        let reconfigurableCells = buildStoryCells(from: reconfigurableIentifiers)
+        let reconfigurableCells = buildStoryCells(from: reconfigurableIdentifiers)
 
         updatedSnapshot.reloadItems(reloadableCells)
         updatedSnapshot.reconfigureItems(reconfigurableCells)
@@ -355,7 +355,7 @@ extension CollectionViewModel: NSFetchedResultsControllerDelegate {
         } else {
             updateCollectionSnapshot(
                 convertToManagedObjectIds(snapshot.reloadedItemIdentifiers),
-                reconfigurableIentifiers: convertToManagedObjectIds(snapshot.reconfiguredItemIdentifiers)
+                reconfigurableIdentifiers: convertToManagedObjectIds(snapshot.reconfiguredItemIdentifiers)
             )
         }
     }
