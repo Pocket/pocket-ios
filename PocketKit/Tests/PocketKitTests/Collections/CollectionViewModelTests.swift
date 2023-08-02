@@ -360,7 +360,7 @@ class CollectionViewModelTests: XCTestCase {
             readableExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        viewModel.select(cell: .story(CollectionStoryViewModel(storyModel: viewModel.createStoryViewModel(with: story))))
+        viewModel.select(cell: .story(CollectionStoryViewModel(collectionStory: story)))
 
         wait(for: [readableExpectation], timeout: 1)
     }
@@ -390,7 +390,7 @@ class CollectionViewModelTests: XCTestCase {
             webExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        viewModel.select(cell: .story(CollectionStoryViewModel(storyModel: viewModel.createStoryViewModel(with: story))))
+        viewModel.select(cell: .story(CollectionStoryViewModel(collectionStory: story)))
 
         wait(for: [webExpectation], timeout: 1)
     }
@@ -419,7 +419,7 @@ class CollectionViewModelTests: XCTestCase {
             readableExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        viewModel.select(cell: .story(CollectionStoryViewModel(storyModel: viewModel.createStoryViewModel(with: story))))
+        viewModel.select(cell: .story(CollectionStoryViewModel(collectionStory: story)))
 
         wait(for: [readableExpectation], timeout: 1)
     }
@@ -448,7 +448,7 @@ class CollectionViewModelTests: XCTestCase {
             webExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        viewModel.select(cell: .story(CollectionStoryViewModel(storyModel: viewModel.createStoryViewModel(with: story))))
+        viewModel.select(cell: .story(CollectionStoryViewModel(collectionStory: story)))
 
         wait(for: [webExpectation], timeout: 1)
     }
@@ -475,7 +475,7 @@ class CollectionViewModelTests: XCTestCase {
             webExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        viewModel.select(cell: .story(CollectionStoryViewModel(storyModel: viewModel.createStoryViewModel(with: story))))
+        viewModel.select(cell: .story(CollectionStoryViewModel(collectionStory: story)))
 
         wait(for: [webExpectation], timeout: 1)
     }
