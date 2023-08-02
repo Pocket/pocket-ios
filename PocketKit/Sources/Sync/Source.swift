@@ -38,6 +38,8 @@ public protocol Source {
 
     func makeImagesController() -> ImagesController
 
+    func makeFeatureFlagsController() -> NSFetchedResultsController<FeatureFlag>
+
     func viewObject<T: NSManagedObject>(id: NSManagedObjectID) -> T?
 
     func viewRefresh(_ object: NSManagedObject, mergeChanges flag: Bool)
