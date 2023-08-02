@@ -112,8 +112,8 @@ class CollectionViewController: UIViewController {
             identifier: nil,
             options: [],
             children: [
-                UIDeferredMenuElement.uncached {
-                    completion in
+                UIDeferredMenuElement.uncached { [weak self] completion in
+                    self?.model.trackOverflow()
                     completion(actions.compactMap(UIAction.init))
                 }
             ]
