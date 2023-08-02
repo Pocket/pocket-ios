@@ -19,10 +19,13 @@ class CollectionViewModel: NSObject {
     @Published var presentedAlert: PocketAlert?
     @Published var presentedAddTags: PocketAddTagsViewModel?
     @Published var sharedActivity: PocketActivity?
-    @Published var selectedItemToReport: Item?
+    @Published var selectedCollectionItemToReport: Item?
 
     @Published var selectedReadableViewModel: ReadableViewModel?
     @Published var presentedStoryWebReaderURL: URL?
+
+    @Published var sharedStoryActivity: PocketActivity?
+    @Published var selectedStoryToReport: Item?
 
     @Published private(set) var _events: ReadableEvent?
     var events: Published<ReadableEvent?>.Publisher { $_events }
@@ -221,12 +224,27 @@ class CollectionViewModel: NSObject {
     }
 
     private func report() {
-        selectedItemToReport = item
+        selectedCollectionItemToReport = item
     }
 }
 
 // MARK: - Cell Selection
 extension CollectionViewModel {
+    func storyViewModel(for story: CollectionStory) -> CollectionStoryViewModel {
+        return CollectionStoryViewModel(
+            collectionStory: story,
+            source: source,
+            overflowActions: [
+                .share { [weak self] sender in
+                    self?.sharedStoryActivity = PocketItemActivity.fromCollection(url: story.url, sender: sender)
+                },
+                .report { [weak self] _ in
+                    self?.selectedStoryToReport = story.item
+                }
+            ]
+        )
+    }
+
     func select(cell: CollectionViewModel.Cell) {
         switch cell {
         case .loading, .collectionHeader:
@@ -308,7 +326,7 @@ private extension CollectionViewModel {
         }
 
         let cells = collectionStories.map {
-            Cell.story(CollectionStoryViewModel(collectionStory: $0, source: source))
+            Cell.story(storyViewModel(for: $0))
         }
         return cells
     }
@@ -345,5 +363,12 @@ extension CollectionViewModel: NSFetchedResultsControllerDelegate {
                 reconfigurableIdentifiers: convertToManagedObjectIds(snapshot.reconfiguredItemIdentifiers)
             )
         }
+    }
+}
+
+// TODO: NATIVE COLLECTIONS - Update when working on analytics ticket
+extension CollectionViewModel {
+    func trackerForReportRecommendation() -> Tracker {
+        tracker.childTracker(hosting: .reportDialog)
     }
 }
