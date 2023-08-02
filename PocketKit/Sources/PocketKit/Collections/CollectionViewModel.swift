@@ -77,9 +77,15 @@ class CollectionViewModel: NSObject {
         collectionController.delegate = self
         buildActions()
 
-        item?.savedItem?.publisher(for: \.isFavorite).sink { [weak self] _ in
+        item?.publisher(for: \.savedItem?.isFavorite).sink { [weak self] _ in
             self?.buildActions()
         }.store(in: &collectionItemSubscriptions)
+
+        item?.publisher(for: \.savedItem).sink { [weak self] _ in
+            self?.buildActions()
+        }.store(in: &collectionItemSubscriptions)
+
+        trackScreenView()
     }
 
     var title: String {
@@ -124,6 +130,7 @@ class CollectionViewModel: NSObject {
     }
 
     func archive() {
+        trackArchiveButtonTapped()
         guard let savedItem = item?.savedItem else {
             Log.capture(message: "Failed to archive item due to savedItem being nil")
             return
@@ -136,10 +143,12 @@ class CollectionViewModel: NSObject {
     // If savedItem exists, then unarchive the item to appear in Saves, otherwise save the item
     func moveToSaves(completion: (Bool) -> Void) {
         guard let savedItem = item?.savedItem else {
+            trackSave()
             source.save(url: url)
             completion(true)
             return
         }
+        trackMoveFromArchiveToSavesButtonTapped()
         source.unarchive(item: savedItem)
         completion(true)
     }
@@ -178,6 +187,7 @@ class CollectionViewModel: NSObject {
     }
 
     private func showAddTagsView(for item: SavedItem) {
+        trackAddTags()
         presentedAddTags = PocketAddTagsViewModel(
             item: item,
             source: source,
@@ -191,14 +201,17 @@ class CollectionViewModel: NSObject {
     }
 
     private func favorite(_ savedItem: SavedItem) {
+        trackFavorite()
         source.favorite(item: savedItem)
     }
 
     private func unfavorite(_ savedItem: SavedItem) {
+        trackUnfavorite()
         source.unfavorite(item: savedItem)
     }
 
     private func confirmDelete(for savedItem: SavedItem) {
+        trackDelete()
         presentedAlert = PocketAlert(
             title: Localization.areYouSureYouWantToDeleteThisItem,
             message: nil,
@@ -220,10 +233,12 @@ class CollectionViewModel: NSObject {
     }
 
     private func share(additionalText: String? = nil) {
+        trackShare()
         sharedActivity = PocketItemActivity.fromCollection(url: url, additionalText: additionalText)
     }
 
     private func report() {
+        trackReport()
         selectedCollectionItemToReport = item
     }
 }
@@ -234,11 +249,14 @@ extension CollectionViewModel {
         return CollectionStoryViewModel(
             collectionStory: story,
             source: source,
+            tracker: tracker,
             overflowActions: [
                 .share { [weak self] sender in
+                    self?.trackStoryShare(storyURL: story.url)
                     self?.sharedStoryActivity = PocketItemActivity.fromCollection(url: story.url, sender: sender)
                 },
                 .report { [weak self] _ in
+                    self?.trackStoryReport(storyURL: story.url)
                     self?.selectedStoryToReport = story.item
                 }
             ]
@@ -250,6 +268,7 @@ extension CollectionViewModel {
         case .loading, .collectionHeader:
             return
         case .story(let storyViewModel):
+            trackContentOpen(storyURL: storyViewModel.collectionStory.url)
             selectItem(with: storyViewModel.collectionStory)
         }
     }
@@ -366,9 +385,75 @@ extension CollectionViewModel: NSFetchedResultsControllerDelegate {
     }
 }
 
-// TODO: NATIVE COLLECTIONS - Update when working on analytics ticket
+// MARK: - Analytics
 extension CollectionViewModel {
-    func trackerForReportRecommendation() -> Tracker {
-        tracker.childTracker(hosting: .reportDialog)
+    /// track native collection view
+    func trackScreenView() {
+        tracker.track(event: Events.Collection.screenView())
+    }
+
+    /// track save button tapped in collection toolbar
+    func trackSave() {
+        tracker.track(event: Events.Collection.saveClicked(url: url))
+    }
+
+    /// track archive button tapped in collection toolbar
+    func trackArchiveButtonTapped() {
+        tracker.track(event: Events.Collection.unsaveClicked(url: url))
+    }
+
+    /// track move to saves from archive button tapped in collection toolbar
+    func trackMoveFromArchiveToSavesButtonTapped() {
+        tracker.track(event: Events.Collection.moveFromArchiveToSavesClicked(url: url))
+    }
+
+    /// track overflow menu tapped in collection toolbar
+    func trackOverflow() {
+        tracker.track(event: Events.Collection.overflowClicked(url: url))
+    }
+
+    /// track favorite button tapped in collection toolbar overflow menu
+    func trackFavorite() {
+        tracker.track(event: Events.Collection.favoriteClicked(url: url))
+    }
+
+    /// track unfavorite button tapped in collection toolbar overflow menu
+    func trackUnfavorite() {
+        tracker.track(event: Events.Collection.unfavoriteClicked(url: url))
+    }
+
+    /// track add tags button tapped in collection toolbar overflow menu
+    func trackAddTags() {
+        tracker.track(event: Events.Collection.addTagsClicked(url: url))
+    }
+
+    /// track delete button tapped in collection toolbar overflow menu
+    func trackDelete() {
+        tracker.track(event: Events.Collection.deleteClicked(url: url))
+    }
+
+    /// track share button tapped in collection toolbar overflow menu
+    func trackShare() {
+        tracker.track(event: Events.Collection.shareClicked(url: url))
+    }
+
+    /// track report button tapped in collection toolbar overflow menu
+    func trackReport() {
+        tracker.track(event: Events.Collection.reportClicked(url: url))
+    }
+
+    /// track user opening a story
+    func trackContentOpen(storyURL: String) {
+        tracker.track(event: Events.Collection.contentOpen(url: storyURL))
+    }
+
+    /// track share button tapped in collection toolbar overflow menu
+    func trackStoryShare(storyURL: String) {
+        tracker.track(event: Events.Collection.storyShareClicked(url: storyURL))
+    }
+
+    /// track report button tapped in collection toolbar overflow menu
+    func trackStoryReport(storyURL: String) {
+        tracker.track(event: Events.Collection.storyReportClicked(url: storyURL))
     }
 }

@@ -470,7 +470,7 @@ extension SavesContainerViewController {
 
         let host = ReportRecommendationHostingController(
             givenURL: givenURL,
-            tracker: model.tracker.childTracker(hosting: .reportDialog),
+            tracker: model.tracker,
             onDismiss: { }
         )
 
