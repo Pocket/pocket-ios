@@ -9,6 +9,7 @@ import Combine
 import CoreData
 import Localization
 import Analytics
+import Network
 
 /// View model that holds logic for the native collection view
 class CollectionViewModel: NSObject {
@@ -39,6 +40,7 @@ class CollectionViewModel: NSObject {
     private let user: User
     private let store: SubscriptionStore
     private let networkPathMonitor: NetworkPathMonitor
+    private var currentNetworkStatus: NWPath.Status?
     private let userDefaults: UserDefaults
     private let featureFlags: FeatureFlagServiceProtocol
     private let notificationCenter: NotificationCenter
@@ -80,6 +82,14 @@ class CollectionViewModel: NSObject {
         item?.savedItem?.publisher(for: \.isFavorite).sink { [weak self] _ in
             self?.buildActions()
         }.store(in: &collectionItemSubscriptions)
+
+        networkPathMonitor.start(queue: .global())
+        currentNetworkStatus = networkPathMonitor.currentNetworkPath.status
+        observeNetworkChanges()
+    }
+
+    var hasLocalData: Bool {
+        !title.isEmpty
     }
 
     var title: String {
@@ -113,12 +123,19 @@ class CollectionViewModel: NSObject {
         } catch {
             // TODO: NATIVECOLLECTIONS - handle core data error here
         }
+
+        guard !isOffline else {
+            checkForLocalData()
+            return
+        }
+
         Task {
             do {
                 try await source.fetchCollection(by: collection.slug)
             } catch {
-                Log.capture(message: "Failed to fetch details for CollectionViewModel: \(error)")
                 // TODO: NATIVECOLLECTIONS - handle remote error here
+                self.snapshot = errorSnapshot()
+                Log.capture(message: "Failed to fetch details for CollectionViewModel: \(error)")
             }
         }
     }
@@ -228,6 +245,46 @@ class CollectionViewModel: NSObject {
     }
 }
 
+// MARK: Error / Offline
+extension CollectionViewModel {
+    var errorEmptyState: EmptyStateViewModel {
+        return ErrorEmptyState(featureFlags: featureFlags, user: user)
+    }
+
+    var isOffline: Bool {
+        return networkPathMonitor.currentNetworkPath.status == .unsatisfied
+    }
+
+    /// Check if collection does not have local data, then show error state
+    private func checkForLocalData() {
+        guard !hasLocalData else { return }
+        snapshot = self.errorSnapshot()
+        return
+    }
+
+    private func observeNetworkChanges() {
+        networkPathMonitor.updateHandler = { [weak self] path in
+            DispatchQueue.main.async {
+                self?.handleNetworkChange(path.status)
+            }
+        }
+    }
+
+    /// Observes network changes and fetch collection when user returns online
+    private func handleNetworkChange(_ status: NWPath.Status) {
+        guard status != currentNetworkStatus else {
+            return
+        }
+
+        if currentNetworkStatus == .unsatisfied, status == .satisfied {
+            // TODO: NATIVE COLLECTIONS - Handle fetching
+            self.snapshot = Self.loadingSnapshot()
+            fetch()
+        }
+        currentNetworkStatus = status
+    }
+}
+
 // MARK: - Cell Selection
 extension CollectionViewModel {
     func storyViewModel(for story: CollectionStory) -> CollectionStoryViewModel {
@@ -247,7 +304,7 @@ extension CollectionViewModel {
 
     func select(cell: CollectionViewModel.Cell) {
         switch cell {
-        case .loading, .collectionHeader:
+        case .loading, .collectionHeader, .error:
             return
         case .story(let storyViewModel):
             selectItem(with: storyViewModel.collectionStory)
@@ -296,6 +353,14 @@ private extension CollectionViewModel {
         return snapshot
     }
 
+    /// Builds snapshot for when user faces offline or error
+    func errorSnapshot() -> Snapshot {
+        var snapshot = Snapshot()
+        snapshot.appendSections([.error])
+        snapshot.appendItems([.error], toSection: .error)
+        return snapshot
+    }
+    
     /// Builds and sets snapshot when collection stories are found in Core Data
     func setCollectionSnapshot(_ identifiers: [NSManagedObjectID]) {
         var collectionSnapshot = Snapshot()
@@ -341,12 +406,14 @@ extension CollectionViewModel {
         case loading
         case collectionHeader
         case collection(Collection)
+        case error
     }
 
     enum Cell: Hashable {
         case loading
         case collectionHeader
         case story(CollectionStoryViewModel)
+        case error
     }
 }
 

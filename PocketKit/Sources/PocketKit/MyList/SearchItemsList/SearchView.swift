@@ -117,9 +117,9 @@ struct SearchEmptyView: View {
                 EmptyStateView(viewModel: viewModel) {
                     GetPocketPremiumButton(text: text)
                 }.padding(Margins.normal.rawValue)
-            case .reportIssue(let text):
+            case .reportIssue(let text, let userEmail):
                 EmptyStateView(viewModel: viewModel) {
-                    ReportIssueButton(text: text)
+                    ReportIssueButton(text: text, userEmail: userEmail)
                 }.padding(Margins.normal.rawValue)
             default:
                 EmptyView()
@@ -128,34 +128,6 @@ struct SearchEmptyView: View {
             EmptyStateView<EmptyView>(viewModel: viewModel)
                 .padding(Margins.normal.rawValue)
         }
-    }
-}
-
-struct ReportIssueButton: View {
-    enum Constants {
-        static let padding = EdgeInsets(top: 12, leading: 0, bottom: 12, trailing: 0)
-        static let maxWidth: CGFloat = 320
-    }
-    @EnvironmentObject private var searchViewModel: SearchViewModel
-    private let text: String
-
-    init(text: String) {
-        self.text = text
-    }
-
-    var body: some View {
-        Button(action: {
-            searchViewModel.isPresentingReportIssue.toggle()
-        }, label: {
-            Text(text)
-                .style(.header.sansSerif.h7.with(color: .ui.white))
-                .padding(Constants.padding)
-                .frame(maxWidth: Constants.maxWidth)
-        }).buttonStyle(PocketButtonStyle(.primary))
-        .sheet(isPresented: $searchViewModel.isPresentingReportIssue) {
-            ReportIssueView(email: searchViewModel.userEmail, submitIssue: searchViewModel.submitIssue)
-        }
-        .accessibilityIdentifier("get-report-issue-button")
     }
 }
 

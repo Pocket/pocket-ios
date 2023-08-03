@@ -93,9 +93,11 @@ struct EmptyStateView<Content: View>: View {
                             .padding(EdgeInsets(top: 12, leading: 0, bottom: 12, trailing: 0))
                             .frame(maxWidth: Constants.maxWidth)
                     }).buttonStyle(ActionsPrimaryButtonStyle())
-                    .sheet(isPresented: self.$showSafariView) {
-                        SFSafariView(url: webURL)
-                    }
+                        .sheet(isPresented: self.$showSafariView) {
+                            SFSafariView(url: webURL)
+                        }
+                } else if case .reportIssue(let buttonText, let userEmail) = viewModel.buttonType {
+                    ReportIssueButton(text: buttonText, userEmail: userEmail)
                 }
             }
         }

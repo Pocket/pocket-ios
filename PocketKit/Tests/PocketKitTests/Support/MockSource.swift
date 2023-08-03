@@ -1519,3 +1519,37 @@ extension MockSource {
         return calls[index] as? FetchFeatureFlagCall
     }
 }
+
+// MARK: fetchCollection
+ extension MockSource {
+    private static let fetchCollection = "fetchCollection"
+    typealias FetchCollectionImpl = (String) async throws -> Void
+
+    struct FetchCollectionCall {
+        let slug: String
+    }
+
+    func stubFetchCollection(impl: @escaping FetchCollectionImpl) {
+        implementations[Self.fetchCollection] = impl
+    }
+
+    func fetchCollection(by slug: String) async throws {
+        guard let impl = implementations[Self.fetchCollection] as? FetchCollectionImpl else {
+            fatalError("\(Self.self)#\(#function) has not been stubbed")
+        }
+
+        calls[Self.fetchCollection] = (calls[Self.fetchCollection] ?? []) + [
+            FetchCollectionCall(slug: slug)
+        ]
+
+        try await impl(slug)
+    }
+
+    func fetchCollectionCall(at index: Int) -> FetchCollectionCall? {
+        guard let calls = calls[Self.fetchCollection], calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? FetchCollectionCall
+    }
+ }

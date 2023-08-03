@@ -345,7 +345,7 @@ class SearchViewModel: ObservableObject {
                     self.trackSearchResultsPage(pageNumber: onlineSearch.pageNumberLoaded, scope: scope)
                 } else if case .failure(let error) = result {
                     guard case SearchServiceError.noInternet = error else {
-                        self.searchState = .emptyState(ErrorEmptyState(featureFlags: featureFlags))
+                        self.searchState = .emptyState(ErrorEmptyState(featureFlags: featureFlags, user: user))
                         return
                     }
                     self.searchState = .emptyState(OfflineEmptyState(type: scope))
