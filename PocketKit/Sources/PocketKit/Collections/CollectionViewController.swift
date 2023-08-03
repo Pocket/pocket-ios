@@ -92,6 +92,7 @@ class CollectionViewController: UIViewController {
         collectionView.register(cellClass: LoadingCell.self)
         collectionView.register(cellClass: CollectionMetadataCell.self)
         collectionView.register(cellClass: RecommendationCell.self)
+        collectionView.register(cellClass: EmptyStateCollectionViewCell.self)
 
         model.$snapshot.receive(on: DispatchQueue.main).sink { [weak self] snapshot in
             self?.dataSource.apply(snapshot)
@@ -171,6 +172,11 @@ class CollectionViewController: UIViewController {
 }
 
 private extension CollectionViewController {
+    enum Constants {
+        /// Height that centers the error section so that it appears approximately in the middle
+        static let errorSectionHeight: CGFloat = 0.65
+        static let errorSectionInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)
+    }
     func section(for index: Int, environment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? {
         let section = self.dataSource.sectionIdentifier(for: index)
         switch section {
@@ -262,6 +268,25 @@ private extension CollectionViewController {
             )
 
             return section
+        case .error:
+            let section = NSCollectionLayoutSection(
+                group: .vertical(
+                    layoutSize: .init(
+                        widthDimension: .fractionalWidth(1),
+                        heightDimension: .fractionalHeight(Constants.errorSectionHeight)
+                    ),
+                    subitems: [
+                        .init(
+                            layoutSize: .init(
+                                widthDimension: .fractionalWidth(1),
+                                heightDimension: .fractionalHeight(1)
+                            )
+                        )
+                    ]
+                )
+            )
+            section.contentInsets = Constants.errorSectionInsets
+            return section
         default:
             return .empty()
         }
@@ -287,6 +312,10 @@ private extension CollectionViewController {
         case .story(let story):
             let cell: RecommendationCell = collectionView.dequeueCell(for: indexPath)
             cell.configure(model: story)
+            return cell
+        case .error:
+            let cell: EmptyStateCollectionViewCell = collectionView.dequeueCell(for: indexPath)
+            cell.configure(parent: self, model.errorEmptyState)
             return cell
         }
     }
