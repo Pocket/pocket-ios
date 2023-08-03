@@ -75,24 +75,10 @@ public extension Item {
     }
 
     var isCollection: Bool {
-        // TODO: Refactor when working on opening a collection tickets
-        // Parses and ensures that the url has "collections" in the first index and count is greater than 3 (ie. 0 represents "/", 1 represents "collections" and 2 represents the slug)
-        guard let url = URL(string: givenURL), url.host == "getpocket.com",
-              url.pathComponents.count >= 3,
-              url.pathComponents[safe: 1] == "collections" else {
-            return false
-        }
-        return true
+        CollectionUrlFormatter().isCollectionUrl(givenURL)
     }
 
     var collectionSlug: String? {
-        // TODO: Add check for slug and use this as fallback
-        // Returns the slug from a collection url by validating that it is in the proper url format (ie. 0 represents "/", 1 represents "collections" and 2 represents the slug)
-        guard let url = URL(string: givenURL), url.host == "getpocket.com",
-              url.pathComponents.count >= 3,
-              url.pathComponents[safe: 1] == "collections" else {
-                 return nil
-             }
-        return url.pathComponents[safe: 2]
+        CollectionUrlFormatter().slug(from: givenURL)
     }
 }
