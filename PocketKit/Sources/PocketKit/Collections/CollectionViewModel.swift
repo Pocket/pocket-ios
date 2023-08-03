@@ -21,7 +21,7 @@ class CollectionViewModel: NSObject {
     @Published var sharedActivity: PocketActivity?
     @Published var selectedCollectionItemToReport: Item?
 
-    @Published var selectedReadableViewModel: ReadableViewModel?
+    @Published var selectedItem: ReadableType?
     @Published var presentedStoryWebReaderURL: URL?
 
     @Published var sharedStoryActivity: PocketActivity?
@@ -274,29 +274,37 @@ extension CollectionViewModel {
     }
 
     private func selectItem(with story: CollectionStory) {
+        // Check if item is a collection
+        if let collection = story.item?.collection, featureFlags.isAssigned(flag: .nativeCollections) {
+            selectedItem = .collection(
+                CollectionViewModel(collection: collection, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults, featureFlags: featureFlags, notificationCenter: notificationCenter)
+                )
         // Check if item is a saved item
-        if let item = story.item, !item.shouldOpenInWebView(override: featureFlags.shouldDisableReader), let savedItem = item.savedItem {
-            selectedReadableViewModel = SavedItemViewModel(
-                item: savedItem,
-                source: source,
-                tracker: tracker.childTracker(hosting: .articleView.screen),
-                pasteboard: UIPasteboard.general,
-                user: user,
-                store: store,
-                networkPathMonitor: networkPathMonitor,
-                userDefaults: userDefaults,
-                notificationCenter: notificationCenter
+        } else if let item = story.item, !item.shouldOpenInWebView(override: featureFlags.shouldDisableReader), let savedItem = item.savedItem {
+            selectedItem = .savedItem(
+                SavedItemViewModel(
+                    item: savedItem,
+                    source: source,
+                    tracker: tracker.childTracker(hosting: .articleView.screen),
+                    pasteboard: UIPasteboard.general,
+                    user: user,
+                    store: store,
+                    networkPathMonitor: networkPathMonitor,
+                    userDefaults: userDefaults,
+                    notificationCenter: notificationCenter
+                )
             )
         // Check if item has an associated recommendation
         } else if let item = story.item, !item.shouldOpenInWebView(override: featureFlags.shouldDisableReader), let recommendation = item.recommendation {
-            selectedReadableViewModel =
-            RecommendationViewModel(
-                recommendation: recommendation,
-                source: source,
-                tracker: tracker,
-                pasteboard: UIPasteboard.general,
-                user: user,
-                userDefaults: userDefaults
+            selectedItem = .recommendation(
+                RecommendationViewModel(
+                    recommendation: recommendation,
+                    source: source,
+                    tracker: tracker,
+                    pasteboard: UIPasteboard.general,
+                    user: user,
+                    userDefaults: userDefaults
+                )
             )
         // Else open item in webview
         } else {
