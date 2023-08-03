@@ -136,7 +136,7 @@ extension Space {
 extension Space {
     @discardableResult
     func buildCollection(
-        slug: String = "slug-1",
+        slug: String = "slug",
         title: String = "collection-title",
         authors: [String] = [],
         stories: [CollectionStory] = [],
