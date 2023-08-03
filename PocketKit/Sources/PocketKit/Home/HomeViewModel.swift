@@ -305,8 +305,8 @@ extension HomeViewModel {
         var destination: ContentOpen.Destination = .internal
         let item = recommendation.item
 
-        if let collection = recommendation.collection, featureFlags.isAssigned(flag: .nativeCollections) {
-            selectedReadableType = .collection(CollectionViewModel(collection: collection, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults, featureFlags: featureFlags, notificationCenter: notificationCenter))
+        if let slug = recommendation.collection?.slug ?? recommendation.item.collectionSlug, featureFlags.isAssigned(flag: .nativeCollections) {
+            selectedReadableType = .collection(CollectionViewModel(slug: slug, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults, featureFlags: featureFlags, notificationCenter: notificationCenter))
         } else {
             let viewModel = RecommendationViewModel(
                 recommendation: recommendation,
@@ -338,8 +338,8 @@ extension HomeViewModel {
     }
 
     private func select(savedItem: SavedItem, at indexPath: IndexPath) {
-        if let collection = savedItem.item?.collection, featureFlags.isAssigned(flag: .nativeCollections) {
-            selectedReadableType = .collection(CollectionViewModel(collection: collection, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults, featureFlags: featureFlags, notificationCenter: notificationCenter))
+        if let slug = savedItem.item?.collection?.slug ?? savedItem.item?.collectionSlug, featureFlags.isAssigned(flag: .nativeCollections) {
+            selectedReadableType = .collection(CollectionViewModel(slug: slug, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults, featureFlags: featureFlags, notificationCenter: notificationCenter))
         } else {
             let viewModel = SavedItemViewModel(
                 item: savedItem,
