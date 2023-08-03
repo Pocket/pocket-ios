@@ -435,11 +435,16 @@ extension SavesContainerViewController {
             }
         }.store(in: &readableSubscriptions)
 
-        collection.$selectedReadableViewModel.receive(on: DispatchQueue.main).sink { [weak self] readableType in
-            if let savedItem = readableType as? SavedItemViewModel {
+        collection.$selectedItem.receive(on: DispatchQueue.main).sink { [weak self] readableType in
+            switch readableType {
+            case .collection(let collection):
+                self?.push(collection: collection)
+            case .savedItem(let savedItem):
                 self?.push(savedItem: savedItem)
-            } else if let recommendation = readableType as? RecommendationViewModel {
+            case .recommendation(let recommendation):
                 self?.show(recommendation)
+            default:
+                break
             }
         }.store(in: &readableSubscriptions)
 
