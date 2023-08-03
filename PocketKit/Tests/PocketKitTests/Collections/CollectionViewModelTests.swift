@@ -391,7 +391,6 @@ class CollectionViewModelTests: XCTestCase {
         let viewModel = subject(slug: "slug-1", source: source)
         viewModel.fetch()
 
-
         let reportExpectation = expectation(description: "expected item to be reported")
         viewModel.$selectedCollectionItemToReport.dropFirst().sink { recommendation in
             XCTAssertNotNil(recommendation)
