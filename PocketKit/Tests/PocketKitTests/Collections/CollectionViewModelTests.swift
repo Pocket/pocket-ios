@@ -56,7 +56,7 @@ class CollectionViewModelTests: XCTestCase {
     }
 
     func subject(
-        collection: Collection,
+        slug: String,
         source: Source? = nil,
         tracker: Tracker? = nil,
         user: User? = nil,
@@ -67,7 +67,7 @@ class CollectionViewModelTests: XCTestCase {
         notificationCenter: NotificationCenter? = nil
     ) -> CollectionViewModel {
         CollectionViewModel(
-            collection: collection,
+            slug: slug,
             source: source ?? self.source,
             tracker: tracker ?? self.tracker,
             user: user ?? self.user,
@@ -88,7 +88,7 @@ class CollectionViewModelTests: XCTestCase {
             self.collectionController
         }
 
-        let viewModel = subject(collection: collection)
+        let viewModel = subject(slug: collection.slug)
 
         let expectArchive = expectation(description: "expect source.archive(_:)")
         source.stubArchiveSavedItem { archivedSavedItem in
@@ -118,7 +118,7 @@ class CollectionViewModelTests: XCTestCase {
             self.collectionController
         }
 
-        let viewModel = subject(collection: collection)
+        let viewModel = subject(slug: collection.slug)
 
         let expectMoveToSaves = expectation(description: "expect source.unarchive(_:)")
         source.stubUnarchiveSavedItem { unarchivedSavedItem in
@@ -141,7 +141,7 @@ class CollectionViewModelTests: XCTestCase {
             self.collectionController
         }
 
-        let viewModel = subject(collection: collection)
+        let viewModel = subject(slug: collection.slug)
 
         let expectMoveToSaves = expectation(description: "expect source.url(_:)")
         source.stubSaveURL { url in
@@ -163,7 +163,7 @@ class CollectionViewModelTests: XCTestCase {
             self.collectionController
         }
 
-        let viewModel = subject(collection: collection)
+        let viewModel = subject(slug: collection.slug)
         XCTAssertEqual(
             viewModel._actions.map(\.title),
             ["Favorite", "Add tags", "Delete", "Share"]
@@ -194,7 +194,7 @@ class CollectionViewModelTests: XCTestCase {
             self.collectionController
         }
 
-        let viewModel = subject(collection: collection)
+        let viewModel = subject(slug: collection.slug)
         viewModel.invokeAction(title: "Favorite")
 
         wait(for: [expectFavorite], timeout: 1)
@@ -216,7 +216,7 @@ class CollectionViewModelTests: XCTestCase {
             self.collectionController
         }
 
-        let viewModel = subject(collection: collection)
+        let viewModel = subject(slug: collection.slug)
         viewModel.invokeAction(title: "Unfavorite")
 
         wait(for: [expectUnfavorite], timeout: 1)
@@ -230,7 +230,7 @@ class CollectionViewModelTests: XCTestCase {
             self.collectionController
         }
 
-        let viewModel = subject(collection: collection)
+        let viewModel = subject(slug: collection.slug)
         let hasCorrectTitle = viewModel._actions.contains { $0.title == "Add tags" }
         XCTAssertTrue(hasCorrectTitle)
     }
@@ -243,7 +243,7 @@ class CollectionViewModelTests: XCTestCase {
             self.collectionController
         }
 
-        let viewModel = subject(collection: collection)
+        let viewModel = subject(slug: collection.slug)
         let hasCorrectTitle = viewModel._actions.contains { $0.title == "Edit tags" }
         XCTAssertTrue(hasCorrectTitle)
     }
@@ -256,7 +256,7 @@ class CollectionViewModelTests: XCTestCase {
             self.collectionController
         }
 
-        let viewModel = subject(collection: collection)
+        let viewModel = subject(slug: collection.slug)
 
         source.stubRetrieveTags { _ in return nil }
         source.stubFetchAllTags { return [] }
@@ -279,7 +279,7 @@ class CollectionViewModelTests: XCTestCase {
             self.collectionController
         }
 
-        let viewModel = subject(collection: collection)
+        let viewModel = subject(slug: collection.slug)
 
         let expectDelete = expectation(description: "expect source.delete(_:)")
         source.stubDeleteSavedItem { deletedSavedItem in
@@ -311,7 +311,7 @@ class CollectionViewModelTests: XCTestCase {
             self.collectionController
         }
 
-        let viewModel = subject(collection: collection)
+        let viewModel = subject(slug: collection.slug)
 
         let reportExpectation = expectation(description: "expected item to be reported")
         viewModel.$selectedCollectionItemToReport.dropFirst().sink { recommendation in
@@ -331,7 +331,7 @@ class CollectionViewModelTests: XCTestCase {
             self.collectionController
         }
 
-        let viewModel = subject(collection: collection)
+        let viewModel = subject(slug: collection.slug)
 
         let shareExpectation = expectation(description: "expected item to be shared")
         viewModel.$sharedActivity.dropFirst().sink { item in
@@ -357,7 +357,7 @@ class CollectionViewModelTests: XCTestCase {
             self.collectionController
         }
 
-        let viewModel = subject(collection: collection)
+        let viewModel = subject(slug: collection.slug)
 
         let readableExpectation = expectation(description: "expected readable to be called")
         viewModel.$selectedItem.dropFirst().sink { readable in
@@ -385,7 +385,7 @@ class CollectionViewModelTests: XCTestCase {
             self.collectionController
         }
 
-        let viewModel = subject(collection: collection)
+        let viewModel = subject(slug: collection.slug)
 
         let webExpectation = expectation(description: "expected web view to be called")
         viewModel.$presentedStoryWebReaderURL.dropFirst().sink { url in
@@ -411,7 +411,7 @@ class CollectionViewModelTests: XCTestCase {
             self.collectionController
         }
 
-        let viewModel = subject(collection: collection)
+        let viewModel = subject(slug: collection.slug)
 
         let readableExpectation = expectation(description: "expected readable to be called")
         viewModel.$selectedItem.dropFirst().sink { readable in
@@ -439,7 +439,7 @@ class CollectionViewModelTests: XCTestCase {
             self.collectionController
         }
 
-        let viewModel = subject(collection: collection)
+        let viewModel = subject(slug: collection.slug)
 
         let webExpectation = expectation(description: "expected web view to be called")
         viewModel.$presentedStoryWebReaderURL.dropFirst().sink { url in
@@ -463,7 +463,7 @@ class CollectionViewModelTests: XCTestCase {
             self.collectionController
         }
 
-        let viewModel = subject(collection: collection)
+        let viewModel = subject(slug: collection.slug)
 
         let webExpectation = expectation(description: "expected web view to be called")
         viewModel.$presentedStoryWebReaderURL.dropFirst().sink { url in
@@ -517,7 +517,7 @@ class CollectionViewModelTests: XCTestCase {
             self.collectionController
         }
 
-        let viewModel = subject(collection: collection)
+        let viewModel = subject(slug: collection.slug)
 
         let reportExpectation = expectation(description: "expected to update selected story to report")
         viewModel.$selectedStoryToReport.dropFirst().sink { story in
@@ -546,7 +546,7 @@ class CollectionViewModelTests: XCTestCase {
             self.collectionController
         }
 
-        let viewModel = subject(collection: collection)
+        let viewModel = subject(slug: collection.slug)
 
         let reportExpectation = expectation(description: "expected to update selected story to report")
         viewModel.$sharedStoryActivity.dropFirst().sink { story in
