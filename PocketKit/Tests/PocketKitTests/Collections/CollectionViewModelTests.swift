@@ -35,6 +35,7 @@ class CollectionViewModelTests: XCTestCase {
         notificationCenter = .default
 
         userDefaults = UserDefaults(suiteName: "CollectionViewModelTests")
+        featureFlags = MockFeatureFlagService()
         space = .testSpace()
         self.collectionController = space.makeCollectionStoriesController(slug: "slug")
     }
@@ -137,7 +138,7 @@ class CollectionViewModelTests: XCTestCase {
         let expectMoveToSaves = expectation(description: "expect source.url(_:)")
         source.stubSaveURL { url in
             defer { expectMoveToSaves.fulfill() }
-            XCTAssertEqual(url, "https://getpocket.com/collections/slug-1")
+            XCTAssertEqual(url, "https://getpocket.com/collections/slug")
         }
 
         viewModel.moveToSaves { _ in }
@@ -548,6 +549,115 @@ class CollectionViewModelTests: XCTestCase {
         }
         let collection = space.buildCollection(stories: [story], item: item)
         return collection
+    }
+
+    func test_snapshot_whenNetworkIsInitiallyAvailable_hasCorrectSnapshot() {
+        let item = space.buildItem()
+        let collection = setupCollection(with: item)
+
+        source.stubMakeCollectionStoriesController {
+            self.collectionController
+        }
+
+        let viewModel = subject(collection: collection)
+        XCTAssertNil(viewModel.snapshot.indexOfSection(.error))
+    }
+
+    func test_snapshot_whenNetworkIsUnavailable_andNoLocalData_hasCorrectSnapshot() throws {
+        networkPathMonitor.update(status: .unsatisfied)
+
+        let collection = space.buildCollection(slug: "collection-slug", title: "", authors: [], stories: [], item: nil)
+
+        source.stubMakeCollectionStoriesController {
+            self.collectionController
+        }
+
+        let viewModel = subject(collection: collection)
+
+        let snapshotExpectation = expectation(description: "expect a snapshot")
+
+        viewModel.$snapshot.dropFirst().sink { snapshot in
+            XCTAssertNotNil(snapshot.indexOfSection(.error))
+            XCTAssertEqual(snapshot.itemIdentifiers(inSection: .error), [.error])
+            snapshotExpectation.fulfill()
+        }.store(in: &subscriptions)
+
+        viewModel.fetch()
+        wait(for: [snapshotExpectation], timeout: 1)
+    }
+
+    func test_snapshot_whenOffline_thenReconnects_hasCorrectSnapshot() async {
+        networkPathMonitor.update(status: .unsatisfied)
+
+        let collection = space.buildCollection(slug: "collection-slug", title: "", authors: [], stories: [], item: nil)
+
+        source.stubMakeCollectionStoriesController {
+            self.collectionController
+        }
+
+        source.stubFetchCollection { _ in }
+
+        let viewModel = subject(collection: collection)
+
+        let loadingExpectation = expectation(description: "expect loading snapshot")
+        let errorSnapshotExpectation = expectation(description: "expect error snapshot")
+        var count = 0
+        viewModel.$snapshot.dropFirst().sink { snapshot in
+            count += 1
+            if count == 1 {
+                XCTAssertNotNil(snapshot.indexOfSection(.error))
+                XCTAssertEqual(snapshot.itemIdentifiers(inSection: .error), [.error])
+                errorSnapshotExpectation.fulfill()
+            } else if count == 2 {
+                XCTAssertNotNil(snapshot.indexOfSection(.loading))
+                XCTAssertEqual(snapshot.itemIdentifiers(inSection: .loading), [.loading])
+                loadingExpectation.fulfill()
+            }
+        }.store(in: &subscriptions)
+
+        viewModel.fetch()
+        networkPathMonitor.update(status: .satisfied)
+
+        await fulfillment(of: [errorSnapshotExpectation, loadingExpectation], timeout: 1, enforceOrder: true)
+    }
+
+    // MARK: - Error Handling
+    func test_snapshot_withFetchingCollectionError_hasCorrectSnapshot() async throws {
+        let item = space.buildItem()
+        let collection = setupCollection(with: item)
+
+        let errorExpectation = expectation(description: "should throw an error")
+
+        source.stubMakeCollectionStoriesController {
+            self.collectionController
+        }
+
+        source.stubFetchCollection { _ in
+            errorExpectation.fulfill()
+            throw CollectionServiceError.nullCollection
+        }
+
+        let viewModel = subject(collection: collection)
+        let errorSnapshotExpectation = expectation(description: "expect error snapshot")
+        let loadingExpectation = expectation(description: "expect loading snapshot")
+
+        var count = 0
+        viewModel.$snapshot.sink { snapshot in
+            count += 1
+            if count == 1 {
+                XCTAssertNotNil(snapshot.indexOfSection(.loading))
+                XCTAssertEqual(snapshot.itemIdentifiers(inSection: .loading), [.loading])
+                errorSnapshotExpectation.fulfill()
+            } else if count == 2 {
+                XCTAssertNotNil(snapshot.indexOfSection(.error))
+                XCTAssertEqual(snapshot.itemIdentifiers(inSection: .error), [.error])
+                loadingExpectation.fulfill()
+            }
+        }.store(in: &subscriptions)
+
+        viewModel.fetch()
+
+        await fulfillment(of: [errorExpectation, errorSnapshotExpectation, loadingExpectation], timeout: 10)
     }
 }
 
