@@ -18,7 +18,7 @@ class CollectionViewModelTests: XCTestCase {
     private var networkPathMonitor: MockNetworkPathMonitor!
     private var userDefaults: UserDefaults!
     private var space: Space!
-    private var featureFlags: FeatureFlagServiceProtocol!
+    private var featureFlags: MockFeatureFlagService!
     private var notificationCenter: NotificationCenter!
     private var collectionController: RichFetchedResultsController<CollectionStory>!
 
@@ -37,6 +37,14 @@ class CollectionViewModelTests: XCTestCase {
         userDefaults = UserDefaults(suiteName: "CollectionViewModelTests")
         space = .testSpace()
         self.collectionController = space.makeCollectionStoriesController(slug: "slug")
+
+        featureFlags.stubIsAssigned { flag, variant in
+            if flag == .nativeCollections {
+                return true
+            }
+            XCTFail("Unknown feature flag")
+            return false
+        }
     }
 
     override func tearDownWithError() throws {
@@ -342,10 +350,6 @@ class CollectionViewModelTests: XCTestCase {
         savedItem?.isArticle = true
 
         let story = space.buildCollectionStory(item: savedItem)
-
-        source.stubFetchItem { url in
-            return item
-        }
         let collection = space.buildCollection(stories: [story], item: item)
 
         source.stubMakeCollectionStoriesController {
@@ -355,9 +359,11 @@ class CollectionViewModelTests: XCTestCase {
         let viewModel = subject(collection: collection)
 
         let readableExpectation = expectation(description: "expected readable to be called")
-        viewModel.$selectedReadableViewModel.dropFirst().sink { readable in
-            XCTAssertNotNil(readable)
-            XCTAssertTrue(readable is SavedItemViewModel)
+        viewModel.$selectedItem.dropFirst().sink { readable in
+            guard case .savedItem = readable else {
+                XCTFail("Expected savedItem but got \(String(describing: readable))")
+                return
+            }
             readableExpectation.fulfill()
         }.store(in: &subscriptions)
 
@@ -372,10 +378,6 @@ class CollectionViewModelTests: XCTestCase {
         savedItem?.isArticle = false
 
         let story = space.buildCollectionStory(item: savedItem)
-
-        source.stubFetchItem { url in
-            return item
-        }
         let collection = space.buildCollection(stories: [story], item: item)
 
         source.stubMakeCollectionStoriesController {
@@ -397,15 +399,12 @@ class CollectionViewModelTests: XCTestCase {
     }
 
     func test_select_withRecommendation_andIsSyndicated_setsReadableViewModel() {
-        let item = space.buildItem(syndicatedArticle: space.buildSyndicatedArticle())
-        let savedItem = space.buildRecommendation(item: item).item
+        let collectionItem = space.buildItem()
+        let storyItem = space.buildItem(syndicatedArticle: space.buildSyndicatedArticle())
+        let savedItem = space.buildRecommendation(item: storyItem).item
 
         let story = space.buildCollectionStory(item: savedItem)
-
-        source.stubFetchItem { url in
-            return item
-        }
-        let collection = space.buildCollection(stories: [story], item: item)
+        let collection = space.buildCollection(stories: [story], item: collectionItem)
 
         source.stubMakeCollectionStoriesController {
             self.collectionController
@@ -414,9 +413,11 @@ class CollectionViewModelTests: XCTestCase {
         let viewModel = subject(collection: collection)
 
         let readableExpectation = expectation(description: "expected readable to be called")
-        viewModel.$selectedReadableViewModel.dropFirst().sink { readable in
-            XCTAssertNotNil(readable)
-            XCTAssertTrue(readable is RecommendationViewModel)
+        viewModel.$selectedItem.dropFirst().sink { readable in
+            guard case .recommendation = readable else {
+                XCTFail("Expected recommendation but got \(String(describing: readable))")
+                return
+            }
             readableExpectation.fulfill()
         }.store(in: &subscriptions)
 
@@ -426,15 +427,12 @@ class CollectionViewModelTests: XCTestCase {
     }
 
     func test_select_withRecommendation_andIsNotSyndicated_setsWebView() {
-        let item = space.buildItem()
-        let savedItem = space.buildRecommendation(item: item).item
+        let collectionItem = space.buildItem()
+        let storyItem = space.buildItem()
+        let savedItem = space.buildRecommendation(item: storyItem).item
 
         let story = space.buildCollectionStory(item: savedItem)
-
-        source.stubFetchItem { url in
-            return item
-        }
-        let collection = space.buildCollection(stories: [story], item: item)
+        let collection = space.buildCollection(stories: [story], item: collectionItem)
 
         source.stubMakeCollectionStoriesController {
             self.collectionController
@@ -455,13 +453,10 @@ class CollectionViewModelTests: XCTestCase {
     }
 
     func test_select_withNotSyndicated_andIsNotSaved_setsWebView() {
-        let item = space.buildItem()
-        let story = space.buildCollectionStory(item: item)
-
-        source.stubFetchItem { url in
-            return item
-        }
-        let collection = space.buildCollection(stories: [story], item: item)
+        let collectionItem = space.buildItem()
+        let storyItem = space.buildItem()
+        let story = space.buildCollectionStory(item: storyItem)
+        let collection = space.buildCollection(stories: [story], item: collectionItem)
 
         source.stubMakeCollectionStoriesController {
             self.collectionController
@@ -479,6 +474,32 @@ class CollectionViewModelTests: XCTestCase {
         viewModel.select(cell: .story(viewModel.storyViewModel(for: story)))
 
         wait(for: [webExpectation], timeout: 1)
+    }
+
+    func test_select_withCollection_showsNativeCollectionView() {
+        let collectionItem = space.buildItem()
+        let storyCollectionItem = setupCollection(with: space.buildItem()).item
+        let story = space.buildCollectionStory(item: storyCollectionItem)
+        let collection = space.buildCollection(stories: [story], item: collectionItem)
+
+        source.stubMakeCollectionStoriesController {
+            self.collectionController
+        }
+
+        let viewModel = subject(collection: collection)
+
+        let readableExpectation = expectation(description: "expected readable to be called")
+        viewModel.$selectedItem.dropFirst().sink { readable in
+            guard case .collection = readable else {
+                XCTFail("Expected collection but got \(String(describing: readable))")
+                return
+            }
+            readableExpectation.fulfill()
+        }.store(in: &subscriptions)
+
+        viewModel.select(cell: .story(viewModel.storyViewModel(for: story)))
+
+        wait(for: [readableExpectation], timeout: 1)
     }
 
     // MARK: - Story Actions
@@ -542,10 +563,6 @@ class CollectionViewModelTests: XCTestCase {
 
     private func setupCollection(with item: Item?) -> Collection {
         let story = space.buildCollectionStory()
-
-        source.stubFetchItem { url in
-            return item
-        }
         let collection = space.buildCollection(stories: [story], item: item)
         return collection
     }

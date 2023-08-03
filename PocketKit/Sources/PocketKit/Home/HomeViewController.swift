@@ -508,11 +508,16 @@ extension HomeViewController {
             }
         }.store(in: &collectionSubscriptions)
 
-        viewModel.$selectedReadableViewModel.receive(on: DispatchQueue.main).sink { [weak self] readableType in
-            if let savedItem = readableType as? SavedItemViewModel {
+        viewModel.$selectedItem.receive(on: DispatchQueue.main).sink { [weak self] readableType in
+            switch readableType {
+            case .collection(let collection):
+                self?.showCollection(collection)
+            case .savedItem(let savedItem):
                 self?.show(savedItem)
-            } else if let recommendation = readableType as? RecommendationViewModel {
+            case .recommendation(let recommendation):
                 self?.show(recommendation)
+            default:
+                break
             }
         }.store(in: &collectionSubscriptions)
 
