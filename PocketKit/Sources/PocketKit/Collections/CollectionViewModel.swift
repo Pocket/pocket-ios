@@ -16,6 +16,8 @@ class CollectionViewModel: NSObject {
     typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Cell>
 
     @Published var snapshot: Snapshot
+    @Published var metadata: CollectionMetadata = .empty
+    @Published var isArchived: Bool = false
 
     @Published var presentedAlert: PocketAlert?
     @Published var presentedAddTags: PocketAddTagsViewModel?
@@ -34,7 +36,7 @@ class CollectionViewModel: NSObject {
     @Published private(set) var _actions: [ItemAction] = []
     var actions: Published<[ItemAction]>.Publisher { $_actions }
 
-    private let collection: Collection
+    private var collection: Collection?
     private let source: Source
     private let tracker: Tracker
     private let user: User
@@ -47,11 +49,13 @@ class CollectionViewModel: NSObject {
 
     private let collectionController: RichFetchedResultsController<CollectionStory>
 
-    private var url: String
+    private let slug: String
+
+    private let url: String
     private var collectionItemSubscriptions: Set<AnyCancellable> = []
 
     init(
-        collection: Collection,
+        slug: String,
         source: Source,
         tracker: Tracker,
         user: User,
@@ -61,7 +65,7 @@ class CollectionViewModel: NSObject {
         featureFlags: FeatureFlagServiceProtocol,
         notificationCenter: NotificationCenter
     ) {
-        self.collection = collection
+        self.slug = slug
         self.source = source
         self.tracker = tracker
         self.user = user
@@ -71,22 +75,12 @@ class CollectionViewModel: NSObject {
         self.featureFlags = featureFlags
         self.notificationCenter = notificationCenter
 
-        self.collectionController = source.makeCollectionStoriesController(slug: collection.slug)
+        self.collectionController = source.makeCollectionStoriesController(slug: slug)
 
         self.snapshot = Self.loadingSnapshot()
-        self.url = "https://getpocket.com/collections/\(collection.slug)"
+        self.url = "https://getpocket.com/collections/\(slug)"
         super.init()
         collectionController.delegate = self
-        buildActions()
-
-        item?.publisher(for: \.savedItem?.isFavorite).sink { [weak self] _ in
-            self?.buildActions()
-        }.store(in: &collectionItemSubscriptions)
-
-        item?.publisher(for: \.savedItem).sink { [weak self] _ in
-            self?.buildActions()
-        }.store(in: &collectionItemSubscriptions)
-
         trackScreenView()
 
         networkPathMonitor.start(queue: .global())
@@ -100,50 +94,26 @@ class CollectionViewModel: NSObject {
         return storiesCount != 0
     }
 
-    var title: String {
-        collection.title ?? ""
-    }
-
-    var authors: [String] {
-        ((collection.authors?.compactMap { $0 as? CollectionAuthor }) ?? [CollectionAuthor]()).map { $0.name }
-    }
-
     var storiesCount: Int? {
         collectionController.fetchedObjects?.count
     }
 
-    var intro: Markdown? {
-        collection.intro
-    }
-
     var item: Item? {
-        return collection.item
-    }
-
-    var isArchived: Bool? {
-        guard let item else { return nil }
-        return item.savedItem?.isArchived
+        return collection?.item
     }
 
     func fetch() {
         do {
             try collectionController.performFetch()
-        } catch {
-            // TODO: NATIVECOLLECTIONS - handle core data error here
-        }
-
-        guard !isOffline else {
-            checkForLocalData()
-            return
-        }
-
-        Task {
-            do {
-                try await source.fetchCollection(by: collection.slug)
-            } catch {
-                self.snapshot = errorSnapshot()
-                Log.capture(message: "Failed to fetch details for CollectionViewModel: \(error)")
+            guard collectionController.fetchedObjects?.isEmpty == true, !isOffline else {
+                return
             }
+            Task {
+                try await source.fetchCollection(by: slug)
+            }
+        } catch {
+            self.snapshot = errorSnapshot()
+            Log.capture(message: "Failed to fetch details for CollectionViewModel: \(error)")
         }
     }
 
@@ -333,9 +303,9 @@ extension CollectionViewModel {
 
     private func selectItem(with story: CollectionStory) {
         // Check if item is a collection
-        if let collection = story.item?.collection, featureFlags.isAssigned(flag: .nativeCollections) {
+        if let slug = story.item?.collectionSlug, featureFlags.isAssigned(flag: .nativeCollections) {
             selectedItem = .collection(
-                CollectionViewModel(collection: collection, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults, featureFlags: featureFlags, notificationCenter: notificationCenter)
+                CollectionViewModel(slug: slug, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults, featureFlags: featureFlags, notificationCenter: notificationCenter)
                 )
         // Check if item is a saved item
         } else if let item = story.item, !item.shouldOpenInWebView(override: featureFlags.shouldDisableReader), let savedItem = item.savedItem {
@@ -389,8 +359,38 @@ private extension CollectionViewModel {
         return snapshot
     }
 
-    /// Builds and sets snapshot when collection stories are found in Core Data
-    func setCollectionSnapshot(_ identifiers: [NSManagedObjectID]) {
+    func listenForItemChanges() {
+        item?.publisher(for: \.savedItem?.isFavorite).sink { [weak self] _ in
+            self?.buildActions()
+        }.store(in: &collectionItemSubscriptions)
+
+        item?.publisher(for: \.savedItem?.isArchived).sink { [weak self] isArchived in
+            self?.isArchived = isArchived ?? false
+        }.store(in: &collectionItemSubscriptions)
+
+        item?.publisher(for: \.savedItem).sink { [weak self] _ in
+            self?.buildActions()
+        }.store(in: &collectionItemSubscriptions)
+    }
+
+    /// Builds collections, metadata and stories when collection data are found in Core Data
+    func buildCollection(_ identifiers: [NSManagedObjectID]) {
+        guard let id = identifiers.first,
+        let story = source.viewObject(id: id) as? CollectionStory,
+            let collection = story.collection else {
+            return
+        }
+        self.collection = collection
+        isArchived = collection.item?.savedItem?.isArchived ?? false
+        listenForItemChanges()
+        buildActions()
+        self.metadata = CollectionMetadata(
+            title: collection.title ?? "",
+            authors: ((collection.authors?.compactMap { $0 as? CollectionAuthor }) ?? [CollectionAuthor]()).map { $0.name },
+            storiesCount: identifiers.count,
+            intro: collection.intro
+        )
+
         var collectionSnapshot = Snapshot()
         let storiesSection = Section.collection(collection)
         collectionSnapshot.appendSections([.collectionHeader, storiesSection])
@@ -451,7 +451,7 @@ extension CollectionViewModel: NSFetchedResultsControllerDelegate {
             return
         }
         if snapshot.reloadedItemIdentifiers.isEmpty && snapshot.reconfiguredItemIdentifiers.isEmpty {
-            setCollectionSnapshot(convertToManagedObjectIds(snapshot.itemIdentifiers))
+            buildCollection(convertToManagedObjectIds(snapshot.itemIdentifiers))
         } else {
             updateCollectionSnapshot(
                 convertToManagedObjectIds(snapshot.reloadedItemIdentifiers),
