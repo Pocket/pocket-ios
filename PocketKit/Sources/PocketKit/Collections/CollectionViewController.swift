@@ -63,7 +63,7 @@ class CollectionViewController: UIViewController {
         return collectionView
     }()
 
-    private var metadata: CollectionMetadataPresenter?
+    private var metadata: CollectionMetadata?
     private var subscriptions: [AnyCancellable] = []
     private let model: CollectionViewModel
 
@@ -79,12 +79,6 @@ class CollectionViewController: UIViewController {
         navigationItem.largeTitleDisplayMode = .never
         hidesBottomBarWhenPushed = true
 
-        navigationItem.rightBarButtonItems = [
-            moreButtonItem,
-            // If item is saved, show archive button; otherwise if it is not saved or it is archived, show saves button.
-            model.isArchived == false ? getArchiveButton : getSavesButton
-        ]
-
         collectionView.backgroundColor = UIColor(.ui.white1)
         collectionView.dataSource = dataSource
         collectionView.delegate = self
@@ -94,17 +88,46 @@ class CollectionViewController: UIViewController {
         collectionView.register(cellClass: RecommendationCell.self)
         collectionView.register(cellClass: EmptyStateCollectionViewCell.self)
 
-        model.$snapshot.receive(on: DispatchQueue.main).sink { [weak self] snapshot in
-            self?.dataSource.apply(snapshot)
-        }.store(in: &subscriptions)
+        model.$snapshot
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] snapshot in
+                self?.dataSource.apply(snapshot)
+            }
+            .store(in: &subscriptions)
 
-        model.actions.receive(on: DispatchQueue.main).sink { [weak self] actions in
-            self?.buildOverflowMenu(from: actions)
-        }.store(in: &subscriptions)
+        model.actions
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] actions in
+                self?.buildOverflowMenu(from: actions)
+            }
+            .store(in: &subscriptions)
+
+        model.$metadata
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] metadata in
+                self?.metadata = metadata
+            }
+            .store(in: &subscriptions)
+
+        model.$isArchived
+            .receive(on: DispatchQueue.main)
+            .dropFirst()
+            .sink { [weak self] isArchived in
+                self?.setBarbuttonItems(isArchived: isArchived)
+            }
+            .store(in: &subscriptions)
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) is not implemented")
+    }
+
+    private func setBarbuttonItems(isArchived: Bool) {
+        navigationItem.rightBarButtonItems = [
+            moreButtonItem,
+            // If item is saved, show archive button; otherwise if it is not saved or it is archived, show saves button.
+            isArchived == false ? getArchiveButton : getSavesButton
+        ]
     }
 
     func buildOverflowMenu(from actions: [ItemAction]) {
@@ -147,7 +170,6 @@ class CollectionViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         model.fetch()
-        metadata = CollectionMetadataPresenter(collectionViewModel: model)
         self.tabBarController?.tabBar.isHidden = true
     }
 
