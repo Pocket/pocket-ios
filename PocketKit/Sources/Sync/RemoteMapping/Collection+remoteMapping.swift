@@ -13,7 +13,7 @@ extension Collection {
         intro = remote.intro
         publishedAt = remote.publishedAt.flatMap { DateFormatter.clientAPI.date(from: $0) }
         title = remote.title
-
+        item = try? space.fetchItem(byURL: self.collectionItemUrl, context: context)
         authors = try? NSOrderedSet(array: remote.authors.map {
             try space.fetchCollectionAuthor(by: $0.name, context: context) ?? CollectionAuthor(context: context, name: $0.name)
         })
