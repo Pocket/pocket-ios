@@ -6,13 +6,20 @@ import UIKit
 import Textile
 import Localization
 import Down
+import Sync
 
 // Contains logic to present metadata for a collection such as title, excerpt, stories count
-struct CollectionMetadataPresenter {
-    private let collectionViewModel: CollectionViewModel
+struct CollectionMetadata {
+    private let title: String
+    private let authors: [String]
+    private let storiesCount: Int?
+    private let intro: Markdown?
 
-    init(collectionViewModel: CollectionViewModel) {
-        self.collectionViewModel = collectionViewModel
+    init(title: String, authors: [String], storiesCount: Int?, intro: Markdown?) {
+        self.title = title
+        self.authors = authors
+        self.storiesCount = storiesCount
+        self.intro = intro
     }
 
     var attributedByline: NSAttributedString? {
@@ -24,7 +31,6 @@ struct CollectionMetadataPresenter {
             byline.append(NSAttributedString(string: " • ", style: .collection.authors))
         }
 
-        let authors = collectionViewModel.authors
         if !authors.isEmpty {
             let authorNames = authors.compactMap { $0 }
             let authorNamesString = ListFormatter.localizedString(byJoining: authorNames) as NSString
@@ -36,25 +42,25 @@ struct CollectionMetadataPresenter {
     }
 
     var attributedTitle: NSAttributedString? {
-        return NSAttributedString(string: collectionViewModel.title, style: .collection.title)
+        return NSAttributedString(string: title, style: .collection.title)
     }
 
     var attributedCount: NSAttributedString? {
-        guard let count = collectionViewModel.storiesCount else { return nil }
+        guard let storiesCount else { return nil }
 
-        return NSAttributedString(string: Localization.Collection.Stories.count(count), style: .collection.detail)
+        return NSAttributedString(string: Localization.Collection.Stories.count(storiesCount), style: .collection.detail)
     }
 
     var attributedIntro: NSAttributedString? {
-        guard let intro = collectionViewModel.intro,
-              let str = NSAttributedString.styled(
+        guard let intro,
+              let atributedString = NSAttributedString.styled(
                 markdown: intro,
                 styler: NSMutableAttributedString.collectionStyler(bodyStyle: .collection.intro)
               )
         else {
             return nil
         }
-        let mutable = NSMutableAttributedString(attributedString: str)
+        let mutable = NSMutableAttributedString(attributedString: atributedString)
         // Down seems to be replacing double newline characters with paragraph separators, so we are reversing that here
         // https://github.com/johnxnguyen/Down/issues/269
         mutable.mutableString.replaceOccurrences(of: "\u{2029}", with: "\n\n", range: NSRange(location: 0, length: mutable.string.count))
@@ -115,5 +121,11 @@ struct CollectionMetadataPresenter {
         )
 
         return rect.height.rounded(.up)
+    }
+}
+
+extension CollectionMetadata {
+    static var empty: CollectionMetadata {
+        CollectionMetadata(title: "", authors: [], storiesCount: nil, intro: nil)
     }
 }
