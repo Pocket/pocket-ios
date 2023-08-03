@@ -72,7 +72,7 @@ class SavedItemViewModel {
             guard let url = try? await url(from: item) else {
                 tracker.track(event: Events.SaveTo.unableToSave())
                 infoViewModel = .error
-                break
+                continue
             }
 
             tracker.track(event: Events.SaveTo.saveEngagement(url: url))
@@ -86,11 +86,11 @@ class SavedItemViewModel {
                 self.savedItem = savedItem
                 infoViewModel = .newItem
             case .taggedItem:
-                break
+                continue
             }
 
             autodismiss(from: context)
-            break
+            continue
         }
     }
 
