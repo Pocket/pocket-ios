@@ -243,9 +243,22 @@ class CollectionViewModelTests: XCTestCase {
         wait(for: [expectFavorite], timeout: 1)
     }
 
-    func test_unfavorite_delegatesToSource() {
+    func test_unfavorite_delegatesToSource() throws {
         let item = space.buildSavedItem(isFavorite: true).item
-        let collection = setupCollection(with: item)
+        let story = space.buildCollectionStory()
+        _ = setupCollection(with: item, space: space, stories: [story])
+        try self.space.save()
+
+        source.stubMakeCollectionStoriesController {
+            self.collectionController
+        }
+
+        source.stubViewObject { _ in
+            story
+        }
+
+        let viewModel = subject(slug: "slug-1", source: source)
+        viewModel.fetch()
 
         let expectUnfavorite = expectation(description: "expect source.unfavorite(_:)")
 
@@ -259,7 +272,6 @@ class CollectionViewModelTests: XCTestCase {
             self.collectionController
         }
 
-        let viewModel = subject(slug: collection.slug)
         viewModel.invokeAction(title: "Unfavorite")
 
         wait(for: [expectUnfavorite], timeout: 1)
