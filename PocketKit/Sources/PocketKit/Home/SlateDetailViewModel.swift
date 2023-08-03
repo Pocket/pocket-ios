@@ -126,8 +126,8 @@ extension SlateDetailViewModel {
         let item = recommendation.item
         var destination: ContentOpen.Destination = .internal
 
-        if let collection = recommendation.collection, featureFlags.isAssigned(flag: .nativeCollections) {
-            selectedCollectionViewModel = CollectionViewModel(collection: collection, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults, featureFlags: featureFlags, notificationCenter: notificationCenter)
+        if let slug = recommendation.collection?.slug ?? recommendation.item.collectionSlug, featureFlags.isAssigned(flag: .nativeCollections) {
+            selectedCollectionViewModel = CollectionViewModel(slug: slug, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults, featureFlags: featureFlags, notificationCenter: notificationCenter)
         } else if item.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
             guard let bestURL = URL(percentEncoding: item.bestURL) else { return }
             let url = pocketPremiumURL(bestURL, user: user)
