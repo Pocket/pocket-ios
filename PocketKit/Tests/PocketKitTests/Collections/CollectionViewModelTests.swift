@@ -28,6 +28,7 @@ class CollectionViewModelTests: XCTestCase {
         super.setUp()
         source = MockSource()
         tracker = MockTracker()
+        space = .testSpace()
         user = PocketUser(userDefaults: UserDefaults())
         networkPathMonitor = MockNetworkPathMonitor()
         subscriptionStore = MockSubscriptionStore()
@@ -35,10 +36,7 @@ class CollectionViewModelTests: XCTestCase {
         notificationCenter = .default
 
         userDefaults = UserDefaults(suiteName: "CollectionViewModelTests")
-        featureFlags = MockFeatureFlagService()
-        space = .testSpace()
         self.collectionController = space.makeCollectionStoriesController(slug: "slug")
-
         featureFlags.stubIsAssigned { flag, variant in
             if flag == .nativeCollections {
                 return true
@@ -46,6 +44,7 @@ class CollectionViewModelTests: XCTestCase {
             XCTFail("Unknown feature flag")
             return false
         }
+        self.collectionController = space.makeCollectionStoriesController(slug: "slug-1")
     }
 
     override func tearDownWithError() throws {
@@ -80,15 +79,22 @@ class CollectionViewModelTests: XCTestCase {
     }
 
     // MARK: - Collection Actions
-    func test_archive_sendsRequestToSource_andSendsArchiveEvent() {
+    func test_archive_sendsRequestToSource_andSendsArchiveEvent() throws {
         let item = space.buildSavedItem().item
-        let collection = setupCollection(with: item)
+        let story = space.buildCollectionStory()
+        _ = setupCollection(with: item, space: space, stories: [story])
+        try self.space.save()
 
         source.stubMakeCollectionStoriesController {
             self.collectionController
         }
 
-        let viewModel = subject(slug: collection.slug)
+        source.stubViewObject { _ in
+            story
+        }
+
+        let viewModel = subject(slug: "slug-1", source: source)
+        viewModel.fetch()
 
         let expectArchive = expectation(description: "expect source.archive(_:)")
         source.stubArchiveSavedItem { archivedSavedItem in
@@ -110,15 +116,22 @@ class CollectionViewModelTests: XCTestCase {
         wait(for: [expectArchive, expectArchiveEvent], timeout: 1)
     }
 
-    func test_moveToSaves_withSavedItem_sendsRequestToSource_AndRefreshes() {
+    func test_moveToSaves_withSavedItem_sendsRequestToSource_AndRefreshes() throws {
         let item = space.buildSavedItem().item
-        let collection = setupCollection(with: item)
+        let story = space.buildCollectionStory()
+        _ = setupCollection(with: item, space: space, stories: [story])
+        try self.space.save()
 
         source.stubMakeCollectionStoriesController {
             self.collectionController
         }
 
-        let viewModel = subject(slug: collection.slug)
+        source.stubViewObject { _ in
+            story
+        }
+
+        let viewModel = subject(slug: "slug-1", source: source)
+        viewModel.fetch()
 
         let expectMoveToSaves = expectation(description: "expect source.unarchive(_:)")
         source.stubUnarchiveSavedItem { unarchivedSavedItem in
@@ -154,23 +167,41 @@ class CollectionViewModelTests: XCTestCase {
         wait(for: [expectMoveToSaves], timeout: 1)
     }
 
-    func test_savedCollection_buildsCorrectActions() {
+    func test_savedCollection_buildsCorrectActions() throws {
         // not-favorited, not-archived
-        let item = space.buildSavedItem(isFavorite: false, isArchived: false).item
-        let collection = setupCollection(with: item)
+        let savedItem = space.buildSavedItem(isFavorite: false, isArchived: false)
+        let item = savedItem.item
+        let story = space.buildCollectionStory()
+        _ = setupCollection(with: item, space: space, stories: [story])
+        try space.save()
 
         source.stubMakeCollectionStoriesController {
             self.collectionController
         }
 
-        let viewModel = subject(slug: collection.slug)
+        source.stubViewObject { _ in
+            story
+        }
+
+        source.stubFavoriteSavedItem { favoritedSavedItem in
+            XCTAssertTrue(favoritedSavedItem.item === item)
+            XCTAssertTrue(favoritedSavedItem === item?.savedItem)
+            do {
+                savedItem.isFavorite = true
+                try self.space.save()
+            } catch {
+                XCTFail("unable to update item")
+            }
+        }
+
+        let viewModel = subject(slug: "slug-1", source: source)
+        viewModel.fetch()
         XCTAssertEqual(
             viewModel._actions.map(\.title),
             ["Favorite", "Add tags", "Delete", "Share"]
         )
 
-        // favorited
-        item?.savedItem?.isFavorite = true
+        viewModel.invokeAction(title: "Favorite")
 
         XCTAssertEqual(
             viewModel._actions.map(\.title),
@@ -178,9 +209,19 @@ class CollectionViewModelTests: XCTestCase {
         )
     }
 
-    func test_favorite_delegatesToSource() {
+    func test_favorite_delegatesToSource() throws {
         let item = space.buildSavedItem(isFavorite: false).item
-        let collection = setupCollection(with: item)
+        let story = space.buildCollectionStory()
+        _ = setupCollection(with: item, space: space, stories: [story])
+        try self.space.save()
+
+        source.stubMakeCollectionStoriesController {
+            self.collectionController
+        }
+
+        source.stubViewObject { _ in
+            story
+        }
 
         let expectFavorite = expectation(description: "expect source.favorite(_:)")
 
@@ -194,7 +235,9 @@ class CollectionViewModelTests: XCTestCase {
             self.collectionController
         }
 
-        let viewModel = subject(slug: collection.slug)
+        let viewModel = subject(slug: "slug-1", source: source)
+        viewModel.fetch()
+
         viewModel.invokeAction(title: "Favorite")
 
         wait(for: [expectFavorite], timeout: 1)
@@ -224,39 +267,60 @@ class CollectionViewModelTests: XCTestCase {
 
     func test_tagsAction_withNoTags_isAddTags() throws {
         let item = space.buildSavedItem(tags: []).item
-        let collection = setupCollection(with: item)
+        let story = space.buildCollectionStory()
+        _ = setupCollection(with: item, space: space, stories: [story])
+        try self.space.save()
 
         source.stubMakeCollectionStoriesController {
             self.collectionController
         }
 
-        let viewModel = subject(slug: collection.slug)
+        source.stubViewObject { _ in
+            story
+        }
+
+        let viewModel = subject(slug: "slug-1", source: source)
+        viewModel.fetch()
         let hasCorrectTitle = viewModel._actions.contains { $0.title == "Add tags" }
         XCTAssertTrue(hasCorrectTitle)
     }
 
     func test_tagsAction_withTags_isEditTags() throws {
         let item = space.buildSavedItem(tags: ["tag 1"]).item
-        let collection = setupCollection(with: item)
+        let story = space.buildCollectionStory()
+        _ = setupCollection(with: item, space: space, stories: [story])
+        try self.space.save()
 
         source.stubMakeCollectionStoriesController {
             self.collectionController
         }
 
-        let viewModel = subject(slug: collection.slug)
+        source.stubViewObject { _ in
+            story
+        }
+
+        let viewModel = subject(slug: "slug-1", source: source)
+        viewModel.fetch()
         let hasCorrectTitle = viewModel._actions.contains { $0.title == "Edit tags" }
         XCTAssertTrue(hasCorrectTitle)
     }
 
-    func test_addTagsAction_sendsAddTagsViewModel() {
+    func test_addTagsAction_sendsAddTagsViewModel() throws {
         let item = space.buildSavedItem(tags: ["tag 1"]).item
-        let collection = setupCollection(with: item)
+        let story = space.buildCollectionStory()
+        _ = setupCollection(with: item, space: space, stories: [story])
+        try self.space.save()
 
         source.stubMakeCollectionStoriesController {
             self.collectionController
         }
 
-        let viewModel = subject(slug: collection.slug)
+        source.stubViewObject { _ in
+            story
+        }
+
+        let viewModel = subject(slug: "slug-1", source: source)
+        viewModel.fetch()
 
         source.stubRetrieveTags { _ in return nil }
         source.stubFetchAllTags { return [] }
@@ -271,15 +335,22 @@ class CollectionViewModelTests: XCTestCase {
         wait(for: [expectAddTags], timeout: 10)
     }
 
-    func test_delete_delegatesToSource_andSendsDeleteEvent() {
+    func test_delete_delegatesToSource_andSendsDeleteEvent() throws {
         let item = space.buildSavedItem(isFavorite: true).item
-        let collection = setupCollection(with: item)
+        let story = space.buildCollectionStory()
+        _ = setupCollection(with: item, space: space, stories: [story])
+        try self.space.save()
 
         source.stubMakeCollectionStoriesController {
             self.collectionController
         }
 
-        let viewModel = subject(slug: collection.slug)
+        source.stubViewObject { _ in
+            story
+        }
+
+        let viewModel = subject(slug: "slug-1", source: source)
+        viewModel.fetch()
 
         let expectDelete = expectation(description: "expect source.delete(_:)")
         source.stubDeleteSavedItem { deletedSavedItem in
@@ -303,15 +374,23 @@ class CollectionViewModelTests: XCTestCase {
         wait(for: [expectDelete, expectDeleteEvent], timeout: 1)
     }
 
-    func test_report_updatesSelectedRecommendationToReport() {
+    func test_report_updatesSelectedRecommendationToReport() throws {
         let item = space.buildItem()
-        let collection = setupCollection(with: item)
+        let story = space.buildCollectionStory()
+        _ = setupCollection(with: item, space: space, stories: [story])
+        try self.space.save()
 
         source.stubMakeCollectionStoriesController {
             self.collectionController
         }
 
-        let viewModel = subject(slug: collection.slug)
+        source.stubViewObject { _ in
+            story
+        }
+
+        let viewModel = subject(slug: "slug-1", source: source)
+        viewModel.fetch()
+
 
         let reportExpectation = expectation(description: "expected item to be reported")
         viewModel.$selectedCollectionItemToReport.dropFirst().sink { recommendation in
@@ -325,13 +404,20 @@ class CollectionViewModelTests: XCTestCase {
 
     func test_share_updatesSharedActivity() throws {
         let item = space.buildItem()
-        let collection = setupCollection(with: item)
+        let story = space.buildCollectionStory()
+        _ = setupCollection(with: item, space: space, stories: [story])
+        try self.space.save()
 
         source.stubMakeCollectionStoriesController {
             self.collectionController
         }
 
-        let viewModel = subject(slug: collection.slug)
+        source.stubViewObject { _ in
+            story
+        }
+
+        let viewModel = subject(slug: "slug-1", source: source)
+        viewModel.fetch()
 
         let shareExpectation = expectation(description: "expected item to be shared")
         viewModel.$sharedActivity.dropFirst().sink { item in
@@ -477,17 +563,22 @@ class CollectionViewModelTests: XCTestCase {
         wait(for: [webExpectation], timeout: 1)
     }
 
-    func test_select_withCollection_showsNativeCollectionView() {
-        let collectionItem = space.buildItem()
-        let storyCollectionItem = setupCollection(with: space.buildItem()).item
-        let story = space.buildCollectionStory(item: storyCollectionItem)
-        let collection = space.buildCollection(stories: [story], item: collectionItem)
+    func test_select_withCollection_showsNativeCollectionView() throws {
+        let item = space.buildItem()
+        let story = space.buildCollectionStory()
+        _ = setupCollection(with: item, space: space, stories: [story])
+        try self.space.save()
 
         source.stubMakeCollectionStoriesController {
             self.collectionController
         }
 
-        let viewModel = subject(collection: collection)
+        source.stubViewObject { _ in
+            story
+        }
+
+        let viewModel = subject(slug: "slug-1", source: source)
+        viewModel.fetch()
 
         let readableExpectation = expectation(description: "expected readable to be called")
         viewModel.$selectedItem.dropFirst().sink { readable in
@@ -562,9 +653,13 @@ class CollectionViewModelTests: XCTestCase {
         wait(for: [reportExpectation], timeout: 1)
     }
 
-    private func setupCollection(with item: Item?) -> Collection {
-        let story = space.buildCollectionStory()
-        let collection = space.buildCollection(stories: [story], item: item)
+    private func setupCollection(with item: Item?, space: Space? = nil, stories: [CollectionStory] = []) -> Collection {
+        let space = space ?? self.space!
+
+        source.stubFetchItem { url in
+            return item
+        }
+        let collection = space.buildCollection(stories: stories, item: item)
         return collection
     }
 
@@ -678,7 +773,7 @@ class CollectionViewModelTests: XCTestCase {
     }
 }
 
-extension CollectionViewModel {
+private extension CollectionViewModel {
     func invokeAction(title: String) {
         invokeAction(from: _actions, title: title)
     }
