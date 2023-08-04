@@ -466,7 +466,10 @@ extension SearchViewModel: SearchResultActionDelegate {
             notificationCenter: notificationCenter
         )
 
-        if savedItem.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
+        if let collection = readable.collection, featureFlags.isAssigned(flag: .nativeCollections) {
+            let collectionViewModel = CollectionViewModel(collection: collection, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults, featureFlags: featureFlags, notificationCenter: notificationCenter)
+            selectedItem = .collection(collectionViewModel)
+        } else if savedItem.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
             trackOpenSearchItem(url: savedItem.url, index: index, destination: .internal)
             selectedItem = .webView(readable)
         } else {
