@@ -311,9 +311,9 @@ extension SavesContainerViewController {
         }.store(in: &subscriptions)
 
         // Search navigation
-        model.searchList.$selectedItem.sink { [weak self] selectedArchivedItem in
-            guard let selectedArchivedItem = selectedArchivedItem else { return }
-            self?.navigate(selectedItem: selectedArchivedItem)
+        model.searchList.$selectedItem.sink { [weak self] selectedItem in
+            guard let selectedItem = selectedItem else { return }
+            self?.navigate(selectedItem: selectedItem)
         }.store(in: &subscriptions)
     }
 
