@@ -63,18 +63,48 @@ class SavedItemViewModel {
     func save(from context: ExtensionContext?) async {
         guard appSession.currentSession != nil else {
             autodismiss(from: context)
+
             return
         }
 
-        let extensionItems = context?.extensionItems ?? []
+        guard let extensionItems = context?.extensionItems else {
+            tracker.track(event: Events.SaveTo.unableToSave())
+            autodismiss(from: context)
+
+            return
+        }
+
+        var urlsToSave = await parse(extensionItems: extensionItems)
+
+        if urlsToSave.isEmpty {
+            tracker.track(event: Events.SaveTo.unableToSave())
+            infoViewModel = .error
+            autodismiss(from: context)
+
+            return
+        }
+
+        save(urlsToSave)
+
+        autodismiss(from: context)
+    }
+
+    private func parse(extensionItems: [ExtensionItem]) async -> [String] {
+        var urlsToSave: [String] = []
 
         for item in extensionItems {
             guard let url = try? await url(from: item) else {
-                tracker.track(event: Events.SaveTo.unableToSave())
-                infoViewModel = .error
                 continue
             }
 
+            urlsToSave.append(url)
+        }
+
+        return urlsToSave
+    }
+
+    private func save(_ urlsToSave: [String]) {
+        urlsToSave.forEach { url in
             tracker.track(event: Events.SaveTo.saveEngagement(url: url))
 
             let result = saveService.save(url: url)
@@ -85,12 +115,9 @@ class SavedItemViewModel {
             case .newItem(let savedItem):
                 self.savedItem = savedItem
                 infoViewModel = .newItem
-            case .taggedItem:
-                continue
+            default:
+                break
             }
-
-            autodismiss(from: context)
-            continue
         }
     }
 
