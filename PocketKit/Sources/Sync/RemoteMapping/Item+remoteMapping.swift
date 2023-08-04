@@ -192,12 +192,6 @@ extension Item {
             self.syndicatedArticle?.itemID = itemId
             self.syndicatedArticle?.title = syndicatedArticle.title
         }
-
-        if let slug = storyItem.collection?.slug {
-            let collection = (try? space.fetchCollection(by: slug, context: context)) ?? Collection(context: context, slug: slug, title: "", authors: [], stories: [])
-            collection.item = self
-            self.collection = collection
-        }
     }
 
     func update(from summary: ItemSummary, with space: Space) {
