@@ -306,7 +306,7 @@ extension CollectionViewModel {
         if let slug = story.item?.collectionSlug, featureFlags.isAssigned(flag: .nativeCollections) {
             selectedItem = .collection(
                 CollectionViewModel(slug: slug, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults, featureFlags: featureFlags, notificationCenter: notificationCenter)
-                )
+            )
         // Check if item is a saved item
         } else if let item = story.item, !item.shouldOpenInWebView(override: featureFlags.shouldDisableReader), let savedItem = item.savedItem {
             selectedItem = .savedItem(
