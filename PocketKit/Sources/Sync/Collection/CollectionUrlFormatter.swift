@@ -8,7 +8,7 @@ import Foundation
 public struct CollectionUrlFormatter {
     static let scheme = "https"
     static let host = "getpocket.com"
-    static let collectionComponent = "collection"
+    static let collectionComponent = "collections"
     static let collectionComponentIndex = 1
     static let slugComponentIndex = 2
     static let pathComponentsCount = 3
