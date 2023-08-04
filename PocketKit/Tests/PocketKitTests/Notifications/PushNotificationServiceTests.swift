@@ -39,6 +39,12 @@ final class PushNotificationServiceTests: XCTestCase {
         subject = PushNotificationService(source: source, tracker: tracker, appSession: appSession, braze: braze, instantSync: instantSync)
     }
 
+    override func tearDown() {
+        super.tearDown()
+
+        subscriptions = []
+    }
+
     func test_onLogin_didCallSubscribers() {
         let sessionExpectation = expectation(description: "published error event")
 
