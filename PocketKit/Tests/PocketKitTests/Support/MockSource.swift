@@ -272,26 +272,6 @@ extension MockSource {
     }
 }
 
-// MARK: fetch collections
-extension MockSource {
-    private static let fetchCollection = "fetchCollection"
-    typealias FetchCollectionImpl = (String) async throws -> Void
-
-    struct FetchCollectionCall {}
-
-    func stubFetchCollection(impl: @escaping FetchCollectionImpl) {
-        implementations[Self.fetchCollection] = impl
-    }
-
-    func fetchCollection(by slug: String) async throws {
-        guard let impl = implementations[Self.fetchCollection] as? FetchCollectionImpl else {
-            fatalError("\(Self.self).\(#function) has not been stubbed")
-        }
-        calls[Self.fetchCollection] = (calls[Self.fetchCollection] ?? []) + [FetchCollectionCall()]
-        return try await impl(slug)
-    }
-}
-
 // MARK: - Make home controller
 extension MockSource {
     static let makeHomeController = "makeHomeController"
@@ -1537,7 +1517,7 @@ extension MockSource {
     }
 }
 
-// MARK: fetchCollection
+ // MARK: fetchCollection
  extension MockSource {
     private static let fetchCollection = "fetchCollection"
     typealias FetchCollectionImpl = (String) async throws -> Void
