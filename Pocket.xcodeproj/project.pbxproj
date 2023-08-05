@@ -277,7 +277,6 @@
 		AA7D6A2A2995F0A20094FD18 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.2.sdk/System/Library/Frameworks/StoreKit.framework; sourceTree = DEVELOPER_DIR; };
 		AA909AC8299EFD3A00F90FA7 /* secrets_test.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = secrets_test.xcconfig; sourceTree = "<group>"; };
 		AA909ACC299F4D5400F90FA7 /* Test_Subscriptions.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Test_Subscriptions.storekit; sourceTree = "<group>"; };
-		AAC484932A7E2F1600C7D493 /* Item+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Item+CoreDataProperties.swift"; path = "PocketKit/Sources/Sync/CoreDataInitializers/Item+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		AAE33A7F2A0ED5A600214652 /* ItemWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ItemWidgets.entitlements; sourceTree = "<group>"; };
 		AAE6AC382A13504400790E33 /* RecentSavesWidgetPreviewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentSavesWidgetPreviewer.swift; sourceTree = "<group>"; };
 		AAEE908129B69BA70028587D /* PremiumTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremiumTests.swift; sourceTree = "<group>"; };
@@ -383,7 +382,6 @@
 		166A81A32637406B0015AA1D = {
 			isa = PBXGroup;
 			children = (
-				AAC484932A7E2F1600C7D493 /* Item+CoreDataProperties.swift */,
 				65D3105129CEACEE00952D64 /* PKTListenResources.bundle */,
 				653DA73829C3BC1500123847 /* Pocket_iOS_Release.entitlements */,
 				653DA73729C3BC0A00123847 /* Pocket_iOS_Debug.entitlements */,
