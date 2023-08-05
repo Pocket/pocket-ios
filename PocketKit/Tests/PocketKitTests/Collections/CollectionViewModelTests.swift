@@ -93,6 +93,8 @@ class CollectionViewModelTests: XCTestCase {
             story
         }
 
+        source.stubFetchCollection { _ in }
+
         let viewModel = subject(slug: "slug-1", source: source)
         viewModel.fetch()
 
@@ -129,6 +131,8 @@ class CollectionViewModelTests: XCTestCase {
         source.stubViewObject { _ in
             story
         }
+
+        source.stubFetchCollection { _ in }
 
         let viewModel = subject(slug: "slug-1", source: source)
         viewModel.fetch()
@@ -183,6 +187,8 @@ class CollectionViewModelTests: XCTestCase {
             story
         }
 
+        source.stubFetchCollection { _ in }
+
         source.stubFavoriteSavedItem { favoritedSavedItem in
             XCTAssertTrue(favoritedSavedItem.item === item)
             XCTAssertTrue(favoritedSavedItem === item?.savedItem)
@@ -223,6 +229,8 @@ class CollectionViewModelTests: XCTestCase {
             story
         }
 
+        source.stubFetchCollection { _ in }
+
         let expectFavorite = expectation(description: "expect source.favorite(_:)")
 
         source.stubFavoriteSavedItem { favoritedSavedItem in
@@ -256,6 +264,8 @@ class CollectionViewModelTests: XCTestCase {
         source.stubViewObject { _ in
             story
         }
+
+        source.stubFetchCollection { _ in }
 
         let viewModel = subject(slug: "slug-1", source: source)
         viewModel.fetch()
@@ -291,6 +301,8 @@ class CollectionViewModelTests: XCTestCase {
             story
         }
 
+        source.stubFetchCollection { _ in }
+
         let viewModel = subject(slug: "slug-1", source: source)
         viewModel.fetch()
         let hasCorrectTitle = viewModel._actions.contains { $0.title == "Add tags" }
@@ -311,6 +323,8 @@ class CollectionViewModelTests: XCTestCase {
             story
         }
 
+        source.stubFetchCollection { _ in }
+
         let viewModel = subject(slug: "slug-1", source: source)
         viewModel.fetch()
         let hasCorrectTitle = viewModel._actions.contains { $0.title == "Edit tags" }
@@ -330,6 +344,8 @@ class CollectionViewModelTests: XCTestCase {
         source.stubViewObject { _ in
             story
         }
+
+        source.stubFetchCollection { _ in }
 
         let viewModel = subject(slug: "slug-1", source: source)
         viewModel.fetch()
@@ -360,6 +376,8 @@ class CollectionViewModelTests: XCTestCase {
         source.stubViewObject { _ in
             story
         }
+
+        source.stubFetchCollection { _ in }
 
         let viewModel = subject(slug: "slug-1", source: source)
         viewModel.fetch()
@@ -400,6 +418,8 @@ class CollectionViewModelTests: XCTestCase {
             story
         }
 
+        source.stubFetchCollection { _ in }
+
         let viewModel = subject(slug: "slug-1", source: source)
         viewModel.fetch()
 
@@ -426,6 +446,8 @@ class CollectionViewModelTests: XCTestCase {
         source.stubViewObject { _ in
             story
         }
+
+        source.stubFetchCollection { _ in }
 
         let viewModel = subject(slug: "slug-1", source: source)
         viewModel.fetch()
@@ -588,6 +610,8 @@ class CollectionViewModelTests: XCTestCase {
             story
         }
 
+        source.stubFetchCollection { _ in }
+
         let viewModel = subject(slug: "slug-1", source: source)
         viewModel.fetch()
 
@@ -618,6 +642,8 @@ class CollectionViewModelTests: XCTestCase {
         source.stubMakeCollectionStoriesController {
             self.collectionController
         }
+
+        source.stubFetchCollection { _ in }
 
         let viewModel = subject(slug: collection.slug)
 
@@ -682,7 +708,7 @@ class CollectionViewModelTests: XCTestCase {
             self.collectionController
         }
 
-        let viewModel = subject(collection: collection)
+        let viewModel = subject(slug: collection.slug)
         XCTAssertNil(viewModel.snapshot.indexOfSection(.error))
     }
 
@@ -695,7 +721,9 @@ class CollectionViewModelTests: XCTestCase {
             self.collectionController
         }
 
-        let viewModel = subject(collection: collection)
+        source.stubFetchCollection { _ in }
+
+        let viewModel = subject(slug: collection.slug)
 
         let snapshotExpectation = expectation(description: "expect a snapshot")
 
@@ -720,7 +748,7 @@ class CollectionViewModelTests: XCTestCase {
 
         source.stubFetchCollection { _ in }
 
-        let viewModel = subject(collection: collection)
+        let viewModel = subject(slug: collection.slug)
 
         let loadingExpectation = expectation(description: "expect loading snapshot")
         let errorSnapshotExpectation = expectation(description: "expect error snapshot")
@@ -760,7 +788,9 @@ class CollectionViewModelTests: XCTestCase {
             throw CollectionServiceError.nullCollection
         }
 
-        let viewModel = subject(collection: collection)
+        source.stubFetchCollection { _ in }
+
+        let viewModel = subject(slug: collection.slug)
         let errorSnapshotExpectation = expectation(description: "expect error snapshot")
         let loadingExpectation = expectation(description: "expect loading snapshot")
 
