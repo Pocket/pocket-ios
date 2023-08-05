@@ -19,22 +19,24 @@ extension Collection {
         })
 
         stories = try? NSOrderedSet(array: remote.stories.enumerated().map {
-            let story = try space.fetchCollectionStory(by: $0.element.url, context: context) ??
+            let story =
             CollectionStory(
                 context: context,
                 url: $0.element.url,
                 title: $0.element.title,
                 excerpt: $0.element.excerpt,
-                authors: makeStoryAuthors(space: space, context: context, authors: $0.element.authors)
+                authors: try makeStoryAuthors(space: space, context: context, authors: $0.element.authors)
             )
 
             story.sortOrder = NSNumber(value: $0.offset + 1)
             story.publisher = $0.element.publisher
             story.imageUrl = $0.element.imageUrl
+            story.collection = self
             if let remoteItem = $0.element.item {
                 let item = (try? space.fetchItem(byURL: remoteItem.givenUrl, context: context)) ??
                 Item(context: context, givenURL: remoteItem.givenUrl, remoteID: remoteItem.remoteID)
                 item.update(from: remoteItem, in: space)
+                item.addToCollectionStories(story)
                 story.item = item
             }
             return story
