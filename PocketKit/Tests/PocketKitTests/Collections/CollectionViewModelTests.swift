@@ -36,7 +36,6 @@ class CollectionViewModelTests: XCTestCase {
         notificationCenter = .default
 
         userDefaults = UserDefaults(suiteName: "CollectionViewModelTests")
-        self.collectionController = space.makeCollectionStoriesController(slug: "slug")
         featureFlags.stubIsAssigned { flag, variant in
             if flag == .nativeCollections {
                 return true
@@ -163,7 +162,7 @@ class CollectionViewModelTests: XCTestCase {
         let expectMoveToSaves = expectation(description: "expect source.url(_:)")
         source.stubSaveURL { url in
             defer { expectMoveToSaves.fulfill() }
-            XCTAssertEqual(url, "https://getpocket.com/collections/slug")
+            XCTAssertEqual(url, "https://getpocket.com/collections/slug-1")
         }
 
         viewModel.moveToSaves { _ in }
@@ -597,8 +596,8 @@ class CollectionViewModelTests: XCTestCase {
     }
 
     func test_select_withCollection_showsNativeCollectionView() throws {
-        let item = space.buildItem()
-        let story = space.buildCollectionStory()
+        let item = space.buildItem(givenURL: "https://getpocket.com/collections/slug-1")
+        let story = space.buildCollectionStory(item: item)
         _ = setupCollection(with: item, space: space, stories: [story])
         try self.space.save()
 
@@ -723,7 +722,7 @@ class CollectionViewModelTests: XCTestCase {
 
         source.stubFetchCollection { _ in }
 
-        let viewModel = subject(slug: collection.slug)
+        let viewModel = subject(slug: collection.slug, networkPathMonitor: networkPathMonitor)
 
         let snapshotExpectation = expectation(description: "expect a snapshot")
 
@@ -788,8 +787,6 @@ class CollectionViewModelTests: XCTestCase {
             throw CollectionServiceError.nullCollection
         }
 
-        source.stubFetchCollection { _ in }
-
         let viewModel = subject(slug: collection.slug)
         let errorSnapshotExpectation = expectation(description: "expect error snapshot")
         let loadingExpectation = expectation(description: "expect loading snapshot")
@@ -810,7 +807,7 @@ class CollectionViewModelTests: XCTestCase {
 
         viewModel.fetch()
 
-        await fulfillment(of: [errorExpectation, errorSnapshotExpectation, loadingExpectation], timeout: 10)
+        await fulfillment(of: [errorExpectation, errorSnapshotExpectation, loadingExpectation], timeout: 1)
     }
 }
 
