@@ -15,26 +15,23 @@ import Network
 class CollectionViewModel: NSObject {
     typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Cell>
 
-    @Published var snapshot: Snapshot
-    @Published var metadata: CollectionMetadata = .empty
-    @Published var isArchived: Bool = false
+    @Published private(set) var snapshot: Snapshot
+    @Published private(set) var metadata: CollectionMetadata = .empty
+    @Published private(set) var isArchived: Bool = false
 
-    @Published var presentedAlert: PocketAlert?
-    @Published var presentedAddTags: PocketAddTagsViewModel?
-    @Published var sharedActivity: PocketActivity?
-    @Published var selectedCollectionItemToReport: Item?
+    @Published private(set) var presentedAlert: PocketAlert?
+    @Published private(set) var presentedAddTags: PocketAddTagsViewModel?
+    @Published private(set) var sharedActivity: PocketActivity?
 
-    @Published var selectedItem: ReadableType?
-    @Published var presentedStoryWebReaderURL: URL?
+    @Published private(set) var selectedCollectionItemToReport: Item?
+    @Published private(set) var selectedItem: ReadableType?
+    @Published private(set) var presentedStoryWebReaderURL: URL?
 
-    @Published var sharedStoryActivity: PocketActivity?
-    @Published var selectedStoryToReport: Item?
+    @Published private(set) var sharedStoryActivity: PocketActivity?
+    @Published private(set) var selectedStoryToReport: Item?
+    @Published private(set) var events: ReadableEvent?
 
-    @Published private(set) var _events: ReadableEvent?
-    var events: Published<ReadableEvent?>.Publisher { $_events }
-
-    @Published private(set) var _actions: [ItemAction] = []
-    var actions: Published<[ItemAction]>.Publisher { $_actions }
+    @Published private(set) var actions: [ItemAction] = []
 
     private var collection: Collection?
     private let source: Source
@@ -135,7 +132,7 @@ class CollectionViewModel: NSObject {
         }
 
         source.archive(item: savedItem)
-        _events = .archive
+        events = .archive
     }
 
     // If savedItem exists, then unarchive the item to appear in Saves, otherwise save the item
@@ -153,7 +150,7 @@ class CollectionViewModel: NSObject {
 
     private func buildActions() {
         guard let savedItem = item?.savedItem else {
-            _actions = [
+            actions = [
                 .share { [weak self] _ in self?.share() },
                 .report { [weak self] _ in self?.report() }
             ]
@@ -167,7 +164,7 @@ class CollectionViewModel: NSObject {
             favoriteAction = .favorite { [weak self] _ in self?.favorite(savedItem) }
         }
 
-        _actions = [
+        actions = [
             favoriteAction,
             tagsAction(for: savedItem),
             .delete { [weak self] _ in self?.confirmDelete(for: savedItem) },
@@ -227,7 +224,7 @@ class CollectionViewModel: NSObject {
     private func delete(_ savedItem: SavedItem) {
         presentedAlert = nil
         source.delete(item: savedItem)
-        _events = .delete
+        events = .delete
     }
 
     private func share(additionalText: String? = nil) {

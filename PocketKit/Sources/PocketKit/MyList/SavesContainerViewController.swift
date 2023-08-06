@@ -426,7 +426,7 @@ extension SavesContainerViewController {
             self?.report(item?.givenURL)
         }.store(in: &readableSubscriptions)
 
-        collection.events.receive(on: DispatchQueue.main).sink { [weak self] event in
+        collection.$events.receive(on: DispatchQueue.main).sink { [weak self] event in
             switch event {
             case .contentUpdated, .none:
                 break

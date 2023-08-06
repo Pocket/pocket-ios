@@ -95,7 +95,7 @@ class CollectionViewController: UIViewController {
             }
             .store(in: &subscriptions)
 
-        model.actions
+        model.$actions
             .receive(on: DispatchQueue.main)
             .sink { [weak self] actions in
                 self?.buildOverflowMenu(from: actions)
