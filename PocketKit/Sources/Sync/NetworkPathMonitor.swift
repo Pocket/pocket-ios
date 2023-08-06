@@ -15,6 +15,7 @@ public protocol NetworkPathMonitor: AnyObject {
     var updateHandler: UpdateHandler? { get set }
 
     func start(queue: DispatchQueue)
+    func cancel()
 }
 
 extension NWPath: NetworkPath {
