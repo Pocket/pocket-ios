@@ -475,7 +475,6 @@ extension HomeViewController {
     }
 
     private func showCollection(_ viewModel: CollectionViewModel) {
-        collectionSubscriptions = []
         let controller = CollectionViewController(model: viewModel)
         navigationController?.pushViewController(controller, animated: true)
 
@@ -499,7 +498,7 @@ extension HomeViewController {
             self?.report(item?.givenURL)
         }.store(in: &collectionSubscriptions)
 
-        viewModel.events.receive(on: DispatchQueue.main).sink { [weak self] event in
+        viewModel.$events.receive(on: DispatchQueue.main).sink { [weak self] event in
             switch event {
             case .contentUpdated, .none:
                 break
