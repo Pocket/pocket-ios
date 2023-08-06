@@ -53,14 +53,14 @@ struct CollectionMetadata {
 
     var attributedIntro: NSAttributedString? {
         guard let intro,
-              let atributedString = NSAttributedString.styled(
+              let attributedString = NSAttributedString.styled(
                 markdown: intro,
                 styler: NSMutableAttributedString.collectionStyler(bodyStyle: .collection.intro)
               )
         else {
             return nil
         }
-        let mutable = NSMutableAttributedString(attributedString: atributedString)
+        let mutable = NSMutableAttributedString(attributedString: attributedString)
         // Down seems to be replacing double newline characters with paragraph separators, so we are reversing that here
         // https://github.com/johnxnguyen/Down/issues/269
         mutable.mutableString.replaceOccurrences(of: "\u{2029}", with: "\n\n", range: NSRange(location: 0, length: mutable.string.count))
