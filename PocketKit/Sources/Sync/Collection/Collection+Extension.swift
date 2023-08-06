@@ -6,6 +6,6 @@ import Sync
 
 public extension Collection {
     var collectionItemUrl: String {
-        CollectionUrlFormatter().collectionUrlString(slug)
+        CollectionUrlFormatter.collectionUrlString(slug)
     }
 }
