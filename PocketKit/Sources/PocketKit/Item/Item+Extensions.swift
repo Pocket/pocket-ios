@@ -75,10 +75,10 @@ public extension Item {
     }
 
     var isCollection: Bool {
-        CollectionUrlFormatter().isCollectionUrl(givenURL)
+        CollectionUrlFormatter.isCollectionUrl(givenURL)
     }
 
     var collectionSlug: String? {
-        CollectionUrlFormatter().slug(from: givenURL)
+        CollectionUrlFormatter.slug(from: givenURL)
     }
 }
