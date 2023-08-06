@@ -90,12 +90,7 @@ class CollectionViewModel: NSObject {
 
     /// Determines whether collection has local data based on stories count
     var hasLocalData: Bool {
-        guard let storiesCount else { return false }
-        return storiesCount != 0
-    }
-
-    var storiesCount: Int? {
-        collectionController.fetchedObjects?.count
+        collectionController.fetchedObjects?.isEmpty == false
     }
 
     var item: Item? {
@@ -105,15 +100,30 @@ class CollectionViewModel: NSObject {
     func fetch() {
         do {
             try collectionController.performFetch()
-            guard collectionController.fetchedObjects?.isEmpty == true, !isOffline else {
+            guard !hasLocalData else {
+                // if we have stories, no need to show error messages when we are offline
+                networkPathMonitor.cancel()
                 return
             }
-            Task {
-                try await source.fetchCollection(by: slug)
+            if isOffline {
+                snapshot = self.errorSnapshot()
+            } else {
+                fetchRemoteCollection()
             }
         } catch {
             self.snapshot = errorSnapshot()
             Log.capture(message: "Failed to fetch details for CollectionViewModel: \(error)")
+        }
+    }
+
+    func fetchRemoteCollection() {
+        Task {
+            do {
+                try await source.fetchCollection(by: slug)
+            } catch {
+                self.snapshot = errorSnapshot()
+                Log.capture(message: "Failed to fetch remote collection stories: \(error)")
+            }
         }
     }
 
@@ -239,13 +249,6 @@ extension CollectionViewModel {
 
     var isOffline: Bool {
         return networkPathMonitor.currentNetworkPath.status == .unsatisfied
-    }
-
-    /// Check if collection does not have local data, then show error state
-    private func checkForLocalData() {
-        guard !hasLocalData else { return }
-        snapshot = self.errorSnapshot()
-        return
     }
 
     private func observeNetworkChanges() {
