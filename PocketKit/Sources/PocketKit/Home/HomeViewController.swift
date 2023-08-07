@@ -38,7 +38,7 @@ class HomeViewController: UIViewController {
     private var slateDetailSubscriptions: [AnyCancellable] = []
     private var readerSubscriptions: [AnyCancellable] = []
 
-    private var collectionSubscriptions = AnyCancellableStack()
+    private var collectionSubscriptions = SubscriptionsStack()
 
     private lazy var layout = UICollectionViewCompositionalLayout { [weak self] sectionIndex, env in
         guard let self = self,
@@ -479,7 +479,7 @@ extension HomeViewController {
         let controller = CollectionViewController(model: viewModel)
         navigationController?.pushViewController(controller, animated: true)
 
-        var subscriptionSet = SubscriptionSet()
+        var subscriptionSet = Set<AnyCancellable>()
 
         viewModel.$presentedStoryWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
             self?.present(url: url?.absoluteString)
