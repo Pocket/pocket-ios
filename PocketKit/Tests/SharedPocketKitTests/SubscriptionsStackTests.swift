@@ -147,7 +147,6 @@ class SubscriptionsStackTests: XCTestCase {
         secondTester.updateMessage("whateverMessage")
 
         // no subscriptions should be retained, callCount should still be equal to 2
-        // callCount should be equal to 3
         XCTAssertEqual(callCount, 2)
     }
 }
