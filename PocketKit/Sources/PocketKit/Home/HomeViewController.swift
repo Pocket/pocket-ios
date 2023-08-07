@@ -37,11 +37,8 @@ class HomeViewController: UIViewController {
     private var subscriptions: [AnyCancellable] = []
     private var slateDetailSubscriptions: [AnyCancellable] = []
     private var readerSubscriptions: [AnyCancellable] = []
-    // because we can have nested sub-collections, we need a data structure
-    // that acocunts for this and allows to remove unused subscription sets
-    // in order to prevent retaining unused CollectionViewModel instances
-    typealias collectionSubscriptionStack = [Set<AnyCancellable>]
-    private var collectionSubscriptions = collectionSubscriptionStack()
+
+    private var collectionSubscriptions = AnyCancellableStack()
 
     private lazy var layout = UICollectionViewCompositionalLayout { [weak self] sectionIndex, env in
         guard let self = self,
@@ -482,7 +479,7 @@ extension HomeViewController {
         let controller = CollectionViewController(model: viewModel)
         navigationController?.pushViewController(controller, animated: true)
 
-        var subscriptionSet = Set<AnyCancellable>()
+        var subscriptionSet = SubscriptionSet()
 
         viewModel.$presentedStoryWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
             self?.present(url: url?.absoluteString)
@@ -717,14 +714,4 @@ extension HomeViewController: SFSafariViewControllerDelegate {
 
 private extension Style {
     static let overscroll = Style.header.sansSerif.p3.with { $0.with(alignment: .center) }
-}
-
-private extension Array {
-    mutating func push(_ element: Element) {
-        append(element)
-    }
-
-    mutating func pop() {
-        removeLast()
-    }
 }

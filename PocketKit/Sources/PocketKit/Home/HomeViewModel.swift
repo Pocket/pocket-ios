@@ -285,6 +285,7 @@ extension HomeViewModel {
 
             select(recommendation: recommendation, at: indexPath)
         }
+        selectedReadableType = nil
     }
 
     private func select(slate: Slate) {
