@@ -67,6 +67,7 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
 
     private var subscriptions: [AnyCancellable] = []
     private var readableSubscriptions: [AnyCancellable] = []
+    private var collectionSubscriptions = AnyCancellableStack()
 
     init(savesContainerModel: SavesContainerViewModel, viewControllers: [SelectableViewController]) {
         selectedIndex = 0
@@ -406,25 +407,28 @@ extension SavesContainerViewController {
 
     private func push(collection: CollectionViewModel?) {
         guard let collection else {
-            readableSubscriptions = []
+            readableSubscriptions.removeAll()
+            collectionSubscriptions.empty()
             return
         }
 
+        var set = SubscriptionSet()
+
         collection.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
             self?.present(alert: alert)
-        }.store(in: &readableSubscriptions)
+        }.store(in: &set)
 
         collection.$presentedAddTags.receive(on: DispatchQueue.main).sink { [weak self] addTagsViewModel in
             self?.present(viewModel: addTagsViewModel)
-        }.store(in: &readableSubscriptions)
+        }.store(in: &set)
 
         collection.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
             self?.present(activity: activity)
-        }.store(in: &readableSubscriptions)
+        }.store(in: &set)
 
         collection.$selectedCollectionItemToReport.receive(on: DispatchQueue.main).sink { [weak self] item in
             self?.report(item?.givenURL)
-        }.store(in: &readableSubscriptions)
+        }.store(in: &set)
 
         collection.$events.receive(on: DispatchQueue.main).sink { [weak self] event in
             switch event {
@@ -433,7 +437,7 @@ extension SavesContainerViewController {
             case .archive, .delete:
                 self?.popToPreviousScreen(navigationController: self?.navigationController)
             }
-        }.store(in: &readableSubscriptions)
+        }.store(in: &set)
 
         collection.$selectedItem.receive(on: DispatchQueue.main).sink { [weak self] readableType in
             switch readableType {
@@ -446,25 +450,37 @@ extension SavesContainerViewController {
             default:
                 break
             }
-        }.store(in: &readableSubscriptions)
+        }.store(in: &set)
+
+        // whenever a CollectionViewController is popped out, remove all its subscriptions
+        // to avoid retaining a viewModel instance
+        collection.$isBeingDeallocated
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isBeingDeallocated in
+                if isBeingDeallocated {
+                    self?.collectionSubscriptions.pop()
+                }
+            }
+            .store(in: &set)
 
         // MARK: Story Presentation
         collection.$presentedStoryWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
             self?.present(url: url)
-        }.store(in: &readableSubscriptions)
+        }.store(in: &set)
 
         collection.$sharedStoryActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
             self?.present(activity: activity)
-        }.store(in: &readableSubscriptions)
+        }.store(in: &set)
 
         collection.$selectedStoryToReport.receive(on: DispatchQueue.main).sink { [weak self] item in
             self?.report(item?.givenURL)
-        }.store(in: &readableSubscriptions)
+        }.store(in: &set)
 
         navigationController?.pushViewController(
             CollectionViewController(model: collection),
             animated: true
         )
+        collectionSubscriptions.push(set)
     }
 
     private func report(_ givenURL: String?) {
