@@ -36,8 +36,12 @@ class HomeViewController: UIViewController {
     private let sectionProvider: HomeViewControllerSectionProvider
     private var subscriptions: [AnyCancellable] = []
     private var slateDetailSubscriptions: [AnyCancellable] = []
-    private var collectionSubscriptions: [AnyCancellable] = []
     private var readerSubscriptions: [AnyCancellable] = []
+    // because we can have nested sub-collections, we need a data structure
+    // that acocunts for this and allows to remove unused subscription sets
+    // in order to prevent retaining unused CollectionViewModel instances
+    typealias collectionSubscriptionStack = [Set<AnyCancellable>]
+    private var collectionSubscriptions = collectionSubscriptionStack()
 
     private lazy var layout = UICollectionViewCompositionalLayout { [weak self] sectionIndex, env in
         guard let self = self,
@@ -353,14 +357,14 @@ extension HomeViewController {
             // we'll utilize its premium url to present a premium Pocket web page as necessary
             present(url: viewModel.premiumURL)
         case .none:
-            readerSubscriptions = []
+            readerSubscriptions.removeAll()
         case .collection(let viewModel):
             showCollection(viewModel)
         }
     }
 
     func show(_ viewModel: SlateDetailViewModel?) {
-        slateDetailSubscriptions = []
+        slateDetailSubscriptions.removeAll()
 
         guard let viewModel = viewModel else {
             return
@@ -396,7 +400,7 @@ extension HomeViewController {
     }
 
     func show(_ recommendation: RecommendationViewModel?) {
-        readerSubscriptions = []
+        readerSubscriptions.removeAll()
         guard let recommendation = recommendation else {
             return
         }
@@ -437,7 +441,7 @@ extension HomeViewController {
     }
 
     func show(_ savedItem: SavedItemViewModel) {
-        readerSubscriptions = []
+        readerSubscriptions.removeAll()
 
         navigationController?.pushViewController(
             ReadableHostViewController(readableViewModel: savedItem),
@@ -478,25 +482,27 @@ extension HomeViewController {
         let controller = CollectionViewController(model: viewModel)
         navigationController?.pushViewController(controller, animated: true)
 
+        var subscriptionSet = Set<AnyCancellable>()
+
         viewModel.$presentedStoryWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
             self?.present(url: url?.absoluteString)
-        }.store(in: &collectionSubscriptions)
+        }.store(in: &subscriptionSet)
 
         viewModel.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
             self?.present(alert: alert)
-        }.store(in: &collectionSubscriptions)
+        }.store(in: &subscriptionSet)
 
         viewModel.$presentedAddTags.receive(on: DispatchQueue.main).sink { [weak self] addTagsViewModel in
             self?.present(addTagsViewModel)
-        }.store(in: &collectionSubscriptions)
+        }.store(in: &subscriptionSet)
 
         viewModel.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
             self?.present(activity: activity)
-        }.store(in: &collectionSubscriptions)
+        }.store(in: &subscriptionSet)
 
         viewModel.$selectedCollectionItemToReport.receive(on: DispatchQueue.main).sink { [weak self] item in
             self?.report(item?.givenURL)
-        }.store(in: &collectionSubscriptions)
+        }.store(in: &subscriptionSet)
 
         viewModel.$events.receive(on: DispatchQueue.main).sink { [weak self] event in
             switch event {
@@ -505,7 +511,7 @@ extension HomeViewController {
             case .archive, .delete:
                 self?.popToPreviousScreen()
             }
-        }.store(in: &collectionSubscriptions)
+        }.store(in: &subscriptionSet)
 
         viewModel.$selectedItem.receive(on: DispatchQueue.main).sink { [weak self] readableType in
             switch readableType {
@@ -518,20 +524,32 @@ extension HomeViewController {
             default:
                 break
             }
-        }.store(in: &collectionSubscriptions)
+        }.store(in: &subscriptionSet)
+        // whenever a CollectionViewController is popped out, remove all its subscriptions
+        // to avoid retaining a viewModel instance
+        viewModel.$isBeingDeallocated
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isBeingDeallocated in
+                if isBeingDeallocated {
+                    self?.collectionSubscriptions.pop()
+                }
+            }
+            .store(in: &subscriptionSet)
 
         // MARK: Story Presentation
         viewModel.$presentedStoryWebReaderURL.sink { [weak self] url in
             self?.present(url: url?.absoluteString)
-        }.store(in: &collectionSubscriptions)
+        }.store(in: &subscriptionSet)
 
         viewModel.$sharedStoryActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
             self?.present(activity: activity)
-        }.store(in: &collectionSubscriptions)
+        }.store(in: &subscriptionSet)
 
         viewModel.$selectedStoryToReport.receive(on: DispatchQueue.main).sink { [weak self] item in
             self?.report(item?.givenURL)
-        }.store(in: &collectionSubscriptions)
+        }.store(in: &subscriptionSet)
+
+        collectionSubscriptions.push(subscriptionSet)
     }
 
     private func showRecommendation(forWebView viewModel: RecommendationViewModel) {
@@ -699,4 +717,14 @@ extension HomeViewController: SFSafariViewControllerDelegate {
 
 private extension Style {
     static let overscroll = Style.header.sansSerif.p3.with { $0.with(alignment: .center) }
+}
+
+private extension Array {
+    mutating func push(_ element: Element) {
+        append(element)
+    }
+
+    mutating func pop() {
+        removeLast()
+    }
 }
