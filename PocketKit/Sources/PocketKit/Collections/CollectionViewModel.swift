@@ -32,6 +32,7 @@ class CollectionViewModel: NSObject {
     @Published private(set) var events: ReadableEvent?
 
     @Published private(set) var actions: [ItemAction] = []
+    @Published private(set) var isBeingDeallocated = false
 
     private var collection: Collection?
     private let source: Source
@@ -531,5 +532,12 @@ extension CollectionViewModel {
     /// track report button tapped in collection toolbar overflow menu
     func trackStoryReport(storyURL: String) {
         tracker.track(event: Events.Collection.storyReportClicked(url: storyURL))
+    }
+}
+
+// MARK: cleanup
+extension CollectionViewModel {
+    func deallocate() {
+        isBeingDeallocated = true
     }
 }
