@@ -106,4 +106,48 @@ class SubscriptionsStackTests: XCTestCase {
         // no more updates should be received, callCount should be still equal to 3
         XCTAssertEqual(callCount, 3)
     }
+
+    func testEmptySubscriptions() {
+        var stack = SubscriptionsStack()
+        var callCount = 0
+
+        let firstTester = SubscriptionTester()
+
+        firstSet = Set<AnyCancellable>()
+        firstTester.$subscriptionMessage
+            .dropFirst()
+            .sink { message in
+                callCount += 1
+            }
+            .store(in: &firstSet)
+
+        stack.push(firstSet)
+        firstSet = nil
+
+        let secondTester = SubscriptionTester()
+
+        secondSet = Set<AnyCancellable>()
+        secondTester.$subscriptionMessage
+            .dropFirst()
+            .sink { message in
+                callCount += 1
+            }
+            .store(in: &secondSet)
+        stack.push(secondSet)
+        secondSet = nil
+
+        firstTester.updateMessage("whateverMessage")
+        secondTester.updateMessage("whateverMessage")
+
+        // two updates should be received, callCount should be equal to 2
+        XCTAssertEqual(callCount, 2)
+        stack.empty()
+
+        firstTester.updateMessage("whateverMessage")
+        secondTester.updateMessage("whateverMessage")
+
+        // no subscriptions should be retained, callCount should still be equal to 2
+        // callCount should be equal to 3
+        XCTAssertEqual(callCount, 2)
+    }
 }
