@@ -17,7 +17,7 @@ class CollectionViewModel: NSObject {
 
     @Published private(set) var snapshot: Snapshot
     @Published private(set) var metadata: CollectionMetadata = .empty
-    @Published private(set) var isArchived: Bool = false
+    @Published private(set) var isArchived: Bool?
 
     @Published private(set) var presentedAlert: PocketAlert?
     @Published private(set) var presentedAddTags: PocketAddTagsViewModel?
@@ -366,7 +366,7 @@ private extension CollectionViewModel {
         }.store(in: &collectionItemSubscriptions)
 
         item?.publisher(for: \.savedItem?.isArchived).sink { [weak self] isArchived in
-            self?.isArchived = isArchived ?? false
+            self?.isArchived = isArchived
         }.store(in: &collectionItemSubscriptions)
 
         item?.publisher(for: \.savedItem).sink { [weak self] _ in
@@ -382,7 +382,7 @@ private extension CollectionViewModel {
             return
         }
         self.collection = collection
-        isArchived = collection.item?.savedItem?.isArchived ?? false
+        isArchived = collection.item?.savedItem?.isArchived
         listenForItemChanges()
         buildActions()
         self.metadata = CollectionMetadata(
