@@ -176,6 +176,9 @@ class CollectionViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.tabBarController?.tabBar.isHidden = false
+        if isMovingFromParent {
+            model.deallocate()
+        }
     }
 
     override func viewDidLoad() {
