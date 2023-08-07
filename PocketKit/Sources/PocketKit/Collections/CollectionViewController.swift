@@ -122,12 +122,12 @@ class CollectionViewController: UIViewController {
         fatalError("init(coder:) is not implemented")
     }
 
-    private func setBarbuttonItems(isArchived: Bool) {
-        navigationItem.rightBarButtonItems = [
-            moreButtonItem,
-            // If item is saved, show archive button; otherwise if it is not saved or it is archived, show saves button.
-            isArchived == false ? getArchiveButton : getSavesButton
-        ]
+    private func setBarbuttonItems(isArchived: Bool?) {
+        var button = getSavesButton
+        if let isArchived {
+            button = isArchived ? getSavesButton : getArchiveButton
+        }
+        navigationItem.rightBarButtonItems = [moreButtonItem, button]
     }
 
     func buildOverflowMenu(from actions: [ItemAction]) {
