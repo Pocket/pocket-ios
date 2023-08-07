@@ -104,7 +104,7 @@ class CollectionViewModelTests: XCTestCase {
         }
 
         let expectArchiveEvent = expectation(description: "expect archive event")
-        viewModel.events.dropFirst().sink { event in
+        viewModel.$events.dropFirst().sink { event in
             guard case .archive = event else {
                 XCTFail("Received unexpected event: \(String(describing: event))")
                 return
@@ -202,14 +202,14 @@ class CollectionViewModelTests: XCTestCase {
         let viewModel = subject(slug: "slug-1", source: source)
         viewModel.fetch()
         XCTAssertEqual(
-            viewModel._actions.map(\.title),
+            viewModel.actions.map(\.title),
             ["Favorite", "Add tags", "Delete", "Share"]
         )
 
         viewModel.invokeAction(title: "Favorite")
 
         XCTAssertEqual(
-            viewModel._actions.map(\.title),
+            viewModel.actions.map(\.title),
             ["Unfavorite", "Add tags", "Delete", "Share"]
         )
     }
@@ -304,7 +304,7 @@ class CollectionViewModelTests: XCTestCase {
 
         let viewModel = subject(slug: "slug-1", source: source)
         viewModel.fetch()
-        let hasCorrectTitle = viewModel._actions.contains { $0.title == "Add tags" }
+        let hasCorrectTitle = viewModel.actions.contains { $0.title == "Add tags" }
         XCTAssertTrue(hasCorrectTitle)
     }
 
@@ -326,7 +326,7 @@ class CollectionViewModelTests: XCTestCase {
 
         let viewModel = subject(slug: "slug-1", source: source)
         viewModel.fetch()
-        let hasCorrectTitle = viewModel._actions.contains { $0.title == "Edit tags" }
+        let hasCorrectTitle = viewModel.actions.contains { $0.title == "Edit tags" }
         XCTAssertTrue(hasCorrectTitle)
     }
 
@@ -388,7 +388,7 @@ class CollectionViewModelTests: XCTestCase {
         }
 
         let expectDeleteEvent = expectation(description: "expect delete event")
-        viewModel.events.dropFirst().sink { event in
+        viewModel.$events.dropFirst().sink { event in
             guard case .delete = event else {
                 XCTFail("Received unexpected event: \(String(describing: event))")
                 return
@@ -813,7 +813,7 @@ class CollectionViewModelTests: XCTestCase {
 
 private extension CollectionViewModel {
     func invokeAction(title: String) {
-        invokeAction(from: _actions, title: title)
+        invokeAction(from: actions, title: title)
     }
 
     func invokeAction(from actions: [ItemAction], title: String) {
