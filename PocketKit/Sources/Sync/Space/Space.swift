@@ -221,29 +221,6 @@ extension Space {
     func fetchUnsavedItems() throws -> [Item] {
         return try fetch(Requests.fetchUnsavedItems())
     }
-
-    func deleteOrphanedRecommendations(context: NSManagedObjectContext) throws {
-        let fetchRequest = Recommendation.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "slate = NULL")
-
-        try context.performAndWait {
-            let orphans = try context.fetch(fetchRequest)
-            orphans.forEach {
-                context.delete($0)
-            }
-        }
-    }
-
-    func deleteOrphanedItems(context: NSManagedObjectContext) throws {
-        let fetchRequest: NSFetchRequest<Item> = Item.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "recommendation = NULL && savedItem = NULL")
-        try context.performAndWait {
-            let orphans = try context.fetch(fetchRequest)
-            orphans.forEach {
-                context.delete($0)
-            }
-        }
-    }
 }
 
 // MARK: Recommendation
@@ -379,18 +356,6 @@ extension Space {
         )
     }
 
-    func deleteOrphanedSlates(context: NSManagedObjectContext) throws {
-        let fetchRequest: NSFetchRequest<Slate> = Slate.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "slateLineup = NULL")
-
-        try context.performAndWait {
-            let orphans = try context.fetch(fetchRequest)
-            orphans.forEach {
-                context.delete($0)
-            }
-        }
-    }
-
     /// Updates unified home lineup from the specified remote object
     /// - Parameter remote: the specified remote object
     func updateHomeLineup(from remote: SlateLineup.RemoteHomeLineup) throws {
@@ -409,19 +374,26 @@ extension Space {
             lineup.update(from: remote, in: self, context: context)
         }
 
-        // save the child context
+        // cleanup and save operations
         try context.performAndWait {
             guard context.hasChanges else {
                 return
             }
-            // purge orphaned slates and items due to recommentation changes
-            try deleteOrphanedSlates(context: context)
-            try deleteOrphanedRecommendations(context: context)
-            try deleteOrphanedItems(context: context)
+            // cleanup orphaned entities
+            try purgeOrphans(context: context)
+            // then save the child context
             try context.save()
             // then save the parent context
             try save()
         }
+    }
+
+    private func purgeOrphans(context: NSManagedObjectContext) throws {
+        try deleteOrphanedSlates(context: context)
+        try deleteOrphanedRecommendations(context: context)
+        try deleteOrphanedItems(context: context)
+        try deleteOrphanedCollections(context: context)
+        try deleteOrphanedStories(context: context)
     }
 }
 
@@ -512,5 +484,51 @@ extension Space {
             cacheName: nil
         )
         return resultsController
+    }
+}
+
+// MARK: cleanup
+private extension Space {
+    /// Removes all the entities matching a given fetch request
+    /// - Parameters:
+    ///   - request: the given fetch request
+    ///   - context: the context where to perform the delete operations
+    func deleteEntities<T: NSManagedObject>(request: NSFetchRequest<T>, context: NSManagedObjectContext) throws {
+        try context.performAndWait {
+            let orphans = try context.fetch(request)
+            orphans.forEach {
+                context.delete($0)
+            }
+        }
+    }
+
+    func deleteOrphanedSlates(context: NSManagedObjectContext) throws {
+        let fetchRequest: NSFetchRequest<Slate> = Slate.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "slateLineup = NULL")
+        try deleteEntities(request: fetchRequest, context: context)
+    }
+
+    func deleteOrphanedRecommendations(context: NSManagedObjectContext) throws {
+        let fetchRequest = Recommendation.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "slate = NULL")
+        try deleteEntities(request: fetchRequest, context: context)
+    }
+
+    func deleteOrphanedItems(context: NSManagedObjectContext) throws {
+        let fetchRequest: NSFetchRequest<Item> = Item.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "recommendation = NULL && savedItem = NULL")
+        try deleteEntities(request: fetchRequest, context: context)
+    }
+
+    func deleteOrphanedCollections(context: NSManagedObjectContext) throws {
+        let fetchRequest = Collection.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "item = NULL")
+        try deleteEntities(request: fetchRequest, context: context)
+    }
+
+    func deleteOrphanedStories(context: NSManagedObjectContext) throws {
+        let fetchRequest = CollectionStory.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "collection = NULL")
+        try deleteEntities(request: fetchRequest, context: context)
     }
 }
