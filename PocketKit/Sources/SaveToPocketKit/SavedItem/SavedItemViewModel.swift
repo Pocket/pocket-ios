@@ -63,33 +63,53 @@ class SavedItemViewModel {
     func save(from context: ExtensionContext?) async {
         guard appSession.currentSession != nil else {
             autodismiss(from: context)
+
             return
         }
 
-        let extensionItems = context?.extensionItems ?? []
+        guard let extensionItems = context?.extensionItems else {
+            tracker.track(event: Events.SaveTo.unableToSave())
+            autodismiss(from: context)
 
+            return
+        }
+
+        guard let url = await parse(extensionItems: extensionItems) else {
+            tracker.track(event: Events.SaveTo.unableToSave())
+            infoViewModel = .error
+
+            return
+        }
+
+        save(url)
+
+        autodismiss(from: context)
+    }
+
+    private func parse(extensionItems: [ExtensionItem]) async -> String? {
         for item in extensionItems {
             guard let url = try? await url(from: item) else {
-                tracker.track(event: Events.SaveTo.unableToSave())
-                infoViewModel = .error
-                break
+                continue
             }
 
-            tracker.track(event: Events.SaveTo.saveEngagement(url: url))
+            return url
+        }
 
-            let result = saveService.save(url: url)
-            switch result {
-            case .existingItem(let savedItem):
-                self.savedItem = savedItem
-                infoViewModel = .existingItem
-            case .newItem(let savedItem):
-                self.savedItem = savedItem
-                infoViewModel = .newItem
-            case .taggedItem:
-                break
-            }
+        return nil
+    }
 
-            autodismiss(from: context)
+    private func save(_ url: String) {
+        tracker.track(event: Events.SaveTo.saveEngagement(url: url))
+
+        let result = saveService.save(url: url)
+        switch result {
+        case .existingItem(let savedItem):
+            self.savedItem = savedItem
+            infoViewModel = .existingItem
+        case .newItem(let savedItem):
+            self.savedItem = savedItem
+            infoViewModel = .newItem
+        default:
             break
         }
     }
