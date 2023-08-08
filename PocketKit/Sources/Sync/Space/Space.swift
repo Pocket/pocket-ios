@@ -449,4 +449,17 @@ extension Space {
     func fetchFeatureFlags(in context: NSManagedObjectContext?) throws -> [FeatureFlag] {
         return try fetch(Requests.fetchFeatureFlags(), context: context)
     }
+
+    /// Returns an NSFetchedResultsController that fetches FeatureFlag objects.
+    func makeFeatureFlagsController() -> NSFetchedResultsController<FeatureFlag> {
+        let request = Requests.fetchFeatureFlags()
+        request.sortDescriptors = [NSSortDescriptor(key: "name", ascending: false)]
+        let resultsController = NSFetchedResultsController(
+            fetchRequest: request,
+            managedObjectContext: backgroundContext,
+            sectionNameKeyPath: nil,
+            cacheName: nil
+        )
+        return resultsController
+    }
 }

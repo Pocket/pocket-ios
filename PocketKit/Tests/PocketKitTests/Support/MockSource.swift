@@ -56,7 +56,7 @@ extension MockSource {
             fatalError("\(Self.self)#\(#function) is not implemented")
         }
 
-        calls[Self.viewObject] = (calls[Self.backgroundObject] ?? []) + [BackgroundObjectCall(id: id)]
+        calls[Self.backgroundObject] = (calls[Self.backgroundObject] ?? []) + [BackgroundObjectCall(id: id)]
 
         return impl(id) as? T
     }
@@ -283,6 +283,37 @@ extension MockSource {
         }
 
         return calls[index] as? MakeArchiveControllerCall
+    }
+}
+
+// MARK: - Make feature flags controller
+extension MockSource {
+    static let makeFeatureFlagsController = "makeFeatureFlagController"
+    typealias MakeFeatureFlagsControllerImpl = () -> NSFetchedResultsController<FeatureFlag>
+
+    struct MakeFeatureFlagsControllerCall {
+    }
+
+    func stubMakeFeatureFlagsController(impl: @escaping MakeFeatureFlagsControllerImpl) {
+        implementations[Self.makeFeatureFlagsController] = impl
+    }
+
+    func makeFeatureFlagsController() -> NSFetchedResultsController<FeatureFlag> {
+        guard let impl = implementations[Self.makeFeatureFlagsController] as? MakeFeatureFlagsControllerImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.makeFeatureFlagsController] = (calls[Self.makeFeatureFlagsController] ?? []) + [MakeFeatureFlagsControllerCall()]
+
+        return impl()
+    }
+
+    func makeFeatureFlagsControllerCall(at index: Int) -> MakeFeatureFlagsControllerCall? {
+        guard let calls = calls[Self.makeFeatureFlagsController], calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? MakeFeatureFlagsControllerCall
     }
 }
 
