@@ -25,6 +25,7 @@
         "BannerViewTests\/test_foregroundingTheApp_withURL_showsSaveFromClipboardBanner()",
         "BannerViewTests\/test_navigatingToHomeTab_withClipboardURL_showsBannerAndSavedItem()",
         "BannerViewTests\/test_navigatingToHomeTab_withoutSavedURL_doesNotShowSaveFromClipboardBanner()",
+        "CollectionTests",
         "DeleteAnItemTests",
         "EditTagsTests",
         "EmptyStateTests",
