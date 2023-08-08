@@ -73,6 +73,10 @@ struct PocketAppElement {
         return ReaderElement(app)
     }
 
+    var collectionView: CollectionElement {
+        return CollectionElement(app)
+    }
+
     var webView: XCUIElement {
        return app.webViews.element(boundBy: 0)
     }

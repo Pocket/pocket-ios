@@ -46,6 +46,7 @@ class ItemsListItemCell: UICollectionViewListCell {
         label.numberOfLines = Constants.maxCollectionLines
         label.setContentCompressionResistancePriority(.required, for: .vertical)
         label.adjustsFontForContentSizeCategory = true
+        label.accessibilityIdentifier = "collection-label"
         return label
     }()
 
