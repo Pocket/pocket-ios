@@ -74,7 +74,7 @@ class SavedItemViewModel {
             return
         }
 
-        var urlsToSave = await parse(extensionItems: extensionItems)
+        let urlsToSave = await parse(extensionItems: extensionItems)
 
         if urlsToSave.isEmpty {
             tracker.track(event: Events.SaveTo.unableToSave())
