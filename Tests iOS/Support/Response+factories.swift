@@ -111,6 +111,14 @@ extension Response {
         )
     }
 
+    static func collection(fixtureName: String = "collection-saves") -> Response {
+        Response {
+            Status.ok
+            Fixture.load(name: fixtureName)
+                .data
+        }
+    }
+
     /// To send a request to unarchive an item or move from saves, uses same mutation response as `saveItem(apiRequest:)`
     /// - Parameter apiRequest: apiRequest that is requesting a response
     /// - Returns: returns mock response for `upsertSavedItem`
@@ -283,11 +291,23 @@ extension Response {
                             assigned: true,
                             name: "temp.feature.variant",
                             variant: "theVariant"
+                        ),
+                        Mock<UnleashAssignment>(
+                            assigned: true,
+                            name: "perm.ios.native_collections"
                         )
                     ]
                 )
             )
         )
+    }
+
+    static func featureFlags(with fixtureName: String) -> Response {
+        Response {
+            Status.ok
+            Fixture.load(name: fixtureName)
+                .data
+        }
     }
 
     static func fixture(named fixtureName: String) -> Response {
@@ -354,6 +374,8 @@ extension Response {
             return .featureFlags()
         } else if apiRequest.isForSaveTags {
             return .saveTags(apiRequest: apiRequest)
+        } else if apiRequest.isForCollection {
+            return .collection()
         } else {
             fatalError("Unexpected request")
         }

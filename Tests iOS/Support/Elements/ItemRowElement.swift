@@ -30,6 +30,10 @@ struct ItemRowElement: PocketUIElement {
             .tap()
     }
 
+    var collectionLabel: XCUIElement {
+        element.staticTexts["collection-label"]
+    }
+
     var itemActionButton: XCUIElement {
         element.buttons["item-actions"]
     }

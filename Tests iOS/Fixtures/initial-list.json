@@ -44,6 +44,7 @@
                                 "wordCount": 500,
                                 "marticle": #MARTICLE#,
                                 "excerpt": "Cursus Aenean Elit",
+                                "collection": null,
                                 "datePublished": "2021-01-01 12:01:01",
                                 "authors": [
                                     {
@@ -59,7 +60,6 @@
                                         "url": "https://example.com/authors/david"
                                     }
                                 ],
-                                "collection": null,
                                 "domainMetadata": {
                                     "__typename": "[type-name-here]",
                                     "name": "WIRED",
@@ -123,8 +123,8 @@
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "item-2",
-                                "givenUrl": "https://example.com/item-2",
-                                "resolvedUrl": "https://example.com/item-2",
+                                "givenUrl": "https://getpocket.com/collections/item-2",
+                                "resolvedUrl": "https://getpocket.com/collections/item-2",
                                 "title": "Item 2",
                                 "topImageUrl": "https://example.com/item-2/top-image.jpg",
                                 "domain": "wired.com",
@@ -134,9 +134,12 @@
                                 "domainMetadata": null,
                                 "marticle": [],
                                 "authors": [],
-                                "collection": null,
                                 "datePublished": "2021-01-01 12:01:01",
                                 "excerpt": "Cursus Aenean Elit",
+                                "collection": {
+                                    "__typename": "Collection",
+                                    "slug": "item-2-collection-slug"
+                                },
                                 "images": [
                                     {
                                         "__typename": "[type-name-here]",

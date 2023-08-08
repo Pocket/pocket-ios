@@ -113,6 +113,10 @@ struct ClientAPIRequest {
         self.operationName == "SavedItemTag"
     }
 
+    var isForCollection: Bool {
+        self.operationName == "getCollectionBySlug"
+    }
+
     var isForDeleteUser: Bool {
         self.operationName == "DeleteUser"
     }
