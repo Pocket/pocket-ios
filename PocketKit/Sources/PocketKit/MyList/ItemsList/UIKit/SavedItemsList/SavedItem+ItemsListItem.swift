@@ -65,6 +65,10 @@ extension SavedItem: ItemsListItem {
     var savedItemURL: String {
         url
     }
+
+    var isCollection: Bool {
+        item?.isCollection ?? false
+    }
 }
 
 extension DomainMetadata: ItemsListItemDomainMetadata {

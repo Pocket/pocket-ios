@@ -9,6 +9,17 @@ import Localization
 import SharedPocketKit
 
 extension SearchSavedItem: ItemsListItem {
+    var isCollection: Bool {
+        // TODO: Refactor when working on opening a collection tickets
+        // Parses and ensures that the url has "collections" in the first index and count is greater than 3 (ie. 0 represents "/", 1 represents "collections" and 2 represents the slug)
+        guard let givenURL = item.asItem?.givenUrl, let url = URL(string: givenURL), url.host == "getpocket.com",
+              url.pathComponents.count >= 3,
+              url.pathComponents[safe: 1] == "collections" else {
+            return false
+        }
+        return true
+    }
+
     var displayTitle: String {
         title ?? ""
     }

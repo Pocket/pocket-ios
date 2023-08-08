@@ -22,3 +22,14 @@ extension Recommendation {
     @NSManaged public var image: Image?
     @NSManaged public var sortIndex: NSNumber?
 }
+
+extension Recommendation {
+    /// The slug of the associated collection
+    public var collectionSlug: String? {
+        item.collection?.slug
+    }
+
+    public var collection: Collection? {
+        item.collection
+    }
+}

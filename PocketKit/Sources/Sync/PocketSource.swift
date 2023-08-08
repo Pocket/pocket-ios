@@ -27,6 +27,7 @@ public class PocketSource: Source {
     private let apollo: ApolloClientProtocol
     private let lastRefresh: LastRefresh
     private let slateService: SlateService
+    private let collectionService: CollectionService
     private let featureFlagService: FeatureFlagLoadingService
     private let networkMonitor: NetworkPathMonitor
     private let retrySignal: PassthroughSubject<Void, Never>
@@ -90,6 +91,7 @@ public class PocketSource: Source {
             operations: OperationFactory(),
             lastRefresh: UserDefaultsLastRefresh(defaults: defaults),
             slateService: APISlateService(apollo: apollo, space: space),
+            collectionService: APICollectionService(apollo: apollo, space: space),
             featureFlagService: APIFeatureFlagService(apollo: apollo, space: space, appSession: appSession),
             networkMonitor: NWPathMonitor(),
             sessionProvider: appSession as! SessionProvider,
@@ -108,6 +110,7 @@ public class PocketSource: Source {
         operations: SyncOperationFactory,
         lastRefresh: LastRefresh,
         slateService: SlateService,
+        collectionService: CollectionService,
         featureFlagService: FeatureFlagLoadingService,
         networkMonitor: NetworkPathMonitor,
         sessionProvider: SessionProvider,
@@ -121,6 +124,7 @@ public class PocketSource: Source {
         self.operations = operations
         self.lastRefresh = lastRefresh
         self.slateService = slateService
+        self.collectionService = collectionService
         self.featureFlagService = featureFlagService
         self.networkMonitor = networkMonitor
         self.retrySignal = .init()
@@ -199,6 +203,10 @@ public class PocketSource: Source {
 
     public func makeFeatureFlagsController() -> NSFetchedResultsController<FeatureFlag> {
         space.makeFeatureFlagsController()
+    }
+
+    public func makeCollectionStoriesController(slug: String) -> RichFetchedResultsController<CollectionStory> {
+        space.makeCollectionStoriesController(slug: slug)
     }
 
     public func viewObject<T: NSManagedObject>(id: NSManagedObjectID) -> T? {
@@ -702,6 +710,17 @@ extension PocketSource {
     }
 }
 
+// MARK: - Collections
+extension PocketSource {
+    public func fetchCollection(by slug: String) async throws {
+        try await collectionService.fetchCollection(by: slug)
+    }
+
+    public func fetchCollectionAuthors(by slug: String) -> [CollectionAuthor] {
+        (try? space.fetchCollectionAuthors(by: slug)) ?? []
+    }
+}
+
 // MARK: - Enqueueing and Restoring offline operations
 extension PocketSource {
     /// Creates a PersistentSync task and a RetriableOperation from a SyncTask request and enqueues it onto the Operation Queue to be performed
@@ -936,6 +955,25 @@ extension PocketSource {
         }
     }
 
+    public func save(collectionStory: CollectionStory) {
+        space.performAndWait {
+            guard let collectionStory = space.backgroundObject(with: collectionStory.objectID) as? CollectionStory,
+            let givenURL = collectionStory.item?.givenURL else {
+                return
+            }
+            if let savedItem = try? space.fetchSavedItem(byURL: givenURL) {
+                unarchive(item: savedItem)
+            } else {
+                let savedItem: SavedItem = SavedItem(context: space.backgroundContext, url: givenURL)
+                savedItem.createdAt = Date()
+                savedItem.item = collectionStory.item
+                try? space.save()
+
+                save(item: savedItem)
+            }
+        }
+    }
+
     public func archive(recommendation: Recommendation) {
         space.performAndWait {
             guard let recommendation = space.backgroundObject(with: recommendation.objectID) as? Recommendation,
@@ -943,6 +981,16 @@ extension PocketSource {
                 return
             }
 
+            archive(item: savedItem)
+        }
+    }
+
+    public func archive(collectionStory: CollectionStory) {
+        space.performAndWait {
+            guard let collectionStory = space.backgroundObject(with: collectionStory.objectID) as? CollectionStory,
+                  let savedItem = collectionStory.item?.savedItem, savedItem.isArchived == false else {
+                return
+            }
             archive(item: savedItem)
         }
     }

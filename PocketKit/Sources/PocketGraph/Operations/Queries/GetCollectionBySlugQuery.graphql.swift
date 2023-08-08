@@ -14,15 +14,11 @@ public class GetCollectionBySlugQuery: GraphQLQuery {
           externalId
           slug
           title
-          excerpt
           intro
-          imageUrl
           publishedAt
           authors {
             __typename
             name
-            bio
-            imageUrl
           }
           stories {
             __typename
@@ -39,6 +35,7 @@ public class GetCollectionBySlugQuery: GraphQLQuery {
               __typename
               ...ItemParts
             }
+            sortOrder
           }
         }
       }
@@ -79,9 +76,7 @@ public class GetCollectionBySlugQuery: GraphQLQuery {
         .field("externalId", PocketGraph.ID.self),
         .field("slug", String.self),
         .field("title", String.self),
-        .field("excerpt", PocketGraph.Markdown?.self),
         .field("intro", PocketGraph.Markdown?.self),
-        .field("imageUrl", PocketGraph.Url?.self),
         .field("publishedAt", PocketGraph.DateString?.self),
         .field("authors", [Author].self),
         .field("stories", [Story].self),
@@ -90,9 +85,7 @@ public class GetCollectionBySlugQuery: GraphQLQuery {
       public var externalId: PocketGraph.ID { __data["externalId"] }
       public var slug: String { __data["slug"] }
       public var title: String { __data["title"] }
-      public var excerpt: PocketGraph.Markdown? { __data["excerpt"] }
       public var intro: PocketGraph.Markdown? { __data["intro"] }
-      public var imageUrl: PocketGraph.Url? { __data["imageUrl"] }
       public var publishedAt: PocketGraph.DateString? { __data["publishedAt"] }
       public var authors: [Author] { __data["authors"] }
       public var stories: [Story] { __data["stories"] }
@@ -108,13 +101,9 @@ public class GetCollectionBySlugQuery: GraphQLQuery {
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("name", String.self),
-          .field("bio", PocketGraph.Markdown?.self),
-          .field("imageUrl", PocketGraph.Url?.self),
         ] }
 
         public var name: String { __data["name"] }
-        public var bio: PocketGraph.Markdown? { __data["bio"] }
-        public var imageUrl: PocketGraph.Url? { __data["imageUrl"] }
       }
 
       /// Collection.Story
@@ -134,6 +123,7 @@ public class GetCollectionBySlugQuery: GraphQLQuery {
           .field("authors", [Author].self),
           .field("publisher", String?.self),
           .field("item", Item?.self),
+          .field("sortOrder", Int?.self),
         ] }
 
         public var url: PocketGraph.Url { __data["url"] }
@@ -143,6 +133,7 @@ public class GetCollectionBySlugQuery: GraphQLQuery {
         public var authors: [Author] { __data["authors"] }
         public var publisher: String? { __data["publisher"] }
         public var item: Item? { __data["item"] }
+        public var sortOrder: Int? { __data["sortOrder"] }
 
         /// Collection.Story.Author
         ///

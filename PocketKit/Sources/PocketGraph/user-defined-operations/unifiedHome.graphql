@@ -10,6 +10,10 @@ fragment CorpusItemParts on CorpusItem {
             __typename
             ...SyndicatedArticleParts
         }
+        ... on Collection {
+            __typename
+            ...CollectionSummary
+        }
     }
 }
 
@@ -39,4 +43,16 @@ query HomeSlateLineup($locale: String!) {
             ...CorpusSlateParts
         }
     }
+}
+
+fragment CollectionSummary on Collection {
+    slug
+    authors {
+        __typename
+        ...CollectionAuthorSummary
+    }
+}
+
+fragment CollectionAuthorSummary on CollectionAuthor {
+    name
 }

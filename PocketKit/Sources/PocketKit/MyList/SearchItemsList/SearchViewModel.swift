@@ -345,7 +345,7 @@ class SearchViewModel: ObservableObject {
                     self.trackSearchResultsPage(pageNumber: onlineSearch.pageNumberLoaded, scope: scope)
                 } else if case .failure(let error) = result {
                     guard case SearchServiceError.noInternet = error else {
-                        self.searchState = .emptyState(ErrorEmptyState(featureFlags: featureFlags))
+                        self.searchState = .emptyState(ErrorEmptyState(featureFlags: featureFlags, user: user))
                         return
                     }
                     self.searchState = .emptyState(OfflineEmptyState(type: scope))
@@ -466,7 +466,10 @@ extension SearchViewModel: SearchResultActionDelegate {
             notificationCenter: notificationCenter
         )
 
-        if savedItem.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
+        if let slug = readable.slug, featureFlags.isAssigned(flag: .nativeCollections) {
+            let collectionViewModel = CollectionViewModel(slug: slug, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults, featureFlags: featureFlags, notificationCenter: notificationCenter)
+            selectedItem = .collection(collectionViewModel)
+        } else if savedItem.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
             trackOpenSearchItem(url: savedItem.url, index: index, destination: .internal)
             selectedItem = .webView(readable)
         } else {

@@ -8,6 +8,12 @@ import CoreData
 import Combine
 
 class MockSource: Source {
+    func save(collectionStory: Sync.CollectionStory) {
+    }
+
+    func archive(collectionStory: Sync.CollectionStory) {
+    }
+
     var _events: SyncEvents = SyncEvents()
     var events: AnyPublisher<SyncEvent, Never> {
         _events.eraseToAnyPublisher()
@@ -221,6 +227,48 @@ extension MockSource {
         }
 
         return calls[index] as? MakeRecentSavesControllerCall
+    }
+}
+
+// MARK: - Make collection stories controller
+extension MockSource {
+    private static let makeCollectionStoriesController = "makeCollectionStoriesController"
+    typealias MakeCollectionStoriesControllerImpl = () -> RichFetchedResultsController<Sync.CollectionStory>
+
+    struct MakeCollectionStoriesControllerCall {}
+
+    func stubMakeCollectionStoriesController(impl: @escaping MakeCollectionStoriesControllerImpl) {
+        implementations[Self.makeCollectionStoriesController] = impl
+    }
+
+    func makeCollectionStoriesController(slug: String) -> Sync.RichFetchedResultsController<Sync.CollectionStory> {
+        guard let impl = implementations[Self.makeCollectionStoriesController] as? MakeCollectionStoriesControllerImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.makeCollectionStoriesController] = (calls[Self.makeCollectionStoriesController] ?? []) + [MakeCollectionStoriesControllerCall()]
+
+        return impl()
+    }
+}
+
+// MARK: fetch collection authors
+extension MockSource {
+    private static let fetchCollectionAuthors = "fetchCollectionAuthors"
+    typealias FetchCollectionAuthorsImpl = (String) -> [Sync.CollectionAuthor]
+
+    struct FetchCollectionAuthorsCall {}
+
+    func stubFetchCollectionAuthors(impl: @escaping FetchCollectionAuthorsImpl) {
+        implementations[Self.fetchCollectionAuthors] = impl
+    }
+
+    func fetchCollectionAuthors(by slug: String) -> [Sync.CollectionAuthor] {
+        guard let impl = implementations[Self.fetchCollectionAuthors] as? FetchCollectionAuthorsImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+        calls[Self.fetchCollectionAuthors] = (calls[Self.fetchCollectionAuthors] ?? []) + [FetchCollectionAuthorsCall()]
+        return impl(slug)
     }
 }
 
@@ -1468,3 +1516,37 @@ extension MockSource {
         return calls[index] as? FetchFeatureFlagCall
     }
 }
+
+ // MARK: fetchCollection
+ extension MockSource {
+    private static let fetchCollection = "fetchCollection"
+    typealias FetchCollectionImpl = (String) async throws -> Void
+
+    struct FetchCollectionCall {
+        let slug: String
+    }
+
+    func stubFetchCollection(impl: @escaping FetchCollectionImpl) {
+        implementations[Self.fetchCollection] = impl
+    }
+
+    func fetchCollection(by slug: String) async throws {
+        guard let impl = implementations[Self.fetchCollection] as? FetchCollectionImpl else {
+            fatalError("\(Self.self)#\(#function) has not been stubbed")
+        }
+
+        calls[Self.fetchCollection] = (calls[Self.fetchCollection] ?? []) + [
+            FetchCollectionCall(slug: slug)
+        ]
+
+        try await impl(slug)
+    }
+
+    func fetchCollectionCall(at index: Int) -> FetchCollectionCall? {
+        guard let calls = calls[Self.fetchCollection], calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? FetchCollectionCall
+    }
+ }

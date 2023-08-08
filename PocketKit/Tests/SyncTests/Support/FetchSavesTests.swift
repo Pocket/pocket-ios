@@ -345,7 +345,7 @@ class FetchSavesTests: XCTestCase {
         let service = subject()
         _ = await service.execute(syncTaskId: task.objectID)
 
-        await fulfillment(of: [receivedEvent], timeout: 10)
+        await fulfillment(of: [receivedEvent], timeout: 1)
     }
 
     func test_refresh_whenUpdatedSinceIsNotPresent_onlyFetchesUnreadItems() async {

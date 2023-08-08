@@ -73,4 +73,12 @@ public extension Item {
     var hasArticleComponents: Bool {
         article?.components.isEmpty == false
     }
+
+    var isCollection: Bool {
+        CollectionUrlFormatter.isCollectionUrl(givenURL)
+    }
+
+    var collectionSlug: String? {
+        CollectionUrlFormatter.slug(from: givenURL)
+    }
 }

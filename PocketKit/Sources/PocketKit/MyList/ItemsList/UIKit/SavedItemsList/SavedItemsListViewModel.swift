@@ -620,7 +620,10 @@ extension SavedItemsListViewModel {
             notificationCenter: notificationCenter
         )
 
-        if savedItem.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
+        if let slug = readable.collection?.slug ?? readable.slug, featureFlags.isAssigned(flag: .nativeCollections) {
+            let collectionViewModel = CollectionViewModel(slug: slug, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults, featureFlags: featureFlags, notificationCenter: notificationCenter)
+            selectedItem = .collection(collectionViewModel)
+        } else if savedItem.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
             selectedItem = .webView(readable)
 
             trackContentOpen(destination: .external, item: savedItem)
@@ -823,6 +826,8 @@ extension SavedItemsListViewModel {
             readable?.clearPresentedWebReaderURL()
         case .webView:
             selectedItem = nil
+        case .collection:
+            break
         case .none:
             break
         }

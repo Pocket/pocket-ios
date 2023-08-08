@@ -24,11 +24,23 @@ final class UserManagementService: ObservableObject, UserManagementServiceProtoc
     @Published public private(set) var accountDeleted: Bool = false
     var accountDeletedPublisher: Published<Bool>.Publisher { $accountDeleted }
 
+    private var subscriptions: Set<AnyCancellable> = []
+
     init(appSession: AppSession, user: User, notificationCenter: NotificationCenter, source: Source) {
         self.appSession = appSession
         self.user = user
         self.notificationCenter = notificationCenter
         self.source = source
+
+        notificationCenter
+            .publisher(for: .unauthorizedResponse)
+            .sink { [weak self] _ in
+                guard let self = self else { return }
+                Task {
+                    await self.logout()
+                }
+            }
+            .store(in: &subscriptions)
     }
 
     func deleteAccount() async throws {

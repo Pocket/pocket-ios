@@ -16,20 +16,20 @@
                             "corpusItem": {
                                 "__typename": "[some-type-name]",
                                 "id": "item-1",
-                                "url": "https://given.example.com/slate-1-rec-1",
+                                "url": "https://getpocket.com/collections/slate-1-rec-1",
                                 "title": "Slate 1, Recommendation 1",
                                 "excerpt": "Cursus Aenean Elit",
                                 "imageUrl": "http://example.com/slate-1-rec-1/top-image.png",
                                 "publisher":"slate-1-rec-1.example.com",
                                 "target": {
-                                    "__typename": "[some-type-name]",
-                                    "itemId": "slate-1-rec-1-corpusItem-1-syndicated",
-                                    "mainImage": "image-1-1-1",
-                                    "title": "syndicatedTitle-1-1-1",
-                                    "excerpt": "syndicatedExcerpt-1-1-1",
-                                    "publisher": {
-                                      "name": "syndicatedPublisher-1-1-1"
-                                    }
+                                    "__typename": "Collection",
+                                    "slug": "slate-1-rec-1",
+                                    "authors": [
+                                      {
+                                        "__typename": "CollectionAuthor",
+                                        "name": "Pocket"
+                                      }
+                                    ]
                                 }
                             }
                         },

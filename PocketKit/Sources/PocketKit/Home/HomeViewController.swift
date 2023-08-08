@@ -38,6 +38,8 @@ class HomeViewController: UIViewController {
     private var slateDetailSubscriptions: [AnyCancellable] = []
     private var readerSubscriptions: [AnyCancellable] = []
 
+    private var collectionSubscriptions = SubscriptionsStack()
+
     private lazy var layout = UICollectionViewCompositionalLayout { [weak self] sectionIndex, env in
         guard let self = self,
               let section = self.dataSource.sectionIdentifier(for: sectionIndex) else {
@@ -319,7 +321,7 @@ extension HomeViewController {
         }.store(in: &subscriptions)
 
         model.$selectedRecommendationToReport.sink { [weak self] recommendation in
-            self?.report(recommendation)
+            self?.report(recommendation?.item.givenURL)
         }.store(in: &subscriptions)
 
         model.$presentedAlert.sink { [weak self] alert in
@@ -352,12 +354,14 @@ extension HomeViewController {
             // we'll utilize its premium url to present a premium Pocket web page as necessary
             present(url: viewModel.premiumURL)
         case .none:
-            readerSubscriptions = []
+            readerSubscriptions.removeAll()
+        case .collection(let viewModel):
+            showCollection(viewModel)
         }
     }
 
     func show(_ viewModel: SlateDetailViewModel?) {
-        slateDetailSubscriptions = []
+        slateDetailSubscriptions.removeAll()
 
         guard let viewModel = viewModel else {
             return
@@ -373,7 +377,7 @@ extension HomeViewController {
         }.store(in: &slateDetailSubscriptions)
 
         viewModel.$selectedRecommendationToReport.sink { [weak self] recommendation in
-            self?.report(recommendation)
+            self?.report(recommendation?.item.givenURL)
         }.store(in: &slateDetailSubscriptions)
 
         viewModel.$presentedWebReaderURL.sink { [weak self] url in
@@ -383,10 +387,17 @@ extension HomeViewController {
         viewModel.$sharedActivity.sink { [weak self] activity in
             self?.present(activity: activity)
         }.store(in: &slateDetailSubscriptions)
+        viewModel.$selectedCollectionViewModel
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] viewModel in
+            guard let viewModel else { return }
+                self?.showCollection(viewModel)
+            }
+            .store(in: &slateDetailSubscriptions)
     }
 
     func show(_ recommendation: RecommendationViewModel?) {
-        readerSubscriptions = []
+        readerSubscriptions.removeAll()
         guard let recommendation = recommendation else {
             return
         }
@@ -413,7 +424,7 @@ extension HomeViewController {
         }.store(in: &readerSubscriptions)
 
         recommendation.$selectedRecommendationToReport.receive(on: DispatchQueue.main).sink { [weak self] selected in
-            self?.report(selected)
+            self?.report(selected?.item.givenURL)
         }.store(in: &readerSubscriptions)
 
         recommendation.events.receive(on: DispatchQueue.main).sink { [weak self] event in
@@ -427,7 +438,7 @@ extension HomeViewController {
     }
 
     func show(_ savedItem: SavedItemViewModel) {
-        readerSubscriptions = []
+        readerSubscriptions.removeAll()
 
         navigationController?.pushViewController(
             ReadableHostViewController(readableViewModel: savedItem),
@@ -464,13 +475,87 @@ extension HomeViewController {
         }.store(in: &readerSubscriptions)
     }
 
+    private func showCollection(_ viewModel: CollectionViewModel) {
+        let controller = CollectionViewController(model: viewModel)
+        navigationController?.pushViewController(controller, animated: true)
+
+        var subscriptionSet = Set<AnyCancellable>()
+
+        viewModel.$presentedStoryWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
+            self?.present(url: url?.absoluteString)
+        }.store(in: &subscriptionSet)
+
+        viewModel.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
+            self?.present(alert: alert)
+        }.store(in: &subscriptionSet)
+
+        viewModel.$presentedAddTags.receive(on: DispatchQueue.main).sink { [weak self] addTagsViewModel in
+            self?.present(addTagsViewModel)
+        }.store(in: &subscriptionSet)
+
+        viewModel.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
+            self?.present(activity: activity)
+        }.store(in: &subscriptionSet)
+
+        viewModel.$selectedCollectionItemToReport.receive(on: DispatchQueue.main).sink { [weak self] item in
+            self?.report(item?.givenURL)
+        }.store(in: &subscriptionSet)
+
+        viewModel.$events.receive(on: DispatchQueue.main).sink { [weak self] event in
+            switch event {
+            case .contentUpdated, .none:
+                break
+            case .archive, .delete:
+                self?.popToPreviousScreen()
+            }
+        }.store(in: &subscriptionSet)
+
+        viewModel.$selectedItem.receive(on: DispatchQueue.main).sink { [weak self] readableType in
+            switch readableType {
+            case .collection(let collection):
+                self?.showCollection(collection)
+            case .savedItem(let savedItem):
+                self?.show(savedItem)
+            case .recommendation(let recommendation):
+                self?.show(recommendation)
+            default:
+                break
+            }
+        }.store(in: &subscriptionSet)
+        // whenever a CollectionViewController is popped out, remove all its subscriptions
+        // to avoid retaining a viewModel instance
+        viewModel.$isBeingDeallocated
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isBeingDeallocated in
+                if isBeingDeallocated {
+                    self?.collectionSubscriptions.pop()
+                }
+            }
+            .store(in: &subscriptionSet)
+
+        // MARK: Story Presentation
+        viewModel.$presentedStoryWebReaderURL.sink { [weak self] url in
+            self?.present(url: url?.absoluteString)
+        }.store(in: &subscriptionSet)
+
+        viewModel.$sharedStoryActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
+            self?.present(activity: activity)
+        }.store(in: &subscriptionSet)
+
+        viewModel.$selectedStoryToReport.receive(on: DispatchQueue.main).sink { [weak self] item in
+            self?.report(item?.givenURL)
+        }.store(in: &subscriptionSet)
+
+        collectionSubscriptions.push(subscriptionSet)
+    }
+
     private func showRecommendation(forWebView viewModel: RecommendationViewModel) {
         viewModel.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
             self?.present(alert: alert)
         }.store(in: &readerSubscriptions)
 
         viewModel.$selectedRecommendationToReport.receive(on: DispatchQueue.main).sink { [weak self] recommendation in
-            self?.report(recommendation)
+            self?.report(recommendation?.item.givenURL)
         }.store(in: &readerSubscriptions)
 
         viewModel.events.receive(on: DispatchQueue.main).sink { [weak self] event in
@@ -498,13 +583,13 @@ extension HomeViewController {
         }.store(in: &readerSubscriptions)
     }
 
-    func report(_ recommendation: Recommendation?) {
-        guard true, let recommendation = recommendation else {
+    func report(_ givenURL: String?) {
+        guard let givenURL else {
             return
         }
 
         let host = ReportRecommendationHostingController(
-            recommendation: recommendation,
+            givenURL: givenURL,
             tracker: model.tracker.childTracker(hosting: .reportDialog),
             onDismiss: { [weak self] in self?.model.clearRecommendationToReport() }
         )

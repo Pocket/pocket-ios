@@ -5,6 +5,7 @@
 import Combine
 import CoreData
 import Foundation
+import PocketGraph
 
 public enum InitialDownloadState {
     case unknown
@@ -35,6 +36,8 @@ public protocol Source {
     func makeArchiveController() -> SavedItemsController
 
     func makeSearchService() -> SearchService
+
+    func makeCollectionStoriesController(slug: String) -> RichFetchedResultsController<CollectionStory>
 
     func makeImagesController() -> ImagesController
 
@@ -70,11 +73,19 @@ public protocol Source {
 
     func fetchUnifiedHomeLineup() async throws
 
+    func fetchCollection(by slug: String) async throws
+
+    func fetchCollectionAuthors(by slug: String) -> [CollectionAuthor]
+
     func restore()
 
     func save(recommendation: Recommendation)
 
+    func save(collectionStory: CollectionStory)
+
     func archive(recommendation: Recommendation)
+
+    func archive(collectionStory: CollectionStory)
 
     func remove(recommendation: Recommendation)
 

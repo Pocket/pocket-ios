@@ -218,7 +218,6 @@
 "premium.upgradeView.unlimitedHighlights" = "Unlimited highlights";
 "premium.upgradeView.premiumFonts" = "Premium fonts";
 
-
 //=======================
 //Old format
 
@@ -326,3 +325,7 @@
 "itemWidgets.recommendations.emptyMessage" = "You might be offline. Please check recommendations in your Pocket app";
 "itemWidgets.recommendations.title" = "Recommendations";
 "itemWidgets.recommendations.description" = "Discover the most thought-provoking stories out there, curated by Pocket.";
+
+// Collection
+"collection.title" = "Collection";
+"collection.stories.count" = "%@ items";

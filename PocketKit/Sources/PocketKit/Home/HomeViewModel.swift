@@ -15,6 +15,7 @@ enum ReadableType {
     case savedItem(SavedItemViewModel)
     case webViewRecommendation(RecommendationViewModel)
     case webViewSavedItem(SavedItemViewModel)
+    case collection(CollectionViewModel)
 
     func clearIsPresentingReaderSettings() {
         switch self {
@@ -26,6 +27,9 @@ enum ReadableType {
             recommendationViewModel.clearPresentedWebReaderURL()
         case .webViewSavedItem(let savedItemViewModel):
             savedItemViewModel.clearPresentedWebReaderURL()
+        case .collection:
+            // TODO: NATIVECOLLECTIONS - we might need to do some additional cleanup here
+            break
         }
     }
 }
@@ -289,30 +293,36 @@ extension HomeViewModel {
             source: source,
             tracker: tracker.childTracker(hosting: .slateDetail.screen),
             user: user,
+            store: store,
             userDefaults: userDefaults,
-            featureFlags: featureFlags
+            networkPathMonitor: networkPathMonitor,
+            featureFlags: featureFlags,
+            notificationCenter: notificationCenter
         ))
     }
 
     private func select(recommendation: Recommendation, at indexPath: IndexPath) {
-        let viewModel = RecommendationViewModel(
-            recommendation: recommendation,
-            source: source,
-            tracker: tracker.childTracker(hosting: .articleView.screen),
-            pasteboard: UIPasteboard.general,
-            user: user,
-            userDefaults: userDefaults
-        )
+        var destination: ContentOpen.Destination = .internal
         let item = recommendation.item
 
-        var destination: ContentOpen.Destination = .internal
-
-        if item.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
-            selectedReadableType = .webViewRecommendation(viewModel)
-            destination = .external
+        if let slug = recommendation.collection?.slug ?? recommendation.item.collectionSlug, featureFlags.isAssigned(flag: .nativeCollections) {
+            selectedReadableType = .collection(CollectionViewModel(slug: slug, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults, featureFlags: featureFlags, notificationCenter: notificationCenter))
         } else {
-            selectedReadableType = .recommendation(viewModel)
-            destination = .internal
+            let viewModel = RecommendationViewModel(
+                recommendation: recommendation,
+                source: source,
+                tracker: tracker.childTracker(hosting: .articleView.screen),
+                pasteboard: UIPasteboard.general,
+                user: user,
+                userDefaults: userDefaults
+            )
+
+            if item.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
+                selectedReadableType = .webViewRecommendation(viewModel)
+                destination = .external
+            } else {
+                selectedReadableType = .recommendation(viewModel)
+            }
         }
 
         guard
@@ -328,22 +338,26 @@ extension HomeViewModel {
     }
 
     private func select(savedItem: SavedItem, at indexPath: IndexPath) {
-        let viewModel = SavedItemViewModel(
-            item: savedItem,
-            source: source,
-            tracker: tracker.childTracker(hosting: .articleView.screen),
-            pasteboard: UIPasteboard.general,
-            user: user,
-            store: store,
-            networkPathMonitor: networkPathMonitor,
-            userDefaults: userDefaults,
-            notificationCenter: notificationCenter
-        )
-
-        if let item = savedItem.item, item.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
-            selectedReadableType = .webViewSavedItem(viewModel)
+        if let slug = savedItem.item?.collection?.slug ?? savedItem.item?.collectionSlug, featureFlags.isAssigned(flag: .nativeCollections) {
+            selectedReadableType = .collection(CollectionViewModel(slug: slug, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults, featureFlags: featureFlags, notificationCenter: notificationCenter))
         } else {
-            selectedReadableType = .savedItem(viewModel)
+            let viewModel = SavedItemViewModel(
+                item: savedItem,
+                source: source,
+                tracker: tracker.childTracker(hosting: .articleView.screen),
+                pasteboard: UIPasteboard.general,
+                user: user,
+                store: store,
+                networkPathMonitor: networkPathMonitor,
+                userDefaults: userDefaults,
+                notificationCenter: notificationCenter
+            )
+
+            if let item = savedItem.item, item.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
+                selectedReadableType = .webViewSavedItem(viewModel)
+            } else {
+                selectedReadableType = .savedItem(viewModel)
+            }
         }
         tracker.track(event: Events.Home.RecentSavesCardContentOpen(url: savedItem.url, positionInList: indexPath.item))
     }
@@ -682,7 +696,7 @@ extension HomeViewModel {
         case .savedItem(let viewModel),
                 .webViewSavedItem(let viewModel):
             return viewModel.webViewActivityItems(url: url)
-        case .none:
+        case .collection, .none:
             return []
         }
     }
@@ -694,7 +708,7 @@ extension HomeViewModel: NSFetchedResultsControllerDelegate {
 
         if controller == self.recentSavesController {
             let reloadedItemIdentifiers: [Cell] = snapshot.reloadedItemIdentifiers.compactMap({ .recentSaves($0 as! NSManagedObjectID) })
-            let reconfiguredItemdIdentifiers: [Cell] = snapshot.reloadedItemIdentifiers.compactMap({ .recentSaves($0 as! NSManagedObjectID) })
+            let reconfiguredItemdIdentifiers: [Cell] = snapshot.reconfiguredItemIdentifiers.compactMap({ .recentSaves($0 as! NSManagedObjectID) })
             newSnapshot.reloadItems(reloadedItemIdentifiers)
             newSnapshot.reconfigureItems(reconfiguredItemdIdentifiers)
             updateRecentSavesWidget()
@@ -718,8 +732,8 @@ extension HomeViewModel: NSFetchedResultsControllerDelegate {
             newSnapshot.reloadItems(reloadedItemIdentifiers)
 
             // Gather all variations a recomendation could exist in for reconfigured identifiers
-            var reconfiguredItemIdentifiers: [Cell] = snapshot.reloadedItemIdentifiers.compactMap({ .recommendationHero($0 as! NSManagedObjectID) })
-            reconfiguredItemIdentifiers.append(contentsOf: snapshot.reloadedItemIdentifiers.compactMap({ .recommendationCarousel($0 as! NSManagedObjectID) }))
+            var reconfiguredItemIdentifiers: [Cell] = snapshot.reconfiguredItemIdentifiers.compactMap({ .recommendationHero($0 as! NSManagedObjectID) })
+            reconfiguredItemIdentifiers.append(contentsOf: snapshot.reconfiguredItemIdentifiers.compactMap({ .recommendationCarousel($0 as! NSManagedObjectID) }))
             // Filter to just the ones that exist in our snapshot
             reconfiguredItemIdentifiers = reconfiguredItemIdentifiers.filter({ existingItemIdentifiers.contains($0) })
             // Tell the new snapshot to reconfigure just the ones that exist

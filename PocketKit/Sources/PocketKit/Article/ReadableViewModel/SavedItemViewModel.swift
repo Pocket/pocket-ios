@@ -136,6 +136,18 @@ class SavedItemViewModel: ReadableViewModel {
         item.isArchived
     }
 
+    var isCollection: Bool {
+        item.isCollection
+    }
+
+    var collection: Collection? {
+        item.item?.collection
+    }
+
+    var slug: String? {
+        item.item?.collectionSlug
+    }
+
     var premiumURL: String? {
         pocketPremiumURL(url, user: user)
     }

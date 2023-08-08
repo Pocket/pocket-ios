@@ -17,6 +17,8 @@ class SlateDetailViewModel {
 
     @Published var selectedReadableViewModel: RecommendationViewModel?
 
+    @Published var selectedCollectionViewModel: CollectionViewModel?
+
     @Published var presentedWebReaderURL: URL?
 
     @Published var selectedRecommendationToReport: Recommendation?
@@ -31,18 +33,24 @@ class SlateDetailViewModel {
     private let source: Source
     private let tracker: Tracker
     private let user: User
+    private let store: SubscriptionStore
     private let userDefaults: UserDefaults
+    private let networkPathMonitor: NetworkPathMonitor
     private var subscriptions: [AnyCancellable] = []
     private let featureFlags: FeatureFlagServiceProtocol
+    private let notificationCenter: NotificationCenter
 
-    init(slate: Slate, source: Source, tracker: Tracker, user: User, userDefaults: UserDefaults, featureFlags: FeatureFlagServiceProtocol) {
+    init(slate: Slate, source: Source, tracker: Tracker, user: User, store: SubscriptionStore, userDefaults: UserDefaults, networkPathMonitor: NetworkPathMonitor, featureFlags: FeatureFlagServiceProtocol, notificationCenter: NotificationCenter) {
         self.slate = slate
         self.source = source
         self.tracker = tracker
         self.user = user
+        self.store = store
         self.userDefaults = userDefaults
         self.snapshot = Self.loadingSnapshot()
         self.featureFlags = featureFlags
+        self.networkPathMonitor = networkPathMonitor
+        self.notificationCenter = notificationCenter
 
         NotificationCenter.default.publisher(
             for: NSManagedObjectContext.didSaveObjectsNotification,
@@ -118,7 +126,9 @@ extension SlateDetailViewModel {
         let item = recommendation.item
         var destination: ContentOpen.Destination = .internal
 
-        if item.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
+        if let slug = recommendation.collection?.slug ?? recommendation.item.collectionSlug, featureFlags.isAssigned(flag: .nativeCollections) {
+            selectedCollectionViewModel = CollectionViewModel(slug: slug, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults, featureFlags: featureFlags, notificationCenter: notificationCenter)
+        } else if item.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
             guard let bestURL = URL(percentEncoding: item.bestURL) else { return }
             let url = pocketPremiumURL(bestURL, user: user)
             presentedWebReaderURL = url

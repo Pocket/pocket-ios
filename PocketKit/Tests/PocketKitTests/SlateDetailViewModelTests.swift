@@ -20,6 +20,9 @@ class SlateDetailViewModelTests: XCTestCase {
     var user: User!
     var userDefaults: UserDefaults!
     var featureFlags: MockFeatureFlagService!
+    private var subscriptionStore: SubscriptionStore!
+    private var networkPathMonitor: MockNetworkPathMonitor!
+    private var notificationCenter: NotificationCenter!
 
     override func setUp() {
         super.setUp()
@@ -28,6 +31,9 @@ class SlateDetailViewModelTests: XCTestCase {
         space = .testSpace()
         userDefaults = UserDefaults(suiteName: "SlateDetailViewModelTests")
         user = PocketUser(userDefaults: userDefaults)
+        networkPathMonitor = MockNetworkPathMonitor()
+        subscriptionStore = MockSubscriptionStore()
+        notificationCenter = .default
         source.stubViewObject { identifier in
             self.space.viewObject(with: identifier)
         }
@@ -51,15 +57,19 @@ class SlateDetailViewModelTests: XCTestCase {
         source: Source? = nil,
         tracker: Tracker? = nil,
         user: User? = nil,
-        userDefaults: UserDefaults? = nil
+        userDefaults: UserDefaults? = nil,
+        notificationCenter: NotificationCenter? = nil
     ) -> SlateDetailViewModel {
         SlateDetailViewModel(
             slate: slate,
             source: source ?? self.source,
             tracker: tracker ?? self.tracker,
             user: user ?? self.user,
+            store: subscriptionStore ?? self.subscriptionStore,
             userDefaults: userDefaults ?? self.userDefaults,
-            featureFlags: featureFlags
+            networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor,
+            featureFlags: featureFlags,
+            notificationCenter: notificationCenter ?? self.notificationCenter
         )
     }
 

@@ -1,0 +1,84 @@
+{
+    "data": {
+        "collection": {
+            "__typename": "Collection",
+            "externalId": "collection-1",
+            "slug": "slate-1-rec-1",
+            "title": "5 Tech Habits to Quit for a Happier Life",
+            "intro": "*Image by Jose A. Bernat Bacete / Getty Images*",
+            "publishedAt": "2023-04-05 12:43:09",
+            "authors": [
+                {
+                    "__typename": "Author",
+                    "name": "Pocket Editors"
+                }
+            ],
+            "stories": [
+                {
+                    "__typename": "CollectionStory",
+                    "sortOrder": 1,
+                    "url": "http://localhost:8080/hello",
+                    "title": "Collection Story 1",
+                    "excerpt": "“In this episode of our YouTube series, we spoke with the author of our latest report from the Common Sense Research Program. Learn what teen girls told us about social media and how it impacts their lives.” -Amanda Lenhart, Head of Research",
+                    "imageUrl": "https://s3.amazonaws.com/pocket-collectionapi-prod-images/8a5da657-25d0-472e-9f83-04ffdcdeeb31.jpeg",
+                    "authors": [
+                        {
+                            "__typename": "CollectionStoryAuthor",
+                            "name": "Common Sense Media for Families"
+                        }
+                    ],
+                    "publisher": "YouTube",
+                    "item": {
+                        "__typename": "Item",
+                        "remoteID": "item-1",
+                        "title": "Item 1",
+                        "givenUrl": "http://localhost:8080/hello",
+                        "resolvedUrl": "http://localhost:8080/hello",
+                        "topImageUrl": "https://example.com/item-1/top-image.jpg",
+                        "domain": null,
+                        "language": "en",
+                        "timeToRead": 6,
+                        "wordCount": 500,
+                        "marticle": [],
+                        "excerpt": "Cursus Aenean Elit",
+                        "collection": null,
+                        "datePublished": "2021-01-01 12:01:01",
+                        "authors": [
+                            {
+                                "__typename": "Author",
+                                "id": "author-1",
+                                "name": "Jacob",
+                                "url": "https://example.com/authors/jacob"
+                            },
+                            {
+                                "__typename": "Author",
+                                "id": "author-2",
+                                "name": "David",
+                                "url": "https://example.com/authors/david"
+                            }
+                        ],
+                        "domainMetadata": {
+                            "__typename": "[type-name-here]",
+                            "name": "WIRED",
+                            "logo": "http://example.com/item-1/domain-logo.jpg"
+                        },
+                        "images": [
+                            {
+                                "__typename": "[type-name-here]",
+                                "height": 1,
+                                "width": 2,
+                                "src": "http://example.com/item-1/image-1.jpg",
+                                "imageId": 1
+                            }
+                        ],
+                        "isArticle": true,
+                        "hasImage": "HAS_IMAGES",
+                        "hasVideo": "HAS_VIDEOS",
+                        "syndicatedArticle": null
+                    }
+                }
+            ]
+        }
+    }
+}
+

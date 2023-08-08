@@ -5,12 +5,15 @@
 import Foundation
 import Textile
 import Localization
+import SharedPocketKit
 
 struct ErrorEmptyState: EmptyStateViewModel {
     private var featureFlags: FeatureFlagServiceProtocol
+    private var user: User
 
-    init(featureFlags: FeatureFlagServiceProtocol) {
+    init(featureFlags: FeatureFlagServiceProtocol, user: User) {
         self.featureFlags = featureFlags
+        self.user = user
     }
 
     let imageAsset: ImageAsset = .warning
@@ -23,7 +26,7 @@ struct ErrorEmptyState: EmptyStateViewModel {
 
     var buttonType: ButtonType? {
         if featureFlags.isAssigned(flag: .reportIssue) {
-            return .reportIssue(Localization.General.Error.sendReport)
+            return .reportIssue(text: Localization.General.Error.sendReport, email: user.email)
         }
         return nil
     }

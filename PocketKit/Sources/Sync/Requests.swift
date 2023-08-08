@@ -136,6 +136,47 @@ public enum Requests {
         return request
     }
 
+    public static func fetchCollection(by slug: String) -> NSFetchRequest<Collection> {
+        let request = Collection.fetchRequest()
+        request.predicate = NSPredicate(format: "slug = %@", slug)
+        request.fetchLimit = 1
+        return request
+    }
+
+    public static func fetchCollectionAuthor(by name: String) -> NSFetchRequest<CollectionAuthor> {
+        let request = CollectionAuthor.fetchRequest()
+        request.predicate = NSPredicate(format: "name = %@", name)
+        request.fetchLimit = 1
+        return request
+    }
+
+    public static func fetchCollectionAuthors(by slug: String) -> NSFetchRequest<CollectionAuthor> {
+        let request = CollectionAuthor.fetchRequest()
+        request.predicate = NSPredicate(format: "collection.slug = %@", slug)
+        return request
+    }
+
+    public static func fetchCollectionStory(by url: String) -> NSFetchRequest<CollectionStory> {
+        let request = CollectionStory.fetchRequest()
+        request.predicate = NSPredicate(format: "url = %@", url)
+        request.fetchLimit = 1
+        return request
+    }
+
+    public static func fetchCollectionStories(by slug: String) -> RichFetchRequest<CollectionStory> {
+        let request = RichFetchRequest<CollectionStory>(entityName: "CollectionStory")
+        request.predicate = NSPredicate(format: "collection.slug = %@", slug)
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \CollectionStory.sortOrder, ascending: true)]
+
+        request.relationshipKeyPathsForRefreshing = [
+            #keyPath(CollectionStory.item.savedItem.archivedAt),
+            #keyPath(CollectionStory.item.savedItem.isFavorite),
+            #keyPath(CollectionStory.item.savedItem.createdAt),
+        ]
+
+        return request
+    }
+
     public static func fetchTags() -> NSFetchRequest<Tag> {
         return Tag.fetchRequest()
     }

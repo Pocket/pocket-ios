@@ -67,6 +67,7 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
 
     private var subscriptions: [AnyCancellable] = []
     private var readableSubscriptions: [AnyCancellable] = []
+    private var collectionSubscriptions = SubscriptionsStack()
 
     init(savesContainerModel: SavesContainerViewModel, viewControllers: [SelectableViewController]) {
         selectedIndex = 0
@@ -311,14 +312,16 @@ extension SavesContainerViewController {
         }.store(in: &subscriptions)
 
         // Search navigation
-        model.searchList.$selectedItem.sink { [weak self] selectedArchivedItem in
-            guard let selectedArchivedItem = selectedArchivedItem else { return }
-            self?.navigate(selectedItem: selectedArchivedItem)
+        model.searchList.$selectedItem.sink { [weak self] selectedItem in
+            guard let selectedItem = selectedItem else { return }
+            self?.navigate(selectedItem: selectedItem)
         }.store(in: &subscriptions)
     }
 
     private func navigate(selectedItem: SelectedItem) {
         switch selectedItem {
+        case .collection(let collection):
+            self.push(collection: collection)
         case .readable(let readable):
             self.push(savedItem: readable)
         case .webView(let readable):
@@ -381,6 +384,125 @@ extension SavesContainerViewController {
         )
     }
 
+    func show(_ recommendation: RecommendationViewModel?) {
+        readableSubscriptions = []
+        guard let recommendation = recommendation else {
+            return
+        }
+
+        navigationController?.pushViewController(
+            ReadableHostViewController(readableViewModel: recommendation),
+            animated: true
+        )
+
+        recommendation.events.receive(on: DispatchQueue.main).sink { [weak self] event in
+            switch event {
+            case .contentUpdated:
+                break
+            case .archive, .delete:
+                self?.popToPreviousScreen(navigationController: self?.navigationController)
+            }
+        }.store(in: &readableSubscriptions)
+    }
+
+    private func push(collection: CollectionViewModel?) {
+        guard let collection else {
+            readableSubscriptions.removeAll()
+            collectionSubscriptions.empty()
+            return
+        }
+
+        var subscriptionSet = Set<AnyCancellable>()
+
+        collection.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
+            self?.present(alert: alert)
+        }.store(in: &subscriptionSet)
+
+        collection.$presentedAddTags.receive(on: DispatchQueue.main).sink { [weak self] addTagsViewModel in
+            self?.present(viewModel: addTagsViewModel)
+        }.store(in: &subscriptionSet)
+
+        collection.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
+            self?.present(activity: activity)
+        }.store(in: &subscriptionSet)
+
+        collection.$selectedCollectionItemToReport.receive(on: DispatchQueue.main).sink { [weak self] item in
+            self?.report(item?.givenURL)
+        }.store(in: &subscriptionSet)
+
+        collection.$events.receive(on: DispatchQueue.main).sink { [weak self] event in
+            switch event {
+            case .contentUpdated, .none:
+                break
+            case .archive, .delete:
+                self?.popToPreviousScreen(navigationController: self?.navigationController)
+            }
+        }.store(in: &subscriptionSet)
+
+        collection.$selectedItem.receive(on: DispatchQueue.main).sink { [weak self] readableType in
+            switch readableType {
+            case .collection(let collection):
+                self?.push(collection: collection)
+            case .savedItem(let savedItem):
+                self?.push(savedItem: savedItem)
+            case .recommendation(let recommendation):
+                self?.show(recommendation)
+            default:
+                break
+            }
+        }.store(in: &subscriptionSet)
+
+        // whenever a CollectionViewController is popped out, remove all its subscriptions
+        // to avoid retaining a viewModel instance
+        collection.$isBeingDeallocated
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isBeingDeallocated in
+                if isBeingDeallocated {
+                    self?.collectionSubscriptions.pop()
+                }
+            }
+            .store(in: &subscriptionSet)
+
+        // MARK: Story Presentation
+        collection.$presentedStoryWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
+            self?.present(url: url)
+        }.store(in: &subscriptionSet)
+
+        collection.$sharedStoryActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
+            self?.present(activity: activity)
+        }.store(in: &subscriptionSet)
+
+        collection.$selectedStoryToReport.receive(on: DispatchQueue.main).sink { [weak self] item in
+            self?.report(item?.givenURL)
+        }.store(in: &subscriptionSet)
+
+        navigationController?.pushViewController(
+            CollectionViewController(model: collection),
+            animated: true
+        )
+        collectionSubscriptions.push(subscriptionSet)
+    }
+
+    private func report(_ givenURL: String?) {
+        guard let givenURL else {
+            Log.capture(message: "Unable to report item from Saves")
+            return
+        }
+
+        let host = ReportRecommendationHostingController(
+            givenURL: givenURL,
+            tracker: model.tracker,
+            onDismiss: { }
+        )
+
+        host.modalPresentationStyle = .formSheet
+        guard let presentedViewController else {
+            self.present(host, animated: true)
+            return
+        }
+        presentedViewController.present(host, animated: true)
+    }
+
     private func present(alert: PocketAlert?) {
         guard let alert = alert else { return }
         guard let presentedVC = self.presentedViewController else {
@@ -435,10 +557,6 @@ extension SavesContainerViewController {
     }
 
     func presentSortMenu(presentedSortFilterViewModel: SortMenuViewModel?) {
-        guard true else {
-            return
-        }
-
         guard let sortFilterVM = presentedSortFilterViewModel else {
             if navigationController?.presentedViewController is SortMenuViewController {
                 navigationController?.dismiss(animated: true)

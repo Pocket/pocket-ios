@@ -31,16 +31,25 @@ class HomeRecommendationCellViewModel {
 }
 
 extension HomeRecommendationCellViewModel: RecommendationCellViewModel {
+    var attributedCollection: NSAttributedString? {
+        guard recommendation.item.isCollection else { return nil }
+        return NSAttributedString(string: Localization.Collection.title, style: .recommendation.collection)
+    }
+
     var attributedTitle: NSAttributedString {
-        NSAttributedString(string: title ?? "", style: .title)
+        NSAttributedString(string: title ?? "", style: .recommendation.heroTitle)
+    }
+
+    var attributedExcerpt: NSAttributedString? {
+        return nil
     }
 
     var attributedDomain: NSAttributedString {
-        NSAttributedString(string: domain ?? "", style: .domain)
+        NSAttributedString(string: domain ?? "", style: .recommendation.domain)
     }
 
     var attributedTimeToRead: NSAttributedString {
-        NSAttributedString(string: timeToRead ?? "", style: .timeToRead)
+        NSAttributedString(string: timeToRead ?? "", style: .recommendation.timeToRead)
     }
 
     var title: String? {
@@ -67,18 +76,4 @@ extension HomeRecommendationCellViewModel: RecommendationCellViewModel {
 
         return Localization.Home.Recommendation.readTime(timeToRead)
     }
-}
-
-private extension Style {
-    static let title: Style = .header.sansSerif.h6.with(color: .ui.black1).with { paragraph in
-        paragraph.with(lineBreakMode: .byTruncatingTail).with(lineSpacing: 4)
-    }
-
-    static let domain: Style = .header.sansSerif.p4.with(color: .ui.grey8).with(weight: .medium).with { paragraph in
-        paragraph.with(lineBreakMode: .byTruncatingTail)
-    }
-
-    static let timeToRead: Style = .header.sansSerif.p4.with(color: .ui.grey8).with { paragraph in
-        paragraph.with(lineBreakMode: .byTruncatingTail)
-    }.with(maxScaleSize: 22)
 }

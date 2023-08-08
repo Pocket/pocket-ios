@@ -3,14 +3,10 @@ query getCollectionBySlug ($slug: String!) {
         externalId
         slug
         title
-        excerpt
         intro
-        imageUrl
         publishedAt
         authors {
             name
-            bio
-            imageUrl
         }
         stories {
             url
@@ -24,6 +20,7 @@ query getCollectionBySlug ($slug: String!) {
             item {
                 ...ItemParts
             }
+            sortOrder
         }
     }
 }

@@ -23,6 +23,10 @@ struct RecommendationCellElement: PocketUIElement {
         element.buttons["overflow-button"]
     }
 
+    var collectionLabel: XCUIElement {
+        element.staticTexts["collection-label"]
+    }
+
     struct SaveButton: PocketUIElement {
         let element: XCUIElement
 
