@@ -82,6 +82,8 @@
 		8ADAC6B028AD4E7500DE9A62 /* AddTagsViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ADAC6AF28AD4E7500DE9A62 /* AddTagsViewElement.swift */; };
 		8ADD6A9F292C189C007F419D /* SearchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ADD6A9E292C189C007F419D /* SearchTests.swift */; };
 		8ADD6AA1292C1B2C007F419D /* SearchViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ADD6AA0292C1B2C007F419D /* SearchViewElement.swift */; };
+		8AE8BCED2A7D3D1D007ABDAF /* CollectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AE8BCEC2A7D3D1D007ABDAF /* CollectionTests.swift */; };
+		8AE969122A8164D9006B3868 /* CollectionElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AE969112A8164D9006B3868 /* CollectionElement.swift */; };
 		9367E9E82A05B6A10052DF47 /* Launch Screen.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9367E9E72A05B6A10052DF47 /* Launch Screen.xcassets */; };
 		938D45322A05B87D00E68B0B /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 938D45312A05B87D00E68B0B /* Launch Screen.storyboard */; };
 		AA2E89032A0D8847004A27BD /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2E89022A0D8847004A27BD /* WidgetKit.framework */; };
@@ -264,6 +266,8 @@
 		8ADAC6AF28AD4E7500DE9A62 /* AddTagsViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTagsViewElement.swift; sourceTree = "<group>"; };
 		8ADD6A9E292C189C007F419D /* SearchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTests.swift; sourceTree = "<group>"; };
 		8ADD6AA0292C1B2C007F419D /* SearchViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewElement.swift; sourceTree = "<group>"; };
+		8AE8BCEC2A7D3D1D007ABDAF /* CollectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionTests.swift; sourceTree = "<group>"; };
+		8AE969112A8164D9006B3868 /* CollectionElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionElement.swift; sourceTree = "<group>"; };
 		9367E9E72A05B6A10052DF47 /* Launch Screen.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Launch Screen.xcassets"; sourceTree = "<group>"; };
 		938D45312A05B87D00E68B0B /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		AA2E89012A0D8847004A27BD /* ItemWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ItemWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -449,6 +453,7 @@
 				656041ED29B18105007E7CD0 /* SettingsTests.swift */,
 				AAEE908129B69BA70028587D /* PremiumTests.swift */,
 				656BF0722A09A5EC008BA8E3 /* ErrorTests.swift */,
+				8AE8BCEC2A7D3D1D007ABDAF /* CollectionTests.swift */,
 			);
 			path = "Tests iOS";
 			sourceTree = "<group>";
@@ -477,6 +482,7 @@
 			children = (
 				166BAD042656E76B00E401F0 /* ItemRowElement.swift */,
 				166BAD082656E76B00E401F0 /* PocketAppElement.swift */,
+				8AE969112A8164D9006B3868 /* CollectionElement.swift */,
 				166F8F2826D0494F00F898E3 /* PocketUIElement.swift */,
 				166BAD062656E76B00E401F0 /* ReaderElement.swift */,
 				3E44BE76290BFD4600EC25AD /* ReaderActionsWebActivityElement.swift */,
@@ -934,6 +940,7 @@
 				F2675EAB27D9424B0016769E /* HomeWebViewTests.swift in Sources */,
 				1606F21B26EBC1A200238111 /* HomeTests.swift in Sources */,
 				3E7349DF2930F6D200EEEA36 /* String+Localization.swift in Sources */,
+				8AE8BCED2A7D3D1D007ABDAF /* CollectionTests.swift in Sources */,
 				8ADAC6B028AD4E7500DE9A62 /* AddTagsViewElement.swift in Sources */,
 				166A81C52637406C0015AA1D /* SavesTests.swift in Sources */,
 				8A8F5EFE28CB740000124B6D /* EditTagsTests.swift in Sources */,
@@ -951,6 +958,7 @@
 				16D76883279F3C73004A3694 /* ArchiveTests.swift in Sources */,
 				1613B2B3275571940014F301 /* SettingsViewElement.swift in Sources */,
 				AA69A28429B7FC6E00BBA644 /* SearchGetPremiumEmptyViewElement.swift in Sources */,
+				8AE969122A8164D9006B3868 /* CollectionElement.swift in Sources */,
 				16BB40A8279F436100FE8650 /* SelectionSwitcherElement.swift in Sources */,
 				F2A5B6B4271E03B300FB8BF2 /* LaunchArguments.swift in Sources */,
 				F2FC070327A9B749009F8D98 /* ArchiveFiltersTests.swift in Sources */,

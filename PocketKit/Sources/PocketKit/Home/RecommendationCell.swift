@@ -33,6 +33,7 @@ class RecommendationCell: UICollectionViewCell {
         label.numberOfLines = Constants.numberOfCollectionLines
         label.setContentCompressionResistancePriority(.required, for: .vertical)
         label.adjustsFontForContentSizeCategory = true
+        label.accessibilityIdentifier = "collection-label"
         return label
     }()
 
