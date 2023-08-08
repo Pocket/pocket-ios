@@ -102,7 +102,7 @@ extension SavedItemViewModelTests {
         }
 
         await viewModel.save(from: context)
-        wait(for: [completeRequestExpectation], timeout: 10)
+        wait(for: [completeRequestExpectation], timeout: 2)
     }
 }
 

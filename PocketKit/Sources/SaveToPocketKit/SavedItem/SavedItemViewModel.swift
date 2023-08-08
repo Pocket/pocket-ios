@@ -74,50 +74,43 @@ class SavedItemViewModel {
             return
         }
 
-        let urlsToSave = await parse(extensionItems: extensionItems)
-
-        if urlsToSave.isEmpty {
+        guard let url = await parse(extensionItems: extensionItems) else {
             tracker.track(event: Events.SaveTo.unableToSave())
             infoViewModel = .error
-            autodismiss(from: context)
 
             return
         }
 
-        save(urlsToSave)
+        save(url)
 
         autodismiss(from: context)
     }
 
-    private func parse(extensionItems: [ExtensionItem]) async -> [String] {
-        var urlsToSave: [String] = []
-
+    private func parse(extensionItems: [ExtensionItem]) async -> String? {
         for item in extensionItems {
             guard let url = try? await url(from: item) else {
                 continue
             }
 
-            urlsToSave.append(url)
+            return url
         }
 
-        return urlsToSave
+        return nil
     }
 
-    private func save(_ urlsToSave: [String]) {
-        urlsToSave.forEach { url in
-            tracker.track(event: Events.SaveTo.saveEngagement(url: url))
+    private func save(_ url: String) {
+        tracker.track(event: Events.SaveTo.saveEngagement(url: url))
 
-            let result = saveService.save(url: url)
-            switch result {
-            case .existingItem(let savedItem):
-                self.savedItem = savedItem
-                infoViewModel = .existingItem
-            case .newItem(let savedItem):
-                self.savedItem = savedItem
-                infoViewModel = .newItem
-            default:
-                break
-            }
+        let result = saveService.save(url: url)
+        switch result {
+        case .existingItem(let savedItem):
+            self.savedItem = savedItem
+            infoViewModel = .existingItem
+        case .newItem(let savedItem):
+            self.savedItem = savedItem
+            infoViewModel = .newItem
+        default:
+            break
         }
     }
 
