@@ -190,7 +190,7 @@ extension SavedItemViewModelTests {
         let extensionItem1 = MockExtensionItem(itemProviders: [provider1])
         let extensionItem2 = MockExtensionItem(itemProviders: [provider2])
 
-        let context = MockExtensionContext(extensionItems: [extensionItem1,extensionItem2])
+        let context = MockExtensionContext(extensionItems: [extensionItem1, extensionItem2])
         context.stubCompleteRequest { _, _ in }
 
         await viewModel.save(from: context)
