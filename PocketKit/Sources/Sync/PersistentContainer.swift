@@ -60,8 +60,6 @@ public class PersistentContainer: NSPersistentContainer {
         storeDescription.setOption(true as NSNumber, forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)
         storeDescription.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
         storeDescription.setOption(true as NSNumber, forKey: NSMigratePersistentStoresAutomaticallyOption)
-        storeDescription.shouldMigrateStoreAutomatically = false
-        storeDescription.shouldInferMappingModelAutomatically = false
 
         loadPersistentStores { storeDescription, error in
             if let error = error as NSError? {
