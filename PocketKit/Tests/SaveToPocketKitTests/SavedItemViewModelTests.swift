@@ -161,6 +161,42 @@ extension SavedItemViewModelTests {
         XCTAssertEqual(saveService.saveCall(at: 0)?.url, "https://getpocket.com")
     }
 
+    /// This test imitates how a specific PDF URL (https://arxiv.org/pdf/2306.00739.pdf) was ingested by the app from the Share extension
+    func test_save_ifValidSessionAndPDF() async {
+        let appSession = AppSession(keychain: MockKeychain(), groupID: "group.com.ideashower.ReadItLaterPro")
+        appSession.currentSession = Session(
+            guid: "mock-guid",
+            accessToken: "mock-access-token",
+            userIdentifier: "mock-user-identifier"
+        )
+        let viewModel = subject(appSession: appSession)
+
+        let provider1 = MockItemProvider()
+        provider1.stubHasItemConformingToTypeIdentifier { identifier in
+            return identifier == "com.adobe.pdf"
+        }
+        provider1.stubLoadItem { _, _ in
+            URL(string: "https://getpocket.com/pdf/some.name.pdf")! as NSSecureCoding
+        }
+
+        let provider2 = MockItemProvider()
+        provider2.stubHasItemConformingToTypeIdentifier { identifier in
+            return identifier == "public.url"
+        }
+        provider2.stubLoadItem { _, _ in
+            URL(string: "https://getpocket.com/pdf/some.name.pdf")! as NSSecureCoding
+        }
+
+        let extensionItem1 = MockExtensionItem(itemProviders: [provider1])
+        let extensionItem2 = MockExtensionItem(itemProviders: [provider2])
+
+        let context = MockExtensionContext(extensionItems: [extensionItem1,extensionItem2])
+        context.stubCompleteRequest { _, _ in }
+
+        await viewModel.save(from: context)
+        XCTAssertEqual(saveService.saveCall(at: 0)?.url, "https://getpocket.com/pdf/some.name.pdf")
+    }
+
     func test_save_withStringContainingURL_sendsCorrectURLToService() async {
         let appSession = AppSession(keychain: MockKeychain(), groupID: "group.com.ideashower.ReadItLaterPro")
         appSession.currentSession = Session(
