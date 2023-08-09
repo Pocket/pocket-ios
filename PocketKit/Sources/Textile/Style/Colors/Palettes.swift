@@ -23,7 +23,7 @@ public struct UIPalette {
 
     public let homeCellBackground = ColorAsset.ui("homeCellBackground")
     public let saveButtonText = ColorAsset.ui("saveButtonText")
-    public let textfieldURL = UIColor(named: "textfieldURL")
+    public let textfieldURL = ColorAsset.ui("textfieldURL")
 
     public let lapis1 = ColorAsset.ui("lapis1")
 
