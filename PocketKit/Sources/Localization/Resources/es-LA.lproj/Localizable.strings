@@ -80,6 +80,13 @@
 //Saves
 "saves.empty.header" = "Comienza a crear tu lista de Pocket";
 "saves.empty.button" = "Cómo guardar";
+// - Add Saved Item
+"saves.addSavedItem.title" = "Agregar una URL";
+"saves.addSavedItem.error" = "Ingresa una URL válida.";
+"saves.addSavedItem.addButton" = "Guardar en Pocket";
+"saves.addSavedItem.cancel" = "Cancelar";
+"saves.addSavedItem.close" = "Cerrar";
+"saves.addSavedItem.placeholder" = "Por ejemplo,https://getpocket.com";
 
 // Search
 "search.errorMessage" = "Se ha producido un error y, por el momento, no podemos obtener lo que necesitas. Inténtalo de nuevo más tarde.";
@@ -211,7 +218,6 @@
 "premium.upgradeView.unlimitedHighlights" = "Sin limite de Resaltados";
 "premium.upgradeView.premiumFonts" = "Fuentes Premium";
 
-
 //=======================
 //Old format
 
@@ -319,3 +325,7 @@
 "itemWidgets.recommendations.emptyMessage" = "Puede que no tengas conexión a Internet. Consulta las recomendaciones en tu aplicación de Pocket.";
 "itemWidgets.recommendations.title" = "Recomendados";
 "itemWidgets.recommendations.description" = "Descubre las historias que más invitan a la reflexión, seleccionadas por Pocket.";
+
+// Collection
+"collection.title" = "Colección";
+"collection.stories.count" = "%1$@ enlaces";
