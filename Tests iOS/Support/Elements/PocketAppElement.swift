@@ -30,7 +30,7 @@ struct PocketAppElement {
 
     /// Gets the delete overlay view, for some reason this is in the main app element.
     var deletingAccountOverlay: XCUIElement {
-        return app.otherElements["deleting-overlay"]
+        return app.otherElements["loading-view"]
     }
 
     var homeView: HomeViewElement {

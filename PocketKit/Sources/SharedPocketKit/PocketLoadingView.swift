@@ -30,7 +30,7 @@ public struct PocketLoadingView: View {
         .background(Color(backgroundColor))
         .foregroundColor(Color(foregroundColor))
         .opacity(0.9)
-        .accessibilityIdentifier("deleting-overlay")
+        .accessibilityIdentifier("loading-view")
     }
 }
 
