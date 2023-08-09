@@ -80,6 +80,13 @@
 //Saves
 "saves.empty.header" = "開始建立您的 Pocket 清單";
 "saves.empty.button" = "如何儲存";
+// - Add Saved Item
+"saves.addSavedItem.title" = "新增 URL";
+"saves.addSavedItem.error" = "請輸入有效的 URL";
+"saves.addSavedItem.addButton" = "儲存到 Pocket";
+"saves.addSavedItem.cancel" = "取消";
+"saves.addSavedItem.close" = "關閉";
+"saves.addSavedItem.placeholder" = "例如 https://getpocket.com";
 
 // Search
 "search.errorMessage" = "我們遇到錯誤，暫時無法為您提供所需資訊。請稍後重試。";
@@ -211,7 +218,6 @@
 "premium.upgradeView.unlimitedHighlights" = "無限標記";
 "premium.upgradeView.premiumFonts" = "Premium 字型";
 
-
 //=======================
 //Old format
 
@@ -319,3 +325,7 @@
 "itemWidgets.recommendations.emptyMessage" = "您可能處於離線狀態。請查看 Pocket 應用程式中的推薦";
 "itemWidgets.recommendations.title" = "建議";
 "itemWidgets.recommendations.description" = "發掘由 Pocket 精心策劃的最發人深省篇章。";
+
+// Collection
+"collection.title" = "收藏";
+"collection.stories.count" = "%1$@ 個項目";
