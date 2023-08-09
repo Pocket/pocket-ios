@@ -329,3 +329,4 @@
 // Collection
 "collection.title" = "Collection";
 "collection.stories.count" = "%@ items";
+"collection.loadingView.message" = "Loading collection...";
