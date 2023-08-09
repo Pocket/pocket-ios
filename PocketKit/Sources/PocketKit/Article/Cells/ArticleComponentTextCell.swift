@@ -60,6 +60,8 @@ class ArticleComponentTextView: UITextView {
         isScrollEnabled = false
         delegate = self
 
+        linkTextAttributes = [.foregroundColor: UIColor(named: "textfieldURL")]
+
         interactions
             .filter { $0 is UIContextMenuInteraction }
             .forEach { removeInteraction($0) }
