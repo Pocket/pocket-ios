@@ -80,6 +80,13 @@
 //Saves
 "saves.empty.header" = "지금 Pocket 목록 구축을 시작하세요";
 "saves.empty.button" = "저장 방법";
+// - Add Saved Item
+"saves.addSavedItem.title" = "URL 추가";
+"saves.addSavedItem.error" = "유효한 URL을 입력하십시오";
+"saves.addSavedItem.addButton" = "Pocket에 저장";
+"saves.addSavedItem.cancel" = "취소";
+"saves.addSavedItem.close" = "닫기";
+"saves.addSavedItem.placeholder" = "예 https://getpocket.com";
 
 // Search
 "search.errorMessage" = "오류가 발생하여 일시적으로 필요한 정보를 얻을 수 없습니다. 나중에 다시 시도하십시오.";
@@ -211,7 +218,6 @@
 "premium.upgradeView.unlimitedHighlights" = "무제한 하이라이트";
 "premium.upgradeView.premiumFonts" = "프리미엄 폰트";
 
-
 //=======================
 //Old format
 
@@ -319,3 +325,7 @@
 "itemWidgets.recommendations.emptyMessage" = "오프라인 상태일 수 있습니다. Pocket 앱에서 권장 사항을 확인하십시오";
 "itemWidgets.recommendations.title" = "권장 사항";
 "itemWidgets.recommendations.description" = "Pocket에서 선정한 가장 생각을 자극하는 스토리를 확인해 보십시오.";
+
+// Collection
+"collection.title" = "콜렉션";
+"collection.stories.count" = "%1$@개 항목";
