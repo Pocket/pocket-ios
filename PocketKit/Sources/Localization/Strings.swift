@@ -181,10 +181,6 @@ public enum Localization {
   public enum Collection {
     /// Collection
     public static let title = Localization.tr("Localizable", "collection.title", fallback: "Collection")
-    public enum LoadingView {
-      /// Loading collection...
-      public static let message = Localization.tr("Localizable", "collection.loadingView.message", fallback: "Loading collection...")
-    }
     public enum Stories {
       /// %@ items
       public static func count(_ p1: Any) -> String {
@@ -305,6 +301,10 @@ public enum Localization {
       /// Tagged
       public static let tagged = Localization.tr("Localizable", "itemlist.filter.tagged", fallback: "Tagged")
     }
+  }
+  public enum LoadingView {
+    /// Loading...
+    public static let message = Localization.tr("Localizable", "loadingView.message", fallback: "Loading...")
   }
   public enum LoggedOut {
     public enum Offline {

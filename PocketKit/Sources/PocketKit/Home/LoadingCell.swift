@@ -21,7 +21,7 @@ class LoadingCell: UICollectionViewCell {
 extension LoadingCell {
     private func setupContentView() {
         contentView.backgroundColor = .clear
-        let view = UIView.embedSwiftUIView(PocketLoadingView.loadingIndicator(Localization.Collection.LoadingView.message))
+        let view = UIView.embedSwiftUIView(PocketLoadingView.loadingIndicator(Localization.LoadingView.message))
         contentView.addSubview(view)
         contentView.pinSubviewToAllEdges(view)
     }
