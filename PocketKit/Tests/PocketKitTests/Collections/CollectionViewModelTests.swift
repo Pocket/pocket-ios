@@ -802,6 +802,9 @@ class CollectionViewModelTests: XCTestCase {
                 XCTAssertNotNil(snapshot.indexOfSection(.loading))
                 XCTAssertEqual(snapshot.itemIdentifiers(inSection: .loading), [.loading])
                 loadingExpectation.fulfill()
+            } else if count == 3 {
+                XCTAssertNotNil(snapshot.indexOfSection(.error))
+                XCTAssertEqual(snapshot.itemIdentifiers(inSection: .error), [.error])
             }
         }.store(in: &subscriptions)
 
