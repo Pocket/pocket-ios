@@ -28,6 +28,17 @@ class RecentTagProviderTests: XCTestCase {
         )
     }
 
+    func test_initial_recentTags() throws {
+        let recentTagsProvider = subject()
+        XCTAssertEqual(recentTagsProvider.recentTags, [])
+    }
+
+    func test_getInitialRecentTags_withEmptyTags_hasNoRecentTags() throws {
+        let recentTagsProvider = subject()
+        recentTagsProvider.getInitialRecentTags(with: [])
+        XCTAssertEqual(recentTagsProvider.recentTags, [])
+    }
+
     func test_recentTags_showsValidArray() {
         userDefaults.setValue(["tag 0", "tag 1", "tag 2"], forKey: UserDefaults.Key.recentTags)
         let recentTagsProvider = subject()
@@ -47,6 +58,11 @@ class RecentTagProviderTests: XCTestCase {
         XCTAssertEqual(recentTagsProvider.recentTags, ["tag 0", "tag 1", "tag 2"])
     }
 
+    func test_updateRecentTags_withEmptyTags_hasNoRecentTags() {
+        let recentTagsProvider = subject()
+        recentTagsProvider.updateRecentTags(with: [], and: [])
+        XCTAssertEqual(recentTagsProvider.recentTags, [])
+    }
     func test_updateRecentTags_withNoOriginalTags_andNewInputTag_showsValidArray() {
         let recentTagsProvider = subject()
         recentTagsProvider.updateRecentTags(with: [], and: ["tag 3"])

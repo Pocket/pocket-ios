@@ -65,10 +65,10 @@ class TagsFilterViewModelTests: XCTestCase {
         _ = try? space.createSavedItem(createdAt: Date() + 1, tags: ["tag 2"])
         _ = try? space.createSavedItem(createdAt: Date() + 2, tags: ["tag 3"])
         _ = try? space.createSavedItem(createdAt: Date() + 3, tags: ["tag 4"])
+
         let savedTags = try? space.fetchTags(isArchived: false)
         let viewModel = subject(user: MockUser(status: .premium), fetchedTags: savedTags) { }
-
-        XCTAssertEqual(viewModel.recentTags, [TagType.recent("tag 1"), TagType.recent("tag 2"), TagType.recent("tag 3")])
+        XCTAssertEqual(viewModel.recentTags, [TagType.recent("tag 3"), TagType.recent("tag 2"), TagType.recent("tag 1")])
     }
 
     func test_recentTags_withMoreThanThreeTags_andFreeUser_returnsNoRecentTags() {
