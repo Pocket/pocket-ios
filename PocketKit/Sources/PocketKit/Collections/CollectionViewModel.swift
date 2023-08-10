@@ -352,7 +352,10 @@ private extension CollectionViewModel {
         snapshot.appendItems([.loading], toSection: .loading)
         return snapshot
     }
-
+    
+    /// Build an empty snapshot section, used at initialization time,
+    /// so we don't show the loading screen (previously set at init time)
+    /// when we have local data
     static func emptySnapshot() -> Snapshot {
         var snapshot = Snapshot()
         snapshot.appendSections([.empty])
