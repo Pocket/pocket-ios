@@ -34,7 +34,7 @@ struct ItemWidgetsListView: View {
                             domain: entry.content.bestDomain,
                             readingTime: entry.content.readingTime,
                             image: entry.image,
-                            deeplinkURL: entry.deeplinkURL
+                            deeplinkURL: entry.content.pocketDeeplinkURL
                         )
                         .frame(minHeight: 0, maxHeight: .infinity)
                     }
