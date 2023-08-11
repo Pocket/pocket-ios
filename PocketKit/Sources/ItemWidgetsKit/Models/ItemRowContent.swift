@@ -14,4 +14,16 @@ struct ItemRowContent: Identifiable, Equatable {
     public static var empty: ItemRowContent {
         ItemRowContent(content: .empty)
     }
+
+    /// Deeplink URL generator
+    /// - Parameter url: The URL to add as a parameter of the getpocket URL
+    /// - Returns: Returns a deeplink url e.g. com.getpocket://getpocket.com/app/save?url=[GIVEN URL]
+    public var deeplinkURL: URL? {
+        var components = URLComponents()
+        components.scheme = "pocket"
+        components.host = "home"
+        components.queryItems = [URLQueryItem(name: "url", value: content.url)]
+
+        return components.url
+    }
 }
