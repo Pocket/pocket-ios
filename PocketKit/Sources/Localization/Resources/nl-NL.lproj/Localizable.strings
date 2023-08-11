@@ -80,6 +80,13 @@
 //Saves
 "saves.empty.header" = "Begin met het samenstellen van je Pocket-lijst";
 "saves.empty.button" = "Opslaan";
+// - Add Saved Item
+"saves.addSavedItem.title" = "Voeg een URL toe";
+"saves.addSavedItem.error" = "Voer een geldige URL in";
+"saves.addSavedItem.addButton" = "Opslaan naar Pocket";
+"saves.addSavedItem.cancel" = "Annuleren";
+"saves.addSavedItem.close" = "Sluiten";
+"saves.addSavedItem.placeholder" = "bijv. https://getpocket.com";
 
 // Search
 "search.errorMessage" = "Er is een fout opgetreden waardoor we je tijdelijk niet kunnen leveren wat je nodig hebt. Probeer het later opnieuw.";
@@ -211,7 +218,6 @@
 "premium.upgradeView.unlimitedHighlights" = "Onbeperkte markeringen";
 "premium.upgradeView.premiumFonts" = "Premium-lettertypen";
 
-
 //=======================
 //Old format
 
@@ -224,6 +230,9 @@
 "Are you sure you want to delete this item?" = "Weet je zeker dat je dit item wilt verwijderen?";
 "Yes" = "Ja";
 "No" = "Nee";
+
+// Loading view
+"loadingView.message" = "Laden...";
 
 // No internet
 "No Internet Connection" = "Geen internetverbinding";
@@ -319,3 +328,7 @@
 "itemWidgets.recommendations.emptyMessage" = "Je bent wellicht offline. Bekijk aanbevelingen in je Pocket-app";
 "itemWidgets.recommendations.title" = "Aanbevelingen";
 "itemWidgets.recommendations.description" = "Ontdek de meest prikkelende verhalen, geselecteerd door Pocket.";
+
+// Collection
+"collection.title" = "Verzameling";
+"collection.stories.count" = "%1$@ items";
