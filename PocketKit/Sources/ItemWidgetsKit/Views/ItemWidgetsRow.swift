@@ -18,6 +18,7 @@ struct ItemWidgetsRow: View {
     let domain: String
     let readingTime: String?
     let image: Image?
+    let url: String
 
     var body: some View {
         HStack(alignment: .top) {
@@ -37,6 +38,19 @@ struct ItemWidgetsRow: View {
                 ItemThumbnail(image: image)
             }
         }
+        .widgetURL(deeplinkURL(url))
+    }
+
+    /// <#Description#>
+    /// - Parameter url: The URL to add as a parameter of the getpocket URL
+    /// - Returns: Returns a deeplink url e.g. com.getpocket://getpocket.com/app/save?url=[GIVEN URL]
+    func deeplinkURL(_ url: String) -> URL? {
+        var components = URLComponents()
+        components.scheme = "pocket"
+        components.host = "home"
+        components.queryItems = [URLQueryItem(name: "url", value: url)]
+
+        return components.url
     }
 }
 

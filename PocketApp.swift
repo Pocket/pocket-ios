@@ -12,6 +12,21 @@ struct PocketApp: App {
     var body: some Scene {
         WindowGroup {
             RootView(model: RootViewModel())
+                .onOpenURL { url in
+                    if url.scheme == "pocket" {
+                        let queryItems = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems
+                        let urlItem = queryItems?.filter {
+                            $0.name == "url"
+                        }
+
+                        if url.host() == "home" {
+                            // TODO: Open Item
+                        } else {
+                            // TODO: Log invalid deeplink
+                            return
+                        }
+                    }
+                }
         }
     }
 }
