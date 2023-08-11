@@ -795,13 +795,16 @@ class CollectionViewModelTests: XCTestCase {
         viewModel.$snapshot.sink { snapshot in
             count += 1
             if count == 1 {
-                XCTAssertNotNil(snapshot.indexOfSection(.loading))
-                XCTAssertEqual(snapshot.itemIdentifiers(inSection: .loading), [.loading])
+                XCTAssertNotNil(snapshot.indexOfSection(.empty))
+                XCTAssertEqual(snapshot.itemIdentifiers(inSection: .empty), [.empty])
                 errorSnapshotExpectation.fulfill()
             } else if count == 2 {
+                XCTAssertNotNil(snapshot.indexOfSection(.loading))
+                XCTAssertEqual(snapshot.itemIdentifiers(inSection: .loading), [.loading])
+                loadingExpectation.fulfill()
+            } else if count == 3 {
                 XCTAssertNotNil(snapshot.indexOfSection(.error))
                 XCTAssertEqual(snapshot.itemIdentifiers(inSection: .error), [.error])
-                loadingExpectation.fulfill()
             }
         }.store(in: &subscriptions)
 

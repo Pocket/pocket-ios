@@ -302,6 +302,10 @@ public enum Localization {
       public static let tagged = Localization.tr("Localizable", "itemlist.filter.tagged", fallback: "Tagged")
     }
   }
+  public enum LoadingView {
+    /// Loading...
+    public static let message = Localization.tr("Localizable", "loadingView.message", fallback: "Loading...")
+  }
   public enum LoggedOut {
     public enum Offline {
       /// Looks like you're offline. Try checking your mobile data or wifi.
