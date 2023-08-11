@@ -22,12 +22,12 @@ public struct RecommendationsWidgetUpdateService {
     /// Update the recommendations using a collection of slates, normalized to `[String: [Recommendation]]`
     /// - Parameter items: the given collection of normalized slates
     public func update(_ topics: [String: [Recommendation]]) {
+        let newTopics: [ItemContentContainer] = topics.map { makeItemContentContainer($0.key, $0.value) }
+        // avoid triggering widget updates if stored data did not change
+        guard store.topics != newTopics else {
+            return
+        }
         recommendationsUpdateQueue.async {
-            let newTopics: [ItemContentContainer] = topics.map { makeItemContentContainer($0.key, $0.value) }
-            // avoid triggering widget updates if stored data did not change
-            guard store.topics != newTopics else {
-                return
-            }
             do {
                 try store.updateTopics(newTopics)
                 reloadWidget()
