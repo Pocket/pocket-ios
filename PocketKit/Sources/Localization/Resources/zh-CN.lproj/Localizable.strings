@@ -80,6 +80,13 @@
 //Saves
 "saves.empty.header" = "开始建立您的 Pocket 列表";
 "saves.empty.button" = "如何保存";
+// - Add Saved Item
+"saves.addSavedItem.title" = "添加 URL";
+"saves.addSavedItem.error" = "请输入有效的 URL";
+"saves.addSavedItem.addButton" = "保存到 Pocket";
+"saves.addSavedItem.cancel" = "取消";
+"saves.addSavedItem.close" = "关闭";
+"saves.addSavedItem.placeholder" = "例如 https://getpocket.com";
 
 // Search
 "search.errorMessage" = "我们遇到了错误，暂时无法为您提供所需的信息。请稍后重试。";
@@ -211,7 +218,6 @@
 "premium.upgradeView.unlimitedHighlights" = "无限突出显示";
 "premium.upgradeView.premiumFonts" = "Premium 字体";
 
-
 //=======================
 //Old format
 
@@ -224,6 +230,9 @@
 "Are you sure you want to delete this item?" = "确定要删除此项目吗？";
 "Yes" = "是";
 "No" = "否";
+
+// Loading view
+"loadingView.message" = "正在加载...";
 
 // No internet
 "No Internet Connection" = "无互联网连接";
@@ -319,3 +328,7 @@
 "itemWidgets.recommendations.emptyMessage" = "您可能处于离线状态。请检查您的 Pocket 应用程序中的推荐";
 "itemWidgets.recommendations.title" = "推荐";
 "itemWidgets.recommendations.description" = "探索由 Pocket 策划的最发人深省的故事。";
+
+// Collection
+"collection.title" = "收集";
+"collection.stories.count" = "%1$@ 个项目";
