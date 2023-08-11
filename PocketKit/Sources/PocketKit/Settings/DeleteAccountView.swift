@@ -108,7 +108,7 @@ struct DeleteAccountView: View {
         .accessibilityIdentifier("delete-confirmation")
         .overlay {
             if viewModel.isDeletingAccount {
-                DeleteLoadingView()
+                PocketLoadingView.overlay(Localization.Settings.AccountManagement.DeleteAccount.deleting)
             }
         }
         .alert(isPresented: $viewModel.showErrorAlert) {
@@ -118,36 +118,6 @@ struct DeleteAccountView: View {
             viewModel.trackDeleteConfirmationImpression()
         }
     }
-}
-
-private struct DeleteLoadingView: View {
-    var body: some View {
-        VStack {
-            HStack {
-               Spacer()
-            }
-            Spacer()
-            LottieView(.loading)
-                .frame(minWidth: 0, maxWidth: 300, minHeight: 0, maxHeight: 100)
-            Text(Localization.Settings.AccountManagement.DeleteAccount.deleting).style(.deleteAccountView.overlay)
-            Spacer()
-        }
-        .background(Color(.ui.grey3))
-        .foregroundColor(Color(.ui.white1))
-        .opacity(0.9)
-        .accessibilityIdentifier("deleting-overlay")
-    }
-}
-
-extension Style {
-    struct DeleteAccountView {
-        let header: Style = Style.header.sansSerif.h2.with(color: .ui.black1)
-        let warning: Style = Style.header.sansSerif.p2.with(color: .ui.black1).with(weight: .bold)
-        let body: Style = Style.header.sansSerif.p3.with(color: .ui.black1)
-        let overlay: Style = Style.header.sansSerif.p2.with(color: .ui.white).with(weight: .bold)
-    }
-
-    static let deleteAccountView = DeleteAccountView()
 }
 
 struct DeleteAccountView_PreviewProvider: PreviewProvider {

@@ -84,6 +84,7 @@ class CollectionViewController: UIViewController {
         collectionView.delegate = self
 
         collectionView.register(cellClass: LoadingCell.self)
+        collectionView.register(cellClass: EmptyCell.self)
         collectionView.register(cellClass: CollectionMetadataCell.self)
         collectionView.register(cellClass: RecommendationCell.self)
         collectionView.register(cellClass: EmptyStateCollectionViewCell.self)
@@ -324,6 +325,9 @@ private extension CollectionViewController {
         switch viewModelCell {
         case .loading:
             let cell: LoadingCell = collectionView.dequeueCell(for: indexPath)
+            return cell
+        case .empty:
+            let cell: EmptyCell = collectionView.dequeueCell(for: indexPath)
             return cell
         case .collectionHeader:
             let metaCell: CollectionMetadataCell = collectionView.dequeueCell(for: indexPath)
