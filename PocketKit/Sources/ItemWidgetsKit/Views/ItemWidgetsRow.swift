@@ -41,7 +41,7 @@ struct ItemWidgetsRow: View {
         .widgetURL(deeplinkURL(url))
     }
 
-    /// <#Description#>
+    /// Deeplink URL generator
     /// - Parameter url: The URL to add as a parameter of the getpocket URL
     /// - Returns: Returns a deeplink url e.g. com.getpocket://getpocket.com/app/save?url=[GIVEN URL]
     func deeplinkURL(_ url: String) -> URL? {
