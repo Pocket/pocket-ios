@@ -18,8 +18,10 @@ class SavedItemViewModel {
     private let consumerKey: String
     private let userDefaults: UserDefaults
     private let user: User
+    private let notificationCenter: NotificationCenter
 
     private var dismissTimerCancellable: AnyCancellable?
+    private var subscriptions: Set<AnyCancellable> = []
 
     @Published var infoViewModel: InfoView.Model = .empty
 
@@ -47,7 +49,8 @@ class SavedItemViewModel {
          tracker: Tracker,
          consumerKey: String,
          userDefaults: UserDefaults,
-         user: User
+         user: User,
+         notificationCenter: NotificationCenter
     ) {
         self.appSession = appSession
         self.saveService = saveService
@@ -56,8 +59,17 @@ class SavedItemViewModel {
         self.consumerKey = consumerKey
         self.userDefaults = userDefaults
         self.user = user
+        self.notificationCenter = notificationCenter
 
         guard appSession.currentSession != nil else { return }
+
+        notificationCenter
+            .publisher(for: .userLoggedOut)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.infoViewModel = .loggedOut
+            }
+            .store(in: &subscriptions)
     }
 
     func save(from context: ExtensionContext?) async {
@@ -185,7 +197,7 @@ extension SavedItemViewModel {
     }
 }
 
-private extension InfoView.Model {
+extension InfoView.Model {
     static let empty = InfoView.Model(
         style: .default,
         attributedText: NSAttributedString(string: ""),
@@ -229,5 +241,17 @@ private extension InfoView.Model {
             style: .mainText
         ),
         attributedDetailText: nil
+    )
+
+    static let loggedOut =  InfoView.Model(
+        style: .error,
+        attributedText: NSAttributedString(
+            string: "Log in to Pocket to save",
+            style: .mainTextError
+        ),
+        attributedDetailText: NSAttributedString(
+            string: "Pocket couldn't save the link. Log in to the Pocket app and try saving again.",
+            style: .detailText
+        )
     )
 }
