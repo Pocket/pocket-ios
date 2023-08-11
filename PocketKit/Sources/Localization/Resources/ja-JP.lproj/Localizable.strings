@@ -80,6 +80,13 @@
 //Saves
 "saves.empty.header" = "Pocket リストを作成する";
 "saves.empty.button" = "保存方法";
+// - Add Saved Item
+"saves.addSavedItem.title" = "URL を追加";
+"saves.addSavedItem.error" = "有効な URL を入力してください。";
+"saves.addSavedItem.addButton" = "Pocket に保存";
+"saves.addSavedItem.cancel" = "キャンセル";
+"saves.addSavedItem.close" = "閉じる";
+"saves.addSavedItem.placeholder" = "例：https://getpocket.com";
 
 // Search
 "search.errorMessage" = "エラーが発生したため、必要なデータを表示できません。後ほどもう一度お試しください。";
@@ -211,7 +218,6 @@
 "premium.upgradeView.unlimitedHighlights" = "何度でもハイライト";
 "premium.upgradeView.premiumFonts" = "Premium 専用フォント";
 
-
 //=======================
 //Old format
 
@@ -224,6 +230,9 @@
 "Are you sure you want to delete this item?" = "このアイテムを削除してよろしいですか？";
 "Yes" = "はい";
 "No" = "いいえ";
+
+// Loading view
+"loadingView.message" = "ロード中…";
 
 // No internet
 "No Internet Connection" = "インターネット接続がありません";
@@ -319,3 +328,7 @@
 "itemWidgets.recommendations.emptyMessage" = "オフラインになっている可能性があります。Pocket アプリで推奨事項を確認してください。";
 "itemWidgets.recommendations.title" = "おすすめ";
 "itemWidgets.recommendations.description" = "Pocket が厳選！色々と考えさせられる興味深いストーリーをお届けします。";
+
+// Collection
+"collection.title" = "コレクション";
+"collection.stories.count" = "%1$@ 件のアイテム";
