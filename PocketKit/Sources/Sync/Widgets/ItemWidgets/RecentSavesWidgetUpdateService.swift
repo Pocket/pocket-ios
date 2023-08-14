@@ -20,22 +20,21 @@ public struct RecentSavesWidgetUpdateService {
     /// Update the recent saves using the given array of `SavedItem`
     /// - Parameter items: the given array
     public func update(_ items: [SavedItem], _ name: String) {
+        let saves = items.map {
+            ItemContent(
+                url: $0.url,
+                title: $0.item?.title ?? $0.url,
+                imageUrl: $0.item?.topImageURL?.absoluteString,
+                bestDomain: $0.item?.domainMetadata?.name ?? $0.item?.domain ?? URL(percentEncoding: $0.url)?.host ?? "",
+                timeToRead: ($0.item?.timeToRead) != nil ? Int(truncating: ($0.item?.timeToRead)!) : nil
+            )
+        }
+        let saveTopic = [ItemContentContainer(name: name, items: saves)]
+        // avoid triggering widget updates if stored data did not change
+        guard store.topics != saveTopic else {
+            return
+        }
         savesUpdateQueue.async {
-            let saves = items.map {
-                ItemContent(
-                    url: $0.url,
-                    title: $0.item?.title ?? $0.url,
-                    imageUrl: $0.item?.topImageURL?.absoluteString,
-                    bestDomain: $0.item?.domainMetadata?.name ?? $0.item?.domain ?? URL(percentEncoding: $0.url)?.host ?? "",
-                    timeToRead: ($0.item?.timeToRead) != nil ? Int(truncating: ($0.item?.timeToRead)!) : nil
-                )
-            }
-            let saveTopic = [ItemContentContainer(name: name, items: saves)]
-            // avoid triggering widget updates if stored data did not change
-            guard store.topics != saveTopic else {
-                return
-            }
-
             do {
                 try store.updateTopics(saveTopic)
                 reloadWidget()

@@ -5,6 +5,7 @@
 import XCTest
 import Analytics
 import SharedPocketKit
+import Combine
 
 @testable import Sync
 @testable import SaveToPocketKit
@@ -18,6 +19,8 @@ class SavedItemViewModelTests: XCTestCase {
     private var user: MockUser!
     private var consumerKey: String!
     private var space: Space!
+    private var notificationCenter: NotificationCenter!
+    private var subscriptions: Set<AnyCancellable> = []
 
     private func subject(
         appSession: AppSession? = nil,
@@ -26,7 +29,8 @@ class SavedItemViewModelTests: XCTestCase {
         tracker: Tracker? = nil,
         consumerKey: String? = nil,
         userDefaults: UserDefaults? = nil,
-        user: User? = nil
+        user: User? = nil,
+        notificationCenter: NotificationCenter? = nil
     ) -> SavedItemViewModel {
         SavedItemViewModel(
             appSession: appSession ?? self.appSession,
@@ -35,7 +39,8 @@ class SavedItemViewModelTests: XCTestCase {
             tracker: tracker ?? self.tracker,
             consumerKey: consumerKey ?? self.consumerKey,
             userDefaults: userDefaults ?? self.userDefaults,
-            user: user ?? self.user
+            user: user ?? self.user,
+            notificationCenter: notificationCenter ?? self.notificationCenter
         )
     }
 
@@ -51,12 +56,15 @@ class SavedItemViewModelTests: XCTestCase {
         space = .testSpace()
         userDefaults = UserDefaults(suiteName: "SavedItemViewModelTests")
         user = MockUser()
+        notificationCenter = .default
 
         let savedItem = SavedItem(context: space.backgroundContext, url: "http://mozilla.com")
         saveService.stubSave { _ in .newItem(savedItem) }
     }
 
     override func tearDownWithError() throws {
+        subscriptions = []
+
         UserDefaults.standard.removePersistentDomain(forName: "SavedItemViewModelTests")
         try space.clear()
         try super.tearDownWithError()
