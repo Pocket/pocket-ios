@@ -9,7 +9,7 @@ import Sync
 class Router {
     func handle(url: URL) {
         guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
-              components.scheme == Self.scheme, components.host == Self.host else {
+              components.scheme == Self.scheme, components.path == Self.path else {
                   // TODO: log invalid url, or not (it's external, but comes from widget)
             return
         }
@@ -20,4 +20,5 @@ class Router {
 private extension Router {
     static let scheme = "pocket"
     static let host = "home"
+    static let path = "/app/openURL"
 }

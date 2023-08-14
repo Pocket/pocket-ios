@@ -18,27 +18,28 @@ struct ItemWidgetsRow: View {
     let domain: String
     let readingTime: String?
     let image: Image?
-    let deeplinkURL: URL?
+    let deeplinkURL: URL
 
     var body: some View {
-        HStack(alignment: .top) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title)
-                    .style(.header.sansSerif.w8)
-                if let readingTime {
-                    Text(domain + " - " + readingTime)
-                        .style(.domain)
-                } else {
-                    Text(domain)
-                        .style(.domain)
+        Link(destination: deeplinkURL) {
+            HStack(alignment: .top) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title)
+                        .style(.header.sansSerif.w8)
+                    if let readingTime {
+                        Text(domain + " - " + readingTime)
+                            .style(.domain)
+                    } else {
+                        Text(domain)
+                            .style(.domain)
+                    }
+                }
+                Spacer()
+                if let image {
+                    ItemThumbnail(image: image)
                 }
             }
-            Spacer()
-            if let image {
-                ItemThumbnail(image: image)
-            }
         }
-        .widgetURL(deeplinkURL)
     }
 }
 
