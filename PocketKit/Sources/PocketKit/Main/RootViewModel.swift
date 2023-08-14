@@ -22,11 +22,12 @@ public class RootViewModel: ObservableObject {
     private let source: Source
     private let userDefaults: UserDefaults
     private let widgetsSessionService: WidgetsSessionService
+    private let router: Router
 
     private var subscriptions: Set<AnyCancellable> = []
 
     public convenience init() {
-        self.init(appSession: Services.shared.appSession, tracker: Services.shared.tracker, source: Services.shared.source, userDefaults: Services.shared.userDefaults, widgetsSessionService: Services.shared.widgetsSessionService)
+        self.init(appSession: Services.shared.appSession, tracker: Services.shared.tracker, source: Services.shared.source, userDefaults: Services.shared.userDefaults, widgetsSessionService: Services.shared.widgetsSessionService, router: Services.shared.router)
     }
 
     init(
@@ -34,13 +35,15 @@ public class RootViewModel: ObservableObject {
         tracker: Tracker,
         source: Source,
         userDefaults: UserDefaults,
-        widgetsSessionService: WidgetsSessionService
+        widgetsSessionService: WidgetsSessionService,
+        router: Router
     ) {
         self.appSession = appSession
         self.tracker = tracker
         self.source = source
         self.userDefaults = userDefaults
         self.widgetsSessionService = widgetsSessionService
+        self.router = router
 
         // Register for login notifications
         NotificationCenter.default.publisher(
@@ -98,5 +101,12 @@ public class RootViewModel: ObservableObject {
 
         Log.clearUser()
         Textiles.clearImageCache()
+    }
+}
+
+// MARK: URL handling
+extension RootViewModel {
+    func handleUrl(_ url: URL) {
+        router.handle(url: url)
     }
 }
