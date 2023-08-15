@@ -188,6 +188,12 @@ public enum Localization {
       }
     }
   }
+  public enum Error {
+    /// A problem occurred
+    public static let problemOccurred = Localization.tr("Localizable", "error.problemOccurred", fallback: "A problem occurred")
+    /// We are re-downloading your saved articles to improve your experience.
+    public static let redownloading = Localization.tr("Localizable", "error.redownloading", fallback: "We are re-downloading your saved articles to improve your experience.")
+  }
   public enum Favourites {
     public enum Empty {
       /// Hit the star icon to favorite an article and find it faster.
