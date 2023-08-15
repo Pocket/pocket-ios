@@ -41,6 +41,16 @@ final class UserManagementService: ObservableObject, UserManagementServiceProtoc
                 }
             }
             .store(in: &subscriptions)
+
+        notificationCenter
+            .publisher(for: .migrationError)
+            .sink { [weak self] _ in
+                guard let self = self else { return }
+                Task {
+                    await self.logout()
+                }
+            }
+            .store(in: &subscriptions)
     }
 
     func deleteAccount() async throws {

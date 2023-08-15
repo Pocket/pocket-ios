@@ -18,6 +18,10 @@ class MainViewController: UIViewController {
     }
 
     convenience init(services: Services) {
+        services.start {
+            services.userDefaults.set(true, forKey: .forceRefreshFromExtension)
+        }
+
         Textiles.initialize()
 
         let appSession = services.appSession
