@@ -12,7 +12,7 @@ import Kingfisher
 import Network
 
 struct Services {
-    static let shared: Services = { Services() }()
+    static let shared: Services = Services()
 
     let userDefaults: UserDefaults
     let appSession: AppSession
@@ -218,6 +218,13 @@ struct Services {
         recommendationsWidgetUpdateService = RecommendationsWidgetUpdateService(store: UserDefaultsItemWidgetsStore(userDefaults: userDefaults, key: .recommendationsWidget))
         widgetsSessionService = UserDefaultsWidgetSessionService(defaults: userDefaults)
         urlValidator = UrlValidator()
+    }
+
+    /// Starts up all services as required.
+    /// - Parameter onReset: The function to call if a service has been reset.
+    /// - Note: `onReset` can be called when a migration within the persistent container fails
+    func start(onReset: @escaping () -> Void) {
+        persistentContainer.load(onReset: onReset)
     }
 }
 

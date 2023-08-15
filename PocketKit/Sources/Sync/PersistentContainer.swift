@@ -27,8 +27,11 @@ public class PersistentContainer: NSPersistentContainer {
         case inMemory
         case shared
     }
+    private let storage: Storage
 
     public init(storage: Storage = .shared, groupID: String) {
+        self.storage = storage
+
         ValueTransformer.setValueTransformer(ArticleTransformer(), forName: .articleTransfomer)
         ValueTransformer.setValueTransformer(SyncTaskTransformer(), forName: .syncTaskTransformer)
 
@@ -61,13 +64,44 @@ public class PersistentContainer: NSPersistentContainer {
         storeDescription.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
         storeDescription.setOption(true as NSNumber, forKey: NSMigratePersistentStoresAutomaticallyOption)
 
-        loadPersistentStores { storeDescription, error in
-            if let error = error as NSError? {
-                fatalError("Unresolved error \(error), \(error.userInfo)")
-            }
-        }
-
         spotlightIndexer = CoreDataSpotlightDelegate(forStoreWith: storeDescription, coordinator: self.persistentStoreCoordinator)
         spotlightIndexer?.startSpotlightIndexing()
+    }
+
+    /// Attempts to load the persistent container. If the load errors, the persistent container
+    /// is destroyed and rebuilt, performing a closure if a reset was necessary.
+    /// - Parameter onReset: Called when the persistent container required to be reset
+    /// - Note: If a reset was necessary, all previous on-disk data will be removed.
+    public func load(onReset: @escaping () -> Void) {
+        loadPersistentStores { [weak self] storeDescription, error in
+            guard let self else { return }
+            if let error = error {
+                do {
+                    Log.breadcrumb(category: "sync", level: .warning, message: "Error while loading persistent stores; resetting: \(error)")
+                    try self.reset(storeDescription: storeDescription)
+                    onReset()
+                } catch {
+                    Log.capture(error: error as NSError)
+                    fatalError("[Sync] Unrecoverable error: \(error)")
+                }
+            }
+        }
+    }
+}
+
+private extension PersistentContainer {
+    /// Destroys and re-adds a store to the persistent container, clearing out all previous data.
+    /// - Parameter storeDescription: The description of the store to re-add on reset.
+    func reset(storeDescription: NSPersistentStoreDescription) throws {
+        guard let url = storeDescription.url else { return }
+        let type = NSPersistentStore.StoreType(rawValue: storeDescription.type)
+        try persistentStoreCoordinator.destroyPersistentStore(at: url, type: type)
+
+        loadPersistentStores { _, error in
+            if let error = error {
+                Log.capture(error: error as NSError)
+                fatalError("[Sync] Unrecoverable error: \(error)")
+            }
+        }
     }
 }

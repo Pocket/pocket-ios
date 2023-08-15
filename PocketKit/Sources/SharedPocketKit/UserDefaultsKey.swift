@@ -36,6 +36,7 @@ public extension UserDefaults {
         case widgetsLoggedIn = "RecentSavesWidgetLoggedInKey"
         case recentSavesWidget = "RecentSavesWidgetKey"
         case recommendationsWidget = "RecommendationsWidgetKey"
+        case forceRefreshFromExtension = "ForceRefreshFromExtentionKey"
 
         var isRemovable: Bool {
             switch self {
