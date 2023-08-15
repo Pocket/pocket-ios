@@ -218,6 +218,11 @@ class MainViewModel: ObservableObject {
 // MARK: universal link handling
 extension MainViewModel {
     func handle(_ url: URL) {
-        router.handle(url: url)
+        guard let itemUrl = router.getItemUrl(from: url) else {
+            return
+        }
+        // TODO: handle dismissal of any presented modal
+        selectedSection = .home
+        // TODO: pass itemUrl to HomeViewModel to select the correct readable type
     }
 }
