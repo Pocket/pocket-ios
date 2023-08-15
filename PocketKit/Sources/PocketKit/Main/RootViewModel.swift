@@ -103,10 +103,3 @@ public class RootViewModel: ObservableObject {
         Textiles.clearImageCache()
     }
 }
-
-// MARK: URL handling
-extension RootViewModel {
-    func handleUrl(_ url: URL) {
-        router.handle(url: url)
-    }
-}

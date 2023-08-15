@@ -17,6 +17,7 @@ class MainViewModel: ObservableObject {
     let saves: SavesContainerViewModel
     let account: AccountViewModel
     let source: Source
+    private let router: Router
 
     @Published var selectedSection: AppSection = .home
 
@@ -115,7 +116,8 @@ class MainViewModel: ObservableObject {
                 featureFlags: Services.shared.featureFlagService
             ),
             source: Services.shared.source,
-            userDefaults: Services.shared.userDefaults
+            userDefaults: Services.shared.userDefaults,
+            router: Services.shared.router
         )
     }
 
@@ -124,13 +126,15 @@ class MainViewModel: ObservableObject {
         home: HomeViewModel,
         account: AccountViewModel,
         source: Source,
-        userDefaults: UserDefaults
+        userDefaults: UserDefaults,
+        router: Router
     ) {
         self.saves = saves
         self.home = home
         self.account = account
         self.source = source
         self.userDefaults = userDefaults
+        self.router = router
 
         self.loadStartingAppSection()
         self.clearStartingAppSection()
@@ -208,5 +212,12 @@ class MainViewModel: ObservableObject {
 
     private func clearStartingAppSection() {
         userDefaults.removeObject(forKey: UserDefaults.Key.startingAppSection)
+    }
+}
+
+// MARK: universal link handling
+extension MainViewModel {
+    func handle(_ url: URL) {
+        router.handle(url: url)
     }
 }
