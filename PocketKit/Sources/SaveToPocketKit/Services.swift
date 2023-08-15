@@ -54,4 +54,11 @@ struct Services {
             groupdID: Keys.shared.groupID
         )
     }
+
+    /// Starts up all services as required.
+    /// - Parameter onReset: The function to call if a service has been reset.
+    /// - Note: `onReset` can be called when a migration within the persistent container fails.
+    func start(onReset: @escaping () -> Void) {
+        persistentContainer.load(onReset: onReset)
+    }
 }

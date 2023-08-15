@@ -11,4 +11,5 @@ public extension Notification.Name {
     static let bannerRequested = Notification.Name("com.mozilla.pocket.bannerRequested")
     static let serverError = Notification.Name("com.mozilla.pocket.serverError")
     static let unauthorizedResponse = Notification.Name("com.mozilla.pocket.unauthorizedResponse")
+    static let migrationError = Notification.Name("com.mozilla.pocket.migrationError")
 }

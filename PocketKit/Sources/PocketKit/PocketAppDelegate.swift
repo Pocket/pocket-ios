@@ -9,10 +9,13 @@ import Analytics
 import BackgroundTasks
 import SharedPocketKit
 import Adjust
+import Localization
+import SwiftUI
 
 public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     static var phoneOrientationLock = UIInterfaceOrientationMask.portrait
 
+    private let services: Services
     private let source: Source
     private let userDefaults: UserDefaults
     private let refreshCoordinators: [RefreshCoordinator]
@@ -25,14 +28,16 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     private let subscriptionStore: SubscriptionStore
     private let notificationRelay: NotificationRelay
     private let featureFlags: FeatureFlagServiceProtocol
+    private let notificationCenter: NotificationCenter
 
     let notificationService: PushNotificationService
 
     convenience override init() {
-        self.init(services: Services.shared)
+        self.init(services: .shared)
     }
 
     init(services: Services) {
+        self.services = services
         self.source = services.source
         self.userDefaults = services.userDefaults
         self.refreshCoordinators = services.refreshCoordinators
@@ -46,6 +51,14 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         self.featureFlags = services.featureFlagService
         self.notificationService = services.notificationService
         self.consumerKey = Keys.shared.pocketApiConsumerKey
+        self.notificationCenter = services.notificationCenter
+
+        super.init()
+
+        services.start { [weak self] in
+            guard let self else { return }
+            self.persistentContainerDidReset()
+        }
     }
 
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
@@ -152,6 +165,21 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         return PocketAppDelegate.phoneOrientationLock
     }
 
+    /// Called when a `ScenePhase` change to active has been detected by the SwiftUI
+    ///  lifecycle (in `PocketApp`, forwarded to here.
+    public func scenePhaseDidChange(_ scenePhase: ScenePhase) {
+        switch scenePhase {
+        case .active:
+            // Upon becoming active, if an extension (e.g SaveTo) requested that we force-refresh the app (e.g due to a
+            // persistent container reset), then perform the same reset logic as if the app had explicitly performed a reset.
+            if userDefaults.bool(forKey: .forceRefreshFromExtension) {
+                persistentContainerDidReset()
+                userDefaults.set(false, forKey: .forceRefreshFromExtension)
+            }
+        default: return
+        }
+    }
+
     /// Attempt to migrate a legacy (v7) account to v8
     func migrateLegacyAccount() {
         let legacyUserMigration = LegacyUserMigration(
@@ -217,5 +245,23 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
             environment: environment
         )
         Adjust.appDidLaunch(adjustConfig)
+    }
+
+    /// Performs actions based on the result of the Services persistent container being reset.
+    func persistentContainerDidReset() {
+        // Since there will be a loss of on-disk data during a reset (read: destroy / add), we want
+        // to perform the same type of sync we would on initial login. An example use case is Home - there is
+        // a possibility that Home _had_ content, but the app was updated (with a failed migration) before the
+        // next allowed refresh interval for Home. Thus, Home wouldn't load data. This is similar across other
+        // portions of the app, such as a user's items.
+        refreshCoordinators.forEach { $0.refresh(isForced: true) { } }
+
+        // Upon reset, let the user know (as a toast) that a problem occurred, and that we're redownloading their data
+        let data = BannerModifier.BannerData(
+            image: .error,
+            title: Localization.Error.problemOccurred,
+            detail: Localization.Error.redownloading
+        )
+        notificationCenter.post(name: .bannerRequested, object: data)
     }
 }
