@@ -18,6 +18,7 @@ struct ItemWidgetsRow: View {
     let domain: String
     let readingTime: String?
     let image: Image?
+    let deeplinkURL: URL?
 
     var body: some View {
         HStack(alignment: .top) {
@@ -37,6 +38,7 @@ struct ItemWidgetsRow: View {
                 ItemThumbnail(image: image)
             }
         }
+        .widgetURL(deeplinkURL)
     }
 }
 
