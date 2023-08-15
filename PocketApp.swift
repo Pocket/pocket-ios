@@ -9,11 +9,9 @@ import SwiftUI
 struct PocketApp: App {
     @UIApplicationDelegateAdaptor var delegate: PocketAppDelegate
 
-    private let dependencyContainer = PocketAppDependencyContainer()
-
     var body: some Scene {
         WindowGroup {
-            dependencyContainer.makeRootView()
+            RootView(model: RootViewModel())
         }
     }
 }
