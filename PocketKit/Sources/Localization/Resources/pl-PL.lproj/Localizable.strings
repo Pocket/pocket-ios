@@ -327,5 +327,5 @@
 "itemWidgets.recommendations.description" = "Odkryj najbardziej inspirujące historie, wyselekcjonowane przez Pocket.";
 
 // Collection
-"collection.title" = "Kolekcja";
+"collection.title" = "Collection";
 "collection.stories.count" = "Liczba elementów: %1$@";

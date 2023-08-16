@@ -327,5 +327,5 @@
 "itemWidgets.recommendations.description" = "Ontdek de meest prikkelende verhalen, geselecteerd door Pocket.";
 
 // Collection
-"collection.title" = "Verzameling";
+"collection.title" = "Collection";
 "collection.stories.count" = "%1$@ items";

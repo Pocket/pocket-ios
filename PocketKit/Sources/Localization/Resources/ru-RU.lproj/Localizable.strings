@@ -327,5 +327,5 @@
 "itemWidgets.recommendations.description" = "Откройте для себя самые интересные и поучительные истории, рекомендованные Pocket.";
 
 // Collection
-"collection.title" = "Коллекция";
+"collection.title" = "Collection";
 "collection.stories.count" = "%1$@ материалов";

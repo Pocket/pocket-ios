@@ -327,5 +327,5 @@
 "itemWidgets.recommendations.description" = "Pocket에서 선정한 가장 생각을 자극하는 스토리를 확인해 보십시오.";
 
 // Collection
-"collection.title" = "콜렉션";
+"collection.title" = "Collection";
 "collection.stories.count" = "%1$@개 항목";
