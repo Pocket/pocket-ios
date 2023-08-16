@@ -35,7 +35,7 @@ class PocketAddTagsViewModel: AddTagsViewModel {
     /// Fetches recent tags to display to the user only if premium and user has more than 3 tags
     var recentTags: [TagType] {
         guard user.status == .premium && fetchAllTags.count > 3 else { return [] }
-        return recentTagsFactory.recentTags.sorted().compactMap { TagType.recent($0) }
+        return recentTagsFactory.recentTags.compactMap { TagType.recent($0) }.reversed()
     }
 
     /// Fetches all tags associated with item

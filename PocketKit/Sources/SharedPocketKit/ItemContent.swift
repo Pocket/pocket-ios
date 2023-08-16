@@ -53,11 +53,10 @@ public struct ItemContent: Codable, Equatable {
             return Localization.minRead(timeToRead)
     }
 
-    /// The URL used to open the saved item within the Pocket reader.
-    var pocketURL: URL {
+    public var pocketDeeplinkURL: URL {
         var components = URLComponents()
         components.scheme = "pocket"
-        components.path = "/app/openURL/\(url)"
+        components.path = "/app/openURL"
         components.queryItems = [URLQueryItem(name: "url", value: url)]
         return components.url!
     }
