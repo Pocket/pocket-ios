@@ -330,5 +330,5 @@
 "itemWidgets.recommendations.description" = "Descubre las historias que más invitan a la reflexión, seleccionadas por Pocket.";
 
 // Collection
-"collection.title" = "Colección";
+"collection.title" = "Collection";
 "collection.stories.count" = "%1$@ enlaces";
