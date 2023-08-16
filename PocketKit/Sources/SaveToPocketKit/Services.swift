@@ -19,6 +19,11 @@ struct Services {
     let notificationCenter: NotificationCenter
     let braze: SaveToBraze
 
+    /// The user management service that will log a user out when the correct notification is posted.
+    /// This is marked as private since we do not need to access it, but we need it to be around for the lifetime
+    /// of a Services instance. When using `.shared`, this lifetime will exist for the duration of the share extension.
+    private let userManagementService: SaveToUserManagementServiceProtocol
+
     private let persistentContainer: PersistentContainer
 
     private init() {
@@ -53,5 +58,7 @@ struct Services {
             endpoint: Keys.shared.brazeAPIEndpoint,
             groupdID: Keys.shared.groupID
         )
+
+        userManagementService = SaveToUserManagementService(appSession: appSession, user: user, notificationCenter: notificationCenter)
     }
 }

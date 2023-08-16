@@ -63,6 +63,9 @@ public struct RootView: View {
     public var body: some View {
         if let model = model.mainViewModel {
             mainView(model: model)
+                .onOpenURL { url in
+                    model.handle(url)
+                }
         }
 
         if let model = model.loggedOutViewModel {

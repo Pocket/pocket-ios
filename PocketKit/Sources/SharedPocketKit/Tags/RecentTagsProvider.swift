@@ -30,18 +30,22 @@ public class RecentTagsProvider {
         }
     }
 
-    /// Update recent tags list after user adds tags to an item
+    /// Update recent tags list after user adds tags to an item by comparing the original tags associated with the item with the updated tags associated with the item
     /// - Parameters:
-    ///   - originalTags: list of tags originally associated with item
-    ///   - inputTags: list of tags saved to the item
-    public func updateRecentTags(with originalTags: [String], and inputTags: [String]) {
-       var newTags = inputTags
+    ///   - originalTags: list of tags originally associated with item before any updates from the user
+    ///   - updatedTags: updated list of tags associated with the items after the user taps save in add tags view
+    public func updateRecentTags(with originalTags: [String], and updatedTags: [String]) {
+        var newTags = updatedTags
+
+        // Filter out the tags from the list of updated tags that also exist in the original tags for the item
         if !originalTags.isEmpty {
-           newTags = inputTags.filter { !originalTags.contains($0) }
-       }
-       newTags.forEach { tag in
-           guard !recentTags.contains(tag) else { return }
-           recentTags.append(tag)
-       }
-   }
+            newTags = updatedTags.filter { !originalTags.contains($0) }
+        }
+
+        // Check if new tags list should be added to recent tags
+        newTags.forEach { tag in
+            guard !recentTags.contains(tag) else { return }
+            recentTags.append(tag)
+        }
+    }
 }

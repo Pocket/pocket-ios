@@ -33,7 +33,8 @@ struct ItemWidgetsListView: View {
                             title: entry.content.title.isEmpty ? entry.content.url : entry.content.title,
                             domain: entry.content.bestDomain,
                             readingTime: entry.content.readingTime,
-                            image: entry.image
+                            image: entry.image,
+                            deeplinkURL: entry.content.pocketDeeplinkURL
                         )
                         .frame(minHeight: 0, maxHeight: .infinity)
                     }

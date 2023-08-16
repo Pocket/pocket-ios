@@ -75,7 +75,7 @@ class CollectionViewModel: NSObject {
 
         self.collectionController = source.makeCollectionStoriesController(slug: slug)
 
-        self.snapshot = Self.loadingSnapshot()
+        self.snapshot = Self.emptySnapshot()
         self.url = "https://getpocket.com/collections/\(slug)"
         super.init()
         collectionController.delegate = self
@@ -104,12 +104,13 @@ class CollectionViewModel: NSObject {
                 return
             }
             if isOffline {
-                snapshot = self.errorSnapshot()
+                snapshot = errorSnapshot()
             } else {
+                snapshot = Self.loadingSnapshot()
                 fetchRemoteCollection()
             }
         } catch {
-            self.snapshot = errorSnapshot()
+            snapshot = errorSnapshot()
             Log.capture(message: "Failed to fetch details for CollectionViewModel: \(error)")
         }
     }
@@ -119,7 +120,7 @@ class CollectionViewModel: NSObject {
             do {
                 try await source.fetchCollection(by: slug)
             } catch {
-                self.snapshot = errorSnapshot()
+                snapshot = errorSnapshot()
                 Log.capture(message: "Failed to fetch remote collection stories: \(error)")
             }
         }
@@ -294,7 +295,7 @@ extension CollectionViewModel {
 
     func select(cell: CollectionViewModel.Cell) {
         switch cell {
-        case .loading, .collectionHeader, .error:
+        case .loading, .collectionHeader, .error, .empty:
             return
         case .story(let storyViewModel):
             trackContentOpen(storyURL: storyViewModel.collectionStory.url)
@@ -349,6 +350,16 @@ private extension CollectionViewModel {
         var snapshot = Snapshot()
         snapshot.appendSections([.loading])
         snapshot.appendItems([.loading], toSection: .loading)
+        return snapshot
+    }
+
+    /// Build an empty snapshot section, used at initialization time,
+    /// so we don't show the loading screen (previously set at init time)
+    /// when we have local data
+    static func emptySnapshot() -> Snapshot {
+        var snapshot = Snapshot()
+        snapshot.appendSections([.empty])
+        snapshot.appendItems([.empty], toSection: .empty)
         return snapshot
     }
 
@@ -432,6 +443,7 @@ private extension CollectionViewModel {
 
 extension CollectionViewModel {
     enum Section: Hashable {
+        case empty
         case loading
         case collectionHeader
         case collection(Collection)
@@ -439,6 +451,7 @@ extension CollectionViewModel {
     }
 
     enum Cell: Hashable {
+        case empty
         case loading
         case collectionHeader
         case story(CollectionStoryViewModel)
