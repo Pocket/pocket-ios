@@ -327,5 +327,5 @@
 "itemWidgets.recommendations.description" = "Pocket が厳選！色々と考えさせられる興味深いストーリーをお届けします。";
 
 // Collection
-"collection.title" = "コレクション";
+"collection.title" = "Collection";
 "collection.stories.count" = "%1$@ 件のアイテム";

@@ -327,5 +327,5 @@
 "itemWidgets.recommendations.description" = "探索由 Pocket 策划的最发人深省的故事。";
 
 // Collection
-"collection.title" = "收集";
+"collection.title" = "Collection";
 "collection.stories.count" = "%1$@ 个项目";
