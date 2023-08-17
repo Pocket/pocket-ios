@@ -8,6 +8,10 @@ import CoreData
 import Combine
 
 class MockSource: Source {
+    func fetchViewContextItem(_ url: String) -> Sync.Item? {
+        return nil
+    }
+
     func save(collectionStory: Sync.CollectionStory) {
     }
 
