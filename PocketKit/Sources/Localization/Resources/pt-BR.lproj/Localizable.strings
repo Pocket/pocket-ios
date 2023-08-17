@@ -231,6 +231,9 @@
 "Yes" = "Sim";
 "No" = "Não";
 
+// Loading view
+"loadingView.message" = "Carregando...";
+
 // No internet
 "No Internet Connection" = "Sem conexão à internet";
 "Looks like you're offline. Try checking your mobile data or wifi." = "Parece que você está off-line. Verifique seus dados móveis ou sua conexão à rede wi-fi.";

@@ -231,6 +231,9 @@
 "Yes" = "예";
 "No" = "아니요";
 
+// Loading view
+"loadingView.message" = "로드 중...";
+
 // No internet
 "No Internet Connection" = "인터넷 연결 없음";
 "Looks like you're offline. Try checking your mobile data or wifi." = "오프라인 상태이신 것 같습니다. 모바일 데이터나 wifi를 확인해 보십시오.";

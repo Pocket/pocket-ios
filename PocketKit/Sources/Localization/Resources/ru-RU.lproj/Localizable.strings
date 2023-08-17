@@ -231,6 +231,9 @@
 "Yes" = "Да";
 "No" = "Нет";
 
+// Loading view
+"loadingView.message" = "Загрузка...";
+
 // No internet
 "No Internet Connection" = "Нет подключения к Интернету";
 "Looks like you're offline. Try checking your mobile data or wifi." = "Похоже, вы не в сети. Проверьте подключение к мобильному интернету или сети wi-fi.";

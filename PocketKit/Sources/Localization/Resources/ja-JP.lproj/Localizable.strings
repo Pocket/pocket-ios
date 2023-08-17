@@ -231,6 +231,9 @@
 "Yes" = "はい";
 "No" = "いいえ";
 
+// Loading view
+"loadingView.message" = "ロード中…";
+
 // No internet
 "No Internet Connection" = "インターネット接続がありません";
 "Looks like you're offline. Try checking your mobile data or wifi." = "オフラインのようです。モバイルデータまたは Wi-Fi の接続を確認してください。";

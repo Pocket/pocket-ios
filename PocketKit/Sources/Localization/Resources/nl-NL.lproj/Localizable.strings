@@ -231,6 +231,9 @@
 "Yes" = "Ja";
 "No" = "Nee";
 
+// Loading view
+"loadingView.message" = "Laden...";
+
 // No internet
 "No Internet Connection" = "Geen internetverbinding";
 "Looks like you're offline. Try checking your mobile data or wifi." = "Het lijkt erop dat je offline bent. Controleer je verbinding met het mobiele of wifi-netwerk.";

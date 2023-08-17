@@ -231,6 +231,9 @@
 "Yes" = "是";
 "No" = "否";
 
+// Loading view
+"loadingView.message" = "正在加载...";
+
 // No internet
 "No Internet Connection" = "无互联网连接";
 "Looks like you're offline. Try checking your mobile data or wifi." = "您可能处于离线状态。尝试检查您的移动数据或 wifi。";
