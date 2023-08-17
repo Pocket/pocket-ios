@@ -6,7 +6,8 @@ import Foundation
 import Network
 import Sync
 
-struct Router {
+/// A type that validates universal links and provides the related item url, if it exists.
+struct UrlValidator {
     func getItemUrl(from url: URL) -> String? {
         guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
               components.scheme == Self.scheme, components.path == Self.path else {
@@ -17,7 +18,7 @@ struct Router {
     }
 }
 
-private extension Router {
+private extension UrlValidator {
     static let scheme = "pocket"
     static let host = "home"
     static let path = "/app/openURL"

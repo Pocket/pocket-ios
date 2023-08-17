@@ -17,7 +17,7 @@ class MainViewModel: ObservableObject {
     let saves: SavesContainerViewModel
     let account: AccountViewModel
     let source: Source
-    private let router: Router
+    private let urlValidator: UrlValidator
 
     @Published var selectedSection: AppSection = .home
 
@@ -117,7 +117,7 @@ class MainViewModel: ObservableObject {
             ),
             source: Services.shared.source,
             userDefaults: Services.shared.userDefaults,
-            router: Services.shared.router
+            urlValidator: Services.shared.urlValidator
         )
     }
 
@@ -127,14 +127,14 @@ class MainViewModel: ObservableObject {
         account: AccountViewModel,
         source: Source,
         userDefaults: UserDefaults,
-        router: Router
+        urlValidator: UrlValidator
     ) {
         self.saves = saves
         self.home = home
         self.account = account
         self.source = source
         self.userDefaults = userDefaults
-        self.router = router
+        self.urlValidator = urlValidator
 
         self.loadStartingAppSection()
         self.clearStartingAppSection()
@@ -224,7 +224,7 @@ extension MainViewModel {
     /// - Parameter url: the URL of the item to be displayed
     @MainActor
     func handle(_ url: URL) {
-        guard let itemUrl = router.getItemUrl(from: url) else {
+        guard let itemUrl = urlValidator.getItemUrl(from: url) else {
             return
         }
         // dismiss any modal from the Settings SwiftUI view

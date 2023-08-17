@@ -22,12 +22,12 @@ public class RootViewModel: ObservableObject {
     private let source: Source
     private let userDefaults: UserDefaults
     private let widgetsSessionService: WidgetsSessionService
-    private let router: Router
+    private let urlValidator: UrlValidator
 
     private var subscriptions: Set<AnyCancellable> = []
 
     public convenience init() {
-        self.init(appSession: Services.shared.appSession, tracker: Services.shared.tracker, source: Services.shared.source, userDefaults: Services.shared.userDefaults, widgetsSessionService: Services.shared.widgetsSessionService, router: Services.shared.router)
+        self.init(appSession: Services.shared.appSession, tracker: Services.shared.tracker, source: Services.shared.source, userDefaults: Services.shared.userDefaults, widgetsSessionService: Services.shared.widgetsSessionService, urlValidator: Services.shared.urlValidator)
     }
 
     init(
@@ -36,14 +36,14 @@ public class RootViewModel: ObservableObject {
         source: Source,
         userDefaults: UserDefaults,
         widgetsSessionService: WidgetsSessionService,
-        router: Router
+        urlValidator: UrlValidator
     ) {
         self.appSession = appSession
         self.tracker = tracker
         self.source = source
         self.userDefaults = userDefaults
         self.widgetsSessionService = widgetsSessionService
-        self.router = router
+        self.urlValidator = urlValidator
 
         // Register for login notifications
         NotificationCenter.default.publisher(
