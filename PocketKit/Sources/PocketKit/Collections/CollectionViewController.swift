@@ -65,6 +65,11 @@ class CollectionViewController: UIViewController {
 
     private var metadata: CollectionMetadata?
     private var subscriptions: [AnyCancellable] = []
+
+    private var showThreeColumnLayout: Bool {
+        return self.view.bounds.width >= Constants.minWidthBoundaryForFullColumnLayout && !UIDevice.current.orientation.isPortrait
+    }
+
     private let model: CollectionViewModel
 
     init(
@@ -290,30 +295,30 @@ private extension CollectionViewController {
     }
 
     /// Determines the stories layout in the native collection view on iPad mode with regular horizontal size class (including split view). Number of columns for the grid layout depends on device orientation and the view's width length. If view's width is less than 800, show 2 col, otherwise show 2 col if it is in portrait and 3 col if it is in landscape mode.
-    private func collectionSectionForWideLayout(with stories: [CollectionStory], width: CGFloat, margin: CGFloat) -> NSCollectionLayoutSection {
-        if self.view.bounds.width >= Constants.minWidthBoundaryForFullColumnLayout && !UIDevice.current.orientation.isPortrait {
-            return collectionSectionForiPadLayout(with: stories, width: width, margin: margin, numberOfColumns: 3)
-        } else {
-            return collectionSectionForiPadLayout(with: stories, width: width, margin: margin, numberOfColumns: 2)
-        }
-    }
-
-    /// Determines the stories layout for the native collection view on iPad mode with regular horizontal size class
     /// - Parameters:
     ///   - stories: list of stories associated with collection to display
     ///   - width: width that the section occupies
     ///   - margin: padding adding to the side of the section
     /// - Returns: section layout for stories on iPad view and regular horizontal size class
-    private func collectionSectionForiPadLayout(with stories: [CollectionStory], width: CGFloat, margin: CGFloat, numberOfColumns: CGFloat) -> NSCollectionLayoutSection {
-        let numberOfRows = (CGFloat(stories.count) / numberOfColumns).rounded(.up)
-
-        let recommendationsHeight: [CGFloat] = stories.map { story in
-            return RecommendationCell.fullHeight(viewModel: model.storyViewModel(for: story), availableWidth: width / numberOfColumns - (margin * 2)) + margin
-        }
+    private func collectionSectionForWideLayout(with stories: [CollectionStory], width: CGFloat, margin: CGFloat) -> NSCollectionLayoutSection {
+        let numberOfColumns: CGFloat = showThreeColumnLayout ? 3 : 2
+        let recommendationsHeight: [CGFloat] = getRecommendationHeights(with: stories, width: width, margin: margin, numberOfColumns: numberOfColumns)
 
         /// Retrieves max height for each row and returns an array of row heights
         let totalGroupHeights = recommendationsHeight.getMaxHeightForRow(of: Int(numberOfColumns))
 
+        let components = createComponentsForWideLayout(with: stories, numberOfColumns: numberOfColumns, totalGroupHeights: totalGroupHeights)
+        return createSectionFromGroup(with: components, and: margin)
+    }
+
+    /// Create components needed for wide section layout
+    /// - Parameters:
+    ///   - recommendations: list of stories to display to the user
+    ///   - width: width that the section occupies
+    ///   - sideMargin: margin for the section layout
+    /// - Returns: tuple of total height and list of items used to determine section layout
+    private func createComponentsForWideLayout(with stories: [CollectionStory], numberOfColumns: CGFloat, totalGroupHeights: [CGFloat]) -> (CGFloat, [NSCollectionLayoutGroup]) {
+        let numberOfRows = (CGFloat(stories.count) / numberOfColumns).rounded(.up)
         let item = NSCollectionLayoutItem(
             layoutSize: NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1 / numberOfColumns),
@@ -322,7 +327,7 @@ private extension CollectionViewController {
         )
         item.contentInsets = Constants.itemPadding
 
-        let components = (0..<Int(numberOfRows)).reduce((CGFloat(0), [NSCollectionLayoutGroup]())) { result, rowIndex in
+        return (0..<Int(numberOfRows)).reduce((CGFloat(0), [NSCollectionLayoutGroup]())) { result, rowIndex in
             let currentHeight = result.0
             guard let height = totalGroupHeights[safe: rowIndex] else { return result }
             var groups = result.1
@@ -338,24 +343,19 @@ private extension CollectionViewController {
             groups.append(group)
             return (currentHeight + height, groups)
         }
+    }
 
-        let group = NSCollectionLayoutGroup.vertical(
-            layoutSize: .init(
-                widthDimension: .fractionalWidth(1),
-                heightDimension: .absolute(components.0)
-            ),
-            subitems: components.1
-        )
-
-        let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(
-            top: 0,
-            leading: margin,
-            bottom: 0,
-            trailing: margin
-        )
-
-        return section
+    /// Get a list of heights for each story
+    /// - Parameters:
+    ///   - recommendations: list of stories
+    ///   - width: width that the section occupies
+    ///   - sideMargin: padding adding to the side of the section
+    ///   - numberOfColumns: number of columns layout should have
+    /// - Returns: return a list of heights for all the stories
+    private func getRecommendationHeights(with stories: [CollectionStory], width: CGFloat, margin: CGFloat, numberOfColumns: CGFloat) -> [CGFloat] {
+        return stories.map { story in
+            return RecommendationCell.fullHeight(viewModel: model.storyViewModel(for: story), availableWidth: width / numberOfColumns - (margin * 2)) + margin
+        }
     }
 
     /// Determines the stories layout for the native collection view on iPhone mode (single column layout)
@@ -365,7 +365,18 @@ private extension CollectionViewController {
     ///   - margin: padding adding to the side of the section
     /// - Returns: section layout for compact (i.e. iPhone mode)
     private func collectionSectionForCompactLayout(with stories: [CollectionStory], width: CGFloat, margin: CGFloat) -> NSCollectionLayoutSection {
-        let components = stories.reduce((CGFloat(0), [NSCollectionLayoutItem]())) { result, story in
+        let components = createComponentsForCompact(with: stories, width: width, margin: margin)
+        return createSectionFromGroup(with: components, and: margin)
+    }
+
+    /// Create components needed for compact section layout
+    /// - Parameters:
+    ///   - recommendations: list of stories to display to the user
+    ///   - width: width that the section occupies
+    ///   - sideMargin: margin for the section layout
+    /// - Returns: tuple of total height and list of items used to determine section layout
+    private func createComponentsForCompact(with stories: [CollectionStory], width: CGFloat, margin: CGFloat) -> (CGFloat, [NSCollectionLayoutItem]) {
+        return stories.reduce((CGFloat(0), [NSCollectionLayoutItem]())) { result, story in
             let currentHeight = result.0
 
             let height = RecommendationCell.fullHeight(
@@ -386,15 +397,21 @@ private extension CollectionViewController {
 
             return (currentHeight + height, items)
         }
+    }
 
+    /// Creates section from group layout
+    /// - Parameters:
+    ///   - components: components that consist of height and list of items for the group
+    ///   - margin: margin for the section layout
+    /// - Returns: section layout
+    private func createSectionFromGroup(with components: (CGFloat, [NSCollectionLayoutItem]), and margin: CGFloat) -> NSCollectionLayoutSection {
         let group = NSCollectionLayoutGroup.vertical(
-            layoutSize: NSCollectionLayoutSize(
+            layoutSize: .init(
                 widthDimension: .fractionalWidth(1),
                 heightDimension: .absolute(components.0)
             ),
             subitems: components.1
         )
-
         let section = NSCollectionLayoutSection(group: group)
         section.contentInsets = NSDirectionalEdgeInsets(
             top: 0,
@@ -402,7 +419,6 @@ private extension CollectionViewController {
             bottom: 0,
             trailing: margin
         )
-
         return section
     }
 
