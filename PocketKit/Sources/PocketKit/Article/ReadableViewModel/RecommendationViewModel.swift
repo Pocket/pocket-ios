@@ -27,6 +27,8 @@ class RecommendationViewModel: ReadableViewModel {
 
     @Published var selectedRecommendationToReport: Recommendation?
 
+    let readableSource: ReadableSource
+
     private let recommendation: Recommendation
     private let source: Source
     private let pasteboard: Pasteboard
@@ -37,13 +39,22 @@ class RecommendationViewModel: ReadableViewModel {
     private var savedItemCancellable: AnyCancellable?
     private var savedItemSubscriptions: Set<AnyCancellable> = []
 
-    init(recommendation: Recommendation, source: Source, tracker: Tracker, pasteboard: Pasteboard, user: User, userDefaults: UserDefaults) {
+    init(
+        recommendation: Recommendation,
+        source: Source,
+        tracker: Tracker,
+        pasteboard: Pasteboard,
+        user: User,
+        userDefaults: UserDefaults,
+        readableSource: ReadableSource = .app
+    ) {
         self.recommendation = recommendation
         self.source = source
         self.tracker = tracker
         self.pasteboard = pasteboard
         self.user = user
         self.userDefaults = userDefaults
+        self.readableSource = readableSource
 
         self.savedItemCancellable = recommendation.item.publisher(for: \.savedItem).sink { [weak self] savedItem in
             self?.update(for: savedItem)

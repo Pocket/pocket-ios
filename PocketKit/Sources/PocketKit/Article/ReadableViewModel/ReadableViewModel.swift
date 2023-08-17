@@ -16,6 +16,8 @@ protocol ReadableViewModel: ReadableViewControllerDelegate {
 
     var tracker: Tracker { get }
 
+    var readableSource: ReadableSource { get }
+
     var readerSettings: ReaderSettings { get }
     var presentedAlert: PocketAlert? { get set }
     var sharedActivity: PocketActivity? { get set }

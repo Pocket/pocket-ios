@@ -34,6 +34,11 @@ enum ReadableType {
     }
 }
 
+enum ReadableSource {
+    case app
+    case widget
+}
+
 enum SeeAll {
     case saves
     case slate(SlateDetailViewModel)
@@ -301,12 +306,23 @@ extension HomeViewModel {
         ))
     }
 
-    private func select(recommendation: Recommendation, at indexPath: IndexPath) {
+    func select(recommendation: Recommendation, at indexPath: IndexPath? = nil, readableSource: ReadableSource = .app) {
         var destination: ContentOpen.Destination = .internal
         let item = recommendation.item
 
         if let slug = recommendation.collection?.slug ?? recommendation.item.collectionSlug, featureFlags.isAssigned(flag: .nativeCollections) {
-            selectedReadableType = .collection(CollectionViewModel(slug: slug, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults, featureFlags: featureFlags, notificationCenter: notificationCenter))
+            selectedReadableType = .collection(CollectionViewModel(
+                slug: slug,
+                source: source,
+                tracker: tracker,
+                user: user,
+                store: store,
+                networkPathMonitor: networkPathMonitor,
+                userDefaults: userDefaults,
+                featureFlags: featureFlags,
+                notificationCenter: notificationCenter,
+                readableSource: readableSource
+            ))
         } else {
             let viewModel = RecommendationViewModel(
                 recommendation: recommendation,
@@ -314,7 +330,8 @@ extension HomeViewModel {
                 tracker: tracker.childTracker(hosting: .articleView.screen),
                 pasteboard: UIPasteboard.general,
                 user: user,
-                userDefaults: userDefaults
+                userDefaults: userDefaults,
+                readableSource: readableSource
             )
 
             if item.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
@@ -334,12 +351,23 @@ extension HomeViewModel {
         }
 
         let givenURL = item.givenURL
-        tracker.track(event: Events.Home.SlateArticleContentOpen(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID, destination: destination))
+        tracker.track(event: Events.Home.SlateArticleContentOpen(url: givenURL, positionInList: indexPath?.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath?.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID, destination: destination))
     }
 
-    private func select(savedItem: SavedItem, at indexPath: IndexPath) {
+    func select(savedItem: SavedItem, at indexPath: IndexPath? = nil, readableSource: ReadableSource = .app) {
         if let slug = savedItem.item?.collection?.slug ?? savedItem.item?.collectionSlug, featureFlags.isAssigned(flag: .nativeCollections) {
-            selectedReadableType = .collection(CollectionViewModel(slug: slug, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults, featureFlags: featureFlags, notificationCenter: notificationCenter))
+            selectedReadableType = .collection(CollectionViewModel(
+                slug: slug,
+                source: source,
+                tracker: tracker,
+                user: user,
+                store: store,
+                networkPathMonitor: networkPathMonitor,
+                userDefaults: userDefaults,
+                featureFlags: featureFlags,
+                notificationCenter: notificationCenter,
+                readableSource: readableSource
+            ))
         } else {
             let viewModel = SavedItemViewModel(
                 item: savedItem,
@@ -350,7 +378,8 @@ extension HomeViewModel {
                 store: store,
                 networkPathMonitor: networkPathMonitor,
                 userDefaults: userDefaults,
-                notificationCenter: notificationCenter
+                notificationCenter: notificationCenter,
+                readableSource: readableSource
             )
 
             if let item = savedItem.item, item.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
@@ -359,7 +388,7 @@ extension HomeViewModel {
                 selectedReadableType = .savedItem(viewModel)
             }
         }
-        tracker.track(event: Events.Home.RecentSavesCardContentOpen(url: savedItem.url, positionInList: indexPath.item))
+        tracker.track(event: Events.Home.RecentSavesCardContentOpen(url: savedItem.url, positionInList: indexPath?.item))
     }
 }
 

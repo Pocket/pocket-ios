@@ -34,6 +34,8 @@ class CollectionViewModel: NSObject {
     @Published private(set) var actions: [ItemAction] = []
     @Published private(set) var isBeingDeallocated = false
 
+    let readableSource: ReadableSource
+
     private var collection: Collection?
     private let source: Source
     private let tracker: Tracker
@@ -61,7 +63,8 @@ class CollectionViewModel: NSObject {
         networkPathMonitor: NetworkPathMonitor,
         userDefaults: UserDefaults,
         featureFlags: FeatureFlagServiceProtocol,
-        notificationCenter: NotificationCenter
+        notificationCenter: NotificationCenter,
+        readableSource: ReadableSource = .app
     ) {
         self.slug = slug
         self.source = source
@@ -72,6 +75,7 @@ class CollectionViewModel: NSObject {
         self.userDefaults = userDefaults
         self.featureFlags = featureFlags
         self.notificationCenter = notificationCenter
+        self.readableSource = readableSource
 
         self.collectionController = source.makeCollectionStoriesController(slug: slug)
 

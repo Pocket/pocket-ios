@@ -99,6 +99,8 @@ public protocol Source {
 
     func fetchItem(_ url: String) -> Item?
 
+    func fetchViewContextItem(_ url: String) -> Item?
+
     func searchSaves(search: String) -> [SavedItem]?
 
     func fetchOrCreateSavedItem(with url: String, and remoteParts: SavedItem.RemoteSavedItem?) -> SavedItem?

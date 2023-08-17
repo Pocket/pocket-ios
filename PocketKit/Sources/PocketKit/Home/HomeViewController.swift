@@ -136,6 +136,8 @@ class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.accessibilityIdentifier = "home"
+        navigationController?.delegate = self
+
         observeModelChanges()
 
         collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -401,7 +403,7 @@ extension HomeViewController {
         guard let recommendation = recommendation else {
             return
         }
-
+        resetView(for: recommendation.readableSource)
         navigationController?.pushViewController(
             ReadableHostViewController(readableViewModel: recommendation),
             animated: true
@@ -438,6 +440,7 @@ extension HomeViewController {
     }
 
     func show(_ savedItem: SavedItemViewModel) {
+        resetView(for: savedItem.readableSource)
         readerSubscriptions.removeAll()
 
         navigationController?.pushViewController(
@@ -476,6 +479,7 @@ extension HomeViewController {
     }
 
     private func showCollection(_ viewModel: CollectionViewModel) {
+        resetView(for: viewModel.readableSource)
         let controller = CollectionViewController(model: viewModel)
         navigationController?.pushViewController(controller, animated: true)
 
@@ -550,6 +554,7 @@ extension HomeViewController {
     }
 
     private func showRecommendation(forWebView viewModel: RecommendationViewModel) {
+        resetView(for: viewModel.readableSource)
         viewModel.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
             self?.present(alert: alert)
         }.store(in: &readerSubscriptions)
@@ -569,6 +574,7 @@ extension HomeViewController {
     }
 
     private func showSavedItem(forWebView viewModel: SavedItemViewModel) {
+        resetView(for: viewModel.readableSource)
         viewModel.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
             self?.present(alert: alert)
         }.store(in: &readerSubscriptions)
@@ -658,6 +664,16 @@ extension HomeViewController {
         let hostingController = UIHostingController(rootView: AddTagsView(viewModel: viewModel))
         hostingController.modalPresentationStyle = .formSheet
         self.present(hostingController, animated: true)
+    }
+
+    /// Pops to the root and dismiss any modal, if required by the readable source
+    /// - Parameter readableSource: the readable source
+    private func resetView(for readableSource: ReadableSource) {
+        guard readableSource == .widget else {
+            return
+        }
+        navigationController?.popToRootViewController(animated: false)
+        dismiss(animated: false)
     }
 }
 

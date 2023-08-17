@@ -77,7 +77,7 @@ public extension Events.Home {
     /**
      Fired when a user clicks a card in the `Recent Saves` section
      */
-    static func RecentSavesCardContentOpen(url: String, positionInList: Int) -> ContentOpen {
+    static func RecentSavesCardContentOpen(url: String, positionInList: Int?) -> ContentOpen {
         return ContentOpen(
             contentEntity:
                 ContentEntity(url: url),
@@ -92,7 +92,7 @@ public extension Events.Home {
     /**
      Fired when a user clicks a card on Home using the /discover API
      */
-    static func SlateArticleContentOpen(url: String, positionInList: Int, slateId: String, slateRequestId: String, slateExperimentId: String, slateIndex: Int, slateLineupId: String, slateLineupRequestId: String, slateLineupExperimentId: String, recommendationId: String, destination: ContentOpen.Destination) -> ContentOpen {
+    static func SlateArticleContentOpen(url: String, positionInList: Int?, slateId: String, slateRequestId: String, slateExperimentId: String, slateIndex: Int?, slateLineupId: String, slateLineupRequestId: String, slateLineupExperimentId: String, recommendationId: String, destination: ContentOpen.Destination) -> ContentOpen {
         return ContentOpen(
             destination: destination,
             contentEntity:

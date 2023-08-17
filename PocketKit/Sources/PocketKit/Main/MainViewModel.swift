@@ -217,12 +217,28 @@ class MainViewModel: ObservableObject {
 
 // MARK: universal link handling
 extension MainViewModel {
+    /// handles universal links
+    /// Note: at the moment, the universal links are limited to
+    ///   - Logged in users
+    ///   - links coming from widgets
+    /// - Parameter url: the URL of the item to be displayed
+    @MainActor
     func handle(_ url: URL) {
         guard let itemUrl = router.getItemUrl(from: url) else {
             return
         }
-        // TODO: handle dismissal of any presented modal
+        // dismiss any modal from the Settings SwiftUI view
+        account.dismissAll()
+        // go to home
         selectedSection = .home
-        // TODO: pass itemUrl to HomeViewModel to select the correct readable type
+        guard let item = source.fetchViewContextItem(itemUrl) else {
+            return
+        }
+        // show the item associated to the given URL
+        if let savedItem = item.savedItem {
+            home.select(savedItem: savedItem, readableSource: .widget)
+        } else if let recommendation = item.recommendation {
+            home.select(recommendation: recommendation, readableSource: .widget)
+        }
     }
 }
