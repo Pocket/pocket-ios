@@ -245,3 +245,24 @@ extension AccountViewModel {
         tracker.track(event: Events.Settings.deleteRowTapped())
     }
 }
+
+// MARK: reset modal presentation
+extension AccountViewModel {
+    func dismissAll() {
+        isPresentingHelp = false
+        isPresentingTerms = false
+        isPresentingPrivacy = false
+        isPresentingSignOutConfirm = false
+        isPresentingPremiumUpgrade = false
+        isPresentingLicenses = false
+        isPresentingAccountManagement = false
+        isPresentingDeleteYourAccount = false
+        isPresentingCancelationHelp = false
+        isPresentingOfflineView = false
+        isPresentingRestoreSuccessful = false
+        isPresentingRestoreNotSuccessful = false
+        isPresentingPremiumStatus = false
+        isPresentingHooray = false
+        isPresentingDebugMenu = false
+    }
+}

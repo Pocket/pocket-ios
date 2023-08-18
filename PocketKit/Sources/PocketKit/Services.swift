@@ -47,7 +47,7 @@ struct Services {
     let widgetsSessionService: WidgetsSessionService
     let recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService
     let recommendationsWidgetUpdateService: RecommendationsWidgetUpdateService
-    let router: Router
+    let urlValidator: UrlValidator
 
     private let persistentContainer: PersistentContainer
 
@@ -217,7 +217,7 @@ struct Services {
         recentSavesWidgetUpdateService = RecentSavesWidgetUpdateService(store: UserDefaultsItemWidgetsStore(userDefaults: userDefaults, key: .recentSavesWidget))
         recommendationsWidgetUpdateService = RecommendationsWidgetUpdateService(store: UserDefaultsItemWidgetsStore(userDefaults: userDefaults, key: .recommendationsWidget))
         widgetsSessionService = UserDefaultsWidgetSessionService(defaults: userDefaults)
-        router = Router()
+        urlValidator = UrlValidator()
     }
 }
 

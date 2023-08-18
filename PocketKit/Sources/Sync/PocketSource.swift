@@ -661,6 +661,10 @@ extension PocketSource {
     public func fetchItem(_ url: String) -> Item? {
         return try? space.fetchItem(byURL: url)
     }
+
+    public func fetchViewContextItem(_ url: String) -> Item? {
+        return try? space.fetchItem(byURL: url, context: viewContext)
+    }
 }
 
 // MARK: - User Info

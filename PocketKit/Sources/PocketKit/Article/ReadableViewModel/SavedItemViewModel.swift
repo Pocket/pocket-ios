@@ -41,6 +41,8 @@ class SavedItemViewModel: ReadableViewModel {
         "readingProgress.\(url)."
     }
 
+    let readableSource: ReadableSource
+
     let tracker: Tracker
 
     @Published private(set) var _actions: [ItemAction] = []
@@ -78,7 +80,8 @@ class SavedItemViewModel: ReadableViewModel {
         store: SubscriptionStore,
         networkPathMonitor: NetworkPathMonitor,
         userDefaults: UserDefaults,
-        notificationCenter: NotificationCenter
+        notificationCenter: NotificationCenter,
+        readableSource: ReadableSource = .app
     ) {
         self.item = item
         self.source = source
@@ -89,6 +92,7 @@ class SavedItemViewModel: ReadableViewModel {
         self.networkPathMonitor = networkPathMonitor
         self.userDefaults = userDefaults
         self.notificationCenter = notificationCenter
+        self.readableSource = readableSource
 
         item.publisher(for: \.isFavorite).sink { [weak self] _ in
             self?.buildActions()

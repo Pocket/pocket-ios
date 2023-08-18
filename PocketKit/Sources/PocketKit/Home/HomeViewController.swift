@@ -136,6 +136,7 @@ class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.accessibilityIdentifier = "home"
+
         observeModelChanges()
 
         collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -401,7 +402,7 @@ extension HomeViewController {
         guard let recommendation = recommendation else {
             return
         }
-
+        resetView(for: recommendation.readableSource)
         navigationController?.pushViewController(
             ReadableHostViewController(readableViewModel: recommendation),
             animated: true
@@ -438,6 +439,7 @@ extension HomeViewController {
     }
 
     func show(_ savedItem: SavedItemViewModel) {
+        resetView(for: savedItem.readableSource)
         readerSubscriptions.removeAll()
 
         navigationController?.pushViewController(
@@ -476,6 +478,7 @@ extension HomeViewController {
     }
 
     private func showCollection(_ viewModel: CollectionViewModel) {
+        resetView(for: viewModel.readableSource)
         let controller = CollectionViewController(model: viewModel)
         navigationController?.pushViewController(controller, animated: true)
 
@@ -550,6 +553,7 @@ extension HomeViewController {
     }
 
     private func showRecommendation(forWebView viewModel: RecommendationViewModel) {
+        resetView(for: viewModel.readableSource)
         viewModel.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
             self?.present(alert: alert)
         }.store(in: &readerSubscriptions)
@@ -569,6 +573,7 @@ extension HomeViewController {
     }
 
     private func showSavedItem(forWebView viewModel: SavedItemViewModel) {
+        resetView(for: viewModel.readableSource)
         viewModel.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
             self?.present(alert: alert)
         }.store(in: &readerSubscriptions)
@@ -659,38 +664,19 @@ extension HomeViewController {
         hostingController.modalPresentationStyle = .formSheet
         self.present(hostingController, animated: true)
     }
+
+    /// Pops to the root and dismiss any modal, if required by the readable source
+    /// - Parameter readableSource: the readable source
+    private func resetView(for readableSource: ReadableSource) {
+        guard readableSource == .widget else {
+            return
+        }
+        navigationController?.popToRootViewController(animated: false)
+        dismiss(animated: false)
+    }
 }
 
-extension HomeViewController: UINavigationControllerDelegate {
-    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
-        // By default, when pushing the reader, switching to landscape, and popping,
-        // the list will remain in landscape despite only supporting portrait.
-        // We have to programatically force the device orientation back to portrait,
-        // if the view controller we want to show _only_ supports portrait
-        // (e.g when popping from the reader).
-        if viewController.supportedInterfaceOrientations == .portrait, UIDevice.current.orientation.isLandscape {
-            UIDevice.current.setValue(UIDeviceOrientation.portrait.rawValue, forKey: "orientation")
-        }
-    }
-
-    func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
-        if viewController === self {
-            slateDetailSubscriptions = []
-            model.clearTappedSeeAll()
-            model.clearSelectedItem()
-        }
-
-        if viewController is SlateDetailViewController {
-            model.clearRecommendationToReport()
-            model.tappedSeeAll?.clearSelectedItem()
-        }
-    }
-
-    func navigationControllerSupportedInterfaceOrientations(_ navigationController: UINavigationController) -> UIInterfaceOrientationMask {
-        guard navigationController.traitCollection.userInterfaceIdiom == .phone else { return .all }
-        return navigationController.visibleViewController?.supportedInterfaceOrientations ?? .portrait
-    }
-
+extension HomeViewController {
     private func popToPreviousScreen() {
         if let presentedVC = navigationController?.presentedViewController {
             presentedVC.dismiss(animated: true) { [weak self] in
