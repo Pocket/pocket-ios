@@ -6,7 +6,7 @@ import XCTest
 
 @testable import PocketKit
 
-class UrlValidatorTests: XCTestCase { 
+class UrlValidatorTests: XCTestCase {
     func testCorrectUrlReturnsItemUrl() {
         let validator = UrlValidator()
         let correctUrlString = "pocket:/app/openURL?url=https://example.com/this_is_an_article/"
