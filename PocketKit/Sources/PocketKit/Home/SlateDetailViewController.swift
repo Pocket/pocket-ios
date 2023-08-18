@@ -39,11 +39,9 @@ class SlateDetailViewController: UIViewController {
         return view
     }()
 
+    private let sectionProvider: GridSectionLayoutProvider
     private var overscrollTopConstraint: NSLayoutConstraint?
     private var overscrollOffset = 0
-    private var showThreeColumnLayout: Bool {
-        return self.view.bounds.width >= Constants.minWidthBoundaryForFullColumnLayout && !UIDevice.current.orientation.isPortrait
-    }
 
     private var subscriptions: [AnyCancellable] = []
 
@@ -53,6 +51,8 @@ class SlateDetailViewController: UIViewController {
         model: SlateDetailViewModel
     ) {
         self.model = model
+
+        sectionProvider = GridSectionLayoutProvider()
 
         super.init(nibName: nil, bundle: nil)
 
@@ -132,13 +132,6 @@ class SlateDetailViewController: UIViewController {
 }
 
 private extension SlateDetailViewController {
-    enum Constants {
-        static let itemPadding = NSDirectionalEdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0)
-        static let interItemSpacing: CGFloat = 16
-        /// Minimum width length to quality for a full (3 - column) layout on iPad
-        static let minWidthBoundaryForFullColumnLayout: CGFloat = 800
-    }
-
     func setupOverflowView(contentSize: CGSize) {
         let shouldHide = contentSize.height <= collectionView.frame.height
         overscrollView.isHidden = shouldHide
@@ -195,147 +188,13 @@ private extension SlateDetailViewController {
 
             return NSCollectionLayoutSection(group: group)
         case .slate(let slate):
-            let width = environment.container.effectiveContentSize.width
-            let sideMargin: CGFloat = environment.traitCollection.shouldUseWideLayout() ? Margins.iPadNormal.rawValue : Margins.normal.rawValue
             let recommendations = slate.recommendations?.compactMap { $0 as? Recommendation } ?? []
+            let viewModels = recommendations.compactMap { model.recommendationViewModel(for: $0.objectID) }
 
-            if environment.traitCollection.shouldUseWideLayout() {
-                return slateSectionForWideLayout(with: recommendations, width: width, sideMargin: sideMargin)
-            } else {
-                return slateSectionForCompact(with: recommendations, width: width, sideMargin: sideMargin)
-            }
+            return sectionProvider.gridSection(for: viewModels, with: environment, and: view)
         default:
             return .empty()
         }
-    }
-
-    /// Determines the section layout for the slate detail view on iPad mode with regular horizontal size class (including split view). Number of columns for the grid layout depends on device orientation and the view's width length. If view's width is less than 800, show 2 col, otherwise show 2 col if it is in portrait and 3 col if it is in landscape mode.
-    /// - Parameters:
-    ///   - recommendations: list of recommendations to display
-    ///   - width: width that the section occupies
-    ///   - sideMargin: padding adding to the side of the section
-    /// - Returns: section layout for iPad view and regular horizontal size class
-    private func slateSectionForWideLayout(with recommendations: [Recommendation], width: CGFloat, sideMargin: CGFloat) -> NSCollectionLayoutSection {
-        let numberOfColumns: CGFloat = showThreeColumnLayout ? 3 : 2
-        let recommendationsHeight: [CGFloat] = getRecommendationHeights(with: recommendations, width: width, sideMargin: sideMargin, numberOfColumns: numberOfColumns)
-
-        /// Retrieves max height for each row and returns an array of row heights
-        let rowHeights = recommendationsHeight.getMaxHeightForRow(of: Int(numberOfColumns))
-
-        let components = createComponentsForWideLayout(with: recommendations, numberOfColumns: numberOfColumns, rowHeights: rowHeights)
-        return createSectionFromGroup(with: components, and: sideMargin)
-    }
-
-    /// Create components needed for wide section layout
-    /// - Parameters:
-    ///   - recommendations: list of recommendations to display to the user
-    ///   - width: width that the section occupies
-    ///   - sideMargin: margin for the section layout
-    /// - Returns: tuple of total height and list of items used to determine section layout
-    private func createComponentsForWideLayout(with recommendations: [Recommendation], numberOfColumns: CGFloat, rowHeights: [CGFloat]) -> (CGFloat, [NSCollectionLayoutGroup]) {
-        let numberOfRows = (CGFloat(recommendations.count) / numberOfColumns).rounded(.up)
-        let item = NSCollectionLayoutItem(
-            layoutSize: NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(1 / numberOfColumns),
-                heightDimension: .fractionalHeight(1)
-            )
-        )
-
-        item.contentInsets = Constants.itemPadding
-
-        return (0..<Int(numberOfRows)).reduce((CGFloat(0), [NSCollectionLayoutGroup]())) { result, rowIndex in
-            let currentHeight = result.0
-            guard let height = rowHeights[safe: rowIndex] else { return result }
-            var groups = result.1
-            let group = NSCollectionLayoutGroup.horizontal(
-                layoutSize: .init(
-                    widthDimension: .fractionalWidth(1),
-                    heightDimension: .absolute(height)
-                ),
-                repeatingSubitem: item,
-                count: Int(numberOfColumns)
-            )
-            group.interItemSpacing = .fixed(Constants.interItemSpacing)
-            groups.append(group)
-            return (currentHeight + height, groups)
-        }
-    }
-
-    /// Get a list of heights for each recommendation item
-    /// - Parameters:
-    ///   - recommendations: list of recommendations
-    ///   - width: width that the section occupies
-    ///   - sideMargin: padding adding to the side of the section
-    ///   - numberOfColumns: number of columns layout should have
-    /// - Returns: return a list of heights for all the recommendations
-    private func getRecommendationHeights(with recommendations: [Recommendation], width: CGFloat, sideMargin: CGFloat, numberOfColumns: CGFloat) -> [CGFloat] {
-        return recommendations.map {
-            guard let viewModel = model.recommendationViewModel(for: $0.objectID) else { return 0 }
-            return RecommendationCell.fullHeight(viewModel: viewModel, availableWidth: width / numberOfColumns - (sideMargin * 2)) + sideMargin
-        }
-    }
-
-    /// Determines the section layout for the slate detail view on iPhone mode (single column layout)
-    /// - Parameters:
-    ///   - recommendations: list of recommendations to display
-    ///   - width: width that the section occupies
-    ///   - sideMargin: padding adding to the side of the section
-    /// - Returns: section layout for compact (i.e. iPhone mode)
-    private func slateSectionForCompact(with recommendations: [Recommendation], width: CGFloat, sideMargin: CGFloat) -> NSCollectionLayoutSection {
-        let components = createComponentsForCompact(with: recommendations, width: width, sideMargin: sideMargin)
-        return createSectionFromGroup(with: components, and: sideMargin)
-    }
-
-    /// Create components needed for compact section layout
-    /// - Parameters:
-    ///   - recommendations: list of recommendations to display to the user
-    ///   - width: width that the section occupies
-    ///   - sideMargin: margin for the section layout
-    /// - Returns: tuple of total height and list of items used to determine section layout
-    private func createComponentsForCompact(with recommendations: [Recommendation], width: CGFloat, sideMargin: CGFloat) -> (CGFloat, [NSCollectionLayoutItem]) {
-        return recommendations.reduce((CGFloat(0), [NSCollectionLayoutItem]())) { result, recommendation in
-            guard let viewModel = self.model.recommendationViewModel(for: recommendation.objectID) else {
-                return result
-            }
-
-            let currentHeight = result.0
-            var items = result.1
-            let height = RecommendationCell.fullHeight(viewModel: viewModel, availableWidth: width - (sideMargin * 2)) + sideMargin
-            let item = NSCollectionLayoutItem(
-                layoutSize: NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1),
-                    heightDimension: .absolute(height)
-                )
-            )
-            item.contentInsets = Constants.itemPadding
-
-            items.append(item)
-
-            return (currentHeight + height, items)
-        }
-    }
-
-    /// Creates section from group layout
-    /// - Parameters:
-    ///   - components: components that consist of height and list of items for the group
-    ///   - margin: margin for the section layout
-    /// - Returns: section layout
-    private func createSectionFromGroup(with components: (CGFloat, [NSCollectionLayoutItem]), and margin: CGFloat) -> NSCollectionLayoutSection {
-        let group = NSCollectionLayoutGroup.vertical(
-            layoutSize: .init(
-                widthDimension: .fractionalWidth(1),
-                heightDimension: .absolute(components.0)
-            ),
-            subitems: components.1
-        )
-        let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(
-            top: 0,
-            leading: margin,
-            bottom: 0,
-            trailing: margin
-        )
-        return section
     }
 
     func cell(
