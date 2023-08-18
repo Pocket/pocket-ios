@@ -16,11 +16,7 @@ struct PocketApp: App {
         WindowGroup {
             RootView(model: RootViewModel())
         }.onChange(of: scenePhase) { newValue in
-            switch newValue {
-            case .active:
-                delegate.scenePhaseDidChange(scenePhase)
-            default: return
-            }
+            delegate.scenePhaseDidChange(scenePhase)
         }
     }
 }
