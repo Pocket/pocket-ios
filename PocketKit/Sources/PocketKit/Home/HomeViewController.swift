@@ -136,7 +136,6 @@ class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.accessibilityIdentifier = "home"
-        navigationController?.delegate = self
 
         observeModelChanges()
 
@@ -677,36 +676,7 @@ extension HomeViewController {
     }
 }
 
-extension HomeViewController: UINavigationControllerDelegate {
-    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
-        // By default, when pushing the reader, switching to landscape, and popping,
-        // the list will remain in landscape despite only supporting portrait.
-        // We have to programatically force the device orientation back to portrait,
-        // if the view controller we want to show _only_ supports portrait
-        // (e.g when popping from the reader).
-        if viewController.supportedInterfaceOrientations == .portrait, UIDevice.current.orientation.isLandscape {
-            UIDevice.current.setValue(UIDeviceOrientation.portrait.rawValue, forKey: "orientation")
-        }
-    }
-
-    func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
-        if viewController === self {
-            slateDetailSubscriptions = []
-            model.clearTappedSeeAll()
-            model.clearSelectedItem()
-        }
-
-        if viewController is SlateDetailViewController {
-            model.clearRecommendationToReport()
-            model.tappedSeeAll?.clearSelectedItem()
-        }
-    }
-
-    func navigationControllerSupportedInterfaceOrientations(_ navigationController: UINavigationController) -> UIInterfaceOrientationMask {
-        guard navigationController.traitCollection.userInterfaceIdiom == .phone else { return .all }
-        return navigationController.visibleViewController?.supportedInterfaceOrientations ?? .portrait
-    }
-
+extension HomeViewController {
     private func popToPreviousScreen() {
         if let presentedVC = navigationController?.presentedViewController {
             presentedVC.dismiss(animated: true) { [weak self] in

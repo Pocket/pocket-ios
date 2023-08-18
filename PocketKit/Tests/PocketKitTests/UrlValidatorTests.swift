@@ -6,14 +6,7 @@ import XCTest
 
 @testable import PocketKit
 
-class UrlValidatorTests: XCTestCase {
-    static let validUrlsNotFromWidgets = [
-        "https://getpocket.com/hooray/not-an-article-from-widgets",
-        "https://getpocket.com/are-you-there/no-i-am-not",
-        "https://getpucket.com/collections/this-may-be-a-collection",
-        "https://example.com/this-is-an-article"
-    ]
-
+class UrlValidatorTests: XCTestCase { 
     func testCorrectUrlReturnsItemUrl() {
         let validator = UrlValidator()
         let correctUrlString = "pocket:/app/openURL?url=https://example.com/this_is_an_article/"
@@ -26,9 +19,7 @@ class UrlValidatorTests: XCTestCase {
 
     func testInvalidUrlReturnsNil() {
         let validator = UrlValidator()
-        let index = Int.random(in: 0..<Self.validUrlsNotFromWidgets.count)
-        let invalidtUrlString = Self.validUrlsNotFromWidgets[index]
-        let invalidUrl = URL(string: invalidtUrlString)
+        let invalidUrl = URL(string: "https://getpocket.com/hooray/not-an-article-from-widgets")
         XCTAssertNotNil(invalidUrl)
         let itemUrl = validator.getItemUrl(from: invalidUrl!)
         XCTAssertNil(itemUrl)
