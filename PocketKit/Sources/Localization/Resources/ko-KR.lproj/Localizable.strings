@@ -332,3 +332,7 @@
 // Collection
 "collection.title" = "Collection";
 "collection.stories.count" = "%1$@개 항목";
+
+// Errors
+"error.problemOccurred" = "문제가 발생했습니다.";
+"error.redownloading" = "경험이 개선될 수 있도록 저장된 아티클을 다시 다운로드하고 있습니다.";
