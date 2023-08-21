@@ -332,3 +332,7 @@
 // Collection
 "collection.title" = "Collection";
 "collection.stories.count" = "%1$@ contenuti";
+
+// Errors
+"error.problemOccurred" = "Si è verificato un problema";
+"error.redownloading" = "Stiamo scaricando nuovamente gli articoli salvati per offrirti un'esperienza migliore.";
