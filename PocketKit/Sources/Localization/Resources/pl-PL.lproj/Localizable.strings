@@ -330,5 +330,9 @@
 "itemWidgets.recommendations.description" = "Odkryj najbardziej inspirujące historie, wyselekcjonowane przez Pocket.";
 
 // Collection
-"collection.title" = "Collection";
+"collection.title" = "Kolekcja";
 "collection.stories.count" = "Liczba elementów: %1$@";
+
+// Errors
+"error.problemOccurred" = "Wystąpił problem";
+"error.redownloading" = "Ponownie pobieramy zapisane artykuły, aby poprawić Twoje wrażenia.";
