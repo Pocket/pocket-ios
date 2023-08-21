@@ -332,3 +332,7 @@
 // Collection
 "collection.title" = "Collection";
 "collection.stories.count" = "%1$@ материалов";
+
+// Errors
+"error.problemOccurred" = "Возникла проблема";
+"error.redownloading" = "Мы повторно загружаем ваши сохраненные статьи, чтобы повысить удобство.";
