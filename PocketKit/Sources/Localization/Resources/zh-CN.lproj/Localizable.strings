@@ -330,5 +330,9 @@
 "itemWidgets.recommendations.description" = "探索由 Pocket 策划的最发人深省的故事。";
 
 // Collection
-"collection.title" = "Collection";
+"collection.title" = "收集";
 "collection.stories.count" = "%1$@ 个项目";
+
+// Errors
+"error.problemOccurred" = "出现问题";
+"error.redownloading" = "我们正在重新下载您已保存的文章，以改善您的体验。";
