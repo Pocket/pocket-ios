@@ -330,5 +330,9 @@
 "itemWidgets.recommendations.description" = "Pocket が厳選！色々と考えさせられる興味深いストーリーをお届けします。";
 
 // Collection
-"collection.title" = "Collection";
+"collection.title" = "コレクション";
 "collection.stories.count" = "%1$@ 件のアイテム";
+
+// Errors
+"error.problemOccurred" = "問題が発生しました";
+"error.redownloading" = "エクスペリエンスを向上させるため、保存した記事を再ダウンロードしています。";
