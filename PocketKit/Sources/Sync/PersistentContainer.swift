@@ -63,9 +63,6 @@ public class PersistentContainer: NSPersistentContainer {
         storeDescription.setOption(true as NSNumber, forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)
         storeDescription.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
         storeDescription.setOption(true as NSNumber, forKey: NSMigratePersistentStoresAutomaticallyOption)
-
-        spotlightIndexer = CoreDataSpotlightDelegate(forStoreWith: storeDescription, coordinator: self.persistentStoreCoordinator)
-        spotlightIndexer?.startSpotlightIndexing()
     }
 
     /// Attempts to load the persistent container. If the load errors, the persistent container
@@ -86,6 +83,10 @@ public class PersistentContainer: NSPersistentContainer {
                 }
             }
         }
+
+        guard let storeDescription = persistentStoreDescriptions.first else { return }
+        spotlightIndexer = CoreDataSpotlightDelegate(forStoreWith: storeDescription, coordinator: self.persistentStoreCoordinator)
+        spotlightIndexer?.startSpotlightIndexing()
     }
 }
 
