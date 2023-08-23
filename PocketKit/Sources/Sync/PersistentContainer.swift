@@ -29,6 +29,8 @@ public class PersistentContainer: NSPersistentContainer {
     }
     private let storage: Storage
 
+    private(set) public var didReset = false
+
     public init(storage: Storage = .shared, groupID: String) {
         self.storage = storage
 
@@ -63,20 +65,14 @@ public class PersistentContainer: NSPersistentContainer {
         storeDescription.setOption(true as NSNumber, forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)
         storeDescription.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
         storeDescription.setOption(true as NSNumber, forKey: NSMigratePersistentStoresAutomaticallyOption)
-    }
 
-    /// Attempts to load the persistent container. If the load errors, the persistent container
-    /// is destroyed and rebuilt, performing a closure if a reset was necessary.
-    /// - Parameter onReset: Called when the persistent container required to be reset
-    /// - Note: If a reset was necessary, all previous on-disk data will be removed.
-    public func load(onReset: @escaping () -> Void) {
         loadPersistentStores { [weak self] storeDescription, error in
             guard let self else { return }
             if let error = error {
                 do {
                     Log.breadcrumb(category: "sync", level: .warning, message: "Error while loading persistent stores; resetting: \(error)")
                     try self.reset(storeDescription: storeDescription)
-                    onReset()
+                    didReset = true
                 } catch {
                     Log.capture(error: error as NSError)
                     fatalError("[Sync] Unrecoverable error: \(error)")
@@ -84,7 +80,6 @@ public class PersistentContainer: NSPersistentContainer {
             }
         }
 
-        guard let storeDescription = persistentStoreDescriptions.first else { return }
         spotlightIndexer = CoreDataSpotlightDelegate(forStoreWith: storeDescription, coordinator: self.persistentStoreCoordinator)
         spotlightIndexer?.startSpotlightIndexing()
     }
