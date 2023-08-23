@@ -29,6 +29,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     private let notificationRelay: NotificationRelay
     private let featureFlags: FeatureFlagServiceProtocol
     private let notificationCenter: NotificationCenter
+    private var appBadgeSetup: AppBadgeSetup?
 
     let notificationService: PushNotificationService
 
@@ -146,6 +147,12 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
             // listens for log in / out events to appropriately start / stop.
             subscriptionStore.start()
         }
+
+        appBadgeSetup = AppBadgeSetup(
+            source: source,
+            userDefaults: userDefaults,
+            badgeProvider: application
+        )
 
         return true
     }

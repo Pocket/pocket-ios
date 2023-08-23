@@ -65,9 +65,9 @@ class AppBadgeSetup {
     }
 
     private func updateBadgeValue(numberOfSaves: Int) {
-//        DispatchQueue.main.async { [weak self] in
-//            self?.badgeProvider.applicationIconBadgeNumber = numberOfSaves
-//            self?.completion?()
-//        }
+        DispatchQueue.main.async { [weak self] in
+            self?.badgeProvider.applicationIconBadgeNumber = numberOfSaves
+            self?.completion?()
+        }
     }
 }

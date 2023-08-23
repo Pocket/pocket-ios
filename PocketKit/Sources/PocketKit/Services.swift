@@ -35,7 +35,6 @@ struct Services {
     let v3Client: V3ClientProtocol
     let instantSync: InstantSyncProtocol
     let braze: BrazeProtocol
-    let appBadgeSetup: AppBadgeSetup
     let subscriptionStore: SubscriptionStore
     let userManagementService: UserManagementServiceProtocol
     let lastRefresh: LastRefresh
@@ -181,11 +180,6 @@ struct Services {
             instantSync: instantSync
         )
 
-        appBadgeSetup = AppBadgeSetup(
-            source: source,
-            userDefaults: userDefaults,
-            badgeProvider: UIApplication.shared
-        )
         subscriptionStore = PocketSubscriptionStore(user: user, receiptService: AppStoreReceiptService(client: v3Client))
 
         userManagementService = UserManagementService(
