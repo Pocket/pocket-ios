@@ -12,17 +12,18 @@ struct PocketApp: App {
     @Environment(\.scenePhase)
     var scenePhase
 
-    let rootViewModel = RootViewModel()
+    let rootViewModel: RootViewModel
+
+    init() {
+        self.rootViewModel = RootViewModel()
+        rootViewModel.start()
+    }
 
     var body: some Scene {
         WindowGroup {
             RootView(model: rootViewModel)
         }.onChange(of: scenePhase) { newValue in
-            switch newValue {
-            case .active:
-                delegate.scenePhaseDidChange(scenePhase)
-            default: return
-            }
+            rootViewModel.scenePhaseDidChange(scenePhase)
         }
     }
 }
