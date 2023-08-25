@@ -128,7 +128,7 @@ class MainViewController: UIViewController {
                 viewModel: SavedItemViewModel(
                     appSession: appSession,
                     saveService: services.saveService,
-                    dismissTimer: Timer.TimerPublisher(interval: 60.0, runLoop: .main, mode: .default),
+                    dismissTimer: Timer.TimerPublisher(interval: 3.0, runLoop: .main, mode: .default),
                     tracker: Services.shared.tracker.childTracker(hosting: .saveExtension.screen),
                     consumerKey: Keys.shared.pocketApiConsumerKey,
                     userDefaults: userDefaults,
