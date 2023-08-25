@@ -9,7 +9,6 @@ import CoreData
 extension PersistentContainer {
     static let testContainer: PersistentContainer = {
         let container = PersistentContainer(storage: .inMemory, groupID: "group.com.ideashower.ReadItLaterPro")
-        container.load { }
         return container
     }()
 }
