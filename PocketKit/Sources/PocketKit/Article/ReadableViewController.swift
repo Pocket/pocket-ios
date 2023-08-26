@@ -37,6 +37,8 @@ class ReadableViewController: UIViewController {
 
     private var subscriptions: [AnyCancellable] = []
 
+    private var isReloading = false
+
     private var userScrollProgress: IndexPath?
 
     private lazy var collectionView: UICollectionView = UICollectionView(
@@ -129,8 +131,11 @@ class ReadableViewController: UIViewController {
     }
 
     private func reload() {
+        guard !isReloading else { return }
+        isReloading = true
         presenters?.forEach { $0.clearCache() }
         collectionView.reloadData()
+        isReloading = false
     }
 
     private func updateContent() {
