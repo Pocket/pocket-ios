@@ -25,7 +25,7 @@ public struct ItemContentContainer: Codable, Equatable {
 }
 
 /// A Core Data agnostic version of an `Item`.
-public struct ItemContent: Codable, Equatable {
+public struct ItemContent: Codable {
     public let url: String
     public let title: String
     public let imageUrl: String?
@@ -59,6 +59,12 @@ public struct ItemContent: Codable, Equatable {
         components.path = "/app/openURL"
         components.queryItems = [URLQueryItem(name: "url", value: url)]
         return components.url!
+    }
+}
+
+extension ItemContent: Equatable {
+    public static func == (lhs: ItemContent, rhs: ItemContent) -> Bool {
+        return lhs.url == rhs.url
     }
 }
 
