@@ -745,6 +745,7 @@ extension HomeViewModel: NSFetchedResultsControllerDelegate {
 
         if isOffline {
             // If we are offline don't try and do anything with Slates, and let the snapshot show the offline
+            setRecommendationsWidgetOffline()
             self.snapshot = newSnapshot
             return
         }
@@ -790,7 +791,7 @@ private extension HomeViewModel {
 private extension HomeViewModel {
     func updateRecommendationsWidget() {
         guard let sections = recomendationsController.sections, !sections.isEmpty else {
-            recommendationsWidgetUpdateService.update([:])
+            setRecommendationsWidgetOffline()
             return
         }
 
@@ -800,5 +801,9 @@ private extension HomeViewModel {
             }
         }
         recommendationsWidgetUpdateService.update(topics)
+    }
+
+    func setRecommendationsWidgetOffline() {
+        recommendationsWidgetUpdateService.update([:])
     }
 }
