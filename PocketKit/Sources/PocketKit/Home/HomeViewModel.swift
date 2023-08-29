@@ -351,7 +351,50 @@ extension HomeViewModel {
         }
 
         let givenURL = item.givenURL
-        tracker.track(event: Events.Home.SlateArticleContentOpen(url: givenURL, positionInList: indexPath?.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath?.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID, destination: destination))
+        trackSlateArticleOpen(
+            url: givenURL,
+            positionInList: indexPath?.item,
+            slateIndex: indexPath?.section,
+            slate: slate,
+            slateLineup: slateLineup,
+            destination: destination,
+            recommendationId: recommendation.analyticsID,
+            source: readableSource
+        )
+    }
+
+    private func trackSlateArticleOpen(
+        url: String,
+        positionInList: Int?,
+        slateIndex: Int?,
+        slate: Slate,
+        slateLineup: SlateLineup,
+        destination: ContentOpen.Destination,
+        recommendationId: String,
+        source: ReadableSource
+    ) {
+        switch source {
+        case .app:
+            tracker.track(event: Events.Home.SlateArticleContentOpen(
+                url: url,
+                positionInList: positionInList,
+                slateId: slate.remoteID,
+                slateRequestId: slate.requestID,
+                slateExperimentId: slate.experimentID,
+                slateIndex: slateIndex,
+                slateLineupId: slateLineup.remoteID,
+                slateLineupRequestId: slateLineup.requestID,
+                slateLineupExperimentId: slateLineup.experimentID,
+                recommendationId: recommendationId,
+                destination: destination
+            ))
+        case .widget:
+            tracker.track(event: Events.Widgets.SlateArticleContentOpen(
+                url: url,
+                recommendationId: recommendationId,
+                destination: destination
+            ))
+        }
     }
 
     func select(savedItem: SavedItem, at indexPath: IndexPath? = nil, readableSource: ReadableSource = .app) {
@@ -388,7 +431,16 @@ extension HomeViewModel {
                 selectedReadableType = .savedItem(viewModel)
             }
         }
-        tracker.track(event: Events.Home.RecentSavesCardContentOpen(url: savedItem.url, positionInList: indexPath?.item))
+        trackRecentSavesOpen(url: savedItem.url, positionInList: indexPath?.item, source: readableSource)
+    }
+
+    private func trackRecentSavesOpen(url: String, positionInList: Int?, source: ReadableSource) {
+        switch source {
+        case .app:
+            tracker.track(event: Events.Home.RecentSavesCardContentOpen(url: url, positionInList: positionInList))
+        case .widget:
+            tracker.track(event: Events.Widgets.RecentSavesCardContentOpen(url: url))
+        }
     }
 }
 
