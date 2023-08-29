@@ -29,6 +29,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     private let notificationRelay: NotificationRelay
     private let featureFlags: FeatureFlagServiceProtocol
     private let notificationCenter: NotificationCenter
+    private var appBadgeSetup: AppBadgeSetup?
 
     let notificationService: PushNotificationService
 
@@ -54,11 +55,6 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         self.notificationCenter = services.notificationCenter
 
         super.init()
-
-        services.start { [weak self] in
-            guard let self else { return }
-            self.persistentContainerDidReset()
-        }
     }
 
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
@@ -152,6 +148,12 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
             subscriptionStore.start()
         }
 
+        appBadgeSetup = AppBadgeSetup(
+            source: source,
+            userDefaults: userDefaults,
+            badgeProvider: application
+        )
+
         return true
     }
 
@@ -163,21 +165,6 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     public func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
         guard UIDevice.current.userInterfaceIdiom == .phone else { return .all }
         return PocketAppDelegate.phoneOrientationLock
-    }
-
-    /// Called when a `ScenePhase` change to active has been detected by the SwiftUI
-    ///  lifecycle (in `PocketApp`, forwarded to here.
-    public func scenePhaseDidChange(_ scenePhase: ScenePhase) {
-        switch scenePhase {
-        case .active:
-            // Upon becoming active, if an extension (e.g SaveTo) requested that we force-refresh the app (e.g due to a
-            // persistent container reset), then perform the same reset logic as if the app had explicitly performed a reset.
-            if userDefaults.bool(forKey: .forceRefreshFromExtension) {
-                persistentContainerDidReset()
-                userDefaults.set(false, forKey: .forceRefreshFromExtension)
-            }
-        default: return
-        }
     }
 
     /// Attempt to migrate a legacy (v7) account to v8
@@ -245,23 +232,5 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
             environment: environment
         )
         Adjust.appDidLaunch(adjustConfig)
-    }
-
-    /// Performs actions based on the result of the Services persistent container being reset.
-    func persistentContainerDidReset() {
-        // Since there will be a loss of on-disk data during a reset (read: destroy / add), we want
-        // to perform the same type of sync we would on initial login. An example use case is Home - there is
-        // a possibility that Home _had_ content, but the app was updated (with a failed migration) before the
-        // next allowed refresh interval for Home. Thus, Home wouldn't load data. This is similar across other
-        // portions of the app, such as a user's items.
-        refreshCoordinators.forEach { $0.refresh(isForced: true) { } }
-
-        // Upon reset, let the user know (as a toast) that a problem occurred, and that we're redownloading their data
-        let data = BannerModifier.BannerData(
-            image: .error,
-            title: Localization.Error.problemOccurred,
-            detail: Localization.Error.redownloading
-        )
-        notificationCenter.post(name: .bannerRequested, object: data)
     }
 }

@@ -24,7 +24,7 @@ public struct RecommendationsWidgetUpdateService {
     public func update(_ topics: [String: [Recommendation]]) {
         let newTopics: [ItemContentContainer] = topics.map { makeItemContentContainer($0.key, $0.value) }
         // avoid triggering widget updates if stored data did not change
-        guard store.topics != newTopics else {
+        guard (store.topics.sorted { $0.name > $1.name }) != (newTopics.sorted { $0.name > $1.name }) else {
             return
         }
         recommendationsUpdateQueue.async {

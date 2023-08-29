@@ -35,7 +35,6 @@ struct Services {
     let v3Client: V3ClientProtocol
     let instantSync: InstantSyncProtocol
     let braze: BrazeProtocol
-    let appBadgeSetup: AppBadgeSetup
     let subscriptionStore: SubscriptionStore
     let userManagementService: UserManagementServiceProtocol
     let lastRefresh: LastRefresh
@@ -181,11 +180,6 @@ struct Services {
             instantSync: instantSync
         )
 
-        appBadgeSetup = AppBadgeSetup(
-            source: source,
-            userDefaults: userDefaults,
-            badgeProvider: UIApplication.shared
-        )
         subscriptionStore = PocketSubscriptionStore(user: user, receiptService: AppStoreReceiptService(client: v3Client))
 
         userManagementService = UserManagementService(
@@ -224,7 +218,9 @@ struct Services {
     /// - Parameter onReset: The function to call if a service has been reset.
     /// - Note: `onReset` can be called when a migration within the persistent container fails
     func start(onReset: @escaping () -> Void) {
-        persistentContainer.load(onReset: onReset)
+        if persistentContainer.didReset {
+            onReset()
+        }
     }
 }
 

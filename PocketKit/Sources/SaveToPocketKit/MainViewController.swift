@@ -11,17 +11,23 @@ import Sync
 import Adjust
 
 class MainViewController: UIViewController {
-    private let childViewController: UIViewController
+    static let services: Services = {
+        let services = Services.shared
 
-    convenience init() {
-        self.init(services: .shared)
-    }
-
-    convenience init(services: Services) {
         services.start {
             services.userDefaults.set(true, forKey: .forceRefreshFromExtension)
         }
 
+        return services
+    }()
+
+    private let childViewController: UIViewController
+
+    convenience init() {
+        self.init(services: Self.services)
+    }
+
+    convenience init(services: Services) {
         Textiles.initialize()
 
         let appSession = services.appSession
@@ -122,7 +128,7 @@ class MainViewController: UIViewController {
                 viewModel: SavedItemViewModel(
                     appSession: appSession,
                     saveService: services.saveService,
-                    dismissTimer: Timer.TimerPublisher(interval: 60.0, runLoop: .main, mode: .default),
+                    dismissTimer: Timer.TimerPublisher(interval: 3.0, runLoop: .main, mode: .default),
                     tracker: Services.shared.tracker.childTracker(hosting: .saveExtension.screen),
                     consumerKey: Keys.shared.pocketApiConsumerKey,
                     userDefaults: userDefaults,

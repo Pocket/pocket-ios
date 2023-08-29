@@ -10,6 +10,8 @@ import Textile
 import SharedPocketKit
 import UIKit
 import Adjust
+import Localization
+import SwiftUI
 
 @MainActor
 public class RootViewModel: ObservableObject {
@@ -23,11 +25,31 @@ public class RootViewModel: ObservableObject {
     private let userDefaults: UserDefaults
     private let widgetsSessionService: WidgetsSessionService
     private let urlValidator: UrlValidator
+    private let notificationCenter: NotificationCenter
+    private let refreshCoordinators: [RefreshCoordinator]
 
     private var subscriptions: Set<AnyCancellable> = []
 
     public convenience init() {
-        self.init(appSession: Services.shared.appSession, tracker: Services.shared.tracker, source: Services.shared.source, userDefaults: Services.shared.userDefaults, widgetsSessionService: Services.shared.widgetsSessionService, urlValidator: Services.shared.urlValidator)
+        self.init(services: Services.shared)
+    }
+
+    private convenience init(services: Services) {
+        self.init(
+            appSession: services.appSession,
+            tracker: services.tracker,
+            source: services.source,
+            userDefaults: services.userDefaults,
+            widgetsSessionService: services.widgetsSessionService,
+            urlValidator: services.urlValidator,
+            notificationCenter: services.notificationCenter,
+            refreshCoordinators: services.refreshCoordinators
+        )
+
+        services.start { [weak self] in
+            guard let self else { return }
+            self.persistentContainerDidReset()
+        }
     }
 
     init(
@@ -36,7 +58,9 @@ public class RootViewModel: ObservableObject {
         source: Source,
         userDefaults: UserDefaults,
         widgetsSessionService: WidgetsSessionService,
-        urlValidator: UrlValidator
+        urlValidator: UrlValidator,
+        notificationCenter: NotificationCenter,
+        refreshCoordinators: [RefreshCoordinator]
     ) {
         self.appSession = appSession
         self.tracker = tracker
@@ -44,7 +68,11 @@ public class RootViewModel: ObservableObject {
         self.userDefaults = userDefaults
         self.widgetsSessionService = widgetsSessionService
         self.urlValidator = urlValidator
+        self.notificationCenter = notificationCenter
+        self.refreshCoordinators = refreshCoordinators
+    }
 
+    public func start() {
         // Register for login notifications
         NotificationCenter.default.publisher(
             for: .userLoggedIn
@@ -101,5 +129,38 @@ public class RootViewModel: ObservableObject {
 
         Log.clearUser()
         Textiles.clearImageCache()
+    }
+
+    /// Performs actions based on the result of the Services persistent container being reset.
+    private func persistentContainerDidReset() {
+        // Since there will be a loss of on-disk data during a reset (read: destroy / add), we want
+        // to perform the same type of sync we would on initial login. An example use case is Home - there is
+        // a possibility that Home _had_ content, but the app was updated (with a failed migration) before the
+        // next allowed refresh interval for Home. Thus, Home wouldn't load data. This is similar across other
+        // portions of the app, such as a user's items.
+        refreshCoordinators.forEach { $0.refresh(isForced: true) { } }
+
+        // Upon reset, let the user know (as a toast) that a problem occurred, and that we're redownloading their data
+        let data = BannerModifier.BannerData(
+            image: .error,
+            title: Localization.Error.problemOccurred,
+            detail: Localization.Error.redownloading
+        )
+        notificationCenter.post(name: .bannerRequested, object: data)
+    }
+
+    /// Called when a `ScenePhase` change to active has been detected by the SwiftUI
+    ///  lifecycle (in `PocketApp`, forwarded to here.
+    public func scenePhaseDidChange(_ scenePhase: ScenePhase) {
+        switch scenePhase {
+        case .active:
+            // Upon becoming active, if an extension (e.g SaveTo) requested that we force-refresh the app (e.g due to a
+            // persistent container reset), then perform the same reset logic as if the app had explicitly performed a reset.
+            if userDefaults.bool(forKey: .forceRefreshFromExtension) {
+                persistentContainerDidReset()
+                userDefaults.set(false, forKey: .forceRefreshFromExtension)
+            }
+        default: return
+        }
     }
 }

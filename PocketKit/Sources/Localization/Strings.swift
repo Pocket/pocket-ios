@@ -288,8 +288,8 @@ public enum Localization {
     public enum Recommendations {
       /// Discover the most thought-provoking stories out there, curated by Pocket.
       public static let description = Localization.tr("Localizable", "itemWidgets.recommendations.description", fallback: "Discover the most thought-provoking stories out there, curated by Pocket.")
-      /// You might be offline. Please check recommendations in your Pocket app
-      public static let emptyMessage = Localization.tr("Localizable", "itemWidgets.recommendations.emptyMessage", fallback: "You might be offline. Please check recommendations in your Pocket app")
+      /// You might be offline. Please check your network connection.
+      public static let emptyMessage = Localization.tr("Localizable", "itemWidgets.recommendations.emptyMessage", fallback: "You might be offline. Please check your network connection.")
       /// Recommendations
       public static let title = Localization.tr("Localizable", "itemWidgets.recommendations.title", fallback: "Recommendations")
     }
