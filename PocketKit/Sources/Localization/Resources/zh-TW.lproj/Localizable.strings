@@ -332,3 +332,7 @@
 // Collection
 "collection.title" = "Collection";
 "collection.stories.count" = "%1$@ 個項目";
+
+// Errors
+"error.problemOccurred" = "出現問題";
+"error.redownloading" = "我們正在重新下載您儲存的文章，以改善您的體驗。";

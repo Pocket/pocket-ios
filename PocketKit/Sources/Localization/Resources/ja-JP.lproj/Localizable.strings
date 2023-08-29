@@ -332,3 +332,7 @@
 // Collection
 "collection.title" = "Collection";
 "collection.stories.count" = "%1$@ 件のアイテム";
+
+// Errors
+"error.problemOccurred" = "問題が発生しました";
+"error.redownloading" = "エクスペリエンスを向上させるため、保存した記事を再ダウンロードしています。";
