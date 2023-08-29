@@ -330,7 +330,7 @@
 "itemWidgets.recommendations.description" = "Descobre as histórias mais instigantes, com curadoria do Pocket.";
 
 // Collection
-"collection.title" = "Coleção";
+"collection.title" = "Collection";
 "collection.stories.count" = "%1$@ itens";
 
 // Errors
