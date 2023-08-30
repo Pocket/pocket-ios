@@ -9,6 +9,10 @@ import Localization
 import SharedPocketKit
 
 extension SearchSavedItem: ItemsListItem {
+    var isSyndicated: Bool {
+        return item.asItem?.syndicatedArticle != nil
+    }
+
     var isCollection: Bool {
         // TODO: Refactor when working on opening a collection tickets
         // Parses and ensures that the url has "collections" in the first index and count is greater than 3 (ie. 0 represents "/", 1 represents "collections" and 2 represents the slug)

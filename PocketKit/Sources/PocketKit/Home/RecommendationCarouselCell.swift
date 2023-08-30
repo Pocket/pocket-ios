@@ -46,7 +46,8 @@ class RecommendationCarouselCell: HomeCarouselItemCell {
         }
 
         var attributedDomain: NSAttributedString {
-            return NSAttributedString(string: viewModel.domain ?? "", style: .recommendation.domain)
+            let detailString = NSMutableAttributedString(string: viewModel.domain ?? "", style: .recommendation.domain)
+            return viewModel.recommendation.item.isSyndicated ? detailString.addSyndicatedIndicator(with: .recommendation.domain) : detailString
         }
 
         var attributedTimeToRead: NSAttributedString {

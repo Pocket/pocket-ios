@@ -45,7 +45,8 @@ extension HomeRecommendationCellViewModel: RecommendationCellViewModel {
     }
 
     var attributedDomain: NSAttributedString {
-        NSAttributedString(string: domain ?? "", style: .recommendation.domain)
+        let detailString = NSMutableAttributedString(string: domain ?? "", style: .recommendation.domain)
+        return recommendation.item.isSyndicated ? detailString.addSyndicatedIndicator(with: .recommendation.domain) : detailString
     }
 
     var attributedTimeToRead: NSAttributedString {

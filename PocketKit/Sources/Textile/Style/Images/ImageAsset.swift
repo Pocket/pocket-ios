@@ -70,6 +70,7 @@ extension ImageAsset {
     public static let premiumHoorayLight = ImageAsset("premium.hooray.light")
     public static let premiumHoorayDark = ImageAsset("premium.hooray.dark")
     public static let readerSkeleton = ReaderSkeleton()
+    public static let syndicatedIcon = ImageAsset("syndicated-icon")
 }
 
 public struct ReaderSkeleton {
