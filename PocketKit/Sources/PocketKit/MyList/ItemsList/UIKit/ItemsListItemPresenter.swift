@@ -56,7 +56,8 @@ class ItemsListItemPresenter {
     }
 
     var attributedDetail: NSAttributedString {
-        NSAttributedString(string: detail, style: isDisabled ? .pendingDetail : .detail)
+        let detailString = NSMutableAttributedString(string: detail, style: isDisabled ? .pendingDetail : .detail)
+        return item.isSyndicated ? detailString.addSyndicatedIndicator(with: isDisabled ? .pendingDetail : .detail) : detailString
     }
 
     var attributedTags: [NSAttributedString]? {

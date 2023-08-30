@@ -46,6 +46,7 @@ struct MockItemsListItem: ItemsListItem {
     let cursor: String?
     let savedItemURL: String
     let isCollection: Bool
+    let isSyndicated: Bool
 
     static func build(
         id: String? = nil,
@@ -62,7 +63,8 @@ struct MockItemsListItem: ItemsListItem {
         tagNames: [String]? = nil,
         cursor: String? = nil,
         savedItemURL: String = "https://example.com",
-        isCollection: Bool? = false
+        isCollection: Bool? = false,
+        isSyndicated: Bool? = false
     ) -> MockItemsListItem {
         MockItemsListItem(
             id: id,
@@ -79,7 +81,8 @@ struct MockItemsListItem: ItemsListItem {
             tagNames: tagNames,
             cursor: cursor,
             savedItemURL: savedItemURL,
-            isCollection: isCollection ?? false
+            isCollection: isCollection ?? false,
+            isSyndicated: isSyndicated ?? false
         )
     }
 }

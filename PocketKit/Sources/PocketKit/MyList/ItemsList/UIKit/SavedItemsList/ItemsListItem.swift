@@ -24,6 +24,7 @@ protocol ItemsListItem {
     var savedItemURL: String { get }
     var cursor: String? { get }
     var isCollection: Bool { get }
+    var isSyndicated: Bool { get }
 }
 
 extension ItemsListItem {
