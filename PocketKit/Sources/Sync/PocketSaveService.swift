@@ -55,7 +55,9 @@ public class PocketSaveService: SaveService {
 
     public func save(url: String) -> SaveServiceStatus {
         defer {
-            reloadRecentSavesWidget()
+            Task {
+                await reloadRecentSavesWidget()
+            }
         }
         return space.performAndWait {
             let result = fetchOrCreateSavedItem(url: url)
@@ -210,7 +212,7 @@ public class PocketSaveService: SaveService {
         queue.waitUntilAllOperationsAreFinished()
     }
 
-    private func reloadRecentSavesWidget() {
+    private func reloadRecentSavesWidget() async {
         do {
             let recentSaves = try space.fetchSavedItems(limit: SyncConstants.Home.recentSaves)
             recentSavesWidgetUpdateService.update(recentSaves, Localization.recentSaves)
