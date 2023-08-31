@@ -134,11 +134,14 @@ public class RootViewModel: ObservableObject {
     /// Performs actions based on the result of the Services persistent container being reset.
     private func persistentContainerDidReset() {
         // Since there will be a loss of on-disk data during a reset (read: destroy / add), we want
-        // to perform the same type of sync we would on initial login. An example use case is Home - there is
-        // a possibility that Home _had_ content, but the app was updated (with a failed migration) before the
+        // to perform the same type of sync we would on initial login, if users are logged in.
+        // An example use case is Home - there is a possibility that Home _had_ content,
+        // but the app was updated (with a failed migration) before the
         // next allowed refresh interval for Home. Thus, Home wouldn't load data. This is similar across other
         // portions of the app, such as a user's items.
-        refreshCoordinators.forEach { $0.refresh(isForced: true) { } }
+        if appSession.currentSession != nil {
+            refreshCoordinators.forEach { $0.refresh(isForced: true) { } }
+        }
 
         // Upon reset, let the user know (as a toast) that a problem occurred, and that we're redownloading their data
         let data = BannerModifier.BannerData(
