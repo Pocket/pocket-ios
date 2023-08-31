@@ -48,9 +48,7 @@ public extension NSAttributedString {
 }
 
 public extension NSMutableAttributedString {
-    enum Constants {
-        static var imageIconSize = CGSize(width: 16, height: 16)
-    }
+    static let imageIconSize = CGSize(width: 16, height: 16)
 
     func updateStyle(_ withStyle: (Style?) -> (Style)) {
         let range = NSRange(location: 0, length: length)
@@ -63,7 +61,7 @@ public extension NSMutableAttributedString {
     func addSyndicatedIndicator(with style: Style) -> NSAttributedString {
         let imageAttachment = NSTextAttachment()
         let image = UIImage(asset: .syndicatedIcon)
-            .resized(to: Constants.imageIconSize)
+            .resized(to: NSMutableAttributedString.imageIconSize)
             .withTintColor(UIColor(style.colorAsset), renderingMode: .alwaysOriginal)
 
         imageAttachment.bounds = CGRect(x: 0, y: calculateLineHeight(for: image), width: image.size.width, height: image.size.height)
