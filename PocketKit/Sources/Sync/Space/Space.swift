@@ -261,7 +261,7 @@ extension Space {
     }
 
     func fetchSavedItems(limit: Int? = nil) throws -> [SavedItem] {
-        return try fetch(Requests.fetchSavedItems())
+        return try fetch(Requests.fetchSavedItems(limit: limit))
     }
 
     func fetchArchivedItems() throws -> [SavedItem] {
