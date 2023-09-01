@@ -41,7 +41,7 @@ class RecentSavesItemCell: HomeCarouselItemCell {
 
         var attributedDomain: NSAttributedString {
             let detailString = NSMutableAttributedString(string: domain ?? "", style: .recommendation.domain)
-            return item.isSyndicated ?? false ? detailString.addSyndicatedIndicator(with: .recommendation.domain) : detailString
+            return item.isSyndicated ? detailString.addSyndicatedIndicator(with: .recommendation.domain) : detailString
         }
 
         var attributedTimeToRead: NSAttributedString {
