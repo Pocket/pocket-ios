@@ -43,7 +43,8 @@ extension CollectionStoryViewModel: RecommendationCellViewModel {
     }
 
     var attributedDomain: NSAttributedString {
-        NSAttributedString(string: domain ?? "", style: .recommendation.domain)
+        let detailString = NSMutableAttributedString(string: domain ?? "", style: .recommendation.domain)
+        return collectionStory.item?.isSyndicated == true ? detailString.addSyndicatedIndicator(with: .recommendation.domain) : detailString
     }
 
     var attributedExcerpt: NSAttributedString? {
