@@ -18,6 +18,7 @@ struct Services {
     let userDefaults: UserDefaults
     let notificationCenter: NotificationCenter
     let braze: SaveToBraze
+    let recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService
 
     /// The user management service that will log a user out when the correct notification is posted.
     /// This is marked as private since we do not need to access it, but we need it to be around for the lifetime
@@ -49,8 +50,7 @@ struct Services {
             space: persistentContainer.rootSpace,
             sessionProvider: appSession,
             consumerKey: Keys.shared.pocketApiConsumerKey,
-            expiringActivityPerformer: ProcessInfo.processInfo,
-            recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService(store: UserDefaultsItemWidgetsStore(userDefaults: userDefaults, key: .recentSavesWidget))
+            expiringActivityPerformer: ProcessInfo.processInfo
         )
 
         braze = SaveToBraze(
@@ -60,6 +60,7 @@ struct Services {
         )
 
         userManagementService = SaveToUserManagementService(appSession: appSession, user: user, notificationCenter: notificationCenter)
+        recentSavesWidgetUpdateService = RecentSavesWidgetUpdateService(store: UserDefaultsItemWidgetsStore(userDefaults: userDefaults, key: .recentSavesWidget))
     }
 
     /// Starts up all services as required.

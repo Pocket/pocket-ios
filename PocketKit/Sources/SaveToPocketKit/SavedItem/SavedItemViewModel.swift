@@ -19,6 +19,7 @@ class SavedItemViewModel {
     private let userDefaults: UserDefaults
     private let user: User
     private let notificationCenter: NotificationCenter
+    private let recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService
 
     private var dismissTimerCancellable: AnyCancellable?
     private var subscriptions: Set<AnyCancellable> = []
@@ -50,7 +51,8 @@ class SavedItemViewModel {
          consumerKey: String,
          userDefaults: UserDefaults,
          user: User,
-         notificationCenter: NotificationCenter
+         notificationCenter: NotificationCenter,
+         recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService
     ) {
         self.appSession = appSession
         self.saveService = saveService
@@ -60,6 +62,7 @@ class SavedItemViewModel {
         self.userDefaults = userDefaults
         self.user = user
         self.notificationCenter = notificationCenter
+        self.recentSavesWidgetUpdateService = recentSavesWidgetUpdateService
 
         guard appSession.currentSession != nil else { return }
 
@@ -118,9 +121,11 @@ class SavedItemViewModel {
         case .existingItem(let savedItem):
             self.savedItem = savedItem
             infoViewModel = .existingItem
+            recentSavesWidgetUpdateService.insert(savedItem)
         case .newItem(let savedItem):
             self.savedItem = savedItem
             infoViewModel = .newItem
+            recentSavesWidgetUpdateService.insert(savedItem)
         default:
             break
         }

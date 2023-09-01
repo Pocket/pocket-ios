@@ -831,11 +831,11 @@ extension HomeViewModel: NSFetchedResultsControllerDelegate {
 private extension HomeViewModel {
     func updateRecentSavesWidget() {
         guard let items = recentSavesController.fetchedObjects else {
-            recentSavesWidgetUpdateService.update([], "")
+            recentSavesWidgetUpdateService.update([])
             return
         }
         // because we might still end up with more items, slice the first n elements anyway.
-        recentSavesWidgetUpdateService.update(Array(items.prefix(SyncConstants.Home.recentSaves)), Localization.recentSaves)
+        recentSavesWidgetUpdateService.update(Array(items.prefix(SyncConstants.Home.recentSaves)))
     }
 }
 
