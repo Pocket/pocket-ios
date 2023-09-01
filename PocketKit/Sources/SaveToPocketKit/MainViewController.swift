@@ -133,7 +133,8 @@ class MainViewController: UIViewController {
                     consumerKey: Keys.shared.pocketApiConsumerKey,
                     userDefaults: userDefaults,
                     user: Services.shared.user,
-                    notificationCenter: notificationCenter
+                    notificationCenter: notificationCenter,
+                    recentSavesWidgetUpdateService: Services.shared.recentSavesWidgetUpdateService
                 )
             )
         }

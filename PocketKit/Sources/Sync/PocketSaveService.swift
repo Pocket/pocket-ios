@@ -14,14 +14,12 @@ public class PocketSaveService: SaveService {
     private let queue: OperationQueue
     private let space: Space
     private let osNotifications: OSNotificationCenter
-    private let recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService
 
     public convenience init(
         space: Space,
         sessionProvider: SessionProvider,
         consumerKey: String,
-        expiringActivityPerformer: ExpiringActivityPerformer,
-        recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService
+        expiringActivityPerformer: ExpiringActivityPerformer
     ) {
         self.init(
             apollo: ApolloClient.createDefault(
@@ -32,8 +30,7 @@ public class PocketSaveService: SaveService {
             space: space,
             osNotifications: OSNotificationCenter(
                 notifications: CFNotificationCenterGetDarwinNotifyCenter()
-            ),
-            recentSavesWidgetUpdateService: recentSavesWidgetUpdateService
+            )
         )
     }
 
@@ -41,24 +38,17 @@ public class PocketSaveService: SaveService {
         apollo: ApolloClientProtocol,
         expiringActivityPerformer: ExpiringActivityPerformer,
         space: Space,
-        osNotifications: OSNotificationCenter,
-        recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService
+        osNotifications: OSNotificationCenter
     ) {
         self.apollo = apollo
         self.expiringActivityPerformer = expiringActivityPerformer
         self.space = space
         self.osNotifications = osNotifications
-        self.recentSavesWidgetUpdateService = recentSavesWidgetUpdateService
 
         self.queue = OperationQueue()
     }
 
     public func save(url: String) -> SaveServiceStatus {
-        defer {
-            Task {
-                await reloadRecentSavesWidget()
-            }
-        }
         return space.performAndWait {
             let result = fetchOrCreateSavedItem(url: url)
 
@@ -210,15 +200,6 @@ public class PocketSaveService: SaveService {
             queue.addOperation(operation)
         }
         queue.waitUntilAllOperationsAreFinished()
-    }
-
-    private func reloadRecentSavesWidget() async {
-        do {
-            let recentSaves = try space.fetchSavedItems(limit: SyncConstants.Home.recentSaves)
-            recentSavesWidgetUpdateService.update(recentSaves, Localization.recentSaves)
-        } catch {
-            Log.capture(message: "Unable to update the Recent Saves widget after saving an item from the Save extension - \(error)")
-        }
     }
 }
 

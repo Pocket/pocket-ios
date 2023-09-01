@@ -3,6 +3,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import Foundation
+import Localization
 import SharedPocketKit
 import WidgetKit
 
@@ -19,7 +20,7 @@ public struct RecentSavesWidgetUpdateService {
 
     /// Update the recent saves using the given array of `SavedItem`
     /// - Parameter items: the given array
-    public func update(_ items: [SavedItem], _ name: String) {
+    public func update(_ items: [SavedItem]) {
         let saves = items.map {
             ItemContent(
                 url: $0.url,
@@ -29,7 +30,11 @@ public struct RecentSavesWidgetUpdateService {
                 timeToRead: ($0.item?.timeToRead) != nil ? Int(truncating: ($0.item?.timeToRead)!) : nil
             )
         }
-        let saveTopic = [ItemContentContainer(name: name, items: saves)]
+        let saveTopic = [ItemContentContainer(name: Localization.recentSaves, items: saves)]
+        save(saveTopic)
+    }
+
+    private func save(_ saveTopic: [ItemContentContainer]) {
         // avoid triggering widget updates if stored data did not change
         guard store.topics != saveTopic else {
             return
@@ -42,6 +47,28 @@ public struct RecentSavesWidgetUpdateService {
                 Log.capture(message: "Failed to update recent saves for widget: \(error)")
             }
         }
+    }
+
+    public func insert(_ savedItem: SavedItem) {
+        var currentItems = store.topics.first?.items ?? [ItemContent]()
+
+        if let index = currentItems.firstIndex(where: { $0.url == savedItem.url }) {
+            currentItems.remove(at: index)
+        } else {
+            currentItems.removeLast()
+        }
+
+        let newItem = ItemContent(
+            url: savedItem.url,
+            title: savedItem.item?.title ?? savedItem.url,
+            imageUrl: savedItem.item?.topImageURL?.absoluteString,
+            bestDomain: savedItem.item?.domainMetadata?.name ?? savedItem.item?.domain ?? URL(percentEncoding: savedItem.url)?.host ?? "",
+            timeToRead: (savedItem.item?.timeToRead) != nil ? Int(truncating: (savedItem.item?.timeToRead)!) : nil
+        )
+        currentItems.insert(newItem, at: 0)
+
+        let saveTopic = [ItemContentContainer(name: Localization.recentSaves, items: currentItems)]
+        save(saveTopic)
     }
 
     /// Reloads the widget
