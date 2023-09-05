@@ -48,7 +48,7 @@ class ItemsListItemPresenter {
 
     var attributedCollection: NSAttributedString? {
         guard item.isCollection else { return nil }
-        return NSAttributedString(string: Localization.Collection.title, style: .recommendation.collection)
+        return NSAttributedString(string: Localization.Constants.collection, style: .recommendation.collection)
     }
 
     var attributedTitle: NSAttributedString {

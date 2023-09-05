@@ -38,7 +38,7 @@ class RecommendationCarouselCell: HomeCarouselItemCell {
 
         var attributedCollection: NSAttributedString? {
             guard viewModel.recommendation.item.isCollection else { return nil }
-            return NSAttributedString(string: Localization.Collection.title, style: .recommendation.collection)
+            return NSAttributedString(string: Localization.Constants.collection, style: .recommendation.collection)
         }
 
         var attributedTitle: NSAttributedString {

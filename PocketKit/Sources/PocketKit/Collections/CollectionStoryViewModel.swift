@@ -35,7 +35,7 @@ struct CollectionStoryViewModel: Hashable {
 extension CollectionStoryViewModel: RecommendationCellViewModel {
     var attributedCollection: NSAttributedString? {
         guard collectionStory.item?.isCollection == true else { return nil }
-        return NSAttributedString(string: Localization.Collection.title, style: .recommendation.collection)
+        return NSAttributedString(string: Localization.Constants.collection, style: .recommendation.collection)
     }
 
     var attributedTitle: NSAttributedString {

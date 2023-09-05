@@ -37,7 +37,7 @@ public struct MainView: View {
                         } else {
                             Image(asset: .tabSavesDeselected)
                         }
-                        Text(Localization.saves)
+                        Text(Localization.Constants.saves)
                     }
                     .accessibilityIdentifier("saves-tab-bar-button")
                     .tag(MainViewModel.AppSection.saves)

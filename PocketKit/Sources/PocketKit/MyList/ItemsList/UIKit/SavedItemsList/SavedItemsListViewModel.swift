@@ -27,7 +27,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     var selectionItem: SelectionItem {
         switch self.viewType {
         case .saves:
-            return SelectionItem(title: Localization.saves, image: .init(asset: .saves), selectedView: SelectedView.saves)
+            return SelectionItem(title: Localization.Constants.saves, image: .init(asset: .saves), selectedView: SelectedView.saves)
         case .archive:
             return SelectionItem(title: Localization.archive, image: .init(asset: .archive), selectedView: SelectedView.archive)
         }
@@ -669,7 +669,7 @@ extension SavedItemsListViewModel {
             var title: String = ""
             switch viewType {
             case .saves:
-                title = Localization.saves
+                title = Localization.Constants.saves
             case .archive:
                 title = Localization.archive
             }
