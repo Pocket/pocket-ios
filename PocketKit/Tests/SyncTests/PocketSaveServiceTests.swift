@@ -39,8 +39,7 @@ class PocketSaveServiceTests: XCTestCase {
             apollo: client ?? self.client,
             expiringActivityPerformer: backgroundActivityPerformer ?? self.backgroundActivityPerformer,
             space: space ?? self.space,
-            osNotifications: osNotificationCenter ?? self.osNotificationCenter,
-            recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService(store: MockRecentSavesWidgetStore())
+            osNotifications: osNotificationCenter ?? self.osNotificationCenter
         )
     }
 

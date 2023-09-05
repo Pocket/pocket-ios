@@ -40,7 +40,8 @@ class SavedItemViewModelTests: XCTestCase {
             consumerKey: consumerKey ?? self.consumerKey,
             userDefaults: userDefaults ?? self.userDefaults,
             user: user ?? self.user,
-            notificationCenter: notificationCenter ?? self.notificationCenter
+            notificationCenter: notificationCenter ?? self.notificationCenter,
+            recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService(store: MockRecentSavesWidgetStore())
         )
     }
 
