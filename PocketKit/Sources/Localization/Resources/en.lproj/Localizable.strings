@@ -243,8 +243,6 @@
 "Share" = "Share";
 "carousel.listen" = "Listen";
 
-"Saves" = "Saves";
-
 "Display Settings" = "Display settings";
 "Font" = "Font";
 "Font Size" = "Font size";
@@ -330,7 +328,6 @@
 "itemWidgets.recommendations.description" = "Discover the most thought-provoking stories out there, curated by Pocket.";
 
 // Collection
-"collection.title" = "Collection";
 "collection.stories.count" = "%@ items";
 
 // Errors

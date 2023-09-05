@@ -25,7 +25,7 @@ struct CollectionMetadata {
     var attributedByline: NSAttributedString? {
         let byline = NSMutableAttributedString()
 
-        byline.append(NSAttributedString(string: Localization.Collection.title, style: .collection.collection))
+        byline.append(NSAttributedString(string: Localization.Constants.collection, style: .collection.collection))
 
         if !byline.string.isEmpty {
             byline.append(NSAttributedString(string: " • ", style: .collection.authors))

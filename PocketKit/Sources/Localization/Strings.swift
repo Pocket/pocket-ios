@@ -108,8 +108,6 @@ public enum Localization {
   public static let saveWhatReallyInterestsYou = Localization.tr("Localizable", "Save what really interests you", fallback: "Save what really interests you")
   /// Saved
   public static let saved = Localization.tr("Localizable", "Saved", fallback: "Saved")
-  /// Saves
-  public static let saves = Localization.tr("Localizable", "Saves", fallback: "Saves")
   /// See all
   public static let seeAll = Localization.tr("Localizable", "See All", fallback: "See all")
   /// Settings
@@ -179,8 +177,6 @@ public enum Localization {
     public static let listen = Localization.tr("Localizable", "carousel.listen", fallback: "Listen")
   }
   public enum Collection {
-    /// Collection
-    public static let title = Localization.tr("Localizable", "collection.title", fallback: "Collection")
     public enum Stories {
       /// %@ items
       public static func count(_ p1: Any) -> String {
