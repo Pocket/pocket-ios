@@ -47,7 +47,13 @@ extension SavedItem {
             return fetchedTag
         } ?? [])
 
-        if let itemParts = remote.item.asItem?.fragments.itemParts {
+        if let corpusItem = remote.corpusItem {
+            Log.breadcrumb(category: "sync", level: .debug, message: "Updating corpus item parts for \(corpusItem.id)")
+            let givenURL = corpusItem.url
+            let itemToUpdate = (try? space.fetchItem(byURL: givenURL, context: context)) ?? Item(context: context, givenURL: givenURL, remoteID: corpusItem.id)
+            itemToUpdate.update(from: corpusItem, in: space)
+            item = itemToUpdate
+        } else if let itemParts = remote.item.asItem?.fragments.itemParts {
             Log.breadcrumb(category: "sync", level: .debug, message: "Updating item parts for \(itemParts.remoteID)")
 
             let givenURL = itemParts.givenUrl
@@ -96,7 +102,13 @@ extension SavedItem {
             tag.update(remote: summaryTag.fragments.tagParts)
             return tag
         } ?? [])
-
+        if let corpusItem = summary.corpusItem {
+            Log.breadcrumb(category: "sync", level: .debug, message: "Updating corpus item from summary for \(corpusItem.id)")
+            let givenURL = corpusItem.url
+            let itemToUpdate = (try? space.fetchItem(byURL: givenURL, context: context)) ?? Item(context: context, givenURL: givenURL, remoteID: corpusItem.id)
+            itemToUpdate.update(from: corpusItem, in: space)
+            item = itemToUpdate
+        }
         if let itemSummary = summary.item.asItem?.fragments.itemSummary {
             Log.breadcrumb(category: "sync", level: .debug, message: "Updating item parts from summary for \(itemSummary.remoteID)")
 
