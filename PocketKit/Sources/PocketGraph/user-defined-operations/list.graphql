@@ -14,6 +14,10 @@ fragment SavedItemParts on SavedItem {
     ...ItemParts
     ...PendingItemParts
   }
+  corpusItem {
+    __typename
+    ...CorpusItemParts
+  }
 }
 
 fragment TagParts on Tag {

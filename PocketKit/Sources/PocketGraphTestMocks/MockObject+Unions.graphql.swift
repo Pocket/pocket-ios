@@ -6,6 +6,6 @@ import PocketGraph
 
 public extension MockObject {
   typealias ItemResult = Union
-  typealias MarticleComponent = Union
   typealias CorpusTarget = Union
+  typealias MarticleComponent = Union
 }
