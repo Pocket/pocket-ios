@@ -13,6 +13,7 @@ public class SavedItem: MockObject {
     @Field<Int>("_createdAt") public var _createdAt
     @Field<Int>("_deletedAt") public var _deletedAt
     @Field<Int>("archivedAt") public var archivedAt
+    @Field<CorpusItem>("corpusItem") public var corpusItem
     @Field<PocketGraph.ID>("id") public var id
     @Field<Bool>("isArchived") public var isArchived
     @Field<Bool>("isFavorite") public var isFavorite
@@ -28,6 +29,7 @@ public extension Mock where O == SavedItem {
     _createdAt: Int? = nil,
     _deletedAt: Int? = nil,
     archivedAt: Int? = nil,
+    corpusItem: Mock<CorpusItem>? = nil,
     id: PocketGraph.ID? = nil,
     isArchived: Bool? = nil,
     isFavorite: Bool? = nil,
@@ -40,6 +42,7 @@ public extension Mock where O == SavedItem {
     _set(_createdAt, for: \._createdAt)
     _set(_deletedAt, for: \._deletedAt)
     _set(archivedAt, for: \.archivedAt)
+    _set(corpusItem, for: \.corpusItem)
     _set(id, for: \.id)
     _set(isArchived, for: \.isArchived)
     _set(isFavorite, for: \.isFavorite)
