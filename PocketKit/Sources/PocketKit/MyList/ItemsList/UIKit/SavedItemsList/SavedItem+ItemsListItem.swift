@@ -29,7 +29,7 @@ extension SavedItem: ItemsListItem {
     }
 
     var displayDomain: String? {
-        item?.domainMetadata?.name ?? item?.domain ?? host
+        item?.domain ?? item?.domainMetadata?.name ?? host
     }
 
     var displayDetail: String {
