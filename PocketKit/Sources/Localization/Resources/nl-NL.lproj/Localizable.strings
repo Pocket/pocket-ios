@@ -243,8 +243,6 @@
 "Share" = "Delen";
 "carousel.listen" = "Luisteren";
 
-"Saves" = "Opgeslagen";
-
 "Display Settings" = "Instellingen weergeven";
 "Font" = "Lettertype";
 "Font Size" = "Lettergrootte";
@@ -325,12 +323,11 @@
 "itemWidgets.recentSaves.emptyMessage" = "Begin met het samenstellen van je Pocket-lijst.";
 "itemWidgets.recentSaves.title" = "Recent opgeslagen";
 "itemWidgets.recentSaves.description" = "Krijg toegang tot je meest recent opgeslagen artikelen.";
-"itemWidgets.recommendations.emptyMessage" = "Je bent wellicht offline. Bekijk aanbevelingen in je Pocket-app";
+"itemWidgets.recommendations.emptyMessage" = "Je bent wellicht offline. Controleer je netwerkverbinding.";
 "itemWidgets.recommendations.title" = "Aanbevelingen";
 "itemWidgets.recommendations.description" = "Ontdek de meest prikkelende verhalen, geselecteerd door Pocket.";
 
 // Collection
-"collection.title" = "Collection";
 "collection.stories.count" = "%1$@ items";
 
 // Errors
