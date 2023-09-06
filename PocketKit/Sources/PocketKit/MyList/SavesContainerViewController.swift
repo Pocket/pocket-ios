@@ -269,7 +269,7 @@ extension SavesContainerViewController {
             self?.present(activity: activity)
         }.store(in: &subscriptions)
 
-        model.savedItemsList.$selectedItem.sink { [weak self] selectedSavedItem in
+        model.savedItemsList.$selectedItem.receive(on: DispatchQueue.main).sink { [weak self] selectedSavedItem in
             guard let selectedSavedItem = selectedSavedItem else { return }
             self?.navigate(selectedItem: selectedSavedItem)
         }.store(in: &subscriptions)
