@@ -95,7 +95,7 @@
 "search.banner.errorMessage." = "We’re experiencing an error and can’t show you full search results. Please try again later.";
 "search.error.view.needsInternet" = "You must have an internet connection to view this item.";
 "search.recent" = "Recent searches";
-"search.recent.empty" = "Recent searches will appear here, so you can easily jump back in.";
+"search.recent.empty" = "Recent searches will appear here so you can jump back in easily.";
 "search.swipe.archive" = "Archive";
 "search.swipe.moveToSaves" = "Move to Saves";
 "search.edit.banner" = "Editing your search results is not available in this version of Pocket, but will be returning soon!";

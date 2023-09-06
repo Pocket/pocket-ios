@@ -471,8 +471,8 @@ public enum Localization {
       }
     }
     public enum Recent {
-      /// Recent searches will appear here, so you can easily jump back in.
-      public static let empty = Localization.tr("Localizable", "search.recent.empty", fallback: "Recent searches will appear here, so you can easily jump back in.")
+      /// Recent searches will appear here so you can jump back in easily.
+      public static let empty = Localization.tr("Localizable", "search.recent.empty", fallback: "Recent searches will appear here so you can jump back in easily.")
     }
     public enum Results {
       public enum Empty {
