@@ -98,7 +98,10 @@ public class Space {
             for entity in objectModel.entities {
                 let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: entity.name!)
                 let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-                try backgroundContext.execute(deleteRequest)
+                deleteRequest.resultType = .resultTypeObjectIDs
+                let result = try backgroundContext.execute(deleteRequest) as? NSBatchDeleteResult
+                let changes: [AnyHashable: Any] = [NSDeletedObjectsKey: result?.result as? [NSManagedObjectID] ?? []]
+                NSManagedObjectContext.mergeChanges(fromRemoteContextSave: changes, into: [backgroundContext])
             }
             backgroundContext.reset()
         }
