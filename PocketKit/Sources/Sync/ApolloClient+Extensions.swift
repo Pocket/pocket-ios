@@ -126,10 +126,12 @@ private class UnauthorizedErrorInterceptor: ApolloErrorInterceptor {
         completion: @escaping (Result<Apollo.GraphQLResult<Operation.Data>, Error>) -> Void
     ) where Operation: ApolloAPI.GraphQLOperation {
         // This case will be sent from a ResponseCodeInterceptor, which is a part of the base DefaultInterceptorProvider
-        // that is used by our PrependingUnauthorizedInterceptorProvider. A 401 (Unauthorized) status code
+        // that is used by our PrependingUnauthorizedInterceptorProvider. A 401 (Unauthorized) or 403 (Forbidden)  status code
         // will cause this error to be handled. We can capture it, and post a notification  to then log a user out.
+        let invalidResponseCodes = [401, 403]
         if case ResponseCodeInterceptor.ResponseCodeError.invalidResponseCode(response: let errorResponse, rawData: _) = error,
-           errorResponse?.statusCode == 401 {
+           let statusCode = errorResponse?.statusCode,
+           invalidResponseCodes.contains(statusCode) {
             NotificationCenter.default.post(name: .unauthorizedResponse, object: nil)
         }
 
