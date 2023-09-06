@@ -55,7 +55,9 @@ public struct RecentSavesWidgetUpdateService {
         if let index = currentItems.firstIndex(where: { $0.url == savedItem.url }) {
             currentItems.remove(at: index)
         } else {
-            currentItems.removeLast()
+            if currentItems.isEmpty == false {
+                currentItems.removeLast()
+            }
         }
 
         let newItem = ItemContent(
