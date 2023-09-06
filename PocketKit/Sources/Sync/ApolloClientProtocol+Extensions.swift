@@ -77,6 +77,7 @@ public extension ApolloClientProtocol {
                                           funcName: String) {
         // Codes we wish to notify the user about
         let notifiableErrorCodes = [429, 500, 503]
+        let skippableErrors = [403]
 
         guard let responseError = error as? ResponseCodeInterceptor.ResponseCodeError else {
             Log.capture(message: "GraphQl Error - unknown error.", filename: filename, line: line, column: column, funcName: funcName)
@@ -91,10 +92,24 @@ public extension ApolloClientProtocol {
             funcName: funcName
         )
 
-        if case .invalidResponseCode(let response, _) = responseError,
-           let code = response?.statusCode,
-           notifiableErrorCodes.contains(code) {
-            NotificationCenter.default.post(name: .serverError, object: code)
+        // If we've received an invalid response code from the server…
+        if case .invalidResponseCode(let response, _) = responseError, let statusCode = response?.statusCode {
+            // …and we shouldn't skip over the error…
+            if skippableErrors.contains(statusCode) == false {
+                // …then capture the error
+                Log.capture(
+                    message: "GraphQl Error - description: \(responseError.errorDescription ?? "no description found").",
+                    filename: filename,
+                    line: line,
+                    column: column,
+                    funcName: funcName
+                )
+            }
+
+            // …and if we're notifiable, do so
+            if notifiableErrorCodes.contains(statusCode) {
+                NotificationCenter.default.post(name: .serverError, object: statusCode)
+            }
         }
     }
 }
