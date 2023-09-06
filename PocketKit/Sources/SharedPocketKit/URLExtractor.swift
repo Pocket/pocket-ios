@@ -14,12 +14,17 @@ public enum URLExtractor {
     /// - Discussion:
     public static func url(from itemProvider: ItemProvider) async -> String? {
         if itemProvider.hasItemConformingToTypeIdentifier("public.url") { // We're handed a URL
-            guard let url = try? await itemProvider.loadItem(forTypeIdentifier: "public.url", options: nil) as? URL else {
+            let item = try? await itemProvider.loadItem(forTypeIdentifier: "public.url", options: nil)
+            if let url = item as? URL {
+                return firstURL(in: url)
+            } else if let data = item as? Data, let url = URL(dataRepresentation: data, relativeTo: nil) {
+                // Running the share extension on Apple Silicon appears to be providing us the URL
+                // as data, so if we can first create a URL from that data, we can attempt to grab it
+                return firstURL(in: url)
+            } else {
                 Log.breadcrumb(category: "urlExtractor", level: .error, message: "Unable to load item as URL from itemProvider for type identifier public.url")
                 return nil
             }
-
-            return firstURL(in: url)
         } else if itemProvider.hasItemConformingToTypeIdentifier("public.plain-text") { // We're handed a String that may contain a URL
             guard let string = try? await itemProvider.loadItem(forTypeIdentifier: "public.plain-text", options: nil) as? String else {
                 Log.breadcrumb(category: "urlExtractor", level: .error, message: "Unable to load item as String from itemProvider for type identifier public.plain-text")
