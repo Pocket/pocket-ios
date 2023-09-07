@@ -157,7 +157,6 @@ class FetchSavesTests: XCTestCase {
         let savedItem2 = savedItems[1]
         let item2 = savedItem2.item
         XCTAssertEqual(item2!.domain!, "example.com")
-
     }
 
     func test_refresh_whenFetchSucceeds_andResultContainsDuplicateItems_createsSingleItem() async throws {
