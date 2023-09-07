@@ -243,8 +243,6 @@
 "Share" = "Поделиться";
 "carousel.listen" = "Слушать";
 
-"Saves" = "Сохраненное";
-
 "Display Settings" = "Отобразить настройки";
 "Font" = "Шрифт";
 "Font Size" = "Размер шрифта";
@@ -325,12 +323,11 @@
 "itemWidgets.recentSaves.emptyMessage" = "Начните создавать свой список Pocket.";
 "itemWidgets.recentSaves.title" = "Недавно сохраненное";
 "itemWidgets.recentSaves.description" = "Получите доступ к последним сохраненным статьям.";
-"itemWidgets.recommendations.emptyMessage" = "Возможно, вы не в сети. Проверьте рекомендации в приложении Pocket.";
+"itemWidgets.recommendations.emptyMessage" = "Возможно, вы офлайн. Проверьте подключение к интернету.";
 "itemWidgets.recommendations.title" = "Рекомендации";
 "itemWidgets.recommendations.description" = "Откройте для себя самые интересные и поучительные истории, рекомендованные Pocket.";
 
 // Collection
-"collection.title" = "Collection";
 "collection.stories.count" = "%1$@ материалов";
 
 // Errors
