@@ -139,6 +139,27 @@ class FetchSavesTests: XCTestCase {
         XCTAssertEqual(item?.syndicatedArticle?.itemID, "syndicated-article-item-id")
     }
 
+    func test_refresh_whenFetchSucceeds_useCorpusItemPublisherIfItExists() async throws {
+        user.stubSetStatus { _ in }
+        apollo.setupFetchSavesSyncResponse(listFixtureName: "list-with-corpusItem")
+
+        let service = subject()
+        _ = await service.execute(syncTaskId: task.objectID)
+
+        let savedItems = try space.fetchAllSavedItems().sorted { $0.remoteID! < $1.remoteID! }
+        XCTAssertEqual(savedItems.count, 2)
+
+        let savedItem1 = savedItems[0]
+        let item1 = savedItem1.item
+        XCTAssertEqual(savedItem1.remoteID, "saved-item-1")
+        XCTAssertEqual(item1?.domain, "CorpusItemPublisher-1")
+
+        let savedItem2 = savedItems[1]
+        let item2 = savedItem2.item
+        XCTAssertEqual(item2!.domain!, "example.com")
+
+    }
+
     func test_refresh_whenFetchSucceeds_andResultContainsDuplicateItems_createsSingleItem() async throws {
         user.stubSetStatus { _ in }
         apollo.setupFetchSavesSyncResponse(listFixtureName: "duplicate-list")
