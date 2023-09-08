@@ -47,18 +47,15 @@ extension SavedItem {
             return fetchedTag
         } ?? [])
 
-        if let corpusItem = remote.corpusItem {
-            Log.breadcrumb(category: "sync", level: .debug, message: "Updating corpus item parts for \(corpusItem.id)")
-            let givenURL = corpusItem.url
-            let itemToUpdate = (try? space.fetchItem(byURL: givenURL, context: context)) ?? Item(context: context, givenURL: givenURL, remoteID: corpusItem.id)
-            itemToUpdate.update(from: corpusItem, in: space)
-            item = itemToUpdate
-        } else if let itemParts = remote.item.asItem?.fragments.itemParts {
+        if let itemParts = remote.item.asItem?.fragments.itemParts {
             Log.breadcrumb(category: "sync", level: .debug, message: "Updating item parts for \(itemParts.remoteID)")
 
             let givenURL = itemParts.givenUrl
             let itemToUpdate = (try? space.fetchItem(byURL: givenURL, context: context)) ?? Item(context: context, givenURL: givenURL, remoteID: itemParts.remoteID)
             itemToUpdate.update(remote: itemParts, with: space)
+            if let corpusItem = remote.corpusItem {
+                itemToUpdate.domain = corpusItem.publisher
+            }
             item = itemToUpdate
         } else if let pendingParts = remote.item.asPendingItem?.fragments.pendingItemParts {
             Log.breadcrumb(category: "sync", level: .debug, message: "Updating pending parts for \(pendingParts.remoteID)")
@@ -102,19 +99,15 @@ extension SavedItem {
             tag.update(remote: summaryTag.fragments.tagParts)
             return tag
         } ?? [])
-        if let corpusItem = summary.corpusItem {
-            Log.breadcrumb(category: "sync", level: .debug, message: "Updating corpus item from summary for \(corpusItem.id)")
-            let givenURL = corpusItem.url
-            let itemToUpdate = (try? space.fetchItem(byURL: givenURL, context: context)) ?? Item(context: context, givenURL: givenURL, remoteID: corpusItem.id)
-            itemToUpdate.update(from: corpusItem, in: space)
-            item = itemToUpdate
-        }
         if let itemSummary = summary.item.asItem?.fragments.itemSummary {
             Log.breadcrumb(category: "sync", level: .debug, message: "Updating item parts from summary for \(itemSummary.remoteID)")
 
             let givenURL = itemSummary.givenUrl
             let itemToUpdate = (try? space.fetchItem(byURL: givenURL, context: context)) ?? Item(context: context, givenURL: givenURL, remoteID: itemSummary.remoteID)
             itemToUpdate.update(from: itemSummary, with: space)
+            if let corpusItem = summary.corpusItem {
+                itemToUpdate.domain = corpusItem.publisher
+            }
             item = itemToUpdate
         } else if let pendingParts = summary.item.asPendingItem?.fragments.pendingItemParts {
             Log.breadcrumb(category: "sync", level: .debug, message: "Updating pending parts from summary for \(pendingParts.remoteID)")

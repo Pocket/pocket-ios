@@ -12,8 +12,6 @@ protocol RemoteAuthor {
 }
 
 extension CorpusSlateParts.Recommendation.CorpusItem.Target.AsCollection.Author: RemoteAuthor {}
-extension SavedItemParts.CorpusItem.Target.AsCollection.Author: RemoteAuthor {}
-extension SavedItemSummary.CorpusItem.Target.AsCollection.Author: RemoteAuthor {}
 
 extension Collection {
     public typealias RemoteCollection = GetCollectionBySlugQuery.Data.Collection

@@ -1,3 +1,7 @@
+fragment CorpusItemSummary on CorpusItem {
+    publisher
+}
+
 fragment SavedItemParts on SavedItem {
   url
   remoteID: id
@@ -16,7 +20,7 @@ fragment SavedItemParts on SavedItem {
   }
   corpusItem {
     __typename
-    ...CorpusItemParts
+    ...CorpusItemSummary
   }
 }
 
