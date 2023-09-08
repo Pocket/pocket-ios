@@ -110,8 +110,6 @@ extension FeatureFlagService: NSFetchedResultsControllerDelegate {
 
 /// Describes the current feature flags that iOS cares about
 public enum CurrentFeatureFlags: String, CaseIterable {
-    case listen = "temp.ios.listen"
-    case listenTagsPlaylists = "temp.ios.listen.tag_playlists"
     case debugMenu = "perm.ios.debug.menu"
     case traceSampling = "perm.ios.sentry.traces"
     case profileSampling = "perm.ios.sentry.profile"
@@ -122,10 +120,6 @@ public enum CurrentFeatureFlags: String, CaseIterable {
     /// Description to use in a debug menu
     var description: String {
         switch self {
-        case .listen:
-            return "Enable the Listen feature"
-        case .listenTagsPlaylists:
-            return "Enable the Playlist support via tags in Listen"
         case .debugMenu:
             return "Debug menu for iOS"
         case .traceSampling:
