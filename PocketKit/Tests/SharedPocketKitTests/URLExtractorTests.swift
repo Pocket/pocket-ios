@@ -26,6 +26,26 @@ class URLExtractorTests: XCTestCase {
         XCTAssertEqual(extracted, "https://getpocket.com")
     }
 
+    func test_extract_whenItemProviderHasURL_asData_returnsURL() async {
+        let itemProvider = MockItemProvider()
+        itemProvider.stubHasItemConformingToTypeIdentifier { id in
+            return id == "public.url"
+        }
+        itemProvider.stubLoadItem { _, _ in
+            URL(string: "https://getpocket.com")!.dataRepresentation as NSSecureCoding
+        }
+
+        var extracted = await URLExtractor.url(from: itemProvider)
+        XCTAssertEqual(extracted, "https://getpocket.com")
+
+        itemProvider.stubLoadItem { _, _ in
+            URL(string: "https%3a%2f%2fgetpocket.com")! as NSSecureCoding
+        }
+
+        extracted = await URLExtractor.url(from: itemProvider)
+        XCTAssertEqual(extracted, "https://getpocket.com")
+    }
+
     func test_extract_whenItemProviderHasExternalAppURL_returnsURL() async {
         let itemProvider = MockItemProvider()
         itemProvider.stubHasItemConformingToTypeIdentifier { id in
