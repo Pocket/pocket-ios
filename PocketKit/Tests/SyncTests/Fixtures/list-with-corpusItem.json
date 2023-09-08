@@ -35,14 +35,7 @@
                                     "name": "tag-2"
                                 }],
                             "corpusItem": {
-                                "__typename": "CorpusItem",
-                                "id": "item-1",
-                                "url": "https://given.example.com/item-1",
-                                "title": "This Item Is In Corpus",
-                                "excerpt": "Cursus Aenean Elit",
-                                "imageUrl": "https://example.com/item-1/top-image.jpg",
-                                "publisher":"CorpusItemPublisher-1",
-                                "target": null
+                                "publisher":"CorpusItemPublisher-1"
                             },
                             "item": {
                                 "__typename": "Item",
