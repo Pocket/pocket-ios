@@ -35,6 +35,7 @@
                                     "name": "tag-2"
                                 }],
                             "corpusItem": {
+                                "__typename": "CorpusItem",
                                 "publisher":"CorpusItemPublisher-1"
                             },
                             "item": {
