@@ -70,7 +70,6 @@
 		65EC272928BA8AD50075E1DF /* UserNotificationsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65EC272828BA8AD50075E1DF /* UserNotificationsUI.framework */; };
 		65EC272C28BA8AD50075E1DF /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EC272B28BA8AD50075E1DF /* NotificationViewController.swift */; };
 		65EC273328BA8AD50075E1DF /* PushNotificationStoryExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 65EC272528BA8AD50075E1DF /* PushNotificationStoryExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		65FD101229E779D4000B0CEF /* ListenTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FD101129E779D4000B0CEF /* ListenTests.swift */; };
 		8A3B77BD29E0AEEB00AD71D0 /* PocketKit in Frameworks */ = {isa = PBXBuildFile; productRef = 8A3B77BC29E0AEEB00AD71D0 /* PocketKit */; };
 		8A3E3DBC2864DB0500483564 /* EmptyStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A3E3DBB2864DB0500483564 /* EmptyStateTests.swift */; };
 		8A3EAA5128AACC9500392057 /* AddTagsItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A3EAA5028AACC9500392057 /* AddTagsItemTests.swift */; };
@@ -255,7 +254,6 @@
 		65EC272B28BA8AD50075E1DF /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
 		65EC273028BA8AD50075E1DF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		65EDF6B22901979800D737E0 /* UITests-3.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = "UITests-3.xctestplan"; sourceTree = "<group>"; };
-		65FD101129E779D4000B0CEF /* ListenTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListenTests.swift; sourceTree = "<group>"; };
 		8A3E3DBB2864DB0500483564 /* EmptyStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateTests.swift; sourceTree = "<group>"; };
 		8A3EAA5028AACC9500392057 /* AddTagsItemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTagsItemTests.swift; sourceTree = "<group>"; };
 		8A47CA8D28BD4A9C003DB4BD /* TagsFilterViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagsFilterViewElement.swift; sourceTree = "<group>"; };
@@ -371,7 +369,6 @@
 		164FB66C278F7E52002959D6 /* MyList */ = {
 			isa = PBXGroup;
 			children = (
-				65FD101129E779D4000B0CEF /* ListenTests.swift */,
 				8A3E3DBB2864DB0500483564 /* EmptyStateTests.swift */,
 				166A81C42637406C0015AA1D /* SavesTests.swift */,
 				8ADD6A9E292C189C007F419D /* SearchTests.swift */,
@@ -966,7 +963,6 @@
 				166EFAEA2682821300A027CD /* WebReaderElement.swift in Sources */,
 				16EE3F5026CEC80900249AF4 /* PullToRefreshTests.swift in Sources */,
 				160056F326CC7FFD00700A80 /* FavoriteAnItemTests.swift in Sources */,
-				65FD101229E779D4000B0CEF /* ListenTests.swift in Sources */,
 				166BAD0A2656E76B00E401F0 /* SignInFormElement.swift in Sources */,
 				8A4ECEF9287775F90007DB67 /* SectionHeaderElement.swift in Sources */,
 				16C2B03F270CF82700D194AA /* RecommendationCellElement.swift in Sources */,
