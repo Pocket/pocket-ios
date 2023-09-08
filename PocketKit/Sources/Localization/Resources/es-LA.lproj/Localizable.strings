@@ -243,8 +243,6 @@
 "Share" = "Compartir";
 "carousel.listen" = "Escuchar";
 
-"Saves" = "Guardado";
-
 "Display Settings" = "Opciones de visualización";
 "Font" = "Fuente";
 "Font Size" = "Tamaño de fuente";
@@ -325,12 +323,11 @@
 "itemWidgets.recentSaves.emptyMessage" = "Comienza a crear tu lista de Pocket.";
 "itemWidgets.recentSaves.title" = "Guardado recientemente";
 "itemWidgets.recentSaves.description" = "Accede a tus últimos artículos guardados.";
-"itemWidgets.recommendations.emptyMessage" = "Puede que no tengas conexión a Internet. Consulta las recomendaciones en tu aplicación de Pocket.";
+"itemWidgets.recommendations.emptyMessage" = "Puede que no tengas conexión a Internet. Comprueba tu conexión de red.";
 "itemWidgets.recommendations.title" = "Recomendados";
 "itemWidgets.recommendations.description" = "Descubre las historias que más invitan a la reflexión, seleccionadas por Pocket.";
 
 // Collection
-"collection.title" = "Collection";
 "collection.stories.count" = "%1$@ enlaces";
 
 // Errors

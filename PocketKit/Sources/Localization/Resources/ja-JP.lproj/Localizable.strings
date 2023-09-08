@@ -243,8 +243,6 @@
 "Share" = "共有";
 "carousel.listen" = "聴く";
 
-"Saves" = "保存アイテム";
-
 "Display Settings" = "表示設定";
 "Font" = "フォント";
 "Font Size" = "フォントサイズ";
@@ -325,12 +323,11 @@
 "itemWidgets.recentSaves.emptyMessage" = "Pocket リストを作成しましょう。";
 "itemWidgets.recentSaves.title" = "最近保存したアイテム";
 "itemWidgets.recentSaves.description" = "最近保存した記事にアクセスしましょう。";
-"itemWidgets.recommendations.emptyMessage" = "オフラインになっている可能性があります。Pocket アプリで推奨事項を確認してください。";
+"itemWidgets.recommendations.emptyMessage" = "オフラインになっている可能性があります。ネットワーク接続を確認してください。";
 "itemWidgets.recommendations.title" = "おすすめ";
 "itemWidgets.recommendations.description" = "Pocket が厳選！色々と考えさせられる興味深いストーリーをお届けします。";
 
 // Collection
-"collection.title" = "Collection";
 "collection.stories.count" = "%1$@ 件のアイテム";
 
 // Errors
