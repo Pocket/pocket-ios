@@ -221,6 +221,11 @@ struct Services {
         if persistentContainer.didReset {
             onReset()
         }
+        SignOutOnFirstLaunch(
+            appSession: appSession,
+            user: user,
+            userDefaults: userDefaults
+        ).signOutOnFirstLaunch()
     }
 }
 

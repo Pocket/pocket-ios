@@ -98,12 +98,6 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
             Textiles.clearImageCache()
         }
 
-        SignOutOnFirstLaunch(
-            appSession: appSession,
-            user: user,
-            userDefaults: userDefaults
-        ).signOutOnFirstLaunch()
-
         if let guid = ProcessInfo.processInfo.environment["sessionGUID"],
            let accessToken = ProcessInfo.processInfo.environment["accessToken"],
            let userIdentifier = ProcessInfo.processInfo.environment["sessionUserID"] {
