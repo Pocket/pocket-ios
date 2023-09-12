@@ -84,14 +84,6 @@ public extension ApolloClientProtocol {
             return
         }
 
-        Log.capture(
-            message: "GraphQl Error - description: \(responseError.errorDescription ?? "no description found").",
-            filename: filename,
-            line: line,
-            column: column,
-            funcName: funcName
-        )
-
         // If we've received an invalid response code from the server…
         if case .invalidResponseCode(let response, _) = responseError, let statusCode = response?.statusCode {
             // …and we shouldn't skip over the error…
@@ -110,6 +102,14 @@ public extension ApolloClientProtocol {
             if notifiableErrorCodes.contains(statusCode) {
                 NotificationCenter.default.post(name: .serverError, object: statusCode)
             }
+        } else {
+            Log.capture(
+                message: "GraphQl Error - description: \(responseError.errorDescription ?? "no description found").",
+                filename: filename,
+                line: line,
+                column: column,
+                funcName: funcName
+            )
         }
     }
 }
