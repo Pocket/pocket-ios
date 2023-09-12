@@ -53,6 +53,9 @@ extension SavedItem {
             let givenURL = itemParts.givenUrl
             let itemToUpdate = (try? space.fetchItem(byURL: givenURL, context: context)) ?? Item(context: context, givenURL: givenURL, remoteID: itemParts.remoteID)
             itemToUpdate.update(remote: itemParts, with: space)
+            if let corpusItem = remote.corpusItem {
+                itemToUpdate.domain = corpusItem.publisher
+            }
             item = itemToUpdate
         } else if let pendingParts = remote.item.asPendingItem?.fragments.pendingItemParts {
             Log.breadcrumb(category: "sync", level: .debug, message: "Updating pending parts for \(pendingParts.remoteID)")
@@ -96,13 +99,15 @@ extension SavedItem {
             tag.update(remote: summaryTag.fragments.tagParts)
             return tag
         } ?? [])
-
         if let itemSummary = summary.item.asItem?.fragments.itemSummary {
             Log.breadcrumb(category: "sync", level: .debug, message: "Updating item parts from summary for \(itemSummary.remoteID)")
 
             let givenURL = itemSummary.givenUrl
             let itemToUpdate = (try? space.fetchItem(byURL: givenURL, context: context)) ?? Item(context: context, givenURL: givenURL, remoteID: itemSummary.remoteID)
             itemToUpdate.update(from: itemSummary, with: space)
+            if let corpusItem = summary.corpusItem {
+                itemToUpdate.domain = corpusItem.publisher
+            }
             item = itemToUpdate
         } else if let pendingParts = summary.item.asPendingItem?.fragments.pendingItemParts {
             Log.breadcrumb(category: "sync", level: .debug, message: "Updating pending parts from summary for \(pendingParts.remoteID)")

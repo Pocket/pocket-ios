@@ -125,7 +125,7 @@ class SavedItemViewModel: ReadableViewModel {
     }
 
     var domain: String? {
-        item.item?.domainMetadata?.name ?? item.item?.domain ?? item.host
+        item.displayDomain
     }
 
     var publishDate: Date? {

@@ -23,6 +23,10 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
         ...ItemParts
         ...PendingItemParts
       }
+      corpusItem {
+        __typename
+        ...CorpusItemSummary
+      }
     }
     """ }
 
@@ -41,6 +45,7 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
     .field("archivedAt", Int?.self),
     .field("tags", [Tag]?.self),
     .field("item", Item.self),
+    .field("corpusItem", CorpusItem?.self),
   ] }
 
   /// The url the user saved to their list
@@ -61,6 +66,8 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
   public var tags: [Tag]? { __data["tags"] }
   /// Link to the underlying Pocket Item for the URL
   public var item: Item { __data["item"] }
+  /// If the item is in corpus allow the saved item to reference it.  Exposing curated info for consistent UX
+  public var corpusItem: CorpusItem? { __data["corpusItem"] }
 
   public init(
     url: String,
@@ -71,7 +78,8 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
     _createdAt: Int,
     archivedAt: Int? = nil,
     tags: [Tag]? = nil,
-    item: Item
+    item: Item,
+    corpusItem: CorpusItem? = nil
   ) {
     self.init(_dataDict: DataDict(
       data: [
@@ -85,6 +93,7 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
         "archivedAt": archivedAt,
         "tags": tags._fieldData,
         "item": item._fieldData,
+        "corpusItem": corpusItem._fieldData,
       ],
       fulfilledFragments: [
         ObjectIdentifier(Self.self)
@@ -914,6 +923,45 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
           ]
         ))
       }
+    }
+  }
+
+  /// CorpusItem
+  ///
+  /// Parent Type: `CorpusItem`
+  public struct CorpusItem: PocketGraph.SelectionSet {
+    public let __data: DataDict
+    public init(_dataDict: DataDict) { __data = _dataDict }
+
+    public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.CorpusItem }
+    public static var __selections: [ApolloAPI.Selection] { [
+      .field("__typename", String.self),
+      .fragment(CorpusItemSummary.self),
+    ] }
+
+    /// The name of the online publication that published this story.
+    public var publisher: String { __data["publisher"] }
+
+    public struct Fragments: FragmentContainer {
+      public let __data: DataDict
+      public init(_dataDict: DataDict) { __data = _dataDict }
+
+      public var corpusItemSummary: CorpusItemSummary { _toFragment() }
+    }
+
+    public init(
+      publisher: String
+    ) {
+      self.init(_dataDict: DataDict(
+        data: [
+          "__typename": PocketGraph.Objects.CorpusItem.typename,
+          "publisher": publisher,
+        ],
+        fulfilledFragments: [
+          ObjectIdentifier(Self.self),
+          ObjectIdentifier(CorpusItemSummary.self)
+        ]
+      ))
     }
   }
 }

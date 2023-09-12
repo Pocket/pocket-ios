@@ -5,9 +5,16 @@
 import CoreData
 import PocketGraph
 
+/// Maps Collection Author coming
+/// from different graphQL types onto one
+protocol RemoteAuthor {
+    var name: String { get }
+}
+
+extension CorpusSlateParts.Recommendation.CorpusItem.Target.AsCollection.Author: RemoteAuthor {}
+
 extension Collection {
     public typealias RemoteCollection = GetCollectionBySlugQuery.Data.Collection
-    public typealias RemoteAuthor = CorpusSlateParts.Recommendation.CorpusItem.Target.AsCollection.Author
 
     func update(from remote: RemoteCollection, in space: Space, context: NSManagedObjectContext) {
         intro = remote.intro

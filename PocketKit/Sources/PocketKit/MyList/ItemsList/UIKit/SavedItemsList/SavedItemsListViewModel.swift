@@ -484,9 +484,6 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         snapshot.appendSections(sections)
 
         var cases = ItemsListFilter.allCases
-        if !self.featureFlags.isAssigned(flag: .listen) {
-            cases.removeAll(where: { $0 == .listen })
-        }
         snapshot.appendItems(
             cases.map { ItemsListCell<ItemIdentifier>.filterButton($0) },
             toSection: .filters
@@ -674,14 +671,6 @@ extension SavedItemsListViewModel {
                 title = Localization.archive
             }
 
-            // If the user selected a filter, and the user is not in the Listen tags playlist feature flag
-            // Remove any filters and sorts they selected and re-fetch data before showing listen.
-            if !selectedFilters.isEmpty && !featureFlags.isAssigned(flag: .listenTagsPlaylists) {
-                selectedFilters.removeAll()
-                presentedTagsFilter = nil
-                applySorting()
-                fetch()
-            }
             if let tag = self.presentedTagsFilter?.selectedTag {
                 switch tag {
                 case .recent(let tagName), .tag(let tagName):

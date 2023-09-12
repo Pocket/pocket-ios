@@ -11,6 +11,12 @@ import Combine
 @testable import SaveToPocketKit
 
 class SavedItemViewModelTests: XCTestCase {
+    class MockRecentSavesWidgetStore: ItemWidgetsStore {
+        var topics: [SharedPocketKit.ItemContentContainer] = []
+        var kind: Sync.ItemWidgetKind = .unknown
+        func updateTopics(_ topics: [SharedPocketKit.ItemContentContainer]) throws { }
+    }
+
     private var appSession: AppSession!
     private var saveService: MockSaveService!
     private var dismissTimer: Timer.TimerPublisher!

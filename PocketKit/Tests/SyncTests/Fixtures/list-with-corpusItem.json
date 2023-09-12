@@ -34,7 +34,10 @@
                                     "id": "id-2",
                                     "name": "tag-2"
                                 }],
-                            "corpusItem": null,
+                            "corpusItem": {
+                                "__typename": "CorpusItem",
+                                "publisher":"CorpusItemPublisher-1"
+                            },
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "item-1",
@@ -42,7 +45,7 @@
                                 "resolvedUrl": "https://resolved.example.com/item-1",
                                 "title": "Item 1",
                                 "topImageUrl": "https://example.com/item-1/top-image.jpg",
-                                "domain": "example.com",
+                                "domain": null,
                                 "language": "en",
                                 "timeToRead": 6,
                     "wordCount": 500,
@@ -110,7 +113,7 @@
                                 "resolvedUrl": "https://resolved.example.com/item-2",
                                 "title": "Item 2",
                                 "topImageUrl": "https://example.com/item-2/top-image.jpg",
-                                "domain": null,
+                                "domain": "example.com",
                                 "language": "en",
                                 "timeToRead": 6,
                     "wordCount": 500,

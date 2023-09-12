@@ -26,6 +26,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-3",
@@ -98,6 +99,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-4",

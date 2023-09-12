@@ -15,7 +15,7 @@ public class SaveItemMutation: GraphQLMutation {
         }
       }
       """#,
-      fragments: [SavedItemParts.self, TagParts.self, ItemParts.self, MarticleTextParts.self, ImageParts.self, MarticleDividerParts.self, MarticleTableParts.self, MarticleHeadingParts.self, MarticleCodeBlockParts.self, VideoParts.self, MarticleBulletedListParts.self, MarticleNumberedListParts.self, MarticleBlockquoteParts.self, DomainMetadataParts.self, SyndicatedArticleParts.self, PendingItemParts.self]
+      fragments: [SavedItemParts.self, TagParts.self, ItemParts.self, MarticleTextParts.self, ImageParts.self, MarticleDividerParts.self, MarticleTableParts.self, MarticleHeadingParts.self, MarticleCodeBlockParts.self, VideoParts.self, MarticleBulletedListParts.self, MarticleNumberedListParts.self, MarticleBlockquoteParts.self, DomainMetadataParts.self, SyndicatedArticleParts.self, PendingItemParts.self, CorpusItemSummary.self]
     ))
 
   public var input: SavedItemUpsertInput
@@ -70,6 +70,8 @@ public class SaveItemMutation: GraphQLMutation {
       public var tags: [Tag]? { __data["tags"] }
       /// Link to the underlying Pocket Item for the URL
       public var item: Item { __data["item"] }
+      /// If the item is in corpus allow the saved item to reference it.  Exposing curated info for consistent UX
+      public var corpusItem: CorpusItem? { __data["corpusItem"] }
 
       public struct Fragments: FragmentContainer {
         public let __data: DataDict
@@ -550,6 +552,26 @@ public class SaveItemMutation: GraphQLMutation {
 
             public var pendingItemParts: PendingItemParts { _toFragment() }
           }
+        }
+      }
+
+      /// UpsertSavedItem.CorpusItem
+      ///
+      /// Parent Type: `CorpusItem`
+      public struct CorpusItem: PocketGraph.SelectionSet {
+        public let __data: DataDict
+        public init(_dataDict: DataDict) { __data = _dataDict }
+
+        public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.CorpusItem }
+
+        /// The name of the online publication that published this story.
+        public var publisher: String { __data["publisher"] }
+
+        public struct Fragments: FragmentContainer {
+          public let __data: DataDict
+          public init(_dataDict: DataDict) { __data = _dataDict }
+
+          public var corpusItemSummary: CorpusItemSummary { _toFragment() }
         }
       }
     }

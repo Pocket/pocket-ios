@@ -31,7 +31,7 @@ public class FetchArchiveQuery: GraphQLQuery {
         }
       }
       """#,
-      fragments: [SavedItemSummary.self, TagParts.self, ItemSummary.self, DomainMetadataParts.self, SyndicatedArticleParts.self, PendingItemParts.self]
+      fragments: [SavedItemSummary.self, TagParts.self, ItemSummary.self, DomainMetadataParts.self, SyndicatedArticleParts.self, PendingItemParts.self, CorpusItemParts.self, CollectionSummary.self, CollectionAuthorSummary.self]
     ))
 
   public var pagination: GraphQLNullable<PaginationInput>
@@ -178,6 +178,8 @@ public class FetchArchiveQuery: GraphQLQuery {
             public var tags: [Tag]? { __data["tags"] }
             /// Link to the underlying Pocket Item for the URL
             public var item: Item { __data["item"] }
+            /// If the item is in corpus allow the saved item to reference it.  Exposing curated info for consistent UX
+            public var corpusItem: CorpusItem? { __data["corpusItem"] }
 
             public struct Fragments: FragmentContainer {
               public let __data: DataDict
@@ -357,6 +359,128 @@ public class FetchArchiveQuery: GraphQLQuery {
                   public init(_dataDict: DataDict) { __data = _dataDict }
 
                   public var pendingItemParts: PendingItemParts { _toFragment() }
+                }
+              }
+            }
+
+            /// User.SavedItems.Edge.Node.CorpusItem
+            ///
+            /// Parent Type: `CorpusItem`
+            public struct CorpusItem: PocketGraph.SelectionSet {
+              public let __data: DataDict
+              public init(_dataDict: DataDict) { __data = _dataDict }
+
+              public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.CorpusItem }
+
+              /// The GUID that is stored on an approved corpus item
+              public var id: PocketGraph.ID { __data["id"] }
+              /// The URL of the Approved Item.
+              public var url: PocketGraph.Url { __data["url"] }
+              /// The title of the Approved Item.
+              public var title: String { __data["title"] }
+              /// The excerpt of the Approved Item.
+              public var excerpt: String { __data["excerpt"] }
+              /// The image URL for this item's accompanying picture.
+              public var imageUrl: PocketGraph.Url { __data["imageUrl"] }
+              /// The name of the online publication that published this story.
+              public var publisher: String { __data["publisher"] }
+              /// If the Corpus Item is pocket owned with a specific type, this is the associated object (Collection or SyndicatedArticle).
+              public var target: Target? { __data["target"] }
+
+              public struct Fragments: FragmentContainer {
+                public let __data: DataDict
+                public init(_dataDict: DataDict) { __data = _dataDict }
+
+                public var corpusItemParts: CorpusItemParts { _toFragment() }
+              }
+
+              /// User.SavedItems.Edge.Node.CorpusItem.Target
+              ///
+              /// Parent Type: `CorpusTarget`
+              public struct Target: PocketGraph.SelectionSet {
+                public let __data: DataDict
+                public init(_dataDict: DataDict) { __data = _dataDict }
+
+                public static var __parentType: ApolloAPI.ParentType { PocketGraph.Unions.CorpusTarget }
+
+                public var asSyndicatedArticle: AsSyndicatedArticle? { _asInlineFragment() }
+                public var asCollection: AsCollection? { _asInlineFragment() }
+
+                /// User.SavedItems.Edge.Node.CorpusItem.Target.AsSyndicatedArticle
+                ///
+                /// Parent Type: `SyndicatedArticle`
+                public struct AsSyndicatedArticle: PocketGraph.InlineFragment, ApolloAPI.CompositeInlineFragment {
+                  public let __data: DataDict
+                  public init(_dataDict: DataDict) { __data = _dataDict }
+
+                  public typealias RootEntityType = FetchArchiveQuery.Data.User.SavedItems.Edge.Node.CorpusItem.Target
+                  public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.SyndicatedArticle }
+                  public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
+                    SyndicatedArticleParts.self,
+                    CorpusItemParts.Target.AsSyndicatedArticle.self
+                  ] }
+
+                  /// The item id of this Syndicated Article
+                  public var itemId: PocketGraph.ID? { __data["itemId"] }
+                  /// Primary image to use in surfacing this content
+                  public var mainImage: String? { __data["mainImage"] }
+                  /// Title of syndicated article
+                  public var title: String { __data["title"] }
+                  /// Excerpt 
+                  public var excerpt: String? { __data["excerpt"] }
+                  /// The manually set publisher information for this article
+                  public var publisher: SyndicatedArticleParts.Publisher? { __data["publisher"] }
+
+                  public struct Fragments: FragmentContainer {
+                    public let __data: DataDict
+                    public init(_dataDict: DataDict) { __data = _dataDict }
+
+                    public var syndicatedArticleParts: SyndicatedArticleParts { _toFragment() }
+                  }
+                }
+
+                /// User.SavedItems.Edge.Node.CorpusItem.Target.AsCollection
+                ///
+                /// Parent Type: `Collection`
+                public struct AsCollection: PocketGraph.InlineFragment, ApolloAPI.CompositeInlineFragment {
+                  public let __data: DataDict
+                  public init(_dataDict: DataDict) { __data = _dataDict }
+
+                  public typealias RootEntityType = FetchArchiveQuery.Data.User.SavedItems.Edge.Node.CorpusItem.Target
+                  public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Collection }
+                  public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
+                    CollectionSummary.self,
+                    CorpusItemParts.Target.AsCollection.self
+                  ] }
+
+                  public var slug: String { __data["slug"] }
+                  public var authors: [Author] { __data["authors"] }
+
+                  public struct Fragments: FragmentContainer {
+                    public let __data: DataDict
+                    public init(_dataDict: DataDict) { __data = _dataDict }
+
+                    public var collectionSummary: CollectionSummary { _toFragment() }
+                  }
+
+                  /// User.SavedItems.Edge.Node.CorpusItem.Target.AsCollection.Author
+                  ///
+                  /// Parent Type: `CollectionAuthor`
+                  public struct Author: PocketGraph.SelectionSet {
+                    public let __data: DataDict
+                    public init(_dataDict: DataDict) { __data = _dataDict }
+
+                    public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.CollectionAuthor }
+
+                    public var name: String { __data["name"] }
+
+                    public struct Fragments: FragmentContainer {
+                      public let __data: DataDict
+                      public init(_dataDict: DataDict) { __data = _dataDict }
+
+                      public var collectionAuthorSummary: CollectionAuthorSummary { _toFragment() }
+                    }
+                  }
                 }
               }
             }

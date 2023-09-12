@@ -21,6 +21,7 @@
                     "name": "tag-2"
                 }
             ],
+            "corpusItem": null,
             "item": {
                 "__typename": "Item",
                 "remoteID": "item-1",

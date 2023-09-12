@@ -463,64 +463,6 @@ class SavedItemsListViewModelTests: XCTestCase {
 
         wait(for: [receivedSnapshot], timeout: 10)
     }
-
-    func test_snapshotContainsListen_WhenInFlag() throws {
-        _ = (1...2).map {
-            space.buildSavedItem(
-                remoteID: "saved-item-\($0)",
-                createdAt: Date(timeIntervalSince1970: TimeInterval($0))
-            )
-        }
-        try space.save()
-        featureFlags.stubIsAssigned { flag, variant in
-            if flag == .listen {
-                return true
-            }
-            XCTFail("Unknown feature flag")
-            return false
-        }
-
-        let viewModel = subject()
-
-        let receivedSnapshot = expectation(description: "receivedSnapshot")
-        viewModel.snapshot.dropFirst().sink { snapshot in
-            XCTAssertTrue(snapshot.itemIdentifiers(inSection: .filters).contains(.filterButton(.listen)))
-            receivedSnapshot.fulfill()
-        }.store(in: &subscriptions)
-
-        viewModel.fetch()
-
-        wait(for: [receivedSnapshot], timeout: 10)
-    }
-
-    func test_snapshotContainsListen_WhenNotInFlag() throws {
-        _ = (1...2).map {
-            space.buildSavedItem(
-                remoteID: "saved-item-\($0)",
-                createdAt: Date(timeIntervalSince1970: TimeInterval($0))
-            )
-        }
-        try space.save()
-        featureFlags.stubIsAssigned { flag, variant in
-            if flag == .listen {
-                return false
-            }
-            XCTFail("Unknown feature flag")
-            return false
-        }
-
-        let viewModel = subject()
-
-        let receivedSnapshot = expectation(description: "receivedSnapshot")
-        viewModel.snapshot.dropFirst().sink { snapshot in
-            XCTAssertTrue(!snapshot.itemIdentifiers(inSection: .filters).contains(.filterButton(.listen)))
-            receivedSnapshot.fulfill()
-        }.store(in: &subscriptions)
-
-        viewModel.fetch()
-
-        wait(for: [receivedSnapshot], timeout: 10)
-    }
 }
 
 // MARK: - Tags
