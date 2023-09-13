@@ -95,7 +95,7 @@
 "search.banner.errorMessage." = "Из-за возникшей ошибки мы не можем показать вам полные результаты поиска. Попробуйте позже.";
 "search.error.view.needsInternet" = "Для просмотра этого материала требуется подключение к Интернету.";
 "search.recent" = "Недавно искали";
-"search.recent.empty" = "Здесь отображаются последние поисковые запросы, благодаря чему и можно легко просматривать.";
+"search.recent.empty" = "Последние поисковые запросы появятся здесь, чтобы вы всегда могли их повторить.";
 "search.swipe.archive" = "Архив";
 "search.swipe.moveToSaves" = "Перейти к Сохраненному";
 "search.edit.banner" = "Редактирование результатов поиска недоступно в этой версии Pocket, но это ненадолго!";
@@ -323,7 +323,7 @@
 "itemWidgets.recentSaves.emptyMessage" = "Начните создавать свой список Pocket.";
 "itemWidgets.recentSaves.title" = "Недавно сохраненное";
 "itemWidgets.recentSaves.description" = "Получите доступ к последним сохраненным статьям.";
-"itemWidgets.recommendations.emptyMessage" = "You might be offline. Please check your network connection.";
+"itemWidgets.recommendations.emptyMessage" = "Возможно, вы офлайн. Проверьте подключение к интернету.";
 "itemWidgets.recommendations.title" = "Рекомендации";
 "itemWidgets.recommendations.description" = "Откройте для себя самые интересные и поучительные истории, рекомендованные Pocket.";
 
