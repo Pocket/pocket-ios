@@ -95,7 +95,7 @@
 "search.banner.errorMessage." = "Nous avons rencontré une erreur et ne pouvons pas afficher tous les résultats de recherche. Veuillez réessayer plus tard.";
 "search.error.view.needsInternet" = "Vous devez disposer d'une connexion Internet pour afficher cet élément.";
 "search.recent" = "Recherches récentes";
-"search.recent.empty" = "Les recherches récentes s'affichent ici, ce qui vous permet d'y revenir facilement.";
+"search.recent.empty" = "Les recherches récentes apparaîtront ici afin que vous puissiez y revenir facilement.";
 "search.swipe.archive" = "Archives";
 "search.swipe.moveToSaves" = "Déplacer vers les Sauvegardes";
 "search.edit.banner" = "La modification de vos résultats de recherche n'est pas disponible dans cette version de Pocket, mais elle sera bientôt de retour!";
