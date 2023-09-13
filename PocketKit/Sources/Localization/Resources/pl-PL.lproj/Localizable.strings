@@ -95,7 +95,7 @@
 "search.banner.errorMessage." = "Wystąpił błąd i nie możemy pokazać Ci pełnych wyników wyszukiwania. Spróbuj ponownie później.";
 "search.error.view.needsInternet" = "Aby wyświetlić ten element, musisz mieć połączenie z Internetem.";
 "search.recent" = "Ostatnie wyszukiwania";
-"search.recent.empty" = "Pojawią się tutaj ostatnie wyszukiwania, aby móc łatwo do nich wrócić.";
+"search.recent.empty" = "Ostatnie wyszukiwania pojawią się tutaj, aby można było łatwo do nich wrócić.";
 "search.swipe.archive" = "Archiwizuj";
 "search.swipe.moveToSaves" = "Przejdź do Zapisanych";
 "search.edit.banner" = "Edytowanie wyników wyszukiwania nie jest dostępne w tej wersji Pocket, ale wróci już wkrótce!";
