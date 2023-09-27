@@ -95,7 +95,7 @@
 "search.banner.errorMessage." = "오류가 발생하여 전체 검색 결과를 표시할 수 없습니다. 나중에 다시 시도하십시오.";
 "search.error.view.needsInternet" = "이 항목을 보려면 인터넷에 연결되어 있어야 합니다.";
 "search.recent" = "최근 검색 결과";
-"search.recent.empty" = "최근 검색이 여기에 표시되므로 간편하게 다시 검색할 수 있습니다.";
+"search.recent.empty" = "쉽게 다시 돌아갈 수 있도록 최근 검색어가 여기에 표시됩니다.";
 "search.swipe.archive" = "보관소";
 "search.swipe.moveToSaves" = "저장소로 이동";
 "search.edit.banner" = "이 Pocket 버전에서는 검색 결과를 편집할 수 없지만 곧 다시 제공될 예정입니다!";
