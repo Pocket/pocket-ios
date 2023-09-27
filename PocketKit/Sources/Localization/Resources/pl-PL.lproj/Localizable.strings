@@ -40,7 +40,7 @@
 "itemAction.displaySettings" = "Ustawienia wyświetlania";
 "itemAction.favorite" = "Dodaj do Ulubionych";
 "itemAction.unfavorite" = "Usuń z Ulubionych";
-"itemAction.moveToSaves" = "Przenieś do Zapisanych";
+"itemAction.moveToSaves" = "Przejdź do Zapisanych";
 "itemAction.open" = "Otwórz";
 "itemAction.report" = "Zgłoś";
 "itemAction.save" = "Zapisz";
