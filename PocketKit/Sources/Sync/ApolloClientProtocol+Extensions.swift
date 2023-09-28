@@ -80,8 +80,7 @@ public extension ApolloClientProtocol {
         let skippableErrors = [403]
 
         guard let responseError = error as? ResponseCodeInterceptor.ResponseCodeError else {
-
-            Log.capture(message: "GraphQl Error - unknown error: \(error.localizedDescription)", filename: filename, line: line, column: column, funcName: funcName)
+            Log.capture(message: "GraphQl Error - unknown error: \(error)", filename: filename, line: line, column: column, funcName: funcName)
             return
         }
 
