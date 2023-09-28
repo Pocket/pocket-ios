@@ -47,7 +47,7 @@ git rebase develop
 git push origin my-pr-branch --force[-with-lease]
 ```
 
-##Before Pushing
+## Before Pushing
 ### Running Danger Locally
 
 You can run danger locally to see what it would output by running the following in the root of the repository.
