@@ -24,7 +24,7 @@ let package = Package(
         .library(name: "ItemWidgetsKit", targets: ["ItemWidgetsKit"])
     ],
     dependencies: [
-        .package(url: "https://github.com/apollographql/apollo-ios.git", exact: "1.2.0"),
+        .package(url: "https://github.com/apollographql/apollo-ios.git", exact: "1.6.1"),
         .package(url: "https://github.com/onevcat/Kingfisher.git", exact: "7.7.0"),
         .package(url: "https://github.com/getsentry/sentry-cocoa.git", exact: "8.7.3"),
         .package(url: "https://github.com/snowplow/snowplow-objc-tracker", exact: "5.4.1"),

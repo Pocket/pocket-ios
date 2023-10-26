@@ -19,6 +19,6 @@ public extension Mock where O == MarticleNumberedList {
     rows: [Mock<NumberedListElement>]? = nil
   ) {
     self.init()
-    _set(rows, for: \.rows)
+    _setList(rows, for: \.rows)
   }
 }

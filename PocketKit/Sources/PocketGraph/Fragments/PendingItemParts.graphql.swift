@@ -4,14 +4,9 @@
 @_exported import ApolloAPI
 
 public struct PendingItemParts: PocketGraph.SelectionSet, Fragment {
-  public static var fragmentDefinition: StaticString { """
-    fragment PendingItemParts on PendingItem {
-      __typename
-      remoteID: itemId
-      givenUrl: url
-      status
-    }
-    """ }
+  public static var fragmentDefinition: StaticString {
+    #"fragment PendingItemParts on PendingItem { __typename remoteID: itemId givenUrl: url status }"#
+  }
 
   public let __data: DataDict
   public init(_dataDict: DataDict) { __data = _dataDict }
@@ -43,7 +38,7 @@ public struct PendingItemParts: PocketGraph.SelectionSet, Fragment {
         "status": status,
       ],
       fulfilledFragments: [
-        ObjectIdentifier(Self.self)
+        ObjectIdentifier(PendingItemParts.self)
       ]
     ))
   }

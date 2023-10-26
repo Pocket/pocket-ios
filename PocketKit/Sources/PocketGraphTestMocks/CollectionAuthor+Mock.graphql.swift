@@ -19,6 +19,6 @@ public extension Mock where O == CollectionAuthor {
     name: String? = nil
   ) {
     self.init()
-    _set(name, for: \.name)
+    _setScalar(name, for: \.name)
   }
 }

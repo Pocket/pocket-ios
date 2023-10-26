@@ -21,7 +21,7 @@ public extension Mock where O == CorpusRecommendation {
     id: PocketGraph.ID? = nil
   ) {
     self.init()
-    _set(corpusItem, for: \.corpusItem)
-    _set(id, for: \.id)
+    _setEntity(corpusItem, for: \.corpusItem)
+    _setScalar(id, for: \.id)
   }
 }

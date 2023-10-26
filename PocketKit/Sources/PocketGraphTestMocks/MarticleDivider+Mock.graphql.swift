@@ -19,6 +19,6 @@ public extension Mock where O == MarticleDivider {
     content: PocketGraph.Markdown? = nil
   ) {
     self.init()
-    _set(content, for: \.content)
+    _setScalar(content, for: \.content)
   }
 }

@@ -1876,7 +1876,7 @@
 			repositoryURL = "https://github.com/apollographql/apollo-ios.git";
 			requirement = {
 				kind = exactVersion;
-				version = 1.2.0;
+				version = 1.6.1;
 			};
 		};
 		65167B6D2909904200343FA8 /* XCRemoteSwiftPackageReference "braze-swift-sdk" */ = {

@@ -21,7 +21,7 @@ public extension Mock where O == CorpusSlateLineup {
     slates: [Mock<CorpusSlate>]? = nil
   ) {
     self.init()
-    _set(id, for: \.id)
-    _set(slates, for: \.slates)
+    _setScalar(id, for: \.id)
+    _setList(slates, for: \.slates)
   }
 }

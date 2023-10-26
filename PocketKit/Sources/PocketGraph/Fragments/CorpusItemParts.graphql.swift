@@ -4,28 +4,9 @@
 @_exported import ApolloAPI
 
 public struct CorpusItemParts: PocketGraph.SelectionSet, Fragment {
-  public static var fragmentDefinition: StaticString { """
-    fragment CorpusItemParts on CorpusItem {
-      __typename
-      id
-      url
-      title
-      excerpt
-      imageUrl
-      publisher
-      target {
-        __typename
-        ... on SyndicatedArticle {
-          __typename
-          ...SyndicatedArticleParts
-        }
-        ... on Collection {
-          __typename
-          ...CollectionSummary
-        }
-      }
-    }
-    """ }
+  public static var fragmentDefinition: StaticString {
+    #"fragment CorpusItemParts on CorpusItem { __typename id url title excerpt imageUrl publisher target { __typename ... on SyndicatedArticle { __typename ...SyndicatedArticleParts } ... on Collection { __typename ...CollectionSummary } } }"#
+  }
 
   public let __data: DataDict
   public init(_dataDict: DataDict) { __data = _dataDict }
@@ -78,7 +59,7 @@ public struct CorpusItemParts: PocketGraph.SelectionSet, Fragment {
         "target": target._fieldData,
       ],
       fulfilledFragments: [
-        ObjectIdentifier(Self.self)
+        ObjectIdentifier(CorpusItemParts.self)
       ]
     ))
   }
@@ -108,7 +89,7 @@ public struct CorpusItemParts: PocketGraph.SelectionSet, Fragment {
           "__typename": __typename,
         ],
         fulfilledFragments: [
-          ObjectIdentifier(Self.self)
+          ObjectIdentifier(CorpusItemParts.Target.self)
         ]
       ))
     }
@@ -161,8 +142,8 @@ public struct CorpusItemParts: PocketGraph.SelectionSet, Fragment {
             "publisher": publisher._fieldData,
           ],
           fulfilledFragments: [
-            ObjectIdentifier(Self.self),
             ObjectIdentifier(CorpusItemParts.Target.self),
+            ObjectIdentifier(CorpusItemParts.Target.AsSyndicatedArticle.self),
             ObjectIdentifier(SyndicatedArticleParts.self)
           ]
         ))
@@ -203,8 +184,8 @@ public struct CorpusItemParts: PocketGraph.SelectionSet, Fragment {
             "authors": authors._fieldData,
           ],
           fulfilledFragments: [
-            ObjectIdentifier(Self.self),
             ObjectIdentifier(CorpusItemParts.Target.self),
+            ObjectIdentifier(CorpusItemParts.Target.AsCollection.self),
             ObjectIdentifier(CollectionSummary.self)
           ]
         ))
@@ -237,8 +218,9 @@ public struct CorpusItemParts: PocketGraph.SelectionSet, Fragment {
               "name": name,
             ],
             fulfilledFragments: [
-              ObjectIdentifier(Self.self),
-              ObjectIdentifier(CollectionAuthorSummary.self)
+              ObjectIdentifier(CorpusItemParts.Target.AsCollection.Author.self),
+              ObjectIdentifier(CollectionAuthorSummary.self),
+              ObjectIdentifier(CollectionSummary.Author.self)
             ]
           ))
         }

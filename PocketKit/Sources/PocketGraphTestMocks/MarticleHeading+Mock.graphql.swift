@@ -21,7 +21,7 @@ public extension Mock where O == MarticleHeading {
     level: Int? = nil
   ) {
     self.init()
-    _set(content, for: \.content)
-    _set(level, for: \.level)
+    _setScalar(content, for: \.content)
+    _setScalar(level, for: \.level)
   }
 }

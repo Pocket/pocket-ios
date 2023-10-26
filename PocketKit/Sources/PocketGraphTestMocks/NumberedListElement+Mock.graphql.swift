@@ -23,8 +23,8 @@ public extension Mock where O == NumberedListElement {
     level: Int? = nil
   ) {
     self.init()
-    _set(content, for: \.content)
-    _set(index, for: \.index)
-    _set(level, for: \.level)
+    _setScalar(content, for: \.content)
+    _setScalar(index, for: \.index)
+    _setScalar(level, for: \.level)
   }
 }

@@ -4,31 +4,9 @@
 @_exported import ApolloAPI
 
 public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
-  public static var fragmentDefinition: StaticString { """
-    fragment SavedItemParts on SavedItem {
-      __typename
-      url
-      remoteID: id
-      isArchived
-      isFavorite
-      _deletedAt
-      _createdAt
-      archivedAt
-      tags {
-        __typename
-        ...TagParts
-      }
-      item {
-        __typename
-        ...ItemParts
-        ...PendingItemParts
-      }
-      corpusItem {
-        __typename
-        ...CorpusItemSummary
-      }
-    }
-    """ }
+  public static var fragmentDefinition: StaticString {
+    #"fragment SavedItemParts on SavedItem { __typename url remoteID: id isArchived isFavorite _deletedAt _createdAt archivedAt tags { __typename ...TagParts } item { __typename ...ItemParts ...PendingItemParts } corpusItem { __typename ...CorpusItemSummary } }"#
+  }
 
   public let __data: DataDict
   public init(_dataDict: DataDict) { __data = _dataDict }
@@ -96,7 +74,7 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
         "corpusItem": corpusItem._fieldData,
       ],
       fulfilledFragments: [
-        ObjectIdentifier(Self.self)
+        ObjectIdentifier(SavedItemParts.self)
       ]
     ))
   }
@@ -137,7 +115,7 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
           "id": id,
         ],
         fulfilledFragments: [
-          ObjectIdentifier(Self.self),
+          ObjectIdentifier(SavedItemParts.Tag.self),
           ObjectIdentifier(TagParts.self)
         ]
       ))
@@ -169,7 +147,7 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
           "__typename": __typename,
         ],
         fulfilledFragments: [
-          ObjectIdentifier(Self.self)
+          ObjectIdentifier(SavedItemParts.Item.self)
         ]
       ))
     }
@@ -285,8 +263,8 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
             "syndicatedArticle": syndicatedArticle._fieldData,
           ],
           fulfilledFragments: [
-            ObjectIdentifier(Self.self),
             ObjectIdentifier(SavedItemParts.Item.self),
+            ObjectIdentifier(SavedItemParts.Item.AsItem.self),
             ObjectIdentifier(ItemParts.self)
           ]
         ))
@@ -320,7 +298,7 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
               "__typename": __typename,
             ],
             fulfilledFragments: [
-              ObjectIdentifier(Self.self)
+              ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.self)
             ]
           ))
         }
@@ -358,9 +336,11 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
                 "content": content,
               ],
               fulfilledFragments: [
-                ObjectIdentifier(Self.self),
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.self),
-                ObjectIdentifier(MarticleTextParts.self)
+                ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.AsMarticleText.self),
+                ObjectIdentifier(MarticleTextParts.self),
+                ObjectIdentifier(ItemParts.Marticle.self),
+                ObjectIdentifier(ItemParts.Marticle.AsMarticleText.self)
               ]
             ))
           }
@@ -420,9 +400,11 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
                 "width": width,
               ],
               fulfilledFragments: [
-                ObjectIdentifier(Self.self),
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.self),
-                ObjectIdentifier(ImageParts.self)
+                ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.AsImage.self),
+                ObjectIdentifier(ImageParts.self),
+                ObjectIdentifier(ItemParts.Marticle.self),
+                ObjectIdentifier(ItemParts.Marticle.AsImage.self)
               ]
             ))
           }
@@ -461,9 +443,11 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
                 "content": content,
               ],
               fulfilledFragments: [
-                ObjectIdentifier(Self.self),
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.self),
-                ObjectIdentifier(MarticleDividerParts.self)
+                ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.AsMarticleDivider.self),
+                ObjectIdentifier(MarticleDividerParts.self),
+                ObjectIdentifier(ItemParts.Marticle.self),
+                ObjectIdentifier(ItemParts.Marticle.AsMarticleDivider.self)
               ]
             ))
           }
@@ -502,9 +486,11 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
                 "html": html,
               ],
               fulfilledFragments: [
-                ObjectIdentifier(Self.self),
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.self),
-                ObjectIdentifier(MarticleTableParts.self)
+                ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.AsMarticleTable.self),
+                ObjectIdentifier(MarticleTableParts.self),
+                ObjectIdentifier(ItemParts.Marticle.self),
+                ObjectIdentifier(ItemParts.Marticle.AsMarticleTable.self)
               ]
             ))
           }
@@ -547,9 +533,11 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
                 "level": level,
               ],
               fulfilledFragments: [
-                ObjectIdentifier(Self.self),
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.self),
-                ObjectIdentifier(MarticleHeadingParts.self)
+                ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.AsMarticleHeading.self),
+                ObjectIdentifier(MarticleHeadingParts.self),
+                ObjectIdentifier(ItemParts.Marticle.self),
+                ObjectIdentifier(ItemParts.Marticle.AsMarticleHeading.self)
               ]
             ))
           }
@@ -592,9 +580,11 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
                 "language": language,
               ],
               fulfilledFragments: [
-                ObjectIdentifier(Self.self),
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.self),
-                ObjectIdentifier(MarticleCodeBlockParts.self)
+                ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.AsMarticleCodeBlock.self),
+                ObjectIdentifier(MarticleCodeBlockParts.self),
+                ObjectIdentifier(ItemParts.Marticle.self),
+                ObjectIdentifier(ItemParts.Marticle.AsMarticleCodeBlock.self)
               ]
             ))
           }
@@ -657,9 +647,11 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
                 "length": length,
               ],
               fulfilledFragments: [
-                ObjectIdentifier(Self.self),
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.self),
-                ObjectIdentifier(VideoParts.self)
+                ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.AsVideo.self),
+                ObjectIdentifier(VideoParts.self),
+                ObjectIdentifier(ItemParts.Marticle.self),
+                ObjectIdentifier(ItemParts.Marticle.AsVideo.self)
               ]
             ))
           }
@@ -697,9 +689,11 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
                 "rows": rows._fieldData,
               ],
               fulfilledFragments: [
-                ObjectIdentifier(Self.self),
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.self),
-                ObjectIdentifier(MarticleBulletedListParts.self)
+                ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.AsMarticleBulletedList.self),
+                ObjectIdentifier(MarticleBulletedListParts.self),
+                ObjectIdentifier(ItemParts.Marticle.self),
+                ObjectIdentifier(ItemParts.Marticle.AsMarticleBulletedList.self)
               ]
             ))
           }
@@ -737,9 +731,11 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
                 "rows": rows._fieldData,
               ],
               fulfilledFragments: [
-                ObjectIdentifier(Self.self),
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.self),
-                ObjectIdentifier(MarticleNumberedListParts.self)
+                ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.AsMarticleNumberedList.self),
+                ObjectIdentifier(MarticleNumberedListParts.self),
+                ObjectIdentifier(ItemParts.Marticle.self),
+                ObjectIdentifier(ItemParts.Marticle.AsMarticleNumberedList.self)
               ]
             ))
           }
@@ -778,9 +774,11 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
                 "content": content,
               ],
               fulfilledFragments: [
-                ObjectIdentifier(Self.self),
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.self),
-                ObjectIdentifier(MarticleBlockquoteParts.self)
+                ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.AsMarticleBlockquote.self),
+                ObjectIdentifier(MarticleBlockquoteParts.self),
+                ObjectIdentifier(ItemParts.Marticle.self),
+                ObjectIdentifier(ItemParts.Marticle.AsMarticleBlockquote.self)
               ]
             ))
           }
@@ -819,8 +817,9 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
               "logo": logo,
             ],
             fulfilledFragments: [
-              ObjectIdentifier(Self.self),
-              ObjectIdentifier(DomainMetadataParts.self)
+              ObjectIdentifier(SavedItemParts.Item.AsItem.DomainMetadata.self),
+              ObjectIdentifier(DomainMetadataParts.self),
+              ObjectIdentifier(ItemParts.DomainMetadata.self)
             ]
           ))
         }
@@ -870,8 +869,9 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
               "publisher": publisher._fieldData,
             ],
             fulfilledFragments: [
-              ObjectIdentifier(Self.self),
-              ObjectIdentifier(SyndicatedArticleParts.self)
+              ObjectIdentifier(SavedItemParts.Item.AsItem.SyndicatedArticle.self),
+              ObjectIdentifier(SyndicatedArticleParts.self),
+              ObjectIdentifier(ItemParts.SyndicatedArticle.self)
             ]
           ))
         }
@@ -917,8 +917,8 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
             "status": status,
           ],
           fulfilledFragments: [
-            ObjectIdentifier(Self.self),
             ObjectIdentifier(SavedItemParts.Item.self),
+            ObjectIdentifier(SavedItemParts.Item.AsPendingItem.self),
             ObjectIdentifier(PendingItemParts.self)
           ]
         ))
@@ -958,7 +958,7 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
           "publisher": publisher,
         ],
         fulfilledFragments: [
-          ObjectIdentifier(Self.self),
+          ObjectIdentifier(SavedItemParts.CorpusItem.self),
           ObjectIdentifier(CorpusItemSummary.self)
         ]
       ))

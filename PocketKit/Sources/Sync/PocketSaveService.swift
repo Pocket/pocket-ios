@@ -243,7 +243,7 @@ class SaveOperation<Mutation: GraphQLMutation>: AsyncOperation {
     }
 
     private func performMutation<Mutation: GraphQLMutation>(mutation: Mutation) {
-        task = apollo.perform(mutation: mutation, publishResultToStore: false, queue: .global(qos: .userInitiated)) { [weak self] result in
+        task = apollo.perform(mutation: mutation, publishResultToStore: false, context: nil, queue: .global(qos: .userInitiated)) { [weak self] result in
             guard case .success(let graphQLResult) = result,
                     let data = graphQLResult.data,
                     let savedItemParts = self?.savedItemParts(data) else {

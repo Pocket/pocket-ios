@@ -23,8 +23,8 @@ public extension Mock where O == CuratedInfo {
     title: String? = nil
   ) {
     self.init()
-    _set(excerpt, for: \.excerpt)
-    _set(imageSrc, for: \.imageSrc)
-    _set(title, for: \.title)
+    _setScalar(excerpt, for: \.excerpt)
+    _setScalar(imageSrc, for: \.imageSrc)
+    _setScalar(title, for: \.title)
   }
 }

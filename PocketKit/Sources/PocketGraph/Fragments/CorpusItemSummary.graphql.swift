@@ -4,12 +4,9 @@
 @_exported import ApolloAPI
 
 public struct CorpusItemSummary: PocketGraph.SelectionSet, Fragment {
-  public static var fragmentDefinition: StaticString { """
-    fragment CorpusItemSummary on CorpusItem {
-      __typename
-      publisher
-    }
-    """ }
+  public static var fragmentDefinition: StaticString {
+    #"fragment CorpusItemSummary on CorpusItem { __typename publisher }"#
+  }
 
   public let __data: DataDict
   public init(_dataDict: DataDict) { __data = _dataDict }
@@ -32,7 +29,7 @@ public struct CorpusItemSummary: PocketGraph.SelectionSet, Fragment {
         "publisher": publisher,
       ],
       fulfilledFragments: [
-        ObjectIdentifier(Self.self)
+        ObjectIdentifier(CorpusItemSummary.self)
       ]
     ))
   }

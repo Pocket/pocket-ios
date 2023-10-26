@@ -5,25 +5,9 @@
 
 public class GetSlateLineupQuery: GraphQLQuery {
   public static let operationName: String = "GetSlateLineup"
-  public static let document: ApolloAPI.DocumentType = .notPersisted(
+  public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"""
-      query GetSlateLineup($lineupID: String!, $maxRecommendations: Int!) {
-        getSlateLineup(
-          slateLineupId: $lineupID
-          recommendationCount: $maxRecommendations
-        ) {
-          __typename
-          id
-          requestId
-          experimentId
-          slates {
-            __typename
-            ...SlateParts
-          }
-        }
-      }
-      """#,
+      #"query GetSlateLineup($lineupID: String!, $maxRecommendations: Int!) { getSlateLineup( slateLineupId: $lineupID recommendationCount: $maxRecommendations ) { __typename id requestId experimentId slates { __typename ...SlateParts } } }"#,
       fragments: [SlateParts.self, ItemSummary.self, DomainMetadataParts.self, SyndicatedArticleParts.self, CuratedInfoParts.self]
     ))
 

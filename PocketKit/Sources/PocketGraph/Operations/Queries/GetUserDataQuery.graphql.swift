@@ -5,19 +5,9 @@
 
 public class GetUserDataQuery: GraphQLQuery {
   public static let operationName: String = "GetUserData"
-  public static let document: ApolloAPI.DocumentType = .notPersisted(
+  public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"""
-      query GetUserData {
-        user {
-          __typename
-          isPremium
-          username
-          name
-          email
-        }
-      }
-      """#
+      #"query GetUserData { user { __typename isPremium username name email } }"#
     ))
 
   public init() {}

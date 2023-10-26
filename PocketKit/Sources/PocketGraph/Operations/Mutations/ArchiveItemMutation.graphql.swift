@@ -5,16 +5,9 @@
 
 public class ArchiveItemMutation: GraphQLMutation {
   public static let operationName: String = "ArchiveItem"
-  public static let document: ApolloAPI.DocumentType = .notPersisted(
+  public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"""
-      mutation ArchiveItem($givenUrl: Url!, $timestamp: ISOString!) {
-        savedItemArchive(givenUrl: $givenUrl, timestamp: $timestamp) {
-          __typename
-          id
-        }
-      }
-      """#
+      #"mutation ArchiveItem($givenUrl: Url!, $timestamp: ISOString!) { savedItemArchive(givenUrl: $givenUrl, timestamp: $timestamp) { __typename id } }"#
     ))
 
   public var givenUrl: Url

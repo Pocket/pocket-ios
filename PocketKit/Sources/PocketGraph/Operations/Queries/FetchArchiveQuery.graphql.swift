@@ -5,32 +5,9 @@
 
 public class FetchArchiveQuery: GraphQLQuery {
   public static let operationName: String = "FetchArchive"
-  public static let document: ApolloAPI.DocumentType = .notPersisted(
+  public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"""
-      query FetchArchive($pagination: PaginationInput, $filter: SavedItemsFilter, $sort: SavedItemsSort) {
-        user {
-          __typename
-          savedItems(pagination: $pagination, filter: $filter, sort: $sort) {
-            __typename
-            totalCount
-            pageInfo {
-              __typename
-              hasNextPage
-              endCursor
-            }
-            edges {
-              __typename
-              cursor
-              node {
-                __typename
-                ...SavedItemSummary
-              }
-            }
-          }
-        }
-      }
-      """#,
+      #"query FetchArchive($pagination: PaginationInput, $filter: SavedItemsFilter, $sort: SavedItemsSort) { user { __typename savedItems(pagination: $pagination, filter: $filter, sort: $sort) { __typename totalCount pageInfo { __typename hasNextPage endCursor } edges { __typename cursor node { __typename ...SavedItemSummary } } } } }"#,
       fragments: [SavedItemSummary.self, TagParts.self, ItemSummary.self, DomainMetadataParts.self, SyndicatedArticleParts.self, PendingItemParts.self, CorpusItemParts.self, CollectionSummary.self, CollectionAuthorSummary.self]
     ))
 

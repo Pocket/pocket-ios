@@ -4,46 +4,9 @@
 @_exported import ApolloAPI
 
 public struct ItemSummary: PocketGraph.SelectionSet, Fragment {
-  public static var fragmentDefinition: StaticString { """
-    fragment ItemSummary on Item {
-      __typename
-      remoteID: itemId
-      givenUrl
-      resolvedUrl
-      title
-      language
-      topImageUrl
-      timeToRead
-      domain
-      datePublished
-      isArticle
-      hasImage
-      hasVideo
-      wordCount
-      authors {
-        __typename
-        id
-        name
-        url
-      }
-      excerpt
-      domainMetadata {
-        __typename
-        ...DomainMetadataParts
-      }
-      images {
-        __typename
-        height
-        width
-        src
-        imageId
-      }
-      syndicatedArticle {
-        __typename
-        ...SyndicatedArticleParts
-      }
-    }
-    """ }
+  public static var fragmentDefinition: StaticString {
+    #"fragment ItemSummary on Item { __typename remoteID: itemId givenUrl resolvedUrl title language topImageUrl timeToRead domain datePublished isArticle hasImage hasVideo wordCount authors { __typename id name url } excerpt domainMetadata { __typename ...DomainMetadataParts } images { __typename height width src imageId } syndicatedArticle { __typename ...SyndicatedArticleParts } }"#
+  }
 
   public let __data: DataDict
   public init(_dataDict: DataDict) { __data = _dataDict }
@@ -154,7 +117,7 @@ public struct ItemSummary: PocketGraph.SelectionSet, Fragment {
         "syndicatedArticle": syndicatedArticle._fieldData,
       ],
       fulfilledFragments: [
-        ObjectIdentifier(Self.self)
+        ObjectIdentifier(ItemSummary.self)
       ]
     ))
   }
@@ -194,7 +157,7 @@ public struct ItemSummary: PocketGraph.SelectionSet, Fragment {
           "url": url,
         ],
         fulfilledFragments: [
-          ObjectIdentifier(Self.self)
+          ObjectIdentifier(ItemSummary.Author.self)
         ]
       ))
     }
@@ -236,7 +199,7 @@ public struct ItemSummary: PocketGraph.SelectionSet, Fragment {
           "logo": logo,
         ],
         fulfilledFragments: [
-          ObjectIdentifier(Self.self),
+          ObjectIdentifier(ItemSummary.DomainMetadata.self),
           ObjectIdentifier(DomainMetadataParts.self)
         ]
       ))
@@ -284,7 +247,7 @@ public struct ItemSummary: PocketGraph.SelectionSet, Fragment {
           "imageId": imageId,
         ],
         fulfilledFragments: [
-          ObjectIdentifier(Self.self)
+          ObjectIdentifier(ItemSummary.Image.self)
         ]
       ))
     }
@@ -338,7 +301,7 @@ public struct ItemSummary: PocketGraph.SelectionSet, Fragment {
           "publisher": publisher._fieldData,
         ],
         fulfilledFragments: [
-          ObjectIdentifier(Self.self),
+          ObjectIdentifier(ItemSummary.SyndicatedArticle.self),
           ObjectIdentifier(SyndicatedArticleParts.self)
         ]
       ))

@@ -5,16 +5,9 @@
 
 public class FavoriteItemMutation: GraphQLMutation {
   public static let operationName: String = "FavoriteItem"
-  public static let document: ApolloAPI.DocumentType = .notPersisted(
+  public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"""
-      mutation FavoriteItem($givenUrl: Url!, $timestamp: ISOString!) {
-        savedItemFavorite(givenUrl: $givenUrl, timestamp: $timestamp) {
-          __typename
-          id
-        }
-      }
-      """#
+      #"mutation FavoriteItem($givenUrl: Url!, $timestamp: ISOString!) { savedItemFavorite(givenUrl: $givenUrl, timestamp: $timestamp) { __typename id } }"#
     ))
 
   public var givenUrl: Url

@@ -4,31 +4,9 @@
 @_exported import ApolloAPI
 
 public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
-  public static var fragmentDefinition: StaticString { """
-    fragment SavedItemSummary on SavedItem {
-      __typename
-      url
-      remoteID: id
-      isArchived
-      isFavorite
-      _deletedAt
-      _createdAt
-      archivedAt
-      tags {
-        __typename
-        ...TagParts
-      }
-      item {
-        __typename
-        ...ItemSummary
-        ...PendingItemParts
-      }
-      corpusItem {
-        __typename
-        ...CorpusItemParts
-      }
-    }
-    """ }
+  public static var fragmentDefinition: StaticString {
+    #"fragment SavedItemSummary on SavedItem { __typename url remoteID: id isArchived isFavorite _deletedAt _createdAt archivedAt tags { __typename ...TagParts } item { __typename ...ItemSummary ...PendingItemParts } corpusItem { __typename ...CorpusItemParts } }"#
+  }
 
   public let __data: DataDict
   public init(_dataDict: DataDict) { __data = _dataDict }
@@ -96,7 +74,7 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
         "corpusItem": corpusItem._fieldData,
       ],
       fulfilledFragments: [
-        ObjectIdentifier(Self.self)
+        ObjectIdentifier(SavedItemSummary.self)
       ]
     ))
   }
@@ -137,7 +115,7 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
           "id": id,
         ],
         fulfilledFragments: [
-          ObjectIdentifier(Self.self),
+          ObjectIdentifier(SavedItemSummary.Tag.self),
           ObjectIdentifier(TagParts.self)
         ]
       ))
@@ -169,7 +147,7 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
           "__typename": __typename,
         ],
         fulfilledFragments: [
-          ObjectIdentifier(Self.self)
+          ObjectIdentifier(SavedItemSummary.Item.self)
         ]
       ))
     }
@@ -277,8 +255,8 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
             "syndicatedArticle": syndicatedArticle._fieldData,
           ],
           fulfilledFragments: [
-            ObjectIdentifier(Self.self),
             ObjectIdentifier(SavedItemSummary.Item.self),
+            ObjectIdentifier(SavedItemSummary.Item.AsItem.self),
             ObjectIdentifier(ItemSummary.self)
           ]
         ))
@@ -316,8 +294,9 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
               "logo": logo,
             ],
             fulfilledFragments: [
-              ObjectIdentifier(Self.self),
-              ObjectIdentifier(DomainMetadataParts.self)
+              ObjectIdentifier(SavedItemSummary.Item.AsItem.DomainMetadata.self),
+              ObjectIdentifier(DomainMetadataParts.self),
+              ObjectIdentifier(ItemSummary.DomainMetadata.self)
             ]
           ))
         }
@@ -367,8 +346,9 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
               "publisher": publisher._fieldData,
             ],
             fulfilledFragments: [
-              ObjectIdentifier(Self.self),
-              ObjectIdentifier(SyndicatedArticleParts.self)
+              ObjectIdentifier(SavedItemSummary.Item.AsItem.SyndicatedArticle.self),
+              ObjectIdentifier(SyndicatedArticleParts.self),
+              ObjectIdentifier(ItemSummary.SyndicatedArticle.self)
             ]
           ))
         }
@@ -414,8 +394,8 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
             "status": status,
           ],
           fulfilledFragments: [
-            ObjectIdentifier(Self.self),
             ObjectIdentifier(SavedItemSummary.Item.self),
+            ObjectIdentifier(SavedItemSummary.Item.AsPendingItem.self),
             ObjectIdentifier(PendingItemParts.self)
           ]
         ))
@@ -479,7 +459,7 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
           "target": target._fieldData,
         ],
         fulfilledFragments: [
-          ObjectIdentifier(Self.self),
+          ObjectIdentifier(SavedItemSummary.CorpusItem.self),
           ObjectIdentifier(CorpusItemParts.self)
         ]
       ))
@@ -505,7 +485,7 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
             "__typename": __typename,
           ],
           fulfilledFragments: [
-            ObjectIdentifier(Self.self)
+            ObjectIdentifier(SavedItemSummary.CorpusItem.Target.self)
           ]
         ))
       }
@@ -559,9 +539,11 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
               "publisher": publisher._fieldData,
             ],
             fulfilledFragments: [
-              ObjectIdentifier(Self.self),
               ObjectIdentifier(SavedItemSummary.CorpusItem.Target.self),
-              ObjectIdentifier(SyndicatedArticleParts.self)
+              ObjectIdentifier(SavedItemSummary.CorpusItem.Target.AsSyndicatedArticle.self),
+              ObjectIdentifier(SyndicatedArticleParts.self),
+              ObjectIdentifier(CorpusItemParts.Target.self),
+              ObjectIdentifier(CorpusItemParts.Target.AsSyndicatedArticle.self)
             ]
           ))
         }
@@ -602,9 +584,11 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
               "authors": authors._fieldData,
             ],
             fulfilledFragments: [
-              ObjectIdentifier(Self.self),
               ObjectIdentifier(SavedItemSummary.CorpusItem.Target.self),
-              ObjectIdentifier(CollectionSummary.self)
+              ObjectIdentifier(SavedItemSummary.CorpusItem.Target.AsCollection.self),
+              ObjectIdentifier(CollectionSummary.self),
+              ObjectIdentifier(CorpusItemParts.Target.self),
+              ObjectIdentifier(CorpusItemParts.Target.AsCollection.self)
             ]
           ))
         }
@@ -636,8 +620,9 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
                 "name": name,
               ],
               fulfilledFragments: [
-                ObjectIdentifier(Self.self),
-                ObjectIdentifier(CollectionAuthorSummary.self)
+                ObjectIdentifier(SavedItemSummary.CorpusItem.Target.AsCollection.Author.self),
+                ObjectIdentifier(CollectionAuthorSummary.self),
+                ObjectIdentifier(CollectionSummary.Author.self)
               ]
             ))
           }

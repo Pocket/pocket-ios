@@ -23,8 +23,8 @@ public extension Mock where O == Author {
     url: String? = nil
   ) {
     self.init()
-    _set(id, for: \.id)
-    _set(name, for: \.name)
-    _set(url, for: \.url)
+    _setScalar(id, for: \.id)
+    _setScalar(name, for: \.name)
+    _setScalar(url, for: \.url)
   }
 }
