@@ -4,16 +4,9 @@
 @_exported import ApolloAPI
 
 public struct MarticleBulletedListParts: PocketGraph.SelectionSet, Fragment {
-  public static var fragmentDefinition: StaticString { """
-    fragment MarticleBulletedListParts on MarticleBulletedList {
-      __typename
-      rows {
-        __typename
-        content
-        level
-      }
-    }
-    """ }
+  public static var fragmentDefinition: StaticString {
+    #"fragment MarticleBulletedListParts on MarticleBulletedList { __typename rows { __typename content level } }"#
+  }
 
   public let __data: DataDict
   public init(_dataDict: DataDict) { __data = _dataDict }
@@ -35,7 +28,7 @@ public struct MarticleBulletedListParts: PocketGraph.SelectionSet, Fragment {
         "rows": rows._fieldData,
       ],
       fulfilledFragments: [
-        ObjectIdentifier(Self.self)
+        ObjectIdentifier(MarticleBulletedListParts.self)
       ]
     ))
   }
@@ -70,7 +63,7 @@ public struct MarticleBulletedListParts: PocketGraph.SelectionSet, Fragment {
           "level": level,
         ],
         fulfilledFragments: [
-          ObjectIdentifier(Self.self)
+          ObjectIdentifier(MarticleBulletedListParts.Row.self)
         ]
       ))
     }

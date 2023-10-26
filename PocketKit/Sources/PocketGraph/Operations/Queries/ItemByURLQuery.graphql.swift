@@ -5,16 +5,9 @@
 
 public class ItemByURLQuery: GraphQLQuery {
   public static let operationName: String = "ItemByURL"
-  public static let document: ApolloAPI.DocumentType = .notPersisted(
+  public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"""
-      query ItemByURL($url: String!) {
-        itemByUrl(url: $url) {
-          __typename
-          ...ItemParts
-        }
-      }
-      """#,
+      #"query ItemByURL($url: String!) { itemByUrl(url: $url) { __typename ...ItemParts } }"#,
       fragments: [ItemParts.self, MarticleTextParts.self, ImageParts.self, MarticleDividerParts.self, MarticleTableParts.self, MarticleHeadingParts.self, MarticleCodeBlockParts.self, VideoParts.self, MarticleBulletedListParts.self, MarticleNumberedListParts.self, MarticleBlockquoteParts.self, DomainMetadataParts.self, SyndicatedArticleParts.self]
     ))
 

@@ -49,6 +49,7 @@ public protocol AccessTokenProvider {
 }
 
 private class AuthParamsInterceptor: ApolloInterceptor {
+    var id: String
     private let sessionProvider: SessionProvider
     private let consumerKey: String
 
@@ -58,6 +59,7 @@ private class AuthParamsInterceptor: ApolloInterceptor {
     ) {
         self.sessionProvider = sessionProvider
         self.consumerKey = consumerKey
+        self.id = "AuthParamsInterceptor"
     }
 
     func interceptAsync<Operation>(
@@ -67,7 +69,12 @@ private class AuthParamsInterceptor: ApolloInterceptor {
         completion: @escaping (Result<GraphQLResult<Operation.Data>, Error>) -> Void
     ) where Operation: GraphQLOperation {
         request.graphQLEndpoint = appendAuthorizationQueryParameters(to: request.graphQLEndpoint)
-        chain.proceedAsync(request: request, response: response, completion: completion)
+        chain.proceedAsync(
+          request: request,
+          response: response,
+          interceptor: self,
+          completion: completion
+        )
     }
 
     private func appendAuthorizationQueryParameters(to url: URL) -> URL {

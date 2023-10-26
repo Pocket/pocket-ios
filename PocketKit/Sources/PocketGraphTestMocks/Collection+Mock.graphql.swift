@@ -31,12 +31,12 @@ public extension Mock where O == Collection {
     title: String? = nil
   ) {
     self.init()
-    _set(authors, for: \.authors)
-    _set(externalId, for: \.externalId)
-    _set(intro, for: \.intro)
-    _set(publishedAt, for: \.publishedAt)
-    _set(slug, for: \.slug)
-    _set(stories, for: \.stories)
-    _set(title, for: \.title)
+    _setList(authors, for: \.authors)
+    _setScalar(externalId, for: \.externalId)
+    _setScalar(intro, for: \.intro)
+    _setScalar(publishedAt, for: \.publishedAt)
+    _setScalar(slug, for: \.slug)
+    _setList(stories, for: \.stories)
+    _setScalar(title, for: \.title)
   }
 }

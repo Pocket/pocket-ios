@@ -38,15 +38,15 @@ public extension Mock where O == Mutation {
     upsertSavedItem: Mock<SavedItem>? = nil
   ) {
     self.init()
-    _set(deleteTag, for: \.deleteTag)
-    _set(deleteUser, for: \.deleteUser)
-    _set(savedItemArchive, for: \.savedItemArchive)
-    _set(savedItemDelete, for: \.savedItemDelete)
-    _set(savedItemFavorite, for: \.savedItemFavorite)
-    _set(savedItemTag, for: \.savedItemTag)
-    _set(savedItemUnFavorite, for: \.savedItemUnFavorite)
-    _set(updateSavedItemRemoveTags, for: \.updateSavedItemRemoveTags)
-    _set(updateTag, for: \.updateTag)
-    _set(upsertSavedItem, for: \.upsertSavedItem)
+    _setScalar(deleteTag, for: \.deleteTag)
+    _setScalar(deleteUser, for: \.deleteUser)
+    _setEntity(savedItemArchive, for: \.savedItemArchive)
+    _setScalar(savedItemDelete, for: \.savedItemDelete)
+    _setEntity(savedItemFavorite, for: \.savedItemFavorite)
+    _setEntity(savedItemTag, for: \.savedItemTag)
+    _setEntity(savedItemUnFavorite, for: \.savedItemUnFavorite)
+    _setEntity(updateSavedItemRemoveTags, for: \.updateSavedItemRemoveTags)
+    _setEntity(updateTag, for: \.updateTag)
+    _setEntity(upsertSavedItem, for: \.upsertSavedItem)
   }
 }

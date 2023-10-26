@@ -4,63 +4,9 @@
 @_exported import ApolloAPI
 
 public struct ItemParts: PocketGraph.SelectionSet, Fragment {
-  public static var fragmentDefinition: StaticString { """
-    fragment ItemParts on Item {
-      __typename
-      remoteID: itemId
-      givenUrl
-      resolvedUrl
-      title
-      language
-      topImageUrl
-      timeToRead
-      domain
-      datePublished
-      isArticle
-      hasImage
-      hasVideo
-      wordCount
-      authors {
-        __typename
-        id
-        name
-        url
-      }
-      collection {
-        __typename
-        slug
-      }
-      marticle {
-        __typename
-        ...MarticleTextParts
-        ...ImageParts
-        ...MarticleDividerParts
-        ...MarticleTableParts
-        ...MarticleHeadingParts
-        ...MarticleCodeBlockParts
-        ...VideoParts
-        ...MarticleBulletedListParts
-        ...MarticleNumberedListParts
-        ...MarticleBlockquoteParts
-      }
-      excerpt
-      domainMetadata {
-        __typename
-        ...DomainMetadataParts
-      }
-      images {
-        __typename
-        height
-        width
-        src
-        imageId
-      }
-      syndicatedArticle {
-        __typename
-        ...SyndicatedArticleParts
-      }
-    }
-    """ }
+  public static var fragmentDefinition: StaticString {
+    #"fragment ItemParts on Item { __typename remoteID: itemId givenUrl resolvedUrl title language topImageUrl timeToRead domain datePublished isArticle hasImage hasVideo wordCount authors { __typename id name url } collection { __typename slug } marticle { __typename ...MarticleTextParts ...ImageParts ...MarticleDividerParts ...MarticleTableParts ...MarticleHeadingParts ...MarticleCodeBlockParts ...VideoParts ...MarticleBulletedListParts ...MarticleNumberedListParts ...MarticleBlockquoteParts } excerpt domainMetadata { __typename ...DomainMetadataParts } images { __typename height width src imageId } syndicatedArticle { __typename ...SyndicatedArticleParts } }"#
+  }
 
   public let __data: DataDict
   public init(_dataDict: DataDict) { __data = _dataDict }
@@ -181,7 +127,7 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
         "syndicatedArticle": syndicatedArticle._fieldData,
       ],
       fulfilledFragments: [
-        ObjectIdentifier(Self.self)
+        ObjectIdentifier(ItemParts.self)
       ]
     ))
   }
@@ -221,7 +167,7 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
           "url": url,
         ],
         fulfilledFragments: [
-          ObjectIdentifier(Self.self)
+          ObjectIdentifier(ItemParts.Author.self)
         ]
       ))
     }
@@ -251,7 +197,7 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
           "slug": slug,
         ],
         fulfilledFragments: [
-          ObjectIdentifier(Self.self)
+          ObjectIdentifier(ItemParts.Collection.self)
         ]
       ))
     }
@@ -298,7 +244,7 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
           "__typename": __typename,
         ],
         fulfilledFragments: [
-          ObjectIdentifier(Self.self)
+          ObjectIdentifier(ItemParts.Marticle.self)
         ]
       ))
     }
@@ -335,8 +281,8 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
             "content": content,
           ],
           fulfilledFragments: [
-            ObjectIdentifier(Self.self),
             ObjectIdentifier(ItemParts.Marticle.self),
+            ObjectIdentifier(ItemParts.Marticle.AsMarticleText.self),
             ObjectIdentifier(MarticleTextParts.self)
           ]
         ))
@@ -396,8 +342,8 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
             "width": width,
           ],
           fulfilledFragments: [
-            ObjectIdentifier(Self.self),
             ObjectIdentifier(ItemParts.Marticle.self),
+            ObjectIdentifier(ItemParts.Marticle.AsImage.self),
             ObjectIdentifier(ImageParts.self)
           ]
         ))
@@ -436,8 +382,8 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
             "content": content,
           ],
           fulfilledFragments: [
-            ObjectIdentifier(Self.self),
             ObjectIdentifier(ItemParts.Marticle.self),
+            ObjectIdentifier(ItemParts.Marticle.AsMarticleDivider.self),
             ObjectIdentifier(MarticleDividerParts.self)
           ]
         ))
@@ -476,8 +422,8 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
             "html": html,
           ],
           fulfilledFragments: [
-            ObjectIdentifier(Self.self),
             ObjectIdentifier(ItemParts.Marticle.self),
+            ObjectIdentifier(ItemParts.Marticle.AsMarticleTable.self),
             ObjectIdentifier(MarticleTableParts.self)
           ]
         ))
@@ -520,8 +466,8 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
             "level": level,
           ],
           fulfilledFragments: [
-            ObjectIdentifier(Self.self),
             ObjectIdentifier(ItemParts.Marticle.self),
+            ObjectIdentifier(ItemParts.Marticle.AsMarticleHeading.self),
             ObjectIdentifier(MarticleHeadingParts.self)
           ]
         ))
@@ -564,8 +510,8 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
             "language": language,
           ],
           fulfilledFragments: [
-            ObjectIdentifier(Self.self),
             ObjectIdentifier(ItemParts.Marticle.self),
+            ObjectIdentifier(ItemParts.Marticle.AsMarticleCodeBlock.self),
             ObjectIdentifier(MarticleCodeBlockParts.self)
           ]
         ))
@@ -628,8 +574,8 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
             "length": length,
           ],
           fulfilledFragments: [
-            ObjectIdentifier(Self.self),
             ObjectIdentifier(ItemParts.Marticle.self),
+            ObjectIdentifier(ItemParts.Marticle.AsVideo.self),
             ObjectIdentifier(VideoParts.self)
           ]
         ))
@@ -667,8 +613,8 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
             "rows": rows._fieldData,
           ],
           fulfilledFragments: [
-            ObjectIdentifier(Self.self),
             ObjectIdentifier(ItemParts.Marticle.self),
+            ObjectIdentifier(ItemParts.Marticle.AsMarticleBulletedList.self),
             ObjectIdentifier(MarticleBulletedListParts.self)
           ]
         ))
@@ -706,8 +652,8 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
             "rows": rows._fieldData,
           ],
           fulfilledFragments: [
-            ObjectIdentifier(Self.self),
             ObjectIdentifier(ItemParts.Marticle.self),
+            ObjectIdentifier(ItemParts.Marticle.AsMarticleNumberedList.self),
             ObjectIdentifier(MarticleNumberedListParts.self)
           ]
         ))
@@ -746,8 +692,8 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
             "content": content,
           ],
           fulfilledFragments: [
-            ObjectIdentifier(Self.self),
             ObjectIdentifier(ItemParts.Marticle.self),
+            ObjectIdentifier(ItemParts.Marticle.AsMarticleBlockquote.self),
             ObjectIdentifier(MarticleBlockquoteParts.self)
           ]
         ))
@@ -791,7 +737,7 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
           "logo": logo,
         ],
         fulfilledFragments: [
-          ObjectIdentifier(Self.self),
+          ObjectIdentifier(ItemParts.DomainMetadata.self),
           ObjectIdentifier(DomainMetadataParts.self)
         ]
       ))
@@ -839,7 +785,7 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
           "imageId": imageId,
         ],
         fulfilledFragments: [
-          ObjectIdentifier(Self.self)
+          ObjectIdentifier(ItemParts.Image.self)
         ]
       ))
     }
@@ -893,7 +839,7 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
           "publisher": publisher._fieldData,
         ],
         fulfilledFragments: [
-          ObjectIdentifier(Self.self),
+          ObjectIdentifier(ItemParts.SyndicatedArticle.self),
           ObjectIdentifier(SyndicatedArticleParts.self)
         ]
       ))

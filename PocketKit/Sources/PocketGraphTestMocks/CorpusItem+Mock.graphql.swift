@@ -31,12 +31,12 @@ public extension Mock where O == CorpusItem {
     url: PocketGraph.Url? = nil
   ) {
     self.init()
-    _set(excerpt, for: \.excerpt)
-    _set(id, for: \.id)
-    _set(imageUrl, for: \.imageUrl)
-    _set(publisher, for: \.publisher)
-    _set(target, for: \.target)
-    _set(title, for: \.title)
-    _set(url, for: \.url)
+    _setScalar(excerpt, for: \.excerpt)
+    _setScalar(id, for: \.id)
+    _setScalar(imageUrl, for: \.imageUrl)
+    _setScalar(publisher, for: \.publisher)
+    _setEntity(target, for: \.target)
+    _setScalar(title, for: \.title)
+    _setScalar(url, for: \.url)
   }
 }

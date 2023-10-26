@@ -5,42 +5,9 @@
 
 public class SearchSavedItemsQuery: GraphQLQuery {
   public static let operationName: String = "SearchSavedItems"
-  public static let document: ApolloAPI.DocumentType = .notPersisted(
+  public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"""
-      query SearchSavedItems($term: String!, $pagination: PaginationInput, $filter: SearchFilterInput, $sort: SearchSortInput) {
-        user {
-          __typename
-          searchSavedItems(
-            term: $term
-            pagination: $pagination
-            filter: $filter
-            sort: $sort
-          ) {
-            __typename
-            edges {
-              __typename
-              node {
-                __typename
-                savedItem {
-                  __typename
-                  ...SavedItemParts
-                }
-              }
-              cursor
-            }
-            pageInfo {
-              __typename
-              endCursor
-              hasNextPage
-              hasPreviousPage
-              startCursor
-            }
-            totalCount
-          }
-        }
-      }
-      """#,
+      #"query SearchSavedItems($term: String!, $pagination: PaginationInput, $filter: SearchFilterInput, $sort: SearchSortInput) { user { __typename searchSavedItems( term: $term pagination: $pagination filter: $filter sort: $sort ) { __typename edges { __typename node { __typename savedItem { __typename ...SavedItemParts } } cursor } pageInfo { __typename endCursor hasNextPage hasPreviousPage startCursor } totalCount } } }"#,
       fragments: [SavedItemParts.self, TagParts.self, ItemParts.self, MarticleTextParts.self, ImageParts.self, MarticleDividerParts.self, MarticleTableParts.self, MarticleHeadingParts.self, MarticleCodeBlockParts.self, VideoParts.self, MarticleBulletedListParts.self, MarticleNumberedListParts.self, MarticleBlockquoteParts.self, DomainMetadataParts.self, SyndicatedArticleParts.self, PendingItemParts.self, CorpusItemSummary.self]
     ))
 

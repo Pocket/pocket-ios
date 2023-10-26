@@ -4,12 +4,9 @@
 @_exported import ApolloAPI
 
 public struct CollectionAuthorSummary: PocketGraph.SelectionSet, Fragment {
-  public static var fragmentDefinition: StaticString { """
-    fragment CollectionAuthorSummary on CollectionAuthor {
-      __typename
-      name
-    }
-    """ }
+  public static var fragmentDefinition: StaticString {
+    #"fragment CollectionAuthorSummary on CollectionAuthor { __typename name }"#
+  }
 
   public let __data: DataDict
   public init(_dataDict: DataDict) { __data = _dataDict }
@@ -31,7 +28,7 @@ public struct CollectionAuthorSummary: PocketGraph.SelectionSet, Fragment {
         "name": name,
       ],
       fulfilledFragments: [
-        ObjectIdentifier(Self.self)
+        ObjectIdentifier(CollectionAuthorSummary.self)
       ]
     ))
   }

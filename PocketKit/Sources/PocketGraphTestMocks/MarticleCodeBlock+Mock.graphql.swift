@@ -21,7 +21,7 @@ public extension Mock where O == MarticleCodeBlock {
     text: String? = nil
   ) {
     self.init()
-    _set(language, for: \.language)
-    _set(text, for: \.text)
+    _setScalar(language, for: \.language)
+    _setScalar(text, for: \.text)
   }
 }

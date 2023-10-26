@@ -4,16 +4,9 @@
 @_exported import ApolloAPI
 
 public struct CorpusRecommendationParts: PocketGraph.SelectionSet, Fragment {
-  public static var fragmentDefinition: StaticString { """
-    fragment CorpusRecommendationParts on CorpusRecommendation {
-      __typename
-      id
-      corpusItem {
-        __typename
-        ...CorpusItemParts
-      }
-    }
-    """ }
+  public static var fragmentDefinition: StaticString {
+    #"fragment CorpusRecommendationParts on CorpusRecommendation { __typename id corpusItem { __typename ...CorpusItemParts } }"#
+  }
 
   public let __data: DataDict
   public init(_dataDict: DataDict) { __data = _dataDict }
@@ -41,7 +34,7 @@ public struct CorpusRecommendationParts: PocketGraph.SelectionSet, Fragment {
         "corpusItem": corpusItem._fieldData,
       ],
       fulfilledFragments: [
-        ObjectIdentifier(Self.self)
+        ObjectIdentifier(CorpusRecommendationParts.self)
       ]
     ))
   }
@@ -102,7 +95,7 @@ public struct CorpusRecommendationParts: PocketGraph.SelectionSet, Fragment {
           "target": target._fieldData,
         ],
         fulfilledFragments: [
-          ObjectIdentifier(Self.self),
+          ObjectIdentifier(CorpusRecommendationParts.CorpusItem.self),
           ObjectIdentifier(CorpusItemParts.self)
         ]
       ))
@@ -128,7 +121,7 @@ public struct CorpusRecommendationParts: PocketGraph.SelectionSet, Fragment {
             "__typename": __typename,
           ],
           fulfilledFragments: [
-            ObjectIdentifier(Self.self)
+            ObjectIdentifier(CorpusRecommendationParts.CorpusItem.Target.self)
           ]
         ))
       }
@@ -182,9 +175,11 @@ public struct CorpusRecommendationParts: PocketGraph.SelectionSet, Fragment {
               "publisher": publisher._fieldData,
             ],
             fulfilledFragments: [
-              ObjectIdentifier(Self.self),
               ObjectIdentifier(CorpusRecommendationParts.CorpusItem.Target.self),
-              ObjectIdentifier(SyndicatedArticleParts.self)
+              ObjectIdentifier(CorpusRecommendationParts.CorpusItem.Target.AsSyndicatedArticle.self),
+              ObjectIdentifier(SyndicatedArticleParts.self),
+              ObjectIdentifier(CorpusItemParts.Target.self),
+              ObjectIdentifier(CorpusItemParts.Target.AsSyndicatedArticle.self)
             ]
           ))
         }
@@ -225,9 +220,11 @@ public struct CorpusRecommendationParts: PocketGraph.SelectionSet, Fragment {
               "authors": authors._fieldData,
             ],
             fulfilledFragments: [
-              ObjectIdentifier(Self.self),
               ObjectIdentifier(CorpusRecommendationParts.CorpusItem.Target.self),
-              ObjectIdentifier(CollectionSummary.self)
+              ObjectIdentifier(CorpusRecommendationParts.CorpusItem.Target.AsCollection.self),
+              ObjectIdentifier(CollectionSummary.self),
+              ObjectIdentifier(CorpusItemParts.Target.self),
+              ObjectIdentifier(CorpusItemParts.Target.AsCollection.self)
             ]
           ))
         }
@@ -259,8 +256,9 @@ public struct CorpusRecommendationParts: PocketGraph.SelectionSet, Fragment {
                 "name": name,
               ],
               fulfilledFragments: [
-                ObjectIdentifier(Self.self),
-                ObjectIdentifier(CollectionAuthorSummary.self)
+                ObjectIdentifier(CorpusRecommendationParts.CorpusItem.Target.AsCollection.Author.self),
+                ObjectIdentifier(CollectionAuthorSummary.self),
+                ObjectIdentifier(CollectionSummary.Author.self)
               ]
             ))
           }

@@ -23,8 +23,8 @@ public extension Mock where O == SavedItemConnection {
     totalCount: Int? = nil
   ) {
     self.init()
-    _set(edges, for: \.edges)
-    _set(pageInfo, for: \.pageInfo)
-    _set(totalCount, for: \.totalCount)
+    _setList(edges, for: \.edges)
+    _setEntity(pageInfo, for: \.pageInfo)
+    _setScalar(totalCount, for: \.totalCount)
   }
 }

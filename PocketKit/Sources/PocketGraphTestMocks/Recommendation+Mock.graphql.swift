@@ -23,8 +23,8 @@ public extension Mock where O == Recommendation {
     item: Mock<Item>? = nil
   ) {
     self.init()
-    _set(curatedInfo, for: \.curatedInfo)
-    _set(id, for: \.id)
-    _set(item, for: \.item)
+    _setEntity(curatedInfo, for: \.curatedInfo)
+    _setScalar(id, for: \.id)
+    _setEntity(item, for: \.item)
   }
 }

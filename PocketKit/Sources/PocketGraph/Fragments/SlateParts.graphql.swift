@@ -4,28 +4,9 @@
 @_exported import ApolloAPI
 
 public struct SlateParts: PocketGraph.SelectionSet, Fragment {
-  public static var fragmentDefinition: StaticString { """
-    fragment SlateParts on Slate {
-      __typename
-      id
-      requestId
-      experimentId
-      displayName
-      description
-      recommendations {
-        __typename
-        id
-        item {
-          __typename
-          ...ItemSummary
-        }
-        curatedInfo {
-          __typename
-          ...CuratedInfoParts
-        }
-      }
-    }
-    """ }
+  public static var fragmentDefinition: StaticString {
+    #"fragment SlateParts on Slate { __typename id requestId experimentId displayName description recommendations { __typename id item { __typename ...ItemSummary } curatedInfo { __typename ...CuratedInfoParts } } }"#
+  }
 
   public let __data: DataDict
   public init(_dataDict: DataDict) { __data = _dataDict }
@@ -72,7 +53,7 @@ public struct SlateParts: PocketGraph.SelectionSet, Fragment {
         "recommendations": recommendations._fieldData,
       ],
       fulfilledFragments: [
-        ObjectIdentifier(Self.self)
+        ObjectIdentifier(SlateParts.self)
       ]
     ))
   }
@@ -113,7 +94,7 @@ public struct SlateParts: PocketGraph.SelectionSet, Fragment {
           "curatedInfo": curatedInfo._fieldData,
         ],
         fulfilledFragments: [
-          ObjectIdentifier(Self.self)
+          ObjectIdentifier(SlateParts.Recommendation.self)
         ]
       ))
     }
@@ -221,7 +202,7 @@ public struct SlateParts: PocketGraph.SelectionSet, Fragment {
             "syndicatedArticle": syndicatedArticle._fieldData,
           ],
           fulfilledFragments: [
-            ObjectIdentifier(Self.self),
+            ObjectIdentifier(SlateParts.Recommendation.Item.self),
             ObjectIdentifier(ItemSummary.self)
           ]
         ))
@@ -259,8 +240,9 @@ public struct SlateParts: PocketGraph.SelectionSet, Fragment {
               "logo": logo,
             ],
             fulfilledFragments: [
-              ObjectIdentifier(Self.self),
-              ObjectIdentifier(DomainMetadataParts.self)
+              ObjectIdentifier(SlateParts.Recommendation.Item.DomainMetadata.self),
+              ObjectIdentifier(DomainMetadataParts.self),
+              ObjectIdentifier(ItemSummary.DomainMetadata.self)
             ]
           ))
         }
@@ -310,8 +292,9 @@ public struct SlateParts: PocketGraph.SelectionSet, Fragment {
               "publisher": publisher._fieldData,
             ],
             fulfilledFragments: [
-              ObjectIdentifier(Self.self),
-              ObjectIdentifier(SyndicatedArticleParts.self)
+              ObjectIdentifier(SlateParts.Recommendation.Item.SyndicatedArticle.self),
+              ObjectIdentifier(SyndicatedArticleParts.self),
+              ObjectIdentifier(ItemSummary.SyndicatedArticle.self)
             ]
           ))
         }
@@ -355,7 +338,7 @@ public struct SlateParts: PocketGraph.SelectionSet, Fragment {
             "title": title,
           ],
           fulfilledFragments: [
-            ObjectIdentifier(Self.self),
+            ObjectIdentifier(SlateParts.Recommendation.CuratedInfo.self),
             ObjectIdentifier(CuratedInfoParts.self)
           ]
         ))

@@ -13,6 +13,7 @@ public extension ApolloClientProtocol {
             query: query,
             cachePolicy: .fetchIgnoringCacheCompletely,
             contextIdentifier: nil,
+            context: nil,
             queue: queue,
             resultHandler: resultHandler
         )
@@ -47,6 +48,7 @@ public extension ApolloClientProtocol {
             _ = perform(
                 mutation: mutation,
                 publishResultToStore: false,
+                context: nil,
                 queue: .main
             ) { result in
                 switch result {

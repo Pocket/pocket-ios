@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apollographql/apollo-ios.git",
       "state" : {
-        "revision" : "c7d618adc40bc20e4f40651b8debbc3c9f6d2b6f",
-        "version" : "1.2.0"
+        "revision" : "7bbdce4bebb0b3978e69f8a34f26227ab733d96d",
+        "version" : "1.6.1"
       }
     },
     {
@@ -34,15 +34,6 @@
       "state" : {
         "revision" : "61e51fde7f7aab6554f30ab061cc588b28a97d04",
         "version" : "2.7.7"
-      }
-    },
-    {
-      "identity" : "inflectorkit",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/mattt/InflectorKit",
-      "state" : {
-        "revision" : "d8cbcc04972690aaa5fc760a2b9ddb3e9f0decd7",
-        "version" : "1.0.0"
       }
     },
     {
@@ -104,8 +95,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/snowplow/snowplow-objc-tracker",
       "state" : {
-        "revision" : "512cec70b72514002d01080428327d427251e006",
-        "version" : "5.1.0"
+        "revision" : "599b162c3acb367f839d620eefb6342799145c5c",
+        "version" : "5.4.1"
       }
     },
     {
@@ -115,24 +106,6 @@
       "state" : {
         "revision" : "7a2e3cd27de56f6d396e84f63beefd0267b55ccb",
         "version" : "0.14.1"
-      }
-    },
-    {
-      "identity" : "swift-argument-parser",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-argument-parser.git",
-      "state" : {
-        "revision" : "fee6933f37fde9a5e12a1e4aeaa93fe60116ff2a",
-        "version" : "1.2.2"
-      }
-    },
-    {
-      "identity" : "swift-collections",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-collections",
-      "state" : {
-        "revision" : "937e904258d22af6e447a0b72c0bc67583ef64a2",
-        "version" : "1.0.4"
       }
     },
     {

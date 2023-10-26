@@ -4,19 +4,9 @@
 @_exported import ApolloAPI
 
 public struct SyndicatedArticleParts: PocketGraph.SelectionSet, Fragment {
-  public static var fragmentDefinition: StaticString { """
-    fragment SyndicatedArticleParts on SyndicatedArticle {
-      __typename
-      itemId
-      mainImage
-      title
-      excerpt
-      publisher {
-        __typename
-        name
-      }
-    }
-    """ }
+  public static var fragmentDefinition: StaticString {
+    #"fragment SyndicatedArticleParts on SyndicatedArticle { __typename itemId mainImage title excerpt publisher { __typename name } }"#
+  }
 
   public let __data: DataDict
   public init(_dataDict: DataDict) { __data = _dataDict }
@@ -59,7 +49,7 @@ public struct SyndicatedArticleParts: PocketGraph.SelectionSet, Fragment {
         "publisher": publisher._fieldData,
       ],
       fulfilledFragments: [
-        ObjectIdentifier(Self.self)
+        ObjectIdentifier(SyndicatedArticleParts.self)
       ]
     ))
   }
@@ -89,7 +79,7 @@ public struct SyndicatedArticleParts: PocketGraph.SelectionSet, Fragment {
           "name": name,
         ],
         fulfilledFragments: [
-          ObjectIdentifier(Self.self)
+          ObjectIdentifier(SyndicatedArticleParts.Publisher.self)
         ]
       ))
     }

@@ -5,41 +5,9 @@
 
 public class GetCollectionBySlugQuery: GraphQLQuery {
   public static let operationName: String = "getCollectionBySlug"
-  public static let document: ApolloAPI.DocumentType = .notPersisted(
+  public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"""
-      query getCollectionBySlug($slug: String!) {
-        collection: collectionBySlug(slug: $slug) {
-          __typename
-          externalId
-          slug
-          title
-          intro
-          publishedAt
-          authors {
-            __typename
-            name
-          }
-          stories {
-            __typename
-            url
-            title
-            excerpt
-            imageUrl
-            authors {
-              __typename
-              name
-            }
-            publisher
-            item {
-              __typename
-              ...ItemParts
-            }
-            sortOrder
-          }
-        }
-      }
-      """#,
+      #"query getCollectionBySlug($slug: String!) { collection: collectionBySlug(slug: $slug) { __typename externalId slug title intro publishedAt authors { __typename name } stories { __typename url title excerpt imageUrl authors { __typename name } publisher item { __typename ...ItemParts } sortOrder } } }"#,
       fragments: [ItemParts.self, MarticleTextParts.self, ImageParts.self, MarticleDividerParts.self, MarticleTableParts.self, MarticleHeadingParts.self, MarticleCodeBlockParts.self, VideoParts.self, MarticleBulletedListParts.self, MarticleNumberedListParts.self, MarticleBlockquoteParts.self, DomainMetadataParts.self, SyndicatedArticleParts.self]
     ))
 
