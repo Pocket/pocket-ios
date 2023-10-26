@@ -105,7 +105,7 @@ public class LegacyUserMigration {
     @discardableResult
     public func attemptMigration(migrationWillBegin: () -> Void) throws -> Bool {
         // If we don't have a password, OR if we've already run the migration, end early.
-        guard let password = currentPassword, (!previouslyRun || shouldForceForOrgTransfer) else {
+        guard let password = currentPassword, !previouslyRun || shouldForceForOrgTransfer else {
             return false // If no password exists either the user never used v7 or has already migrated.
         }
 

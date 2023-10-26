@@ -47,7 +47,7 @@ class YouTubeVideoComponentPresenter: ArticleComponentPresenter {
                     cell?.mode = .loaded
                 case .error:
                     cell?.mode = .error
-            }
+                }
         }
 
         guard let vid = VIDExtractor(component).vid else {

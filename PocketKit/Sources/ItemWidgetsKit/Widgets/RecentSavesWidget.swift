@@ -18,7 +18,7 @@ public struct RecentSavesWidget: Widget {
 
     public var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: ItemWidgetsProvider(service: ItemWidgetsService.makeRecentSavesService())) { entry in
-            ItemsWidgetsContainerView(entry: entry)
+            ItemWidgetsContainerView(entry: entry)
                 .titleColor(entry.titleColor)
         }
         .configurationDisplayName(Localization.ItemWidgets.RecentSaves.title)
@@ -29,7 +29,7 @@ public struct RecentSavesWidget: Widget {
 
 public struct RecentSavesWidget_Previews: PreviewProvider {
     public static var previews: some View {
-        ItemsWidgetsContainerView(entry: ItemsListEntry(date: Date(), name: "Recent Saves", contentType: .items([ItemRowContent(content: .placeHolder, image: nil)])))
+        ItemWidgetsContainerView(entry: ItemsListEntry(date: Date(), name: "Recent Saves", contentType: .items([ItemRowContent(content: .placeHolder, image: nil)])))
             .previewContext(WidgetPreviewContext(family: .systemLarge))
     }
 }

@@ -18,7 +18,7 @@ public struct RecommendationsWidget: Widget {
 
     public var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: ItemWidgetsProvider(service: ItemWidgetsService.makeRecommendationsService())) { entry in
-                ItemsWidgetsContainerView(entry: entry)
+                ItemWidgetsContainerView(entry: entry)
                 .titleColor(entry.titleColor)
         }
         .configurationDisplayName(Localization.ItemWidgets.Recommendations.title)
