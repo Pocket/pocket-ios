@@ -211,7 +211,7 @@ class FetchSavesTests: XCTestCase {
         var fetches = 0
         user.stubSetStatus { _ in }
         apollo.setupTagsResponse()
-        apollo.stubFetch { [weak self] (query: FetchSavesQuery, _, _, queue, completion) -> Apollo.Cancellable in
+        apollo.stubFetch { [weak self] (query: FetchSavesQuery, _, _, _, queue, completion) -> Apollo.Cancellable in
             defer { fetches += 1 }
 
             let result: Fixture
@@ -248,7 +248,7 @@ class FetchSavesTests: XCTestCase {
 
         user.stubSetStatus { _ in }
         apollo.setupTagsResponse()
-        apollo.stubFetch { [weak self] (query: FetchSavesQuery, _, _, queue, completion) -> Apollo.Cancellable in
+        apollo.stubFetch { [weak self] (query: FetchSavesQuery, _, _, _, queue, completion) -> Apollo.Cancellable in
             defer { fetches += 1 }
 
             let result: Fixture
@@ -301,7 +301,7 @@ class FetchSavesTests: XCTestCase {
         var fetches = 0
         user.stubSetStatus { _ in }
         apollo.setupTagsResponse()
-        apollo.stubFetch { [weak self] (query: FetchSavesQuery, _, _, queue, completion) -> Apollo.Cancellable in
+        apollo.stubFetch { [weak self] (query: FetchSavesQuery, _, _, _, queue, completion) -> Apollo.Cancellable in
             defer { fetches += 1 }
 
             let result: Fixture
@@ -383,7 +383,7 @@ class FetchSavesTests: XCTestCase {
         user.stubSetStatus { _ in }
 
         var tagsPageCount = 1
-        apollo.stubFetch { (query: TagsQuery, _, _, queue, completion) in
+        apollo.stubFetch { (query: TagsQuery, _, _, _, queue, completion) in
             defer { tagsPageCount += 1 }
 
             guard tagsPageCount < 3 else {

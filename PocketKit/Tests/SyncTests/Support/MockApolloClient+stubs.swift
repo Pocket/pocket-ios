@@ -58,7 +58,7 @@ extension MockApolloClient {
         asResultType: T.Type,
         handler: (() -> Void)? = nil
     ) {
-        stubFetch { (query: T, _, _, queue, completion) -> Apollo.Cancellable in
+        stubFetch { (query: T, _, _,_, queue, completion) -> Apollo.Cancellable in
             queue.async {
                 completion?(.success(fixture.asGraphQLResult(from: query)))
                 handler?()
@@ -73,7 +73,7 @@ extension MockApolloClient {
         toReturnError error: Error,
         handler: (() -> Void)? = nil
     ) {
-        stubFetch { (query: T, _, _, queue, completion) -> Apollo.Cancellable in
+        stubFetch { (query: T, _, _,_, queue, completion) -> Apollo.Cancellable in
             queue.async {
                 completion?(.failure(error))
                 handler?()

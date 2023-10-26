@@ -21,6 +21,7 @@ extension MockApolloClient {
         let query: Query
         let cachePolicy: CachePolicy
         let contextIdentifier: UUID?
+        let context: RequestContext?
         let queue: DispatchQueue
     }
 
@@ -28,6 +29,7 @@ extension MockApolloClient {
         Query,
         CachePolicy,
         UUID?,
+        RequestContext?,
         DispatchQueue,
         GraphQLResultHandler<Query.Data>?
     ) -> Cancellable
@@ -37,6 +39,7 @@ extension MockApolloClient {
         query: Query,
         cachePolicy: CachePolicy,
         contextIdentifier: UUID?,
+        context: RequestContext?,
         queue: DispatchQueue,
         resultHandler: GraphQLResultHandler<Query.Data>? = nil
     ) -> Cancellable {
@@ -56,12 +59,13 @@ extension MockApolloClient {
                     query: query,
                     cachePolicy: cachePolicy,
                     contextIdentifier: contextIdentifier,
+                    context: context,
                     queue: queue
                 )
             ]
         }
 
-        return impl(query, cachePolicy, contextIdentifier, queue, resultHandler)
+        return impl(query, cachePolicy, contextIdentifier, context, queue, resultHandler)
     }
 
     func stubFetch<Query: GraphQLQuery>(impl: @escaping FetchImpl<Query>) {
@@ -105,6 +109,7 @@ extension MockApolloClient {
         let mutation: Mutation
         let publishResultToStore: Bool
         let queue: DispatchQueue
+        let context: RequestContext?
         let resultHandler: GraphQLResultHandler<Mutation.Data>?
     }
 
@@ -119,6 +124,7 @@ extension MockApolloClient {
     func perform<Mutation: GraphQLMutation>(
         mutation: Mutation,
         publishResultToStore: Bool,
+        context: RequestContext?,
         queue: DispatchQueue,
         resultHandler: GraphQLResultHandler<Mutation.Data>?
     ) -> Cancellable {
@@ -138,6 +144,7 @@ extension MockApolloClient {
                     mutation: mutation,
                     publishResultToStore: publishResultToStore,
                     queue: queue,
+                    context: context,
                     resultHandler: resultHandler
                 )
             ]
@@ -184,6 +191,7 @@ extension MockApolloClient {
     func watch<Query: GraphQLQuery>(
         query: Query,
         cachePolicy: CachePolicy,
+        context: Apollo.RequestContext?,
         callbackQueue: DispatchQueue,
         resultHandler: @escaping GraphQLResultHandler<Query.Data>
     ) -> GraphQLQueryWatcher<Query> {
@@ -192,10 +200,11 @@ extension MockApolloClient {
 
     @discardableResult
     func upload<Operation: GraphQLOperation>(
-        operation: Operation,
-        files: [GraphQLFile],
-        queue: DispatchQueue,
-        resultHandler: GraphQLResultHandler<Operation.Data>?
+        operation: Operation, 
+        files: [Apollo.GraphQLFile],
+        context: Apollo.RequestContext?,
+        queue: DispatchQueue, resultHandler:
+        Apollo.GraphQLResultHandler<Operation.Data>?
     ) -> Cancellable {
         fatalError("\(Self.self).\(#function) is not implemented")
     }
@@ -203,6 +212,7 @@ extension MockApolloClient {
     @discardableResult
     func subscribe<Subscription: GraphQLSubscription>(
         subscription: Subscription,
+        context: RequestContext?,
         queue: DispatchQueue,
         resultHandler: @escaping GraphQLResultHandler<Subscription.Data>
     ) -> Cancellable {
