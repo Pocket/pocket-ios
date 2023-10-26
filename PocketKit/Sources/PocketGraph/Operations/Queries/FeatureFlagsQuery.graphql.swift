@@ -5,22 +5,9 @@
 
 public class FeatureFlagsQuery: GraphQLQuery {
   public static let operationName: String = "FeatureFlags"
-  public static let document: ApolloAPI.DocumentType = .notPersisted(
+  public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"""
-      query FeatureFlags($context: UnleashContext!) {
-        assignments: unleashAssignments(context: $context) {
-          __typename
-          assignments {
-            __typename
-            name
-            assigned
-            variant
-            payload
-          }
-        }
-      }
-      """#
+      #"query FeatureFlags($context: UnleashContext!) { assignments: unleashAssignments(context: $context) { __typename assignments { __typename name assigned variant payload } } }"#
     ))
 
   public var context: UnleashContext

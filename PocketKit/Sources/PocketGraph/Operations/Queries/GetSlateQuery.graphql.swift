@@ -5,16 +5,9 @@
 
 public class GetSlateQuery: GraphQLQuery {
   public static let operationName: String = "GetSlate"
-  public static let document: ApolloAPI.DocumentType = .notPersisted(
+  public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"""
-      query GetSlate($slateID: String!, $recommendationCount: Int!) {
-        getSlate(slateId: $slateID, recommendationCount: $recommendationCount) {
-          __typename
-          ...SlateParts
-        }
-      }
-      """#,
+      #"query GetSlate($slateID: String!, $recommendationCount: Int!) { getSlate(slateId: $slateID, recommendationCount: $recommendationCount) { __typename ...SlateParts } }"#,
       fragments: [SlateParts.self, ItemSummary.self, DomainMetadataParts.self, SyndicatedArticleParts.self, CuratedInfoParts.self]
     ))
 

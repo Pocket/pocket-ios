@@ -4,12 +4,9 @@
 @_exported import ApolloAPI
 
 public struct MarticleTextParts: PocketGraph.SelectionSet, Fragment {
-  public static var fragmentDefinition: StaticString { """
-    fragment MarticleTextParts on MarticleText {
-      __typename
-      content
-    }
-    """ }
+  public static var fragmentDefinition: StaticString {
+    #"fragment MarticleTextParts on MarticleText { __typename content }"#
+  }
 
   public let __data: DataDict
   public init(_dataDict: DataDict) { __data = _dataDict }
@@ -32,7 +29,7 @@ public struct MarticleTextParts: PocketGraph.SelectionSet, Fragment {
         "content": content,
       ],
       fulfilledFragments: [
-        ObjectIdentifier(Self.self)
+        ObjectIdentifier(MarticleTextParts.self)
       ]
     ))
   }

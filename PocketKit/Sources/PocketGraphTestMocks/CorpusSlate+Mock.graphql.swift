@@ -25,9 +25,9 @@ public extension Mock where O == CorpusSlate {
     subheadline: String? = nil
   ) {
     self.init()
-    _set(headline, for: \.headline)
-    _set(id, for: \.id)
-    _set(recommendations, for: \.recommendations)
-    _set(subheadline, for: \.subheadline)
+    _setScalar(headline, for: \.headline)
+    _setScalar(id, for: \.id)
+    _setList(recommendations, for: \.recommendations)
+    _setScalar(subheadline, for: \.subheadline)
   }
 }

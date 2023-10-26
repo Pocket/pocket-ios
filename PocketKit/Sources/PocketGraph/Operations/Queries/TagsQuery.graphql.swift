@@ -5,34 +5,9 @@
 
 public class TagsQuery: GraphQLQuery {
   public static let operationName: String = "Tags"
-  public static let document: ApolloAPI.DocumentType = .notPersisted(
+  public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"""
-      query Tags($pagination: PaginationInput) {
-        user {
-          __typename
-          tags(pagination: $pagination) {
-            __typename
-            edges {
-              __typename
-              node {
-                __typename
-                ...TagParts
-              }
-              cursor
-            }
-            pageInfo {
-              __typename
-              endCursor
-              hasNextPage
-              hasPreviousPage
-              startCursor
-            }
-            totalCount
-          }
-        }
-      }
-      """#,
+      #"query Tags($pagination: PaginationInput) { user { __typename tags(pagination: $pagination) { __typename edges { __typename node { __typename ...TagParts } cursor } pageInfo { __typename endCursor hasNextPage hasPreviousPage startCursor } totalCount } } }"#,
       fragments: [TagParts.self]
     ))
 

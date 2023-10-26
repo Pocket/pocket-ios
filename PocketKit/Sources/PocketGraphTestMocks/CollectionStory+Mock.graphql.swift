@@ -33,13 +33,13 @@ public extension Mock where O == CollectionStory {
     url: PocketGraph.Url? = nil
   ) {
     self.init()
-    _set(authors, for: \.authors)
-    _set(excerpt, for: \.excerpt)
-    _set(imageUrl, for: \.imageUrl)
-    _set(item, for: \.item)
-    _set(publisher, for: \.publisher)
-    _set(sortOrder, for: \.sortOrder)
-    _set(title, for: \.title)
-    _set(url, for: \.url)
+    _setList(authors, for: \.authors)
+    _setScalar(excerpt, for: \.excerpt)
+    _setScalar(imageUrl, for: \.imageUrl)
+    _setEntity(item, for: \.item)
+    _setScalar(publisher, for: \.publisher)
+    _setScalar(sortOrder, for: \.sortOrder)
+    _setScalar(title, for: \.title)
+    _setScalar(url, for: \.url)
   }
 }

@@ -5,16 +5,9 @@
 
 public class SavedItemTagMutation: GraphQLMutation {
   public static let operationName: String = "SavedItemTag"
-  public static let document: ApolloAPI.DocumentType = .notPersisted(
+  public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"""
-      mutation SavedItemTag($input: SavedItemTagInput!, $timestamp: ISOString!) {
-        savedItemTag(input: $input, timestamp: $timestamp) {
-          __typename
-          ...SavedItemParts
-        }
-      }
-      """#,
+      #"mutation SavedItemTag($input: SavedItemTagInput!, $timestamp: ISOString!) { savedItemTag(input: $input, timestamp: $timestamp) { __typename ...SavedItemParts } }"#,
       fragments: [SavedItemParts.self, TagParts.self, ItemParts.self, MarticleTextParts.self, ImageParts.self, MarticleDividerParts.self, MarticleTableParts.self, MarticleHeadingParts.self, MarticleCodeBlockParts.self, VideoParts.self, MarticleBulletedListParts.self, MarticleNumberedListParts.self, MarticleBlockquoteParts.self, DomainMetadataParts.self, SyndicatedArticleParts.self, PendingItemParts.self, CorpusItemSummary.self]
     ))
 

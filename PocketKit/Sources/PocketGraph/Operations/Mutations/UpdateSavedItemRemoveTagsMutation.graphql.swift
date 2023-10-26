@@ -5,16 +5,9 @@
 
 public class UpdateSavedItemRemoveTagsMutation: GraphQLMutation {
   public static let operationName: String = "UpdateSavedItemRemoveTags"
-  public static let document: ApolloAPI.DocumentType = .notPersisted(
+  public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"""
-      mutation UpdateSavedItemRemoveTags($savedItemId: ID!) {
-        updateSavedItemRemoveTags(savedItemId: $savedItemId) {
-          __typename
-          ...SavedItemParts
-        }
-      }
-      """#,
+      #"mutation UpdateSavedItemRemoveTags($savedItemId: ID!) { updateSavedItemRemoveTags(savedItemId: $savedItemId) { __typename ...SavedItemParts } }"#,
       fragments: [SavedItemParts.self, TagParts.self, ItemParts.self, MarticleTextParts.self, ImageParts.self, MarticleDividerParts.self, MarticleTableParts.self, MarticleHeadingParts.self, MarticleCodeBlockParts.self, VideoParts.self, MarticleBulletedListParts.self, MarticleNumberedListParts.self, MarticleBlockquoteParts.self, DomainMetadataParts.self, SyndicatedArticleParts.self, PendingItemParts.self, CorpusItemSummary.self]
     ))
 

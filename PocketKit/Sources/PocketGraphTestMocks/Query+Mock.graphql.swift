@@ -33,12 +33,12 @@ public extension Mock where O == Query {
     user: Mock<User>? = nil
   ) {
     self.init()
-    _set(assignments, for: \.assignments)
-    _set(collection, for: \.collection)
-    _set(getSlate, for: \.getSlate)
-    _set(getSlateLineup, for: \.getSlateLineup)
-    _set(homeSlateLineup, for: \.homeSlateLineup)
-    _set(itemByUrl, for: \.itemByUrl)
-    _set(user, for: \.user)
+    _setEntity(assignments, for: \.assignments)
+    _setEntity(collection, for: \.collection)
+    _setEntity(getSlate, for: \.getSlate)
+    _setEntity(getSlateLineup, for: \.getSlateLineup)
+    _setEntity(homeSlateLineup, for: \.homeSlateLineup)
+    _setEntity(itemByUrl, for: \.itemByUrl)
+    _setEntity(user, for: \.user)
   }
 }

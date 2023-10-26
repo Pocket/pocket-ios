@@ -4,18 +4,9 @@
 @_exported import ApolloAPI
 
 public struct CorpusSlateParts: PocketGraph.SelectionSet, Fragment {
-  public static var fragmentDefinition: StaticString { """
-    fragment CorpusSlateParts on CorpusSlate {
-      __typename
-      id
-      headline
-      subheadline
-      recommendations {
-        __typename
-        ...CorpusRecommendationParts
-      }
-    }
-    """ }
+  public static var fragmentDefinition: StaticString {
+    #"fragment CorpusSlateParts on CorpusSlate { __typename id headline subheadline recommendations { __typename ...CorpusRecommendationParts } }"#
+  }
 
   public let __data: DataDict
   public init(_dataDict: DataDict) { __data = _dataDict }
@@ -53,7 +44,7 @@ public struct CorpusSlateParts: PocketGraph.SelectionSet, Fragment {
         "recommendations": recommendations._fieldData,
       ],
       fulfilledFragments: [
-        ObjectIdentifier(Self.self)
+        ObjectIdentifier(CorpusSlateParts.self)
       ]
     ))
   }
@@ -94,7 +85,7 @@ public struct CorpusSlateParts: PocketGraph.SelectionSet, Fragment {
           "corpusItem": corpusItem._fieldData,
         ],
         fulfilledFragments: [
-          ObjectIdentifier(Self.self),
+          ObjectIdentifier(CorpusSlateParts.Recommendation.self),
           ObjectIdentifier(CorpusRecommendationParts.self)
         ]
       ))
@@ -152,8 +143,9 @@ public struct CorpusSlateParts: PocketGraph.SelectionSet, Fragment {
             "target": target._fieldData,
           ],
           fulfilledFragments: [
-            ObjectIdentifier(Self.self),
-            ObjectIdentifier(CorpusItemParts.self)
+            ObjectIdentifier(CorpusSlateParts.Recommendation.CorpusItem.self),
+            ObjectIdentifier(CorpusItemParts.self),
+            ObjectIdentifier(CorpusRecommendationParts.CorpusItem.self)
           ]
         ))
       }
@@ -178,7 +170,7 @@ public struct CorpusSlateParts: PocketGraph.SelectionSet, Fragment {
               "__typename": __typename,
             ],
             fulfilledFragments: [
-              ObjectIdentifier(Self.self)
+              ObjectIdentifier(CorpusSlateParts.Recommendation.CorpusItem.Target.self)
             ]
           ))
         }
@@ -232,9 +224,11 @@ public struct CorpusSlateParts: PocketGraph.SelectionSet, Fragment {
                 "publisher": publisher._fieldData,
               ],
               fulfilledFragments: [
-                ObjectIdentifier(Self.self),
                 ObjectIdentifier(CorpusSlateParts.Recommendation.CorpusItem.Target.self),
-                ObjectIdentifier(SyndicatedArticleParts.self)
+                ObjectIdentifier(CorpusSlateParts.Recommendation.CorpusItem.Target.AsSyndicatedArticle.self),
+                ObjectIdentifier(SyndicatedArticleParts.self),
+                ObjectIdentifier(CorpusItemParts.Target.self),
+                ObjectIdentifier(CorpusItemParts.Target.AsSyndicatedArticle.self)
               ]
             ))
           }
@@ -275,9 +269,11 @@ public struct CorpusSlateParts: PocketGraph.SelectionSet, Fragment {
                 "authors": authors._fieldData,
               ],
               fulfilledFragments: [
-                ObjectIdentifier(Self.self),
                 ObjectIdentifier(CorpusSlateParts.Recommendation.CorpusItem.Target.self),
-                ObjectIdentifier(CollectionSummary.self)
+                ObjectIdentifier(CorpusSlateParts.Recommendation.CorpusItem.Target.AsCollection.self),
+                ObjectIdentifier(CollectionSummary.self),
+                ObjectIdentifier(CorpusItemParts.Target.self),
+                ObjectIdentifier(CorpusItemParts.Target.AsCollection.self)
               ]
             ))
           }
@@ -309,8 +305,9 @@ public struct CorpusSlateParts: PocketGraph.SelectionSet, Fragment {
                   "name": name,
                 ],
                 fulfilledFragments: [
-                  ObjectIdentifier(Self.self),
-                  ObjectIdentifier(CollectionAuthorSummary.self)
+                  ObjectIdentifier(CorpusSlateParts.Recommendation.CorpusItem.Target.AsCollection.Author.self),
+                  ObjectIdentifier(CollectionAuthorSummary.self),
+                  ObjectIdentifier(CollectionSummary.Author.self)
                 ]
               ))
             }

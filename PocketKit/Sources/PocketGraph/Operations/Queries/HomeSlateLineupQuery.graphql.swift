@@ -5,20 +5,9 @@
 
 public class HomeSlateLineupQuery: GraphQLQuery {
   public static let operationName: String = "HomeSlateLineup"
-  public static let document: ApolloAPI.DocumentType = .notPersisted(
+  public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"""
-      query HomeSlateLineup($locale: String!) {
-        homeSlateLineup(locale: $locale) {
-          __typename
-          id
-          slates {
-            __typename
-            ...CorpusSlateParts
-          }
-        }
-      }
-      """#,
+      #"query HomeSlateLineup($locale: String!) { homeSlateLineup(locale: $locale) { __typename id slates { __typename ...CorpusSlateParts } } }"#,
       fragments: [CorpusSlateParts.self, CorpusRecommendationParts.self, CorpusItemParts.self, SyndicatedArticleParts.self, CollectionSummary.self, CollectionAuthorSummary.self]
     ))
 

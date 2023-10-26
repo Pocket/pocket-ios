@@ -23,8 +23,8 @@ public extension Mock where O == PendingItem {
     status: GraphQLEnum<PocketGraph.PendingItemStatus>? = nil
   ) {
     self.init()
-    _set(givenUrl, for: \.givenUrl)
-    _set(remoteID, for: \.remoteID)
-    _set(status, for: \.status)
+    _setScalar(givenUrl, for: \.givenUrl)
+    _setScalar(remoteID, for: \.remoteID)
+    _setScalar(status, for: \.status)
   }
 }

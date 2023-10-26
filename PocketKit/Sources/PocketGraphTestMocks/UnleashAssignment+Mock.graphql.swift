@@ -25,9 +25,9 @@ public extension Mock where O == UnleashAssignment {
     variant: String? = nil
   ) {
     self.init()
-    _set(assigned, for: \.assigned)
-    _set(name, for: \.name)
-    _set(payload, for: \.payload)
-    _set(variant, for: \.variant)
+    _setScalar(assigned, for: \.assigned)
+    _setScalar(name, for: \.name)
+    _setScalar(payload, for: \.payload)
+    _setScalar(variant, for: \.variant)
   }
 }

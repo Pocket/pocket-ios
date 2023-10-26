@@ -5,13 +5,9 @@
 
 public class DeleteItemMutation: GraphQLMutation {
   public static let operationName: String = "DeleteItem"
-  public static let document: ApolloAPI.DocumentType = .notPersisted(
+  public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"""
-      mutation DeleteItem($givenUrl: Url!, $timestamp: ISOString!) {
-        savedItemDelete(givenUrl: $givenUrl, timestamp: $timestamp)
-      }
-      """#
+      #"mutation DeleteItem($givenUrl: Url!, $timestamp: ISOString!) { savedItemDelete(givenUrl: $givenUrl, timestamp: $timestamp) }"#
     ))
 
   public var givenUrl: Url

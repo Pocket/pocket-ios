@@ -21,7 +21,7 @@ public extension Mock where O == DomainMetadata {
     name: String? = nil
   ) {
     self.init()
-    _set(logo, for: \.logo)
-    _set(name, for: \.name)
+    _setScalar(logo, for: \.logo)
+    _setScalar(name, for: \.name)
   }
 }

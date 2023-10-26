@@ -21,7 +21,7 @@ public extension Mock where O == Tag {
     name: String? = nil
   ) {
     self.init()
-    _set(id, for: \.id)
-    _set(name, for: \.name)
+    _setScalar(id, for: \.id)
+    _setScalar(name, for: \.name)
   }
 }

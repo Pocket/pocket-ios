@@ -4,13 +4,9 @@
 @_exported import ApolloAPI
 
 public struct TagParts: PocketGraph.SelectionSet, Fragment {
-  public static var fragmentDefinition: StaticString { """
-    fragment TagParts on Tag {
-      __typename
-      name
-      id
-    }
-    """ }
+  public static var fragmentDefinition: StaticString {
+    #"fragment TagParts on Tag { __typename name id }"#
+  }
 
   public let __data: DataDict
   public init(_dataDict: DataDict) { __data = _dataDict }
@@ -38,7 +34,7 @@ public struct TagParts: PocketGraph.SelectionSet, Fragment {
         "id": id,
       ],
       fulfilledFragments: [
-        ObjectIdentifier(Self.self)
+        ObjectIdentifier(TagParts.self)
       ]
     ))
   }
