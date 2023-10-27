@@ -45,12 +45,13 @@
                                 "imageUrl": "http://example.com/slate-1-rec-2/top-image.png",
                                 "publisher":"slate-1-rec-2.example.com",
                                 "target": {
-                                    "__typename": "[some-type-name]",
+                                    "__typename": "SyndicatedArticle",
                                     "itemId": "slate-1-rec-2-corpusItem-2-syndicated",
                                     "mainImage": "image-1-2-2",
                                     "title": "syndicatedTitle-1-2-2",
                                     "excerpt": "syndicatedExcerpt-1-2-2",
                                     "publisher": {
+                                       "__typename": "Publisher",
                                       "name": "syndicatedPublisher-1-2-2"
                                     }
                                 }
@@ -70,18 +71,19 @@
                             "corpusItem": {
                                 "__typename": "[some-type-name]",
                                 "id": "item-3",
-                                "url": "https://given.example.com/slate-2-rec-1",
+                                "url": "https://getpocket.com/item/slate-2-rec-1",
                                 "title": "Slate 2, Recommendation 1",
                                 "excerpt": "Cursus Aenean Elit",
                                 "imageUrl": "http://example.com/slate-2-rec-1/top-image.png",
                                 "publisher":"slate-2-rec-1.example.com",
                                 "target": {
-                                    "__typename": "[some-type-name]",
+                                    "__typename": "SyndicatedArticle",
                                     "itemId": "slate-2-rec-1-corpusItem-3-syndicated",
                                     "mainImage": "image-2-1-3",
                                     "title": "syndicatedTitle-2-1-3",
                                     "excerpt": "syndicatedExcerpt-2-1-3",
                                     "publisher": {
+                                      "__typename": "Publisher",
                                       "name": "syndicatedPublisher-2-1-3"
                                     }
                                 }

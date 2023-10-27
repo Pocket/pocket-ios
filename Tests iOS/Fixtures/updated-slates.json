@@ -1,190 +1,98 @@
 {
-  "data": {
-    "getSlateLineup": {
-      "id": "e39bc22a-6b70-4ed2-8247-4b3f1a516bd1",
-      "requestId": "slate-lineup-1-request",
-      "experimentId": "slate-lineup-1-experiment",
-      "__typename": "[some-type-name]",
-      "slates": [
-        {
-          "__typename": "[some-type-name]",
-          "id": "slate-1",
-          "requestId": "slate-1-request",
-          "experimentId": "slate-1-experiment",
-          "displayName": "Updated Slate 1",
-          "description": "The description of slate 1",
-          "recommendations": [
-            {
-              "__typename": "[some-type-name]",
-              "id": "slate-1-rec-1",
-              "curatedInfo": null,
-              "item": {
-                "__typename": "[some-type-name]",
-                "remoteID": "recommended-item-1",
-                "givenUrl": "http://localhost:8080/slate-1-rec-1",
-                "resolvedUrl": "http://localhost:8080/slate-1-rec-1",
-                "title": "Updated Slate 1, Recommendation 1",
-                "language": "en",
-                "topImageUrl": "http://example.com/slate-1-rec-1/top-image.png",
-                "timeToRead": 1,
-                "wordCount": 200,
-                "authors": [
-                  {
-                    "__typename": "Author",
-                    "id": "author-1",
-                    "name": "Jacob",
-                    "url": "http://example.com/authors/author-1"
-                  },
-                  {
-                    "__typename": "Author",
-                    "id": "author-2",
-                    "name": "David",
-                    "url": "http://example.com/authors/author-2"
-                  }
-                ],
-                "datePublished": "2021-01-01 12:01:01",
-                "images": [
-
-                ],
-                "excerpt": "Cursus Aenean Elit",
-                "domain": "slate-1-rec-1.example.com",
-                "domainMetadata": {
-                  "__typename": "[some-type-name]",
-                  "name": "Lifehacker",
-                  "logo": "https://slate-1-rec-1.example.com/logo.png"
+    "data": {
+        "homeSlateLineup": {
+            "id": "slate-lineup-1",
+            "__typename": "[some-type-name]",
+            "slates": [
+                {
+                    "__typename": "[some-type-name]",
+                    "id": "slate-1",
+                    "headline": "Slate 1",
+                    "subheadline": "The description of slate 1",
+                    "recommendations": [
+                        {
+                            "__typename": "[some-type-name]",
+                            "id": "7eb25abf-39f6-4d04-91e9-7485bbf7333b",
+                            "corpusItem": {
+                                "__typename": "[some-type-name]",
+                                "id": "item-1",
+                                "url": "https://getpocket.com/collections/slate-1-rec-1",
+                                "title": "Updated Slate 1, Recommendation 1",
+                                "excerpt": "Cursus Aenean Elit",
+                                "imageUrl": "http://example.com/slate-1-rec-1/top-image.png",
+                                "publisher":"slate-1-rec-1.example.com",
+                                "target": {
+                                    "__typename": "Collection",
+                                    "slug": "slate-1-rec-1",
+                                    "authors": [
+                                      {
+                                        "__typename": "CollectionAuthor",
+                                        "name": "Pocket"
+                                      }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "__typename": "[some-type-name]",
+                            "id": "d88c1280-0128-4767-84e2-a6fa0d2832fa",
+                            "corpusItem": {
+                                "__typename": "[some-type-name]",
+                                "id": "item-2",
+                                "url": "https://given.example.com/slate-1-rec-2",
+                                "title": "Slate 1, Recommendation 2",
+                                "excerpt": "Cursus Aenean Elit",
+                                "imageUrl": "http://example.com/slate-1-rec-2/top-image.png",
+                                "publisher":"slate-1-rec-2.example.com",
+                                "target": {
+                                    "__typename": "SyndicatedArticle",
+                                    "itemId": "slate-1-rec-2-corpusItem-2-syndicated",
+                                    "mainImage": "image-1-2-2",
+                                    "title": "syndicatedTitle-1-2-2",
+                                    "excerpt": "syndicatedExcerpt-1-2-2",
+                                    "publisher": {
+                                      "__typename": "Publisher",
+                                      "name": "syndicatedPublisher-1-2-2"
+                                    }
+                                }
+                            }
+                        },
+                    ],
                 },
-                "isArticle": true,
-                "hasImage": "HAS_IMAGES",
-                "hasVideo": "HAS_VIDEOS",
-                "syndicatedArticle": null
-              }
-            },
-            {
-              "__typename": "[some-type-name]",
-              "id": "slate-1-rec-2",
-              "curatedInfo": null,
-              "item": {
-                "__typename": "[some-type-name]",
-                "remoteID": "recommended-item-2",
-                "givenUrl": "https://example.com/slate-1-rec-2",
-                "resolvedUrl": "https://example.com/slate-1-rec-2",
-                "title": "Slate 1, Recommendation 2",
-                "language": "en",
-                "topImageUrl": "http://example.com/slate-1-rec-2/top-image.png",
-                "timeToRead": 2,
-                "wordCount": 200,
-                "authors": [
-
-                ],
-                "datePublished": "2021-01-01 12:01:01",
-                "images": [
-
-                ],
-                "excerpt": "Cursus Aenean Elit",
-                "domain": "slate-1-rec-2.example.com",
-                "domainMetadata": {
-                  "__typename": "[some-type-name]",
-                  "name": "Lifehacker",
-                  "logo": "https://slate-1-rec-2.example.com/logo.png"
+                {
+                    "__typename": "[some-type-name]",
+                    "id": "slate-2",
+                    "headline": "Slate 2",
+                    "subheadline": "The description of slate 2",
+                    "recommendations": [
+                        {
+                            "__typename": "[some-type-name]",
+                            "id": "619b6058-49e5-40b8-af43-dcca6048e61e",
+                            "corpusItem": {
+                                "__typename": "[some-type-name]",
+                                "id": "item-3",
+                                "url": "https://getpocket.com/item/slate-2-rec-1",
+                                "title": "Slate 2, Recommendation 1",
+                                "excerpt": "Cursus Aenean Elit",
+                                "imageUrl": "http://example.com/slate-2-rec-1/top-image.png",
+                                "publisher":"slate-2-rec-1.example.com",
+                                "target": {
+                                    "__typename": "SyndicatedArticle",
+                                    "itemId": "slate-2-rec-1-corpusItem-3-syndicated",
+                                    "mainImage": "image-2-1-3",
+                                    "title": "syndicatedTitle-2-1-3",
+                                    "excerpt": "syndicatedExcerpt-2-1-3",
+                                    "publisher": {
+                                      "__typename": "Publisher",
+                                      "name": "syndicatedPublisher-2-1-3"
+                                    }
+                                }
+                            }
+                        },
+                    ],
                 },
-                "isArticle": true,
-                "hasImage": "HAS_IMAGES",
-                "hasVideo": "HAS_VIDEOS",
-                "syndicatedArticle": null
-              }
-            }
-          ]
-        },
-        {
-          "__typename": "[some-type-name]",
-          "id": "slate-2",
-          "requestId": "slate-2-request",
-          "experimentId": "slate-2-experiment",
-          "displayName": "Updated Slate 2",
-          "description": "The description of slate 2",
-          "recommendations": [
-            {
-              "__typename": "[some-type-name]",
-              "id": "slate-2-rec-1",
-              "curatedInfo": null,
-              "item": {
-                "__typename": "[some-type-name]",
-                "remoteID": "recommended-item-3",
-                "givenUrl": "https://example.com/recommended-item-3",
-                "resolvedUrl": "https://example.com/recommended-item-3",
-                "title": "Updated Slate 2, Recommendation 1",
-                "language": "en",
-                "topImageUrl": "http://example.com/slate-2-rec-1/top-image.png",
-                "timeToRead": 3,
-                "wordCount": 200,
-                "authors": [
-
-                ],
-                "datePublished": "2021-01-01 12:01:01",
-                "images": [
-
-                ],
-                "excerpt": "Cursus Aenean Elit",
-                "domain": "slate-2-rec-1.example.com",
-                "domainMetadata": {
-                  "__typename": "[some-type-name]",
-                  "name": "Lifehacker",
-                  "logo": "https://slate-2-rec-1.example.com/logo.png"
-                },
-                "isArticle": true,
-                "hasImage": "HAS_IMAGES",
-                "hasVideo": "HAS_VIDEOS",
-                "syndicatedArticle": null
-              }
-            },
-            {
-              "__typename": "[some-type-name]",
-              "id": "slate-2-rec-2",
-              "curatedInfo": null,
-              "item": {
-                "remoteID": "recommended-item-4",
-                "__typename": "[some-type-name]",
-                "givenUrl": "https://getpocket.com/explore/item/article-4",
-                "resolvedUrl": "https://getpocket.com/explore/item/article-4",
-                "title": "Slate 2, Recommendation 2",
-                "language": "en",
-                "topImageUrl": "http://example.com/slate-2-rec-2/top-image.png",
-                "timeToRead": 3,
-                "wordCount": 200,
-                "authors": [
-
-                ],
-                "datePublished": "2021-01-01 12:01:01",
-                "images": [
-
-                ],
-                "excerpt": "Cursus Aenean Elit",
-                "domain": "slate-2-rec-2.example.com",
-                "domainMetadata": {
-                  "__typename": "DomainMetadata",
-                  "name": "Pocket",
-                  "logo": "https://getpocket.com/logo.png"
-                },
-                "isArticle": true,
-                "hasImage": "HAS_IMAGES",
-                "hasVideo": "HAS_VIDEOS",
-                "syndicatedArticle": {
-                  "__typename": "SyndicatedArticle",
-                  "itemId": "recommended-item-4",
-                  "title": "Updated Syndicated Article Slate 2, Rec 2",
-                  "excerpt": "A better syndicated excerpt",
-                  "mainImage": "http://example.com/slate-2-rec-2/top-image.png",
-                  "publisher": {
-                    "__typename": "Publisher",
-                    "name": "Mozilla"
-                  }
-                }
-              }
-            }
-          ]
+            ],
         }
-      ]
     }
-  }
 }
 

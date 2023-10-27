@@ -33,8 +33,12 @@ public extension Item {
         if override == true {
             return true
         }
+        
+        if isSyndicated {
+            return false
+        }
 
-        if isSaved || isSyndicated {
+        if isSaved {
             // We are legally allowed to open the item in reader view
             // BUT: if any of the following are true...
             // a) the item is not an article (i.e. it was not parseable)
