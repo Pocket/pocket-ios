@@ -33,7 +33,7 @@ public extension Item {
         if override == true {
             return true
         }
-        
+
         if isSyndicated {
             return false
         }

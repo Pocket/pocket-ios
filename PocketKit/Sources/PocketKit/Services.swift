@@ -87,9 +87,9 @@ struct Services {
             sessionProvider: appSession,
             consumerKey: Keys.shared.pocketApiConsumerKey
         )
-        
+
         Self.initTestUtilsIfPresent(appSession: appSession, userDefaults: userDefaults, source: source)
-        
+
         sceneTracker = SceneTracker(tracker: tracker, userDefaults: userDefaults)
 
         savesRefreshCoordinator = SavesRefreshCoordinator(
@@ -215,7 +215,7 @@ struct Services {
         widgetsSessionService = UserDefaultsWidgetSessionService(defaults: userDefaults)
         urlValidator = UrlValidator()
     }
-    
+
     /**
      This used to live in AppDelegate but didFinishLaunching is not called
      before the SwiftUI lifecycle in iOS 17 to setup everything.

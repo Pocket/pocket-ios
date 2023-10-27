@@ -81,7 +81,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
                 return sample
             }
         )
-        
+
         if CommandLine.arguments.contains("clearImageCache") {
             Textiles.clearImageCache()
         }

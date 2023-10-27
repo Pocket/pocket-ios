@@ -45,7 +45,7 @@ struct SavesElement: PocketUIElement {
             "topic-chip"
         ), and: type)
     }
-    
+
     func swipeCollectionViewLeftToMatchingCell(withPredicate predicate: NSPredicate, and type: String) -> XCUIElement {
         let firstCell = collectionView.cells.matching(predicate).firstMatch
         var matchingCell: XCUIElement?
@@ -66,7 +66,7 @@ struct SavesElement: PocketUIElement {
         // Do something with the matching cell, e.g., tap it or perform assertions
         return matchingCell!
     }
-    
+
     func addSavedItemButton() -> XCUIElement {
         element.buttons["add_saved_item_button"]
     }
