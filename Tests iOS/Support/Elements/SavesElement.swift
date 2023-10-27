@@ -54,7 +54,9 @@ struct SavesElement: PocketUIElement {
 
         while matchingCell == nil && swipeCount < maxSwipes {
             let cells = collectionView.cells.matching(predicate).containing(.staticText, identifier: type)
+            // swiftlint:disable empty_count
             if cells.count > 0 {
+            // swiftlint:enable empty_count
                 matchingCell = cells.element(boundBy: 0)
             } else {
                firstCell.swipeLeft()
