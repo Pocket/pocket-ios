@@ -6,8 +6,9 @@ public extension Style {
     static let collection = CollectionStyle()
     struct CollectionStyle {
         public let title: Style = .header
-            .serif
-            .title
+            .sansSerif
+            .h2
+            .with(color: .ui.black1)
             .with { (paragraph: ParagraphStyle) -> ParagraphStyle in
                 paragraph.with(lineHeight: .multiplier(0.925))
             }
@@ -19,11 +20,11 @@ public extension Style {
         public let detail: Style = .header.sansSerif.p4
             .with(color: .ui.black1)
 
-        public let excerpt: Style = .header.serif.p1
+        public let excerpt: Style = .header.sansSerif.p3
             .with(weight: .regular)
             .with(color: .ui.black1)
 
-        public let intro: Style = .header.serif.p1
+        public let intro: Style = .header.sansSerif.p3
             .with(color: .ui.black1)
 
         public let collection: Style = .header.sansSerif.p4
