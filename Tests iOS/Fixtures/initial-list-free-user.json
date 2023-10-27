@@ -31,6 +31,7 @@
                                     "name": "tag 0"
                                 }
                             ],
+                            "corpusItem": null,
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "free-item-1",
@@ -41,7 +42,7 @@
                                 "domain": null,
                                 "language": "en",
                                 "timeToRead": 6,
-                    "wordCount": 500,
+                                "wordCount": 500,
                                 "marticle": #MARTICLE#,
                                 "excerpt": "Cursus Aenean Elit",
                                 "datePublished": "2021-01-01 12:01:01",
@@ -110,6 +111,7 @@
                                     "name": "tag 2"
                                 }
                             ],
+                            "corpusItem": null,
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "free-item-2",
@@ -120,7 +122,7 @@
                                 "domain": "wired.com",
                                 "language": "en",
                                 "timeToRead": 6,
-                    "wordCount": 500,
+                                "wordCount": 500,
                                 "domainMetadata": null,
                                 "marticle": [],
                                 "authors": [],

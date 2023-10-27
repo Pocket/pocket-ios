@@ -24,6 +24,7 @@
                             "archivedAt": null,
                             "isArchived": false,
                             "isFavorite": false,
+                            "corpusItem": null,
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "archived-item-1",

@@ -40,6 +40,7 @@
                   "name": "tag 2"
                 }
               ],
+              "corpusItem": null,
               "item": {
                 "__typename": "Item",
                 "remoteID": "archived-item-1",
@@ -84,6 +85,7 @@
               "isArchived": true,
               "isFavorite": true,
               "tags": [],
+              "corpusItem": null,
               "item": {
                 "__typename": "Item",
                 "remoteID": "archived-item-2",

@@ -13,6 +13,7 @@
                 "isArchived": true,
                 "isFavorite": false,
                 "tags": [],
+                "corpusItem": null,
                 "item": {
                     "__typename": "Item",
                     "remoteID": "saved-item-1",

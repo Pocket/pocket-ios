@@ -252,6 +252,7 @@
                             "isArchived": false,
                             "isFavorite": false,
                             "tags": [],
+                            "corpusItem": null,
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "item-6",
@@ -262,7 +263,7 @@
                                 "domain": "wired.com",
                                 "language": "en",
                                 "timeToRead": 6,
-                    "wordCount": 500,
+                                "wordCount": 500,
                                 "domainMetadata": null,
                                 "marticle": [],
                                 "authors": [],
