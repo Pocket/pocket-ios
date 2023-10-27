@@ -81,6 +81,10 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
                 return sample
             }
         )
+        
+        if CommandLine.arguments.contains("clearImageCache") {
+            Textiles.clearImageCache()
+        }
 
         // Setup adjust early on because we attach the ad id to the UserEntity.
         enableAdjust()
