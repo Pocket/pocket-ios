@@ -200,7 +200,7 @@ extension MockApolloClient {
 
     @discardableResult
     func upload<Operation: GraphQLOperation>(
-        operation: Operation, 
+        operation: Operation,
         files: [Apollo.GraphQLFile],
         context: Apollo.RequestContext?,
         queue: DispatchQueue, resultHandler:
