@@ -82,32 +82,6 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
             }
         )
 
-        if CommandLine.arguments.contains("clearKeychain") {
-            appSession.currentSession = nil
-        }
-
-        if CommandLine.arguments.contains("clearUserDefaults") {
-            userDefaults.resetKeys()
-        }
-
-        if CommandLine.arguments.contains("clearCoreData") {
-            source.clear()
-        }
-
-        if CommandLine.arguments.contains("clearImageCache") {
-            Textiles.clearImageCache()
-        }
-
-        if let guid = ProcessInfo.processInfo.environment["sessionGUID"],
-           let accessToken = ProcessInfo.processInfo.environment["accessToken"],
-           let userIdentifier = ProcessInfo.processInfo.environment["sessionUserID"] {
-            appSession.currentSession = Session(
-                guid: guid,
-                accessToken: accessToken,
-                userIdentifier: userIdentifier
-            )
-        }
-
         // Setup adjust early on because we attach the ad id to the UserEntity.
         enableAdjust()
 

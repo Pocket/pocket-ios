@@ -86,9 +86,41 @@ public class RootViewModel: ObservableObject {
         ).sink { [weak self] notification in
             self?.handleSession(session: nil)
         }.store(in: &subscriptions)
-
+        self.initTestUtilsIfPresent()
         // Because session could already be available at init, lets try and use it.
         handleSession(session: appSession.currentSession)
+    }
+
+    /**
+     This used to live in AppDelegate but didFinishLaunching is not called
+     before the SwiftUI lifecycle in iOS 17 to setup everything.
+     */
+    func initTestUtilsIfPresent() {
+        if CommandLine.arguments.contains("clearKeychain") {
+            appSession.currentSession = nil
+        }
+
+        if CommandLine.arguments.contains("clearUserDefaults") {
+            userDefaults.resetKeys()
+        }
+
+        if CommandLine.arguments.contains("clearCoreData") {
+            source.clear()
+        }
+
+        if CommandLine.arguments.contains("clearImageCache") {
+            Textiles.clearImageCache()
+        }
+
+        if let guid = ProcessInfo.processInfo.environment["sessionGUID"],
+           let accessToken = ProcessInfo.processInfo.environment["accessToken"],
+           let userIdentifier = ProcessInfo.processInfo.environment["sessionUserID"] {
+            appSession.currentSession = Session(
+                guid: guid,
+                accessToken: accessToken,
+                userIdentifier: userIdentifier
+            )
+        }
     }
 
     /**
