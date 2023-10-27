@@ -6,9 +6,7 @@ import Foundation
 
 public extension URL {
     init?(percentEncoding string: String) {
-        if let url = URL(string: string) {
-            self = url
-        } else if let escaped = string.addingPercentEncoding(withAllowedCharacters: .urlAllowed),
+        if let escaped = string.addingPercentEncoding(withAllowedCharacters: .urlAllowed),
                   let url = URL(string: escaped) {
             self = url
         } else {
