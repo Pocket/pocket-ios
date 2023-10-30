@@ -144,7 +144,7 @@ extension MockApolloClient {
     }
 
     func setupSearchListResponseForPagination(fixtureName: String = "search-list-page-1") {
-        stubFetch { (query: SearchSavedItemsQuery, _, _, queue, completion) in
+        stubFetch { (query: SearchSavedItemsQuery, _, _, _, queue, completion) in
             let resultFixtureName: String
             switch query.pagination.after {
             case nil:

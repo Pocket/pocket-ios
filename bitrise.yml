@@ -298,7 +298,7 @@ workflows:
           timeout: 600 #10 minutes
           title: Unit Tests
           inputs:
-            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UnitTests_iphonesimulator17.0.1.xctestrun'
+            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UnitTests_iphonesimulator17.0.xctestrun'
             - destination: platform=iOS Simulator,name=iPhone 15,OS=17.0.1
       - deploy-to-bitrise-io@2.1.1:
           inputs:
@@ -313,7 +313,7 @@ workflows:
           timeout: 1200 #20 minutes
           title: UI Test Suite 1
           inputs:
-            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests_iphonesimulator17.0.1-arm64-x86_64.xctestrun'
+            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests_iphonesimulator17.0-arm64-x86_64.xctestrun'
             - destination: platform=iOS Simulator,name=iPhone 15,OS=17.0.1
       - deploy-to-bitrise-io@2.1.1:
           inputs:
@@ -328,7 +328,7 @@ workflows:
           timeout: 1200 #20 minutes
           title: UI Test Suite 2
           inputs:
-            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests-2_iphonesimulator17.0.1-arm64-x86_64.xctestrun'
+            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests-2_iphonesimulator17.0-arm64-x86_64.xctestrun'
             - destination: platform=iOS Simulator,name=iPhone 15,OS=17.0.1
       - deploy-to-bitrise-io@2.1.1:
           inputs:
@@ -343,7 +343,7 @@ workflows:
           timeout: 1200 #20 minutes
           title: UI Test Suite 3
           inputs:
-            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests-3_iphonesimulator17.0.1-arm64-x86_64.xctestrun'
+            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests-3_iphonesimulator17.0-arm64-x86_64.xctestrun'
             - destination: platform=iOS Simulator,name=iPhone 15,OS=17.0.1
       - deploy-to-bitrise-io@2.1.1:
           inputs:
@@ -360,7 +360,7 @@ workflows:
           timeout: 1200 #20 minutes
           title: UI Test Suite 1 Legacy
           inputs:
-            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests_iphonesimulator17.0.1-arm64-x86_64.xctestrun'
+            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests_iphonesimulator17.0-arm64-x86_64.xctestrun'
             - destination: platform=iOS Simulator,name=iPhone 14,OS=16.4
       - deploy-to-bitrise-io@2.1.1:
           inputs:
@@ -376,7 +376,7 @@ workflows:
           timeout: 1200 #20 minutes
           title: UI Test Suite 2 Legacy
           inputs:
-            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests-2_iphonesimulator17.0.1-arm64-x86_64.xctestrun'
+            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests-2_iphonesimulator17.0-arm64-x86_64.xctestrun'
             - destination: platform=iOS Simulator,name=iPhone 14,OS=16.4
       - deploy-to-bitrise-io@2.1.1:
           inputs:
@@ -392,7 +392,7 @@ workflows:
           timeout: 1200 #20 minutes
           title: UI Test Suite 3 Legacy
           inputs:
-            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests-3_iphonesimulator17.0.1-arm64-x86_64.xctestrun'
+            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests-3_iphonesimulator17.0-arm64-x86_64.xctestrun'
             - destination: platform=iOS Simulator,name=iPhone 14,OS=16.4
       - deploy-to-bitrise-io@2.1.1:
           inputs:
@@ -407,7 +407,7 @@ workflows:
           timeout: 600 #10 minutes
           title: Unit Tests
           inputs:
-            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITestsFlaky_iphonesimulator17.0.1-arm64-x86_64.xctestrun'
+            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITestsFlaky_iphonesimulator17.0-arm64-x86_64.xctestrun'
             - destination: platform=iOS Simulator,name=iPhone 15,OS=17.0.1
       - deploy-to-bitrise-io@2.1.1:
           inputs:

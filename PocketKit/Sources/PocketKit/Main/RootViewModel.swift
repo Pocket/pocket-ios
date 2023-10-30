@@ -86,7 +86,6 @@ public class RootViewModel: ObservableObject {
         ).sink { [weak self] notification in
             self?.handleSession(session: nil)
         }.store(in: &subscriptions)
-
         // Because session could already be available at init, lets try and use it.
         handleSession(session: appSession.currentSession)
     }

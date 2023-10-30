@@ -45,11 +45,11 @@ class FavoriteAnItemTests: XCTestCase {
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isToUnfavoriteAnItem {
                 defer { expectUnfavoriteRequest.fulfill() }
-                XCTAssertEqual(apiRequest.variableGivenURL, "https://example.com/item-2")
+                XCTAssertEqual(apiRequest.variableGivenURL, "http://localhost:8080/hello")
                 return .unfavorite(apiRequest: apiRequest)
             } else if apiRequest.isToFavoriteAnItem {
                 defer { expectFavoriteRequest.fulfill() }
-                XCTAssertEqual(apiRequest.variableGivenURL, "https://example.com/item-2")
+                XCTAssertEqual(apiRequest.variableGivenURL, "http://localhost:8080/hello")
                 return .favorite(apiRequest: apiRequest)
             }
             return .fallbackResponses(apiRequest: apiRequest)
@@ -60,7 +60,7 @@ class FavoriteAnItemTests: XCTestCase {
 
         let itemCell = app
             .saves
-            .itemView(matching: "Item 2")
+            .itemView(matching: "Item 1")
             .wait()
 
         itemCell.favoriteButton.tap()
@@ -80,11 +80,11 @@ class FavoriteAnItemTests: XCTestCase {
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isToUnfavoriteAnItem {
                 defer { expectUnfavoriteRequest.fulfill() }
-                XCTAssertEqual(apiRequest.variableGivenURL, "https://example.com/item-2")
+                XCTAssertEqual(apiRequest.variableGivenURL, "http://localhost:8080/hello")
                 return .unfavorite(apiRequest: apiRequest)
             } else if apiRequest.isToFavoriteAnItem {
                 defer { expectFavoriteRequest.fulfill() }
-                XCTAssertEqual(apiRequest.variableGivenURL, "https://example.com/item-2")
+                XCTAssertEqual(apiRequest.variableGivenURL, "http://localhost:8080/hello")
                 return .favorite(apiRequest: apiRequest)
             }
             return .fallbackResponses(apiRequest: apiRequest)
@@ -95,7 +95,7 @@ class FavoriteAnItemTests: XCTestCase {
 
         app
             .saves
-            .itemView(matching: "Item 2")
+            .itemView(matching: "Item 1")
             .wait()
             .tap()
 
@@ -125,11 +125,11 @@ class FavoriteAnItemTests: XCTestCase {
 
         let favoriteEvent = events[0]!
         favoriteEvent.getUIContext()!.assertHas(type: "button")
-        favoriteEvent.getContentContext()!.assertHas(url: "https://example.com/item-2")
+        favoriteEvent.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
 
         let unfavoriteEvent = events[1]!
         unfavoriteEvent.getUIContext()!.assertHas(type: "button")
-        unfavoriteEvent.getContentContext()!.assertHas(url: "https://example.com/item-2")
+        unfavoriteEvent.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
     }
 
     func test_favoritingAndUnfavoritingAnItemFromArchive_togglesFavoritedIcon_andSyncsWithServer() {

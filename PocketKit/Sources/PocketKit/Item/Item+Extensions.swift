@@ -34,7 +34,11 @@ public extension Item {
             return true
         }
 
-        if isSaved || isSyndicated {
+        if isSyndicated {
+            return false
+        }
+
+        if isSaved {
             // We are legally allowed to open the item in reader view
             // BUT: if any of the following are true...
             // a) the item is not an article (i.e. it was not parseable)

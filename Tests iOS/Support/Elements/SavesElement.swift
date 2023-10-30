@@ -40,12 +40,33 @@ struct SavesElement: PocketUIElement {
     }
 
     func filterButton(for type: String) -> XCUIElement {
-        collectionView.cells.matching(
-            NSPredicate(
-                format: "identifier = %@",
-                "topic-chip"
-            )
-        ).containing(.staticText, identifier: type).element(boundBy: 0)
+        swipeCollectionViewLeftToMatchingCell(withPredicate: NSPredicate(
+            format: "identifier = %@",
+            "topic-chip"
+        ), and: type)
+    }
+
+    func swipeCollectionViewLeftToMatchingCell(withPredicate predicate: NSPredicate, and type: String) -> XCUIElement {
+        let firstCell = collectionView.cells.matching(predicate).firstMatch
+        var matchingCell: XCUIElement?
+        let maxSwipes = 10 // Set a maximum number of swipes to prevent infinite loops
+        var swipeCount = 0
+
+        while matchingCell == nil && swipeCount < maxSwipes {
+            let cells = collectionView.cells.matching(predicate).containing(.staticText, identifier: type)
+            // swiftlint:disable empty_count
+            if cells.count > 0 {
+            // swiftlint:enable empty_count
+                matchingCell = cells.element(boundBy: 0)
+            } else {
+               firstCell.swipeLeft()
+               swipeCount += 1
+            }
+        }
+
+        XCTAssertNotNil(matchingCell)
+        // Do something with the matching cell, e.g., tap it or perform assertions
+        return matchingCell!
     }
 
     func addSavedItemButton() -> XCUIElement {

@@ -342,13 +342,13 @@ extension Response {
             return .archive(apiRequest: apiRequest)
         } else if apiRequest.isToSaveAnItem {
             return .saveItem(apiRequest: apiRequest)
-        } else if apiRequest.isForRecommendationDetail(1) {
+        } else if apiRequest.isForRecommendationDetail("slate-1-rec-1") {
             return .recommendationDetail(1)
-        } else if apiRequest.isForRecommendationDetail(2) {
+        } else if apiRequest.isForRecommendationDetail("slate-1-rec-2") {
             return .recommendationDetail(2)
-        } else if apiRequest.isForRecommendationDetail(3) {
+        } else if apiRequest.isForRecommendationDetail("slate-2-rec-1") {
             return .recommendationDetail(3)
-        } else if apiRequest.isForRecommendationDetail(4) {
+        } else if apiRequest.isForRecommendationDetail("slate-2-rec-2") {
             return .recommendationDetail(4)
         } else if apiRequest.isForArchivedItemDetail {
             return .archiveItemDetail()

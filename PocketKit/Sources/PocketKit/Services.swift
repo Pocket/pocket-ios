@@ -88,6 +88,8 @@ struct Services {
             consumerKey: Keys.shared.pocketApiConsumerKey
         )
 
+        Self.initTestUtilsIfPresent(appSession: appSession, userDefaults: userDefaults, source: source)
+
         sceneTracker = SceneTracker(tracker: tracker, userDefaults: userDefaults)
 
         savesRefreshCoordinator = SavesRefreshCoordinator(
@@ -212,6 +214,34 @@ struct Services {
         recommendationsWidgetUpdateService = RecommendationsWidgetUpdateService(store: UserDefaultsItemWidgetsStore(userDefaults: userDefaults, key: .recommendationsWidget))
         widgetsSessionService = UserDefaultsWidgetSessionService(defaults: userDefaults)
         urlValidator = UrlValidator()
+    }
+
+    /**
+     This used to live in AppDelegate but didFinishLaunching is not called
+     before the SwiftUI lifecycle in iOS 17 to setup everything.
+     */
+    static func initTestUtilsIfPresent(appSession: AppSession, userDefaults: UserDefaults, source: Sync.Source) {
+        if CommandLine.arguments.contains("clearKeychain") {
+            appSession.currentSession = nil
+        }
+
+        if CommandLine.arguments.contains("clearUserDefaults") {
+            userDefaults.resetKeys()
+        }
+
+        if CommandLine.arguments.contains("clearCoreData") {
+            source.clear()
+        }
+
+        if let guid = ProcessInfo.processInfo.environment["sessionGUID"],
+           let accessToken = ProcessInfo.processInfo.environment["accessToken"],
+           let userIdentifier = ProcessInfo.processInfo.environment["sessionUserID"] {
+            appSession.currentSession = Session(
+                guid: guid,
+                accessToken: accessToken,
+                userIdentifier: userIdentifier
+            )
+        }
     }
 
     /// Starts up all services as required.
