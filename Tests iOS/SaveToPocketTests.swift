@@ -51,9 +51,7 @@ class SaveToPocketTests: XCTestCase {
         safari.toolbars.buttons["ShareButton"].tap()
         let activityView = safari.descendants(matching: .other)["ActivityListView"].wait()
 
-        // Sadly this is the only way I could devise to find the Pocket Beta button
-        // This will likely be very brittle
-        activityView.cells.matching(identifier: "XCElementSnapshotPrivilegedValuePlaceholder").element(boundBy: 1).tap()
+        activityView.cells["Pocket"].tap()
         safari.buttons["log-in"].wait().tap()
 
         app.loggedOutView.wait()
@@ -103,9 +101,10 @@ class SaveToPocketTests: XCTestCase {
         reminders.textFields.firstMatch.wait().tap()
         reminders.menuItems["Select All"].wait().tap()
         reminders.buttons["Forward"].wait().tap()
+        reminders.buttons["Forward"].wait().tap()
         reminders.collectionViews.staticTexts["Share…"].tap()
         let activityView = reminders.descendants(matching: .other)["ActivityListView"].wait()
-        activityView.cells.matching(identifier: "XCElementSnapshotPrivilegedValuePlaceholder").element(boundBy: 2).wait().tap()
+        activityView.cells["Pocket"].tap()
         reminders.otherElements["save-extension-info-view"].staticTexts["Saved to Pocket"].wait()
         reminders.terminate()
     }
@@ -123,9 +122,10 @@ class SaveToPocketTests: XCTestCase {
         reminders.textFields.firstMatch.wait().tap()
         reminders.menuItems["Select All"].wait().tap()
         reminders.buttons["Forward"].wait().tap()
+        reminders.buttons["Forward"].wait().tap()
         reminders.collectionViews.staticTexts["Share…"].tap()
         let activityView = reminders.descendants(matching: .other)["ActivityListView"].wait()
-        activityView.cells.matching(identifier: "XCElementSnapshotPrivilegedValuePlaceholder").element(boundBy: 2).wait().tap()
+        activityView.cells["Pocket"].tap()
         reminders.otherElements["save-extension-info-view"].staticTexts["Pocket couldn't save this link"].wait()
         reminders.terminate()
     }
@@ -133,6 +133,6 @@ class SaveToPocketTests: XCTestCase {
     func tapPocketShareMenuIcon() {
         let safariShareMenu = XCUIApplication(bundleIdentifier: "com.apple.mobilesafari")
         let activityView = safariShareMenu.descendants(matching: .other)["ActivityListView"].wait()
-        activityView.cells.matching(identifier: "XCElementSnapshotPrivilegedValuePlaceholder").element(boundBy: 1).wait().tap()
+        activityView.cells["Pocket"].tap()
     }
 }
