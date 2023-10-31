@@ -379,7 +379,7 @@ class HomeTests: XCTestCase {
         let home = app.launch().homeView
         home.overscroll()
         validateBottomMessage()
-        home.recommendationCell("Slate 2, Recommendation 1").tap()
+        home.recommendationCell("Slate 1, Recommendation 2").tap()
         app.readerView.readerHomeButton.wait().tap()
         validateBottomMessage()
     }

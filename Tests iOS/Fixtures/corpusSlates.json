@@ -89,6 +89,20 @@
                                 }
                             }
                         },
+                        {
+                            "__typename": "[some-type-name]",
+                            "id": "619b605a-49e5-40b8-af43-dcca6048e61e",
+                            "corpusItem": {
+                                "__typename": "[some-type-name]",
+                                "id": "item-4",
+                                "url": "http://localhost:8080/slate-2-rec-2",
+                                "title": "Slate 2, Recommendation 2",
+                                "excerpt": "Cursus Aenean Elit",
+                                "imageUrl": "http://example.com/slate-2-rec-2/top-image.png",
+                                "publisher":"slate-2-rec-2.example.com",
+                                "target": null
+                            }
+                        },
                     ],
                 },
             ],
