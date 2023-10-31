@@ -201,14 +201,16 @@ class HomeTests: XCTestCase {
     }
 
     func test_tappingRecommendationCell_whenItemIsNotSaved_andItemIsNotSyndicated_opensItemInWebView() {
-        server.routes.get("/slate-1-rec-1") { _, _ in
+        server.routes.get("/slate-2-rec-2") { _, _ in
             Response {
                 Status.ok
                 Fixture.data(name: "hello", ext: "html")
             }
         }
 
-        app.launch().homeView.recommendationCell("Slate 1, Recommendation 1").wait().tap()
+        app.launch()
+        app.homeView.element.swipeUp()
+        app.homeView.recommendationCell("Slate 2, Recommendation 2").wait().tap()
         app.webReaderView
             .staticText(matching: "Hello, world")
             .wait()
@@ -219,7 +221,7 @@ class HomeTests: XCTestCase {
             .homeView.recommendationCell("Slate 1, Recommendation 1")
             .wait().element.swipeUp()
 
-        app.homeView.recommendationCell("Syndicated Article Slate 2, Rec 2")
+        app.homeView.recommendationCell("Slate 1, Recommendation 2")
             .wait().tap()
 
         app.readerView.cell(containing: "Mozilla").wait()
@@ -230,14 +232,14 @@ class HomeTests: XCTestCase {
             .homeView.recommendationCell("Slate 1, Recommendation 1")
             .wait().element.swipeUp()
 
-        app.homeView.recommendationCell("Syndicated Article Slate 2, Rec 2")
+        app.homeView.recommendationCell("Slate 1, Recommendation 2")
             .wait().tap()
 
-        app.readerView.cell(containing: "Syndicated Article Slate 2, Rec 2").wait()
+        app.readerView.cell(containing: "Slate 1, Recommendation 2").wait()
 
         app.navigationBar.buttons["Home"].tap()
 
-        XCTAssertTrue(app.homeView.recommendationCell("Syndicated Article Slate 2, Rec 2").element.staticTexts["Mozilla"].exists)
+        XCTAssertTrue(app.homeView.recommendationCell("Slate 1, Recommendation 2").element.staticTexts["Mozilla"].exists)
     }
 
     func test_tappingSaveButtonInRecommendationCell_savesItemToList() {
@@ -249,7 +251,7 @@ class HomeTests: XCTestCase {
 
             if apiRequest.isToSaveAnItem {
                 defer { saveRequestExpectation.fulfill() }
-                XCTAssertEqual(apiRequest.inputURL, URL(string: "http://localhost:8080/slate-1-rec-1"))
+                XCTAssertEqual(apiRequest.inputURL, URL(string: "https://getpocket.com/collections/slate-1-rec-1"))
                 return .saveItem("save-recommendation-1")
             } else if apiRequest.isToArchiveAnItem {
                 defer { archiveRequestExpectation.fulfill() }
@@ -283,9 +285,9 @@ class HomeTests: XCTestCase {
         server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isToSaveAnItem {
-                if apiRequest.inputURL == URL(string: "http://localhost:8080/slate-1-rec-1") {
+                if apiRequest.inputURL == URL(string: "https://getpocket.com/collections/slate-1-rec-1") {
                     return Response.saveItem("save-recommendation-1")
-                } else if apiRequest.inputURL == URL(string: "https://example.com/slate-1-rec-2") {
+                } else if apiRequest.inputURL == URL(string: "https://given.example.com/slate-1-rec-2") {
                     return Response.saveItem("save-recommendation-2")
                 }
             } else if apiRequest.isToArchiveAnItem {
@@ -334,11 +336,11 @@ class HomeTests: XCTestCase {
         rec2Cell.savedButton.wait()
         rec1Cell.savedButton.wait()
 
-        async let slate1Rec1 = snowplowMicro.getFirstEvent(with: "home.expandedSlate.article.impression", recommendationId: "slate-1-rec-1")
-        async let slate1Rec2 = snowplowMicro.getFirstEvent(with: "home.expandedSlate.article.impression", recommendationId: "slate-1-rec-2")
-        async let slate1Rec1Save = snowplowMicro.getFirstEvent(with: "home.expandedSlate.article.save", recommendationId: "slate-1-rec-1")
-        async let slate1Rec2Save = snowplowMicro.getFirstEvent(with: "home.expandedSlate.article.save", recommendationId: "slate-1-rec-2")
-        async let slate1Rec2Unsave = snowplowMicro.getFirstEvent(with: "home.expandedSlate.article.archive", recommendationId: "slate-1-rec-2")
+        async let slate1Rec1 = snowplowMicro.getFirstEvent(with: "home.expandedSlate.article.impression", recommendationId: "7eb25abf-39f6-4d04-91e9-7485bbf7333b")
+        async let slate1Rec2 = snowplowMicro.getFirstEvent(with: "home.expandedSlate.article.impression", recommendationId: "d88c1280-0128-4767-84e2-a6fa0d2832fa")
+        async let slate1Rec1Save = snowplowMicro.getFirstEvent(with: "home.expandedSlate.article.save", recommendationId: "7eb25abf-39f6-4d04-91e9-7485bbf7333b")
+        async let slate1Rec2Save = snowplowMicro.getFirstEvent(with: "home.expandedSlate.article.save", recommendationId: "d88c1280-0128-4767-84e2-a6fa0d2832fa")
+        async let slate1Rec2Unsave = snowplowMicro.getFirstEvent(with: "home.expandedSlate.article.archive", recommendationId: "d88c1280-0128-4767-84e2-a6fa0d2832fa")
         async let slateDetail = snowplowMicro.getFirstEvent(with: "home.expandedSlate.impression", slateId: "slate-1")
 
         let recs = await [slate1Rec1, slate1Rec2, slate1Rec1Save, slate1Rec2Save, slate1Rec2Unsave, slateDetail]
@@ -348,8 +350,8 @@ class HomeTests: XCTestCase {
         let loadedSlate1Rec2Save = recs[3]!
         let loadedSlate1Rec2Unsave = recs[4]!
         let loadedSlateDetail = recs[5]!
-        snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate1Rec1, url: "http://localhost:8080/slate-1-rec-1")
-        snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate1Rec2, url: "https://example.com/slate-1-rec-2")
+        snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate1Rec1, url: "https://getpocket.com/collections/slate-1-rec-1")
+        snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate1Rec2, url: "https://given.example.com/slate-1-rec-2")
 
         XCTAssertNotNil(loadedSlate1Rec1Save)
         XCTAssertNotNil(loadedSlate1Rec2Save)
