@@ -52,7 +52,6 @@
         "HomeTests\/test_tappingSaveButtonInRecommendationCell_savesItemToList()",
         "HomeTests\/test_tappingSlatesSeeAllButton_showsSlateDetailView()",
         "HomeTests\/test_unfavoritingRecentSavesItem_shouldNotAppearForFavoriteInSaves()",
-        "HomeWebViewTests",
         "PremiumTests",
         "ReaderTests",
         "ReportARecommendationTests",

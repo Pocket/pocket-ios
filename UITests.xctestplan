@@ -79,7 +79,6 @@
         "BannerViewTests\/test_foregroundingTheApp_withAlreadySavedURL_showsSaveFromClipboardBannerAndBringsItemToTop()",
         "ErrorTests",
         "HomeTests",
-        "HomeWebViewTests",
         "ListenTests",
         "PremiumTests",
         "PullToRefreshTests",

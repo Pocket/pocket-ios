@@ -81,7 +81,6 @@
         "ErrorTests",
         "FavoriteAnItemTests",
         "HomeTests",
-        "HomeWebViewTests",
         "ListenTests",
         "PremiumTests",
         "PullToRefreshTests\/test_saves_pullToRefresh_fetchesNewContent()",
