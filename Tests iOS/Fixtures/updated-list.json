@@ -76,6 +76,7 @@
               "isArchived": false,
               "isFavorite": false,
               "tags": [],
+              "corpusItem": null,
               "item": {
                 "__typename": "Item",
                 "remoteID": "item-2",
