@@ -55,7 +55,7 @@ class ReportARecommendationTests: XCTestCase {
         await snowplowMicro.assertBaselineSnowplowExpectation()
         let event = await snowplowMicro.getFirstEvent(with: "home.slate.article.report")
         event!.getReportContext()!.assertHas(reason: "other")
-        event!.getContentContext()!.assertHas(url: "http://localhost:8080/slate-1-rec-1")
+        event!.getContentContext()!.assertHas(url: "https://getpocket.com/collections/slate-1-rec-1")
     }
 
     @MainActor
@@ -93,7 +93,7 @@ class ReportARecommendationTests: XCTestCase {
         await snowplowMicro.assertBaselineSnowplowExpectation()
         let event = await snowplowMicro.getFirstEvent(with: "home.slate.article.report")
         event!.getReportContext()!.assertHas(reason: "other")
-        event!.getContentContext()!.assertHas(url: "https://example.com/slate-1-rec-2")
+        event!.getContentContext()!.assertHas(url: "https://given.example.com/slate-1-rec-2")
     }
 
     @MainActor
@@ -105,7 +105,7 @@ class ReportARecommendationTests: XCTestCase {
 
         // Swipe down to a syndicated item
         app.homeView.element.swipeUp()
-        app.homeView.recommendationCell("Syndicated Article Slate 2, Rec 2").wait().tap()
+        app.homeView.recommendationCell("Slate 1, Recommendation 2").wait().tap()
         app.readerView.readerToolbar.moreButton.tap()
         app.reportButton.wait().tap()
         app.reportView.wait()
@@ -113,6 +113,6 @@ class ReportARecommendationTests: XCTestCase {
         await snowplowMicro.assertBaselineSnowplowExpectation()
         let reportEvent = await snowplowMicro.getFirstEvent(with: "reader.toolbar.report")
         reportEvent!.getUIContext()!.assertHas(type: "button")
-        reportEvent!.getContentContext()!.assertHas(url: "https://getpocket.com/explore/item/article-4")
+        reportEvent!.getContentContext()!.assertHas(url: "https://getpocket.com/explore/item/article-2")
     }
 }
