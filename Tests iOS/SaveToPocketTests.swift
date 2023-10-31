@@ -23,7 +23,7 @@ class SaveToPocketTests: XCTestCase {
             }
         }
 
-        server.routes.get("/graphql") { request, _ -> Response in
+        server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
             return Response.fallbackResponses(apiRequest: apiRequest)
         }
@@ -82,7 +82,6 @@ class SaveToPocketTests: XCTestCase {
 
         addTagsView.wait()
         addTagsView.clearTagsTextfield()
-        let randomTagName = String(addTagsView.enterRandomTagName())
 
         addTagsView.saveButton.wait().tap()
         safari.staticTexts["Hello, world"].wait()
@@ -100,7 +99,6 @@ class SaveToPocketTests: XCTestCase {
         reminders.textFields.firstMatch.wait().tap()
         reminders.textFields.firstMatch.wait().tap()
         reminders.menuItems["Select All"].wait().tap()
-        reminders.buttons["Forward"].wait().tap()
         reminders.buttons["Forward"].wait().tap()
         reminders.collectionViews.staticTexts["Share…"].tap()
         let activityView = reminders.descendants(matching: .other)["ActivityListView"].wait()
@@ -121,7 +119,6 @@ class SaveToPocketTests: XCTestCase {
         reminders.textFields.firstMatch.wait().tap()
         reminders.textFields.firstMatch.wait().tap()
         reminders.menuItems["Select All"].wait().tap()
-        reminders.buttons["Forward"].wait().tap()
         reminders.buttons["Forward"].wait().tap()
         reminders.collectionViews.staticTexts["Share…"].tap()
         let activityView = reminders.descendants(matching: .other)["ActivityListView"].wait()
