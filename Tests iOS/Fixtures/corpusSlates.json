@@ -52,7 +52,7 @@
                                     "excerpt": "syndicatedExcerpt-1-2-2",
                                     "publisher": {
                                        "__typename": "Publisher",
-                                      "name": "syndicatedPublisher-1-2-2"
+                                      "name": "Mozilla"
                                     }
                                 }
                             }

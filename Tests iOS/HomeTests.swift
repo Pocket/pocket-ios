@@ -239,7 +239,7 @@ class HomeTests: XCTestCase {
 
         app.navigationBar.buttons["Home"].tap()
 
-        XCTAssertTrue(app.homeView.recommendationCell("Slate 1, Recommendation 2").element.staticTexts["Mozilla"].exists)
+        XCTAssertTrue(app.homeView.recommendationCell("Slate 1, Recommendation 2").element.staticTexts["Mozilla "].exists)
     }
 
     func test_tappingSaveButtonInRecommendationCell_savesItemToList() {
