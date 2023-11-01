@@ -31,8 +31,8 @@
       "hasVideo": "HAS_VIDEOS",
       "syndicatedArticle": {
         "__typename": "SyndicatedArticle",
-        "itemId": "recommended-item-2",
-        "title": "Slate 1, Rec 2",
+        "itemId": "recommended-item-1",
+        "title": "Syndicated Article Slate 1, Rec 2",
         "excerpt": "A better syndicated excerpt",
         "mainImage": "http://example.com/slate-1-rec-2/top-image.png",
         "publisher": {
@@ -44,4 +44,3 @@
     }
   }
 }
-

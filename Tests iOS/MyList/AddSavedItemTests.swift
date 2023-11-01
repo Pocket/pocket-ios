@@ -125,7 +125,7 @@ final class AddSavedItemTests: XCTestCase {
 
         let urlTextfield = addSavedItem.urlEntryTextField
         urlTextfield.tap()
-        urlTextfield.typeText("www.mozilla.com")
+        urlTextfield.typeText("https://www.mozilla.org/")
 
         addSavedItem.addItemButton.wait().tap()
 

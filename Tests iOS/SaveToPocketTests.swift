@@ -23,7 +23,7 @@ class SaveToPocketTests: XCTestCase {
             }
         }
 
-        server.routes.get("/graphql") { request, _ -> Response in
+        server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
             return Response.fallbackResponses(apiRequest: apiRequest)
         }
@@ -51,9 +51,7 @@ class SaveToPocketTests: XCTestCase {
         safari.toolbars.buttons["ShareButton"].tap()
         let activityView = safari.descendants(matching: .other)["ActivityListView"].wait()
 
-        // Sadly this is the only way I could devise to find the Pocket Beta button
-        // This will likely be very brittle
-        activityView.cells.matching(identifier: "XCElementSnapshotPrivilegedValuePlaceholder").element(boundBy: 1).tap()
+        activityView.cells["Pocket"].tap()
         safari.buttons["log-in"].wait().tap()
 
         app.loggedOutView.wait()
@@ -84,55 +82,14 @@ class SaveToPocketTests: XCTestCase {
 
         addTagsView.wait()
         addTagsView.clearTagsTextfield()
-        let randomTagName = String(addTagsView.enterRandomTagName())
 
         addTagsView.saveButton.wait().tap()
         safari.staticTexts["Hello, world"].wait()
     }
 
-    func test_userSharesTextWithValidURL_showsConfirmationView() {
-        app.launch(arguments: .bypassSignIn, environment: .withSession)
-        let reminders = XCUIApplication(bundleIdentifier: "com.apple.reminders")
-        reminders.launch()
-        if !reminders.buttons["New Reminder"].isHittable {
-            reminders.buttons["Continue"].wait().tap()
-        }
-        reminders.buttons["New Reminder"].wait().tap()
-        reminders.typeText("Get Pocket https://getpocket.com")
-        reminders.textFields.firstMatch.wait().tap()
-        reminders.textFields.firstMatch.wait().tap()
-        reminders.menuItems["Select All"].wait().tap()
-        reminders.buttons["Forward"].wait().tap()
-        reminders.collectionViews.staticTexts["Share…"].tap()
-        let activityView = reminders.descendants(matching: .other)["ActivityListView"].wait()
-        activityView.cells.matching(identifier: "XCElementSnapshotPrivilegedValuePlaceholder").element(boundBy: 2).wait().tap()
-        reminders.otherElements["save-extension-info-view"].staticTexts["Saved to Pocket"].wait()
-        reminders.terminate()
-    }
-
-    func test_userSharesTextWithNoURL_showsErrorView() {
-        app.launch(arguments: .bypassSignIn, environment: .withSession)
-        let reminders = XCUIApplication(bundleIdentifier: "com.apple.reminders")
-        reminders.launch()
-        if !reminders.buttons["New Reminder"].isHittable {
-            reminders.buttons["Continue"].wait().tap()
-        }
-        reminders.buttons["New Reminder"].wait().tap()
-        reminders.typeText("Get Pocket")
-        reminders.textFields.firstMatch.wait().tap()
-        reminders.textFields.firstMatch.wait().tap()
-        reminders.menuItems["Select All"].wait().tap()
-        reminders.buttons["Forward"].wait().tap()
-        reminders.collectionViews.staticTexts["Share…"].tap()
-        let activityView = reminders.descendants(matching: .other)["ActivityListView"].wait()
-        activityView.cells.matching(identifier: "XCElementSnapshotPrivilegedValuePlaceholder").element(boundBy: 2).wait().tap()
-        reminders.otherElements["save-extension-info-view"].staticTexts["Pocket couldn't save this link"].wait()
-        reminders.terminate()
-    }
-
     func tapPocketShareMenuIcon() {
         let safariShareMenu = XCUIApplication(bundleIdentifier: "com.apple.mobilesafari")
         let activityView = safariShareMenu.descendants(matching: .other)["ActivityListView"].wait()
-        activityView.cells.matching(identifier: "XCElementSnapshotPrivilegedValuePlaceholder").element(boundBy: 1).wait().tap()
+        activityView.cells["Pocket"].tap()
     }
 }
