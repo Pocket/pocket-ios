@@ -53,7 +53,7 @@ class ShareAnItemTests: XCTestCase {
 
         app
             .saves
-            .itemView(matching: "Item 2")
+            .itemView(matching: "Item 1")
             .wait()
             .tap()
 
@@ -72,7 +72,7 @@ class ShareAnItemTests: XCTestCase {
         await snowplowMicro.assertBaselineSnowplowExpectation()
         let overflowEvent = await snowplowMicro.getFirstEvent(with: "reader.toolbar.share")
         overflowEvent!.getUIContext()!.assertHas(type: "button")
-        overflowEvent!.getContentContext()!.assertHas(url: "https://example.com/item-2")
+        overflowEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
     }
 
     func test_shareFromHome_sharingARecommendation_sharingFromSlate() {
