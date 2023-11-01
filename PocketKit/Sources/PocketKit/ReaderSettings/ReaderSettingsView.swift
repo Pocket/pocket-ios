@@ -39,6 +39,7 @@ struct ReaderSettingsView: View {
                         in: Constants.allowedAdjustments,
                         step: Constants.adjustmentStep
                     )
+                    .accessibilityIdentifier("reader-settings-stepper")
                 }
             }
             .navigationBarHidden(true)

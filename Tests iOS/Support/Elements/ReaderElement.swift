@@ -73,11 +73,11 @@ struct ReaderElement: PocketUIElement {
     }
 
     var fontStepperIncreaseButton: XCUIElement {
-        element.collectionViews.steppers["Font Size"].buttons["Increment"]
+        element.collectionViews.buttons["reader-settings-stepper-Increment"]
     }
 
     var fontStepperDecreaseButton: XCUIElement {
-        element.collectionViews.steppers["Font Size"].buttons["Decrement"]
+        element.collectionViews.buttons["reader-settings-stepper-Decrement"]
     }
 
     var safariButton: XCUIElement {

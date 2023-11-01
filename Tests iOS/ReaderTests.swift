@@ -132,24 +132,21 @@ class ReaderTests: XCTestCase {
     @MainActor
     func test_tappingSave_savesItem() async {
         app.launch()
-        app.homeView
-            .recommendationCell("Slate 1, Recommendation 1")
-            .wait()
 
         // Swipe down to a syndicated item
-        scrollTo(element: app.homeView.recommendationCell("Syndicated Article Slate 2, Rec 2").element, in: app.homeView.element, direction: .up)
-        app.homeView.recommendationCell("Syndicated Article Slate 2, Rec 2").wait().tap()
+        scrollTo(element: app.homeView.recommendationCell("Slate 1, Recommendation 2").element, in: app.homeView.element, direction: .up)
+        app.homeView.recommendationCell("Slate 1, Recommendation 2").wait().tap()
         app.readerView.readerToolbar.moreButton.wait().tap()
         app.readerView.saveButton.wait().tap()
 
         app.readerView.backButton.wait().tap()
         app.tabBar.savesButton.wait().tap()
-        app.saves.itemView(matching: "Slate 2, Recommendation 2").wait()
+        app.saves.itemView(matching: "Slate 1, Recommendation 2").wait()
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
         let reportEvent = await snowplowMicro.getFirstEvent(with: "reader.toolbar.save")
         reportEvent!.getUIContext()!.assertHas(type: "button")
-        reportEvent!.getContentContext()!.assertHas(url: "https://getpocket.com/explore/item/article-4")
+        reportEvent!.getContentContext()!.assertHas(url: "https://getpocket.com/explore/item/article-2")
     }
 
 //  NOTE: Commented out for now, Daniel is unable to get these to fail locally, but they always fail in CI and on others computers.
