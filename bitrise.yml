@@ -502,5 +502,5 @@ app:
 
 meta:
   bitrise.io:
-    machine_type_id: g2-m1.8core
+    machine_type_id: g2-m1-max.10core
     stack: osx-xcode-15.0.x
