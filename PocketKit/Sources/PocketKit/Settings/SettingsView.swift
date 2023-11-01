@@ -174,7 +174,7 @@ extension SettingsForm {
                         Button(Localization.Settings.logout, role: .destructive) {
                             model.trackLogoutConfirmTapped()
                             model.signOut()
-                        }
+                        }.accessibilityIdentifier("alert-log-out-button")
                     }, message: {
                         Text(Localization.Settings.Logout.areYouSureMessage)
                     }
