@@ -41,8 +41,7 @@ class SignOutTests: XCTestCase {
         let logoutRowTappedEvent = await snowplowMicro.getFirstEvent(with: "global-nav.settings.logout")
         XCTAssertNotNil(logoutRowTappedEvent)
 
-        let account = XCUIApplication()
-        account.alerts["Are you sure?"].scrollViews.otherElements.buttons["Log Out"].wait().tap()
+        app.alert.element.buttons["alert-log-out-button"].tap()
         app.loggedOutView.wait()
 
         let logoutConfirmedEvent = await snowplowMicro.getFirstEvent(with: "global-nav.settings.logout-confirmed")
