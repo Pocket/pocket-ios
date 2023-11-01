@@ -24,6 +24,7 @@ protocol ReadableViewModel: ReadableViewControllerDelegate {
     var presentedWebReaderURL: URL? { get set }
     var isPresentingReaderSettings: Bool? { get set }
 
+    var isListenSupported: Bool { get }
     var actions: Published<[ItemAction]>.Publisher { get }
     var events: EventPublisher { get }
 
@@ -59,6 +60,7 @@ protocol ReadableViewModel: ReadableViewControllerDelegate {
     func beginBulkEdit()
     func trackReadingProgress(index: IndexPath)
     func readingProgress() -> IndexPath?
+    func listen()
 }
 
 // MARK: - ReadableViewControllerDelegate

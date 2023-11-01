@@ -50,6 +50,14 @@ class ReadableHostViewController: UIViewController {
         navigationItem.largeTitleDisplayMode = .never
         hidesBottomBarWhenPushed = true
 
+        let listenButtonItem = UIBarButtonItem(
+            image: UIImage(asset: .listen),
+            style: .plain,
+            target: self,
+            action: #selector(listen)
+        )
+        listenButtonItem.isEnabled = readableViewModel.isListenSupported
+
         navigationItem.rightBarButtonItems = [
             moreButtonItem,
             UIBarButtonItem(
@@ -58,7 +66,8 @@ class ReadableHostViewController: UIViewController {
                 target: self,
                 action: #selector(showWebView)
             ),
-            readableViewModel.isArchived ? getMoveFromArchiveToSavesButton : getArchiveButton
+            readableViewModel.isArchived ? getMoveFromArchiveToSavesButton : getArchiveButton,
+            listenButtonItem
         ]
 
         readableViewModel.actions.receive(on: DispatchQueue.main).sink { [weak self] actions in
@@ -150,6 +159,11 @@ class ReadableHostViewController: UIViewController {
                 self?.navigationItem.rightBarButtonItems?[index] = archiveButton
             }
         }
+    }
+
+    @objc
+    private func listen() {
+        readableViewModel.listen()
     }
 
     var popoverAnchor: UIBarButtonItem? {

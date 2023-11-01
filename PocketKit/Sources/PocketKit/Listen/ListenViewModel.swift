@@ -13,51 +13,24 @@ class ListenViewModel: PKTListenDataSource<PKTListDiffable> {
     static func source(savedItems: [SavedItem]?, title: String) -> ListenViewModel {
         let config = PKTListenAppKusariConfiguration()
 
-        guard let languages = PKTListen.supportedLanguages else {
-            let viewModel = ListenViewModel(context: ["index": NSNumber(value: 0)], loader: { source, context, complete in
-                source.hasMore = false
-                Log.debug("Loaded Listen with no items")
-                complete(nil, ["index": NSNumber(value: 0)], [])
-            })
-            viewModel.title = title
-            return viewModel
-        }
-
-        let allItems: [PKTKusari<PKTListenItem>] = savedItems?.compactMap { $0 }.filter({savedItem in
-            if savedItem.remoteID == nil {
-                return false
-            }
-
-            if savedItem.estimatedAlbumDuration <= 60 {
-                return false
-            }
-
-            guard let language = savedItem.albumLanguage else {
-                return false
-            }
-
-            if !languages.contains(language) {
-                return false
-            }
-
-            return savedItem.item?.isArticle ?? false
-        }).compactMap({item in
-            let v = PKTListenKusariCreate(item.albumID!, PKTListenQueueSectionType.item.rawValue, item, config)
-            return v
-        }) ?? []
+        let listenItems: [PKTKusari<PKTListenItem>] = savedItems?
+            .compactMap { $0 }
+            .filter { $0.isEligibleForListen }
+            .compactMap { PKTListenKusariCreate($0.albumID!, PKTListenQueueSectionType.item.rawValue, $0, config) }
+        ?? []
 
         DispatchQueue.global(qos: .background).async {
             // Warm up the first 6 images
-            allItems.prefix(6).forEach({ listenItem in
+            listenItems.prefix(6).forEach({ listenItem in
                 listenItem.warmImage()
             })
         }
 
-        let viewModel = ListenViewModel(context: ["index": NSNumber(value: 0)], loader: { source, context, complete in
+        let viewModel = ListenViewModel(context: ["index": NSNumber(value: 0)]) { source, context, complete in
             source.hasMore = false
-            Log.debug("Loaded Listen with \(allItems.count) articles")
-            complete(nil, ["index": NSNumber(value: allItems.count)], allItems)
-        })
+            Log.debug("Loaded Listen with \(listenItems.count) articles")
+            complete(nil, ["index": NSNumber(value: listenItems.count)], listenItems)
+        }
         viewModel.title = title
         return viewModel
     }

@@ -8,6 +8,26 @@ import PKTListen
 import SharedPocketKit
 
 extension SavedItem: PKTListenItem {
+    public var isEligibleForListen: Bool {
+        if remoteID == nil {
+            return false
+        }
+
+        if estimatedAlbumDuration <= 60 {
+            return false
+        }
+
+        guard let language = albumLanguage else {
+            return false
+        }
+
+        if !(PKTListen.supportedLanguages ?? []).contains(language) {
+            return false
+        }
+
+        return item?.isArticle ?? false
+    }
+
     public var albumID: String? {
         self.remoteID
     }
