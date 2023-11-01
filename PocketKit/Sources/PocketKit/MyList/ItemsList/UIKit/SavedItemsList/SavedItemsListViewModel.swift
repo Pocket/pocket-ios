@@ -21,6 +21,8 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     typealias ItemIdentifier = NSManagedObjectID
     typealias Snapshot = NSDiffableDataSourceSnapshot<ItemsListSection, ItemsListCell<ItemIdentifier>>
 
+    weak var delegate: ItemsListViewModelDelegate?
+
     private let _events: PassthroughSubject<ItemsListEvent<ItemIdentifier>, Never> = .init()
     var events: AnyPublisher<ItemsListEvent<ItemIdentifier>, Never> { _events.eraseToAnyPublisher() }
 
@@ -47,8 +49,6 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     @Published var sharedActivity: PocketActivity?
 
     @Published var presentedSortFilterViewModel: SortMenuViewModel?
-
-    @Published var presentedListenViewModel: ListenViewModel?
 
     @Published private var _initialDownloadState: InitialDownloadState
     var initialDownloadState: Published<InitialDownloadState>.Publisher { $_initialDownloadState }
@@ -678,7 +678,10 @@ extension SavedItemsListViewModel {
                 case .notTagged: break
                 }
             }
-            presentedListenViewModel = ListenViewModel.source(savedItems: self.itemsController.fetchedObjects, title: title)
+
+            let listen = ListenViewModel.source(savedItems: self.itemsController.fetchedObjects, title: title)
+            delegate?.viewModel(self, didRequestListen: listen)
+
             selectedFilters.remove(.listen)
         case .all:
             selectedFilters.removeAll()

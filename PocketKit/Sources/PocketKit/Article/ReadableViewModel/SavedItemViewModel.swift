@@ -41,6 +41,8 @@ class SavedItemViewModel: ReadableViewModel {
         "readingProgress.\(url)."
     }
 
+    weak var delegate: ReadableViewModelDelegate?
+
     let readableSource: ReadableSource
 
     let tracker: Tracker
@@ -60,8 +62,6 @@ class SavedItemViewModel: ReadableViewModel {
     @Published var sharedActivity: PocketActivity?
 
     @Published var isPresentingReaderSettings: Bool?
-
-    @Published var presentedListenViewModel: ListenViewModel?
 
     private let item: SavedItem
     private let source: Source
@@ -216,10 +216,12 @@ class SavedItemViewModel: ReadableViewModel {
     }
 
     func listen() {
-        presentedListenViewModel = ListenViewModel.source(
+        let listen = ListenViewModel.source(
             savedItems: [item],
             title: item.isArchived ? Localization.archive : "Saves"
         )
+
+        delegate?.viewModel(self, didRequestListen: listen)
     }
 }
 
