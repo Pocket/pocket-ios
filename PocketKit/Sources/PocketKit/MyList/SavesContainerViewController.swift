@@ -245,25 +245,12 @@ extension SavesContainerViewController {
             }
         }.store(in: &subscriptions)
 
+        model.savedItemsList.delegate = self
+
         // Saves navigation
         model.savedItemsList.$presentedAlert.sink { [weak self] alert in
             self?.present(alert: alert)
         }.store(in: &subscriptions)
-
-        model.savedItemsList.$presentedListenViewModel.sink { [weak self] listenViewModel in
-            guard let listenViewModel else {
-                return
-            }
-            self?.showListen(listenViewModel: listenViewModel)
-        }.store(in: &subscriptions)
-
-        model.savedItemsList.$presentedListenViewModel
-            .filter { $0 != nil }
-            .sink { [weak self] listenViewModel in
-                guard let listenViewModel else { return }
-                self?.showListen(listenViewModel: listenViewModel)
-                self?.model.savedItemsList.presentedListenViewModel = nil
-            }.store(in: &subscriptions)
 
         model.savedItemsList.$presentedAddTags.sink { [weak self] addTagsViewModel in
             self?.present(viewModel: addTagsViewModel)
@@ -286,19 +273,13 @@ extension SavesContainerViewController {
             self?.presentSortMenu(presentedSortFilterViewModel: presentedSortFilterViewModel)
         }.store(in: &subscriptions)
 
+        model.archivedItemsList.delegate = self
+
         // Archive navigation
         model.archivedItemsList.$selectedItem.sink { [weak self] selectedArchivedItem in
             guard let selectedArchivedItem = selectedArchivedItem else { return }
             self?.navigate(selectedItem: selectedArchivedItem)
         }.store(in: &subscriptions)
-
-        model.archivedItemsList.$presentedListenViewModel
-            .filter { $0 != nil }
-            .sink { [weak self] listenViewModel in
-                guard let listenViewModel else { return }
-                self?.showListen(listenViewModel: listenViewModel)
-                self?.model.archivedItemsList.presentedListenViewModel = nil
-            }.store(in: &subscriptions)
 
         model.archivedItemsList.$sharedActivity.sink { [weak self] activity in
             self?.present(activity: activity)
@@ -358,6 +339,8 @@ extension SavesContainerViewController {
             return
         }
 
+        readable.delegate = self
+
         readable.$presentedAlert.sink { [weak self] alert in
             self?.present(alert: alert)
         }.store(in: &readableSubscriptions)
@@ -377,14 +360,6 @@ extension SavesContainerViewController {
         readable.$presentedAddTags.sink { [weak self] addTagsViewModel in
             self?.present(viewModel: addTagsViewModel)
         }.store(in: &readableSubscriptions)
-
-        readable.$presentedListenViewModel
-            .filter { $0 != nil }
-            .sink { [weak self] listenViewModel in
-                guard let listenViewModel else { return }
-                self?.showListen(listenViewModel: listenViewModel)
-                readable.presentedListenViewModel = nil
-            }.store(in: &subscriptions)
 
         readable.events.sink { [weak self] event in
             switch event {
@@ -641,5 +616,17 @@ extension SavesContainerViewController {
         let listen =  PKTListenContainerViewController(configuration: appConfig)
         listen.title = listenViewModel.title
         self.present(listen, animated: true)
+    }
+}
+
+extension SavesContainerViewController: ReadableViewModelDelegate {
+    func viewModel(_ readableViewModel: ReadableViewModel, didRequestListen viewModel: ListenViewModel) {
+        showListen(listenViewModel: viewModel)
+    }
+}
+
+extension SavesContainerViewController: ItemsListViewModelDelegate {
+    func viewModel(_ itemsListViewModel: any ItemsListViewModel, didRequestListen viewModel: ListenViewModel) {
+        showListen(listenViewModel: viewModel)
     }
 }

@@ -11,6 +11,8 @@ import Analytics
 import SharedPocketKit
 
 class RecommendationViewModel: ReadableViewModel {
+    weak var delegate: ReadableViewModelDelegate?
+
     @Published private(set) var _actions: [ItemAction] = []
     var actions: Published<[ItemAction]>.Publisher { $_actions }
 

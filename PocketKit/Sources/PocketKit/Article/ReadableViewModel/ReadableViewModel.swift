@@ -11,8 +11,18 @@ import Analytics
 import Localization
 import SharedPocketKit
 
+protocol ReadableViewModelDelegate: AnyObject {
+    /// Called when a ReadableViewModel requests that Listen be presented with a given view model.
+    /// - Parameters:
+    ///   - readableViewModel: The view model requesting that Listen be presented.
+    ///   - viewModel: The view model to use when presenting Listen.
+    func viewModel(_ readableViewModel: ReadableViewModel, didRequestListen viewModel: ListenViewModel)
+}
+
 protocol ReadableViewModel: ReadableViewControllerDelegate {
     typealias EventPublisher = AnyPublisher<ReadableEvent, Never>
+
+    var delegate: ReadableViewModelDelegate? { get set }
 
     var tracker: Tracker { get }
 

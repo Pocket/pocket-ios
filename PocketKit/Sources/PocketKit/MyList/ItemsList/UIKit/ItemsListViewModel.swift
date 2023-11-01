@@ -100,9 +100,15 @@ enum ItemsListEvent<ItemIdentifier: Hashable> {
     case networkStatusUpdated
 }
 
+protocol ItemsListViewModelDelegate: AnyObject {
+    func viewModel(_ itemsListViewModel: any ItemsListViewModel, didRequestListen: ListenViewModel)
+}
+
 protocol ItemsListViewModel: AnyObject {
     associatedtype ItemIdentifier: Hashable
     typealias Snapshot = NSDiffableDataSourceSnapshot<ItemsListSection, ItemsListCell<ItemIdentifier>>
+
+    var delegate: ItemsListViewModelDelegate? { get set }
 
     var events: AnyPublisher<ItemsListEvent<ItemIdentifier>, Never> { get }
     var selectionItem: SelectionItem { get }
