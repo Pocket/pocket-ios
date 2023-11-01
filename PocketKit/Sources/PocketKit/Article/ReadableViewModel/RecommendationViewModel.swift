@@ -103,6 +103,10 @@ class RecommendationViewModel: ReadableViewModel {
         pocketPremiumURL(url, user: user)
     }
 
+    var isListenSupported: Bool {
+        false
+    }
+
     func moveToSaves() {
         guard let savedItem = recommendation.item.savedItem else {
             return
@@ -221,6 +225,8 @@ class RecommendationViewModel: ReadableViewModel {
             return webViewActivityItems(for: savedItem)
         }
     }
+
+    func listen() { }
 }
 
 extension RecommendationViewModel {

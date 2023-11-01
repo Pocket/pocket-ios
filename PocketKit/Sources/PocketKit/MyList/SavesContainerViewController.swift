@@ -257,6 +257,14 @@ extension SavesContainerViewController {
             self?.showListen(listenViewModel: listenViewModel)
         }.store(in: &subscriptions)
 
+        model.savedItemsList.$presentedListenViewModel
+            .filter { $0 != nil }
+            .sink { [weak self] listenViewModel in
+                guard let listenViewModel else { return }
+                self?.showListen(listenViewModel: listenViewModel)
+                self?.model.savedItemsList.presentedListenViewModel = nil
+            }.store(in: &subscriptions)
+
         model.savedItemsList.$presentedAddTags.sink { [weak self] addTagsViewModel in
             self?.present(viewModel: addTagsViewModel)
         }.store(in: &subscriptions)
@@ -284,12 +292,13 @@ extension SavesContainerViewController {
             self?.navigate(selectedItem: selectedArchivedItem)
         }.store(in: &subscriptions)
 
-        model.archivedItemsList.$presentedListenViewModel.sink { [weak self] listenViewModel in
-            guard let listenViewModel else {
-                return
-            }
-            self?.showListen(listenViewModel: listenViewModel)
-        }.store(in: &subscriptions)
+        model.archivedItemsList.$presentedListenViewModel
+            .filter { $0 != nil }
+            .sink { [weak self] listenViewModel in
+                guard let listenViewModel else { return }
+                self?.showListen(listenViewModel: listenViewModel)
+                self?.model.archivedItemsList.presentedListenViewModel = nil
+            }.store(in: &subscriptions)
 
         model.archivedItemsList.$sharedActivity.sink { [weak self] activity in
             self?.present(activity: activity)
@@ -368,6 +377,14 @@ extension SavesContainerViewController {
         readable.$presentedAddTags.sink { [weak self] addTagsViewModel in
             self?.present(viewModel: addTagsViewModel)
         }.store(in: &readableSubscriptions)
+
+        readable.$presentedListenViewModel
+            .filter { $0 != nil }
+            .sink { [weak self] listenViewModel in
+                guard let listenViewModel else { return }
+                self?.showListen(listenViewModel: listenViewModel)
+                readable.presentedListenViewModel = nil
+            }.store(in: &subscriptions)
 
         readable.events.sink { [weak self] event in
             switch event {

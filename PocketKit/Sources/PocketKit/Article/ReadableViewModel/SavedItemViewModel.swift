@@ -61,6 +61,8 @@ class SavedItemViewModel: ReadableViewModel {
 
     @Published var isPresentingReaderSettings: Bool?
 
+    @Published var presentedListenViewModel: ListenViewModel?
+
     private let item: SavedItem
     private let source: Source
     private let pasteboard: Pasteboard
@@ -156,6 +158,10 @@ class SavedItemViewModel: ReadableViewModel {
         pocketPremiumURL(url, user: user)
     }
 
+    var isListenSupported: Bool {
+        item.isEligibleForListen
+    }
+
     func moveToSaves() {
         source.unarchive(item: item)
     }
@@ -207,6 +213,13 @@ class SavedItemViewModel: ReadableViewModel {
         }
 
         return webViewActivityItems(for: savedItem)
+    }
+
+    func listen() {
+        presentedListenViewModel = ListenViewModel.source(
+            savedItems: [item],
+            title: item.isArchived ? Localization.archive : "Saves"
+        )
     }
 }
 

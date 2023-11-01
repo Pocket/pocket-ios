@@ -408,6 +408,8 @@ extension HomeViewController {
             animated: true
         )
 
+        // TODO: Listen
+
         recommendation.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
             self?.present(alert: alert)
         }.store(in: &readerSubscriptions)
@@ -446,6 +448,8 @@ extension HomeViewController {
             ReadableHostViewController(readableViewModel: savedItem),
             animated: true
         )
+
+        // TODO: Listen
 
         savedItem.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
             self?.present(alert: alert)
