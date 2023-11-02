@@ -82,7 +82,7 @@ extension LaunchArguments {
         clearImageCache: false,
         disableSentry: true,
         disableSnowplow: false,
-        skipLegacyAccountMigration: false, 
+        skipLegacyAccountMigration: false,
         disableSignOutOnFirstLaunch: false
     )
 
