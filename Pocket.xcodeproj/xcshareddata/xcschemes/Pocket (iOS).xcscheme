@@ -309,6 +309,10 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
+            argument = "disableSignOutOnFirstLaunch"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
             argument = "skipLegacyAccountMigration"
             isEnabled = "NO">
          </CommandLineArgument>
