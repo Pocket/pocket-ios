@@ -88,8 +88,6 @@ struct Services {
             consumerKey: Keys.shared.pocketApiConsumerKey
         )
 
-        Self.initTestUtilsIfPresent(appSession: appSession, userDefaults: userDefaults, source: source)
-
         sceneTracker = SceneTracker(tracker: tracker, userDefaults: userDefaults)
 
         savesRefreshCoordinator = SavesRefreshCoordinator(
@@ -256,6 +254,7 @@ struct Services {
             user: user,
             userDefaults: userDefaults
         ).signOutOnFirstLaunch()
+        Self.initTestUtilsIfPresent(appSession: appSession, userDefaults: userDefaults, source: source)
     }
 }
 
