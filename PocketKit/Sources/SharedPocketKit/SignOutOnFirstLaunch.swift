@@ -31,7 +31,7 @@ public class SignOutOnFirstLaunch {
     }
 
     public func signOutOnFirstLaunch() {
-        guard !hasAppBeenLaunchedPreviously, !CommandLine.arguments.contains("disableSignOutOnFirstLaunch") else {
+        guard !hasAppBeenLaunchedPreviously else {
             return
         }
 
