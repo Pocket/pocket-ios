@@ -10,7 +10,17 @@ struct ReaderSettingsView: View {
     private enum Constants {
         static let allowedAdjustments = -6...6
         static let adjustmentStep = 2
-        static let allowedFontFamilies: [FontDescriptor.Family] = [.graphik, .blanco]
+        static let freeFontFamilies: [FontDescriptor.Family] = [.graphik, .blanco]
+        static let premiumFontFamilies: [FontDescriptor.Family] = [
+            .idealSans,
+            .inter,
+            .plexSans,
+            .sentinel,
+            .tiempos,
+            .vollkorn,
+            .whitney,
+            .zillaSlab
+        ]
     }
 
     @Environment(\.presentationMode)
@@ -27,7 +37,7 @@ struct ReaderSettingsView: View {
             Form {
                 Section(header: Text(Localization.displaySettings)) {
                     Picker(Localization.font, selection: settings.$fontFamily) {
-                        ForEach(Constants.allowedFontFamilies, id: \.name) { family in
+                        ForEach(Constants.freeFontFamilies, id: \.name) { family in
                             Text(family.name)
                                 .tag(family)
                         }.navigationBarTitleDisplayMode(.inline)
