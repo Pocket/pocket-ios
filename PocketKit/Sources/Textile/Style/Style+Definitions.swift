@@ -7,6 +7,15 @@ public extension FontDescriptor.Family {
     static let blanco: Self = "Blanco OSF"
     static let doyle: Self = "Doyle"
     static let monospace: Self = ".AppleSystemUIFontMonospaced"
+    // premium fonts
+    static let idealSans: Self = "Ideal Sans"
+    static let inter: Self = "Inter"
+    static let plexSans: Self = "Plex Sans"
+    static let sentinel: Self = "Sentinel"
+    static let tiempos: Self = "tiempos"
+    static let vollkorn: Self = "Vollkorn"
+    static let whitney: Self = "Whitney"
+    static let zillaSlab: Self = "Zilla Slab"
 }
 
 public extension FontDescriptor.Size {
@@ -54,7 +63,7 @@ public extension Style {
             public let p4 = Style(family: .graphik, size: .p4, weight: .regular)
             public let p5 = Style(family: .graphik, size: .p5, weight: .regular)
             public let p6 = Style(family: .graphik, size: .p6, weight: .regular) // used in widgets
-            public let w8 = Style(family: .graphik, size: .p4, weight: .medium) // used in widgets
+            public let w8 = Style(family: .graphik, size: .p4, weight: .medium)  // used in widgets
         }
 
         public struct Serif {
