@@ -1092,7 +1092,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MARKETING_VERSION = 8.1.0;
+				MARKETING_VERSION = 8.2.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1151,7 +1151,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MARKETING_VERSION = 8.1.0;
+				MARKETING_VERSION = 8.2.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				POCKET_API_BASE_URL = "https://api.getpocket.com/graphql";
@@ -1180,7 +1180,7 @@
 					"@executable_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.1.0;
+				MARKETING_VERSION = 8.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro;
 				PRODUCT_NAME = Pocket;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1211,7 +1211,7 @@
 					"@executable_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.1.0;
+				MARKETING_VERSION = 8.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro;
 				PRODUCT_NAME = Pocket;
 				PROVISIONING_PROFILE_SPECIFIER = "Bitrise com.ideashower.ReadItLaterPro";
@@ -1237,7 +1237,7 @@
 					"@loader_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.1.0;
+				MARKETING_VERSION = 8.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ideashower.ReadItLaterProAlphaNeue.Tests-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1263,7 +1263,7 @@
 					"@loader_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.1.0;
+				MARKETING_VERSION = 8.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ideashower.ReadItLaterProAlphaNeue.Tests-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1296,7 +1296,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.1.0;
+				MARKETING_VERSION = 8.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.PushNotificationServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1329,7 +1329,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.1.0;
+				MARKETING_VERSION = 8.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.PushNotificationServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "Bitrise com.ideashower.ReadItLaterPro.PushNotifica";
@@ -1362,7 +1362,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.1.0;
+				MARKETING_VERSION = 8.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.PushNotificationStoryExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1394,7 +1394,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.1.0;
+				MARKETING_VERSION = 8.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.PushNotificationStoryExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "Bitrise com.ideashower.ReadItLaterPro.PushStory";
@@ -1462,7 +1462,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MARKETING_VERSION = 8.1.0;
+				MARKETING_VERSION = 8.2.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1492,7 +1492,7 @@
 					"@executable_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.1.0;
+				MARKETING_VERSION = 8.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro;
 				PRODUCT_NAME = Pocket;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1518,7 +1518,7 @@
 					"@loader_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.1.0;
+				MARKETING_VERSION = 8.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ideashower.ReadItLaterProAlphaNeue.Tests-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1550,7 +1550,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.1.0;
+				MARKETING_VERSION = 8.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.AddToPocketExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1584,7 +1584,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.1.0;
+				MARKETING_VERSION = 8.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.PushNotificationServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1616,7 +1616,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.1.0;
+				MARKETING_VERSION = 8.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.PushNotificationStoryExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1650,7 +1650,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.1.0;
+				MARKETING_VERSION = 8.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ideashower.ReadItLaterPro.Widget-Extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -1683,7 +1683,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.1.0;
+				MARKETING_VERSION = 8.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ideashower.ReadItLaterPro.Widget-Extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -1716,7 +1716,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.1.0;
+				MARKETING_VERSION = 8.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ideashower.ReadItLaterPro.Widget-Extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "Bitrise com.ideashower.ReadItLaterPro.Widget-Exten";
@@ -1750,7 +1750,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.1.0;
+				MARKETING_VERSION = 8.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.AddToPocketExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1784,7 +1784,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.1.0;
+				MARKETING_VERSION = 8.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.AddToPocketExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "Bitrise com.ideashower.ReadItLaterPro.AddToPocketE";
