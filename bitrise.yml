@@ -304,6 +304,21 @@ workflows:
           inputs:
             - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UNIT_XCRESULT_PATH'
 
+  debug_build:
+    steps:
+    - file-downloader@1:
+        inputs:
+        - source: $BITRISEIO_SECRETS_DEVELOPMENT_XCCONFIG_URL
+        - destination: $BITRISE_SOURCE_DIR/Config/secrets.xcconfig
+        title: Install development secrets.xcconfig
+    - fastlane@3:
+        inputs:
+        - lane: debug_build
+    - deploy-to-bitrise-io@2: {}
+    - cache-push@2: {}
+    before_run:
+    - _setup
+
   run-tests-ui-1:
     before_run:
       - _pull_test_bundle
