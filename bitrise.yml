@@ -15,8 +15,8 @@ pipelines:
       # Run multiple tests on simulators in parallel
       - run-test-groups: {}
       - deploy-test-results: {}
-      # Build a release build
-      - release-build: {}
+      # Build a debug build
+      - debug-build: {}
 
   test-nightly-pipeline:
     stages:
@@ -59,6 +59,10 @@ stages:
     workflows:
       # Build a qa build
       - qa-build: {}
+
+  debug-build:
+    workflows:
+      - debug-build: {}
 
   run-test-groups:
     workflows:
@@ -304,7 +308,7 @@ workflows:
           inputs:
             - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UNIT_XCRESULT_PATH'
 
-  debug_build:
+  debug-build:
     steps:
     - file-downloader@1:
         inputs:
