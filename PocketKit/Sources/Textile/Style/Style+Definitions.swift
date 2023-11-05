@@ -62,8 +62,9 @@ public extension Style {
             public let p3 = Style(family: .graphik, size: .p3, weight: .regular)
             public let p4 = Style(family: .graphik, size: .p4, weight: .regular)
             public let p5 = Style(family: .graphik, size: .p5, weight: .regular)
-            public let p6 = Style(family: .graphik, size: .p6, weight: .regular) // used in widgets
-            public let w8 = Style(family: .graphik, size: .p4, weight: .medium)  // used in widgets
+            // widgets
+            public let p6 = Style(family: .graphik, size: .p6, weight: .regular)
+            public let w8 = Style(family: .graphik, size: .p4, weight: .medium)
         }
 
         public struct Serif {
