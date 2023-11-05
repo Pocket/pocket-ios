@@ -17,6 +17,68 @@ BITRISE_IPA_PATH = ENV["BITRISE_IPA_PATH"]
 APPLE_ID = ENV["APP_ID"]
 default_platform(:ios)
 
+lane :debug_build do
+  update_code_signing_settings(
+      use_automatic_signing: false,
+      path: "Pocket.xcodeproj",
+      targets: "Pocket (iOS)",
+      build_configurations: "Debug",
+      code_sign_identity: "Apple Development",
+      sdk: "iphoneos*",
+      profile_name: "PocketDev_CI",
+  )
+  update_code_signing_settings(
+      use_automatic_signing: false,
+      path: "Pocket.xcodeproj",
+      targets: "SaveToPocket",
+      build_configurations: "Debug",
+      code_sign_identity: "Apple Development",
+      sdk: "iphoneos*",
+      profile_name: "PocketDev_AddToPocketExtension_CI",
+  )
+  update_code_signing_settings(
+      use_automatic_signing: false,
+      path: "Pocket.xcodeproj",
+      targets: "PushNotificationServiceExtension",
+      build_configurations: "Debug",
+      code_sign_identity: "Apple Development",
+      sdk: "iphoneos*",
+      profile_name: "PocketDev_PushNitificationServiceExtension_CI",
+  )
+  update_code_signing_settings(
+      use_automatic_signing: false,
+      path: "Pocket.xcodeproj",
+      targets: "PushNotificationStoryExtension",
+      build_configurations: "Debug",
+      code_sign_identity: "Apple Development",
+      sdk: "iphoneos*",
+      profile_name: "PocketDev_PushNotificationStoryExtension_CI",
+  )
+  update_code_signing_settings(
+      use_automatic_signing: false,
+      path: "Pocket.xcodeproj",
+      targets: "ItemWidgets",
+      build_configurations: "Debug",
+      code_sign_identity: "Apple Development",
+      sdk: "iphoneos*",
+      profile_name: "PocketDev_WidgetExtension_CI",
+  )
+  build_app(
+      scheme: "Pocket (iOS)",
+      export_method: "development",
+      configuration: "Debug",
+      export_options: {
+        provisioningProfiles: {
+          "com.ideashower.ReadItLaterPro" => "PocketDev_CI",
+          "com.ideashower.ReadItLaterPro.AddToPocketExtension" => "PocketDev_AddToPocketExtension_CI",
+          "com.ideashower.ReadItLaterPro.Widget-Extension" => "PocketDev_WidgetExtension_CI",
+          "com.ideashower.ReadItLaterPro.PushNotificationStoryExtension" => "PocketDev_PushNotificationStoryExtension_CI",
+          "com.ideashower.ReadItLaterPro.PushNotificationServiceExtension" => "PocketDev_PushNitificationServiceExtension_CI",
+        }
+      }
+  )
+end
+
 platform :ios do
   desc "Push a new beta build to TestFlight Internal Testers via CI"
   lane :beta_internal do
