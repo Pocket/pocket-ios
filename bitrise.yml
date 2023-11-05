@@ -258,10 +258,10 @@ workflows:
             - destination: '$BITRISE_SOURCE_DIR/Config/secrets.xcconfig'
           title: Install test secrets.xcconfig
       - restore-spm-cache@1: {}
-      - save-spm-cache@1: {}
       - xcode-build-for-test:
           inputs:
             - destination: generic/platform=iOS Simulator
+      - save-spm-cache@1: {}
       - deploy-to-bitrise-io@2.1.1:
           inputs:
             - pipeline_intermediate_files: '$BITRISE_TEST_BUNDLE_PATH:BITRISE_TEST_BUNDLE_PATH'
