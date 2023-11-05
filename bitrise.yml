@@ -55,11 +55,6 @@ stages:
       # Build a release build
       - release-build: {}
 
-  qa-build:
-    workflows:
-      # Build a qa build
-      - qa-build: {}
-
   debug-build:
     workflows:
       - debug-build: {}
@@ -123,7 +118,6 @@ workflows:
             - source: '$BITRISEIO_SECRETS_XCCONFIG_URL'
             - destination: '$BITRISE_SOURCE_DIR/Config/secrets.xcconfig'
           title: Install production secrets.xcconfig
-      - cache-pull@2: {}
       - resource-archive@2:
           inputs:
             - extract_to_path: '$BITRISE_SOURCE_DIR/PocketKit/Sources/Textile/Style/Typography/Fonts'
@@ -161,7 +155,6 @@ workflows:
 
   _danger:
     steps:
-      - cache-pull@2: {}
       - activate-ssh-key@4: {}
       - git-clone@7: {}
       - script@1:
@@ -174,7 +167,6 @@ workflows:
 
                 echo "Run danger"
                 swift run danger-swift ci
-      - cache-push@2: {}
 
   # Helper step to pull the built test bundle.
   _pull_test_bundle:
@@ -224,6 +216,7 @@ workflows:
   #Builds a release build that could be uploaded to App Store Connect
   release-build:
     steps:
+      - restore-spm-cache@1: {}
       - xcode-archive@4:
           title: Build an app store release build
           inputs:
@@ -233,11 +226,11 @@ workflows:
             - configuration: Release
             - xcconfig_content: CURRENT_PROJECT_VERSION = $BITRISE_BUILD_NUMBER
             - export_method: app-store
+      - save-spm-cache@1: {}
       - deploy-to-bitrise-io@2: {}
       - deploy-to-bitrise-io@2:
           inputs:
             - pipeline_intermediate_files: '$BITRISE_IPA_PATH:BITRISE_IPA_PATH'
-      - cache-push@2: {}
     before_run:
       - _setup
     after_run:
@@ -257,26 +250,6 @@ workflows:
             - verbose_log: 'yes'
             - lane: beta_internal
 
-  qa-build:
-    steps:
-      - file-downloader@1:
-          inputs:
-            - source: '$BITRISEIO_SECRETS_DEVELOPMENT_XCCONFIG_URL'
-            - destination: '$BITRISE_SOURCE_DIR/Config/secrets.xcconfig'
-          title: Install development secrets.xcconfig
-      - xcode-archive@4:
-          inputs:
-            - xcconfig_content: |-
-                COMPILER_INDEX_STORE_ENABLE = NO
-                CURRENT_PROJECT_VERSION = $BITRISE_BUILD_NUMBER
-            - configuration: Debug
-      - deploy-to-bitrise-io@2: {}
-      - cache-push@2: {}
-    before_run:
-      - _setup
-    after_run:
-      - _upload_sentry
-
   test-build:
     steps:
       - file-downloader@1:
@@ -284,13 +257,14 @@ workflows:
             - source: '$BITRISEIO_SECRETS_TEST_URL'
             - destination: '$BITRISE_SOURCE_DIR/Config/secrets.xcconfig'
           title: Install test secrets.xcconfig
+      - restore-spm-cache@1: {}
+      - save-spm-cache@1: {}
       - xcode-build-for-test:
           inputs:
             - destination: generic/platform=iOS Simulator
       - deploy-to-bitrise-io@2.1.1:
           inputs:
             - pipeline_intermediate_files: '$BITRISE_TEST_BUNDLE_PATH:BITRISE_TEST_BUNDLE_PATH'
-      - cache-push@2: {}
     before_run:
       - _setup
 
@@ -319,7 +293,6 @@ workflows:
         inputs:
         - lane: debug_build
     - deploy-to-bitrise-io@2: {}
-    - cache-push@2: {}
     before_run:
     - _setup
 
