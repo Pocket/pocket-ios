@@ -28,7 +28,7 @@ let package = Package(
         .package(url: "https://github.com/onevcat/Kingfisher.git", exact: "7.7.0"),
         .package(url: "https://github.com/getsentry/sentry-cocoa.git", exact: "8.7.3"),
         .package(url: "https://github.com/snowplow/snowplow-objc-tracker", exact: "5.6.0"),
-        .package(url: "https://github.com/airbnb/lottie-ios.git", exact: "4.2.0"),
+        .package(url: "https://github.com/airbnb/lottie-ios.git", exact: "4.3.3"),
         .package(url: "https://github.com/johnxnguyen/Down", exact: "0.11.0"),
         .package(url: "https://github.com/SvenTiigi/YouTubePlayerKit.git", exact: "1.5.4"),
         .package(url: "https://github.com/braze-inc/braze-swift-sdk.git", exact: "7.1.0"),
