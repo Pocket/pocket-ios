@@ -104,8 +104,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/snowplow/snowplow-objc-tracker",
       "state" : {
-        "revision" : "599b162c3acb367f839d620eefb6342799145c5c",
-        "version" : "5.4.1"
+        "revision" : "cc136256383ed50c754219895e34d25c48650314",
+        "version" : "5.6.0"
       }
     },
     {
@@ -140,8 +140,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio.git",
       "state" : {
-        "revision" : "54c85cb26308b89846d4671f23954dce088da2b0",
-        "version" : "2.60.0"
+        "revision" : "853522d90871b4b63262843196685795b5008c46",
+        "version" : "2.61.1"
       }
     },
     {
