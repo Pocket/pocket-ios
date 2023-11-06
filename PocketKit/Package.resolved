@@ -77,8 +77,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SDWebImage/SDWebImage.git",
       "state" : {
-        "revision" : "7f9fb5d43ecd4aa714c00746f54873f354403438",
-        "version" : "5.15.8"
+        "revision" : "fd1950de05a5ad77cb252fd88576c1e1809ee50d",
+        "version" : "5.18.4"
       }
     },
     {
@@ -95,8 +95,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/snowplow/snowplow-objc-tracker",
       "state" : {
-        "revision" : "599b162c3acb367f839d620eefb6342799145c5c",
-        "version" : "5.4.1"
+        "revision" : "cc136256383ed50c754219895e34d25c48650314",
+        "version" : "5.6.0"
       }
     },
     {
