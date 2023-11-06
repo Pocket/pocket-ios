@@ -5,7 +5,7 @@ import ApolloTestSupport
 import PocketGraph
 
 public class SavedItemConnection: MockObject {
-  public static let objectType: Object = PocketGraph.Objects.SavedItemConnection
+  public static let objectType: ApolloAPI.Object = PocketGraph.Objects.SavedItemConnection
   public static let _mockFields = MockFields()
   public typealias MockValueCollectionType = Array<Mock<SavedItemConnection>>
 

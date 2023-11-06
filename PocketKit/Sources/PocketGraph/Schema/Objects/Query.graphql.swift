@@ -6,7 +6,7 @@ import ApolloAPI
 public extension Objects {
   /// Default root level query type. All authorization checks are done in these queries.
   /// TODO: These belong in a seperate User Service that provides a User object (the user settings will probably exist there too)
-  static let Query = Object(
+  static let Query = ApolloAPI.Object(
     typename: "Query",
     implementedInterfaces: []
   )

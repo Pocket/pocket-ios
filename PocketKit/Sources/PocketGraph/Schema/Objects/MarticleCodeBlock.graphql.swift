@@ -5,7 +5,7 @@ import ApolloAPI
 
 public extension Objects {
   /// A pre formatted text in the HTML content.
-  static let MarticleCodeBlock = Object(
+  static let MarticleCodeBlock = ApolloAPI.Object(
     typename: "MarticleCodeBlock",
     implementedInterfaces: []
   )

@@ -5,7 +5,7 @@ import ApolloAPI
 
 public extension Objects {
   /// Content of a blockquote
-  static let MarticleBlockquote = Object(
+  static let MarticleBlockquote = ApolloAPI.Object(
     typename: "MarticleBlockquote",
     implementedInterfaces: []
   )

@@ -5,7 +5,7 @@ import ApolloAPI
 
 public extension Objects {
   /// An article that Pocket has syndicated and we also host on our own site
-  static let SyndicatedArticle = Object(
+  static let SyndicatedArticle = ApolloAPI.Object(
     typename: "SyndicatedArticle",
     implementedInterfaces: []
   )

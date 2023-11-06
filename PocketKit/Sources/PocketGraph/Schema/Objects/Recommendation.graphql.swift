@@ -5,7 +5,7 @@ import ApolloAPI
 
 public extension Objects {
   /// Represents a Recommendation from Pocket
-  static let Recommendation = Object(
+  static let Recommendation = ApolloAPI.Object(
     typename: "Recommendation",
     implementedInterfaces: []
   )

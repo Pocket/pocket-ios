@@ -5,7 +5,7 @@ import ApolloAPI
 
 public extension Objects {
   /// A grouping of item recommendations that relate to each other under a specific name and description
-  static let Slate = Object(
+  static let Slate = ApolloAPI.Object(
     typename: "Slate",
     implementedInterfaces: []
   )

@@ -5,7 +5,7 @@ import ApolloTestSupport
 import PocketGraph
 
 public class CorpusRecommendation: MockObject {
-  public static let objectType: Object = PocketGraph.Objects.CorpusRecommendation
+  public static let objectType: ApolloAPI.Object = PocketGraph.Objects.CorpusRecommendation
   public static let _mockFields = MockFields()
   public typealias MockValueCollectionType = Array<Mock<CorpusRecommendation>>
 

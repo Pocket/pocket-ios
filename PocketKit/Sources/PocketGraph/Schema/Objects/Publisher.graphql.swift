@@ -5,7 +5,7 @@ import ApolloAPI
 
 public extension Objects {
   /// The publisher that the curation team set for the syndicated article
-  static let Publisher = Object(
+  static let Publisher = ApolloAPI.Object(
     typename: "Publisher",
     implementedInterfaces: []
   )

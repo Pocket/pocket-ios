@@ -6,7 +6,7 @@ import ApolloAPI
 public extension Objects {
   /// Represents an item that is in the Corpus and its associated manually edited metadata.
   /// TODO: CorpusItem to implement PocketResource when it becomes available.
-  static let CorpusItem = Object(
+  static let CorpusItem = ApolloAPI.Object(
     typename: "CorpusItem",
     implementedInterfaces: []
   )

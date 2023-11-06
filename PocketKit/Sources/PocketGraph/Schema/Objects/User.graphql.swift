@@ -5,7 +5,7 @@ import ApolloAPI
 
 public extension Objects {
   /// Resolve by reference the User entity in this graph to provide user data with public lists.
-  static let User = Object(
+  static let User = ApolloAPI.Object(
     typename: "User",
     implementedInterfaces: []
   )

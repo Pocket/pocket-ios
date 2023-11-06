@@ -5,7 +5,7 @@ import ApolloAPI
 
 public extension Objects {
   /// Represents a Tag that a User has created for their list
-  static let Tag = Object(
+  static let Tag = ApolloAPI.Object(
     typename: "Tag",
     implementedInterfaces: []
   )

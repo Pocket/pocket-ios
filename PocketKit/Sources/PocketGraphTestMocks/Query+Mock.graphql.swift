@@ -5,7 +5,7 @@ import ApolloTestSupport
 import PocketGraph
 
 public class Query: MockObject {
-  public static let objectType: Object = PocketGraph.Objects.Query
+  public static let objectType: ApolloAPI.Object = PocketGraph.Objects.Query
   public static let _mockFields = MockFields()
   public typealias MockValueCollectionType = Array<Mock<Query>>
 

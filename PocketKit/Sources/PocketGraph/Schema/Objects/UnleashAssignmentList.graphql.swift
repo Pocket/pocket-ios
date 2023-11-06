@@ -5,7 +5,7 @@ import ApolloAPI
 
 public extension Objects {
   /// Contains a list of all toggles.
-  static let UnleashAssignmentList = Object(
+  static let UnleashAssignmentList = ApolloAPI.Object(
     typename: "UnleashAssignmentList",
     implementedInterfaces: []
   )

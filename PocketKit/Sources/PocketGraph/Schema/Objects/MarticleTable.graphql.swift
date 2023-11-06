@@ -5,7 +5,7 @@ import ApolloAPI
 
 public extension Objects {
   /// Content in a table.
-  static let MarticleTable = Object(
+  static let MarticleTable = ApolloAPI.Object(
     typename: "MarticleTable",
     implementedInterfaces: []
   )

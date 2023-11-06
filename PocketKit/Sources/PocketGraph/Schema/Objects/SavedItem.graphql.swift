@@ -6,7 +6,7 @@ import ApolloAPI
 public extension Objects {
   /// Represents a Pocket Item that a user has saved to their list.
   /// (Said otherways, indicates a saved url to a users list and associated user specific information.)
-  static let SavedItem = Object(
+  static let SavedItem = ApolloAPI.Object(
     typename: "SavedItem",
     implementedInterfaces: [Interfaces.RemoteEntity.self]
   )

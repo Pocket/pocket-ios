@@ -5,7 +5,7 @@ import ApolloAPI
 
 public extension Objects {
   /// Metadata from a domain, originally populated from ClearBit
-  static let DomainMetadata = Object(
+  static let DomainMetadata = ApolloAPI.Object(
     typename: "DomainMetadata",
     implementedInterfaces: []
   )

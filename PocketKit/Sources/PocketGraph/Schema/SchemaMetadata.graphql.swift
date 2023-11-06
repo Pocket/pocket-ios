@@ -20,7 +20,7 @@ where Schema == PocketGraph.SchemaMetadata {}
 public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
   public static let configuration: ApolloAPI.SchemaConfiguration.Type = SchemaConfiguration.self
 
-  public static func objectType(forTypename typename: String) -> Object? {
+  public static func objectType(forTypename typename: String) -> ApolloAPI.Object? {
     switch typename {
     case "Query": return PocketGraph.Objects.Query
     case "User": return PocketGraph.Objects.User

@@ -4,7 +4,7 @@
 import ApolloAPI
 
 public extension Objects {
-  static let SlateLineup = Object(
+  static let SlateLineup = ApolloAPI.Object(
     typename: "SlateLineup",
     implementedInterfaces: []
   )

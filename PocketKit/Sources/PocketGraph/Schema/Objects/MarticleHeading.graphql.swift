@@ -5,7 +5,7 @@ import ApolloAPI
 
 public extension Objects {
   /// A heading in an article, with markdown formatting.
-  static let MarticleHeading = Object(
+  static let MarticleHeading = ApolloAPI.Object(
     typename: "MarticleHeading",
     implementedInterfaces: []
   )

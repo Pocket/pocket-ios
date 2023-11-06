@@ -5,7 +5,7 @@ import ApolloTestSupport
 import PocketGraph
 
 public class Publisher: MockObject {
-  public static let objectType: Object = PocketGraph.Objects.Publisher
+  public static let objectType: ApolloAPI.Object = PocketGraph.Objects.Publisher
   public static let _mockFields = MockFields()
   public typealias MockValueCollectionType = Array<Mock<Publisher>>
 
