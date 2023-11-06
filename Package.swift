@@ -9,12 +9,12 @@ import PackageDescription
 
 let package = Package(
     name: "Danger",
-    platforms: [.iOS("15"), .macOS("11")],
+    platforms: [.iOS("16"), .macOS("13")],
     products: [
         .library(name: "DangerDeps", type: .dynamic, targets: ["DangerDependencies"]), // dev
     ],
     dependencies: [
-        .package(url: "https://github.com/danger/swift.git", exact: "3.16.0"), // dev
+        .package(url: "https://github.com/danger/swift.git", exact: "3.17.1"), // dev
         .package(url: "https://github.com/f-meloni/danger-swift-coverage", exact: "1.2.1") // dev
     ],
     targets: [
