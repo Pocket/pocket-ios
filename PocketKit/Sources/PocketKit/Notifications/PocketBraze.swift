@@ -64,7 +64,7 @@ extension PocketBraze: BrazeProtocol {
             // Was this build deployed through the App Store or through TestFlight?
             var isTestFlight = false
             if let receiptURL = Bundle.main.appStoreReceiptURL {
-                isTestFlight = receiptURL.path(percentEncoded: false).range(of: "sandboxreceipt") != nil
+                isTestFlight = receiptURL.path(percentEncoded: false).contains("sandboxreceipt")
             }
             // Could expand to include "development"
             let deployment = isTestFlight ? "testflight" : "app_store"
