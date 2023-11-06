@@ -68,7 +68,7 @@ extension PocketBraze: BrazeProtocol {
             }
             // Could expand to include "development"
             let deployment = isTestFlight ? "testflight" : "app_store"
-            self?.braze.user.setCustomAttribute(key: "deployment", value: deployment)
+            self?.braze.user.setCustomAttribute(key: "ios_deployment", value: deployment)
         }
 
         let center = UNUserNotificationCenter.current()
