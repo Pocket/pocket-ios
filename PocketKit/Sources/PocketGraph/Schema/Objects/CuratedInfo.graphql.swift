@@ -5,7 +5,7 @@ import ApolloAPI
 
 public extension Objects {
   /// This type represents the information we need on a curated item.
-  static let CuratedInfo = Object(
+  static let CuratedInfo = ApolloAPI.Object(
     typename: "CuratedInfo",
     implementedInterfaces: []
   )

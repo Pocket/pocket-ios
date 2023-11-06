@@ -5,7 +5,7 @@ import ApolloAPI
 
 public extension Objects {
   /// The connection type for SavedItem.
-  static let SavedItemConnection = Object(
+  static let SavedItemConnection = ApolloAPI.Object(
     typename: "SavedItemConnection",
     implementedInterfaces: []
   )

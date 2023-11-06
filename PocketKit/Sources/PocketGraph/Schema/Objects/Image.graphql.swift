@@ -5,7 +5,7 @@ import ApolloAPI
 
 public extension Objects {
   /// An image that is keyed on URL
-  static let Image = Object(
+  static let Image = ApolloAPI.Object(
     typename: "Image",
     implementedInterfaces: []
   )

@@ -5,7 +5,7 @@ import ApolloTestSupport
 import PocketGraph
 
 public class UnleashAssignmentList: MockObject {
-  public static let objectType: Object = PocketGraph.Objects.UnleashAssignmentList
+  public static let objectType: ApolloAPI.Object = PocketGraph.Objects.UnleashAssignmentList
   public static let _mockFields = MockFields()
   public typealias MockValueCollectionType = Array<Mock<UnleashAssignmentList>>
 

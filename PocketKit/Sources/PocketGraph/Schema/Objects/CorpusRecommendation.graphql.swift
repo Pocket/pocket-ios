@@ -4,7 +4,7 @@
 import ApolloAPI
 
 public extension Objects {
-  static let CorpusRecommendation = Object(
+  static let CorpusRecommendation = ApolloAPI.Object(
     typename: "CorpusRecommendation",
     implementedInterfaces: []
   )

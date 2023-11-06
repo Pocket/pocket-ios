@@ -5,7 +5,7 @@ import ApolloTestSupport
 import PocketGraph
 
 public class SavedItemSearchResultEdge: MockObject {
-  public static let objectType: Object = PocketGraph.Objects.SavedItemSearchResultEdge
+  public static let objectType: ApolloAPI.Object = PocketGraph.Objects.SavedItemSearchResultEdge
   public static let _mockFields = MockFields()
   public typealias MockValueCollectionType = Array<Mock<SavedItemSearchResultEdge>>
 

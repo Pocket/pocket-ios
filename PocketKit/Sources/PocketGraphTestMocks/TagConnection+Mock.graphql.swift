@@ -5,7 +5,7 @@ import ApolloTestSupport
 import PocketGraph
 
 public class TagConnection: MockObject {
-  public static let objectType: Object = PocketGraph.Objects.TagConnection
+  public static let objectType: ApolloAPI.Object = PocketGraph.Objects.TagConnection
   public static let _mockFields = MockFields()
   public typealias MockValueCollectionType = Array<Mock<TagConnection>>
 

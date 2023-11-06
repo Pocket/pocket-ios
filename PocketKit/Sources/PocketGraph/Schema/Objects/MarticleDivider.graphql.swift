@@ -4,7 +4,7 @@
 import ApolloAPI
 
 public extension Objects {
-  static let MarticleDivider = Object(
+  static let MarticleDivider = ApolloAPI.Object(
     typename: "MarticleDivider",
     implementedInterfaces: []
   )

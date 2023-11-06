@@ -5,7 +5,7 @@ import ApolloAPI
 
 public extension Objects {
   /// Content in a bulleted (unordered) list.
-  static let MarticleNumberedList = Object(
+  static let MarticleNumberedList = ApolloAPI.Object(
     typename: "MarticleNumberedList",
     implementedInterfaces: []
   )

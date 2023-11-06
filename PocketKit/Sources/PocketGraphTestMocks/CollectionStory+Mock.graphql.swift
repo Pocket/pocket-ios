@@ -5,7 +5,7 @@ import ApolloTestSupport
 import PocketGraph
 
 public class CollectionStory: MockObject {
-  public static let objectType: Object = PocketGraph.Objects.CollectionStory
+  public static let objectType: ApolloAPI.Object = PocketGraph.Objects.CollectionStory
   public static let _mockFields = MockFields()
   public typealias MockValueCollectionType = Array<Mock<CollectionStory>>
 

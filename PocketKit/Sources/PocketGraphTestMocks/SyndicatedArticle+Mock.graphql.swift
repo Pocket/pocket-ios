@@ -5,7 +5,7 @@ import ApolloTestSupport
 import PocketGraph
 
 public class SyndicatedArticle: MockObject {
-  public static let objectType: Object = PocketGraph.Objects.SyndicatedArticle
+  public static let objectType: ApolloAPI.Object = PocketGraph.Objects.SyndicatedArticle
   public static let _mockFields = MockFields()
   public typealias MockValueCollectionType = Array<Mock<SyndicatedArticle>>
 

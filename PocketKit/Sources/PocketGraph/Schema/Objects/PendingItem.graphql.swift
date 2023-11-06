@@ -4,7 +4,7 @@
 import ApolloAPI
 
 public extension Objects {
-  static let PendingItem = Object(
+  static let PendingItem = ApolloAPI.Object(
     typename: "PendingItem",
     implementedInterfaces: []
   )

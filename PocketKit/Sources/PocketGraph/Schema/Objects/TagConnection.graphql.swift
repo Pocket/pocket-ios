@@ -5,7 +5,7 @@ import ApolloAPI
 
 public extension Objects {
   /// The connection type for Tag.
-  static let TagConnection = Object(
+  static let TagConnection = ApolloAPI.Object(
     typename: "TagConnection",
     implementedInterfaces: []
   )

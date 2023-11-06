@@ -5,7 +5,7 @@ import ApolloAPI
 
 public extension Objects {
   /// Details on the variant/status of this toggle for a given user/context
-  static let UnleashAssignment = Object(
+  static let UnleashAssignment = ApolloAPI.Object(
     typename: "UnleashAssignment",
     implementedInterfaces: []
   )

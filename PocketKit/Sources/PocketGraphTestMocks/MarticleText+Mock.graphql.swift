@@ -5,7 +5,7 @@ import ApolloTestSupport
 import PocketGraph
 
 public class MarticleText: MockObject {
-  public static let objectType: Object = PocketGraph.Objects.MarticleText
+  public static let objectType: ApolloAPI.Object = PocketGraph.Objects.MarticleText
   public static let _mockFields = MockFields()
   public typealias MockValueCollectionType = Array<Mock<MarticleText>>
 

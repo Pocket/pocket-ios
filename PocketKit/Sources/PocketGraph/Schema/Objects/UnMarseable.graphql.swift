@@ -5,7 +5,7 @@ import ApolloAPI
 
 public extension Objects {
   /// Represents content that could not be parsed into a valid Marticle* component.
-  static let UnMarseable = Object(
+  static let UnMarseable = ApolloAPI.Object(
     typename: "UnMarseable",
     implementedInterfaces: []
   )

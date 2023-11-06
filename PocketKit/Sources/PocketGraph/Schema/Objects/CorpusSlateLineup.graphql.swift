@@ -5,7 +5,7 @@ import ApolloAPI
 
 public extension Objects {
   /// A collection of slates.
-  static let CorpusSlateLineup = Object(
+  static let CorpusSlateLineup = ApolloAPI.Object(
     typename: "CorpusSlateLineup",
     implementedInterfaces: []
   )

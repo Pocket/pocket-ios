@@ -4,7 +4,7 @@
 import ApolloAPI
 
 public extension Objects {
-  static let CollectionAuthor = Object(
+  static let CollectionAuthor = ApolloAPI.Object(
     typename: "CollectionAuthor",
     implementedInterfaces: []
   )
