@@ -8,14 +8,16 @@ public extension FontDescriptor.Family {
     static let doyle: Self = "Doyle"
     static let monospace: Self = ".AppleSystemUIFontMonospaced"
     // premium fonts
-    static let idealSans: Self = "Ideal Sans"
+    static let idealSans: Self = "Ideal Sans SSm"
     static let inter: Self = "Inter"
-    static let plexSans: Self = "Plex Sans"
-    static let sentinel: Self = "Sentinel"
+    static let plexSans: Self = "IBM Plex Sans"
+    static let plexSansSemibold: Self = "IBM Plex Sans Semibold"
+    static let sentinel: Self = "Sentinel SSm"
     static let tiempos: Self = "tiempos"
     static let vollkorn: Self = "Vollkorn"
-    static let whitney: Self = "Whitney"
+    static let whitney: Self = "Whitney SSm"
     static let zillaSlab: Self = "Zilla Slab"
+    static let zillaSlabSemibold: Self = "Zilla Slab Semibold"
 }
 
 public extension FontDescriptor.Size {

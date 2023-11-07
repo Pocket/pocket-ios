@@ -51,11 +51,13 @@ private extension ReaderSettings {
             .idealSans,
             .inter,
             .plexSans,
+            .plexSansSemibold,
             .sentinel,
             .tiempos,
             .vollkorn,
             .whitney,
-            .zillaSlab
+            .zillaSlab,
+            .zillaSlabSemibold
         ]
     }
 }
