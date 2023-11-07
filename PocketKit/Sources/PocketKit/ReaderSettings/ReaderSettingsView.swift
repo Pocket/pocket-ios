@@ -5,24 +5,9 @@
 import SwiftUI
 import Textile
 import Localization
+import SharedPocketKit
 
 struct ReaderSettingsView: View {
-    private enum Constants {
-        static let allowedAdjustments = -6...6
-        static let adjustmentStep = 2
-        static let freeFontFamilies: [FontDescriptor.Family] = [.graphik, .blanco]
-        static let premiumFontFamilies: [FontDescriptor.Family] = [
-            .idealSans,
-            .inter,
-            .plexSans,
-            .sentinel,
-            .tiempos,
-            .vollkorn,
-            .whitney,
-            .zillaSlab
-        ]
-    }
-
     @Environment(\.presentationMode)
     private var presentationMode
 
@@ -37,7 +22,7 @@ struct ReaderSettingsView: View {
             Form {
                 Section(header: Text(Localization.displaySettings)) {
                     Picker(Localization.font, selection: settings.$fontFamily) {
-                        ForEach(Constants.freeFontFamilies, id: \.name) { family in
+                        ForEach(settings.fontSet, id: \.name) { family in
                             Text(family.name)
                                 .tag(family)
                         }.navigationBarTitleDisplayMode(.inline)
@@ -46,8 +31,8 @@ struct ReaderSettingsView: View {
                     Stepper(
                         Localization.fontSize,
                         value: settings.$fontSizeAdjustment,
-                        in: Constants.allowedAdjustments,
-                        step: Constants.adjustmentStep
+                        in: settings.adjustmentRange,
+                        step: settings.adjustmentStep
                     )
                     .accessibilityIdentifier("reader-settings-stepper")
                 }
