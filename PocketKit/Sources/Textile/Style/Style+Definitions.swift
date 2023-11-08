@@ -13,7 +13,7 @@ public extension FontDescriptor.Family {
     static let plexSans: Self = "IBM Plex Sans"
     static let plexSansSemibold: Self = "IBM Plex Sans Semibold"
     static let sentinel: Self = "Sentinel SSm"
-    static let tiempos: Self = "tiempos"
+    static let tiempos: Self = "Tiempos"
     static let vollkorn: Self = "Vollkorn"
     static let whitney: Self = "Whitney SSm"
     static let zillaSlab: Self = "Zilla Slab"
