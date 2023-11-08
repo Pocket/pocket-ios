@@ -16,7 +16,7 @@ protocol ReadableViewModelDelegate: AnyObject {
     /// - Parameters:
     ///   - readableViewModel: The view model requesting that Listen be presented.
     ///   - viewModel: The view model to use when presenting Listen.
-    func viewModel(_ readableViewModel: ReadableViewModel, didRequestListen viewModel: ListenViewModel)
+    func viewModel(_ readableViewModel: ReadableViewModel, didRequestListen configuration: ListenConfiguration)
 }
 
 protocol ReadableViewModel: ReadableViewControllerDelegate {

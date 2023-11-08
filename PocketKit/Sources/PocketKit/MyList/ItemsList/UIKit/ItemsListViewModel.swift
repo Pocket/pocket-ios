@@ -101,7 +101,7 @@ enum ItemsListEvent<ItemIdentifier: Hashable> {
 }
 
 protocol ItemsListViewModelDelegate: AnyObject {
-    func viewModel(_ itemsListViewModel: any ItemsListViewModel, didRequestListen: ListenViewModel)
+    func viewModel(_ itemsListViewModel: any ItemsListViewModel, didRequestListen: ListenConfiguration)
 }
 
 protocol ItemsListViewModel: AnyObject {
