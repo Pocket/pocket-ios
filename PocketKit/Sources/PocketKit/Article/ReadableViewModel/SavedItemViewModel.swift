@@ -108,10 +108,9 @@ class SavedItemViewModel: ReadableViewModel {
         }.store(in: &subscriptions)
     }
 
-    var readerSettings: ReaderSettings {
-        // TODO: inject this
+    lazy var readerSettings: ReaderSettings = {
         ReaderSettings(userDefaults: userDefaults)
-    }
+    }()
 
     var components: [ArticleComponent]? {
         item.item?.article?.components
