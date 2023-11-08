@@ -7,7 +7,7 @@ import Sync
 import PKTListen
 import SharedPocketKit
 
-class ListenConfiguration: NSObject, PKTListenOfflineTTSDelegate {
+class ListenConfiguration: NSObject {
     let title: String
     private let savedItems: [SavedItem]?
 
@@ -17,13 +17,41 @@ class ListenConfiguration: NSObject, PKTListenOfflineTTSDelegate {
     }
 
     func toAppConfiguration() -> PKTListenAppConfiguration {
-        let config = PKTListenAppConfiguration(source: createSource())
-        config.offlineTTSDelegate = self
+        let source = ListenSource(savedItems: savedItems)
+        let config = PKTListenAppConfiguration(source: source)
+        config.offlineTTSDelegate = source
         return config
     }
+}
 
-    private func createSource() -> ListenSource {
-        return ListenSource.source(savedItems: savedItems)
+class ListenSource: PKTListenDataSource<PKTListDiffable>, PKTListenOfflineTTSDelegate {
+    private var savedItems: [SavedItem]?
+
+    convenience init(savedItems: [SavedItem]?) {
+        let config = PKTListenAppKusariConfiguration()
+
+        let listenItems: [PKTKusari<PKTListenItem>] = savedItems?
+            .compactMap { $0 }
+            .filter { $0.isEligibleForListen }
+            .compactMap { PKTListenKusariCreate($0.albumID!, PKTListenQueueSectionType.item.rawValue, $0, config) }
+        ?? []
+
+        defer {
+            DispatchQueue.global(qos: .background).async {
+                // Warm up the first 6 images
+                listenItems.prefix(6).forEach({ listenItem in
+                    listenItem.warmImage()
+                })
+            }
+        }
+
+        self.init(context: ["index": NSNumber(value: 0)]) { source, context, complete in
+            source.hasMore = false
+            Log.debug("Loaded Listen with \(listenItems.count) articles")
+            complete(nil, ["index": NSNumber(value: listenItems.count)], listenItems)
+        }
+
+        self.savedItems = savedItems
     }
 
     func textUnits(for kusari: PKTKusari<PKTListenItem>) -> [PKTTextUnit] {
@@ -48,31 +76,6 @@ class ListenConfiguration: NSObject, PKTListenOfflineTTSDelegate {
 
     func isKusariAvailable(forOfflineTTS kusari: PKTKusari<PKTListenItem>) -> Bool {
         return textUnits(for: kusari).isEmpty == false
-    }
-}
-
-class ListenSource: PKTListenDataSource<PKTListDiffable> {
-    static func source(savedItems: [SavedItem]?) -> ListenSource {
-        let config = PKTListenAppKusariConfiguration()
-
-        let listenItems: [PKTKusari<PKTListenItem>] = savedItems?
-            .compactMap { $0 }
-            .filter { $0.isEligibleForListen }
-            .compactMap { PKTListenKusariCreate($0.albumID!, PKTListenQueueSectionType.item.rawValue, $0, config) }
-        ?? []
-
-        DispatchQueue.global(qos: .background).async {
-            // Warm up the first 6 images
-            listenItems.prefix(6).forEach({ listenItem in
-                listenItem.warmImage()
-            })
-        }
-
-        return ListenSource(context: ["index": NSNumber(value: 0)]) { source, context, complete in
-            source.hasMore = false
-            Log.debug("Loaded Listen with \(listenItems.count) articles")
-            complete(nil, ["index": NSNumber(value: listenItems.count)], listenItems)
-        }
     }
 }
 
