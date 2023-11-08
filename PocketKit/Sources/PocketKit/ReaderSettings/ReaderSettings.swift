@@ -37,7 +37,7 @@ class ReaderSettings: StylerModifier, ObservableObject {
 
     init(userDefaults: UserDefaults) {
         _fontSizeAdjustment = AppStorage(wrappedValue: 0, UserDefaults.Key.readerFontSizeAdjustment, store: userDefaults)
-        _fontFamily = AppStorage(wrappedValue: .blanco, UserDefaults.Key.readerFontSizeAdjustment, store: userDefaults)
+        _fontFamily = AppStorage(wrappedValue: .blanco, UserDefaults.Key.readerFontFamily, store: userDefaults)
         _userStatus = AppStorage(wrappedValue: .unknown, UserDefaults.Key.userStatus, store: userDefaults)
     }
 }
