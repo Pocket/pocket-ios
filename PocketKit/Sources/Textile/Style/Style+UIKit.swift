@@ -46,7 +46,7 @@ extension UIFontDescriptor {
 
         let fontAttributes: [UIFontDescriptor.AttributeName: Any] = [
             .traits: traits,
-            .family: descriptor.family.name
+            .family: descriptor.fontName
         ]
 
         self.init(fontAttributes: fontAttributes)

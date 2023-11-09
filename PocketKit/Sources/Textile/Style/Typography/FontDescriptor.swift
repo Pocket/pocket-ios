@@ -4,6 +4,7 @@
 
 public struct FontDescriptor {
     let family: Family
+    let fontName: String
     let size: Size
     let weight: Weight
     let slant: Slant
@@ -20,11 +21,60 @@ public struct FontDescriptor {
         case italic
     }
 
-    public struct Family: Hashable {
-        public let name: String
+    public enum Family: String, Hashable {
+        case graphik = "Graphik LCG"
+        case blanco = "Blanco OSF"
+        case doyle = "Doyle"
+        case monospace = ".AppleSystemUIFontMonospaced"
+        // premium fonts
+        case idealSans = "Ideal Sans"
+        case inter = "Inter"
+        case plexSans = "Plex Sans"
+        case sentinel = "Sentinel"
+        case tiempos = "Tiempos"
+        case vollkorn = "Vollkorn"
+        case whitney = "Whitney"
+        case zillaSlab = "Zilla Slab"
 
-        public init(name: String) {
-            self.name = name
+        public func fontName(for weight: Weight) -> String {
+            switch self {
+            case .graphik, .blanco, .doyle, .monospace, .inter, .tiempos, .vollkorn:
+                return rawValue
+            case .idealSans:
+                return "Ideal Sans SSm"
+            case .sentinel:
+                return "Sentinel SSm"
+            case .whitney:
+                return "Whitney SSm"
+            case .plexSans:
+                if case .medium = weight, case .regular = weight {
+                    return "IBM Plex Sans"
+                } else {
+                    return "IBM Plex Sans Semibold"
+                }
+            case .zillaSlab:
+                if case .medium = weight, case .regular = weight {
+                    return "Zilla Slab"
+                } else {
+                    return "Zilla Slab Semibold"
+                }
+            }
+        }
+
+        public func actualWeight(for weight: Weight) -> Weight {
+            switch self {
+                // downgrade the weight as these fonts are using a semibold variation
+            case .plexSans, .zillaSlab:
+                if case .semibold = weight {
+                    return .regular
+                }
+                if case .bold = weight {
+                    return .medium
+                }
+                return weight
+            default:
+                return weight
+            }
         }
     }
 
@@ -39,8 +89,9 @@ public struct FontDescriptor {
         slant: Slant = .none
     ) {
         self.family = family
+        self.fontName = family.fontName(for: weight)
         self.size = size
-        self.weight = weight
+        self.weight = family.actualWeight(for: weight)
         self.slant = slant
     }
 
@@ -62,12 +113,6 @@ public struct FontDescriptor {
 
     func adjustingSize(by adjustment: Int) -> FontDescriptor {
         return FontDescriptor(family: family, size: size.adjusting(by: adjustment), weight: weight, slant: slant)
-    }
-}
-
-extension FontDescriptor.Family: ExpressibleByStringLiteral {
-    public init(stringLiteral value: StringLiteralType) {
-        self.init(name: value)
     }
 }
 
