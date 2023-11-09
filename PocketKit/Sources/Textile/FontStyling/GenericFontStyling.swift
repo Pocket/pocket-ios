@@ -2,8 +2,8 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-/// Concrete implementation of FontStyling for premium fonts
-public struct PremiumFontOSFStyling: FontStyling {
+/// Concrete implementation of FontStyling for a generic font family
+public struct GenericFontStyling: FontStyling {
     public let h1: Style
     public let h2: Style
     public let h3: Style
@@ -36,7 +36,7 @@ public struct PremiumFontOSFStyling: FontStyling {
     public init(family: FontDescriptor.Family) {
         let headerStyles = Style.header.headerStyles(with: family)
         self.init(
-            h1: headerStyles.h1.with{ (paragraph: ParagraphStyle) -> ParagraphStyle in
+            h1: headerStyles.h1.with { (paragraph: ParagraphStyle) -> ParagraphStyle in
                 paragraph.with(lineHeight: .multiplier(0.97))
             },
             h2: headerStyles.h2.with { (paragraph: ParagraphStyle) -> ParagraphStyle in
@@ -57,7 +57,8 @@ public struct PremiumFontOSFStyling: FontStyling {
             body: .body.bodyStyle(with: family).with { (paragraph: ParagraphStyle) -> ParagraphStyle in
                 paragraph.with(lineHeight: .multiplier(1.1))
             },
-            monospace: .body.monospace)
+            monospace: .body.monospace
+        )
     }
 
     public func bolding(style: Style) -> Style {
@@ -65,7 +66,7 @@ public struct PremiumFontOSFStyling: FontStyling {
     }
 
     public func with(body: Style) -> FontStyling {
-        PremiumFontOSFStyling(
+        GenericFontStyling(
             h1: h1,
             h2: h2,
             h3: h3,
@@ -77,4 +78,3 @@ public struct PremiumFontOSFStyling: FontStyling {
         )
     }
 }
-

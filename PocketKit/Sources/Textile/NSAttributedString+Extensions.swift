@@ -24,7 +24,7 @@ public extension NSAttributedString {
     }
 
     static func collectionStyler(bodyStyle: Style? = nil) -> Styler {
-        var styling: FontStyling = BlancoOSFStyling()
+        var styling: FontStyling = GenericFontStyling(family: .blanco)
         if let bodyStyle = bodyStyle {
             styling = styling.with(body: bodyStyle)
         }
