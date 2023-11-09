@@ -68,10 +68,10 @@ class ListenSource: PKTListenDataSource<PKTListDiffable>, PKTListenOfflineTTSDel
         return article.components.compactMap { c in
             switch c {
             // Utilize the NSAttributedString(markdown:) initializer to "strip out" the characters used for styling
-            case .text(let textComponent): return try? NSAttributedString(markdown: textComponent.content).string
+            case .text(let textComponent): return try? NSAttributedString(markdown: textComponent.content)
             default: return nil
             }
-        }.map { ListenTextUnit(stringValue: $0) }
+        }.map { ListenTextUnit(attributedString: $0) }
     }
 
     func isKusariAvailable(forOfflineTTS kusari: PKTKusari<PKTListenItem>) -> Bool {
@@ -82,11 +82,13 @@ class ListenSource: PKTListenDataSource<PKTListDiffable>, PKTListenOfflineTTSDel
 private class ListenTextUnit: NSObject, PKTTextUnit {
     var type: PKTTagMatchType = .text
 
+    var attributedStringValue: NSAttributedString?
     var stringValue: String?
 
     var tagValue: String?
 
-    init(stringValue: String) {
-        self.stringValue = stringValue
+    init(attributedString: NSAttributedString) {
+        self.attributedStringValue = attributedString
+        self.stringValue = attributedString.string
     }
 }
