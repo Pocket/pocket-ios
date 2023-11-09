@@ -6,6 +6,7 @@ import Foundation
 import Sync
 import PKTListen
 import SharedPocketKit
+import Down
 
 class ListenConfiguration: NSObject {
     let title: String
@@ -64,18 +65,54 @@ class ListenSource: PKTListenDataSource<PKTListDiffable>, PKTListenOfflineTTSDel
             return []
         }
 
-        // For offline TTS, filter out only the text components, returning the appropriate types
+        // For offline TTS, filter out only components that contain text "blocks", returning the appropriate types
         return article.components.compactMap { c in
             switch c {
-            // Utilize the NSAttributedString(markdown:) initializer to "strip out" the characters used for styling
-            case .text(let textComponent): return try? NSAttributedString(markdown: textComponent.content)
-            default: return nil
+            case .blockquote(let component): return component.content
+            case .bulletedList(let component): return string(from: component)
+            case .codeBlock(let component): return component.text
+            case .divider: return nil
+            case .heading(let component): return component.content
+            case .image(let component): return string(from: component)
+            case .numberedList(let component): return string(from: component)
+            case .table: return nil
+            case .text(let textComponent): return textComponent.content
+            case .unsupported: return nil
+            case .video: return nil
             }
-        }.map { ListenTextUnit(attributedString: $0) }
+        }
+        .filter { $0.isEmpty == false }
+        .compactMap {
+            // The built-in NSAttributedString(markdown:) initializer would strangely strip
+            // out numbers from bulleted lists; the Down parser used for styling article components
+            // tends to do a better job keeping the desired "structure" of Markdown strings.
+            try? Down(markdownString: $0).toAttributedString()
+        }
+        .map { ListenTextUnit(attributedString: $0) }
     }
 
     func isKusariAvailable(forOfflineTTS kusari: PKTKusari<PKTListenItem>) -> Bool {
         return textUnits(for: kusari).isEmpty == false
+    }
+
+    private func string(from component: BulletedListComponent) -> String? {
+        // Return a newline-separated string of all rows, with bullets added.
+        // Adding a comma before separating by newline also introduces a pause in the speach, to
+        // provide better separation between the rows in the list during speech synthesis.
+        return component.rows.map { $0.content }.joined(separator: ",\n")
+    }
+
+    private func string(from component: NumberedListComponent) -> String? {
+        // Return a newline-separated string of all rows, with line numbers added.
+        // Line numbers are determined by a row's index, which is 0-based (so add 1).
+        // Adding a comma before separating by newline also introduces a pause in the speach, to
+        // provide better separation between the rows in the list during speech synthesis.
+        return component.rows.map { "\($0.index + 1). \($0.content)" }.joined(separator: ",\n")
+    }
+
+    private func string(from component: ImageComponent) -> String? {
+        guard let caption = component.caption, caption.isEmpty == false else { return nil }
+        return "Image: \(caption)"
     }
 }
 
