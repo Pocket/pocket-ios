@@ -16,7 +16,7 @@ class ReaderSettings: StylerModifier, ObservableObject {
         if fontFamily == .graphik {
             return GraphikLCGStyling()
         } else {
-            return BlancoOSFStyling()
+            return GenericFontStyling(family: fontFamily)
         }
     }
 
@@ -51,23 +51,11 @@ private extension ReaderSettings {
             .idealSans,
             .inter,
             .plexSans,
-            .plexSansSemibold,
             .sentinel,
             .tiempos,
             .vollkorn,
             .whitney,
-            .zillaSlab,
-            .zillaSlabSemibold
+            .zillaSlab
         ]
-    }
-}
-
-extension FontDescriptor.Family: RawRepresentable {
-    public init?(rawValue: String) {
-        self = FontDescriptor.Family(name: rawValue)
-    }
-
-    public var rawValue: String {
-        return self.name
     }
 }

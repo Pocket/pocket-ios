@@ -22,8 +22,8 @@ struct ReaderSettingsView: View {
             Form {
                 Section(header: Text(Localization.displaySettings)) {
                     Picker(Localization.font, selection: settings.$fontFamily) {
-                        ForEach(settings.fontSet, id: \.name) { family in
-                            Text(family.name)
+                        ForEach(settings.fontSet, id: \.rawValue) { family in
+                            Text(family.rawValue)
                                 .tag(family)
                         }.navigationBarTitleDisplayMode(.inline)
                     }
