@@ -216,12 +216,13 @@ class SavedItemViewModel: ReadableViewModel {
     }
 
     func listen() {
-        let listen = ListenViewModel.source(
-            savedItems: [item],
-            title: item.isArchived ? Localization.archive : "Saves"
+        delegate?.viewModel(
+            self,
+            didRequestListen: ListenConfiguration(
+                title: item.isArchived ? Localization.archive : "Saves",
+                savedItems: [item]
+            )
         )
-
-        delegate?.viewModel(self, didRequestListen: listen)
     }
 }
 

@@ -611,22 +611,21 @@ extension SavesContainerViewController: SFSafariViewControllerDelegate {
 }
 
 extension SavesContainerViewController {
-    private func showListen(listenViewModel: ListenViewModel) {
-        let appConfig = PKTListenAppConfiguration(source: listenViewModel)
-        let listen =  PKTListenContainerViewController(configuration: appConfig)
-        listen.title = listenViewModel.title
+    private func showListen(_ configuration: ListenConfiguration) {
+        let listen =  PKTListenContainerViewController(configuration: configuration.toAppConfiguration())
+        listen.title = configuration.title
         self.present(listen, animated: true)
     }
 }
 
 extension SavesContainerViewController: ReadableViewModelDelegate {
-    func viewModel(_ readableViewModel: ReadableViewModel, didRequestListen viewModel: ListenViewModel) {
-        showListen(listenViewModel: viewModel)
+    func viewModel(_ readableViewModel: ReadableViewModel, didRequestListen configuration: ListenConfiguration) {
+        showListen(configuration)
     }
 }
 
 extension SavesContainerViewController: ItemsListViewModelDelegate {
-    func viewModel(_ itemsListViewModel: any ItemsListViewModel, didRequestListen viewModel: ListenViewModel) {
-        showListen(listenViewModel: viewModel)
+    func viewModel(_ itemsListViewModel: any ItemsListViewModel, didRequestListen configuration: ListenConfiguration) {
+        showListen(configuration)
     }
 }

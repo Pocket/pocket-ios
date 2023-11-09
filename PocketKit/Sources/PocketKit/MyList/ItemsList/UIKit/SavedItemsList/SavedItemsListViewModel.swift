@@ -679,8 +679,7 @@ extension SavedItemsListViewModel {
                 }
             }
 
-            let listen = ListenViewModel.source(savedItems: self.itemsController.fetchedObjects, title: title)
-            delegate?.viewModel(self, didRequestListen: listen)
+            delegate?.viewModel(self, didRequestListen: ListenConfiguration(title: title, savedItems: self.itemsController.fetchedObjects))
 
             selectedFilters.remove(.listen)
         case .all:
