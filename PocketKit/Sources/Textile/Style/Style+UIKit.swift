@@ -44,10 +44,13 @@ extension UIFontDescriptor {
             traits[.slant] = 1
         }
 
-        let fontAttributes: [UIFontDescriptor.AttributeName: Any] = [
+        var fontAttributes: [UIFontDescriptor.AttributeName: Any] = [
             .traits: traits,
             .family: descriptor.familyName
         ]
+        if let fontName = descriptor.fontName {
+            fontAttributes[.name] = fontName
+        }
 
         self.init(fontAttributes: fontAttributes)
     }

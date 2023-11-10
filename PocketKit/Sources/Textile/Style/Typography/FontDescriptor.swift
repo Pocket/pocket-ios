@@ -5,6 +5,7 @@
 public struct FontDescriptor {
     let family: Family
     let familyName: String
+    let fontName: String?
     let size: Size
     let weight: Weight
     let slant: Slant
@@ -36,6 +37,9 @@ public struct FontDescriptor {
         case whitney = "Whitney"
         case zillaSlab = "Zilla Slab"
 
+        /// Font family name used by the system. In some cases family names can be different between regular and semibold weights
+        /// - Parameter weight: the font weight
+        /// - Returns: the family name
         public func name(for weight: Weight) -> String {
             switch self {
             case .graphik, .blanco, .doyle, .monospace, .inter, .tiempos, .vollkorn:
@@ -47,17 +51,33 @@ public struct FontDescriptor {
             case .whitney:
                 return "Whitney SSm"
             case .plexSans:
-                if weight == .regular || weight == .medium {
-                    return "IBM Plex Sans"
-                } else {
-                    return "IBM Plex Sans Semibold"
-                }
+                return attribute(for: weight, regular: "IBM Plex Sans", strong: "IBM Plex Sans Semibold")
             case .zillaSlab:
-                if weight == .regular || weight == .medium {
-                    return "Zilla Slab"
-                } else {
-                    return "Zilla Slab Semibold"
-                }
+                return attribute(for: weight, regular: "Zilla Slab", strong: "Zilla Slab Semibold")
+            }
+        }
+
+        /// Font  name used by the system. In some cases font names can be different between regular and semibold weights
+        /// - Parameter weight: the font weight
+        /// - Returns: the font name
+        public func fontName(for weight: Weight) -> String? {
+            switch self {
+            case .whitney:
+                return attribute(for: weight, regular: "WhitneySSm-Book", strong: "WhitneySSm-Semibold")
+            case .sentinel:
+                return attribute(for: weight, regular: "SentinelSSm-Book", strong: "SentinelSSm-Semibold")
+            case .idealSans:
+                return attribute(for: weight, regular: "IdealSansSSm-Book", strong: "IdealSansSSm-Semibold")
+            default:
+                return nil
+            }
+        }
+
+        private func attribute(for weight: Weight, regular: String, strong: String) -> String {
+            if weight == .regular || weight == .medium {
+                return regular
+            } else {
+                return strong
             }
         }
     }
@@ -74,6 +94,7 @@ public struct FontDescriptor {
     ) {
         self.family = family
         self.familyName = family.name(for: weight)
+        self.fontName = family.fontName(for: weight)
         self.size = size
         self.weight = weight
         self.slant = slant
