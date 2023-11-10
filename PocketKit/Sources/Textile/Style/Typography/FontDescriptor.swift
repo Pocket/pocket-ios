@@ -4,7 +4,7 @@
 
 public struct FontDescriptor {
     let family: Family
-    let fontName: String
+    let familyName: String
     let size: Size
     let weight: Weight
     let slant: Slant
@@ -36,7 +36,7 @@ public struct FontDescriptor {
         case whitney = "Whitney"
         case zillaSlab = "Zilla Slab"
 
-        public func fontName(for weight: Weight) -> String {
+        public func name(for weight: Weight) -> String {
             switch self {
             case .graphik, .blanco, .doyle, .monospace, .inter, .tiempos, .vollkorn:
                 return rawValue
@@ -47,33 +47,17 @@ public struct FontDescriptor {
             case .whitney:
                 return "Whitney SSm"
             case .plexSans:
-                if case .medium = weight, case .regular = weight {
+                if weight == .regular || weight == .medium {
                     return "IBM Plex Sans"
                 } else {
                     return "IBM Plex Sans Semibold"
                 }
             case .zillaSlab:
-                if case .medium = weight, case .regular = weight {
+                if weight == .regular || weight == .medium {
                     return "Zilla Slab"
                 } else {
                     return "Zilla Slab Semibold"
                 }
-            }
-        }
-
-        public func actualWeight(for weight: Weight) -> Weight {
-            switch self {
-                // downgrade the weight as these fonts are using a semibold variation
-            case .plexSans, .zillaSlab:
-                if case .semibold = weight {
-                    return .regular
-                }
-                if case .bold = weight {
-                    return .medium
-                }
-                return weight
-            default:
-                return weight
             }
         }
     }
@@ -89,9 +73,9 @@ public struct FontDescriptor {
         slant: Slant = .none
     ) {
         self.family = family
-        self.fontName = family.fontName(for: weight)
+        self.familyName = family.name(for: weight)
         self.size = size
-        self.weight = family.actualWeight(for: weight)
+        self.weight = weight
         self.slant = slant
     }
 

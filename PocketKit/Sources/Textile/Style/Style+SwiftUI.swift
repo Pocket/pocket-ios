@@ -29,7 +29,7 @@ public extension Font {
     init(_ descriptor: FontDescriptor) {
         let size = CGFloat(descriptor.size)
 
-        self = .custom(descriptor.fontName, size: size)
+        self = .custom(descriptor.familyName, size: size)
             .weight(Weight(descriptor.weight))
     }
 }
