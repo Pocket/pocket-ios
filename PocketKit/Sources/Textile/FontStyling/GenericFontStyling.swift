@@ -54,7 +54,7 @@ public struct GenericFontStyling: FontStyling {
             h6: headerStyles.h6.with { (paragraph: ParagraphStyle) -> ParagraphStyle in
                 paragraph.with(lineHeight: .multiplier(0.9))
             },
-            body: .body.bodyStyle(with: family).with { (paragraph: ParagraphStyle) -> ParagraphStyle in
+            body: .body.bodyStyle(with: family).with(size: .body.adjusting(by: family.adjustment)).with { (paragraph: ParagraphStyle) -> ParagraphStyle in
                 paragraph.with(lineHeight: .multiplier(1.1))
             },
             monospace: .body.monospace
