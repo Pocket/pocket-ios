@@ -54,4 +54,20 @@ public struct ParagraphStyle {
     public func with(verticalAlignment: VerticalTextAlignment) -> ParagraphStyle {
         return ParagraphStyle(alignment: alignment, lineBreakMode: lineBreakMode, lineSpacing: lineSpacing, lineHeight: lineHeight, verticalAlignment: verticalAlignment)
     }
+
+    public func scaleLineHeight(by factor: CGFloat) -> ParagraphStyle {
+        let scaledLineHeight = scaledLineHeight(factor)
+        return ParagraphStyle(alignment: alignment, lineBreakMode: lineBreakMode, lineSpacing: lineSpacing, lineHeight: scaledLineHeight, verticalAlignment: verticalAlignment)
+    }
+
+    func scaledLineHeight(_ factor: CGFloat) -> LineHeight? {
+        switch lineHeight {
+        case .explicit(let explicitValue):
+            return .explicit(explicitValue * factor)
+        case .multiplier(let multiplierValue):
+            return .multiplier(multiplierValue * factor)
+        case nil:
+            return nil
+        }
+    }
 }

@@ -8,8 +8,13 @@ import SwiftUI
 import SharedPocketKit
 
 class ReaderSettings: StylerModifier, ObservableObject {
+    var lineHeightScaleFactor: Double {
+        Constants.lineHeightMultipliers[lineHeightScaleFactorIndex]
+    }
+
     @AppStorage var fontSizeAdjustment: Int
     @AppStorage var fontFamily: FontDescriptor.Family
+    @AppStorage var lineHeightScaleFactorIndex: Int
     @AppStorage private var userStatus: Status
 
     var currentStyling: FontStyling {
@@ -28,24 +33,35 @@ class ReaderSettings: StylerModifier, ObservableObject {
     }
 
     var adjustmentRange: ClosedRange<Int> {
-        Constants.allowedAdjustments
+        Constants.fontSizeAdjustmentRange
     }
 
     var adjustmentStep: Int {
-        Constants.adjustmentStep
+        Constants.fontSizeAdjustmentStep
+    }
+
+    var lineHeightScaleFactorRange: ClosedRange<Int> {
+        Constants.lineHaighMultipliersIndexRange
+    }
+
+    var lineHeightScaleFactorStep: Int {
+        1
     }
 
     init(userDefaults: UserDefaults) {
         _fontSizeAdjustment = AppStorage(wrappedValue: 0, UserDefaults.Key.readerFontSizeAdjustment, store: userDefaults)
         _fontFamily = AppStorage(wrappedValue: .blanco, UserDefaults.Key.readerFontFamily, store: userDefaults)
+        _lineHeightScaleFactorIndex = AppStorage(wrappedValue: Constants.lineHeightMultipliers.count / 2, UserDefaults.Key.readerScaleFactorIndex, store: userDefaults)
         _userStatus = AppStorage(wrappedValue: .unknown, UserDefaults.Key.userStatus, store: userDefaults)
     }
 }
 
-private extension ReaderSettings {
+extension ReaderSettings {
     enum Constants {
-        static let allowedAdjustments = -6...6
-        static let adjustmentStep = 2
+        static let fontSizeAdjustmentRange = -6...6
+        static let lineHeightMultipliers: [Double] = [0.75, 0.8, 0.9, 1.0, 1.2, 1.5, 2.0]
+        static let lineHaighMultipliersIndexRange: ClosedRange<Int> = 0...lineHeightMultipliers.count - 1
+        static let fontSizeAdjustmentStep = 2
         static let freeFontFamilies: [FontDescriptor.Family] = [.graphik, .blanco]
         static let premiumFontFamilies: [FontDescriptor.Family] = [
             .idealSans,

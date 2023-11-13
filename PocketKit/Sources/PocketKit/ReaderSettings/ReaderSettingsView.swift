@@ -18,7 +18,7 @@ struct ReaderSettingsView: View {
     }
 
     var body: some View {
-        NavigationView {
+        // NavigationView {
             Form {
                 Section(header: Text(Localization.displaySettings)) {
                     Picker(Localization.font, selection: settings.$fontFamily) {
@@ -35,9 +35,15 @@ struct ReaderSettingsView: View {
                         step: settings.adjustmentStep
                     )
                     .accessibilityIdentifier("reader-settings-stepper")
+                    Stepper(
+                        "Line Height",
+                        value: settings.$lineHeightScaleFactorIndex,
+                        in: settings.lineHeightScaleFactorRange,
+                        step: settings.lineHeightScaleFactorStep
+                    )
                 }
-            }
-            .navigationBarHidden(true)
+            // }
+            // .navigationBarHidden(true)
         }
     }
 }
