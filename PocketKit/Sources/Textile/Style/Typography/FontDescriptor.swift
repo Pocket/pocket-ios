@@ -80,6 +80,7 @@ public struct FontDescriptor {
             }
         }
 
+        /// Font size adjustment: used to make font appearance consistent
         public var adjustment: Int {
             switch self {
             case .graphik, .idealSans, .inter, .sentinel, .whitney:
