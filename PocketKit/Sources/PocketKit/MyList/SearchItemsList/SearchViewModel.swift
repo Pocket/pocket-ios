@@ -463,7 +463,8 @@ extension SearchViewModel: SearchResultActionDelegate {
             store: store,
             networkPathMonitor: networkPathMonitor,
             userDefaults: userDefaults,
-            notificationCenter: notificationCenter
+            notificationCenter: notificationCenter,
+            featureFlagService: featureFlags
         )
 
         if let slug = readable.slug, featureFlags.isAssigned(flag: .nativeCollections) {
