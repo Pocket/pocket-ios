@@ -25,7 +25,7 @@ class ListenConfiguration: NSObject {
     }
 }
 
-class ListenSource: PKTListenDataSource<PKTListDiffable>, PKTListenPlayerDelegate {
+private class ListenSource: PKTListenDataSource<PKTListDiffable>, PKTListenPlayerDelegate {
     private var savedItems: [SavedItem]?
 
     convenience init(savedItems: [SavedItem]?) {
