@@ -20,12 +20,12 @@ class ListenConfiguration: NSObject {
     func toAppConfiguration() -> PKTListenAppConfiguration {
         let source = ListenSource(savedItems: savedItems)
         let config = PKTListenAppConfiguration(source: source)
-        config.offlineTTSDelegate = source
+        config.playerDelegate = source
         return config
     }
 }
 
-class ListenSource: PKTListenDataSource<PKTListDiffable>, PKTListenOfflineTTSDelegate {
+class ListenSource: PKTListenDataSource<PKTListDiffable>, PKTListenPlayerDelegate {
     private var savedItems: [SavedItem]?
 
     convenience init(savedItems: [SavedItem]?) {
@@ -93,6 +93,10 @@ class ListenSource: PKTListenDataSource<PKTListDiffable>, PKTListenOfflineTTSDel
 
     func isKusariAvailable(forOfflineTTS kusari: PKTKusari<PKTListenItem>) -> Bool {
         return textUnits(for: kusari).isEmpty == false
+    }
+
+    func isOnlinePlayerAvailable() -> Bool {
+        return false
     }
 
     private func string(from component: BulletedListComponent) -> String? {
