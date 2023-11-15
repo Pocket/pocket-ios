@@ -62,7 +62,7 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
     var isFromSaves: Bool
 
     private let viewControllers: [SelectableViewController]
-    private var searchViewModel: SearchViewModel
+    private var searchViewModel: DefaultSearchViewModel
     private var model: SavesContainerViewModel
 
     private var subscriptions: [AnyCancellable] = []

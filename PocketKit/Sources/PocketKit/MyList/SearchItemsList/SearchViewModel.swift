@@ -35,7 +35,7 @@ protocol SearchResultActionDelegate: AnyObject {
 }
 
 /// View model that holds business logic for the SearchView
-class SearchViewModel: ObservableObject {
+class DefaultSearchViewModel: ObservableObject {
     static let recentSearchesKey = UserDefaults.Key.recentSearches
 
     private var subscriptions: [AnyCancellable] = []
@@ -120,10 +120,10 @@ class SearchViewModel: ObservableObject {
 
     private var recentSearches: [String] {
         get {
-            userDefaults.stringArray(forKey: SearchViewModel.recentSearchesKey) ?? []
+            userDefaults.stringArray(forKey: DefaultSearchViewModel.recentSearchesKey) ?? []
         }
         set {
-            userDefaults.set(newValue, forKey: SearchViewModel.recentSearchesKey)
+            userDefaults.set(newValue, forKey: DefaultSearchViewModel.recentSearchesKey)
         }
     }
 
@@ -427,7 +427,7 @@ class SearchViewModel: ObservableObject {
     }
 }
 
-extension SearchViewModel: SearchResultActionDelegate {
+extension DefaultSearchViewModel: SearchResultActionDelegate {
     func itemViewModel(_ searchItem: PocketItem, index: Int) -> PocketItemViewModel {
         return PocketItemViewModel(
             item: searchItem,
@@ -549,7 +549,7 @@ extension SearchViewModel: SearchResultActionDelegate {
 }
 
 // MARK: Analytics
-extension SearchViewModel {
+extension DefaultSearchViewModel {
     /// Tracks when user opens search (magnifying glass or pull down)
     func trackOpenSearch() {
         tracker.track(event: Events.Search.openSearch(scope: selectedScope))
@@ -605,7 +605,7 @@ extension SearchViewModel {
     }
 }
 
-extension SearchViewModel: SavedItemsControllerDelegate {
+extension DefaultSearchViewModel: SavedItemsControllerDelegate {
     func controller(
         _ controller: SavedItemsController,
         didChange savedItem: SavedItem,
@@ -637,7 +637,7 @@ extension SearchViewModel: SavedItemsControllerDelegate {
 }
 
 // MARK: Premium upgrades
-extension SearchViewModel {
+extension DefaultSearchViewModel {
     @MainActor
     func makePremiumUpgradeViewModel() -> PremiumUpgradeViewModel {
         premiumUpgradeViewModelFactory(.search)
@@ -650,7 +650,7 @@ extension SearchViewModel {
 }
 
 // MARK: Sentry User Feedback Reporting
-extension SearchViewModel {
+extension DefaultSearchViewModel {
     var userEmail: String {
         user.email
     }

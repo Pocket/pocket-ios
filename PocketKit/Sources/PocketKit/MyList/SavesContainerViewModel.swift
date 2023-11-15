@@ -18,14 +18,14 @@ class SavesContainerViewModel {
     @Published var selection: Selection = .saves
 
     let tracker: Tracker
-    let searchList: SearchViewModel
+    let searchList: DefaultSearchViewModel
     let savedItemsList: SavedItemsListViewModel
     let archivedItemsList: SavedItemsListViewModel
     let addSavedItemModel: AddSavedItemViewModel
 
     init(
         tracker: Tracker,
-        searchList: SearchViewModel,
+        searchList: DefaultSearchViewModel,
         savedItemsList: SavedItemsListViewModel,
         archivedItemsList: SavedItemsListViewModel,
         addSavedItemModel: AddSavedItemViewModel

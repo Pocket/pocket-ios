@@ -8,7 +8,7 @@ import Textile
 import Localization
 
 struct SearchView: View {
-    @ObservedObject var viewModel: SearchViewModel
+    @ObservedObject var viewModel: DefaultSearchViewModel
 
     var body: some View {
         Group {
@@ -44,7 +44,7 @@ struct ResultsView: View {
 
     @Environment(\.horizontalSizeClass)
     var sizeClass
-    @ObservedObject var viewModel: SearchViewModel
+    @ObservedObject var viewModel: DefaultSearchViewModel
     @State private var showingAlert = false
 
     let results: [PocketItem]
@@ -133,7 +133,7 @@ struct SearchEmptyView: View {
 
 struct GetPocketPremiumButton: View {
     @State var dismissReason: DismissReason = .swipe
-    @EnvironmentObject private var searchViewModel: SearchViewModel
+    @EnvironmentObject private var searchViewModel: DefaultSearchViewModel
     private let text: String
 
     init(text: String) {
@@ -169,7 +169,7 @@ struct GetPocketPremiumButton: View {
 
 // MARK: - Recent Searches Component
 struct RecentSearchView: View {
-    @ObservedObject var viewModel: SearchViewModel
+    @ObservedObject var viewModel: DefaultSearchViewModel
     var recentSearches: [String]
 
     var body: some View {

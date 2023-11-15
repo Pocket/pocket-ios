@@ -30,7 +30,7 @@ class MainViewModel: ObservableObject {
         self.init(
             saves: SavesContainerViewModel(
                 tracker: Services.shared.tracker,
-                searchList: SearchViewModel(
+                searchList: DefaultSearchViewModel(
                     networkPathMonitor: NWPathMonitor(),
                     user: Services.shared.user,
                     userDefaults: Services.shared.userDefaults,
