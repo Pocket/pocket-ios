@@ -24,7 +24,7 @@ public struct FontDescriptor {
 
     public enum Family: String, Hashable {
         case graphik = "Graphik"
-        case blanco = "Blanco OSF"
+        case blanco = "Blanco"
         case doyle = "Doyle"
         case monospace = "Monospace"
         // premium fonts
