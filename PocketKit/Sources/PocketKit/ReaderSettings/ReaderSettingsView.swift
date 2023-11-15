@@ -18,7 +18,6 @@ struct ReaderSettingsView: View {
     }
 
     var body: some View {
-        // NavigationView {
             Form {
                 Section(header: Text(Localization.displaySettings)) {
                     Picker(Localization.font, selection: settings.$fontFamily) {
@@ -31,19 +30,27 @@ struct ReaderSettingsView: View {
                     Stepper(
                         Localization.fontSize,
                         value: settings.$fontSizeAdjustment,
-                        in: settings.adjustmentRange,
-                        step: settings.adjustmentStep
+                        in: settings.fontSizeAdjustmentRange,
+                        step: settings.fontSizeAdjustmentStep
                     )
-                    .accessibilityIdentifier("reader-settings-stepper")
-                    Stepper(
-                        "Line Height",
-                        value: settings.$lineHeightScaleFactorIndex,
-                        in: settings.lineHeightScaleFactorRange,
-                        step: settings.lineHeightScaleFactorStep
-                    )
+                    .accessibilityIdentifier("reader-settings-font-size-stepper")
+                    if settings.isPremium {
+                        Stepper(
+                            "Line Height",
+                            value: settings.$lineHeightScaleFactorIndex,
+                            in: settings.settingIndexRange,
+                            step: settings.settingIndexStep
+                        )
+                        .accessibilityIdentifier("reader-settings-line-height-stepper")
+                        Stepper(
+                            "Margins",
+                            value: settings.$marginsIndex,
+                            in: settings.settingIndexRange,
+                            step: settings.settingIndexStep
+                        )
+                        .accessibilityIdentifier("reader-settings-margins-stepper")
+                    }
                 }
-            // }
-            // .navigationBarHidden(true)
         }
     }
 }
