@@ -8,14 +8,45 @@ import SwiftUI
 import SharedPocketKit
 
 class ReaderSettings: StylerModifier, ObservableObject {
-    var lineHeightScaleFactor: Double {
-        Constants.lineHeightMultipliers[lineHeightScaleFactorIndex]
-    }
-
     @AppStorage var fontSizeAdjustment: Int
     @AppStorage var fontFamily: FontDescriptor.Family
     @AppStorage var lineHeightScaleFactorIndex: Int
+    @AppStorage var marginsIndex: Int
     @AppStorage private var userStatus: Status
+
+    enum UserInterFaceSetting {
+        case iPhonePortrait
+        case iPhoneLandscape
+        case iPadPortrait
+        case iPadLandscape
+
+        init(isLandscape: Bool, isIpad: Bool) {
+            if isLandscape {
+                self = isIpad ? .iPadLandscape : .iPhoneLandscape
+            } else {
+                self = isIpad ? .iPadPortrait : .iPhonePortrait
+            }
+        }
+    }
+
+    private var uiSetting: UserInterFaceSetting {
+        UserInterFaceSetting(
+            isLandscape: UIDevice.current.orientation.isLandscape,
+            isIpad: UIDevice.current.userInterfaceIdiom == .pad
+        )
+    }
+
+    var isPremium: Bool {
+        userStatus == .premium
+    }
+
+    var lineHeightScaleFactor: Double {
+        ReaderAppearance.lineHeightMultipliers[lineHeightScaleFactorIndex]
+    }
+
+    var margins: Double {
+        ReaderAppearance.margins(for: uiSetting)[marginsIndex]
+    }
 
     var currentStyling: FontStyling {
         if fontFamily == .graphik {
@@ -26,42 +57,41 @@ class ReaderSettings: StylerModifier, ObservableObject {
     }
 
     var fontSet: [FontDescriptor.Family] {
-        if case .premium = userStatus {
-            return Constants.freeFontFamilies + Constants.premiumFontFamilies
+        if isPremium {
+            return ReaderAppearance.freeFontFamilies + ReaderAppearance.premiumFontFamilies
         }
-        return Constants.freeFontFamilies
+        return ReaderAppearance.freeFontFamilies
     }
 
-    var adjustmentRange: ClosedRange<Int> {
-        Constants.fontSizeAdjustmentRange
+    var fontSizeAdjustmentRange: ClosedRange<Int> {
+        -6...6
     }
 
-    var adjustmentStep: Int {
-        Constants.fontSizeAdjustmentStep
+    var fontSizeAdjustmentStep: Int {
+        2
+    }
+    /// Default range of indexes for settings adjustments
+    var settingIndexRange: ClosedRange<Int> {
+        0...6
     }
 
-    var lineHeightScaleFactorRange: ClosedRange<Int> {
-        Constants.lineHaighMultipliersIndexRange
-    }
-
-    var lineHeightScaleFactorStep: Int {
+    /// Step for setting indexes
+    var settingIndexStep: Int {
         1
     }
 
     init(userDefaults: UserDefaults) {
         _fontSizeAdjustment = AppStorage(wrappedValue: 0, UserDefaults.Key.readerFontSizeAdjustment, store: userDefaults)
         _fontFamily = AppStorage(wrappedValue: .blanco, UserDefaults.Key.readerFontFamily, store: userDefaults)
-        _lineHeightScaleFactorIndex = AppStorage(wrappedValue: Constants.lineHeightMultipliers.count / 2, UserDefaults.Key.readerScaleFactorIndex, store: userDefaults)
+        _lineHeightScaleFactorIndex = AppStorage(wrappedValue: 3, UserDefaults.Key.readerScaleFactorIndex, store: userDefaults)
+        _marginsIndex = AppStorage(wrappedValue: 3, UserDefaults.Key.readerMarginsIndex, store: userDefaults)
         _userStatus = AppStorage(wrappedValue: .unknown, UserDefaults.Key.userStatus, store: userDefaults)
     }
 }
 
-extension ReaderSettings {
-    enum Constants {
-        static let fontSizeAdjustmentRange = -6...6
-        static let lineHeightMultipliers: [Double] = [0.75, 0.8, 0.9, 1.0, 1.2, 1.5, 2.0]
-        static let lineHaighMultipliersIndexRange: ClosedRange<Int> = 0...lineHeightMultipliers.count - 1
-        static let fontSizeAdjustmentStep = 2
+private extension ReaderSettings {
+    enum ReaderAppearance {
+        // Fonts
         static let freeFontFamilies: [FontDescriptor.Family] = [.graphik, .blanco]
         static let premiumFontFamilies: [FontDescriptor.Family] = [
             .idealSans,
@@ -73,5 +103,24 @@ extension ReaderSettings {
             .whitney,
             .zillaSlab
         ]
+        // Line height
+        static let lineHeightMultipliers: [Double] = [0.8, 0.85, 0.9, 1.0, 1.2, 1.5, 2.0]
+        // Margins
+        static let iPhonePortraitMargins: [Double] = [-8.0, -4.0, -2.0, 0.0, 2.0, 4.0, 8.0]
+        static let iPhoneLandscapeMargins: [Double] = [-12.0, -8.0, -4.0, 0.0, 4.0, 8.0, 12.0] // [-8.0, -4.0, -2.0, 0.0, 4.0, 8.0, 12.0]
+        static let iPadPortraitMargins: [Double] = [-12.0, -8.0, -4.0, 0.0, 4.0, 8.0, 12.0]
+        static let iPadLandscapeMargins: [Double] = [-36.0, -24.0, -12.0, 0.0, 12.0, 24.0, 36.0]
+        static func margins(for setting: UserInterFaceSetting) -> [Double] {
+            switch setting {
+            case .iPhonePortrait:
+                return iPadPortraitMargins
+            case .iPhoneLandscape:
+                return iPhoneLandscapeMargins
+            case .iPadPortrait:
+                return iPadPortraitMargins
+            case .iPadLandscape:
+                return iPadLandscapeMargins
+            }
+        }
     }
 }

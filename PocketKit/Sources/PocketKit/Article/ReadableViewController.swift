@@ -319,8 +319,8 @@ extension ReadableViewController {
             // Zero out the default leading/trailing contentInsets, but preserve the default top/bottom values.
             // This ensures each section will be inset horizontally exactly to the readable content width.
             var contentInsets = section.contentInsets
-            contentInsets.leading = 0
-            contentInsets.trailing = 0
+            contentInsets.leading = readerSettings.margins
+            contentInsets.trailing = readerSettings.margins
             contentInsets.top = Constants.metaSectionContentInsets.top
             contentInsets.bottom = Constants.metaSectionContentInsets.bottom
             section.contentInsets = contentInsets
@@ -354,8 +354,8 @@ extension ReadableViewController {
             // Zero out the default leading/trailing contentInsets, but preserve the default top/bottom values.
             // This ensures each section will be inset horizontally exactly to the readable content width.
             var contentInsets = section.contentInsets
-            contentInsets.leading = 0
-            contentInsets.trailing = 0
+            contentInsets.leading = readerSettings.margins
+            contentInsets.trailing = readerSettings.margins
             contentInsets.top = Constants.contentSectionContentInsets.top
             contentInsets.bottom = Constants.metaSectionContentInsets.bottom
             section.contentInsets = contentInsets

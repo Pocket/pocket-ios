@@ -25,6 +25,7 @@ public extension UserDefaults {
         case listSelectedSortForArchive = "listSelectedSortForArchive"
         case readerFontSizeAdjustment = "readerFontSizeAdjustment"
         case readerScaleFactorIndex = "readerScaleFactorIndex"
+        case readerMarginsIndex = "readerMarginsIndex"
         case readerFontFamily = "readerFontFamily"
         case dateLastOpened = "dateLastOpened"
         case dateLastBackgrounded = "dateLastBackgrounded"
