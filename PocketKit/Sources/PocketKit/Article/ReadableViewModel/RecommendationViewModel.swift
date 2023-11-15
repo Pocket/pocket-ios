@@ -67,10 +67,9 @@ class RecommendationViewModel: ReadableViewModel {
         recommendation.item.article?.components
     }
 
-    var readerSettings: ReaderSettings {
-        // TODO: inject this
-        ReaderSettings(userDefaults: userDefaults)
-    }
+    lazy var readerSettings: ReaderSettings = {
+        ReaderSettings(tracker: tracker, userDefaults: userDefaults)
+    }()
 
     var textAlignment: Textile.TextAlignment {
         TextAlignment(language: recommendation.item.language)

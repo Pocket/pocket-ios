@@ -80,7 +80,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     private let tracker: Tracker
     private let itemsController: SavedItemsController
     private let user: User
-    private let userDefaults: UserDefaults
+
     private var subscriptions: [AnyCancellable] = []
     private var store: SubscriptionStore
     private var networkPathMonitor: NetworkPathMonitor
@@ -90,6 +90,8 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     private let availableFilters: [ItemsListFilter]
     private let notificationCenter: NotificationCenter
     private let viewType: SavesViewType
+
+    let userDefaults: UserDefaults
 
     init(source: Source, tracker: Tracker, viewType: SavesViewType, listOptions: ListOptions, notificationCenter: NotificationCenter, user: User, store: SubscriptionStore, refreshCoordinator: RefreshCoordinator, networkPathMonitor: NetworkPathMonitor, userDefaults: UserDefaults, featureFlags: FeatureFlagServiceProtocol) {
         self.source = source

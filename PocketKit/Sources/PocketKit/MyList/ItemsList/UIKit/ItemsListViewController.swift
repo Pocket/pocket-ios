@@ -418,12 +418,13 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
             return nil
         }
 
-        return UIContextMenuConfiguration {
+        return UIContextMenuConfiguration { [weak self] in
             if showInWebView {
                 guard let url = URL(percentEncoding: viewModel.url) else { return UIViewController() }
                 return SFSafariViewController(url: url)
             } else {
-                return ReadableViewController(readable: viewModel, readerSettings: ReaderSettings(userDefaults: .standard))
+                guard let self else { return UIViewController() }
+                return ReadableViewController(readable: viewModel, readerSettings: ReaderSettings(tracker: viewModel.tracker, userDefaults: model.userDefaults))
             }
         } actionProvider: { _ in
             return UIMenu(children: [

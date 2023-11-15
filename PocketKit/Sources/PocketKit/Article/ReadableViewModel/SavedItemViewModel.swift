@@ -109,7 +109,7 @@ class SavedItemViewModel: ReadableViewModel {
     }
 
     lazy var readerSettings: ReaderSettings = {
-        ReaderSettings(userDefaults: userDefaults)
+        ReaderSettings(tracker: tracker, userDefaults: userDefaults)
     }()
 
     var components: [ArticleComponent]? {

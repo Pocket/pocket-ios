@@ -10,7 +10,7 @@ import SharedPocketKit
 struct ReaderSettingsView: View {
     @Environment(\.presentationMode)
     private var presentationMode
-
+    @State private var dismissReason: DismissReason = .swipe
     @ObservedObject private var settings: ReaderSettings
 
     init(settings: ReaderSettings) {
@@ -49,7 +49,37 @@ struct ReaderSettingsView: View {
                             step: settings.settingIndexStep
                         )
                         .accessibilityIdentifier("reader-settings-margins-stepper")
+                        Button("Reset to defaults") {
+                            settings.reset()
+                        }
+                        .buttonStyle(PocketButtonStyle(.primary))
+                    } else {
+                        SettingsRowButton(
+                            title: "Unlock more options",
+                            titleStyle: .settings.row.active,
+                            leadingImageAsset: .premiumIcon,
+                            leadingTintColor: Color(.ui.teal2)
+                        ) {
+                            settings.presentPremiumUpgrade()
+                        }
+                            .sheet(
+                                isPresented: $settings.isPresentingPremiumUpgrade,
+                                onDismiss: {
+                                    settings.trackPremiumDismissed(dismissReason: dismissReason)
+                                    if dismissReason == .system {
+                                        settings.isPresentingHooray = true
+                                    }
+                            }
+                            ) {
+                                PremiumUpgradeView(dismissReason: self.$dismissReason, viewModel: settings.makePremiumUpgradeViewModel())
+                            }
+                            .task {
+                                settings.trackPremiumUpsellViewed()
+                            }
                     }
+                }
+                .sheet(isPresented: $settings.isPresentingHooray) {
+                    PremiumUpgradeSuccessView()
                 }
         }
     }

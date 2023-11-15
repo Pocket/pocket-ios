@@ -6,6 +6,7 @@ import Combine
 import UIKit
 import Sync
 import Localization
+import Analytics
 
 enum SelectedItem {
     case readable(SavedItemViewModel?)
@@ -115,6 +116,7 @@ protocol ItemsListViewModel: AnyObject {
     var emptyState: EmptyStateViewModel? { get }
     var snapshot: Published<Snapshot>.Publisher { get }
     var initialDownloadState: Published<InitialDownloadState>.Publisher { get }
+    var userDefaults: UserDefaults { get }
 
     func fetch()
     func refresh(_ completion: (() -> Void)?)
