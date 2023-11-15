@@ -18,69 +18,81 @@ struct ReaderSettingsView: View {
     }
 
     var body: some View {
-            Form {
-                Section(header: Text(Localization.displaySettings)) {
-                    Picker(Localization.font, selection: settings.$fontFamily) {
-                        ForEach(settings.fontSet, id: \.rawValue) { family in
-                            Text(family.rawValue)
-                                .tag(family)
-                        }.navigationBarTitleDisplayMode(.inline)
-                    }
+        Form {
+            Section(header: Text(Localization.displaySettings)) {
+                Picker(Localization.font, selection: settings.$fontFamily) {
+                    ForEach(settings.fontSet, id: \.rawValue) { family in
+                        Text(family.rawValue)
+                            .tag(family)
+                    }.navigationBarTitleDisplayMode(.inline)
+                }
 
+                Stepper(
+                    Localization.fontSize,
+                    value: settings.$fontSizeAdjustment,
+                    in: settings.fontSizeAdjustmentRange,
+                    step: settings.fontSizeAdjustmentStep
+                )
+                .accessibilityIdentifier("reader-settings-font-size-stepper")
+                if settings.isPremium {
                     Stepper(
-                        Localization.fontSize,
-                        value: settings.$fontSizeAdjustment,
-                        in: settings.fontSizeAdjustmentRange,
-                        step: settings.fontSizeAdjustmentStep
+                        "Line Height",
+                        value: settings.$lineHeightScaleFactorIndex,
+                        in: settings.settingIndexRange,
+                        step: settings.settingIndexStep
                     )
-                    .accessibilityIdentifier("reader-settings-font-size-stepper")
-                    if settings.isPremium {
-                        Stepper(
-                            "Line Height",
-                            value: settings.$lineHeightScaleFactorIndex,
-                            in: settings.settingIndexRange,
-                            step: settings.settingIndexStep
-                        )
-                        .accessibilityIdentifier("reader-settings-line-height-stepper")
-                        Stepper(
-                            "Margins",
-                            value: settings.$marginsIndex,
-                            in: settings.settingIndexRange,
-                            step: settings.settingIndexStep
-                        )
-                        .accessibilityIdentifier("reader-settings-margins-stepper")
-                        Button("Reset to defaults") {
-                            settings.reset()
+                    .accessibilityIdentifier("reader-settings-line-height-stepper")
+                    Stepper(
+                        "Margins",
+                        value: settings.$marginsIndex,
+                        in: settings.settingIndexRange,
+                        step: settings.settingIndexStep
+                    )
+                    .accessibilityIdentifier("reader-settings-margins-stepper")
+                } else {
+                    SettingsRowButton(
+                        title: "Unlock more options",
+                        titleStyle: .settings.row.active,
+                        leadingImageAsset: .premiumIcon,
+                        leadingTintColor: Color(.ui.teal2)
+                    ) {
+                        settings.presentPremiumUpgrade()
+                    }
+                    .sheet(
+                        isPresented: $settings.isPresentingPremiumUpgrade,
+                        onDismiss: {
+                            settings.trackPremiumDismissed(dismissReason: dismissReason)
+                            if dismissReason == .system {
+                                settings.isPresentingHooray = true
+                            }
                         }
-                        .buttonStyle(PocketButtonStyle(.primary))
-                    } else {
-                        SettingsRowButton(
-                            title: "Unlock more options",
-                            titleStyle: .settings.row.active,
-                            leadingImageAsset: .premiumIcon,
-                            leadingTintColor: Color(.ui.teal2)
-                        ) {
-                            settings.presentPremiumUpgrade()
-                        }
-                            .sheet(
-                                isPresented: $settings.isPresentingPremiumUpgrade,
-                                onDismiss: {
-                                    settings.trackPremiumDismissed(dismissReason: dismissReason)
-                                    if dismissReason == .system {
-                                        settings.isPresentingHooray = true
-                                    }
-                            }
-                            ) {
-                                PremiumUpgradeView(dismissReason: self.$dismissReason, viewModel: settings.makePremiumUpgradeViewModel())
-                            }
-                            .task {
-                                settings.trackPremiumUpsellViewed()
-                            }
+                    ) {
+                        PremiumUpgradeView(dismissReason: self.$dismissReason, viewModel: settings.makePremiumUpgradeViewModel())
+                    }
+                    .task {
+                        settings.trackPremiumUpsellViewed()
                     }
                 }
-                .sheet(isPresented: $settings.isPresentingHooray) {
-                    PremiumUpgradeSuccessView()
+            }
+            .sheet(isPresented: $settings.isPresentingHooray) {
+                PremiumUpgradeSuccessView()
+            }
+            if settings.isPremium {
+                Section {
+                    Button {
+                        settings.reset()
+                    } label: {
+                        HStack {
+                            Text("Reset to defaults")
+                            Spacer()
+                            if settings.isUsingDefaults {
+                                Image(systemName: "checkmark")
+                            }
+                        }
+                    }
+                    .foregroundColor(Color(.ui.black1))
                 }
+            }
         }
     }
 }

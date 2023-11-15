@@ -43,6 +43,10 @@ class ReaderSettings: StylerModifier, ObservableObject {
         )
     }
 
+    var isUsingDefaults: Bool {
+        fontSizeAdjustment == 0 && fontFamily == .blanco && lineHeightScaleFactorIndex == 3 && marginsIndex == 3
+    }
+
     var isPremium: Bool {
         userStatus == .premium
     }
