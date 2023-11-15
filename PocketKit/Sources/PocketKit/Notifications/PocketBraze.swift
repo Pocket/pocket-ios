@@ -17,6 +17,8 @@ protocol BrazeSDKProtocol {
         withCompletionHandler completionHandler: @escaping () -> Void)
 
     func signedInUserDidBeginMigration()
+
+    func isFeatureFlagEnabled(id: String) -> Bool
 }
 
 /**
@@ -56,11 +58,20 @@ class PocketBraze: NSObject {
  Conforming to our PocketBraze Protocol
  */
 extension PocketBraze: BrazeProtocol {
+    func isFeatureFlagEnabled(id: String) -> Bool {
+        guard let featureFlag = braze.featureFlags.featureFlag(id: id) else {
+            return false
+        }
+
+        return featureFlag.enabled
+    }
+
     func loggedIn(session: SharedPocketKit.Session) {
         DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
             // Braze SDK docs say this needs to be called from the main thread.
             // https://www.braze.com/docs/developer_guide/platform_integration_guides/ios/analytics/setting_user_ids/#assigning-a-user-id
-            self?.braze.changeUser(userId: session.userIdentifier)
+            braze.changeUser(userId: session.userIdentifier)
             // Was this build deployed through the App Store or through TestFlight?
             var isTestFlight = false
             if let receiptURL = Bundle.main.appStoreReceiptURL {
@@ -68,7 +79,10 @@ extension PocketBraze: BrazeProtocol {
             }
             // Could expand to include "development"
             let deployment = isTestFlight ? "testflight" : "app_store"
-            self?.braze.user.setCustomAttribute(key: "ios_deployment", value: deployment)
+            braze.user.setCustomAttribute(key: "ios_deployment", value: deployment)
+
+            // Request refresh of feature flags when user is initially signed in
+            braze.featureFlags.requestRefresh()
         }
 
         let center = UNUserNotificationCenter.current()

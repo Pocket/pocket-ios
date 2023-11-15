@@ -36,13 +36,15 @@ class FeatureFlagService: NSObject, FeatureFlagServiceProtocol {
     private let tracker: Tracker
     private let userDefaults: UserDefaults
     private let resultsController: NSFetchedResultsController<FeatureFlag>
+    private let braze: BrazeProtocol
     private var featureFlags: [CurrentFeatureFlags: InMemoryFeatureFlag] = [:]
 
-    init(source: Source, tracker: Tracker, userDefaults: UserDefaults) {
+    init(source: Source, tracker: Tracker, userDefaults: UserDefaults, braze: BrazeProtocol) {
         self.source = source
         self.tracker = tracker
         self.userDefaults = userDefaults
         self.resultsController = source.makeFeatureFlagsController()
+        self.braze = braze
 
         super.init()
 
@@ -56,12 +58,20 @@ class FeatureFlagService: NSObject, FeatureFlagServiceProtocol {
 
     /// Determine if a user is assigned to a test and a variant.
     func isAssigned(flag: CurrentFeatureFlags, variant: String?) -> Bool {
-        guard let cachedFlag = featureFlags[flag] else {
-            return false
+        func isAssignedViaUnleash(flag: CurrentFeatureFlags, variant: String?) -> Bool {
+            guard let cachedFlag = featureFlags[flag] else {
+                return false
+            }
+
+            let flagVariant = cachedFlag.variant ?? "control"
+            return cachedFlag.assigned && flagVariant == variant
         }
 
-        let flagVariant = cachedFlag.variant ?? "control"
-        return cachedFlag.assigned && flagVariant == variant
+        func isEnabledViaBraze(flag: CurrentFeatureFlags) -> Bool {
+            return braze.isFeatureFlagEnabled(id: flag.rawValue)
+        }
+
+        return isAssignedViaUnleash(flag: flag, variant: variant) || isEnabledViaBraze(flag: flag)
     }
 
     func getPayload(flag: CurrentFeatureFlags) -> String? {
@@ -117,6 +127,7 @@ public enum CurrentFeatureFlags: String, CaseIterable {
     case disableReader = "perm.ios.disable_reader"
     case nativeCollections = "perm.ios.native_collections"
     case disableOnlineListen = "perm.ios.listen.disableOnline"
+    case premiumSearchScopesExperiment = "EXPERIMENT_POCKET_PREMIUM_SEARCH_SCOPES"
 
     /// Description to use in a debug menu
     var description: String {
@@ -135,6 +146,8 @@ public enum CurrentFeatureFlags: String, CaseIterable {
             return "Enable native collections instead of opening collections in web view"
         case .disableOnlineListen:
             return "Disable online listen support, and fall back to offline TTS"
+        case .premiumSearchScopesExperiment:
+            return "Enable the search scopes experiment (for Premium users)"
         }
     }
 }
