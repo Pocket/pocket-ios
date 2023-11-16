@@ -194,6 +194,16 @@
 "reader.activity.unfavorite" = "Unfavorite";
 "reader.activity.moveToSaves" = "Move to Saves";
 
+// Reader Settings
+"reader.settings.title" = "Display settings";
+"reader.settings.fontLabel"  = "Font";
+"reader.settings.fontSizeLabel" = "Font size";
+"reader.settings.lineHeightLabel" = "Line Height";
+"reader.settings.marginsLabel" = "Margins";
+"reader.settings.alignmentLabel" = "Alignment";
+"reader.settings.resetToDefaultsLabel" = "Reset to defaults";
+"reader.settings.premiumUpsellLabel" = "Unlock more options";
+
 //Recommendation
 "recommendation.save" = "Save";
 "recommendation.saved" = "Saved";
@@ -242,10 +252,6 @@
 "Tags" = "Tags";
 "Share" = "Share";
 "carousel.listen" = "Listen";
-
-"Display Settings" = "Display settings";
-"Font" = "Font";
-"Font Size" = "Font size";
 
 "Copy link" = "Copy link";
 "Copy link with selection" = "Copy link with selection";

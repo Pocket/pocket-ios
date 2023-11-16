@@ -50,12 +50,6 @@ public enum Localization {
   public static let couldNotSuccessfullyHandleTheServerRedirect = Localization.tr("Localizable", "Could not successfully handle the server redirect.", fallback: "Could not successfully handle the server redirect.")
   /// Delete
   public static let delete = Localization.tr("Localizable", "Delete", fallback: "Delete")
-  /// Display settings
-  public static let displaySettings = Localization.tr("Localizable", "Display Settings", fallback: "Display settings")
-  /// Font
-  public static let font = Localization.tr("Localizable", "Font", fallback: "Font")
-  /// Font size
-  public static let fontSize = Localization.tr("Localizable", "Font Size", fallback: "Font size")
   /// Home
   public static let home = Localization.tr("Localizable", "Home", fallback: "Home")
   /// Hooray!
@@ -381,6 +375,24 @@ public enum Localization {
       public static let save = Localization.tr("Localizable", "reader.activity.save", fallback: "Save")
       /// Unfavorite
       public static let unfavorite = Localization.tr("Localizable", "reader.activity.unfavorite", fallback: "Unfavorite")
+    }
+    public enum Settings {
+      /// Alignment
+      public static let alignmentLabel = Localization.tr("Localizable", "reader.settings.alignmentLabel", fallback: "Alignment")
+      /// Font
+      public static let fontLabel = Localization.tr("Localizable", "reader.settings.fontLabel", fallback: "Font")
+      /// Font size
+      public static let fontSizeLabel = Localization.tr("Localizable", "reader.settings.fontSizeLabel", fallback: "Font size")
+      /// Line Height
+      public static let lineHeightLabel = Localization.tr("Localizable", "reader.settings.lineHeightLabel", fallback: "Line Height")
+      /// Margins
+      public static let marginsLabel = Localization.tr("Localizable", "reader.settings.marginsLabel", fallback: "Margins")
+      /// Unlock more options
+      public static let premiumUpsellLabel = Localization.tr("Localizable", "reader.settings.premiumUpsellLabel", fallback: "Unlock more options")
+      /// Reset to defaults
+      public static let resetToDefaultsLabel = Localization.tr("Localizable", "reader.settings.resetToDefaultsLabel", fallback: "Reset to defaults")
+      /// Display settings
+      public static let title = Localization.tr("Localizable", "reader.settings.title", fallback: "Display settings")
     }
   }
   public enum Recommendation {
