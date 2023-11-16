@@ -149,7 +149,7 @@ class DefaultSearchViewModel: ObservableObject {
         savesOnlineSearch = OnlineSearch(source: source, scope: .saves)
         archiveOnlineSearch = OnlineSearch(source: source, scope: .archive)
         allOnlineSearch = OnlineSearch(source: source, scope: .all)
-        premiumExperimentSearch = PremiumExperimentSearch(source: source, scope: .all)
+        premiumExperimentSearch = PremiumExperimentSearch(source: source)
 
         searchState = defaultState
         itemsController.delegate = self
@@ -234,7 +234,7 @@ class DefaultSearchViewModel: ObservableObject {
         savesOnlineSearch = OnlineSearch(source: source, scope: .saves)
         archiveOnlineSearch = OnlineSearch(source: source, scope: .archive)
         allOnlineSearch = OnlineSearch(source: source, scope: .all)
-        premiumExperimentSearch = PremiumExperimentSearch(source: source, scope: .all)
+        premiumExperimentSearch = PremiumExperimentSearch(source: source)
     }
 
     /// Resets the search objects if it does not have a cache before each search
@@ -254,8 +254,8 @@ class DefaultSearchViewModel: ObservableObject {
             allOnlineSearch = OnlineSearch(source: source, scope: .all)
         }
 
-        if !premiumExperimentSearch.hasCache(with: term) {
-            premiumExperimentSearch = PremiumExperimentSearch(source: source, scope: .all)
+        if !premiumExperimentSearch.hasCache(with: term, scope: selectedScope) {
+            premiumExperimentSearch = PremiumExperimentSearch(source: source)
         }
     }
 
@@ -278,7 +278,7 @@ class DefaultSearchViewModel: ObservableObject {
             allOnlineSearch.search(with: term, and: true)
         case .premiumExperimentTitle, .premiumExperimentTags, .premiumExperimentContent:
             guard !premiumExperimentSearch.hasFinishedResults else { return }
-            premiumExperimentSearch.search(with: term, shouldLoadMoreResults: true)
+            premiumExperimentSearch.search(with: term, scope: selectedScope, shouldLoadMoreResults: true)
             return // TODO: Update for premium search experiment
         }
     }
@@ -311,8 +311,8 @@ class DefaultSearchViewModel: ObservableObject {
             allOnlineSearch.search(with: term)
             listenForResults(with: term, onlineSearch: allOnlineSearch, scope: .all)
         case .premiumExperimentTitle, .premiumExperimentTags, .premiumExperimentContent:
-            premiumExperimentSearch.search(with: term)
-            listenForResults(with: term, premiumExperimentSearch: premiumExperimentSearch, scope: .all)
+            premiumExperimentSearch.search(with: term, scope: selectedScope)
+            listenForResults(with: term, premiumExperimentSearch: premiumExperimentSearch, scope: selectedScope)
         }
     }
 

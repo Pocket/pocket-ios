@@ -10,42 +10,51 @@ class PremiumExperimentSearch {
     private let source: Source
     private let searchService: SearchService
     private var subscriptions: [AnyCancellable] = []
-    private var cache: [String: [PocketItem]] = [:]
-    private let scope: SearchScope
+    private var cache: [SearchScope: [String: [PocketItem]]] = [:]
 
     var pageNumberLoaded: Int = 0
 
     @Published var results: Result<[PocketItem], Error>?
 
-    init(source: Source, scope: SearchScope) {
+    init(source: Source) {
         self.source = source
         self.searchService = source.makeSearchService()
-        self.scope = scope
     }
 
-    func hasCache(with term: String) -> Bool {
-        cache[term] != nil
+    func hasCache(with term: String, scope: SearchScope) -> Bool {
+        guard let cache = cache[scope] else { return false }
+        return cache[term] != nil
     }
 
-    func search(with term: String, shouldLoadMoreResults: Bool = false) {
-        guard !hasCache(with: term) || shouldLoadMoreResults else {
+    func search(with term: String, scope: SearchScope, shouldLoadMoreResults: Bool = false) {
+        guard SearchScope.premiumExperimentScopes.contains(scope) else {
+            results = .success([])
+            return
+        }
+
+        guard !hasCache(with: term, scope: scope) || shouldLoadMoreResults else {
             Log.debug("Load cache for search")
-            results = .success(cache[term] ?? [])
+            if let scopeCache = cache[scope] {
+                results = .success(scopeCache[term] ?? [])
+            } else {
+                results = .success([])
+            }
             return
         }
         clear()
         searchService.results.dropFirst().sink { [weak self] items in
             guard let self, let items else { return }
             let searchItems = items.compactMap { PocketItem(item: $0) }
-            self.pageNumberLoaded += 1
-            guard let currentItems = self.cache[term] else {
-                self.cache[term] = searchItems
-                self.results = .success(searchItems)
+            pageNumberLoaded += 1
+            guard var scopeCache = cache[scope], let currentItems = scopeCache[term] else {
+                cache[scope] = [term: searchItems]
+                results = .success(searchItems)
                 return
             }
 
-            self.cache[term] = currentItems + searchItems
-            self.results = .success(currentItems + searchItems)
+            scopeCache[term] = currentItems + searchItems
+            cache[scope] = scopeCache
+            results = .success(currentItems + searchItems)
         }.store(in: &subscriptions)
 
         Task {
