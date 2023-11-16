@@ -53,6 +53,7 @@ class DefaultSearchViewModel: ObservableObject {
     private var savesOnlineSearch: OnlineSearch
     private var archiveOnlineSearch: OnlineSearch
     private var allOnlineSearch: OnlineSearch
+    private var premiumExperimentSearch: PremiumExperimentSearch
     // separated from the subscriptions array as that one gets cleared between searches
     private var userStatusListener: AnyCancellable?
 
@@ -148,6 +149,7 @@ class DefaultSearchViewModel: ObservableObject {
         savesOnlineSearch = OnlineSearch(source: source, scope: .saves)
         archiveOnlineSearch = OnlineSearch(source: source, scope: .archive)
         allOnlineSearch = OnlineSearch(source: source, scope: .all)
+        premiumExperimentSearch = PremiumExperimentSearch(source: source, scope: .all)
 
         searchState = defaultState
         itemsController.delegate = self
@@ -232,6 +234,7 @@ class DefaultSearchViewModel: ObservableObject {
         savesOnlineSearch = OnlineSearch(source: source, scope: .saves)
         archiveOnlineSearch = OnlineSearch(source: source, scope: .archive)
         allOnlineSearch = OnlineSearch(source: source, scope: .all)
+        premiumExperimentSearch = PremiumExperimentSearch(source: source, scope: .all)
     }
 
     /// Resets the search objects if it does not have a cache before each search
@@ -249,6 +252,10 @@ class DefaultSearchViewModel: ObservableObject {
 
         if !allOnlineSearch.hasCache(with: term) {
             allOnlineSearch = OnlineSearch(source: source, scope: .all)
+        }
+
+        if !premiumExperimentSearch.hasCache(with: term) {
+            premiumExperimentSearch = PremiumExperimentSearch(source: source, scope: .all)
         }
     }
 
@@ -269,7 +276,9 @@ class DefaultSearchViewModel: ObservableObject {
         case .all:
             guard !allOnlineSearch.hasFinishedResults else { return }
             allOnlineSearch.search(with: term, and: true)
-        default:
+        case .premiumExperimentTitle, .premiumExperimentTags, .premiumExperimentContent:
+            guard !premiumExperimentSearch.hasFinishedResults else { return }
+            premiumExperimentSearch.search(with: term, shouldLoadMoreResults: true)
             return // TODO: Update for premium search experiment
         }
     }
@@ -301,8 +310,9 @@ class DefaultSearchViewModel: ObservableObject {
         case .all:
             allOnlineSearch.search(with: term)
             listenForResults(with: term, onlineSearch: allOnlineSearch, scope: .all)
-        default:
-            return // TODO: Update for premium search experiment
+        case .premiumExperimentTitle, .premiumExperimentTags, .premiumExperimentContent:
+            premiumExperimentSearch.search(with: term)
+            listenForResults(with: term, premiumExperimentSearch: premiumExperimentSearch, scope: .all)
         }
     }
 
@@ -364,6 +374,33 @@ class DefaultSearchViewModel: ObservableObject {
             .store(in: &subscriptions)
     }
 
+    /// Submit premium experiment search and update `searchState` with proper view
+    /// - Parameter term: the term the user enters in search bar
+
+    /// Submit premium experiment search and update `searchState` with proper view
+    /// - Parameters:
+    ///   - term: the term the user enters in search bar
+    ///   - premiumExperimentSearch: object for premium experiment search
+    ///   - scope: the scope that the user is in (i.e. title, tags, content)
+    private func listenForResults(with term: String, premiumExperimentSearch: PremiumExperimentSearch, scope: SearchScope) {
+        premiumExperimentSearch.$results
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] result in
+                guard let self, let result, self.selectedScope == scope else { return }
+                if case .success(let items) = result {
+                    self.searchState = items.isEmpty ? .emptyState(self.searchResultState()) : .searchResults(items)
+                    self.trackSearchResultsPage(pageNumber: premiumExperimentSearch.pageNumberLoaded, scope: scope)
+                } else if case .failure(let error) = result {
+                    guard case SearchServiceError.noInternet = error else {
+                        self.searchState = .emptyState(ErrorEmptyState(featureFlags: featureFlags, user: user))
+                        return
+                    }
+                    self.searchState = .emptyState(OfflineEmptyState(type: scope))
+                }
+            }
+            .store(in: &subscriptions)
+    }
+
     /// Updates recent searches after user submits a search up to 5 terms
     /// - Parameter searchTerm: the term the user enters in search bar
     /// - Returns: array of strings with the recent search terms
@@ -390,7 +427,7 @@ class DefaultSearchViewModel: ObservableObject {
             return NoResultsEmptyState()
         case .archive, .all:
             return isOffline ? OfflineEmptyState(type: selectedScope) : NoResultsEmptyState()
-        default:
+        case .premiumExperimentTitle, .premiumExperimentTags, .premiumExperimentContent:
             return isOffline ? OfflineEmptyState(type: selectedScope) : NoResultsEmptyState() // TODO: Update for premium search experiment
         }
     }
@@ -406,7 +443,7 @@ class DefaultSearchViewModel: ObservableObject {
             return isOffline ? OfflineEmptyState(type: .archive) : SearchEmptyState()
         case .all:
             return GetPremiumEmptyState()
-        default:
+        case .premiumExperimentTitle, .premiumExperimentTags, .premiumExperimentContent:
             return isOffline ? OfflineEmptyState(type: .archive) : SearchEmptyState() // TODO: Update for premium search experiment
         }
     }
