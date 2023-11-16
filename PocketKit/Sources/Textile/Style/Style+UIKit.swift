@@ -94,6 +94,8 @@ extension NSTextAlignment {
             self = .right
         case .center:
             self = .center
+        case .justified:
+            self = .justified
         }
     }
 }

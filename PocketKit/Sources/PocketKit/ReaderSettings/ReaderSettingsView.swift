@@ -19,16 +19,16 @@ struct ReaderSettingsView: View {
 
     var body: some View {
         Form {
-            Section(header: Text(Localization.displaySettings)) {
-                Picker(Localization.font, selection: settings.$fontFamily) {
+            Section(header: Text(Localization.Reader.Settings.title)) {
+                Picker(Localization.Reader.Settings.fontLabel, selection: settings.$fontFamily) {
                     ForEach(settings.fontSet, id: \.rawValue) { family in
                         Text(family.rawValue)
                             .tag(family)
-                    }.navigationBarTitleDisplayMode(.inline)
+                    }
+                    .navigationBarTitleDisplayMode(.inline)
                 }
-
                 Stepper(
-                    Localization.fontSize,
+                    Localization.Reader.Settings.fontSizeLabel,
                     value: settings.$fontSizeAdjustment,
                     in: settings.fontSizeAdjustmentRange,
                     step: settings.fontSizeAdjustmentStep
@@ -36,22 +36,29 @@ struct ReaderSettingsView: View {
                 .accessibilityIdentifier("reader-settings-font-size-stepper")
                 if settings.isPremium {
                     Stepper(
-                        "Line Height",
+                        Localization.Reader.Settings.lineHeightLabel,
                         value: settings.$lineHeightScaleFactorIndex,
                         in: settings.settingIndexRange,
                         step: settings.settingIndexStep
                     )
                     .accessibilityIdentifier("reader-settings-line-height-stepper")
                     Stepper(
-                        "Margins",
+                        Localization.Reader.Settings.marginsLabel,
                         value: settings.$marginsIndex,
                         in: settings.settingIndexRange,
                         step: settings.settingIndexStep
                     )
                     .accessibilityIdentifier("reader-settings-margins-stepper")
+                    Picker(Localization.Reader.Settings.alignmentLabel, selection: settings.$alignmentOption) {
+                        ForEach(ReaderSettings.AlignmentOption.allCases, id: \.rawValue) { alignment in
+                            Text(alignment.rawValue)
+                                .tag(alignment)
+                        }
+                        .navigationBarTitleDisplayMode(.inline)
+                    }
                 } else {
                     SettingsRowButton(
-                        title: "Unlock more options",
+                        title: Localization.Reader.Settings.premiumUpsellLabel,
                         titleStyle: .settings.row.active,
                         leadingImageAsset: .premiumIcon,
                         leadingTintColor: Color(.ui.teal2)
@@ -83,7 +90,7 @@ struct ReaderSettingsView: View {
                         settings.reset()
                     } label: {
                         HStack {
-                            Text("Reset to defaults")
+                            Text(Localization.Reader.Settings.resetToDefaultsLabel)
                             Spacer()
                             if settings.isUsingDefaults {
                                 Image(systemName: "checkmark")

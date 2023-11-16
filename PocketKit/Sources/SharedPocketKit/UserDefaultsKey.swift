@@ -26,6 +26,7 @@ public extension UserDefaults {
         case readerFontSizeAdjustment = "readerFontSizeAdjustment"
         case readerScaleFactorIndex = "readerScaleFactorIndex"
         case readerMarginsIndex = "readerMarginsIndex"
+        case readerTextAlignment = "readerTextAlignment"
         case readerFontFamily = "readerFontFamily"
         case dateLastOpened = "dateLastOpened"
         case dateLastBackgrounded = "dateLastBackgrounded"

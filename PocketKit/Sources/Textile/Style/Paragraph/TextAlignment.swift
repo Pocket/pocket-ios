@@ -8,9 +8,10 @@ public enum TextAlignment {
     case left
     case right
     case center
+    case justified
 
     public init(language: String?) {
-        let direction = Locale.characterDirection(forLanguage: language ?? "en")
+        let direction = Locale.Language(identifier: language ?? "en").characterDirection
 
         switch direction {
         case .rightToLeft:

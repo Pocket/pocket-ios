@@ -194,7 +194,7 @@ public struct Style {
             color: colorAsset,
             underlineStyle: underlineStyle,
             strike: strike,
-            paragraph: ParagraphStyle(alignment: alignment),
+            paragraph: paragraph.with(alignment: alignment),
             backgroundColor: backgroundColorAsset
         )
     }

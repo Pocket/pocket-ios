@@ -16,10 +16,16 @@ class ReaderSettings: StylerModifier, ObservableObject {
     @AppStorage var fontFamily: FontDescriptor.Family
     @AppStorage var lineHeightScaleFactorIndex: Int
     @AppStorage var marginsIndex: Int
+    @AppStorage var alignmentOption: AlignmentOption
     @AppStorage private var userStatus: Status
 
     @Published var isPresentingPremiumUpgrade = false
     @Published var isPresentingHooray = false
+
+    enum AlignmentOption: String, CaseIterable {
+        case natural = "Default"
+        case justified = "Justified"
+    }
 
     enum UserInterFaceSetting {
         case iPhonePortrait
@@ -43,8 +49,21 @@ class ReaderSettings: StylerModifier, ObservableObject {
         )
     }
 
+    var alignment: Textile.TextAlignment {
+        switch alignmentOption {
+        case .natural:
+            return TextAlignment(language: Locale.current.identifier)
+        case .justified:
+            return .justified
+        }
+    }
+
     var isUsingDefaults: Bool {
-        fontSizeAdjustment == 0 && fontFamily == .blanco && lineHeightScaleFactorIndex == 3 && marginsIndex == 3
+        fontSizeAdjustment == 0 &&
+        fontFamily == .blanco &&
+        lineHeightScaleFactorIndex == 3 &&
+        marginsIndex == 3 &&
+        alignmentOption == .natural
     }
 
     var isPremium: Bool {
@@ -97,6 +116,7 @@ class ReaderSettings: StylerModifier, ObservableObject {
         _lineHeightScaleFactorIndex = AppStorage(wrappedValue: 3, UserDefaults.Key.readerScaleFactorIndex, store: userDefaults)
         _marginsIndex = AppStorage(wrappedValue: 3, UserDefaults.Key.readerMarginsIndex, store: userDefaults)
         _userStatus = AppStorage(wrappedValue: .unknown, UserDefaults.Key.userStatus, store: userDefaults)
+        _alignmentOption = AppStorage(wrappedValue: .natural, UserDefaults.Key.readerTextAlignment, store: userDefaults)
         self.tracker = tracker
     }
 
@@ -105,6 +125,7 @@ class ReaderSettings: StylerModifier, ObservableObject {
         fontFamily = .blanco
         lineHeightScaleFactorIndex = 3
         marginsIndex = 3
+        alignmentOption = .natural
     }
 }
 

@@ -8,13 +8,14 @@ public protocol StylerModifier {
     var fontSizeAdjustment: Int { get }
     var lineHeightScaleFactor: Double { get }
     var fontFamily: FontDescriptor.Family { get }
-
+    var alignment: TextAlignment { get }
     var currentStyling: FontStyling { get }
 }
 
 public extension Style {
     func modified(by modifier: StylerModifier) -> Style {
         self.with(family: modifier.fontFamily)
+            .with(alignment: modifier.alignment)
             .adjustingSize(by: modifier.fontSizeAdjustment)
             .scalingLineHeight(by: modifier.lineHeightScaleFactor)
     }
