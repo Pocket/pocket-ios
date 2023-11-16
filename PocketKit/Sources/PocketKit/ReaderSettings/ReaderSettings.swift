@@ -121,6 +121,7 @@ class ReaderSettings: StylerModifier, ObservableObject {
     }
 
     func reset() {
+        guard !isUsingDefaults else { return }
         fontSizeAdjustment = 0
         fontFamily = .blanco
         lineHeightScaleFactorIndex = 3
