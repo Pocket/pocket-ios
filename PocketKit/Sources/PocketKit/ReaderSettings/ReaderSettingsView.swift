@@ -51,7 +51,7 @@ struct ReaderSettingsView: View {
                     .accessibilityIdentifier("reader-settings-margins-stepper")
                     Picker(Localization.Reader.Settings.alignmentLabel, selection: settings.$alignmentOption) {
                         ForEach(ReaderSettings.AlignmentOption.allCases, id: \.rawValue) { alignment in
-                            Text(alignment.rawValue)
+                            Text(alignment.name)
                                 .tag(alignment)
                         }
                         .navigationBarTitleDisplayMode(.inline)

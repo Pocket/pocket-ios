@@ -4,6 +4,7 @@
 
 import Analytics
 import Combine
+import Localization
 import Textile
 import SwiftUI
 import SharedPocketKit
@@ -23,8 +24,17 @@ class ReaderSettings: StylerModifier, ObservableObject {
     @Published var isPresentingHooray = false
 
     enum AlignmentOption: String, CaseIterable {
-        case natural = "Default"
-        case justified = "Justified"
+        case natural
+        case justified
+
+        var name: String {
+            switch self {
+            case .natural:
+                Localization.Reader.Settings.alignmentNatural
+            case .justified:
+                Localization.Reader.Settings.alignmentJustified
+            }
+        }
     }
 
     enum UserInterFaceSetting {

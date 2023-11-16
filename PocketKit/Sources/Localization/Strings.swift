@@ -377,8 +377,12 @@ public enum Localization {
       public static let unfavorite = Localization.tr("Localizable", "reader.activity.unfavorite", fallback: "Unfavorite")
     }
     public enum Settings {
+      /// Justified
+      public static let alignmentJustified = Localization.tr("Localizable", "reader.settings.alignmentJustified", fallback: "Justified")
       /// Alignment
       public static let alignmentLabel = Localization.tr("Localizable", "reader.settings.alignmentLabel", fallback: "Alignment")
+      /// Default
+      public static let alignmentNatural = Localization.tr("Localizable", "reader.settings.alignmentNatural", fallback: "Default")
       /// Font
       public static let fontLabel = Localization.tr("Localizable", "reader.settings.fontLabel", fallback: "Font")
       /// Font size
