@@ -138,6 +138,81 @@ class PocketSearchServiceTests: XCTestCase {
     }
 }
 
+// MARK: - Premium Search Experiment
+extension PocketSearchServiceTests {
+    func test_search_forTitle_fetchesSearchSavedItemsQueryWithCorrectFilter() async throws {
+        apollo.setupSearchListResponse()
+        let service = subject()
+        let searchExpectation = expectation(description: "searchExpectation")
+
+        service.results.dropFirst().first().receive(on: DispatchQueue.main).sink { _ in
+            searchExpectation.fulfill()
+        }.store(in: &cancellables)
+
+        try await service.search(for: "search-term", scope: .premiumExperimentTitle)
+
+        wait(for: [searchExpectation], timeout: 10)
+
+        let call: MockApolloClient.FetchCall<SearchSavedItemsQuery>? = self.apollo.fetchCall(at: 0)
+        XCTAssertEqual(call?.query.term, "search-term")
+        XCTAssertEqual(call?.query.filter.onlyTitleAndURL, true)
+    }
+
+    func test_search_forTag_withNoPrefix_fetchesSearchSavedItemsQueryWithCorrectTerm() async throws {
+        apollo.setupSearchListResponse()
+        let service = subject()
+        let searchExpectation = expectation(description: "searchExpectation")
+
+        service.results.dropFirst().first().receive(on: DispatchQueue.main).sink { _ in
+            searchExpectation.fulfill()
+        }.store(in: &cancellables)
+
+        try await service.search(for: "search term", scope: .premiumExperimentTags)
+
+        wait(for: [searchExpectation], timeout: 10)
+
+        let call: MockApolloClient.FetchCall<SearchSavedItemsQuery>? = self.apollo.fetchCall(at: 0)
+        XCTAssertEqual(call?.query.term, "tag:\"search term\"")
+        XCTAssertEqual(call?.query.filter.status, .init(.none))
+    }
+
+    func test_search_forTag_withPrefix_fetchesSearchSavedItemsQueryWithCorrectTerm() async throws {
+        apollo.setupSearchListResponse()
+        let service = subject()
+        let searchExpectation = expectation(description: "searchExpectation")
+
+        service.results.dropFirst().first().receive(on: DispatchQueue.main).sink { _ in
+            searchExpectation.fulfill()
+        }.store(in: &cancellables)
+
+        try await service.search(for: "#search", scope: .premiumExperimentTags)
+
+        wait(for: [searchExpectation], timeout: 10)
+
+        let call: MockApolloClient.FetchCall<SearchSavedItemsQuery>? = self.apollo.fetchCall(at: 0)
+        XCTAssertEqual(call?.query.term, "#search")
+        XCTAssertEqual(call?.query.filter.status, .init(.none))
+    }
+
+    func test_search_forContent_fetchesSearchSavedItemsQueryWithTerm() async throws {
+        apollo.setupSearchListResponse()
+        let service = subject()
+        let searchExpectation = expectation(description: "searchExpectation")
+
+        service.results.dropFirst().first().receive(on: DispatchQueue.main).sink { _ in
+            searchExpectation.fulfill()
+        }.store(in: &cancellables)
+
+        try await service.search(for: "search-term", scope: .premiumExperimentContent)
+
+        wait(for: [searchExpectation], timeout: 10)
+
+        let call: MockApolloClient.FetchCall<SearchSavedItemsQuery>? = self.apollo.fetchCall(at: 0)
+        XCTAssertEqual(call?.query.term, "search-term")
+        XCTAssertEqual(call?.query.filter.status, .init(.none))
+    }
+}
+
 extension MockApolloClient {
     func setupSearchListResponse(fixtureName: String = "search-list") {
         stubFetch(toReturnFixture: Fixture.load(name: fixtureName), asResultType: SearchSavedItemsQuery.self)
