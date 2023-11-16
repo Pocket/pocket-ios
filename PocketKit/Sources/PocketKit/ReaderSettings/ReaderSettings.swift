@@ -134,6 +134,7 @@ extension ReaderSettings {
     @MainActor
     func makePremiumUpgradeViewModel() -> PremiumUpgradeViewModel {
         PremiumUpgradeViewModel(
+            // TODO: change this when refactor DI
             store: Services.shared.subscriptionStore,
             tracker: tracker,
             source: .premiumFonts,
