@@ -93,7 +93,7 @@ public class PocketSearchService: SearchService {
 
         let filter = getSearchFilter(with: scope)
         let sortOrder = getSortOrder()
-        let query = SearchSavedItemsQuery(term: term, pagination: .init(pagination), filter: .some(filter), sort: .some(sortOrder))
+        let query = SearchSavedItemsQuery(term: getTerm(term, for: scope), pagination: .init(pagination), filter: .some(filter), sort: .some(sortOrder))
         let result = try await apollo.fetch(query: query)
         result.data?.user?.searchSavedItems?.edges.forEach { edge in
             var searchSavedItem = SearchSavedItem(remoteItem: edge.node.savedItem.fragments.savedItemParts)
@@ -117,12 +117,33 @@ public class PocketSearchService: SearchService {
             return SearchFilterInput(status: .init(.archived))
         case .all:
             return SearchFilterInput()
-        default:
-            return SearchFilterInput() // TODO: Update for premium search experiment
+        case .premiumExperimentTitle:
+            return SearchFilterInput(onlyTitleAndURL: true)
+        case .premiumExperimentTags:
+            return SearchFilterInput()
+        case .premiumExperimentContent:
+            return SearchFilterInput()
         }
     }
 
     private func getSortOrder() -> SearchSortInput {
         return SearchSortInput(sortBy: .init(.createdAt), sortOrder: .init(.desc))
+    }
+
+    func getTerm(_ term: String, for scope: SearchScope) -> String {
+        switch scope {
+        case .all, .saves, .archive, .premiumExperimentTitle, .premiumExperimentContent: return term
+        // For now, assume that tags uses the search bar text as a single tag term.
+        // Support for multiple tags may come later.
+        case .premiumExperimentTags:
+            // Searching by tag uses custom operators:
+            // https://support.mozilla.org/en-US/kb/searching-for-tags-with-pocket-premium
+            // So, if the user has already prefixed their search term appropriately,
+            // then the term doesn't have to be generated
+            if term.hasPrefix("tag:") || term.hasPrefix("#") {
+                return term
+            }
+            return "tag:\"\(term)\""
+        }
     }
 }

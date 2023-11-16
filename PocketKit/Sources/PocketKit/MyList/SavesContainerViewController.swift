@@ -218,16 +218,21 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate, UISea
     }
 
     func updateSearchScope() {
-        let scope: SearchScope = isFromSaves ? .saves : .archive
-        searchViewModel.updateScope(with: scope)
+        guard let searchController = navigationItem.searchController else { return }
+        let searchBar = searchController.searchBar
 
         if isFromSaves {
-            navigationItem.searchController?.searchBar.selectedScopeButtonIndex = 0
+            searchBar.selectedScopeButtonIndex = 0
         } else {
-            navigationItem.searchController?.searchBar.selectedScopeButtonIndex = 1
+            searchBar.selectedScopeButtonIndex = 1
         }
-        navigationItem.searchController?.isActive = true
-        navigationItem.searchController?.searchBar.becomeFirstResponder()
+        searchController.isActive = true
+        searchController.searchBar.becomeFirstResponder()
+
+        guard let selectedScope = searchBar.scopeButtonTitles?[safe: searchBar.selectedScopeButtonIndex],
+              let scope = SearchScope(rawValue: selectedScope)
+        else { return }
+        searchViewModel.updateScope(with: scope)
     }
 
     func willPresentSearchController(_ searchController: UISearchController) {

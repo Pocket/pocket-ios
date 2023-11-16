@@ -8,7 +8,7 @@ public enum SearchScope: String, CaseIterable, Codable {
     case all = "All items"
     // Premium Experiment
     case premiumExperimentTitle = "Title"
-    case premiumExperimentTags = "Tags"
+    case premiumExperimentTags = "Tag"
     case premiumExperimentContent = "Content"
 
     public static var defaultScopes: [SearchScope] {
