@@ -20,6 +20,7 @@ class SavedItemViewModelTests: XCTestCase {
     private var networkPathMonitor: MockNetworkPathMonitor!
     private var userDefaults: UserDefaults!
     private var notificationCenter: NotificationCenter!
+    private var featureFlagService: MockFeatureFlagService!
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -34,6 +35,7 @@ class SavedItemViewModelTests: XCTestCase {
         subscriptionStore = MockSubscriptionStore()
         userDefaults = .standard
         notificationCenter = .default
+        featureFlagService = MockFeatureFlagService()
     }
 
     override func tearDownWithError() throws {
@@ -51,7 +53,8 @@ class SavedItemViewModelTests: XCTestCase {
         pasteboard: UIPasteboard? = nil,
         user: User? = nil,
         networkPathMonitor: NetworkPathMonitor? = nil,
-        notificationCenter: NotificationCenter? = nil
+        notificationCenter: NotificationCenter? = nil,
+        featureFlagService: FeatureFlagServiceProtocol? = nil
     ) -> SavedItemViewModel {
         SavedItemViewModel(
             item: item,
@@ -62,7 +65,8 @@ class SavedItemViewModelTests: XCTestCase {
             store: subscriptionStore ?? self.subscriptionStore,
             networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor,
             userDefaults: userDefaults ?? self.userDefaults,
-            notificationCenter: notificationCenter ?? self.notificationCenter
+            notificationCenter: notificationCenter ?? self.notificationCenter,
+            featureFlagService: featureFlagService ?? self.featureFlagService
         )
     }
 
