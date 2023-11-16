@@ -387,8 +387,8 @@ public enum Localization {
       public static let fontLabel = Localization.tr("Localizable", "reader.settings.fontLabel", fallback: "Font")
       /// Font size
       public static let fontSizeLabel = Localization.tr("Localizable", "reader.settings.fontSizeLabel", fallback: "Font size")
-      /// Line Height
-      public static let lineHeightLabel = Localization.tr("Localizable", "reader.settings.lineHeightLabel", fallback: "Line Height")
+      /// Line height
+      public static let lineHeightLabel = Localization.tr("Localizable", "reader.settings.lineHeightLabel", fallback: "Line height")
       /// Margins
       public static let marginsLabel = Localization.tr("Localizable", "reader.settings.marginsLabel", fallback: "Margins")
       /// Unlock more options

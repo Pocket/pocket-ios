@@ -28,11 +28,11 @@ public extension Style {
 
     struct Header {
         public let sansSerif = Graphik()
-        public let serif = TextStyles(with: .blanco)
+        public let serif = GenericTextStyles(with: .blanco)
         public let display = Display()
 
-        public func headerStyles(with family: FontDescriptor.Family) -> TextStyles {
-            TextStyles(with: family)
+        public func headerStyles(with family: FontDescriptor.Family) -> GenericTextStyles {
+            GenericTextStyles(with: family)
         }
 
         public struct Graphik {
@@ -55,7 +55,7 @@ public extension Style {
             public let w8 = Style(family: .graphik, size: .p4, weight: .medium)
         }
 
-        public struct TextStyles {
+        public struct GenericTextStyles {
             public let title: Style
             public let h1: Style
             public let h2: Style
