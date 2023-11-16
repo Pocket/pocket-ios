@@ -18,6 +18,12 @@ public extension Events.Search {
             return "archive"
         case .all:
             return "all_items"
+        case .premiumExperimentTitle:
+            return "title"
+        case .premiumExperimentTags:
+            return "tags"
+        case .premiumExperimentContent:
+            return "content"
         }
     }
 

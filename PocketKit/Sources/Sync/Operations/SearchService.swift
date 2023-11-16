@@ -117,6 +117,8 @@ public class PocketSearchService: SearchService {
             return SearchFilterInput(status: .init(.archived))
         case .all:
             return SearchFilterInput()
+        default:
+            return SearchFilterInput() // TODO: Update for premium search experiment
         }
     }
 

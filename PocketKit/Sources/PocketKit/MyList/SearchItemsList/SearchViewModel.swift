@@ -68,6 +68,7 @@ class DefaultSearchViewModel: ObservableObject {
         return user.status == .premium
     }
 
+    private(set) var scopeTitles: [String] = SearchScope.defaultScopes.map { $0.rawValue }
     var selectedScope: SearchScope = .saves
 
     @Published var showBanner: Bool = false
@@ -112,10 +113,6 @@ class DefaultSearchViewModel: ObservableObject {
             return .recentSearches(recentSearches)
         }
         return .emptyState(emptyStateViewModel)
-    }
-
-    var scopeTitles: [String] {
-        SearchScope.allCases.map { $0.rawValue }
     }
 
     private var recentSearches: [String] {
@@ -171,6 +168,15 @@ class DefaultSearchViewModel: ObservableObject {
                 }
                 self?.searchState = self?.defaultState
             }
+    }
+
+    /// Updates the scope titles based on whether the user is enrolled in the premium search scopes experiment.
+    func updateScopeTitles() {
+        if featureFlags.isAssigned(flag: .premiumSearchScopesExperiment, variant: nil) {
+            scopeTitles = SearchScope.premiumExperimentScopes.map { $0.rawValue }
+        } else {
+            scopeTitles = SearchScope.defaultScopes.map { $0.rawValue }
+        }
     }
 
     /// Updates the scope user is in and presents an empty state or submits a search
@@ -263,6 +269,8 @@ class DefaultSearchViewModel: ObservableObject {
         case .all:
             guard !allOnlineSearch.hasFinishedResults else { return }
             allOnlineSearch.search(with: term, and: true)
+        default:
+            return // TODO: Update for premium search experiment
         }
     }
 
@@ -293,6 +301,8 @@ class DefaultSearchViewModel: ObservableObject {
         case .all:
             allOnlineSearch.search(with: term)
             listenForResults(with: term, onlineSearch: allOnlineSearch, scope: .all)
+        default:
+            return // TODO: Update for premium search experiment
         }
     }
 
@@ -380,6 +390,8 @@ class DefaultSearchViewModel: ObservableObject {
             return NoResultsEmptyState()
         case .archive, .all:
             return isOffline ? OfflineEmptyState(type: selectedScope) : NoResultsEmptyState()
+        default:
+            return isOffline ? OfflineEmptyState(type: selectedScope) : NoResultsEmptyState() // TODO: Update for premium search experiment
         }
     }
 
@@ -394,6 +406,8 @@ class DefaultSearchViewModel: ObservableObject {
             return isOffline ? OfflineEmptyState(type: .archive) : SearchEmptyState()
         case .all:
             return GetPremiumEmptyState()
+        default:
+            return isOffline ? OfflineEmptyState(type: .archive) : SearchEmptyState() // TODO: Update for premium search experiment
         }
     }
 

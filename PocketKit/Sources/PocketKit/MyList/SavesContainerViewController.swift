@@ -51,7 +51,7 @@ protocol SelectableViewController: UIViewController {
     func didBecomeSelected(by parent: SavesContainerViewController)
 }
 
-class SavesContainerViewController: UIViewController, UISearchBarDelegate {
+class SavesContainerViewController: UIViewController, UISearchBarDelegate, UISearchControllerDelegate {
     var selectedIndex: Int {
         didSet {
             resetTitleView()
@@ -165,11 +165,11 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
         let searchViewController = UIHostingController(rootView: SearchView(viewModel: searchViewModel))
         searchViewController.view.backgroundColor = UIColor(.ui.white1)
         navigationItem.searchController = UISearchController(searchResultsController: searchViewController)
+        navigationItem.searchController?.delegate = self
         navigationItem.searchController?.searchBar.delegate = self
         navigationItem.searchController?.searchBar.autocapitalizationType = .none
         navigationItem.searchController?.view.accessibilityIdentifier = "search-view"
         navigationItem.searchController?.searchBar.accessibilityHint = "Search"
-        navigationItem.searchController?.searchBar.scopeButtonTitles = searchViewModel.scopeTitles
         navigationItem.searchController?.scopeBarActivation = .onSearchActivation
         navigationItem.preferredSearchBarPlacement = .stacked
         navigationItem.searchController?.showsSearchResultsController = true
@@ -228,6 +228,12 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
         }
         navigationItem.searchController?.isActive = true
         navigationItem.searchController?.searchBar.becomeFirstResponder()
+    }
+
+    func willPresentSearchController(_ searchController: UISearchController) {
+        // Update the scope titles, since the user may have been (un)enrolled in the premium search experiment.
+        searchViewModel.updateScopeTitles()
+        navigationItem.searchController?.searchBar.scopeButtonTitles = searchViewModel.scopeTitles
     }
 }
 
