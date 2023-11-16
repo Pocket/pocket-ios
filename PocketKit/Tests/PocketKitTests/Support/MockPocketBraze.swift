@@ -6,7 +6,39 @@ import Foundation
 import UserNotifications
 @testable import PocketKit
 
-class MockPocketBraze: MockPushNotificationProtocol, BrazeSDKProtocol { }
+class MockPocketBraze: MockPushNotificationProtocol, BrazeSDKProtocol {
+
+}
+
+extension MockPocketBraze {
+    private static let isFeatureFlagEnabled = "isFeatureFlagEnabled"
+    typealias IsFeatureFlagEnabledImpl = (String) -> Bool
+    struct IsFeatureFlagEnabledCall {
+        let id: String
+    }
+
+    func stubIsFeatureFlagEnabled(impl: @escaping IsFeatureFlagEnabledImpl) {
+        implementations[Self.isFeatureFlagEnabled] = impl
+    }
+
+    func isFeatureFlagEnabled(id: String) -> Bool {
+        guard let impl = implementations[Self.isFeatureFlagEnabled] as? IsFeatureFlagEnabledImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.isFeatureFlagEnabled] = (calls[Self.isFeatureFlagEnabled] ?? []) + [IsFeatureFlagEnabledCall(id: id)]
+
+        return impl(id)
+    }
+
+    func isFeatureFlagCall(at index: Int) -> IsFeatureFlagEnabledCall? {
+        guard let calls = calls[Self.isFeatureFlagEnabled] else {
+            return nil
+        }
+
+        return calls[safe: index] as? IsFeatureFlagEnabledCall
+    }
+}
 
 // MARK: Did Receive User Notification
 extension MockPocketBraze {

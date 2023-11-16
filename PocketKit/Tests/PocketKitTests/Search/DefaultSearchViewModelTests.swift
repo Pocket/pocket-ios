@@ -12,7 +12,7 @@ import Apollo
 @testable import Sync
 @testable import PocketKit
 
-class SearchViewModelTests: XCTestCase {
+class DefaultSearchViewModelTests: XCTestCase {
     private var networkPathMonitor: MockNetworkPathMonitor!
     private var userDefaults: UserDefaults!
     private var source: MockSource!
@@ -67,14 +67,14 @@ class SearchViewModelTests: XCTestCase {
         source: Source? = nil,
         tracker: Tracker? = nil,
         notificationCenter: NotificationCenter? = nil
-    ) async -> SearchViewModel {
+    ) async -> DefaultSearchViewModel {
         let premiumViewModel = PremiumUpgradeViewModel(
             store: subscriptionStore,
             tracker: MockTracker(),
             source: .search,
             networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor
         )
-        return SearchViewModel(
+        return DefaultSearchViewModel(
             networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor,
             user: user,
             userDefaults: userDefaults ?? self.userDefaults,

@@ -133,6 +133,12 @@ struct ClientAPIRequest {
             return self.operationName == "SearchSavedItems" && contains("filter\":{\"status\":\"ARCHIVED\"}")
         case .all:
             return self.operationName == "SearchSavedItems" && contains("filter\":{}")
+        case .premiumExperimentTitle:
+            return self.operationName == "SearchSavedItems" && contains("filter\":{\"onlyTitleAndURL\"}")
+        case .premiumExperimentTags:
+            return self.operationName == "SearchSavedItems" && contains("filter\":{}") && contains("tag:")
+        case .premiumExperimentContent:
+            return self.operationName == "SearchSavedItems" && contains("filter\":{}")
         }
     }
 
