@@ -11,24 +11,27 @@ import Down
 class ListenConfiguration: NSObject {
     let title: String
     private let savedItems: [SavedItem]?
+    private let featureFlagService: FeatureFlagServiceProtocol
 
-    init(title: String, savedItems: [SavedItem]?) {
+    init(title: String, savedItems: [SavedItem]?, featureFlagService: FeatureFlagServiceProtocol) {
         self.title = title
         self.savedItems = savedItems
+        self.featureFlagService = featureFlagService
     }
 
     func toAppConfiguration() -> PKTListenAppConfiguration {
-        let source = ListenSource(savedItems: savedItems)
+        let source = ListenSource(savedItems: savedItems, featureFlagService: featureFlagService)
         let config = PKTListenAppConfiguration(source: source)
-        config.offlineTTSDelegate = source
+        config.playerDelegate = source
         return config
     }
 }
 
-class ListenSource: PKTListenDataSource<PKTListDiffable>, PKTListenOfflineTTSDelegate {
-    private var savedItems: [SavedItem]?
+private class ListenSource: PKTListenDataSource<PKTListDiffable>, PKTListenPlayerDelegate {
+    private var savedItems: [SavedItem]!
+    private var featureFlagService: FeatureFlagServiceProtocol!
 
-    convenience init(savedItems: [SavedItem]?) {
+    convenience init(savedItems: [SavedItem]?, featureFlagService: FeatureFlagServiceProtocol) {
         let config = PKTListenAppKusariConfiguration()
 
         let listenItems: [PKTKusari<PKTListenItem>] = savedItems?
@@ -53,7 +56,10 @@ class ListenSource: PKTListenDataSource<PKTListDiffable>, PKTListenOfflineTTSDel
         }
 
         self.savedItems = savedItems
+        self.featureFlagService = featureFlagService
     }
+
+    // MARK: PKTListenPlayerDelegate
 
     func textUnits(for kusari: PKTKusari<PKTListenItem>) -> [PKTTextUnit] {
         // When returning the text components for offline TTS,
@@ -94,6 +100,12 @@ class ListenSource: PKTListenDataSource<PKTListDiffable>, PKTListenOfflineTTSDel
     func isKusariAvailable(forOfflineTTS kusari: PKTKusari<PKTListenItem>) -> Bool {
         return textUnits(for: kusari).isEmpty == false
     }
+
+    func isOnlinePlayerAvailable() -> Bool {
+        return featureFlagService.isAssigned(flag: .disableOnlineListen) == false
+    }
+
+    // MARK: Private
 
     private func string(from component: BulletedListComponent) -> String? {
         // Return a newline-separated string of all rows, with bullets added.

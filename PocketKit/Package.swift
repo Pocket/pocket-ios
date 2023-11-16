@@ -39,7 +39,7 @@ let package = Package(
         .binaryTarget(
             name: "PKTListen",
             url: "https://github.com/Pocket/pocket-ios/releases/download/release%2Fv8.2.0-offline-tts/PKTListen.xcframework.zip",
-            checksum: "b1f1a7a6c342123cef4d725b9b9c43247afe6576f67963f993959084dbaa8864"
+            checksum: "47a318af51ff3196d142ede33fe1da33f93b6d6c459b5834e0968bb4b02406e9"
         ),
         .target(
             name: "ItemWidgetsKit",

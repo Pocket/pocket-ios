@@ -116,6 +116,7 @@ public enum CurrentFeatureFlags: String, CaseIterable {
     case reportIssue = "perm.ios.report_issue"
     case disableReader = "perm.ios.disable_reader"
     case nativeCollections = "perm.ios.native_collections"
+    case disableOnlineListen = "perm.ios.listen.disableOnline"
 
     /// Description to use in a debug menu
     var description: String {
@@ -132,6 +133,8 @@ public enum CurrentFeatureFlags: String, CaseIterable {
             return "Disable the Reader to force use of a Web view for viewing content"
         case .nativeCollections:
             return "Enable native collections instead of opening collections in web view"
+        case .disableOnlineListen:
+            return "Disable online listen support, and fall back to offline TTS"
         }
     }
 }

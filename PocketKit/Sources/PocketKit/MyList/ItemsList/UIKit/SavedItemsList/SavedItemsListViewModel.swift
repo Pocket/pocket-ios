@@ -249,7 +249,8 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             store: store,
             networkPathMonitor: networkPathMonitor,
             userDefaults: userDefaults,
-            notificationCenter: notificationCenter
+            notificationCenter: notificationCenter,
+            featureFlagService: featureFlags
         )
 
         if savedItem.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
@@ -614,7 +615,8 @@ extension SavedItemsListViewModel {
             store: store,
             networkPathMonitor: networkPathMonitor,
             userDefaults: userDefaults,
-            notificationCenter: notificationCenter
+            notificationCenter: notificationCenter,
+            featureFlagService: featureFlags
         )
 
         if let slug = readable.collection?.slug ?? readable.slug, featureFlags.isAssigned(flag: .nativeCollections) {
@@ -679,7 +681,14 @@ extension SavedItemsListViewModel {
                 }
             }
 
-            delegate?.viewModel(self, didRequestListen: ListenConfiguration(title: title, savedItems: self.itemsController.fetchedObjects))
+            delegate?.viewModel(
+                self,
+                didRequestListen: ListenConfiguration(
+                    title: title,
+                    savedItems: self.itemsController.fetchedObjects,
+                    featureFlagService: featureFlags
+                )
+            )
 
             selectedFilters.remove(.listen)
         case .all:

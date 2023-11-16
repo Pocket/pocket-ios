@@ -72,6 +72,7 @@ class SavedItemViewModel: ReadableViewModel {
     private var store: SubscriptionStore
     private var networkPathMonitor: NetworkPathMonitor
     private let notificationCenter: NotificationCenter
+    private let featureFlagService: FeatureFlagServiceProtocol
 
     init(
         item: SavedItem,
@@ -83,7 +84,8 @@ class SavedItemViewModel: ReadableViewModel {
         networkPathMonitor: NetworkPathMonitor,
         userDefaults: UserDefaults,
         notificationCenter: NotificationCenter,
-        readableSource: ReadableSource = .app
+        readableSource: ReadableSource = .app,
+        featureFlagService: FeatureFlagServiceProtocol
     ) {
         self.item = item
         self.source = source
@@ -95,6 +97,7 @@ class SavedItemViewModel: ReadableViewModel {
         self.userDefaults = userDefaults
         self.notificationCenter = notificationCenter
         self.readableSource = readableSource
+        self.featureFlagService = featureFlagService
 
         item.publisher(for: \.isFavorite).sink { [weak self] _ in
             self?.buildActions()
@@ -220,7 +223,8 @@ class SavedItemViewModel: ReadableViewModel {
             self,
             didRequestListen: ListenConfiguration(
                 title: item.isArchived ? Localization.archive : "Saves",
-                savedItems: [item]
+                savedItems: [item],
+                featureFlagService: featureFlagService
             )
         )
     }

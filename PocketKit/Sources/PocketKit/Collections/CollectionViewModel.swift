@@ -325,7 +325,8 @@ extension CollectionViewModel {
                     store: store,
                     networkPathMonitor: networkPathMonitor,
                     userDefaults: userDefaults,
-                    notificationCenter: notificationCenter
+                    notificationCenter: notificationCenter,
+                    featureFlagService: featureFlags
                 )
             )
         // Check if item has an associated recommendation

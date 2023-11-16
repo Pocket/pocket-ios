@@ -422,7 +422,8 @@ extension HomeViewModel {
                 networkPathMonitor: networkPathMonitor,
                 userDefaults: userDefaults,
                 notificationCenter: notificationCenter,
-                readableSource: readableSource
+                readableSource: readableSource,
+                featureFlagService: featureFlags
             )
 
             if let item = savedItem.item, item.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
