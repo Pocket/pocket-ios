@@ -276,7 +276,7 @@ class DefaultSearchViewModel: ObservableObject {
         case .all:
             guard !allOnlineSearch.hasFinishedResults else { return }
             allOnlineSearch.search(with: term, and: true)
-        case .premiumExperimentTitle, .premiumExperimentTags, .premiumExperimentContent:
+        case .premiumSearchExperimentTitle, .premiumSearchExperimentTag, .premiumSearchExperimentContent:
             guard !premiumExperimentSearch.hasFinishedResults else { return }
             premiumExperimentSearch.search(with: term, scope: selectedScope, shouldLoadMoreResults: true)
             return // TODO: Update for premium search experiment
@@ -310,7 +310,7 @@ class DefaultSearchViewModel: ObservableObject {
         case .all:
             allOnlineSearch.search(with: term)
             listenForResults(with: term, onlineSearch: allOnlineSearch, scope: .all)
-        case .premiumExperimentTitle, .premiumExperimentTags, .premiumExperimentContent:
+        case .premiumSearchExperimentTitle, .premiumSearchExperimentTag, .premiumSearchExperimentContent:
             premiumExperimentSearch.search(with: term, scope: selectedScope)
             listenForResults(with: term, premiumExperimentSearch: premiumExperimentSearch, scope: selectedScope)
         }
@@ -427,7 +427,7 @@ class DefaultSearchViewModel: ObservableObject {
             return NoResultsEmptyState()
         case .archive, .all:
             return isOffline ? OfflineEmptyState(type: selectedScope) : NoResultsEmptyState()
-        case .premiumExperimentTitle, .premiumExperimentTags, .premiumExperimentContent:
+        case .premiumSearchExperimentTitle, .premiumSearchExperimentTag, .premiumSearchExperimentContent:
             return isOffline ? OfflineEmptyState(type: selectedScope) : NoResultsEmptyState() // TODO: Update for premium search experiment
         }
     }
@@ -443,7 +443,7 @@ class DefaultSearchViewModel: ObservableObject {
             return isOffline ? OfflineEmptyState(type: .archive) : SearchEmptyState()
         case .all:
             return GetPremiumEmptyState()
-        case .premiumExperimentTitle, .premiumExperimentTags, .premiumExperimentContent:
+        case .premiumSearchExperimentTitle, .premiumSearchExperimentTag, .premiumSearchExperimentContent:
             return isOffline ? OfflineEmptyState(type: .archive) : SearchEmptyState() // TODO: Update for premium search experiment
         }
     }
@@ -476,7 +476,7 @@ class DefaultSearchViewModel: ObservableObject {
                 return
             case .archive, .all:
                 updateSearchResults(with: currentSearchTerm)
-            case .premiumExperimentTitle, .premiumExperimentTags, .premiumExperimentContent:
+            case .premiumSearchExperimentTitle, .premiumSearchExperimentTag, .premiumSearchExperimentContent:
                 updateSearchResults(with: currentSearchTerm)
             }
         }

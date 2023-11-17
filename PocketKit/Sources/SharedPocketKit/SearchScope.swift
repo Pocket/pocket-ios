@@ -7,15 +7,15 @@ public enum SearchScope: String, CaseIterable, Codable {
     case archive = "Archive"
     case all = "All items"
     // Premium Experiment
-    case premiumExperimentTitle = "Title"
-    case premiumExperimentTags = "Tag"
-    case premiumExperimentContent = "Content"
+    case premiumSearchExperimentTitle = "Title"
+    case premiumSearchExperimentTag = "Tag"
+    case premiumSearchExperimentContent = "Content"
 
     public static var defaultScopes: [SearchScope] {
         return [.saves, .archive, .all]
     }
 
     public static var premiumExperimentScopes: [SearchScope] {
-        return [.premiumExperimentTitle, .premiumExperimentTags, .premiumExperimentContent]
+        return [.premiumSearchExperimentTitle, .premiumSearchExperimentTag, .premiumSearchExperimentContent]
     }
 }

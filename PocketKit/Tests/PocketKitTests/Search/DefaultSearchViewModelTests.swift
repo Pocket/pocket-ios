@@ -767,7 +767,7 @@ extension DefaultSearchViewModelTests {
         featureFlags.stubIsAssigned { _, _ in
             return true
         }
-        
+
         let errorExpectation = expectation(description: "should throw an error")
         searchService.stubSearch { _, _ in
             errorExpectation.fulfill()
@@ -788,7 +788,7 @@ extension DefaultSearchViewModelTests {
             errorExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        viewModel.updateScope(with: .premiumExperimentTitle, searchTerm: "saved")
+        viewModel.updateScope(with: .premiumSearchExperimentTitle, searchTerm: "saved")
 
         await fulfillment(of: [errorExpectation], timeout: 10)
     }
@@ -797,7 +797,7 @@ extension DefaultSearchViewModelTests {
         featureFlags.stubIsAssigned { _, _ in
             return true
         }
-        
+
         let errorExpectation = expectation(description: "should throw an error")
         searchService.stubSearch { _, _ in
             errorExpectation.fulfill()
@@ -818,7 +818,7 @@ extension DefaultSearchViewModelTests {
             errorExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        viewModel.updateScope(with: .premiumExperimentTags, searchTerm: "saved")
+        viewModel.updateScope(with: .premiumSearchExperimentTag, searchTerm: "saved")
 
         await fulfillment(of: [errorExpectation], timeout: 10)
     }
@@ -844,7 +844,7 @@ extension DefaultSearchViewModelTests {
             errorExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        viewModel.updateScope(with: .premiumExperimentContent, searchTerm: "saved")
+        viewModel.updateScope(with: .premiumSearchExperimentContent, searchTerm: "saved")
 
         await fulfillment(of: [errorExpectation], timeout: 10)
     }
@@ -886,7 +886,7 @@ extension DefaultSearchViewModelTests {
 
         // Since the logic is the same for title, tag, and content (aside from which query filter is used),
         // we will assume that this single scope test will act the same for the others.
-        viewModel.updateScope(with: .premiumExperimentTitle, searchTerm: "search-term")
+        viewModel.updateScope(with: .premiumSearchExperimentTitle, searchTerm: "search-term")
 
         networkPathMonitor.update(status: .satisfied)
 
@@ -899,7 +899,7 @@ extension DefaultSearchViewModelTests {
         featureFlags.stubIsAssigned { _, _ in
             return true
         }
-        
+
         await setupOnlineSearch(with: "search-term")
 
         let viewModel = await subject(user: MockUser(status: .premium))
@@ -912,7 +912,7 @@ extension DefaultSearchViewModelTests {
         }
         XCTAssertTrue(emptyStateViewModel is OfflineEmptyState)
 
-        viewModel.updateScope(with: .premiumExperimentTitle, searchTerm: "search-term")
+        viewModel.updateScope(with: .premiumSearchExperimentTitle, searchTerm: "search-term")
         guard case .emptyState(let emptyStateViewModel) = viewModel.searchState else {
             XCTFail("Should not have failed")
             return
@@ -926,7 +926,7 @@ extension DefaultSearchViewModelTests {
         featureFlags.stubIsAssigned { _, _ in
             return true
         }
-        
+
         let term = "search-term"
         await setupOnlineSearch(with: term)
 
@@ -943,7 +943,7 @@ extension DefaultSearchViewModelTests {
             searchExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        viewModel.updateScope(with: .premiumExperimentTitle, searchTerm: term)
+        viewModel.updateScope(with: .premiumSearchExperimentTitle, searchTerm: term)
 
         await setupOnlineSearch(with: term)
 
