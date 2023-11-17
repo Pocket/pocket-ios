@@ -68,10 +68,10 @@ struct ReaderSettingsView: View {
                                 Spacer()
                             }
                             .padding(.trailing)
-                            VStack(alignment: .leading) {
+                            VStack(alignment: .leading, spacing: 6) {
                                 Text(Localization.Reader.Settings.premiumUpsellLabel)
                                     .style(.settings.row.active)
-                                Text("Premium fonts, text formatting and more.")
+                                Text(Localization.Reader.Settings.premiumUpselSubtitle)
                                     .style(.settings.row.subtitle)
                             }
                         }
