@@ -760,3 +760,193 @@ class DefaultSearchViewModelTests: XCTestCase {
         searchService._results = [item]
     }
 }
+
+// MARK: - Premium search experiment
+extension DefaultSearchViewModelTests {
+    func test_updateSearchResults_forPremiumUser_inExperiment_searchingByTitle_withOnlineSavesError_showsOfflineView() async throws {
+        featureFlags.stubIsAssigned { _, _ in
+            return true
+        }
+        
+        let errorExpectation = expectation(description: "should throw an error")
+        searchService.stubSearch { _, _ in
+            errorExpectation.fulfill()
+            throw TestError.anError
+        }
+
+        networkPathMonitor.update(status: .unsatisfied)
+        await setupOnlineSearch(with: "search-term")
+
+        let viewModel = await subject(user: MockUser(status: .premium))
+
+        viewModel.$searchState.dropFirst().receive(on: DispatchQueue.main).sink { state in
+            guard case .emptyState(let emptyStateViewModel) = state else {
+                XCTFail("Should not have failed")
+                return
+            }
+            XCTAssertTrue(emptyStateViewModel is OfflineEmptyState)
+            errorExpectation.fulfill()
+        }.store(in: &subscriptions)
+
+        viewModel.updateScope(with: .premiumExperimentTitle, searchTerm: "saved")
+
+        await fulfillment(of: [errorExpectation], timeout: 10)
+    }
+
+    func test_updateSearchResults_forPremiumUser_inExperiment_searchingByTag_withOnlineSavesError_showsOfflineView() async throws {
+        featureFlags.stubIsAssigned { _, _ in
+            return true
+        }
+        
+        let errorExpectation = expectation(description: "should throw an error")
+        searchService.stubSearch { _, _ in
+            errorExpectation.fulfill()
+            throw TestError.anError
+        }
+
+        networkPathMonitor.update(status: .unsatisfied)
+        await setupOnlineSearch(with: "search-term")
+
+        let viewModel = await subject(user: MockUser(status: .premium))
+
+        viewModel.$searchState.dropFirst().receive(on: DispatchQueue.main).sink { state in
+            guard case .emptyState(let emptyStateViewModel) = state else {
+                XCTFail("Should not have failed")
+                return
+            }
+            XCTAssertTrue(emptyStateViewModel is OfflineEmptyState)
+            errorExpectation.fulfill()
+        }.store(in: &subscriptions)
+
+        viewModel.updateScope(with: .premiumExperimentTags, searchTerm: "saved")
+
+        await fulfillment(of: [errorExpectation], timeout: 10)
+    }
+
+    func test_updateSearchResults_forPremiumUser_inExperiment_searchingByContent_withOnlineSavesError_showsOfflineView() async throws {
+        let errorExpectation = expectation(description: "should throw an error")
+        searchService.stubSearch { _, _ in
+            errorExpectation.fulfill()
+            throw TestError.anError
+        }
+
+        networkPathMonitor.update(status: .unsatisfied)
+        await setupOnlineSearch(with: "search-term")
+
+        let viewModel = await subject(user: MockUser(status: .premium))
+
+        viewModel.$searchState.dropFirst().receive(on: DispatchQueue.main).sink { state in
+            guard case .emptyState(let emptyStateViewModel) = state else {
+                XCTFail("Should not have failed")
+                return
+            }
+            XCTAssertTrue(emptyStateViewModel is OfflineEmptyState)
+            errorExpectation.fulfill()
+        }.store(in: &subscriptions)
+
+        viewModel.updateScope(with: .premiumExperimentContent, searchTerm: "saved")
+
+        await fulfillment(of: [errorExpectation], timeout: 10)
+    }
+
+    func test_search_inExperiment_whenDeviceRegainsInternetConnection_submitsSearch() async {
+        featureFlags.stubIsAssigned { _, _ in
+            return true
+        }
+
+        await setupOnlineSearch(with: "search-term")
+
+        let user = MockUser()
+        let viewModel = await subject(user: user)
+        networkPathMonitor.update(status: .unsatisfied)
+        let offlineExpectation = expectation(description: "handle offline scenario")
+        let onlineExpectation = expectation(description: "handle online scenario")
+
+        var count = 0
+        viewModel.$searchState.dropFirst().receive(on: DispatchQueue.main).sink { state in
+            count += 1
+            if count == 1 {
+                guard case .emptyState(let emptyStateViewModel) = state else {
+                    XCTFail("Should not have failed")
+                    return
+                }
+
+                XCTAssertTrue(emptyStateViewModel is OfflineEmptyState)
+                offlineExpectation.fulfill()
+            } else if count == 3 {
+                guard case .searchResults(let results) = state else {
+                    XCTFail("Should not have failed")
+                    return
+                }
+
+                XCTAssertEqual(results.compactMap { $0.title.string }, ["search-term"])
+                onlineExpectation.fulfill()
+            }
+        }.store(in: &subscriptions)
+
+        // Since the logic is the same for title, tag, and content (aside from which query filter is used),
+        // we will assume that this single scope test will act the same for the others.
+        viewModel.updateScope(with: .premiumExperimentTitle, searchTerm: "search-term")
+
+        networkPathMonitor.update(status: .satisfied)
+
+        await setupOnlineSearch(with: "search-term")
+
+        await fulfillment(of: [offlineExpectation, onlineExpectation], timeout: 30, enforceOrder: true)
+    }
+
+    func test_selectingScope_inExperiment_whenOffline_showsOfflineEmptyState() async {
+        featureFlags.stubIsAssigned { _, _ in
+            return true
+        }
+        
+        await setupOnlineSearch(with: "search-term")
+
+        let viewModel = await subject(user: MockUser(status: .premium))
+        networkPathMonitor.update(status: .unsatisfied)
+
+        viewModel.updateScope(with: .all, searchTerm: "search-term")
+        guard case .emptyState(let emptyStateViewModel) = viewModel.searchState else {
+            XCTFail("Should not have failed")
+            return
+        }
+        XCTAssertTrue(emptyStateViewModel is OfflineEmptyState)
+
+        viewModel.updateScope(with: .premiumExperimentTitle, searchTerm: "search-term")
+        guard case .emptyState(let emptyStateViewModel) = viewModel.searchState else {
+            XCTFail("Should not have failed")
+            return
+        }
+        XCTAssertTrue(emptyStateViewModel is OfflineEmptyState)
+    }
+
+    // Since the logic is the same for title, tag, and content (aside from which query filter is used),
+    // we will assume that this single scope test will act the same for the others.
+    func test_updateScope_forPremiumUser_inExperiment_withTitleAndTerm_showsResults() async {
+        featureFlags.stubIsAssigned { _, _ in
+            return true
+        }
+        
+        let term = "search-term"
+        await setupOnlineSearch(with: term)
+
+        let viewModel = await subject(user: MockUser(status: .premium))
+        let searchExpectation = expectation(description: "search Expectation")
+
+        viewModel.$searchState.dropFirst(2).receive(on: DispatchQueue.main).sink { state in
+            guard case .searchResults(let results) = state else {
+                XCTFail("Should not have failed")
+                return
+            }
+
+            XCTAssertEqual(results.compactMap { $0.title.string }, ["search-term"])
+            searchExpectation.fulfill()
+        }.store(in: &subscriptions)
+
+        viewModel.updateScope(with: .premiumExperimentTitle, searchTerm: term)
+
+        await setupOnlineSearch(with: term)
+
+        await fulfillment(of: [searchExpectation], timeout: 10)
+    }
+}

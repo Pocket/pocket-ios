@@ -470,8 +470,15 @@ class DefaultSearchViewModel: ObservableObject {
         let currentPathStatus = path?.status
 
         if lastPathStatus == .unsatisfied, currentPathStatus == .satisfied {
-            guard let currentSearchTerm, !currentSearchTerm.isEmpty, selectedScope == .archive || selectedScope == .all else { return }
-            updateSearchResults(with: currentSearchTerm)
+            guard let currentSearchTerm, !currentSearchTerm.isEmpty else { return }
+            switch selectedScope {
+            case .saves:
+                return
+            case .archive, .all:
+                updateSearchResults(with: currentSearchTerm)
+            case .premiumExperimentTitle, .premiumExperimentTags, .premiumExperimentContent:
+                updateSearchResults(with: currentSearchTerm)
+            }
         }
 
         lastPathStatus = currentPathStatus
