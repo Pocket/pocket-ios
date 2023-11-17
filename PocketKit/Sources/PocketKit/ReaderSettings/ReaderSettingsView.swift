@@ -71,7 +71,7 @@ struct ReaderSettingsView: View {
                             VStack(alignment: .leading, spacing: 6) {
                                 Text(Localization.Reader.Settings.premiumUpsellLabel)
                                     .style(.settings.row.active)
-                                Text(Localization.Reader.Settings.premiumUpselSubtitle)
+                                Text(Localization.Reader.Settings.premiumUpsellSubtitle)
                                     .style(.settings.row.subtitle)
                             }
                         }
