@@ -21,7 +21,7 @@ public extension Events.Search {
         case .premiumSearchExperimentTitle:
             return "title"
         case .premiumSearchExperimentTag:
-            return "tags"
+            return "tag"
         case .premiumSearchExperimentContent:
             return "content"
         }

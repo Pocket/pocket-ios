@@ -19,6 +19,8 @@ protocol BrazeSDKProtocol {
     func signedInUserDidBeginMigration()
 
     func isFeatureFlagEnabled(id: String) -> Bool
+
+    func logFeatureFlagImpression(id: String) -> Bool
 }
 
 /**
@@ -101,6 +103,28 @@ extension PocketBraze: BrazeProtocol {
 
     func loggedOut(session: SharedPocketKit.Session?) {
         // Waiting on braze support to understand logout
+    }
+
+    /// Logs a feature flag impression by Braze, selectively if the feature flag is being enabled by Braze
+    /// - Parameter id: The id of the feature flag
+    /// - Returns: True if the feature flag impression was logged by Braze, otherwise false
+    func logFeatureFlagImpression(id: String) -> Bool {
+        guard let flag = CurrentFeatureFlags(rawValue: id) else {
+            return false
+        }
+
+        let shouldLog = switch flag {
+        case .premiumSearchScopesExperiment:
+            true
+        // Make this exhaustive so that when new feature flags are added, we can specify whether Braze should log it
+        case .debugMenu, .disableOnlineListen, .disableReader, .nativeCollections, .profileSampling, .reportIssue, .traceSampling:
+            false
+        }
+
+        if shouldLog {
+            braze.featureFlags.logFeatureFlagImpression(id: id)
+        }
+        return shouldLog
     }
 
     // MARK: Push Notification Events

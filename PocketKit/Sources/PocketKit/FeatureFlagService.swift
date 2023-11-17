@@ -88,7 +88,12 @@ class FeatureFlagService: NSObject, FeatureFlagServiceProtocol {
             // No variant value so we can't do anything
             return
         }
-        tracker.track(event: Events.FeatureFlag.FeatureFlagFelt(name: flag.rawValue, variant: variant))
+
+        // First attempt to log the feature flag via Braze; when false, log via tracker
+        let brazeLogged = braze.logFeatureFlagImpression(id: flag.rawValue)
+        if brazeLogged == false {
+            tracker.track(event: Events.FeatureFlag.FeatureFlagFelt(name: flag.rawValue, variant: variant))
+        }
     }
 }
 

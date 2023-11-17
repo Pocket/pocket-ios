@@ -176,6 +176,7 @@ class DefaultSearchViewModel: ObservableObject {
     func updateScopeTitles() {
         if featureFlags.isAssigned(flag: .premiumSearchScopesExperiment, variant: nil) {
             scopeTitles = SearchScope.premiumExperimentScopes.map { $0.rawValue }
+            featureFlags.trackFeatureFlagFelt(flag: .premiumSearchScopesExperiment, variant: nil)
         } else {
             scopeTitles = SearchScope.defaultScopes.map { $0.rawValue }
         }

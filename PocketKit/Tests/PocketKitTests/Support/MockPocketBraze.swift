@@ -6,7 +6,9 @@ import Foundation
 import UserNotifications
 @testable import PocketKit
 
-class MockPocketBraze: MockPushNotificationProtocol, BrazeSDKProtocol { }
+class MockPocketBraze: MockPushNotificationProtocol, BrazeSDKProtocol {
+    func logFeatureFlagImpression(id: String) -> Bool { return false }
+}
 
 extension MockPocketBraze {
     private static let isFeatureFlagEnabled = "isFeatureFlagEnabled"
