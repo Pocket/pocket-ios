@@ -20,13 +20,7 @@ struct ReaderSettingsView: View {
     var body: some View {
         Form {
             Section(header: Text(Localization.Reader.Settings.title)) {
-                Picker(Localization.Reader.Settings.fontLabel, selection: settings.$fontFamily) {
-                    ForEach(settings.fontSet, id: \.rawValue) { family in
-                        Text(family.rawValue)
-                            .tag(family)
-                    }
-                    .navigationBarTitleDisplayMode(.inline)
-                }
+                CustomFontPicker(data: settings.fontSet, selection: settings.$fontFamily).navigationBarTitleDisplayMode(.inline)
                 Stepper(
                     Localization.Reader.Settings.fontSizeLabel,
                     value: settings.$fontSizeAdjustment,
@@ -100,6 +94,65 @@ struct ReaderSettingsView: View {
                     .foregroundColor(Color(.ui.black1))
                 }
             }
+        }
+    }
+}
+
+import UIKit
+
+struct CustomFontPicker: UIViewRepresentable {
+    var data: [FontDescriptor.Family]
+    @Binding var selection: FontDescriptor.Family
+
+    func makeUIView(context: Context) -> UIPickerView {
+        let picker = UIPickerView()
+        picker.dataSource = context.coordinator
+        picker.delegate = context.coordinator
+        return picker
+    }
+
+    func updateUIView(_ uiView: UIPickerView, context: Context) {
+        uiView.selectRow(data.firstIndex(of: selection) ?? 0, inComponent: 0, animated: true)
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+
+    class Coordinator: NSObject, UIPickerViewDataSource, UIPickerViewDelegate {
+        var parent: CustomFontPicker
+
+        init(_ pickerView: CustomFontPicker) {
+            self.parent = pickerView
+        }
+
+        func numberOfComponents(in pickerView: UIPickerView) -> Int {
+            1
+        }
+
+        func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+            parent.data.count
+        }
+
+        func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+            return parent.data[row].rawValue
+        }
+
+        func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+            parent.selection = parent.data[row]
+        }
+
+        func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
+            var label = UILabel()
+            if let v = view as? UILabel { label = v }
+
+            if let font = UIFont(name: parent.data[row].name(for: .regular), size: 25) {
+                label.font = font
+            }
+
+            label.text =  parent.data[row].rawValue
+            label.textAlignment = .center
+            return label
         }
     }
 }
