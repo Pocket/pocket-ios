@@ -393,6 +393,8 @@ public enum Localization {
       public static let marginsLabel = Localization.tr("Localizable", "reader.settings.marginsLabel", fallback: "Margins")
       /// Unlock more options
       public static let premiumUpsellLabel = Localization.tr("Localizable", "reader.settings.premiumUpsellLabel", fallback: "Unlock more options")
+      /// Premium fonts, text formatting and more.
+      public static let premiumUpselSubtitle = Localization.tr("Localizable", "reader.settings.premiumUpselSubtitle", fallback: "Premium fonts, text formatting and more.")
       /// Reset to defaults
       public static let resetToDefaultsLabel = Localization.tr("Localizable", "reader.settings.resetToDefaultsLabel", fallback: "Reset to defaults")
       /// Display settings

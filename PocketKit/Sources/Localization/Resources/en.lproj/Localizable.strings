@@ -203,6 +203,7 @@
 "reader.settings.alignmentLabel" = "Alignment";
 "reader.settings.resetToDefaultsLabel" = "Reset to defaults";
 "reader.settings.premiumUpsellLabel" = "Unlock more options";
+"reader.settings.premiumUpselSubtitle" = "Premium fonts, text formatting and more.";
 "reader.settings.alignmentNatural" = "Default";
 "reader.settings.alignmentJustified" = "Justified";
 

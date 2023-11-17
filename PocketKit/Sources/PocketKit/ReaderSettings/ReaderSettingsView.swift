@@ -57,13 +57,25 @@ struct ReaderSettingsView: View {
                         .navigationBarTitleDisplayMode(.inline)
                     }
                 } else {
-                    SettingsRowButton(
-                        title: Localization.Reader.Settings.premiumUpsellLabel,
-                        titleStyle: .settings.row.active,
-                        leadingImageAsset: .premiumIcon,
-                        leadingTintColor: Color(.ui.teal2)
-                    ) {
+                    Button {
                         settings.presentPremiumUpgrade()
+                    } label: {
+                        HStack(alignment: .top, spacing: 0) {
+                            VStack {
+                                Image(uiImage: UIImage(asset: .premiumIcon))
+                                    .renderingMode(.template)
+                                    .foregroundColor(Color(.ui.teal2))
+                                Spacer()
+                            }
+                            .padding(.trailing)
+                            VStack(alignment: .leading) {
+                                Text(Localization.Reader.Settings.premiumUpsellLabel)
+                                    .style(.settings.row.active)
+                                Text("Premium fonts, text formatting and more.")
+                                    .style(.settings.row.subtitle)
+                            }
+                        }
+                        .padding(.top)
                     }
                     .sheet(
                         isPresented: $settings.isPresentingPremiumUpgrade,
@@ -84,21 +96,19 @@ struct ReaderSettingsView: View {
             .sheet(isPresented: $settings.isPresentingHooray) {
                 PremiumUpgradeSuccessView()
             }
-            if settings.isPremium {
-                Section {
-                    Button {
-                        settings.reset()
-                    } label: {
-                        HStack {
-                            Text(Localization.Reader.Settings.resetToDefaultsLabel)
-                            Spacer()
-                            if settings.isUsingDefaults {
-                                Image(systemName: "checkmark")
-                            }
+            Section {
+                Button {
+                    settings.reset()
+                } label: {
+                    HStack {
+                        Text(Localization.Reader.Settings.resetToDefaultsLabel)
+                        Spacer()
+                        if settings.isUsingDefaults {
+                            Image(systemName: "checkmark")
                         }
                     }
-                    .foregroundColor(Color(.ui.black1))
                 }
+                .foregroundColor(Color(.ui.black1))
             }
         }
     }
