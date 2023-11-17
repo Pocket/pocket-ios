@@ -6,7 +6,9 @@ import Sync
 import Combine
 import SharedPocketKit
 
-class PremiumExperimentSearch {
+/// A type that can perform a premium online-only search by searching by tag, title, or content.
+/// Currently, this is used during a premium search experiment.
+class PremiumOnlineSearch {
     private let source: Source
     private let searchService: SearchService
     private var subscriptions: [AnyCancellable] = []
@@ -27,7 +29,7 @@ class PremiumExperimentSearch {
     }
 
     func search(with term: String, scope: SearchScope, shouldLoadMoreResults: Bool = false) {
-        guard SearchScope.premiumExperimentScopes.contains(scope) else {
+        guard SearchScope.premiumScopes.contains(scope) else {
             results = .success([])
             return
         }

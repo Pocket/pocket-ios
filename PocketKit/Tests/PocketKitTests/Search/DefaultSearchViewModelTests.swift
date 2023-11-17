@@ -788,7 +788,7 @@ extension DefaultSearchViewModelTests {
             errorExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        viewModel.updateScope(with: .premiumSearchExperimentTitle, searchTerm: "saved")
+        viewModel.updateScope(with: .premiumSearchByTitle, searchTerm: "saved")
 
         await fulfillment(of: [errorExpectation], timeout: 10)
     }
@@ -818,7 +818,7 @@ extension DefaultSearchViewModelTests {
             errorExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        viewModel.updateScope(with: .premiumSearchExperimentTag, searchTerm: "saved")
+        viewModel.updateScope(with: .premiumSearchByTag, searchTerm: "saved")
 
         await fulfillment(of: [errorExpectation], timeout: 10)
     }
@@ -844,7 +844,7 @@ extension DefaultSearchViewModelTests {
             errorExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        viewModel.updateScope(with: .premiumSearchExperimentContent, searchTerm: "saved")
+        viewModel.updateScope(with: .premiumSearchByContent, searchTerm: "saved")
 
         await fulfillment(of: [errorExpectation], timeout: 10)
     }
@@ -886,7 +886,7 @@ extension DefaultSearchViewModelTests {
 
         // Since the logic is the same for title, tag, and content (aside from which query filter is used),
         // we will assume that this single scope test will act the same for the others.
-        viewModel.updateScope(with: .premiumSearchExperimentTitle, searchTerm: "search-term")
+        viewModel.updateScope(with: .premiumSearchByTitle, searchTerm: "search-term")
 
         networkPathMonitor.update(status: .satisfied)
 
@@ -912,7 +912,7 @@ extension DefaultSearchViewModelTests {
         }
         XCTAssertTrue(emptyStateViewModel is OfflineEmptyState)
 
-        viewModel.updateScope(with: .premiumSearchExperimentTitle, searchTerm: "search-term")
+        viewModel.updateScope(with: .premiumSearchByTitle, searchTerm: "search-term")
         guard case .emptyState(let emptyStateViewModel) = viewModel.searchState else {
             XCTFail("Should not have failed")
             return
@@ -943,7 +943,7 @@ extension DefaultSearchViewModelTests {
             searchExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        viewModel.updateScope(with: .premiumSearchExperimentTitle, searchTerm: term)
+        viewModel.updateScope(with: .premiumSearchByTitle, searchTerm: term)
 
         await setupOnlineSearch(with: term)
 

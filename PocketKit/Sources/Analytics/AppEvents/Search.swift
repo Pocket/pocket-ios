@@ -18,11 +18,11 @@ public extension Events.Search {
             return "archive"
         case .all:
             return "all_items"
-        case .premiumSearchExperimentTitle:
+        case .premiumSearchByTitle:
             return "title"
-        case .premiumSearchExperimentTag:
+        case .premiumSearchByTag:
             return "tag"
-        case .premiumSearchExperimentContent:
+        case .premiumSearchByContent:
             return "content"
         }
     }

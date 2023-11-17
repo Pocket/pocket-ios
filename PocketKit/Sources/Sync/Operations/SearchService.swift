@@ -117,11 +117,11 @@ public class PocketSearchService: SearchService {
             return SearchFilterInput(status: .init(.archived))
         case .all:
             return SearchFilterInput()
-        case .premiumSearchExperimentTitle:
+        case .premiumSearchByTitle:
             return SearchFilterInput(onlyTitleAndURL: true)
-        case .premiumSearchExperimentTag:
+        case .premiumSearchByTag:
             return SearchFilterInput()
-        case .premiumSearchExperimentContent:
+        case .premiumSearchByContent:
             return SearchFilterInput()
         }
     }
@@ -132,10 +132,10 @@ public class PocketSearchService: SearchService {
 
     func getTerm(_ term: String, for scope: SearchScope) -> String {
         switch scope {
-        case .all, .saves, .archive, .premiumSearchExperimentTitle, .premiumSearchExperimentContent: return term
+        case .all, .saves, .archive, .premiumSearchByTitle, .premiumSearchByContent: return term
         // For now, assume that tags uses the search bar text as a single tag term.
         // Support for multiple tags may come later.
-        case .premiumSearchExperimentTag:
+        case .premiumSearchByTag:
             // Searching by tag uses custom operators:
             // https://support.mozilla.org/en-US/kb/searching-for-tags-with-pocket-premium
             // So, if the user has already prefixed their search term appropriately,

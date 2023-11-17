@@ -149,7 +149,7 @@ extension PocketSearchServiceTests {
             searchExpectation.fulfill()
         }.store(in: &cancellables)
 
-        try await service.search(for: "search-term", scope: .premiumSearchExperimentTitle)
+        try await service.search(for: "search-term", scope: .premiumSearchByTitle)
 
         wait(for: [searchExpectation], timeout: 10)
 
@@ -167,7 +167,7 @@ extension PocketSearchServiceTests {
             searchExpectation.fulfill()
         }.store(in: &cancellables)
 
-        try await service.search(for: "search term", scope: .premiumSearchExperimentTag)
+        try await service.search(for: "search term", scope: .premiumSearchByTag)
 
         wait(for: [searchExpectation], timeout: 10)
 
@@ -185,7 +185,7 @@ extension PocketSearchServiceTests {
             searchExpectation.fulfill()
         }.store(in: &cancellables)
 
-        try await service.search(for: "#search", scope: .premiumSearchExperimentTag)
+        try await service.search(for: "#search", scope: .premiumSearchByTag)
 
         wait(for: [searchExpectation], timeout: 10)
 
@@ -203,7 +203,7 @@ extension PocketSearchServiceTests {
             searchExpectation.fulfill()
         }.store(in: &cancellables)
 
-        try await service.search(for: "search-term", scope: .premiumSearchExperimentContent)
+        try await service.search(for: "search-term", scope: .premiumSearchByContent)
 
         wait(for: [searchExpectation], timeout: 10)
 

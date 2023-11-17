@@ -256,7 +256,7 @@ extension Response {
             fixtureName = "search-list-archive"
         case .all:
             fixtureName = "search-list-all"
-        case .premiumSearchExperimentTitle, .premiumSearchExperimentTag, .premiumSearchExperimentContent:
+        case .premiumSearchByTitle, .premiumSearchByTag, .premiumSearchByContent:
             fixtureName = "search-list-all"
         }
 
