@@ -5,7 +5,7 @@
       "isPremium": true,
       "savedItems": {
         "__typename": "[type-name-here]",
-        "totalCount": 1001,
+        "totalCount": 10001,
         "pageInfo": {
           "__typename": "[type-name-here]",
           "hasNextPage": true,
