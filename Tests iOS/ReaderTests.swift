@@ -149,7 +149,6 @@ class ReaderTests: XCTestCase {
         reportEvent!.getContentContext()!.assertHas(url: "https://getpocket.com/explore/item/article-2")
     }
 
-//  NOTE: Commented out for now, Daniel is unable to get these to fail locally, but they always fail in CI and on others computers.
     func test_tappingDisplaySettings_fontStepperIncreasesFont() {
         // Given
         launchApp_andOpenItem()
