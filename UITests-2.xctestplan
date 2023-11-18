@@ -70,7 +70,6 @@
       "skippedTests" : [
         "AddTagsItemTests\/test_addTagsToItemFromSaves_savesNewTags()",
         "AddTagsItemTests\/test_addTags_withPremiumUser_showsRecentTagsView()",
-        "ArchiveAnItemTests",
         "ArchiveFiltersTests",
         "ArchiveTests",
         "BannerViewTests",
