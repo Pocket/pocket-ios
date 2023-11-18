@@ -89,7 +89,6 @@
         "SavesTests",
         "SearchTests\/test_selectSearchItem_forPremiumUser_showsReaderView()",
         "SearchTests\/test_sharingAnItemFromSearch_forPremiumUser_presentsShareSheet()",
-        "SettingsTest",
         "SignOutTests"
       ],
       "target" : {

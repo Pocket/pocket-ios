@@ -91,9 +91,12 @@
         "SearchTests\/test_submitSearch_forPremiumUser_withSaves_showsResults()",
         "SearchTests\/test_switchingScopes_forPremiumUser_showsResultsWithCache()",
         "SearchTests\/test_unArchivingAnItemFromSearch_forPremiumUser_removesItem()",
+        "SettingsTest",
         "SettingsTest\/test_deleteAccount_free_showsError()",
+        "SettingsTest\/test_deleteAccount_free_succeeds()",
         "SettingsTest\/test_deleteAccount_premium_showsError()",
         "SettingsTest\/test_deleteAccount_premium_showsHelp()",
+        "SettingsTest\/test_deleteAccount_premium_succeeds()",
         "SettingsTest\/test_premiumStatus_success()",
         "ShareAnItemTests",
         "SignOutTests\/test_tappingSignOutCancelshowsAccountsMenu()"
