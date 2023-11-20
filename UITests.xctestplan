@@ -87,6 +87,7 @@
         "ReportARecommendationTests",
         "SaveToPocketTests",
         "SavesFiltersTests",
+        "SavesTests",
         "SavesTests\/test_savingAnItemFromShareExtension_addsItemToList()",
         "SearchTests",
         "SettingsTest",
