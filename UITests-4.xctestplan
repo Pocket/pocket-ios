@@ -32,6 +32,7 @@
         "ReportARecommendationTests",
         "SavesFiltersTests",
         "SavesTests",
+        "SearchTests\/test_sharingAnItemFromSearch_forPremiumUser_presentsShareSheet()",
         "SignOutTests"
       ],
       "target" : {

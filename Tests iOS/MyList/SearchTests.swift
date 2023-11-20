@@ -440,7 +440,7 @@ class SearchTests: XCTestCase {
         searchEvent2!.getUIContext()!.assertHas(componentDetail: "saves")
         searchEvent2!.getContentContext()!.assertHas(url: "http://localhost:8080/hello-2")
     }
-
+    // TODO: FLAKEY - To be investigated: share sheet does not always appear in ui tests.
     @MainActor
     func test_sharingAnItemFromSearch_forPremiumUser_presentsShareSheet() async {
         stubGraphQLEndpoint(isPremium: true)
