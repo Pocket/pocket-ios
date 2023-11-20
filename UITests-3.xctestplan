@@ -87,8 +87,11 @@
         "ReaderTests\/test_longPressingHyperlink_showsPreview_andMenu()",
         "ReaderTests\/test_tappingDisplaySettings_showsDisplaySettings()",
         "SavesTests",
+        "SearchTests",
         "SearchTests\/test_selectSearchItem_forPremiumUser_showsReaderView()",
         "SearchTests\/test_sharingAnItemFromSearch_forPremiumUser_presentsShareSheet()",
+        "SettingsTest",
+        "ShareAnItemTests",
         "SignOutTests"
       ],
       "target" : {
