@@ -201,7 +201,7 @@
       </CodeCoverageTargets>
       <TestPlans>
          <TestPlanReference
-            reference = "container:UITests.xctestplan">
+            reference = "container:UITests-1.xctestplan">
          </TestPlanReference>
          <TestPlanReference
             reference = "container:UITests-2.xctestplan">

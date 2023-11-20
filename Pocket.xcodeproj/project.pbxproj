@@ -236,7 +236,7 @@
 		6544202229B1B17C002B12F2 /* DeleteConfirmationViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteConfirmationViewElement.swift; sourceTree = "<group>"; };
 		6551C9D42900B27D00247C40 /* UnitTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = UnitTests.xctestplan; sourceTree = "<group>"; };
 		6551C9D52900B27D00247C40 /* UITests-2.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = "UITests-2.xctestplan"; sourceTree = "<group>"; };
-		6551C9D62900B27D00247C40 /* UITests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = UITests.xctestplan; sourceTree = "<group>"; };
+		6551C9D62900B27D00247C40 /* UITests-1.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = "UITests-1.xctestplan"; sourceTree = "<group>"; };
 		6551C9D72900B46000247C40 /* bitrise.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = bitrise.yml; sourceTree = "<group>"; };
 		655C274E28B67ED20040AEAB /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		656041ED29B18105007E7CD0 /* SettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTests.swift; sourceTree = "<group>"; };
@@ -391,7 +391,7 @@
 				16E881F129072663008B2E05 /* AllTests.xctestplan */,
 				D2A8AF0F29D3A0E60042BC97 /* UITestsFlaky.xctestplan */,
 				6551C9D42900B27D00247C40 /* UnitTests.xctestplan */,
-				6551C9D62900B27D00247C40 /* UITests.xctestplan */,
+				6551C9D62900B27D00247C40 /* UITests-1.xctestplan */,
 				6551C9D52900B27D00247C40 /* UITests-2.xctestplan */,
 				65EDF6B22901979800D737E0 /* UITests-3.xctestplan */,
 				AAC9F5AA2B0BDBF800FD614A /* UITests-4.xctestplan */,
