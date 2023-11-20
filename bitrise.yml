@@ -450,7 +450,7 @@ workflows:
                 #!/usr/bin/env bash
                 set -eo pipefail
 
-                xcrun xcresulttool merge "${BITRISE_UITESTS_1_XCRESULT_PATH}" "${BITRISE_UITESTS_2_XCRESULT_PATH}" "${BITRISE_UITESTS_3_XCRESULT_PATH}" "${BITRISE_UNIT_XCRESULT_PATH}"  --output-path "merged.xcresult"
+                xcrun xcresulttool merge "${BITRISE_UITESTS_1_XCRESULT_PATH}" "${BITRISE_UITESTS_2_XCRESULT_PATH}" "${BITRISE_UITESTS_3_XCRESULT_PATH}" "${BITRISE_UITESTS_4_XCRESULT_PATH}" "${BITRISE_UNIT_XCRESULT_PATH}"  --output-path "merged.xcresult"
                 envman add --key BITRISE_XCRESULT_PATH --value "$(pwd)/merged.xcresult"
 
       - custom-test-results-export@0:
@@ -476,9 +476,9 @@ workflows:
                 set -eo pipefail
 
                 # Switch to this when legacy is turned back on
-                # xcrun xcresulttool merge "${BITRISE_UITESTS_1_XCRESULT_PATH}" "${BITRISE_UITESTS_2_XCRESULT_PATH}" "${BITRISE_UITESTS_3_XCRESULT_PATH}" "${BITRISE_UITESTS_1_LEGACY_XCRESULT_PATH}" "${BITRISE_UITESTS_2_LEGACY_XCRESULT_PATH}" "${BITRISE_UITESTS_3_LEGACY_XCRESULT_PATH}" "${BITRISE_UNIT_XCRESULT_PATH}"  --output-path "merged.xcresult"
+                # xcrun xcresulttool merge "${BITRISE_UITESTS_1_XCRESULT_PATH}" "${BITRISE_UITESTS_2_XCRESULT_PATH}" "${BITRISE_UITESTS_3_XCRESULT_PATH}" "${BITRISE_UITESTS_4_XCRESULT_PATH}" "${BITRISE_UITESTS_1_LEGACY_XCRESULT_PATH}" "${BITRISE_UITESTS_2_LEGACY_XCRESULT_PATH}" "${BITRISE_UITESTS_3_LEGACY_XCRESULT_PATH}" "${BITRISE_UITESTS_4_LEGACY_XCRESULT_PATH}" "${BITRISE_UNIT_XCRESULT_PATH}"  --output-path "merged.xcresult"
 
-                xcrun xcresulttool merge "${BITRISE_UITESTS_1_XCRESULT_PATH}" "${BITRISE_UITESTS_2_XCRESULT_PATH}" "${BITRISE_UITESTS_3_XCRESULT_PATH}" "${BITRISE_UNIT_XCRESULT_PATH}"  --output-path "merged.xcresult"
+                xcrun xcresulttool merge "${BITRISE_UITESTS_1_XCRESULT_PATH}" "${BITRISE_UITESTS_2_XCRESULT_PATH}" "${BITRISE_UITESTS_3_XCRESULT_PATH}" "${BITRISE_UITESTS_4_XCRESULT_PATH}" "${BITRISE_UNIT_XCRESULT_PATH}"  --output-path "merged.xcresult"
 
                 envman add --key BITRISE_XCRESULT_PATH --value "$(pwd)/merged.xcresult"
       - custom-test-results-export@0:

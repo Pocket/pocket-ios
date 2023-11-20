@@ -219,6 +219,9 @@
          <TestPlanReference
             reference = "container:UITestsFlaky.xctestplan">
          </TestPlanReference>
+         <TestPlanReference
+            reference = "container:UITests-4.xctestplan">
+         </TestPlanReference>
       </TestPlans>
       <Testables>
          <TestableReference
