@@ -65,6 +65,7 @@ stages:
       - run-tests-ui-1: {}
       - run-tests-ui-2: {}
       - run-tests-ui-3: {}
+      - run-tests-ui-4: {}
 
   run-test-groups-flakey:
     workflows:
@@ -81,10 +82,12 @@ stages:
       - run-tests-ui-1: {}
       - run-tests-ui-2: {}
       - run-tests-ui-3: {}
+      - run-tests-ui-4: {}
       # Turning off until iOS 16 is legacy
       # - run-tests-ui-1-legacy: {}
       # - run-tests-ui-2-legacy: {}
       # - run-tests-ui-3-legacy: {}
+      # - run-tests-ui-4-legacy: {}
 
   deploy-test-results:
     should_always_run: true
@@ -341,6 +344,21 @@ workflows:
           inputs:
             - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UITESTS_3_XCRESULT_PATH'
 
+  run-tests-ui-4:
+    before_run:
+      - _pull_test_bundle
+      - _start_snowplow
+    steps:
+      - xcode-test-without-building:
+          timeout: 1200 #20 minutes
+          title: UI Test Suite 4
+          inputs:
+            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests-4_iphonesimulator17.0-arm64-x86_64.xctestrun'
+            - destination: platform=iOS Simulator,name=iPhone 15,OS=17.0.1
+      - deploy-to-bitrise-io@2.1.1:
+          inputs:
+            - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UITESTS_4_XCRESULT_PATH'
+
 
   run-tests-ui-1-legacy:
     before_run:
@@ -389,6 +407,22 @@ workflows:
       - deploy-to-bitrise-io@2.1.1:
           inputs:
             - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UITESTS_3_LEGACY_XCRESULT_PATH'
+
+  run-tests-ui-4-legacy:
+    before_run:
+      - _install_past_ios
+      - _pull_test_bundle
+      - _start_snowplow
+    steps:
+      - xcode-test-without-building:
+          timeout: 1200 #20 minutes
+          title: UI Test Suite 4 Legacy
+          inputs:
+            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests-4_iphonesimulator17.0-arm64-x86_64.xctestrun'
+            - destination: platform=iOS Simulator,name=iPhone 14,OS=16.4
+      - deploy-to-bitrise-io@2.1.1:
+          inputs:
+            - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UITESTS_4_LEGACY_XCRESULT_PATH'
 
   run-tests-flakey:
     before_run:
