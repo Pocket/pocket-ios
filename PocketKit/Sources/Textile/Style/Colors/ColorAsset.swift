@@ -16,4 +16,8 @@ public struct ColorAsset {
     static func branding(_ name: String) -> Self {
         Self(name: "Branding/\(name)")
     }
+
+    static func listen(_ name: String) -> Self {
+        Self(name: "Listen/\(name)")
+    }
 }
