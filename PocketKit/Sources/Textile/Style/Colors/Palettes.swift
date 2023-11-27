@@ -75,7 +75,34 @@ public struct BrandingPalette {
     public let mint5 = ColorAsset.branding("mint5")
 }
 
+public struct ListenPalette {
+    public let black = ColorAsset.listen("black")
+    public let white = ColorAsset.listen("white")
+    public let amber = ColorAsset.listen("amber")
+    public let amberTouch = ColorAsset.listen("amberTouch")
+    public let blue = ColorAsset.listen("blue")
+    public let blueTouch = ColorAsset.listen("blueTouch")
+    public let teal = ColorAsset.listen("teal")
+    public let tealLight = ColorAsset.listen("tealLight")
+    public let darkTeal = ColorAsset.listen("darkTeal")
+    public let mintGreen = ColorAsset.listen("mintGreen")
+    public let coral = ColorAsset.listen("coral")
+    public let coralTouch = ColorAsset.listen("coralTouch")
+    public let coralLight = ColorAsset.listen("coralLight")
+    public let darkTealSelection = ColorAsset.listen("darkTealSelection")
+    public let purple = ColorAsset.listen("purple")
+
+    public let gray1 = ColorAsset.listen("gray1")
+    public let gray2 = ColorAsset.listen("gray2")
+    public let gray3 = ColorAsset.listen("gray3")
+    public let gray4 = ColorAsset.listen("gray4")
+    public let gray5 = ColorAsset.listen("gray5")
+    public let gray6 = ColorAsset.listen("gray6")
+    public let gray7 = ColorAsset.listen("gray7")
+}
+
 extension ColorAsset {
     public static let ui = UIPalette()
     public static let branding = BrandingPalette()
+    public static let listen = ListenPalette()
 }

@@ -13,7 +13,7 @@ import Network
 class Listen: NSObject {
     private var subscriptions: Set<AnyCancellable> = []
 
-    static let colors = PKTListenAppTheme()
+    static let colors = ListenTheme()
 
     /// Analytics tracker
     private let tracker: Tracker
