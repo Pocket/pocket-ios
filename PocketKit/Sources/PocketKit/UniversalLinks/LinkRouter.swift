@@ -22,7 +22,7 @@ struct LinkRouter {
         }
         routes.forEach { route in
             if let destinationUrl = route.resolvedUrlString(from: components) {
-                route.action(destinationUrl)
+                route.action(destinationUrl, route.source)
                 return
             }
         }

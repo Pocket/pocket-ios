@@ -119,7 +119,8 @@ class MainViewModel: ObservableObject {
             userDefaults: Services.shared.userDefaults,
             linkRouter: LinkRouter()
         )
-        let widgetRoute = WidgetRoute { [weak self] urlString in
+        let routingAction: (String, ReadableSource) -> Void = { [weak self] urlString, source in
+            // dismiss any existing modal
             self?.account.dismissAll()
             // go to home
             self?.selectedSection = .home
@@ -128,12 +129,16 @@ class MainViewModel: ObservableObject {
             }
             // show the item associated to the given URL
             if let savedItem = item.savedItem {
-                self?.home.select(savedItem: savedItem, readableSource: .widget)
+                self?.home.select(savedItem: savedItem, readableSource: source)
             } else if let recommendation = item.recommendation {
-                self?.home.select(recommendation: recommendation, readableSource: .widget)
+                self?.home.select(recommendation: recommendation, readableSource: source)
             }
         }
+
+        let widgetRoute = WidgetRoute(action: routingAction)
+        let collectionRoute = CollectionRoute(action: routingAction)
         linkRouter.addRoute(route: widgetRoute)
+        linkRouter.addRoute(route: collectionRoute)
     }
 
     init(
