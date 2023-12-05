@@ -37,6 +37,7 @@ enum ReadableType {
 enum ReadableSource {
     case app
     case widget
+    case external
 }
 
 enum SeeAll {
@@ -374,7 +375,8 @@ extension HomeViewModel {
         source: ReadableSource
     ) {
         switch source {
-        case .app:
+            // TODO: UNIVERSAL LINKS - Separate tracking between app and external links
+        case .app, .external:
             tracker.track(event: Events.Home.SlateArticleContentOpen(
                 url: url,
                 positionInList: positionInList,
@@ -437,7 +439,8 @@ extension HomeViewModel {
 
     private func trackRecentSavesOpen(url: String, positionInList: Int?, source: ReadableSource) {
         switch source {
-        case .app:
+            // TODO: UNIVERSAL LINKS - Separate tracking between app and external links
+        case .app, .external:
             tracker.track(event: Events.Home.RecentSavesCardContentOpen(url: url, positionInList: positionInList))
         case .widget:
             tracker.track(event: Events.Widgets.RecentSavesCardContentOpen(url: url))

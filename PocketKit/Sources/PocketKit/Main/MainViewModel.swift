@@ -17,7 +17,7 @@ class MainViewModel: ObservableObject {
     let saves: SavesContainerViewModel
     let account: AccountViewModel
     let source: Source
-    private let urlValidator: UrlValidator
+    private var linkRouter: LinkRouter
 
     @Published var selectedSection: AppSection = .home
 
@@ -117,8 +117,23 @@ class MainViewModel: ObservableObject {
             ),
             source: Services.shared.source,
             userDefaults: Services.shared.userDefaults,
-            urlValidator: Services.shared.urlValidator
+            linkRouter: LinkRouter()
         )
+        let widgetRoute = WidgetRoute { [weak self] urlString in
+            self?.account.dismissAll()
+            // go to home
+            self?.selectedSection = .home
+            guard let item = self?.source.fetchViewContextItem(urlString) else {
+                return
+            }
+            // show the item associated to the given URL
+            if let savedItem = item.savedItem {
+                self?.home.select(savedItem: savedItem, readableSource: .widget)
+            } else if let recommendation = item.recommendation {
+                self?.home.select(recommendation: recommendation, readableSource: .widget)
+            }
+        }
+        linkRouter.addRoute(route: widgetRoute)
     }
 
     init(
@@ -127,14 +142,14 @@ class MainViewModel: ObservableObject {
         account: AccountViewModel,
         source: Source,
         userDefaults: UserDefaults,
-        urlValidator: UrlValidator
+        linkRouter: LinkRouter
     ) {
         self.saves = saves
         self.home = home
         self.account = account
         self.source = source
         self.userDefaults = userDefaults
-        self.urlValidator = urlValidator
+        self.linkRouter = linkRouter
 
         self.loadStartingAppSection()
         self.clearStartingAppSection()
@@ -215,30 +230,9 @@ class MainViewModel: ObservableObject {
     }
 }
 
-// MARK: universal link handling
 extension MainViewModel {
-    /// handles universal links
-    /// Note: at the moment, the universal links are limited to
-    ///   - Logged in users
-    ///   - links coming from widgets
-    /// - Parameter url: the URL of the item to be displayed
     @MainActor
     func handle(_ url: URL) {
-        guard let itemUrl = urlValidator.getItemUrl(from: url) else {
-            return
-        }
-        // dismiss any modal from the Settings SwiftUI view
-        account.dismissAll()
-        // go to home
-        selectedSection = .home
-        guard let item = source.fetchViewContextItem(itemUrl) else {
-            return
-        }
-        // show the item associated to the given URL
-        if let savedItem = item.savedItem {
-            home.select(savedItem: savedItem, readableSource: .widget)
-        } else if let recommendation = item.recommendation {
-            home.select(recommendation: recommendation, readableSource: .widget)
-        }
+        linkRouter.matchRoute(from: url)
     }
 }
