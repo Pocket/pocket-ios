@@ -8,7 +8,7 @@ protocol Route {
     var scheme: String { get }
     var path: String { get }
     var source: ReadableSource { get }
-    @MainActor var action: (String) -> Void { get }
+    @MainActor var action: (String, ReadableSource) -> Void { get }
     func resolvedUrlString(from components: URLComponents) -> String?
 }
 
@@ -25,9 +25,9 @@ struct WidgetRoute: Route {
     let scheme = "pocketWidget"
     let path = "/itemURL"
     let source: ReadableSource = .widget
-    let action: (String) -> Void
+    let action: (String, ReadableSource) -> Void
 
-    init(action: @escaping (String) -> Void) {
+    init(action: @escaping (String, ReadableSource) -> Void) {
         self.action = action
     }
 
@@ -43,9 +43,9 @@ struct CollectionRoute: Route {
     let scheme = "https"
     let path =  "/collections/"
     let source: ReadableSource = .external
-    let action: (String) -> Void
+    let action: (String, ReadableSource) -> Void
 
-    init(action: @escaping (String) -> Void) {
+    init(action: @escaping (String, ReadableSource) -> Void) {
         self.action = action
     }
 }
