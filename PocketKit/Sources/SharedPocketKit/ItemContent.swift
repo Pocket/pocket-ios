@@ -55,8 +55,8 @@ public struct ItemContent: Codable {
 
     public var pocketDeeplinkURL: URL {
         var components = URLComponents()
-        components.scheme = "pocket"
-        components.path = "/app/openURL"
+        components.scheme = "pocketWidget"
+        components.path = "/itemURL"
         components.queryItems = [URLQueryItem(name: "url", value: url)]
         return components.url!
     }
