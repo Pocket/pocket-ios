@@ -24,7 +24,6 @@ public class RootViewModel: ObservableObject {
     private let source: Source
     private let userDefaults: UserDefaults
     private let widgetsSessionService: WidgetsSessionService
-    private let urlValidator: UrlValidator
     private let notificationCenter: NotificationCenter
     private let refreshCoordinators: [RefreshCoordinator]
 
@@ -41,7 +40,6 @@ public class RootViewModel: ObservableObject {
             source: services.source,
             userDefaults: services.userDefaults,
             widgetsSessionService: services.widgetsSessionService,
-            urlValidator: services.urlValidator,
             notificationCenter: services.notificationCenter,
             refreshCoordinators: services.refreshCoordinators
         )
@@ -58,7 +56,6 @@ public class RootViewModel: ObservableObject {
         source: Source,
         userDefaults: UserDefaults,
         widgetsSessionService: WidgetsSessionService,
-        urlValidator: UrlValidator,
         notificationCenter: NotificationCenter,
         refreshCoordinators: [RefreshCoordinator]
     ) {
@@ -67,7 +64,6 @@ public class RootViewModel: ObservableObject {
         self.source = source
         self.userDefaults = userDefaults
         self.widgetsSessionService = widgetsSessionService
-        self.urlValidator = urlValidator
         self.notificationCenter = notificationCenter
         self.refreshCoordinators = refreshCoordinators
     }
