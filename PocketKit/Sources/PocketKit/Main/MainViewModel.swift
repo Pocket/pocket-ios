@@ -224,19 +224,27 @@ extension MainViewModel {
     }
 
     private func setupLinkRouter() {
-        let routingAction: (String, ReadableSource) -> Void = { [weak self] urlString, source in
+        let routingAction: (URL, ReadableSource) -> Void = { [weak self] url, source in
             // dismiss any existing modal
             self?.account.dismissAll()
             // go to home
             self?.selectedSection = .home
-            if let item = self?.source.fetchViewContextItem(urlString) {
-                // show the item associated to the given URL
-                if let savedItem = item.savedItem {
-                    self?.home.select(savedItem: savedItem, readableSource: source)
-                } else if let recommendation = item.recommendation {
-                    self?.home.select(recommendation: recommendation, readableSource: source)
+            Task {
+                do {
+                    if let item = try await self?.source.fetchViewItem(from: url.absoluteString) {
+                        if let savedItem = item.savedItem {
+                            self?.home.select(savedItem: savedItem, readableSource: source)
+                        } else if let recommendation = item.recommendation {
+                            self?.home.select(recommendation: recommendation, readableSource: source)
+                        } else {
+                            self?.home.select(externalItem: item)
+                        }
+                    } else {
+                        LinkRouter.fallback(url: url)
+                    }
+                } catch {
+                    LinkRouter.fallback(url: url)
                 }
-            } else {
             }
         }
 
