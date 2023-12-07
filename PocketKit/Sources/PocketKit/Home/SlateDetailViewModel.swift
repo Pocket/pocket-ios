@@ -15,7 +15,7 @@ class SlateDetailViewModel {
 
     @Published var snapshot: Snapshot
 
-    @Published var selectedReadableViewModel: RecommendationViewModel?
+    @Published var selectedReadableViewModel: RecommendableItemViewModel?
 
     @Published var selectedCollectionViewModel: CollectionViewModel?
 
@@ -134,8 +134,8 @@ extension SlateDetailViewModel {
             presentedWebReaderURL = url
             destination = .external
         } else {
-            selectedReadableViewModel = RecommendationViewModel(
-                recommendation: recommendation,
+            selectedReadableViewModel = RecommendableItemViewModel(
+                item: recommendation.item,
                 source: source,
                 tracker: tracker.childTracker(hosting: .articleView.screen),
                 pasteboard: UIPasteboard.general,

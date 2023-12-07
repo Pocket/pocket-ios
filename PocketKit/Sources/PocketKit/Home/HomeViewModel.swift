@@ -11,19 +11,19 @@ import Localization
 import SharedPocketKit
 
 enum ReadableType {
-    case recommendation(RecommendationViewModel)
+    case recommendable(RecommendableItemViewModel)
     case savedItem(SavedItemViewModel)
-    case webViewRecommendation(RecommendationViewModel)
+    case webViewRecommendable(RecommendableItemViewModel)
     case webViewSavedItem(SavedItemViewModel)
     case collection(CollectionViewModel)
 
     func clearIsPresentingReaderSettings() {
         switch self {
-        case .recommendation(let recommendationViewModel):
+        case .recommendable(let recommendationViewModel):
             recommendationViewModel.clearIsPresentingReaderSettings()
         case .savedItem(let savedItemViewModel):
             savedItemViewModel.clearIsPresentingReaderSettings()
-        case .webViewRecommendation(let recommendationViewModel):
+        case .webViewRecommendable(let recommendationViewModel):
             recommendationViewModel.clearPresentedWebReaderURL()
         case .webViewSavedItem(let savedItemViewModel):
             savedItemViewModel.clearPresentedWebReaderURL()
@@ -325,8 +325,8 @@ extension HomeViewModel {
                 readableSource: readableSource
             ))
         } else {
-            let viewModel = RecommendationViewModel(
-                recommendation: recommendation,
+            let viewModel = RecommendableItemViewModel(
+                item: recommendation.item,
                 source: source,
                 tracker: tracker.childTracker(hosting: .articleView.screen),
                 pasteboard: UIPasteboard.general,
@@ -336,10 +336,10 @@ extension HomeViewModel {
             )
 
             if item.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
-                selectedReadableType = .webViewRecommendation(viewModel)
+                selectedReadableType = .webViewRecommendable(viewModel)
                 destination = .external
             } else {
-                selectedReadableType = .recommendation(viewModel)
+                selectedReadableType = .recommendable(viewModel)
             }
         }
 
@@ -775,8 +775,8 @@ extension HomeViewModel {
 extension HomeViewModel {
     func activityItemsForSelectedItem(url: URL) -> [UIActivity] {
         switch selectedReadableType {
-        case .recommendation(let viewModel),
-                .webViewRecommendation(let viewModel):
+        case .recommendable(let viewModel),
+                .webViewRecommendable(let viewModel):
             return viewModel.webViewActivityItems(url: url)
         case .savedItem(let viewModel),
                 .webViewSavedItem(let viewModel):
