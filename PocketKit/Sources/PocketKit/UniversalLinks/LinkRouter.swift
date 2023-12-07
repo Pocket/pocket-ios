@@ -11,28 +11,24 @@ struct LinkRouter {
         self.routes = routes
     }
 
-    mutating func addRoute(route: Route) {
+    mutating func addRoute(_ route: Route) {
         routes.append(route)
     }
+
+    mutating func addRoutes(_ newRoutes: [Route]) {
+        routes.append(contentsOf: newRoutes)
+    }
+
     @MainActor
     func matchRoute(from url: URL) {
-        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true) else {
+        guard let route = routes.first(where: {
+            $0.matchedUrlString(from: url) != nil
+        })  else {
             fallbackToSafari(url: url)
             return
         }
-        routes.forEach { route in
-            if let destinationUrl = route.resolvedUrlString(from: components) {
-                route.action(destinationUrl, route.source)
-                return
-            }
-        }
-    }
-
-    private func fallbackToSafari(urlString: String) {
-        guard let url = URL(string: urlString) else {
-            return
-        }
-        fallbackToSafari(url: url)
+        // safe to force-unwrap since we already found the non-nil matching url
+        route.action(route.matchedUrlString(from: url)!, route.source)
     }
 
     private func fallbackToSafari(url: URL) {

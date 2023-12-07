@@ -9,12 +9,14 @@ protocol Route {
     var path: String { get }
     var source: ReadableSource { get }
     @MainActor var action: (String, ReadableSource) -> Void { get }
-    func resolvedUrlString(from components: URLComponents) -> String?
+    func matchedUrlString(from url: URL) -> String?
 }
 
 extension Route {
-    func resolvedUrlString(from components: URLComponents) -> String? {
-        guard components.scheme == scheme && components.path.contains(path) else {
+    func matchedUrlString(from url: URL) -> String? {
+        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
+              components.scheme == scheme,
+              components.path.contains(path) else {
             return nil
         }
         return components.url?.absoluteString
@@ -31,8 +33,10 @@ struct WidgetRoute: Route {
         self.action = action
     }
 
-    func resolvedUrlString(from components: URLComponents) -> String? {
-        guard components.scheme == scheme && components.path == path else {
+    func matchedUrlString(from url: URL) -> String? {
+        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
+              components.scheme == scheme,
+              components.path == path else {
             return nil
         }
         return components.queryItems?.first(where: { $0.name == "url" })?.value
@@ -47,5 +51,28 @@ struct CollectionRoute: Route {
 
     init(action: @escaping (String, ReadableSource) -> Void) {
         self.action = action
+    }
+}
+
+struct SyndicationRoute: Route {
+    let scheme = "https"
+    let path =  "/explore/item/"
+    let source: ReadableSource = .external
+    let action: (String, ReadableSource) -> Void
+
+    init(action: @escaping (String, ReadableSource) -> Void) {
+        self.action = action
+    }
+
+    func matchedUrlString(from url: URL) -> String? {
+        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
+              components.scheme == scheme,
+              components.path.contains(path) else {
+            return nil
+        }
+        var normalizedComponents = components
+        // remove utm-source and other external query items to obtain the item url
+        normalizedComponents.queryItems = nil
+        return normalizedComponents.url?.absoluteString
     }
 }
