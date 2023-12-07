@@ -692,17 +692,17 @@ extension PocketSource {
         try await slateService.fetchHomeSlateLineup()
     }
 
-    public func fetchDetails(for recommendation: Recommendation) async throws -> Bool {
-        Log.breadcrumb(category: "recommendations", level: .debug, message: "Loading details for Recomendation: \(String(describing: recommendation.remoteID))")
+    public func fetchDetails(for item: Item) async throws -> Bool {
+        Log.breadcrumb(category: "recommendations", level: .debug, message: "Loading details for Recomendation: \(String(describing: item.remoteID))")
 
         guard let remoteItem = try await apollo
-            .fetch(query: ItemByURLQuery(url: recommendation.item.givenURL))
+            .fetch(query: ItemByURLQuery(url: item.givenURL))
             .data?.itemByUrl?.fragments.itemParts else {
             return false
         }
 
         return try space.performAndWait {
-            guard let backgroundItem = space.backgroundObject(with: recommendation.item.objectID) as? Item else {
+            guard let backgroundItem = space.backgroundObject(with: item.objectID) as? Item else {
                 Log.capture(message: "Could not fetch a background item when fetching details for Recommendations")
                 return false
             }
@@ -952,6 +952,24 @@ extension PocketSource {
             } else {
                 let savedItem: SavedItem = SavedItem(context: space.backgroundContext, url: givenURL)
                 savedItem.update(from: recommendation)
+                try? space.save()
+
+                save(item: savedItem)
+            }
+        }
+    }
+
+    public func save(item: Item) {
+        space.performAndWait {
+            guard let item = space.backgroundObject(with: item.objectID) as? Item else {
+                return
+            }
+            let givenURL = item.givenURL
+            if let savedItem = try? space.fetchSavedItem(byURL: givenURL) {
+                unarchive(item: savedItem)
+            } else {
+                let savedItem: SavedItem = SavedItem(context: space.backgroundContext, url: givenURL)
+                savedItem.update(from: item)
                 try? space.save()
 
                 save(item: savedItem)
