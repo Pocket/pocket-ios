@@ -307,6 +307,40 @@ extension HomeViewModel {
         ))
     }
 
+    func select(externalItem: Item) {
+        if let slug = externalItem.collection?.slug ?? externalItem.collectionSlug {
+            selectedReadableType = .collection(CollectionViewModel(
+                slug: slug,
+                source: source,
+                tracker: tracker,
+                user: user,
+                store: store,
+                networkPathMonitor: networkPathMonitor,
+                userDefaults: userDefaults,
+                featureFlags: featureFlags,
+                notificationCenter: notificationCenter,
+                readableSource: .external
+            ))
+        } else {
+            let viewModel = RecommendableItemViewModel(
+                item: externalItem,
+                source: source,
+                tracker: tracker.childTracker(hosting: .articleView.screen),
+                pasteboard: UIPasteboard.general,
+                user: user,
+                userDefaults: userDefaults,
+                readableSource: .external
+            )
+
+            if externalItem.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
+                selectedReadableType = .webViewRecommendable(viewModel)
+            } else {
+                selectedReadableType = .recommendable(viewModel)
+            }
+        }
+        // TODO: UNIVERSAL LINKS: ADD ANALYTICS TRACKING
+    }
+
     func select(recommendation: Recommendation, at indexPath: IndexPath? = nil, readableSource: ReadableSource = .app) {
         var destination: ContentOpen.Destination = .internal
         let item = recommendation.item

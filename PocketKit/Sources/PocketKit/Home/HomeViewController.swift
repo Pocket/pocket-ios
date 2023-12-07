@@ -672,7 +672,7 @@ extension HomeViewController {
     /// Pops to the root and dismiss any modal, if required by the readable source
     /// - Parameter readableSource: the readable source
     private func resetView(for readableSource: ReadableSource) {
-        guard readableSource == .widget else {
+        guard readableSource == .widget || readableSource == .external else {
             return
         }
         navigationController?.popToRootViewController(animated: false)

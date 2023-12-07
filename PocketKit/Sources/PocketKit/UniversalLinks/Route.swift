@@ -8,7 +8,7 @@ protocol Route {
     var scheme: String { get }
     var path: String { get }
     var source: ReadableSource { get }
-    @MainActor var action: (String, ReadableSource) -> Void { get }
+    @MainActor var action: (URL, ReadableSource) -> Void { get }
     func matchedUrlString(from url: URL) -> String?
 }
 
@@ -27,9 +27,9 @@ struct WidgetRoute: Route {
     let scheme = "pocketWidget"
     let path = "/itemURL"
     let source: ReadableSource = .widget
-    let action: (String, ReadableSource) -> Void
+    let action: (URL, ReadableSource) -> Void
 
-    init(action: @escaping (String, ReadableSource) -> Void) {
+    init(action: @escaping (URL, ReadableSource) -> Void) {
         self.action = action
     }
 
@@ -47,9 +47,9 @@ struct CollectionRoute: Route {
     let scheme = "https"
     let path =  "/collections/"
     let source: ReadableSource = .external
-    let action: (String, ReadableSource) -> Void
+    let action: (URL, ReadableSource) -> Void
 
-    init(action: @escaping (String, ReadableSource) -> Void) {
+    init(action: @escaping (URL, ReadableSource) -> Void) {
         self.action = action
     }
 }
@@ -58,9 +58,9 @@ struct SyndicationRoute: Route {
     let scheme = "https"
     let path =  "/explore/item/"
     let source: ReadableSource = .external
-    let action: (String, ReadableSource) -> Void
+    let action: (URL, ReadableSource) -> Void
 
-    init(action: @escaping (String, ReadableSource) -> Void) {
+    init(action: @escaping (URL, ReadableSource) -> Void) {
         self.action = action
     }
 

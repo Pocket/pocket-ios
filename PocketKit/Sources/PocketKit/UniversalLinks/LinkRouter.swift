@@ -24,14 +24,17 @@ struct LinkRouter {
         guard let route = routes.first(where: {
             $0.matchedUrlString(from: url) != nil
         })  else {
-            fallbackToSafari(url: url)
+            Self.fallback(url: url)
             return
         }
-        // safe to force-unwrap since we already found the non-nil matching url
-        route.action(route.matchedUrlString(from: url)!, route.source)
+        guard let urlString = route.matchedUrlString(from: url), let itemUrl = URL(string: urlString) else {
+            Self.fallback(url: url)
+            return
+        }
+        route.action(itemUrl, route.source)
     }
 
-    private func fallbackToSafari(url: URL) {
+    static func fallback(url: URL) {
         UIApplication.shared.open(url)
     }
 }
