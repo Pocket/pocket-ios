@@ -45,14 +45,22 @@ class PocketBraze: NSObject {
         // Enable logging of general SDK information (e.g. user changes, etc.)
         configuration.logger.level = .info
         configuration.push.appGroup = groupdId
+        configuration.forwardUniversalLinks = true
         braze = Braze(configuration: configuration)
 
         super.init()
-
+        braze.delegate = self
         // Set up the in app message ui
         let inAppMessageUI = BrazeInAppMessageUI()
         inAppMessageUI.delegate = self
         braze.inAppMessagePresenter = inAppMessageUI
+    }
+}
+
+extension PocketBraze: BrazeDelegate {
+    func braze(_ braze: Braze, shouldOpenURL context: Braze.URLContext) -> Bool {
+        context.isUniversalLink = true
+        return true
     }
 }
 
