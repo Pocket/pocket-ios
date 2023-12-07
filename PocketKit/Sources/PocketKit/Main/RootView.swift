@@ -66,6 +66,12 @@ public struct RootView: View {
                 .onOpenURL { url in
                     model.handle(url)
                 }
+                .onContinueUserActivity("NSUserActivityTypeBrowsingWeb", perform: { userActivity in
+                    guard let url = userActivity.webpageURL else {
+                        return
+                    }
+                    model.handle(url)
+                })
         }
 
         if let model = model.loggedOutViewModel {
