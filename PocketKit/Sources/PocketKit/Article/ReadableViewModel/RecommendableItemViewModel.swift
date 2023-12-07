@@ -10,7 +10,7 @@ import UIKit
 import Analytics
 import SharedPocketKit
 
-class RecommendationViewModel: ReadableViewModel {
+class RecommendableItemViewModel: ReadableViewModel {
     weak var delegate: ReadableViewModelDelegate?
 
     @Published private(set) var _actions: [ItemAction] = []
@@ -27,11 +27,11 @@ class RecommendationViewModel: ReadableViewModel {
 
     @Published var isPresentingReaderSettings: Bool?
 
-    @Published var selectedRecommendationToReport: Recommendation?
+    @Published var selectedItemToReport: Item?
 
     let readableSource: ReadableSource
 
-    private let recommendation: Recommendation
+    private let item: Item
     private let source: Source
     private let pasteboard: Pasteboard
     private let user: User
@@ -42,7 +42,7 @@ class RecommendationViewModel: ReadableViewModel {
     private var savedItemSubscriptions: Set<AnyCancellable> = []
 
     init(
-        recommendation: Recommendation,
+        item: Item,
         source: Source,
         tracker: Tracker,
         pasteboard: Pasteboard,
@@ -50,7 +50,7 @@ class RecommendationViewModel: ReadableViewModel {
         userDefaults: UserDefaults,
         readableSource: ReadableSource = .app
     ) {
-        self.recommendation = recommendation
+        self.item = item
         self.source = source
         self.tracker = tracker
         self.pasteboard = pasteboard
@@ -58,13 +58,13 @@ class RecommendationViewModel: ReadableViewModel {
         self.userDefaults = userDefaults
         self.readableSource = readableSource
 
-        self.savedItemCancellable = recommendation.item.publisher(for: \.savedItem).sink { [weak self] savedItem in
+        self.savedItemCancellable = item.publisher(for: \.savedItem).sink { [weak self] savedItem in
             self?.update(for: savedItem)
         }
     }
 
     var components: [ArticleComponent]? {
-        recommendation.item.article?.components
+        item.article?.components
     }
 
     lazy var readerSettings: ReaderSettings = {
@@ -72,32 +72,32 @@ class RecommendationViewModel: ReadableViewModel {
     }()
 
     var textAlignment: Textile.TextAlignment {
-        TextAlignment(language: recommendation.item.language)
+        TextAlignment(language: item.language)
     }
 
     var title: String? {
-        recommendation.bestTitle
+        item.syndicatedArticle?.title ?? item.title
     }
 
     var authors: [ReadableAuthor]? {
-        recommendation.item.authors?.compactMap { $0 as? Author }
+        item.authors?.compactMap { $0 as? Author }
     }
 
     var domain: String? {
-        recommendation.bestDomain
+        item.bestDomain
     }
 
     var publishDate: Date? {
-        recommendation.item.datePublished
+        item.datePublished
     }
 
     // TODO: Can this be converted from URL? -> String?
     var url: String {
-        recommendation.item.bestURL
+        item.bestURL
     }
 
     var isArchived: Bool {
-        return recommendation.item.savedItem?.isArchived ?? false
+        return item.savedItem?.isArchived ?? false
     }
 
     var premiumURL: String? {
@@ -109,7 +109,7 @@ class RecommendationViewModel: ReadableViewModel {
     }
 
     func moveToSaves() {
-        guard let savedItem = recommendation.item.savedItem else {
+        guard let savedItem = item.savedItem else {
             return
         }
 
@@ -117,7 +117,7 @@ class RecommendationViewModel: ReadableViewModel {
     }
 
     func delete() {
-        guard let savedItem = recommendation.item.savedItem else {
+        guard let savedItem = item.savedItem else {
             return
         }
 
@@ -126,14 +126,14 @@ class RecommendationViewModel: ReadableViewModel {
     }
 
     func fetchDetailsIfNeeded() {
-        guard recommendation.item.article == nil else {
+        guard item.article == nil else {
             _events.send(.contentUpdated)
             return
         }
 
         Task {
             do {
-                let remoteHasArticle = try await source.fetchDetails(for: recommendation)
+                let remoteHasArticle = try await source.fetchDetails(for: item)
                 displayArticle(with: remoteHasArticle)
             } catch {
                 Log.capture(message: "Failed to fetch details for RecommendationViewModel: \(error)")
@@ -183,7 +183,7 @@ class RecommendationViewModel: ReadableViewModel {
     /// Check to see if item has article components to display in reader view, else display in web view
     /// - Parameter remoteHasArticle: condition if the remote in `fetchDetails` has article data
     private func displayArticle(with remoteHasArticle: Bool) {
-        if recommendation.item.hasArticleComponents || remoteHasArticle {
+        if item.hasArticleComponents || remoteHasArticle {
             _events.send(.contentUpdated)
         } else {
             showWebReader()
@@ -230,9 +230,9 @@ class RecommendationViewModel: ReadableViewModel {
     func listen() { }
 }
 
-extension RecommendationViewModel {
+extension RecommendableItemViewModel {
     private func buildActions() {
-        guard let savedItem = recommendation.item.savedItem else {
+        guard let savedItem = item.savedItem else {
             _actions = [
                 .displaySettings { [weak self] _ in self?.displaySettings() },
                 .save { [weak self] _ in self?.save() },
@@ -278,12 +278,12 @@ extension RecommendationViewModel {
     }
 
     private func report() {
-        selectedRecommendationToReport = recommendation
+        selectedItemToReport = item
         trackReport()
     }
 
     func favorite() {
-        guard let savedItem = recommendation.item.savedItem else {
+        guard let savedItem = item.savedItem else {
             return
         }
 
@@ -292,7 +292,7 @@ extension RecommendationViewModel {
     }
 
     func unfavorite() {
-        guard let savedItem = recommendation.item.savedItem else {
+        guard let savedItem = item.savedItem else {
             return
         }
 
@@ -316,7 +316,7 @@ extension RecommendationViewModel {
     }
 
     func moveFromArchiveToSaves(completion: (Bool) -> Void) {
-        guard let savedItem = recommendation.item.savedItem else {
+        guard let savedItem = item.savedItem else {
             Log.capture(message: "Could not get SavedItem so unarchive action not taken")
             completion(false)
             return
@@ -327,7 +327,7 @@ extension RecommendationViewModel {
     }
 
     func archive() {
-        guard let savedItem = recommendation.item.savedItem else {
+        guard let savedItem = item.savedItem else {
             Log.capture(message: "Could not get SavedItem so archive action not taken")
             return
         }
@@ -341,7 +341,7 @@ extension RecommendationViewModel {
     }
 
     private func save() {
-        source.save(recommendation: recommendation)
+        source.save(item: item)
         trackSave()
     }
 
@@ -359,7 +359,7 @@ extension RecommendationViewModel {
     }
 }
 
-extension RecommendationViewModel {
+extension RecommendableItemViewModel {
     func clearPresentedWebReaderURL() {
         presentedWebReaderURL = nil
     }
@@ -373,6 +373,6 @@ extension RecommendationViewModel {
     }
 
     func clearSelectedRecommendationToReport() {
-        selectedRecommendationToReport = nil
+        selectedItemToReport = nil
     }
 }

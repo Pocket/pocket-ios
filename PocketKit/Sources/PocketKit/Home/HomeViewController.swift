@@ -342,10 +342,10 @@ extension HomeViewController {
         switch readableType {
         case .savedItem(let viewModel):
             show(viewModel)
-        case .recommendation(let viewModel):
+        case .recommendable(let viewModel):
             show(viewModel)
-        case .webViewRecommendation(let viewModel):
-            showRecommendation(forWebView: viewModel)
+        case .webViewRecommendable(let viewModel):
+            showRecommendable(forWebView: viewModel)
             // Since the view model is not publishing a direct request to present a url (e.g presentedWebReaderURL),
             // we'll utilize its premium url to present a premium Pocket web page as necessary
             present(url: viewModel.premiumURL)
@@ -397,40 +397,40 @@ extension HomeViewController {
             .store(in: &slateDetailSubscriptions)
     }
 
-    func show(_ recommendation: RecommendationViewModel?) {
+    func show(_ recommendable: RecommendableItemViewModel?) {
         readerSubscriptions.removeAll()
-        guard let recommendation = recommendation else {
+        guard let recommendable else {
             return
         }
-        resetView(for: recommendation.readableSource)
+        resetView(for: recommendable.readableSource)
         navigationController?.pushViewController(
-            ReadableHostViewController(readableViewModel: recommendation),
+            ReadableHostViewController(readableViewModel: recommendable),
             animated: true
         )
 
         // TODO: Listen
 
-        recommendation.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
+        recommendable.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
             self?.present(alert: alert)
         }.store(in: &readerSubscriptions)
 
-        recommendation.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
+        recommendable.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
             self?.present(activity: activity)
         }.store(in: &readerSubscriptions)
 
-        recommendation.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
+        recommendable.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
             self?.present(url: url?.absoluteString)
         }.store(in: &readerSubscriptions)
 
-        recommendation.$isPresentingReaderSettings.receive(on: DispatchQueue.main).sink { [weak self] isPresenting in
-            self?.presentReaderSettings(isPresenting, on: recommendation)
+        recommendable.$isPresentingReaderSettings.receive(on: DispatchQueue.main).sink { [weak self] isPresenting in
+            self?.presentReaderSettings(isPresenting, on: recommendable)
         }.store(in: &readerSubscriptions)
 
-        recommendation.$selectedRecommendationToReport.receive(on: DispatchQueue.main).sink { [weak self] selected in
-            self?.report(selected?.item.givenURL)
+        recommendable.$selectedItemToReport.receive(on: DispatchQueue.main).sink { [weak self] selected in
+            self?.report(selected?.givenURL)
         }.store(in: &readerSubscriptions)
 
-        recommendation.events.receive(on: DispatchQueue.main).sink { [weak self] event in
+        recommendable.events.receive(on: DispatchQueue.main).sink { [weak self] event in
             switch event {
             case .contentUpdated:
                 break
@@ -523,7 +523,7 @@ extension HomeViewController {
                 self?.showCollection(collection)
             case .savedItem(let savedItem):
                 self?.show(savedItem)
-            case .recommendation(let recommendation):
+            case .recommendable(let recommendation):
                 self?.show(recommendation)
             default:
                 break
@@ -556,14 +556,14 @@ extension HomeViewController {
         collectionSubscriptions.push(subscriptionSet)
     }
 
-    private func showRecommendation(forWebView viewModel: RecommendationViewModel) {
+    private func showRecommendable(forWebView viewModel: RecommendableItemViewModel) {
         resetView(for: viewModel.readableSource)
         viewModel.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
             self?.present(alert: alert)
         }.store(in: &readerSubscriptions)
 
-        viewModel.$selectedRecommendationToReport.receive(on: DispatchQueue.main).sink { [weak self] recommendation in
-            self?.report(recommendation?.item.givenURL)
+        viewModel.$selectedItemToReport.receive(on: DispatchQueue.main).sink { [weak self] item in
+            self?.report(item?.givenURL)
         }.store(in: &readerSubscriptions)
 
         viewModel.events.receive(on: DispatchQueue.main).sink { [weak self] event in

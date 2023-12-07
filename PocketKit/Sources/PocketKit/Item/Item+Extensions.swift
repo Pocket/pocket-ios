@@ -85,4 +85,11 @@ public extension Item {
     var collectionSlug: String? {
         CollectionUrlFormatter.slug(from: givenURL)
     }
+
+    var bestDomain: String? {
+        syndicatedArticle?.publisherName
+        ?? domainMetadata?.name
+        ?? domain
+        ?? URL(percentEncoding: bestURL)?.host
+    }
 }
