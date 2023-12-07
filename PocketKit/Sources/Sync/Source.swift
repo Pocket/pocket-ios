@@ -81,6 +81,8 @@ public protocol Source {
 
     func save(recommendation: Recommendation)
 
+    func save(item: Item)
+
     func save(collectionStory: CollectionStory)
 
     func archive(recommendation: Recommendation)
@@ -93,7 +95,7 @@ public protocol Source {
 
     func fetchDetails(for savedItem: SavedItem) async throws -> Bool
 
-    func fetchDetails(for recommendation: Recommendation) async throws -> Bool
+    func fetchDetails(for item: Item) async throws -> Bool
 
     func save(url: String)
 

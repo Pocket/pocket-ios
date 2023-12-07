@@ -75,6 +75,13 @@ extension SavedItem {
         self.item = recommendation.item
     }
 
+    public func update(from item: Item) {
+        self.url = item.givenURL
+        self.createdAt = Date()
+
+        self.item = item
+    }
+
     public func update(from summary: SavedItemSummary, with space: Space) {
         remoteID = summary.remoteID
 

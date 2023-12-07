@@ -16,11 +16,7 @@ extension Recommendation {
     }
 
     var bestDomain: String? {
-        item.syndicatedArticle?.publisherName
-        ?? item.domainMetadata?.name
-        ?? item.domain
-        ?? URL(percentEncoding: item.bestURL)?.host
-        ?? "" // TODO: What should be the final fallback string?
+        item.bestDomain
     }
 
     var bestTitle: String? {

@@ -387,7 +387,7 @@ extension SavesContainerViewController {
         )
     }
 
-    func show(_ recommendation: RecommendationViewModel?) {
+    func show(_ recommendation: RecommendableItemViewModel?) {
         readableSubscriptions = []
         guard let recommendation = recommendation else {
             return
@@ -448,7 +448,7 @@ extension SavesContainerViewController {
                 self?.push(collection: collection)
             case .savedItem(let savedItem):
                 self?.push(savedItem: savedItem)
-            case .recommendation(let recommendation):
+            case .recommendable(let recommendation):
                 self?.show(recommendation)
             default:
                 break

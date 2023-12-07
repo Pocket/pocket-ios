@@ -45,8 +45,8 @@ class RecommendationViewModelTests: XCTestCase {
         pasteboard: Pasteboard? = nil,
         user: User? = nil,
         userDefaults: UserDefaults? = nil
-    ) -> RecommendationViewModel {
-        RecommendationViewModel(
+    ) -> RecommendableItemViewModel {
+        RecommendableItemViewModel(
             recommendation: recommendation,
             source: source ?? self.source,
             tracker: tracker ?? self.tracker,
@@ -477,7 +477,7 @@ class RecommendationViewModelTests: XCTestCase {
     }
 }
 
-extension RecommendationViewModel {
+extension RecommendableItemViewModel {
     func invokeAction(title: String) {
         invokeAction(from: _actions, title: title)
     }
