@@ -119,26 +119,7 @@ class MainViewModel: ObservableObject {
             userDefaults: Services.shared.userDefaults,
             linkRouter: LinkRouter()
         )
-        let routingAction: (String, ReadableSource) -> Void = { [weak self] urlString, source in
-            // dismiss any existing modal
-            self?.account.dismissAll()
-            // go to home
-            self?.selectedSection = .home
-            guard let item = self?.source.fetchViewContextItem(urlString) else {
-                return
-            }
-            // show the item associated to the given URL
-            if let savedItem = item.savedItem {
-                self?.home.select(savedItem: savedItem, readableSource: source)
-            } else if let recommendation = item.recommendation {
-                self?.home.select(recommendation: recommendation, readableSource: source)
-            }
-        }
-
-        let widgetRoute = WidgetRoute(action: routingAction)
-        let collectionRoute = CollectionRoute(action: routingAction)
-        linkRouter.addRoute(route: widgetRoute)
-        linkRouter.addRoute(route: collectionRoute)
+        setupLinkRouter()
     }
 
     init(
@@ -235,9 +216,33 @@ class MainViewModel: ObservableObject {
     }
 }
 
+// MARK: Universal Links
 extension MainViewModel {
     @MainActor
     func handle(_ url: URL) {
         linkRouter.matchRoute(from: url)
+    }
+
+    private func setupLinkRouter() {
+        let routingAction: (String, ReadableSource) -> Void = { [weak self] urlString, source in
+            // dismiss any existing modal
+            self?.account.dismissAll()
+            // go to home
+            self?.selectedSection = .home
+            if let item = self?.source.fetchViewContextItem(urlString) {
+                // show the item associated to the given URL
+                if let savedItem = item.savedItem {
+                    self?.home.select(savedItem: savedItem, readableSource: source)
+                } else if let recommendation = item.recommendation {
+                    self?.home.select(recommendation: recommendation, readableSource: source)
+                }
+            } else {
+            }
+        }
+
+        let widgetRoute = WidgetRoute(action: routingAction)
+        let collectionRoute = CollectionRoute(action: routingAction)
+        let syndicatedRoute = SyndicationRoute(action: routingAction)
+        linkRouter.addRoutes([widgetRoute, collectionRoute, syndicatedRoute])
     }
 }
