@@ -558,7 +558,7 @@ class HomeViewModelTests: XCTestCase {
         readableExpectation.expectedFulfillmentCount = 2
         viewModel.$selectedReadableType.dropFirst().sink { readableType in
             switch readableType {
-            case .recommendation, .webViewRecommendation:
+            case .recommendable, .webViewRecommendable:
                 readableExpectation.fulfill()
             case .savedItem, .webViewSavedItem, .none:
                 XCTFail("Expected recommendation, but got \(String(describing: readableType))")
@@ -668,9 +668,9 @@ class HomeViewModelTests: XCTestCase {
 
         viewModel.$selectedReadableType.dropFirst().sink { readableType in
             switch readableType {
-            case .webViewRecommendation:
+            case .webViewRecommendable:
                 readableExpectation.fulfill()
-            case .savedItem, .webViewSavedItem, .recommendation, .none:
+            case .savedItem, .webViewSavedItem, .recommendable, .none:
                 XCTFail("Expected web view saved item, but got \(String(describing: readableType))")
             default:
                 // TODO: we might want to add a check here
@@ -718,7 +718,7 @@ class HomeViewModelTests: XCTestCase {
             switch readableType {
             case .savedItem, .webViewSavedItem:
                 readableExpectation.fulfill()
-            case .webViewRecommendation, .recommendation, .none:
+            case .webViewRecommendable, .recommendable, .none:
                 XCTFail("Expected recommendation, but got \(String(describing: readableType))")
             default:
                 // TODO: we might want to add a check here
@@ -819,7 +819,7 @@ class HomeViewModelTests: XCTestCase {
             switch readableType {
             case .webViewSavedItem:
                 readableExpectation.fulfill()
-            case .savedItem, .webViewRecommendation, .recommendation, .none:
+            case .savedItem, .webViewRecommendable, .recommendable, .none:
                 XCTFail("Expected web view saved item, but got \(String(describing: readableType))")
             default:
                 // TODO: we might want to add a check here

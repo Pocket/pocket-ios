@@ -8,6 +8,17 @@ import CoreData
 import Combine
 
 class MockSource: Source {
+    func save(item: Sync.Item) {
+    }
+
+    func fetchDetails(for item: Sync.Item) async throws -> Bool {
+        true
+    }
+
+    func fetchViewItem(from url: String) async throws -> Sync.Item? {
+        nil
+    }
+
     func fetchViewContextItem(_ url: String) -> Sync.Item? {
         return nil
     }

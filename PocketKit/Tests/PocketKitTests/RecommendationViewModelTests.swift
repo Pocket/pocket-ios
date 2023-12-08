@@ -47,7 +47,7 @@ class RecommendationViewModelTests: XCTestCase {
         userDefaults: UserDefaults? = nil
     ) -> RecommendableItemViewModel {
         RecommendableItemViewModel(
-            recommendation: recommendation,
+            item: recommendation.item,
             source: source ?? self.source,
             tracker: tracker ?? self.tracker,
             pasteboard: pasteboard ?? self.pasteboard,
@@ -298,8 +298,8 @@ class RecommendationViewModelTests: XCTestCase {
         let viewModel = subject(recommendation: recommendation)
 
         let reportExpectation = expectation(description: "expected recommendation to be reported")
-        viewModel.$selectedRecommendationToReport.dropFirst().sink { recommendation in
-            XCTAssertNotNil(recommendation)
+        viewModel.$selectedItemToReport.dropFirst().sink { item in
+            XCTAssertNotNil(item)
             reportExpectation.fulfill()
         }.store(in: &subscriptions)
 

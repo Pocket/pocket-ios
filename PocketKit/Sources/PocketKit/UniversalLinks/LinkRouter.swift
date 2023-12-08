@@ -7,6 +7,8 @@ import UIKit
 struct LinkRouter {
     private var routes: [Route]
 
+    private var fallbackAction: ((URL) -> Void)?
+
     init(routes: [Route] = []) {
         self.routes = routes
     }
@@ -19,22 +21,22 @@ struct LinkRouter {
         routes.append(contentsOf: newRoutes)
     }
 
+    mutating func setFallbackAction(_ action: @escaping (URL) -> Void) {
+        self.fallbackAction = action
+    }
+
     @MainActor
     func matchRoute(from url: URL) {
         guard let route = routes.first(where: {
             $0.matchedUrlString(from: url) != nil
         })  else {
-            Self.fallback(url: url)
+            fallbackAction?(url)
             return
         }
         guard let urlString = route.matchedUrlString(from: url), let itemUrl = URL(string: urlString) else {
-            Self.fallback(url: url)
+            fallbackAction?(url)
             return
         }
         route.action(itemUrl, route.source)
-    }
-
-    static func fallback(url: URL) {
-        UIApplication.shared.open(url)
     }
 }

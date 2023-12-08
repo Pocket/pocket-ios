@@ -533,7 +533,7 @@ class CollectionViewModelTests: XCTestCase {
 
         let readableExpectation = expectation(description: "expected readable to be called")
         viewModel.$selectedItem.dropFirst().sink { readable in
-            guard case .recommendation = readable else {
+            guard case .recommendable = readable else {
                 XCTFail("Expected recommendation but got \(String(describing: readable))")
                 return
             }

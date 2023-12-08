@@ -224,6 +224,11 @@ extension MainViewModel {
     }
 
     private func setupLinkRouter() {
+        let fallbackAction: (URL) -> Void = { url in
+            UIApplication.shared.open(url)
+        }
+        linkRouter.setFallbackAction(fallbackAction)
+
         let routingAction: (URL, ReadableSource) -> Void = { [weak self] url, source in
             // dismiss any existing modal
             self?.account.dismissAll()
@@ -240,10 +245,10 @@ extension MainViewModel {
                             self?.home.select(externalItem: item)
                         }
                     } else {
-                        LinkRouter.fallback(url: url)
+                        fallbackAction(url)
                     }
                 } catch {
-                    LinkRouter.fallback(url: url)
+                    fallbackAction(url)
                 }
             }
         }
