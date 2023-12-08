@@ -17,10 +17,7 @@ public extension Events.Deeplinks {
             uiEntity: UiEntity(
                 .card,
                 identifier: "deeplink.article.open"
-            ),
-            extraEntities: [
-                ContentEntity(url: url)
-            ]
+            )
         )
     }
 }
