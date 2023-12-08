@@ -9,7 +9,7 @@ public extension Events {
 
 public extension Events.Widgets {
     /// Fired when a user taps a card in the `Recent Saves Widget`
-    static func RecentSavesCardContentOpen(url: String) -> ContentOpen {
+    static func recentSavesCardContentOpen(url: String) -> ContentOpen {
         return ContentOpen(
             contentEntity:
                 ContentEntity(url: url),
@@ -21,7 +21,7 @@ public extension Events.Widgets {
     }
 
      /// Fired when a user taps a card in the `Recommendations Widget`
-    static func SlateArticleContentOpen(url: String, recommendationId: String, destination: ContentOpen.Destination) -> ContentOpen {
+    static func slateArticleContentOpen(url: String, recommendationId: String, destination: ContentOpen.Destination) -> ContentOpen {
         return ContentOpen(
             destination: destination,
             contentEntity:

@@ -308,6 +308,7 @@ extension HomeViewModel {
     }
 
     func select(externalItem: Item) {
+        var destination: ContentOpen.Destination = .internal
         if let slug = externalItem.collection?.slug ?? externalItem.collectionSlug {
             selectedReadableType = .collection(CollectionViewModel(
                 slug: slug,
@@ -334,11 +335,12 @@ extension HomeViewModel {
 
             if externalItem.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
                 selectedReadableType = .webViewRecommendable(viewModel)
+                destination = .external
             } else {
                 selectedReadableType = .recommendable(viewModel)
             }
         }
-        // TODO: UNIVERSAL LINKS: ADD ANALYTICS TRACKING
+        tracker.track(event: Events.Deeplinks.deeplinkArticleContentOpen(url: externalItem.givenURL, destination: destination))
     }
 
     func select(recommendation: Recommendation, at indexPath: IndexPath? = nil, readableSource: ReadableSource = .app) {
@@ -409,8 +411,7 @@ extension HomeViewModel {
         source: ReadableSource
     ) {
         switch source {
-            // TODO: UNIVERSAL LINKS - Separate tracking between app and external links
-        case .app, .external:
+        case .app:
             tracker.track(event: Events.Home.SlateArticleContentOpen(
                 url: url,
                 positionInList: positionInList,
@@ -424,8 +425,10 @@ extension HomeViewModel {
                 recommendationId: recommendationId,
                 destination: destination
             ))
+        case .external:
+            tracker.track(event: Events.Deeplinks.deeplinkArticleContentOpen(url: url, destination: destination))
         case .widget:
-            tracker.track(event: Events.Widgets.SlateArticleContentOpen(
+            tracker.track(event: Events.Widgets.slateArticleContentOpen(
                 url: url,
                 recommendationId: recommendationId,
                 destination: destination
@@ -473,11 +476,12 @@ extension HomeViewModel {
 
     private func trackRecentSavesOpen(url: String, positionInList: Int?, source: ReadableSource) {
         switch source {
-            // TODO: UNIVERSAL LINKS - Separate tracking between app and external links
-        case .app, .external:
+        case .app:
             tracker.track(event: Events.Home.RecentSavesCardContentOpen(url: url, positionInList: positionInList))
+        case .external:
+            tracker.track(event: Events.Deeplinks.deeplinkArticleContentOpen(url: url, destination: .internal))
         case .widget:
-            tracker.track(event: Events.Widgets.RecentSavesCardContentOpen(url: url))
+            tracker.track(event: Events.Widgets.recentSavesCardContentOpen(url: url))
         }
     }
 }
