@@ -15,14 +15,14 @@ public extension Events.Stickers {
 
     /// Fired when a user opens the sticker drawer
     /// context: should be MSMessagesAppPresentationContext but not binding to that type so
-    static func StickersView(context: MessagesContext) -> Impression {
+    static func StickersView(context: MessagesContext?) -> Impression {
         return Impression(
             component: .screen,
             requirement: .instant,
             uiEntity: UiEntity(
                 .screen,
                 identifier: "stickers.view",
-                componentDetail: context.rawValue
+                componentDetail: context?.rawValue
             )
         )
     }

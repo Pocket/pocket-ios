@@ -22,14 +22,13 @@ extension MSMessagesAppPresentationContext {
 class StickerBrowserController: MSStickerBrowserViewController {
     let braze: StickerBraze
     let tracker: Tracker
-    let context: MSMessagesAppPresentationContext
+    var context: MSMessagesAppPresentationContext?
 
     let _stickers: [MSSticker]? = nil
 
-    public init(braze: StickerBraze, tracker: Tracker, context: MSMessagesAppPresentationContext) {
+    public init(braze: StickerBraze, tracker: Tracker) {
         self.braze = braze
         self.tracker = tracker
-        self.context = context
         super.init(stickerSize: .regular)
     }
 
@@ -37,9 +36,13 @@ class StickerBrowserController: MSStickerBrowserViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    public func setPresentationContext(context: MSMessagesAppPresentationContext) {
+        self.context = context
+    }
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        tracker.track(event: Events.Stickers.StickersView(context: context.toAnalytics()))
+        tracker.track(event: Events.Stickers.StickersView(context: context?.toAnalytics()))
     }
 
     func stickers() -> [MSSticker] {

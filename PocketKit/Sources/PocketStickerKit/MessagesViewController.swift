@@ -42,8 +42,8 @@ class MessagesViewController: MSMessagesAppViewController {
         } else {
             Log.setUserID(services.appSession.currentSession!.userIdentifier)
         }
-        pr
-        child = StickerBrowserController(braze: braze, tracker: tracker, )
+
+        child = StickerBrowserController(braze: braze, tracker: tracker)
         self.init(childViewController: child)
     }
 
@@ -58,6 +58,10 @@ class MessagesViewController: MSMessagesAppViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        if let stickerController = childViewController as? StickerBrowserController {
+            stickerController.setPresentationContext(context: presentationContext)
+        }
 
         childViewController.willMove(toParent: self)
         addChild(childViewController)
