@@ -11,6 +11,12 @@ import Analytics
 import Localization
 import SharedPocketKit
 
+enum ItemSaveStatus {
+    case unsaved
+    case saved
+    case archived
+}
+
 protocol ReadableViewModelDelegate: AnyObject {
     /// Called when a ReadableViewModel requests that Listen be presented with a given view model.
     /// - Parameters:
@@ -45,7 +51,7 @@ protocol ReadableViewModel: ReadableViewControllerDelegate {
     var domain: String? { get }
     var publishDate: Date? { get }
     var url: String { get }
-    var isArchived: Bool { get }
+    var itemSaveStatus: ItemSaveStatus { get }
     var premiumURL: String? { get }
 
     func delete()
@@ -62,6 +68,7 @@ protocol ReadableViewModel: ReadableViewControllerDelegate {
     func openExternalLink(url: URL)
     func archive()
     func moveFromArchiveToSaves(completion: (Bool) -> Void)
+    func save(completion: (Bool) -> Void)
     func fetchDetailsIfNeeded()
     func externalActions(for url: URL) -> [ItemAction]
     func clearPresentedWebReaderURL()

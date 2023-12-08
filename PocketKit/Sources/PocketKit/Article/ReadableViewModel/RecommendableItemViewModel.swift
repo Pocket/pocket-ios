@@ -96,8 +96,14 @@ class RecommendableItemViewModel: ReadableViewModel {
         item.bestURL
     }
 
-    var isArchived: Bool {
-        return item.savedItem?.isArchived ?? false
+    var itemSaveStatus: ItemSaveStatus {
+        guard let savedItem = item.savedItem else {
+            return .unsaved
+        }
+        if savedItem.isArchived {
+            return .archived
+        }
+        return .saved
     }
 
     var premiumURL: String? {
@@ -210,7 +216,7 @@ class RecommendableItemViewModel: ReadableViewModel {
                 if item.isSaved {
                     self?.archive()
                 } else {
-                    self?.save()
+                    self?.save(completion: { _ in })
                 }
             }
 
@@ -235,7 +241,7 @@ extension RecommendableItemViewModel {
         guard let savedItem = item.savedItem else {
             _actions = [
                 .displaySettings { [weak self] _ in self?.displaySettings() },
-                .save { [weak self] _ in self?.save() },
+                .save { [weak self] _ in self?.save(completion: { _ in }) },
                 .share { [weak self] _ in self?.share() },
                 .report { [weak self] _ in self?.report() }
             ]
@@ -340,9 +346,10 @@ extension RecommendableItemViewModel {
     func beginBulkEdit() {
     }
 
-    private func save() {
+    func save(completion: (Bool) -> Void) {
         source.save(item: item)
         trackSave()
+        completion(true)
     }
 
     private func saveExternalURL(_ url: URL) {

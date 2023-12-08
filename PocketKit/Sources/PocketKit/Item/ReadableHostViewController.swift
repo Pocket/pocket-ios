@@ -13,7 +13,7 @@ class ReadableHostViewController: UIViewController {
     private var subscriptions: [AnyCancellable] = []
     private var readableViewModel: ReadableViewModel
 
-    private lazy var getArchiveButton: UIBarButtonItem = {
+    private lazy var archiveButton: UIBarButtonItem = {
         let archiveNavButton = UIBarButtonItem(
             image: UIImage(asset: .archive),
             style: .plain,
@@ -25,7 +25,7 @@ class ReadableHostViewController: UIViewController {
         return archiveNavButton
     }()
 
-    private lazy var getMoveFromArchiveToSavesButton: UIBarButtonItem = {
+    private lazy var moveFromArchiveToSavesButton: UIBarButtonItem = {
         let moveFromArchiveToSavesNavButton = UIBarButtonItem(
             image: UIImage(asset: .save),
             style: .plain,
@@ -35,6 +35,18 @@ class ReadableHostViewController: UIViewController {
 
         moveFromArchiveToSavesNavButton.accessibilityIdentifier = "moveFromArchiveToSavesNavButton"
         return moveFromArchiveToSavesNavButton
+    }()
+
+    private lazy var saveButton: UIBarButtonItem = {
+        let saveButton = UIBarButtonItem(
+            image: UIImage(asset: .checkMini),
+            style: .plain,
+            target: self,
+            action: #selector(save)
+        )
+
+        saveButton.accessibilityIdentifier = "saveNavButton"
+        return saveButton
     }()
 
     init(readableViewModel: ReadableViewModel) {
@@ -50,13 +62,24 @@ class ReadableHostViewController: UIViewController {
         navigationItem.largeTitleDisplayMode = .never
         hidesBottomBarWhenPushed = true
 
-        let listenButtonItem = UIBarButtonItem(
+        let listenButton = UIBarButtonItem(
             image: UIImage(asset: .listen),
             style: .plain,
             target: self,
             action: #selector(listen)
         )
-        listenButtonItem.isEnabled = readableViewModel.isListenSupported
+        listenButton.isEnabled = readableViewModel.isListenSupported
+
+        var additionalBarButtonItems = [UIBarButtonItem]()
+
+        switch readableViewModel.itemSaveStatus {
+        case .unsaved:
+            additionalBarButtonItems = [saveButton]
+        case .saved:
+            additionalBarButtonItems = [archiveButton, listenButton]
+        case .archived:
+            additionalBarButtonItems = [moveFromArchiveToSavesButton]
+        }
 
         navigationItem.rightBarButtonItems = [
             moreButtonItem,
@@ -65,10 +88,7 @@ class ReadableHostViewController: UIViewController {
                 style: .plain,
                 target: self,
                 action: #selector(showWebView)
-            ),
-            readableViewModel.isArchived ? getMoveFromArchiveToSavesButton : getArchiveButton,
-            listenButtonItem
-        ]
+            )] + additionalBarButtonItems
 
         readableViewModel.actions.receive(on: DispatchQueue.main).sink { [weak self] actions in
             self?.buildOverflowMenu(from: actions)
@@ -153,9 +173,22 @@ class ReadableHostViewController: UIViewController {
         readableViewModel.moveFromArchiveToSaves { [weak self] success in
             if success,
                let items = self?.navigationItem.rightBarButtonItems,
-               let getMoveFromArchiveToSavesButton = self?.getMoveFromArchiveToSavesButton,
-               let index = items.firstIndex(of: getMoveFromArchiveToSavesButton),
-               let archiveButton = self?.getArchiveButton {
+               let moveFromArchiveToSavesButton = self?.moveFromArchiveToSavesButton,
+               let index = items.firstIndex(of: moveFromArchiveToSavesButton),
+               let archiveButton = self?.archiveButton {
+                self?.navigationItem.rightBarButtonItems?[index] = archiveButton
+            }
+        }
+    }
+
+    @objc
+    private func save() {
+        readableViewModel.save { [weak self] success in
+            if success,
+               let items = self?.navigationItem.rightBarButtonItems,
+               let saveButton = self?.saveButton,
+               let index = items.firstIndex(of: saveButton),
+               let archiveButton = self?.archiveButton {
                 self?.navigationItem.rightBarButtonItems?[index] = archiveButton
             }
         }
