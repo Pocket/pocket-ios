@@ -140,8 +140,12 @@ class SavedItemViewModel: ReadableViewModel {
         item.bestURL
     }
 
-    var isArchived: Bool {
-        item.isArchived
+    var itemSaveStatus: ItemSaveStatus {
+        if item.isArchived {
+            return .archived
+        }
+        return .saved
+        // unsaved option is not applicable to this type since it needs a SavedItem
     }
 
     var isCollection: Bool {
@@ -261,6 +265,10 @@ extension SavedItemViewModel {
         source.unarchive(item: item)
         trackMoveFromArchiveToSavesButtonTapped(url: item.url)
         completion(true)
+    }
+
+    func save(completion: (Bool) -> Void) {
+        // NO-OP: this type is initialized with a valid SavedItem, which won't need to be saved.
     }
 
     func openInWebView(url: String) {
