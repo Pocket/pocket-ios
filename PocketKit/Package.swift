@@ -21,7 +21,8 @@ let package = Package(
         .library(name: "Analytics", targets: ["Analytics"]),
         .library(name: "Localization", targets: ["Localization"]),
         .library(name: "PKTListen", targets: ["PKTListen"]),
-        .library(name: "ItemWidgetsKit", targets: ["ItemWidgetsKit"])
+        .library(name: "ItemWidgetsKit", targets: ["ItemWidgetsKit"]),
+        .library(name: "PocketStickerKit", targets: ["PocketStickerKit"])
     ],
     dependencies: [
         .package(url: "https://github.com/apollographql/apollo-ios.git", exact: "1.7.0"),
@@ -49,6 +50,16 @@ let package = Package(
                 "SharedPocketKit",
                 "Sync",
                 "Textile"
+            ]
+        ),
+        .target(
+            name: "PocketStickerKit",
+            dependencies: [
+                "Analytics",
+                "SharedPocketKit",
+            ],
+            resources: [
+                .copy("Stickers")
             ]
         ),
         .target(
