@@ -4,20 +4,65 @@
 
 import UIKit
 import Messages
+import Analytics
+import Adjust
+import Sync
+import Textile
+import SharedPocketKit
 
 class MessagesViewController: MSMessagesAppViewController {
     // MARK: - Conversation Handling
 
+    private let childViewController: UIViewController
+
+    convenience init() {
+        self.init(services: Services.shared)
+    }
+
+    convenience init(services: Services) {
+        Textiles.initialize()
+
+        let appSession = services.appSession
+        let child: UIViewController
+        let tracker = services.tracker
+        let braze = services.braze
+
+        // Reset and attach at least an api user entity on extension launch
+        tracker.resetPersistentEntities([
+            APIUserEntity(consumerKey: Keys.shared.pocketApiConsumerKey)
+        ])
+
+        if let currentSession = appSession.currentSession {
+            // Attach a user entity at launch if it exists
+            tracker.addPersistentEntity(UserEntity(guid: currentSession.guid, userID: currentSession.userIdentifier, adjustAdId: Adjust.adid()))
+        }
+
+        if appSession.currentSession == nil {
+            Log.clearUser()
+        } else {
+            Log.setUserID(services.appSession.currentSession!.userIdentifier)
+        }
+        child = StickerBrowserController(braze: braze)
+        self.init(childViewController: child)
+    }
+
+    init(childViewController: UIViewController) {
+        self.childViewController = childViewController
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let controller = StickerBrowserController(stickerSize: .regular)
+        childViewController.willMove(toParent: self)
+        addChild(childViewController)
 
-        controller.willMove(toParent: self)
-        addChild(controller)
-
-        if let vcView = controller.view {
-          view.addSubview(controller.view)
+        if let vcView = childViewController.view {
+          view.addSubview(childViewController.view)
           vcView.frame = view.bounds
           vcView.translatesAutoresizingMaskIntoConstraints = false
           vcView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
@@ -25,9 +70,14 @@ class MessagesViewController: MSMessagesAppViewController {
           vcView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
           vcView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         }
-        controller.didMove(toParent: self)
+        childViewController.didMove(toParent: self)
     }
+}
 
+/**
+ Usual Apple Messages call backs
+ */
+extension MessagesViewController {
     override func willBecomeActive(with conversation: MSConversation) {
         // Called when the extension is about to move from the inactive to active state.
         // This will happen when the extension is about to present UI.

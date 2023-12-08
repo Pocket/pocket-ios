@@ -9,5 +9,23 @@
 		<key>NSExtensionPrincipalClass</key>
 		<string>PocketStickerKit.MessagesViewController</string>
 	</dict>
+	<key>BrazeAPIEndpoint</key>
+	<string>$(BRAZE_API_ENDPOINT)</string>
+	<key>BrazeAPIKey</key>
+	<string>$(BRAZE_API_KEY)</string>
+	<key>PocketAPIBaseURL</key>
+	<string>$(POCKET_API_BASE_URL)</string>
+	<key>PocketAPIConsumerKey</key>
+	<string>$(POCKET_API_CONSUMER_KEY)</string>
+	<key>PocketAPIConsumerKeyPad</key>
+	<string>$(POCKET_API_CONSUMER_KEY_PAD)</string>
+	<key>SentryDSN</key>
+	<string>$(SENTRY_DSN)</string>
+	<key>SnowplowEndpoint</key>
+	<string>$(SNOWPLOW_ENDPOINT)</string>
+	<key>SnowplowIdentifier</key>
+	<string>$(SNOWPLOW_IDENTIFIER)</string>
+	<key>GroupId</key>
+	<string>$(GROUP_ID)</string>
 </dict>
 </plist>

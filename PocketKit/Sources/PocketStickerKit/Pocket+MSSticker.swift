@@ -11,8 +11,8 @@ enum StickerError: Error {
 
 extension MSSticker {
   enum PocketSticker: String {
-    case TwentyTwentyThreeBestOfTopOnePercent,
-         TwentyTwentyThreeBestOfTopFivePercent,
+    case BestOf2023Top1Percent,
+         BestOf2023Top5Percent,
          PocketLogo
   }
 

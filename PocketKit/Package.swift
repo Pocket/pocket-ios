@@ -57,6 +57,10 @@ let package = Package(
             dependencies: [
                 "Analytics",
                 "SharedPocketKit",
+                "Textile",
+                "Sync",
+                .product(name: "Adjust", package: "ios_sdk"),
+                .product(name: "BrazeKit", package: "braze-swift-sdk")
             ],
             resources: [
                 .copy("Stickers")
@@ -105,6 +109,7 @@ let package = Package(
                 "Textile",
                 "Localization",
                 "RNCryptor",
+                .product(name: "BrazeKit", package: "braze-swift-sdk"),
                 .product(name: "Sentry", package: "sentry-cocoa")
             ]
         ),

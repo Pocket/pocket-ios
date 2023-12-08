@@ -6,6 +6,7 @@ import Foundation
 import Analytics
 import Sync
 import CoreData
+import SharedPocketKit
 
 protocol FeatureFlagServiceProtocol {
     /// Determine if a user is assigned to a test and a variant.
@@ -119,40 +120,6 @@ extension FeatureFlagService: NSFetchedResultsControllerDelegate {
             }
 
             featureFlags[current] = InMemoryFeatureFlag(featureFlag: f)
-        }
-    }
-}
-
-/// Describes the current feature flags that iOS cares about
-public enum CurrentFeatureFlags: String, CaseIterable {
-    case debugMenu = "perm.ios.debug.menu"
-    case traceSampling = "perm.ios.sentry.traces"
-    case profileSampling = "perm.ios.sentry.profile"
-    case reportIssue = "perm.ios.report_issue"
-    case disableReader = "perm.ios.disable_reader"
-    case nativeCollections = "perm.ios.native_collections"
-    case disableOnlineListen = "perm.ios.listen.disableOnline"
-    case premiumSearchScopesExperiment = "EXPERIMENT_POCKET_PREMIUM_SEARCH_SCOPES"
-
-    /// Description to use in a debug menu
-    var description: String {
-        switch self {
-        case .debugMenu:
-            return "Debug menu for iOS"
-        case .traceSampling:
-            return "Percentage to use to sample traces in Sentry"
-        case .profileSampling:
-            return "Percentage to use to sample profiles in Sentry"
-        case .reportIssue:
-            return "Enable the Report an Issue feature when users encounter an error"
-        case .disableReader:
-            return "Disable the Reader to force use of a Web view for viewing content"
-        case .nativeCollections:
-            return "Enable native collections instead of opening collections in web view"
-        case .disableOnlineListen:
-            return "Disable online listen support, and fall back to offline TTS"
-        case .premiumSearchScopesExperiment:
-            return "Enable the search scopes experiment (for Premium users)"
         }
     }
 }
