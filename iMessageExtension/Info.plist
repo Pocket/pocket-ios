@@ -27,5 +27,10 @@
 	<string>$(SNOWPLOW_IDENTIFIER)</string>
 	<key>GroupId</key>
 	<string>$(GROUP_ID)</string>
+	<key>MSSupportedPresentationContexts</key>
+	<array>
+		<string>MSMessagesAppPresentationContextMessages</string>
+		<string>MSMessagesAppPresentationContextMedia</string>
+	</array>
 </dict>
 </plist>

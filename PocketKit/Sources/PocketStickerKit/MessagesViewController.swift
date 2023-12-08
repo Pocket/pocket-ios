@@ -42,7 +42,8 @@ class MessagesViewController: MSMessagesAppViewController {
         } else {
             Log.setUserID(services.appSession.currentSession!.userIdentifier)
         }
-        child = StickerBrowserController(braze: braze)
+        pr
+        child = StickerBrowserController(braze: braze, tracker: tracker, )
         self.init(childViewController: child)
     }
 
@@ -69,6 +70,7 @@ class MessagesViewController: MSMessagesAppViewController {
           vcView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
           vcView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
           vcView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+          vcView.backgroundColor = .white
         }
         childViewController.didMove(toParent: self)
     }
@@ -78,6 +80,11 @@ class MessagesViewController: MSMessagesAppViewController {
  Usual Apple Messages call backs
  */
 extension MessagesViewController {
+    // https://developer.apple.com/documentation/messages/adding_sticker_packs_and_imessage_apps_to_the_system_stickers_app_messages_camera_and_facetime
+    // Use that to determine if a user is in effects in facetime, or in imessage.
+    // presentationContext == .messages = The system is presenting your iMessage app inside the Messages app.
+    // presentationContext == .media = The system is in effects and you can only present stickers and images.
+
     override func willBecomeActive(with conversation: MSConversation) {
         // Called when the extension is about to move from the inactive to active state.
         // This will happen when the extension is about to present UI.
