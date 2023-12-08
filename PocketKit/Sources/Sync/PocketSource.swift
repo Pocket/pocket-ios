@@ -715,7 +715,18 @@ extension PocketSource {
 
     public func fetchViewItem(from url: String) async throws -> Item? {
         if let item = fetchViewContextItem(url) {
-            // TODO: update existing item with new data?
+            defer {
+                Task {
+                    if let remoteItem = try await apollo
+                        .fetch(query: ItemByURLQuery(url: url))
+                        .data?.itemByUrl?.fragments.itemParts {
+                        try viewContext.performAndWait {
+                            item.update(remote: remoteItem, with: space)
+                            try space.save(context: viewContext)
+                        }
+                    }
+                }
+            }
             return item
         }
 
