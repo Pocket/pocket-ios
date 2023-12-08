@@ -200,7 +200,13 @@ extension PocketBraze: UNUserNotificationCenterDelegate {
         didReceive response: UNNotificationResponse,
         withCompletionHandler completionHandler: @escaping () -> Void
     ) {
-        didReceiveUserNotification(center, didReceive: response, withCompletionHandler: completionHandler)
+        // TODO: Refactor this once SwiftUI bug is addressed
+        // we are doing this hack because, from what we have experienced, if the app is in background
+        // the `onContinueUserActivity` call that we have on mainView and handles the urls does not seem to be called until the
+        // app is fully foregrounded. Not a great way, but for now it's the only hacky workaround that we have found
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+            self?.didReceiveUserNotification(center, didReceive: response, withCompletionHandler: completionHandler)
+        }
     }
 
     func userNotificationCenter(
