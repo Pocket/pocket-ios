@@ -10,7 +10,7 @@ import SharedPocketKit
 @testable import Sync
 @testable import PocketKit
 
-class RecommendationViewModelTests: XCTestCase {
+class RecommendableViewModelTests: XCTestCase {
     private var source: MockSource!
     private var space: Space!
     private var tracker: MockTracker!
@@ -280,16 +280,16 @@ class RecommendationViewModelTests: XCTestCase {
         let recommendation = space.buildRecommendation(item: space.buildItem())
 
         let expectSave = expectation(description: "expect source.save(_:)")
-        source.stubSaveRecommendation { saved in
+        source.stubSaveItem { saved in
             defer { expectSave.fulfill() }
-            XCTAssertTrue(saved === recommendation)
+            XCTAssertTrue(saved === recommendation.item)
         }
 
         let viewModel = subject(recommendation: recommendation)
 
         viewModel.invokeAction(title: "Save")
 
-        wait(for: [expectSave], timeout: 10)
+        wait(for: [expectSave], timeout: 2)
     }
 
     func test_report_updatesSelectedRecommendationToReport() {
@@ -347,8 +347,8 @@ class RecommendationViewModelTests: XCTestCase {
         let recommendation = space.buildRecommendation(
             item: space.buildItem()
         )
-        source.stubFetchDetailsForRecommendation { rec in
-            rec.item.article = .some(Article(components: [.text(TextComponent(content: "This article has components"))]))
+        source.stubFetchDetailsForItem { item in
+            item.article = .some(Article(components: [.text(TextComponent(content: "This article has components"))]))
             return true
         }
 
@@ -371,8 +371,8 @@ class RecommendationViewModelTests: XCTestCase {
         let recommendation = space.buildRecommendation(
             item: space.buildItem()
         )
-        source.stubFetchDetailsForRecommendation { rec in
-            rec.item.article = nil
+        source.stubFetchDetailsForItem { item in
+            item.article = nil
             return false
         }
 
@@ -395,7 +395,7 @@ class RecommendationViewModelTests: XCTestCase {
             item: space.buildItem(article: .init(components: []))
         )
 
-        source.stubFetchDetailsForRecommendation { rec in
+        source.stubFetchDetailsForItem { rec in
             XCTFail("Should not fetch details when article content is already available")
             return false
         }

@@ -8,13 +8,6 @@ import CoreData
 import Combine
 
 class MockSource: Source {
-    func save(item: Sync.Item) {
-    }
-
-    func fetchDetails(for item: Sync.Item) async throws -> Bool {
-        true
-    }
-
     func fetchViewItem(from url: String) async throws -> Sync.Item? {
         nil
     }
@@ -989,6 +982,12 @@ extension MockSource {
         let recommendation: Recommendation
     }
 
+    static let saveItem = "saveItem"
+    typealias SaveItemImpl = (Item) -> Void
+    struct SaveItemCall {
+        let item: Item
+    }
+
     static let archiveRecommendation = "archiveRecommendation"
     typealias ArchiveRecommendationImpl = (Recommendation) -> Void
     struct ArchiveRecommendationCall {
@@ -1025,6 +1024,27 @@ extension MockSource {
         ]
 
         impl(recommendation)
+    }
+
+    func stubSaveItem(_ impl: @escaping SaveItemImpl) {
+        implementations[Self.saveItem] = impl
+    }
+
+    func saveItemCall(at index: Int) -> SaveItemCall? {
+        guard let calls = calls[Self.saveItem],
+                index < calls.count,
+                let call = calls[index] as? SaveItemCall else {
+            return nil
+        }
+        return call
+    }
+
+    func save(item: Item) {
+        guard let impl = implementations[Self.saveItem] as? SaveItemImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+        calls[Self.saveItem] = (calls[Self.saveItem] ?? []) + [SaveItemCall(item: item)]
+        impl(item)
     }
 
     func stubArchiveRecommendation(_ impl: @escaping ArchiveRecommendationImpl) {
@@ -1215,36 +1235,36 @@ extension MockSource {
 
 // MARK: - Fetch Details for Recommendation
 extension MockSource {
-    static let fetchDetailsForRecommendation = "fetchDetailsForRecommendation"
-    typealias FetchDetailsForRecommendationImpl = (Recommendation) async throws -> Bool
+    static let fetchDetailsForItem = "fetchDetailsForItem"
+    typealias FetchDetailsForItemImpl = (Item) async throws -> Bool
 
-    struct FetchDetailsForRecommendationCall {
-        let recommendation: Recommendation
+    struct FetchDetailsForItemCall {
+        let item: Item
     }
 
-    func stubFetchDetailsForRecommendation(impl: @escaping FetchDetailsForRecommendationImpl) {
-        implementations[Self.fetchDetailsForRecommendation] = impl
+    func stubFetchDetailsForItem(impl: @escaping FetchDetailsForItemImpl) {
+        implementations[Self.fetchDetailsForItem] = impl
     }
 
-    func fetchDetails(for recommendation: Recommendation) async throws -> Bool {
-        guard let impl = implementations[Self.fetchDetailsForRecommendation] as? FetchDetailsForRecommendationImpl else {
+    func fetchDetails(for item: Item) async throws -> Bool {
+        guard let impl = implementations[Self.fetchDetailsForItem] as? FetchDetailsForItemImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
 
-        calls[Self.fetchDetailsForRecommendation] = (calls[Self.fetchDetailsForRecommendation] ?? []) + [
-            FetchDetailsForRecommendationCall(recommendation: recommendation)
+        calls[Self.fetchDetailsForItem] = (calls[Self.fetchDetailsForItem] ?? []) + [
+            FetchDetailsForItemCall(item: item)
         ]
 
-        return try await impl(recommendation)
+        return try await impl(item)
     }
 
-    func fetchDetailsForRecommendationCall(at index: Int) -> FetchDetailsForRecommendationCall? {
-        guard let calls = calls[Self.fetchDetailsForRecommendation],
+    func fetchDetailsForRecommendationCall(at index: Int) -> FetchDetailsForItemCall? {
+        guard let calls = calls[Self.fetchDetailsForItem],
               calls.count > index else {
             return nil
         }
 
-        return calls[index] as? FetchDetailsForRecommendationCall
+        return calls[index] as? FetchDetailsForItemCall
     }
 }
 
