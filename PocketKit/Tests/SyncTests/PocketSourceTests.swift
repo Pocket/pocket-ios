@@ -469,7 +469,7 @@ class PocketSourceTests: XCTestCase {
         )
 
         let source = subject()
-        try await source.fetchDetails(for: recommendation)
+        try await source.fetchDetails(for: recommendation.item)
 
         space.backgroundRefresh(recommendation, mergeChanges: true)
         XCTAssertNotNil(recommendation.item.article)
