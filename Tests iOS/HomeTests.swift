@@ -235,7 +235,7 @@ class HomeTests: XCTestCase {
         app.homeView.recommendationCell("Slate 1, Recommendation 2")
             .wait().tap()
 
-        app.readerView.cell(containing: "Slate 1, Recommendation 2").wait()
+        app.readerView.cell(containing: "Slate 1, Rec 2").wait()
 
         app.navigationBar.buttons["Home"].tap()
 
