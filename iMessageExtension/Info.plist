@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>NSExtension</key>
+	<dict>
+		<key>NSExtensionPointIdentifier</key>
+		<string>com.apple.message-payload-provider</string>
+		<key>NSExtensionPrincipalClass</key>
+		<string>PocketStickerKit.MessagesViewController</string>
+	</dict>
+	<key>BrazeAPIEndpoint</key>
+	<string>$(BRAZE_API_ENDPOINT)</string>
+	<key>BrazeAPIKey</key>
+	<string>$(BRAZE_API_KEY)</string>
+	<key>PocketAPIBaseURL</key>
+	<string>$(POCKET_API_BASE_URL)</string>
+	<key>PocketAPIConsumerKey</key>
+	<string>$(POCKET_API_CONSUMER_KEY)</string>
+	<key>PocketAPIConsumerKeyPad</key>
+	<string>$(POCKET_API_CONSUMER_KEY_PAD)</string>
+	<key>SentryDSN</key>
+	<string>$(SENTRY_DSN)</string>
+	<key>SnowplowEndpoint</key>
+	<string>$(SNOWPLOW_ENDPOINT)</string>
+	<key>SnowplowIdentifier</key>
+	<string>$(SNOWPLOW_IDENTIFIER)</string>
+	<key>GroupId</key>
+	<string>$(GROUP_ID)</string>
+	<key>MSSupportedPresentationContexts</key>
+	<array>
+		<string>MSMessagesAppPresentationContextMessages</string>
+		<string>MSMessagesAppPresentationContextMedia</string>
+	</array>
+</dict>
+</plist>

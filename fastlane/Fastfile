@@ -63,6 +63,15 @@ lane :debug_build do
       sdk: "iphoneos*",
       profile_name: "PocketDev_WidgetExtension_CI",
   )
+  update_code_signing_settings(
+    use_automatic_signing: false,
+    path: "Pocket.xcodeproj",
+    targets: "iMessageExtension",
+    build_configurations: "Debug",
+    code_sign_identity: "Apple Development",
+    sdk: "iphoneos*",
+    profile_name: "PocketDev_IMessage_CI",
+)
   build_app(
       scheme: "Pocket (iOS)",
       export_method: "development",
@@ -74,6 +83,7 @@ lane :debug_build do
           "com.ideashower.ReadItLaterPro.Widget-Extension" => "PocketDev_WidgetExtension_CI",
           "com.ideashower.ReadItLaterPro.PushNotificationStoryExtension" => "PocketDev_PushNotificationStoryExtension_CI",
           "com.ideashower.ReadItLaterPro.PushNotificationServiceExtension" => "PocketDev_PushNitificationServiceExtension_CI",
+          "com.ideashower.ReadItLaterPro.iMessageExtension" => "PocketDev_IMessage_CI",
         }
       }
   )

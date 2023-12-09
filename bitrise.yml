@@ -126,6 +126,11 @@ workflows:
             - extract_to_path: '$BITRISE_SOURCE_DIR/PocketKit/Sources/Textile/Style/Typography/Fonts'
             - archive_url: '$BITRISEIO_BASE_FONTS_URL'
           title: Install fonts
+      - resource-archive@2:
+          inputs:
+            - extract_to_path: '$BITRISE_SOURCE_DIR/PocketKit/Sources/PocketStickerKit/Stickers'
+            - archive_url: '$BITRISEIO_STICKERS_URL'
+          title: Install stickers
       - script@1:
           title: Download latest schema
           inputs:

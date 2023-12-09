@@ -3,6 +3,8 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import SwiftUI
+import SharedPocketKit
+
 enum SnowplowEndpoint: String, CaseIterable, Identifiable {
     case production
     case mini

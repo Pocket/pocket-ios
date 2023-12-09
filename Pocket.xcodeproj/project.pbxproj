@@ -61,6 +61,10 @@
 		6547A0FF29F1812E00F6FC6B /* Sails in Frameworks */ = {isa = PBXBuildFile; productRef = 6547A0FE29F1812E00F6FC6B /* Sails */; };
 		656041EE29B18105007E7CD0 /* SettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656041ED29B18105007E7CD0 /* SettingsTests.swift */; };
 		656041F029B182AF007E7CD0 /* AccountManagementViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656041EF29B182AF007E7CD0 /* AccountManagementViewElement.swift */; };
+		656A99D62B237F6300FCFDC4 /* Messages.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65BE9F542B228AA80059C3C4 /* Messages.framework */; };
+		656A99E22B237F6300FCFDC4 /* iMessageExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 656A99D52B237F6300FCFDC4 /* iMessageExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		656A99E82B237FC500FCFDC4 /* PocketStickerKit in Frameworks */ = {isa = PBXBuildFile; productRef = 656A99E72B237FC500FCFDC4 /* PocketStickerKit */; };
+		656A99EB2B23828200FCFDC4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 65BE9F5C2B228AA90059C3C4 /* Assets.xcassets */; };
 		656BF0732A09A5EC008BA8E3 /* ErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656BF0722A09A5EC008BA8E3 /* ErrorTests.swift */; };
 		658140EA29A5993C00346848 /* SnowplowMicro.swift in Sources */ = {isa = PBXBuildFile; fileRef = 658140E929A5993C00346848 /* SnowplowMicro.swift */; };
 		658140EC29A59A0C00346848 /* HTTPDataDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 658140EB29A59A0C00346848 /* HTTPDataDownloader.swift */; };
@@ -132,6 +136,13 @@
 			remoteGlobalIDString = 650FECCA28BA85F300A3CB0C;
 			remoteInfo = PushNotificationServiceExtension;
 		};
+		656A99E02B237F6300FCFDC4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 166A81A42637406B0015AA1D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 656A99D42B237F6300FCFDC4;
+			remoteInfo = iMessageExtension;
+		};
 		65EC273128BA8AD50075E1DF /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 166A81A42637406B0015AA1D /* Project object */;
@@ -159,6 +170,7 @@
 				166DF27427E9160A00C03BF4 /* SaveToPocket.appex in Embed App Extensions */,
 				65EC273328BA8AD50075E1DF /* PushNotificationStoryExtension.appex in Embed App Extensions */,
 				650FECD228BA85F300A3CB0C /* PushNotificationServiceExtension.appex in Embed App Extensions */,
+				656A99E22B237F6300FCFDC4 /* iMessageExtension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -241,10 +253,15 @@
 		655C274E28B67ED20040AEAB /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		656041ED29B18105007E7CD0 /* SettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTests.swift; sourceTree = "<group>"; };
 		656041EF29B182AF007E7CD0 /* AccountManagementViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountManagementViewElement.swift; sourceTree = "<group>"; };
+		656A99D52B237F6300FCFDC4 /* iMessageExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = iMessageExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		656BF0722A09A5EC008BA8E3 /* ErrorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorTests.swift; sourceTree = "<group>"; };
 		658140E929A5993C00346848 /* SnowplowMicro.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnowplowMicro.swift; sourceTree = "<group>"; };
 		658140EB29A59A0C00346848 /* HTTPDataDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPDataDownloader.swift; sourceTree = "<group>"; };
 		65BE918D29A5B9AF00B13BF1 /* AnyCodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyCodable.swift; sourceTree = "<group>"; };
+		65BE9F542B228AA80059C3C4 /* Messages.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Messages.framework; path = Library/Frameworks/Messages.framework; sourceTree = DEVELOPER_DIR; };
+		65BE9F5C2B228AA90059C3C4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		65BE9F5E2B228AA90059C3C4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		65BE9F682B2297E40059C3C4 /* iMessageExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = iMessageExtension.entitlements; sourceTree = "<group>"; };
 		65D3105129CEACEE00952D64 /* PKTListenResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PKTListenResources.bundle; sourceTree = "<group>"; };
 		65EC272528BA8AD50075E1DF /* PushNotificationStoryExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PushNotificationStoryExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		65EC272628BA8AD50075E1DF /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
@@ -332,6 +349,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		656A99D22B237F6300FCFDC4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				656A99D62B237F6300FCFDC4 /* Messages.framework in Frameworks */,
+				656A99E82B237FC500FCFDC4 /* PocketStickerKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		65EC272228BA8AD50075E1DF /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -407,6 +433,7 @@
 				650FECCC28BA85F300A3CB0C /* PushNotificationServiceExtension */,
 				65EC272A28BA8AD50075E1DF /* PushNotificationStoryExtension */,
 				AA2E89062A0D8848004A27BD /* ItemWidgets */,
+				65BE9F562B228AA80059C3C4 /* iMessageExtension */,
 				F220F2B8264DC2750064D272 /* Frameworks */,
 				166A81B12637406C0015AA1D /* Products */,
 			);
@@ -421,6 +448,7 @@
 				650FECCB28BA85F300A3CB0C /* PushNotificationServiceExtension.appex */,
 				65EC272528BA8AD50075E1DF /* PushNotificationStoryExtension.appex */,
 				AA2E89012A0D8847004A27BD /* ItemWidgets.appex */,
+				656A99D52B237F6300FCFDC4 /* iMessageExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -530,6 +558,16 @@
 			path = PushNotificationServiceExtension;
 			sourceTree = "<group>";
 		};
+		65BE9F562B228AA80059C3C4 /* iMessageExtension */ = {
+			isa = PBXGroup;
+			children = (
+				65BE9F682B2297E40059C3C4 /* iMessageExtension.entitlements */,
+				65BE9F5C2B228AA90059C3C4 /* Assets.xcassets */,
+				65BE9F5E2B228AA90059C3C4 /* Info.plist */,
+			);
+			path = iMessageExtension;
+			sourceTree = "<group>";
+		};
 		65EC272A28BA8AD50075E1DF /* PushNotificationStoryExtension */ = {
 			isa = PBXGroup;
 			children = (
@@ -581,6 +619,7 @@
 				65EC272828BA8AD50075E1DF /* UserNotificationsUI.framework */,
 				AA2E89022A0D8847004A27BD /* WidgetKit.framework */,
 				AA2E89042A0D8847004A27BD /* SwiftUI.framework */,
+				65BE9F542B228AA80059C3C4 /* Messages.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -607,6 +646,7 @@
 				650FECD128BA85F300A3CB0C /* PBXTargetDependency */,
 				65EC273228BA8AD50075E1DF /* PBXTargetDependency */,
 				AA2E890F2A0D8849004A27BD /* PBXTargetDependency */,
+				656A99E12B237F6300FCFDC4 /* PBXTargetDependency */,
 			);
 			name = "Pocket (iOS)";
 			packageProductDependencies = (
@@ -664,6 +704,26 @@
 			productName = PushNotificationServiceExtension;
 			productReference = 650FECCB28BA85F300A3CB0C /* PushNotificationServiceExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
+		};
+		656A99D42B237F6300FCFDC4 /* iMessageExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 656A99E32B237F6400FCFDC4 /* Build configuration list for PBXNativeTarget "iMessageExtension" */;
+			buildPhases = (
+				656A99D12B237F6300FCFDC4 /* Sources */,
+				656A99D22B237F6300FCFDC4 /* Frameworks */,
+				656A99D32B237F6300FCFDC4 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = iMessageExtension;
+			packageProductDependencies = (
+				656A99E72B237FC500FCFDC4 /* PocketStickerKit */,
+			);
+			productName = iMessageExtension;
+			productReference = 656A99D52B237F6300FCFDC4 /* iMessageExtension.appex */;
+			productType = "com.apple.product-type.app-extension.messages";
 		};
 		65EC272428BA8AD50075E1DF /* PushNotificationStoryExtension */ = {
 			isa = PBXNativeTarget;
@@ -731,7 +791,7 @@
 		166A81A42637406B0015AA1D /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1430;
+				LastSwiftUpdateCheck = 1500;
 				LastUpgradeCheck = 1300;
 				TargetAttributes = {
 					166A81AF2637406C0015AA1D = {
@@ -744,6 +804,9 @@
 					};
 					650FECCA28BA85F300A3CB0C = {
 						CreatedOnToolsVersion = 13.4.1;
+					};
+					656A99D42B237F6300FCFDC4 = {
+						CreatedOnToolsVersion = 15.0.1;
 					};
 					65EC272428BA8AD50075E1DF = {
 						CreatedOnToolsVersion = 13.4.1;
@@ -797,6 +860,7 @@
 				650FECCA28BA85F300A3CB0C /* PushNotificationServiceExtension */,
 				65EC272428BA8AD50075E1DF /* PushNotificationStoryExtension */,
 				AA2E89002A0D8847004A27BD /* ItemWidgets */,
+				656A99D42B237F6300FCFDC4 /* iMessageExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -826,6 +890,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		656A99D32B237F6300FCFDC4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				656A99EB2B23828200FCFDC4 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -983,6 +1055,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		656A99D12B237F6300FCFDC4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		65EC272128BA8AD50075E1DF /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1025,6 +1104,11 @@
 			isa = PBXTargetDependency;
 			target = 650FECCA28BA85F300A3CB0C /* PushNotificationServiceExtension */;
 			targetProxy = 650FECD028BA85F300A3CB0C /* PBXContainerItemProxy */;
+		};
+		656A99E12B237F6300FCFDC4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 656A99D42B237F6300FCFDC4 /* iMessageExtension */;
+			targetProxy = 656A99E02B237F6300FCFDC4 /* PBXContainerItemProxy */;
 		};
 		65EC273228BA8AD50075E1DF /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1335,6 +1419,123 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.PushNotificationServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "Bitrise com.ideashower.ReadItLaterPro.PushNotifica";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		656A99E42B237F6400FCFDC4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = iMessageExtension/iMessageExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 43AQ936H96;
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = iMessageExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Pocket;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 8.2.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.iMessageExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		656A99E52B237F6400FCFDC4 /* Debug_Tests */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = iMessageExtension/iMessageExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 43AQ936H96;
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = iMessageExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Pocket;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 8.2.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.iMessageExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug_Tests;
+		};
+		656A99E62B237F6400FCFDC4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = iMessageExtension/iMessageExtension.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 43AQ936H96;
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = iMessageExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Pocket;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 8.2.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.iMessageExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Bitrise com.ideashower.ReadItLaterPro.iMessageExte";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1842,6 +2043,16 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		656A99E32B237F6400FCFDC4 /* Build configuration list for PBXNativeTarget "iMessageExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				656A99E42B237F6400FCFDC4 /* Debug */,
+				656A99E52B237F6400FCFDC4 /* Debug_Tests */,
+				656A99E62B237F6400FCFDC4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		65EC273428BA8AD50075E1DF /* Build configuration list for PBXNativeTarget "PushNotificationStoryExtension" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -1962,6 +2173,10 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6547A0FD29F17AAF00F6FC6B /* XCRemoteSwiftPackageReference "Sails" */;
 			productName = Sails;
+		};
+		656A99E72B237FC500FCFDC4 /* PocketStickerKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PocketStickerKit;
 		};
 		8A3B77BC29E0AEEB00AD71D0 /* PocketKit */ = {
 			isa = XCSwiftPackageProductDependency;

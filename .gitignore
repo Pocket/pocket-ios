@@ -127,3 +127,4 @@ schema.graphqls
 introspection_response.json
 !PocketKit/Sources/PocketGraph/user-defined-operations
 PocketKit/apollo-ios-cli
+PocketKit/Sources/PocketStickerKit/Stickers
