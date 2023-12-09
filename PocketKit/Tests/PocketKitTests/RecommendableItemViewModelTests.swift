@@ -10,7 +10,7 @@ import SharedPocketKit
 @testable import Sync
 @testable import PocketKit
 
-class RecommendableViewModelTests: XCTestCase {
+class RecommendableItemViewModelTests: XCTestCase {
     private var source: MockSource!
     private var space: Space!
     private var tracker: MockTracker!
