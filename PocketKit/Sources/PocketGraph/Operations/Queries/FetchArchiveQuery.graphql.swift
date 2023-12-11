@@ -8,7 +8,7 @@ public class FetchArchiveQuery: GraphQLQuery {
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
       #"query FetchArchive($pagination: PaginationInput, $filter: SavedItemsFilter, $sort: SavedItemsSort) { user { __typename savedItems(pagination: $pagination, filter: $filter, sort: $sort) { __typename totalCount pageInfo { __typename hasNextPage endCursor } edges { __typename cursor node { __typename ...SavedItemSummary } } } } }"#,
-      fragments: [SavedItemSummary.self, TagParts.self, ItemSummary.self, DomainMetadataParts.self, SyndicatedArticleParts.self, PendingItemParts.self, CorpusItemParts.self, CollectionSummary.self, CollectionAuthorSummary.self]
+      fragments: [CollectionAuthorSummary.self, CollectionSummary.self, CorpusItemParts.self, DomainMetadataParts.self, ItemSummary.self, PendingItemParts.self, SavedItemSummary.self, SyndicatedArticleParts.self, TagParts.self]
     ))
 
   public var pagination: GraphQLNullable<PaginationInput>
