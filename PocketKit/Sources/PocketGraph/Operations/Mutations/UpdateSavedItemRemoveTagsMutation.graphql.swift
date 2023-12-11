@@ -8,7 +8,7 @@ public class UpdateSavedItemRemoveTagsMutation: GraphQLMutation {
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
       #"mutation UpdateSavedItemRemoveTags($savedItemId: ID!) { updateSavedItemRemoveTags(savedItemId: $savedItemId) { __typename ...SavedItemParts } }"#,
-      fragments: [SavedItemParts.self, TagParts.self, ItemParts.self, MarticleTextParts.self, ImageParts.self, MarticleDividerParts.self, MarticleTableParts.self, MarticleHeadingParts.self, MarticleCodeBlockParts.self, VideoParts.self, MarticleBulletedListParts.self, MarticleNumberedListParts.self, MarticleBlockquoteParts.self, DomainMetadataParts.self, SyndicatedArticleParts.self, PendingItemParts.self, CorpusItemSummary.self]
+      fragments: [CorpusItemSummary.self, DomainMetadataParts.self, ImageParts.self, ItemParts.self, MarticleBlockquoteParts.self, MarticleBulletedListParts.self, MarticleCodeBlockParts.self, MarticleDividerParts.self, MarticleHeadingParts.self, MarticleNumberedListParts.self, MarticleTableParts.self, MarticleTextParts.self, PendingItemParts.self, SavedItemParts.self, SyndicatedArticleParts.self, TagParts.self, VideoParts.self]
     ))
 
   public var savedItemId: ID

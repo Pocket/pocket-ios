@@ -8,7 +8,7 @@ public class GetCollectionBySlugQuery: GraphQLQuery {
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
       #"query getCollectionBySlug($slug: String!) { collection: collectionBySlug(slug: $slug) { __typename externalId slug title intro publishedAt authors { __typename name } stories { __typename url title excerpt imageUrl authors { __typename name } publisher item { __typename ...ItemParts } sortOrder } } }"#,
-      fragments: [ItemParts.self, MarticleTextParts.self, ImageParts.self, MarticleDividerParts.self, MarticleTableParts.self, MarticleHeadingParts.self, MarticleCodeBlockParts.self, VideoParts.self, MarticleBulletedListParts.self, MarticleNumberedListParts.self, MarticleBlockquoteParts.self, DomainMetadataParts.self, SyndicatedArticleParts.self]
+      fragments: [DomainMetadataParts.self, ImageParts.self, ItemParts.self, MarticleBlockquoteParts.self, MarticleBulletedListParts.self, MarticleCodeBlockParts.self, MarticleDividerParts.self, MarticleHeadingParts.self, MarticleNumberedListParts.self, MarticleTableParts.self, MarticleTextParts.self, SyndicatedArticleParts.self, VideoParts.self]
     ))
 
   public var slug: String

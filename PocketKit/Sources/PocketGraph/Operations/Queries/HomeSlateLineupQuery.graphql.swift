@@ -8,7 +8,7 @@ public class HomeSlateLineupQuery: GraphQLQuery {
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
       #"query HomeSlateLineup($locale: String!) { homeSlateLineup(locale: $locale) { __typename id slates { __typename ...CorpusSlateParts } } }"#,
-      fragments: [CorpusSlateParts.self, CorpusRecommendationParts.self, CorpusItemParts.self, SyndicatedArticleParts.self, CollectionSummary.self, CollectionAuthorSummary.self]
+      fragments: [CollectionAuthorSummary.self, CollectionSummary.self, CorpusItemParts.self, CorpusRecommendationParts.self, CorpusSlateParts.self, SyndicatedArticleParts.self]
     ))
 
   public var locale: String
@@ -28,7 +28,7 @@ public class HomeSlateLineupQuery: GraphQLQuery {
       .field("homeSlateLineup", HomeSlateLineup.self, arguments: ["locale": .variable("locale")]),
     ] }
 
-    /// Get ranked corpus slates and recommendations to deliver a unified Home experience. The locale argument determines the UI and recommendation content language.
+    /// Get ranked corpus slates and recommendations to deliver a unified Home experience. 
     public var homeSlateLineup: HomeSlateLineup { __data["homeSlateLineup"] }
 
     /// HomeSlateLineup
