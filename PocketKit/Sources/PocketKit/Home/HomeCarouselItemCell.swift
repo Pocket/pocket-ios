@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import UIKit
 import Kingfisher
 import Textile
@@ -8,6 +12,7 @@ protocol HomeCarouselItemCellModel {
     var favoriteAction: ItemAction? { get }
     var overflowActions: [ItemAction]? { get }
     var saveAction: ItemAction? { get }
+    var attributedCollection: NSAttributedString? { get }
     var attributedTitle: NSAttributedString { get }
     var attributedDomain: NSAttributedString { get }
     var attributedTimeToRead: NSAttributedString { get }
@@ -18,10 +23,20 @@ class HomeCarouselItemCell: UICollectionViewCell {
         static let cornerRadius: CGFloat = 16
         static let maxTitleLines = 3
         static let maxDetailLines = 2
+        static let maxCollectionLines = 1
         static let actionButtonImageSize = CGSize(width: 20, height: 20)
         static let layoutMargins = UIEdgeInsets(top: Margins.normal.rawValue, left: Margins.normal.rawValue, bottom: Margins.normal.rawValue, right: Margins.normal.rawValue)
         static let stackSpacing: CGFloat = 4
     }
+
+    private let collectionLabel: UILabel = {
+        let label = UILabel()
+        label.numberOfLines = Constants.maxCollectionLines
+        label.setContentCompressionResistancePriority(.required, for: .vertical)
+        label.adjustsFontForContentSizeCategory = true
+        label.accessibilityIdentifier = "collection-label"
+        return label
+    }()
 
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -75,7 +90,14 @@ class HomeCarouselItemCell: UICollectionViewCell {
 
     internal let mainContentView = UIView()
 
-    internal let mainContentStack: UIStackView = {
+    private let textStack: UIStackView = {
+        let stack = UIStackView()
+        stack.spacing = Constants.stackSpacing
+        stack.axis = .vertical
+        return stack
+    }()
+
+    private let mainContentStack: UIStackView = {
         let stack = UIStackView()
         stack.alignment = .top
         stack.distribution = .equalSpacing
@@ -152,7 +174,8 @@ class HomeCarouselItemCell: UICollectionViewCell {
 
         [UIView(), domainLabel, timeToReadLabel, UIView()].forEach(subtitleStack.addArrangedSubview)
         [favoriteButton, saveButton, overflowButton].forEach(buttonStack.addArrangedSubview)
-        [titleLabel, thumbnailView].forEach(mainContentStack.addArrangedSubview)
+        [collectionLabel, titleLabel].forEach(textStack.addArrangedSubview)
+        [textStack, thumbnailView].forEach(mainContentStack.addArrangedSubview)
         [subtitleStack, UIView(), buttonStack].forEach(bottomStack.addArrangedSubview)
     }
 
@@ -166,6 +189,13 @@ extension HomeCarouselItemCell {
         titleLabel.attributedText = model.attributedTitle
         domainLabel.attributedText = model.attributedDomain
         timeToReadLabel.attributedText = model.attributedTimeToRead
+
+        if let attributedCollection = model.attributedCollection {
+            collectionLabel.isHidden = false
+            collectionLabel.attributedText = attributedCollection
+        } else {
+            collectionLabel.isHidden = true
+        }
 
         if model.attributedTimeToRead.string.isEmpty {
             timeToReadLabel.isHidden = true

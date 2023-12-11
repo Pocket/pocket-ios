@@ -1,4 +1,9 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import UIKit
+import Textile
 
 // An object that conforms to this protocol is commonly capable of responding to
 // (overridden) events that occur within a PocketTextView nested within a PocketTextCell.
@@ -55,6 +60,8 @@ class ArticleComponentTextView: UITextView {
         isEditable = false
         isScrollEnabled = false
         delegate = self
+
+        linkTextAttributes = [.foregroundColor: UIColor(.ui.textfieldURL) as Any]
 
         interactions
             .filter { $0 is UIContextMenuInteraction }

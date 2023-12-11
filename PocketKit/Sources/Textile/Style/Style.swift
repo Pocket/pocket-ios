@@ -177,13 +177,24 @@ public struct Style {
         )
     }
 
+    public func scalingLineHeight(by factor: CGFloat) -> Style {
+        Style(
+            fontDescriptor: fontDescriptor,
+            color: colorAsset,
+            underlineStyle: underlineStyle,
+            strike: strike,
+            paragraph: paragraph.scaleLineHeight(by: factor),
+            backgroundColor: backgroundColorAsset
+        )
+    }
+
     public func with(alignment: TextAlignment) -> Style {
         Style(
             fontDescriptor: fontDescriptor,
             color: colorAsset,
             underlineStyle: underlineStyle,
             strike: strike,
-            paragraph: ParagraphStyle(alignment: alignment),
+            paragraph: paragraph.with(alignment: alignment),
             backgroundColor: backgroundColorAsset
         )
     }

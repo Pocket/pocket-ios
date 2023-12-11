@@ -108,6 +108,8 @@ public class AuthorizationClient {
             session.prefersEphemeralWebBrowserSession = true
             session.presentationContextProvider = contextProvider
             _ = session.start()
+
+            Log.breadcrumb(category: "auth", level: .error, message: "User did log in")
         }
     }
 }

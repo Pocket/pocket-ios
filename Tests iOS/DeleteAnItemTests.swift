@@ -8,12 +8,15 @@ import Sails
 class DeleteAnItemTests: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
+    var snowplowMicro = SnowplowMicro()
 
-    override func setUpWithError() throws {
+    override func setUp() async throws {
+        try await super.setUp()
         continueAfterFailure = false
 
         let uiApp = XCUIApplication()
         app = PocketAppElement(app: uiApp)
+        await snowplowMicro.resetSnowplowEvents()
 
         server = Application()
         try server.start()
@@ -22,6 +25,7 @@ class DeleteAnItemTests: XCTestCase {
     override func tearDownWithError() throws {
         try server.stop()
         app.terminate()
+        try super.tearDownWithError()
     }
 
     func test_deletingAnItemFromList_removesItFromList_andSyncsWithServer() {
@@ -30,7 +34,7 @@ class DeleteAnItemTests: XCTestCase {
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isToDeleteAnItem {
                 defer { deletionExpectation.fulfill() }
-                XCTAssertEqual(apiRequest.variableItemId, "saved-item-2")
+                XCTAssertEqual(apiRequest.variableGivenURL, "http://localhost:8080/hello")
                 return .delete(apiRequest: apiRequest)
             }
 
@@ -42,7 +46,7 @@ class DeleteAnItemTests: XCTestCase {
 
         let itemCell = app
             .saves
-            .itemView(matching: "Item 2").wait()
+            .itemView(matching: "Item 1").wait()
 
         itemCell
             .itemActionButton.wait()
@@ -54,13 +58,59 @@ class DeleteAnItemTests: XCTestCase {
         waitForDisappearance(of: itemCell)
     }
 
-    func test_deletingAnItemFromReader_deletesItem_andPopsBackToList() {
+    @MainActor
+    func test_deletingAnItemFromReader_deletesItem_andPopsBackToList() async {
         let deletionExpectation = expectation(description: "A delete request to the server")
         server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isToDeleteAnItem {
                 defer { deletionExpectation.fulfill() }
-                XCTAssertEqual(apiRequest.variableItemId, "saved-item-2")
+                XCTAssertEqual(apiRequest.variableGivenURL, "http://localhost:8080/hello")
+                return .delete(apiRequest: apiRequest)
+            }
+
+            return Response.fallbackResponses(apiRequest: apiRequest)
+        }
+        app.launch()
+        app.tabBar.savesButton.wait().tap()
+
+        let itemCell = app
+            .saves
+            .itemView(matching: "Item 1")
+            .wait()
+
+        itemCell.tap()
+
+        app
+            .readerView
+            .wait()
+            .readerToolbar
+            .wait()
+            .moreButton
+            .wait()
+            .tap()
+
+        app.deleteButton.wait().tap()
+        app.alert.yes.wait().tap()
+        await fulfillment(of: [deletionExpectation], timeout: 10)
+
+        app.saves.wait()
+        waitForDisappearance(of: itemCell)
+
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+        let deleteEvent = await snowplowMicro.getFirstEvent(with: "reader.toolbar.delete")
+        deleteEvent!.getUIContext()!.assertHas(type: "button")
+        deleteEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
+    }
+
+    @MainActor
+    func test_deletingAnItemFromCollection_deletesItem_andPopsBackToList() async {
+        let deletionExpectation = expectation(description: "A delete request to the server")
+        server.routes.post("/graphql") { request, _ -> Response in
+            let apiRequest = ClientAPIRequest(request)
+            if apiRequest.isToDeleteAnItem {
+                defer { deletionExpectation.fulfill() }
+                XCTAssertEqual(apiRequest.variableGivenURL, "https://getpocket.com/collections/item-2")
                 return .delete(apiRequest: apiRequest)
             }
 
@@ -87,10 +137,15 @@ class DeleteAnItemTests: XCTestCase {
 
         app.deleteButton.wait().tap()
         app.alert.yes.wait().tap()
-        wait(for: [deletionExpectation], timeout: 10)
+        await fulfillment(of: [deletionExpectation], timeout: 10)
 
         app.saves.wait()
         waitForDisappearance(of: itemCell)
+
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+        let deleteEvent = await snowplowMicro.getFirstEvent(with: "collection.overflow.delete")
+        deleteEvent!.getUIContext()!.assertHas(type: "button")
+        deleteEvent!.getContentContext()!.assertHas(url: "https://getpocket.com/collections/item-2")
     }
 
     func test_deletingAnItem_fromArchive_removesItFromList_andSyncsWithServer() {
@@ -99,7 +154,7 @@ class DeleteAnItemTests: XCTestCase {
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isToDeleteAnItem {
                 defer { deletionExpectation.fulfill() }
-                XCTAssertEqual(apiRequest.variableItemId, "archived-item-1")
+                XCTAssertEqual(apiRequest.variableGivenURL, "http://example.com/items/archived-item-1")
                 return .delete(apiRequest: apiRequest)
             }
 

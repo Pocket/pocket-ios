@@ -10,8 +10,7 @@ public struct InputTagsView: View {
     let upsellView: AnyView
     let geometry: GeometryProxy
 
-    @Namespace
-    var animation
+    @Namespace var animation
 
     enum Constants {
         static let tagsHorizontalSpacing: CGFloat = 6
@@ -113,7 +112,8 @@ struct InputTagsView_PreviewProvider: PreviewProvider {
                 tags: ["tag 0", "tag 1", "tag 2", "tag 3", "tag 4", "tag 5", "tag 6", "this is going to be a long tag"],
                 removeTag: tagAction,
                 upsellView: AnyView(EmptyView()),
-                geometry: reader)
+                geometry: reader
+            )
         }
         .previewLayout(.sizeThatFits)
         .previewDisplayName("Light")
@@ -124,7 +124,8 @@ struct InputTagsView_PreviewProvider: PreviewProvider {
                 tags: ["tag 0", "tag 1", "tag 2", "tag 3", "tag 4", "tag 5", "tag 6", "this is going to be a long tag"],
                 removeTag: tagAction,
                 upsellView: AnyView(EmptyView()),
-                geometry: reader)
+                geometry: reader
+            )
         }
         .previewLayout(.sizeThatFits)
         .previewDisplayName("Dark")

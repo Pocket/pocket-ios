@@ -15,8 +15,8 @@ pipelines:
       # Run multiple tests on simulators in parallel
       - run-test-groups: {}
       - deploy-test-results: {}
-      # Build a release build
-      - release-build: {}
+      # Build a debug build
+      - debug-build: {}
 
   test-nightly-pipeline:
     stages:
@@ -55,10 +55,9 @@ stages:
       # Build a release build
       - release-build: {}
 
-  qa-build:
+  debug-build:
     workflows:
-      # Build a qa build
-      - qa-build: {}
+      - debug-build: {}
 
   run-test-groups:
     workflows:
@@ -66,6 +65,7 @@ stages:
       - run-tests-ui-1: {}
       - run-tests-ui-2: {}
       - run-tests-ui-3: {}
+      - run-tests-ui-4: {}
 
   run-test-groups-flakey:
     workflows:
@@ -82,10 +82,12 @@ stages:
       - run-tests-ui-1: {}
       - run-tests-ui-2: {}
       - run-tests-ui-3: {}
+      - run-tests-ui-4: {}
       # Turning off until iOS 16 is legacy
       # - run-tests-ui-1-legacy: {}
       # - run-tests-ui-2-legacy: {}
       # - run-tests-ui-3-legacy: {}
+      # - run-tests-ui-4-legacy: {}
 
   deploy-test-results:
     should_always_run: true
@@ -100,11 +102,9 @@ stages:
   release-build:
     workflows:
       - release-build: {}
-      - alpha-neue-release-build: {}
   deploy-internal-testflight:
     workflows:
       - internal-testflight-release: {}
-      - alpha-neue-internal-testflight-release: {}
 
 workflows:
   #Reusable workflow that is ran before each workflow to setup the necessary information
@@ -121,12 +121,16 @@ workflows:
             - source: '$BITRISEIO_SECRETS_XCCONFIG_URL'
             - destination: '$BITRISE_SOURCE_DIR/Config/secrets.xcconfig'
           title: Install production secrets.xcconfig
-      - cache-pull@2: {}
       - resource-archive@2:
           inputs:
             - extract_to_path: '$BITRISE_SOURCE_DIR/PocketKit/Sources/Textile/Style/Typography/Fonts'
             - archive_url: '$BITRISEIO_BASE_FONTS_URL'
           title: Install fonts
+      - resource-archive@2:
+          inputs:
+            - extract_to_path: '$BITRISE_SOURCE_DIR/PocketKit/Sources/PocketStickerKit/Stickers'
+            - archive_url: '$BITRISEIO_STICKERS_URL'
+          title: Install stickers
       - script@1:
           title: Download latest schema
           inputs:
@@ -159,7 +163,6 @@ workflows:
 
   _danger:
     steps:
-      - cache-pull@2: {}
       - activate-ssh-key@4: {}
       - git-clone@7: {}
       - script@1:
@@ -172,7 +175,6 @@ workflows:
 
                 echo "Run danger"
                 swift run danger-swift ci
-      - cache-push@2: {}
 
   # Helper step to pull the built test bundle.
   _pull_test_bundle:
@@ -196,8 +198,8 @@ workflows:
                 brew tap robotsandpencils/made
                 brew install robotsandpencils/made/xcodes
                 
-                echo "Install iOS 15 sim"
-                sudo xcodes runtimes install "iOS 15.5"
+                echo "Install iOS 16 sim"
+                sudo xcodes runtimes install "iOS 16.4"
 
 
   # Helper step to start snowplow
@@ -216,61 +218,13 @@ workflows:
                 ## It uses the values in MICRO_IGLU_REGISTRY_URL and MICRO_IGLU_API_KEY
                 echo "Run snowplow"
                 brew install wget openjdk
-                wget https://github.com/snowplow-incubator/snowplow-micro/releases/download/micro-1.6.0/snowplow-micro-1.6.0.jar
-                java -jar snowplow-micro-1.6.0.jar &
-
-  #Builds a release build that could be uploaded to App Store Connect
-  alpha-neue-release-build:
-    steps:
-      - file-downloader@1:
-          inputs:
-            - source: '$BITRISEIO_SECRETS_ALPHA_NEUE_XCCONFIG_URL'
-            - destination: '$BITRISE_SOURCE_DIR/Config/secrets_alpha_neue.xcconfig'
-          title: Install production secrets_alpha_neue.xcconfig
-      - xcode-archive@4:
-          title: Build an alpha neue app store release build
-          inputs:
-            - project_path: '$BITRISE_PROJECT_PATH'
-            - scheme: '$BITRISE_SCHEME'
-            - distribution_method: app-store
-            - configuration: Release_AlphaNeue
-            - xcconfig_content: CURRENT_PROJECT_VERSION = $BITRISE_BUILD_NUMBER
-            - export_method: app-store
-            - automatic_code_signing: api-key
-            - api_key_path: "$BITRISEIO_APP_STORE_CONNECT_API_ID_URL"
-            - api_key_id: "$APP_STORE_API_ID"
-            - api_key_issuer_id: "$APP_STORE_API_ISSUER_ID"
-      - deploy-to-bitrise-io@2: {}
-      - deploy-to-bitrise-io@2:
-          inputs:
-            - pipeline_intermediate_files: '$BITRISE_IPA_PATH:BITRISE_IPA_PATH'
-      - cache-push@2: {}
-    before_run:
-      - _setup
-    after_run:
-      - _upload_sentry
-
-  # Uses artifacts from the release build stage and workflow to ship the build to testflight.
-  alpha-neue-internal-testflight-release:
-    steps:
-      - activate-ssh-key@4: {}
-      #clone the repo so we can get our fastlane files.
-      - git-clone@6: {}
-      - pull-intermediate-files@1:
-          inputs:
-            - artifact_sources: release-build.alpha-neue-release-build
-      - fastlane@3:
-          inputs:
-            - automatic_code_signing: api-key
-            - api_key_path: "$BITRISEIO_APP_STORE_CONNECT_API_ID_URL"
-            - api_key_id: "$APP_STORE_API_ID"
-            - api_key_issuer_id: "$APP_STORE_API_ISSUER_ID"
-            - verbose_log: 'yes'
-            - lane: beta_internal
+                wget https://github.com/snowplow-incubator/snowplow-micro/releases/download/micro-1.7.2/snowplow-micro-1.7.2.jar
+                java -jar snowplow-micro-1.7.2.jar &
 
   #Builds a release build that could be uploaded to App Store Connect
   release-build:
     steps:
+      - restore-spm-cache@1: {}
       - xcode-archive@4:
           title: Build an app store release build
           inputs:
@@ -280,15 +234,11 @@ workflows:
             - configuration: Release
             - xcconfig_content: CURRENT_PROJECT_VERSION = $BITRISE_BUILD_NUMBER
             - export_method: app-store
-            - automatic_code_signing: api-key
-            - api_key_path: "$BITRISEIO_APP_STORE_CONNECT_API_ID_URL"
-            - api_key_id: "$APP_STORE_API_ID"
-            - api_key_issuer_id: "$APP_STORE_API_ISSUER_ID"
+      - save-spm-cache@1: {}
       - deploy-to-bitrise-io@2: {}
       - deploy-to-bitrise-io@2:
           inputs:
             - pipeline_intermediate_files: '$BITRISE_IPA_PATH:BITRISE_IPA_PATH'
-      - cache-push@2: {}
     before_run:
       - _setup
     after_run:
@@ -305,40 +255,8 @@ workflows:
             - artifact_sources: release-build.release-build
       - fastlane@3:
           inputs:
-            - automatic_code_signing: api-key
-            - api_key_path: "$BITRISEIO_APP_STORE_CONNECT_API_ID_URL"
-            - api_key_id: "$APP_STORE_API_ID"
-            - api_key_issuer_id: "$APP_STORE_API_ISSUER_ID"
             - verbose_log: 'yes'
             - lane: beta_internal
-
-  qa-build:
-    steps:
-      - file-downloader@1:
-          inputs:
-            - source: '$BITRISEIO_SECRETS_ALPHA_NEUE_XCCONFIG_URL'
-            - destination: '$BITRISE_SOURCE_DIR/Config/secrets_alpha_neue.xcconfig'
-          title: Install development secrets.xcconfig
-      - xcode-archive@4:
-          inputs:
-            - xcconfig_content: |-
-                COMPILER_INDEX_STORE_ENABLE = NO
-                CURRENT_PROJECT_VERSION = $BITRISE_BUILD_NUMBER
-            - configuration: Debug_AlphaNeue
-            - automatic_code_signing: api-key
-            - api_key_path: "$BITRISEIO_APP_STORE_CONNECT_API_ID_URL"
-            - api_key_id: "$APP_STORE_API_ID"
-            - api_key_issuer_id: "$APP_STORE_API_ISSUER_ID"
-      - deploy-to-bitrise-io@2: {}
-      - cache-push@2: {}
-      - slack@3:
-          inputs:
-            - channel: '#log-ios-qa-builds'
-            - webhook_url: $SLACK_WEBHOOK_URL
-    before_run:
-      - _setup
-    after_run:
-      - _upload_sentry
 
   test-build:
     steps:
@@ -347,13 +265,14 @@ workflows:
             - source: '$BITRISEIO_SECRETS_TEST_URL'
             - destination: '$BITRISE_SOURCE_DIR/Config/secrets.xcconfig'
           title: Install test secrets.xcconfig
+      - restore-spm-cache@1: {}
       - xcode-build-for-test:
           inputs:
             - destination: generic/platform=iOS Simulator
+      - save-spm-cache@1: {}
       - deploy-to-bitrise-io@2.1.1:
           inputs:
             - pipeline_intermediate_files: '$BITRISE_TEST_BUNDLE_PATH:BITRISE_TEST_BUNDLE_PATH'
-      - cache-push@2: {}
     before_run:
       - _setup
 
@@ -365,11 +284,25 @@ workflows:
           timeout: 600 #10 minutes
           title: Unit Tests
           inputs:
-            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UnitTests_iphonesimulator16.4.xctestrun'
-            - destination: platform=iOS Simulator,name=iPhone 14,OS=16.4
+            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UnitTests_iphonesimulator17.0.xctestrun'
+            - destination: platform=iOS Simulator,name=iPhone 15,OS=17.0.1
       - deploy-to-bitrise-io@2.1.1:
           inputs:
             - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UNIT_XCRESULT_PATH'
+
+  debug-build:
+    steps:
+    - file-downloader@1:
+        inputs:
+        - source: $BITRISEIO_SECRETS_DEVELOPMENT_XCCONFIG_URL
+        - destination: $BITRISE_SOURCE_DIR/Config/secrets.xcconfig
+        title: Install development secrets.xcconfig
+    - fastlane@3:
+        inputs:
+        - lane: debug_build
+    - deploy-to-bitrise-io@2: {}
+    before_run:
+    - _setup
 
   run-tests-ui-1:
     before_run:
@@ -380,8 +313,8 @@ workflows:
           timeout: 1200 #20 minutes
           title: UI Test Suite 1
           inputs:
-            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests_iphonesimulator16.4-arm64-x86_64.xctestrun'
-            - destination: platform=iOS Simulator,name=iPhone 14,OS=16.4
+            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests-1_iphonesimulator17.0-arm64-x86_64.xctestrun'
+            - destination: platform=iOS Simulator,name=iPhone 15,OS=17.0.1
       - deploy-to-bitrise-io@2.1.1:
           inputs:
             - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UITESTS_1_XCRESULT_PATH'
@@ -395,8 +328,8 @@ workflows:
           timeout: 1200 #20 minutes
           title: UI Test Suite 2
           inputs:
-            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests-2_iphonesimulator16.4-arm64-x86_64.xctestrun'
-            - destination: platform=iOS Simulator,name=iPhone 14,OS=16.4
+            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests-2_iphonesimulator17.0-arm64-x86_64.xctestrun'
+            - destination: platform=iOS Simulator,name=iPhone 15,OS=17.0.1
       - deploy-to-bitrise-io@2.1.1:
           inputs:
             - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UITESTS_2_XCRESULT_PATH'
@@ -410,11 +343,26 @@ workflows:
           timeout: 1200 #20 minutes
           title: UI Test Suite 3
           inputs:
-            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests-3_iphonesimulator16.4-arm64-x86_64.xctestrun'
-            - destination: platform=iOS Simulator,name=iPhone 14,OS=16.4
+            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests-3_iphonesimulator17.0-arm64-x86_64.xctestrun'
+            - destination: platform=iOS Simulator,name=iPhone 15,OS=17.0.1
       - deploy-to-bitrise-io@2.1.1:
           inputs:
             - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UITESTS_3_XCRESULT_PATH'
+
+  run-tests-ui-4:
+    before_run:
+      - _pull_test_bundle
+      - _start_snowplow
+    steps:
+      - xcode-test-without-building:
+          timeout: 1200 #20 minutes
+          title: UI Test Suite 4
+          inputs:
+            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests-4_iphonesimulator17.0-arm64-x86_64.xctestrun'
+            - destination: platform=iOS Simulator,name=iPhone 15,OS=17.0.1
+      - deploy-to-bitrise-io@2.1.1:
+          inputs:
+            - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UITESTS_4_XCRESULT_PATH'
 
 
   run-tests-ui-1-legacy:
@@ -427,8 +375,8 @@ workflows:
           timeout: 1200 #20 minutes
           title: UI Test Suite 1 Legacy
           inputs:
-            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests_iphonesimulator16.4-arm64-x86_64.xctestrun'
-            - destination: platform=iOS Simulator,name=iPhone 13,OS=15.5
+            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests-1_iphonesimulator17.0-arm64-x86_64.xctestrun'
+            - destination: platform=iOS Simulator,name=iPhone 14,OS=16.4
       - deploy-to-bitrise-io@2.1.1:
           inputs:
             - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UITESTS_1_LEGACY_XCRESULT_PATH'
@@ -443,8 +391,8 @@ workflows:
           timeout: 1200 #20 minutes
           title: UI Test Suite 2 Legacy
           inputs:
-            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests-2_iphonesimulator16.4-arm64-x86_64.xctestrun'
-            - destination: platform=iOS Simulator,name=iPhone 13,OS=15.5
+            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests-2_iphonesimulator17.0-arm64-x86_64.xctestrun'
+            - destination: platform=iOS Simulator,name=iPhone 14,OS=16.4
       - deploy-to-bitrise-io@2.1.1:
           inputs:
             - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UITESTS_2_LEGACY_XCRESULT_PATH'
@@ -459,11 +407,27 @@ workflows:
           timeout: 1200 #20 minutes
           title: UI Test Suite 3 Legacy
           inputs:
-            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests-3_iphonesimulator16.4-arm64-x86_64.xctestrun'
-            - destination: platform=iOS Simulator,name=iPhone 13,OS=15.5
+            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests-3_iphonesimulator17.0-arm64-x86_64.xctestrun'
+            - destination: platform=iOS Simulator,name=iPhone 14,OS=16.4
       - deploy-to-bitrise-io@2.1.1:
           inputs:
             - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UITESTS_3_LEGACY_XCRESULT_PATH'
+
+  run-tests-ui-4-legacy:
+    before_run:
+      - _install_past_ios
+      - _pull_test_bundle
+      - _start_snowplow
+    steps:
+      - xcode-test-without-building:
+          timeout: 1200 #20 minutes
+          title: UI Test Suite 4 Legacy
+          inputs:
+            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests-4_iphonesimulator17.0-arm64-x86_64.xctestrun'
+            - destination: platform=iOS Simulator,name=iPhone 14,OS=16.4
+      - deploy-to-bitrise-io@2.1.1:
+          inputs:
+            - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UITESTS_4_LEGACY_XCRESULT_PATH'
 
   run-tests-flakey:
     before_run:
@@ -474,8 +438,8 @@ workflows:
           timeout: 600 #10 minutes
           title: Unit Tests
           inputs:
-            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITestsFlaky_iphonesimulator16.4-arm64-x86_64.xctestrun'
-            - destination: platform=iOS Simulator,name=iPhone 14,OS=16.4
+            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITestsFlaky_iphonesimulator17.0-arm64-x86_64.xctestrun'
+            - destination: platform=iOS Simulator,name=iPhone 15,OS=17.0.1
       - deploy-to-bitrise-io@2.1.1:
           inputs:
             - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UITESTSFLAKEY_XCRESULT_PATH'
@@ -491,7 +455,7 @@ workflows:
                 #!/usr/bin/env bash
                 set -eo pipefail
 
-                xcrun xcresulttool merge "${BITRISE_UITESTS_1_XCRESULT_PATH}" "${BITRISE_UITESTS_2_XCRESULT_PATH}" "${BITRISE_UITESTS_3_XCRESULT_PATH}" "${BITRISE_UNIT_XCRESULT_PATH}"  --output-path "merged.xcresult"
+                xcrun xcresulttool merge "${BITRISE_UITESTS_1_XCRESULT_PATH}" "${BITRISE_UITESTS_2_XCRESULT_PATH}" "${BITRISE_UITESTS_3_XCRESULT_PATH}" "${BITRISE_UITESTS_4_XCRESULT_PATH}" "${BITRISE_UNIT_XCRESULT_PATH}"  --output-path "merged.xcresult"
                 envman add --key BITRISE_XCRESULT_PATH --value "$(pwd)/merged.xcresult"
 
       - custom-test-results-export@0:
@@ -517,9 +481,9 @@ workflows:
                 set -eo pipefail
 
                 # Switch to this when legacy is turned back on
-                # xcrun xcresulttool merge "${BITRISE_UITESTS_1_XCRESULT_PATH}" "${BITRISE_UITESTS_2_XCRESULT_PATH}" "${BITRISE_UITESTS_3_XCRESULT_PATH}" "${BITRISE_UITESTS_1_LEGACY_XCRESULT_PATH}" "${BITRISE_UITESTS_2_LEGACY_XCRESULT_PATH}" "${BITRISE_UITESTS_3_LEGACY_XCRESULT_PATH}" "${BITRISE_UNIT_XCRESULT_PATH}"  --output-path "merged.xcresult"
+                # xcrun xcresulttool merge "${BITRISE_UITESTS_1_XCRESULT_PATH}" "${BITRISE_UITESTS_2_XCRESULT_PATH}" "${BITRISE_UITESTS_3_XCRESULT_PATH}" "${BITRISE_UITESTS_4_XCRESULT_PATH}" "${BITRISE_UITESTS_1_LEGACY_XCRESULT_PATH}" "${BITRISE_UITESTS_2_LEGACY_XCRESULT_PATH}" "${BITRISE_UITESTS_3_LEGACY_XCRESULT_PATH}" "${BITRISE_UITESTS_4_LEGACY_XCRESULT_PATH}" "${BITRISE_UNIT_XCRESULT_PATH}"  --output-path "merged.xcresult"
 
-                xcrun xcresulttool merge "${BITRISE_UITESTS_1_XCRESULT_PATH}" "${BITRISE_UITESTS_2_XCRESULT_PATH}" "${BITRISE_UITESTS_3_XCRESULT_PATH}" "${BITRISE_UNIT_XCRESULT_PATH}"  --output-path "merged.xcresult"
+                xcrun xcresulttool merge "${BITRISE_UITESTS_1_XCRESULT_PATH}" "${BITRISE_UITESTS_2_XCRESULT_PATH}" "${BITRISE_UITESTS_3_XCRESULT_PATH}" "${BITRISE_UITESTS_4_XCRESULT_PATH}" "${BITRISE_UNIT_XCRESULT_PATH}"  --output-path "merged.xcresult"
 
                 envman add --key BITRISE_XCRESULT_PATH --value "$(pwd)/merged.xcresult"
       - custom-test-results-export@0:
@@ -569,5 +533,5 @@ app:
 
 meta:
   bitrise.io:
-    machine_type_id: g2-m1.8core
-    stack: osx-xcode-14.3.x-ventura
+    machine_type_id: g2-m1-max.10core
+    stack: osx-xcode-15.0.x

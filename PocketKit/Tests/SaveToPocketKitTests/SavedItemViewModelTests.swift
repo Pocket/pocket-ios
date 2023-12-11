@@ -1,11 +1,22 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 import Analytics
 import SharedPocketKit
+import Combine
 
 @testable import Sync
 @testable import SaveToPocketKit
 
 class SavedItemViewModelTests: XCTestCase {
+    class MockRecentSavesWidgetStore: ItemWidgetsStore {
+        var topics: [SharedPocketKit.ItemContentContainer] = []
+        var kind: Sync.ItemWidgetKind = .unknown
+        func updateTopics(_ topics: [SharedPocketKit.ItemContentContainer]) throws { }
+    }
+
     private var appSession: AppSession!
     private var saveService: MockSaveService!
     private var dismissTimer: Timer.TimerPublisher!
@@ -14,6 +25,8 @@ class SavedItemViewModelTests: XCTestCase {
     private var user: MockUser!
     private var consumerKey: String!
     private var space: Space!
+    private var notificationCenter: NotificationCenter!
+    private var subscriptions: Set<AnyCancellable> = []
 
     private func subject(
         appSession: AppSession? = nil,
@@ -22,7 +35,8 @@ class SavedItemViewModelTests: XCTestCase {
         tracker: Tracker? = nil,
         consumerKey: String? = nil,
         userDefaults: UserDefaults? = nil,
-        user: User? = nil
+        user: User? = nil,
+        notificationCenter: NotificationCenter? = nil
     ) -> SavedItemViewModel {
         SavedItemViewModel(
             appSession: appSession ?? self.appSession,
@@ -31,11 +45,14 @@ class SavedItemViewModelTests: XCTestCase {
             tracker: tracker ?? self.tracker,
             consumerKey: consumerKey ?? self.consumerKey,
             userDefaults: userDefaults ?? self.userDefaults,
-            user: user ?? self.user
+            user: user ?? self.user,
+            notificationCenter: notificationCenter ?? self.notificationCenter,
+            recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService(store: MockRecentSavesWidgetStore())
         )
     }
 
     override func setUp() {
+        super.setUp()
         self.continueAfterFailure = false
 
         appSession = AppSession(keychain: MockKeychain(), groupID: "group.com.ideashower.ReadItLaterPro")
@@ -46,14 +63,18 @@ class SavedItemViewModelTests: XCTestCase {
         space = .testSpace()
         userDefaults = UserDefaults(suiteName: "SavedItemViewModelTests")
         user = MockUser()
+        notificationCenter = .default
 
-        let savedItem = SavedItem(context: space.backgroundContext, url: URL(string: "http://mozilla.com")!)
+        let savedItem = SavedItem(context: space.backgroundContext, url: "http://mozilla.com")
         saveService.stubSave { _ in .newItem(savedItem) }
     }
 
-    override func tearDown() async throws {
+    override func tearDownWithError() throws {
+        subscriptions = []
+
         UserDefaults.standard.removePersistentDomain(forName: "SavedItemViewModelTests")
         try space.clear()
+        try super.tearDownWithError()
     }
 }
 
@@ -96,7 +117,7 @@ extension SavedItemViewModelTests {
         }
 
         await viewModel.save(from: context)
-        wait(for: [completeRequestExpectation], timeout: 10)
+        wait(for: [completeRequestExpectation], timeout: 2)
     }
 }
 
@@ -126,7 +147,7 @@ extension SavedItemViewModelTests {
         context.stubCompleteRequest { _, _ in }
 
         await viewModel.save(from: context)
-        XCTAssertEqual(saveService.saveCall(at: 0)?.url, URL(string: "https://getpocket.com")!)
+        XCTAssertEqual(saveService.saveCall(at: 0)?.url, "https://getpocket.com")
     }
 
     func test_save_ifValidSessionAndURLString_sendsCorrectURLToService() async {
@@ -152,7 +173,43 @@ extension SavedItemViewModelTests {
         context.stubCompleteRequest { _, _ in }
 
         await viewModel.save(from: context)
-        XCTAssertEqual(saveService.saveCall(at: 0)?.url, URL(string: "https://getpocket.com")!)
+        XCTAssertEqual(saveService.saveCall(at: 0)?.url, "https://getpocket.com")
+    }
+
+    /// This test imitates how a specific PDF URL (https://arxiv.org/pdf/2306.00739.pdf) was ingested by the app from the Share extension
+    func test_save_ifValidSessionAndPDF() async {
+        let appSession = AppSession(keychain: MockKeychain(), groupID: "group.com.ideashower.ReadItLaterPro")
+        appSession.currentSession = Session(
+            guid: "mock-guid",
+            accessToken: "mock-access-token",
+            userIdentifier: "mock-user-identifier"
+        )
+        let viewModel = subject(appSession: appSession)
+
+        let provider1 = MockItemProvider()
+        provider1.stubHasItemConformingToTypeIdentifier { identifier in
+            return identifier == "com.adobe.pdf"
+        }
+        provider1.stubLoadItem { _, _ in
+            URL(string: "https://getpocket.com/pdf/some.name.pdf")! as NSSecureCoding
+        }
+
+        let provider2 = MockItemProvider()
+        provider2.stubHasItemConformingToTypeIdentifier { identifier in
+            return identifier == "public.url"
+        }
+        provider2.stubLoadItem { _, _ in
+            URL(string: "https://getpocket.com/pdf/some.name.pdf")! as NSSecureCoding
+        }
+
+        let extensionItem1 = MockExtensionItem(itemProviders: [provider1])
+        let extensionItem2 = MockExtensionItem(itemProviders: [provider2])
+
+        let context = MockExtensionContext(extensionItems: [extensionItem1, extensionItem2])
+        context.stubCompleteRequest { _, _ in }
+
+        await viewModel.save(from: context)
+        XCTAssertEqual(saveService.saveCall(at: 0)?.url, "https://getpocket.com/pdf/some.name.pdf")
     }
 
     func test_save_withStringContainingURL_sendsCorrectURLToService() async {
@@ -178,7 +235,7 @@ extension SavedItemViewModelTests {
         context.stubCompleteRequest { _, _ in }
 
         await viewModel.save(from: context)
-        XCTAssertEqual(saveService.saveCall(at: 0)?.url, URL(string: "https://getpocket.com")!)
+        XCTAssertEqual(saveService.saveCall(at: 0)?.url, "https://getpocket.com")
     }
 
     func test_save_ifValidSessionAndURL_automaticallyCompletesRequest() async {
@@ -218,7 +275,7 @@ extension SavedItemViewModelTests {
             accessToken: "mock-access-token",
             userIdentifier: "mock-user-identifier"
         )
-        let savedItem = SavedItem(context: self.space.backgroundContext, url: URL(string: "http://mozilla.com")!)
+        let savedItem = SavedItem(context: self.space.backgroundContext, url: "http://mozilla.com")
         saveService.stubSave { _ in .existingItem(savedItem) }
 
         let provider = MockItemProvider()

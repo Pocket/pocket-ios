@@ -30,7 +30,7 @@ struct PocketAppElement {
 
     /// Gets the delete overlay view, for some reason this is in the main app element.
     var deletingAccountOverlay: XCUIElement {
-        return app.otherElements["deleting-overlay"]
+        return app.otherElements["loading-view"]
     }
 
     var homeView: HomeViewElement {
@@ -73,6 +73,10 @@ struct PocketAppElement {
         return ReaderElement(app)
     }
 
+    var collectionView: CollectionElement {
+        return CollectionElement(app)
+    }
+
     var webView: XCUIElement {
        return app.webViews.element(boundBy: 0)
     }
@@ -86,6 +90,13 @@ struct PocketAppElement {
         query = app.collectionViews
 
         return ReportViewElement(query["report-recommendation"])
+    }
+
+    var reportIssueView: ReportIssueViewElement {
+        let query: XCUIElementQuery
+        query = app.collectionViews
+
+        return ReportIssueViewElement(query["report-issue"])
     }
 
     var sortMenu: SortMenuElement {
@@ -140,6 +151,10 @@ struct PocketAppElement {
         app.buttons["Report"]
     }
 
+    var reportIssueButton: XCUIElement {
+        app.buttons["get-report-issue-button"]
+    }
+
     var alert: AlertElement {
         AlertElement(app.alerts.element(boundBy: 0))
     }
@@ -177,7 +192,6 @@ struct PocketAppElement {
 /// Listen
 /// Hacky helper extenstion until we add accessibility identifier helpers to Listen
 extension PocketAppElement {
-
     var listenPlay: XCUIElement {
         app.buttons["Play"]
     }
@@ -186,5 +200,4 @@ extension PocketAppElement {
     var listenList: XCUIElement {
         app.collectionViews.element(boundBy: 0)
     }
-
 }

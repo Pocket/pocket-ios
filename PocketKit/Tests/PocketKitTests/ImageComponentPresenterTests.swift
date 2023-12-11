@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 
 @testable import Sync
@@ -16,7 +20,7 @@ extension ImageComponentPresenterTests {
             id: 3,
             source: URL(string: "http://example.com")!
         )
-        let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings(userDefaults: .standard)) { }
+        let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings(tracker: MockTracker(), userDefaults: .standard)) { }
 
         XCTAssertEqual(presenter.shouldHideCaption, false)
     }
@@ -30,7 +34,7 @@ extension ImageComponentPresenterTests {
             id: 3,
             source: URL(string: "http://example.com")!
         )
-        let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings(userDefaults: .standard)) { }
+        let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings(tracker: MockTracker(), userDefaults: .standard)) { }
 
         XCTAssertEqual(presenter.shouldHideCaption, true)
     }
@@ -44,7 +48,7 @@ extension ImageComponentPresenterTests {
             id: 3,
             source: URL(string: "http://example.com")!
         )
-        let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings(userDefaults: .standard)) { }
+        let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings(tracker: MockTracker(), userDefaults: .standard)) { }
         let imageSize = CGSize(width: 0, height: 0)
 
         XCTAssertEqual(presenter.imageViewBackgroundColor(imageSize: imageSize), UIColor(.clear))
@@ -59,7 +63,7 @@ extension ImageComponentPresenterTests {
             id: 3,
             source: URL(string: "http://example.com")!
         )
-        let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings(userDefaults: .standard)) { }
+        let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings(tracker: MockTracker(), userDefaults: .standard)) { }
         let imageSize = CGSize(width: 0, height: 0)
 
         XCTAssertEqual(presenter.imageViewBackgroundColor(imageSize: imageSize), UIColor(.clear))
@@ -74,7 +78,7 @@ extension ImageComponentPresenterTests {
             id: 3,
             source: URL(string: "http://example.com")!
         )
-        let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings(userDefaults: .standard)) { }
+        let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings(tracker: MockTracker(), userDefaults: .standard)) { }
         let imageSize = CGSize(width: -1, height: 0)
 
         XCTAssertEqual(presenter.imageViewBackgroundColor(imageSize: imageSize), UIColor(.ui.grey7))
@@ -89,7 +93,7 @@ extension ImageComponentPresenterTests {
             id: 3,
             source: URL(string: "http://example.com")!
         )
-        let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings(userDefaults: .standard)) { }
+        let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings(tracker: MockTracker(), userDefaults: .standard)) { }
         let imageSize = CGSize(width: -1, height: 0)
 
         XCTAssertEqual(presenter.imageViewBackgroundColor(imageSize: imageSize), UIColor(.clear))
@@ -104,7 +108,7 @@ extension ImageComponentPresenterTests {
             id: 3,
             source: nil
         )
-        let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings(userDefaults: .standard)) { }
+        let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings(tracker: MockTracker(), userDefaults: .standard)) { }
         let imageSize = CGSize(width: -1, height: 0)
 
         XCTAssertEqual(presenter.imageViewBackgroundColor(imageSize: imageSize), UIColor(.clear))
@@ -119,7 +123,7 @@ extension ImageComponentPresenterTests {
             id: 3,
             source: nil
         )
-        let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings(userDefaults: .standard)) { }
+        let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings(tracker: MockTracker(), userDefaults: .standard)) { }
         let imageSize = CGSize(width: -1, height: 0)
 
         XCTAssertEqual(presenter.imageViewBackgroundColor(imageSize: imageSize), UIColor(.clear))

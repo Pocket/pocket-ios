@@ -11,7 +11,7 @@ public extension SavedItem {
         TextAlignment(language: item?.language)
     }
 
-    var bestURL: URL? {
+    var bestURL: String {
         item?.bestURL ?? url
     }
 
@@ -19,8 +19,8 @@ public extension SavedItem {
         item == nil
     }
 
-    var shouldOpenInWebView: Bool {
-        item?.shouldOpenInWebView == true
+    func shouldOpenInWebView(override: Bool) -> Bool {
+        item?.shouldOpenInWebView(override: override) == true
     }
 
     var isSyndicated: Bool {
@@ -29,8 +29,16 @@ public extension SavedItem {
 }
 
 public extension Item {
-    var shouldOpenInWebView: Bool {
-        if isSaved || isSyndicated {
+    func shouldOpenInWebView(override: Bool) -> Bool {
+        if override == true {
+            return true
+        }
+
+        if isSyndicated {
+            return false
+        }
+
+        if isSaved {
             // We are legally allowed to open the item in reader view
             // BUT: if any of the following are true...
             // a) the item is not an article (i.e. it was not parseable)
@@ -68,5 +76,20 @@ public extension Item {
 
     var hasArticleComponents: Bool {
         article?.components.isEmpty == false
+    }
+
+    var isCollection: Bool {
+        CollectionUrlFormatter.isCollectionUrl(givenURL)
+    }
+
+    var collectionSlug: String? {
+        CollectionUrlFormatter.slug(from: givenURL)
+    }
+
+    var bestDomain: String? {
+        syndicatedArticle?.publisherName
+        ?? domainMetadata?.name
+        ?? domain
+        ?? URL(percentEncoding: bestURL)?.host
     }
 }

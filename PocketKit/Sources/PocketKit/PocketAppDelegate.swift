@@ -9,10 +9,13 @@ import Analytics
 import BackgroundTasks
 import SharedPocketKit
 import Adjust
+import Localization
+import SwiftUI
 
 public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     static var phoneOrientationLock = UIInterfaceOrientationMask.portrait
 
+    private let services: Services
     private let source: Source
     private let userDefaults: UserDefaults
     private let refreshCoordinators: [RefreshCoordinator]
@@ -25,14 +28,17 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     private let subscriptionStore: SubscriptionStore
     private let notificationRelay: NotificationRelay
     private let featureFlags: FeatureFlagServiceProtocol
+    private let notificationCenter: NotificationCenter
+    private var appBadgeSetup: AppBadgeSetup?
 
     let notificationService: PushNotificationService
 
     convenience override init() {
-        self.init(services: Services.shared)
+        self.init(services: .shared)
     }
 
     init(services: Services) {
+        self.services = services
         self.source = services.source
         self.userDefaults = services.userDefaults
         self.refreshCoordinators = services.refreshCoordinators
@@ -46,59 +52,38 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         self.featureFlags = services.featureFlagService
         self.notificationService = services.notificationService
         self.consumerKey = Keys.shared.pocketApiConsumerKey
+        self.notificationCenter = services.notificationCenter
+
+        super.init()
     }
 
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
-        Log.start(dsn: Keys.shared.sentryDSN, tracesSampler: { context in
-            guard self.featureFlags.isAssigned(flag: .traceSampling),
-                  // Get the sentry traces sample value from the feature flag
-                  let sample = self.featureFlags.getPayload(flag: .traceSampling)?.numberValue else {
-                // Traces sampler is disabled or not set, so returning a 0
-                return 0.0
+        Log.start(
+            dsn: Keys.shared.sentryDSN,
+            tracesSampler: { context in
+                guard self.featureFlags.isAssigned(flag: .traceSampling),
+                      // Get the sentry traces sample value from the feature flag
+                      let sample = self.featureFlags.getPayload(flag: .traceSampling)?.numberValue else {
+                    // Traces sampler is disabled or not set, so returning a 0
+                    return 0.0
+                }
+                return sample
+            },
+            profilesSampler: { context in
+                // NOTE: This is relative to the TracesSampler. IE. if tracesSampler responds with 100%, profilesSampler will be called 100% of the time,
+                // if traces responds with 50%, profileSamples will be called 50% of the time.
+                guard self.featureFlags.isAssigned(flag: .profileSampling),
+                      // Get the sentry profile sample value from the feature flag
+                      let sample = self.featureFlags.getPayload(flag: .profileSampling)?.numberValue else {
+                    // Profiles sampler is disabled or not set, so returning a 0
+                    return 0.0
+                }
+                return sample
             }
-            return sample
-        }, profilesSampler: { context in
-            // NOTE: This is relative to the TracesSampler. IE. if tracesSampler responds with 100%, profilesSampler will be called 100% of the time,
-            // if traces responds with 50%, profileSamples will be called 50% of the time.
-            guard self.featureFlags.isAssigned(flag: .profileSampling),
-                  // Get the sentry profile sample value from the feature flag
-                  let sample = self.featureFlags.getPayload(flag: .profileSampling)?.numberValue else {
-                // Profiles sampler is disabled or not set, so returning a 0
-                return 0.0
-            }
-            return sample
-        })
-
-        if CommandLine.arguments.contains("clearKeychain") {
-            appSession.currentSession = nil
-        }
-
-        if CommandLine.arguments.contains("clearUserDefaults") {
-            userDefaults.resetKeys()
-        }
-
-        if CommandLine.arguments.contains("clearCoreData") {
-            source.clear()
-        }
+        )
 
         if CommandLine.arguments.contains("clearImageCache") {
             Textiles.clearImageCache()
-        }
-
-        SignOutOnFirstLaunch(
-            appSession: appSession,
-            user: user,
-            userDefaults: userDefaults
-        ).signOutOnFirstLaunch()
-
-        if let guid = ProcessInfo.processInfo.environment["sessionGUID"],
-           let accessToken = ProcessInfo.processInfo.environment["accessToken"],
-           let userIdentifier = ProcessInfo.processInfo.environment["sessionUserID"] {
-            appSession.currentSession = Session(
-                guid: guid,
-                accessToken: accessToken,
-                userIdentifier: userIdentifier
-            )
         }
 
         // Setup adjust early on because we attach the ad id to the UserEntity.
@@ -114,13 +99,15 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
             tracker.addPersistentEntity(UserEntity(guid: currentSession.guid, userID: currentSession.userIdentifier, adjustAdId: Adjust.adid()))
         }
 
-        self.refreshCoordinators.forEach({$0.initialize()})
+        self.refreshCoordinators.forEach({ $0.initialize() })
         DispatchQueue.global(qos: .background).async { [weak self] in
             self?.source.restore()
         }
         Textiles.initialize()
 
-        migrateLegacyAccount()
+        if CommandLine.arguments.contains("skipLegacyAccountMigration") == false {
+            migrateLegacyAccount()
+        }
 
         // The session backup utility can be started after user migration since
         // the session can possibly already be backed up, i.e if used for user migration
@@ -132,6 +119,12 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
             // listens for log in / out events to appropriately start / stop.
             subscriptionStore.start()
         }
+
+        appBadgeSetup = AppBadgeSetup(
+            source: source,
+            userDefaults: userDefaults,
+            badgeProvider: application
+        )
 
         return true
     }

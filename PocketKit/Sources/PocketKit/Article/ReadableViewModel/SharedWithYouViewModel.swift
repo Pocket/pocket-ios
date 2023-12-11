@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Combine
 import Sync
 import Foundation
@@ -28,6 +32,14 @@ class SharedWithYouHighlightViewModel: ReadableViewModel {
     private let userDefaults: UserDefaults
     let tracker: Tracker
 
+    var delegate: ReadableViewModelDelegate?
+
+    var readableSource: ReadableSource = .app
+
+    var isListenSupported: Bool = false
+
+    var itemSaveStatus: ItemSaveStatus = .unsaved
+
     private var savedItemCancellable: AnyCancellable?
     private var savedItemSubscriptions: Set<AnyCancellable> = []
 
@@ -39,9 +51,9 @@ class SharedWithYouHighlightViewModel: ReadableViewModel {
         self.user = user
         self.userDefaults = userDefaults
 
-        self.savedItemCancellable = sharedWithYouHighlight.item.publisher(for: \.savedItem).sink { [weak self] savedItem in
-            self?.update(for: savedItem)
-        }
+//        self.savedItemCancellable = sharedWithYouHighlight.item.publisher(for: \.savedItem).sink { [weak self] savedItem in
+//            self?.update(for: savedItem)
+//        }
     }
 
     var components: [ArticleComponent]? {
@@ -50,7 +62,7 @@ class SharedWithYouHighlightViewModel: ReadableViewModel {
 
     var readerSettings: ReaderSettings {
         // TODO: inject this
-        ReaderSettings(userDefaults: userDefaults)
+        ReaderSettings(tracker: self.tracker, userDefaults: userDefaults)
     }
 
     var textAlignment: Textile.TextAlignment {
@@ -73,7 +85,7 @@ class SharedWithYouHighlightViewModel: ReadableViewModel {
         sharedWithYouHighlight.item.datePublished
     }
 
-    var url: URL? {
+    var url: String {
         sharedWithYouHighlight.item.bestURL
     }
 
@@ -81,7 +93,7 @@ class SharedWithYouHighlightViewModel: ReadableViewModel {
         return sharedWithYouHighlight.item.savedItem?.isArchived ?? false
     }
 
-    var premiumURL: URL? {
+    var premiumURL: String? {
         pocketPremiumURL(url, user: user)
     }
 
@@ -124,7 +136,7 @@ class SharedWithYouHighlightViewModel: ReadableViewModel {
     }
 
     func webViewActivityItems(url: URL) -> [UIActivity] {
-        guard let item = source.fetchItem(url) else {
+        guard let item = source.fetchItem(url.absoluteString) else {
             return []
         }
 
@@ -200,7 +212,7 @@ extension SharedWithYouHighlightViewModel {
         }
 
         source.favorite(item: savedItem)
-        track(identifier: .itemFavorite)
+        // track(identifier: .itemFavorite)
     }
 
     func unfavorite() {
@@ -209,7 +221,7 @@ extension SharedWithYouHighlightViewModel {
         }
 
         source.unfavorite(item: savedItem)
-        track(identifier: .itemUnfavorite)
+        // track(identifier: .itemUnfavorite)
     }
 
     func openInWebView(url: URL?) {
@@ -223,7 +235,7 @@ extension SharedWithYouHighlightViewModel {
         let updatedURL = pocketPremiumURL(url, user: user)
         presentedWebReaderURL = updatedURL
 
-        trackExternalLinkOpen(url: url)
+        // trackExternalLinkOpen(url: url)
     }
 
     func moveFromArchiveToSaves(completion: (Bool) -> Void) {
@@ -249,16 +261,15 @@ extension SharedWithYouHighlightViewModel {
     }
 
     func beginBulkEdit() {
-
     }
 
     private func save() {
         source.save(sharedWithYouHighlight: sharedWithYouHighlight)
-        track(identifier: .itemSave)
+        // track(identifier: .itemSave)
     }
 
     private func saveExternalURL(_ url: URL) {
-        source.save(url: url)
+        source.save(url: url.absoluteString)
     }
 
     private func copyExternalURL(_ url: URL) {
@@ -267,7 +278,7 @@ extension SharedWithYouHighlightViewModel {
 
     private func shareExternalURL(_ url: URL) {
         // This view model is used within the context of a view that is presented within the reader
-        sharedActivity = PocketItemActivity.fromReader(url: url)
+        sharedActivity = PocketItemActivity.fromReader(url: url.absoluteString)
     }
 }
 
@@ -282,5 +293,23 @@ extension SharedWithYouHighlightViewModel {
 
     func clearSharedActivity() {
         sharedActivity = nil
+    }
+}
+
+extension SharedWithYouHighlightViewModel {
+    func openInWebView(url: String) {
+    }
+
+    func save(completion: (Bool) -> Void) {
+    }
+
+    func trackReadingProgress(index: IndexPath) {
+    }
+
+    func readingProgress() -> IndexPath? {
+        return nil
+    }
+
+    func listen() {
     }
 }

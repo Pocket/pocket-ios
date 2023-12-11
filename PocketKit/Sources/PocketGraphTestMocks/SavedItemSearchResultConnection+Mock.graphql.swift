@@ -5,7 +5,7 @@ import ApolloTestSupport
 import PocketGraph
 
 public class SavedItemSearchResultConnection: MockObject {
-  public static let objectType: Object = PocketGraph.Objects.SavedItemSearchResultConnection
+  public static let objectType: ApolloAPI.Object = PocketGraph.Objects.SavedItemSearchResultConnection
   public static let _mockFields = MockFields()
   public typealias MockValueCollectionType = Array<Mock<SavedItemSearchResultConnection>>
 
@@ -23,8 +23,8 @@ public extension Mock where O == SavedItemSearchResultConnection {
     totalCount: Int? = nil
   ) {
     self.init()
-    self.edges = edges
-    self.pageInfo = pageInfo
-    self.totalCount = totalCount
+    _setList(edges, for: \.edges)
+    _setEntity(pageInfo, for: \.pageInfo)
+    _setScalar(totalCount, for: \.totalCount)
   }
 }

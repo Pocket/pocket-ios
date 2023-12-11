@@ -10,10 +10,10 @@ import Foundation
 public struct System: Event, CustomStringConvertible {
     public static let schema = "iglu:com.pocket/system_log/jsonschema/1-0-0"
 
-    let type: System.SystemLogType
-    let source: MigrationSource
+    let type: LogType
+    let source: EventSource
 
-    public init(type: SystemLogType, source: MigrationSource) {
+    public init(type: LogType, source: EventSource = .pocketKit) {
         self.type = type
         self.source = source
     }
@@ -22,6 +22,10 @@ public struct System: Event, CustomStringConvertible {
         switch type {
         case .userMigration(let userMigrationState):
             return userMigrationState.id(source)
+        case .appPermission(let appPermissionType):
+            return appPermissionType.id()
+        case .unableToSave:
+            return "ios.\(source).unableToSave"
         }
     }
 
@@ -29,6 +33,10 @@ public struct System: Event, CustomStringConvertible {
         switch type {
         case .userMigration(let userMigrationState):
             return userMigrationState.value(source)
+        case .appPermission:
+            return nil
+        case .unableToSave:
+            return nil
         }
     }
 
@@ -45,9 +53,17 @@ public struct System: Event, CustomStringConvertible {
     }
 }
 
+// MARK: - Enums
 extension System {
-    public enum SystemLogType {
+    public enum EventSource: String {
+        case pocketKit
+        case saveToPocketKit
+    }
+
+    public enum LogType {
         case userMigration(UserMigrationState)
+        case appPermission(AppPermissionType)
+        case unableToSave
     }
 
     public enum UserMigrationState {
@@ -55,7 +71,7 @@ extension System {
         case succeeded
         case failed(Error?)
 
-        func id(_ source: MigrationSource) -> String {
+        func id(_ source: EventSource) -> String {
             switch self {
             case .started:
                 return "ios.\(source).migration.to8.start"
@@ -69,12 +85,23 @@ extension System {
             }
         }
 
-        func value(_ source: MigrationSource) -> String? {
+        func value(_ source: EventSource) -> String? {
             switch self {
             case .started, .succeeded:
                 return nil
             case UserMigrationState.failed(let error):
                 return error?.localizedDescription
+            }
+        }
+    }
+
+    public enum AppPermissionType {
+        case appBadge(Bool)
+
+        func id() -> String {
+            switch self {
+            case .appBadge(let enabled):
+                return "ios.appPermissions.appBadge." + (enabled ? "enabled" : "disabled")
             }
         }
     }

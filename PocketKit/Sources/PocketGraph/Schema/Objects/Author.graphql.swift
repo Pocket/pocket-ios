@@ -5,7 +5,7 @@ import ApolloAPI
 
 public extension Objects {
   /// Information about an Author of an article or some content
-  static let Author = Object(
+  static let Author = ApolloAPI.Object(
     typename: "Author",
     implementedInterfaces: []
   )

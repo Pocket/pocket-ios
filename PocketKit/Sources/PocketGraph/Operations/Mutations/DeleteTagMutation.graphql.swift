@@ -5,13 +5,9 @@
 
 public class DeleteTagMutation: GraphQLMutation {
   public static let operationName: String = "DeleteTag"
-  public static let document: ApolloAPI.DocumentType = .notPersisted(
+  public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"""
-      mutation DeleteTag($id: ID!) {
-        deleteTag(id: $id)
-      }
-      """#
+      #"mutation DeleteTag($id: ID!) { deleteTag(id: $id) }"#
     ))
 
   public var id: ID

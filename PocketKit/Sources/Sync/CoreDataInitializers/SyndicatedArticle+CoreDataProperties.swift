@@ -7,7 +7,8 @@ import Foundation
 import CoreData
 
 extension SyndicatedArticle {
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<SyndicatedArticle> {
+    @nonobjc
+    public class func fetchRequest() -> NSFetchRequest<SyndicatedArticle> {
         return NSFetchRequest<SyndicatedArticle>(entityName: "SyndicatedArticle")
     }
 
@@ -15,7 +16,6 @@ extension SyndicatedArticle {
     @NSManaged public var imageURL: URL?
     @NSManaged public var itemID: String
     @NSManaged public var publisherName: String?
-    #warning("TODO - CORE DATA: title should not be optional")
     @NSManaged public var title: String
     @NSManaged public var image: Image?
     @NSManaged public var item: Item?

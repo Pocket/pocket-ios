@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 @testable import Textile
 @testable import PocketKit
@@ -14,7 +18,7 @@ extension ItemsListItemPresenterTests {
     }
 
     func test_attributedTitle_noItemTitle_usesBestURL() {
-        let item = MockItemsListItem.build(bestURL: URL(string: "https://getpocket.com")!)
+        let item = MockItemsListItem.build(bestURL: "https://getpocket.com")
         let presenter = ItemsListItemPresenter(item: item)
 
         XCTAssertEqual(presenter.attributedTitle.string, "https://getpocket.com")

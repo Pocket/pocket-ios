@@ -1,6 +1,11 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 import Apollo
 import PocketGraph
+import SharedPocketKit
 
 @testable import Sync
 
@@ -10,7 +15,8 @@ class PocketSaveServiceTests: XCTestCase {
     private var space: Space!
     private var osNotificationCenter: OSNotificationCenter!
 
-    override func setUp() async throws {
+    override func setUp() {
+        super.setUp()
         backgroundActivityPerformer = MockExpiringActivityPerformer()
         client = MockApolloClient()
         space = .testSpace()
@@ -20,6 +26,7 @@ class PocketSaveServiceTests: XCTestCase {
     override func tearDownWithError() throws {
         try space.clear()
         osNotificationCenter.removeAllObservers()
+        try super.tearDownWithError()
     }
 
     func subject(
@@ -49,7 +56,7 @@ class PocketSaveServiceTests: XCTestCase {
         }
 
         let service = subject()
-        let result = service.save(url: URL(string: "https://getpocket.com")!)
+        let result = service.save(url: "https://getpocket.com")
 
         guard case .newItem = result else {
             XCTFail("Expected newItem, but was \(result)")
@@ -63,8 +70,8 @@ class PocketSaveServiceTests: XCTestCase {
     }
 
     func test_save_whenSavedItemExistsWithGivenURL_returnsExistingItemStatus_postsItemUpdatedNotification() throws {
-        let url = URL(string: "http://example.com/item-1")!
-        let existingSavedItem = try space.createSavedItem(url: url.absoluteString)
+        let url = "http://example.com/item-1"
+        let existingSavedItem = try space.createSavedItem(url: url)
         backgroundActivityPerformer.stubPerformExpiringActivity { _, _ in }
 
         let savedItemUpdated = expectation(description: "savedItemUpdated")
@@ -109,7 +116,7 @@ class PocketSaveServiceTests: XCTestCase {
             return MockCancellable()
         }
 
-        let url = URL(string: "http://example.com/add-me-to-your-list")!
+        let url = "http://example.com/add-me-to-your-list"
         let service = subject()
         _ = service.save(url: url)
 
@@ -138,7 +145,7 @@ class PocketSaveServiceTests: XCTestCase {
             performMutationCalled.fulfill()
         }
 
-        let url = URL(string: "https://getpocket.com")!
+        let url = "https://getpocket.com"
         let service = self.subject()
         _ = service.save(url: url)
 
@@ -172,7 +179,7 @@ class PocketSaveServiceTests: XCTestCase {
         }
 
         let service = self.subject()
-        _ = service.save(url: URL(string: "https://getpocket.com")!)
+        _ = service.save(url: "https://getpocket.com")
 
         let finishedActivity = expectation(description: "finished the original call to perform an activity")
         queue.async {
@@ -204,7 +211,7 @@ class PocketSaveServiceTests: XCTestCase {
             return MockCancellable()
         }
 
-        let url = URL(string: "https://getpocket.com")!
+        let url = "https://getpocket.com"
         let service = self.subject()
         _ = service.save(url: url)
 
@@ -255,7 +262,7 @@ class PocketSaveServiceTests: XCTestCase {
         }
 
         let service = subject()
-        _ = service.save(url: URL(string: "https://getpocket.com")!)
+        _ = service.save(url: "https://getpocket.com")
         wait(for: [performCalled, savedItemCreated], timeout: 10)
 
         DispatchQueue.main.async {
@@ -270,7 +277,7 @@ class PocketSaveServiceTests: XCTestCase {
 
 // MARK: Tags
 extension PocketSaveServiceTests {
-    func test_addTags_beginsBackgroundActivity_andPerformsReplaceSavedItemTagsMutationWithCorrectTags() {
+    func test_addTags_beginsBackgroundActivity_andPerformsSaveItemTagMutationWithCorrectTags() {
         backgroundActivityPerformer.stubPerformExpiringActivity { _, block in
             DispatchQueue.global(qos: .background).async {
                 block(false)
@@ -278,7 +285,7 @@ extension PocketSaveServiceTests {
         }
 
         let performCalled = expectation(description: "perform called")
-        client.stubPerform(toReturnFixtureNamed: "add-tags", asResultType: ReplaceSavedItemTagsMutation.self) {
+        client.stubPerform(toReturnFixtureNamed: "add-tags", asResultType: SavedItemTagMutation.self) {
             performCalled.fulfill()
         }
 
@@ -293,18 +300,18 @@ extension PocketSaveServiceTests {
         XCTAssertNotNil(backgroundActivityPerformer.performCall(at: 0))
 
         wait(for: [performCalled], timeout: 10)
-        let performCall: MockApolloClient.PerformCall<ReplaceSavedItemTagsMutation>? = client.performCall(at: 0)
-        XCTAssertEqual(performCall?.mutation.input.compactMap { $0.tags }, [["tag 1", "tag 2"]])
+        let performCall: MockApolloClient.PerformCall<SavedItemTagMutation>? = client.performCall(at: 0)
+        XCTAssertEqual(performCall?.mutation.input.tagNames, ["tag 1", "tag 2"])
     }
 
-    func test_addTags_whenApolloRequestFailsForReplaceSavedItemTagsMutation_storesUnresolvedSavedItemAndPostsNotification() throws {
+    func test_addTags_whenApolloRequestFailsForSaveItemTagMutation_storesUnresolvedSavedItemAndPostsNotification() throws {
         var expiringActivity: ((Bool) -> Void)?
         backgroundActivityPerformer.stubPerformExpiringActivity { _, _expiringActivity in
             expiringActivity = _expiringActivity
         }
 
         let performMutationCalled = expectation(description: "perform called")
-        client.stubPerform(ofMutationType: ReplaceSavedItemTagsMutation.self, toReturnError: TestError.anError) {
+        client.stubPerform(ofMutationType: SavedItemTagMutation.self, toReturnError: TestError.anError) {
             performMutationCalled.fulfill()
         }
         let item = space.buildSavedItem()

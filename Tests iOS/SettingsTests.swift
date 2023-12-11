@@ -12,6 +12,7 @@ class SettingsTest: XCTestCase {
     var snowplowMicro = SnowplowMicro()
 
     override func setUp() async throws {
+        try await super.setUp()
         continueAfterFailure = false
 
         app = PocketAppElement(app: XCUIApplication())
@@ -26,6 +27,7 @@ class SettingsTest: XCTestCase {
         try server.stop()
         app.terminate()
         await snowplowMicro.assertBaselineSnowplowExpectation()
+        try await super.tearDown()
     }
 
     @MainActor
@@ -187,8 +189,8 @@ class SettingsTest: XCTestCase {
         XCTAssertTrue(app.deleteConfirmationView.deleteAccountButton.isEnabled)
     }
 
-    @MainActor
     /// Helper to load and assert the basics of the delete confirmation view
+    @MainActor
     func loadDeleteConfirmationView() async {
         await tapSettings()
         await tap_AccountManagement()

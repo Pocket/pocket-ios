@@ -8,5 +8,4 @@ import CoreData
 
 @objc(SavedItemUpdatedNotification)
 public class SavedItemUpdatedNotification: NSManagedObject {
-
 }

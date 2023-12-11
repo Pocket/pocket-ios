@@ -40,6 +40,7 @@
                   "name": "tag 2"
                 }
               ],
+              "corpusItem": null,
               "item": {
                 "__typename": "Item",
                 "remoteID": "archived-item-1",
@@ -61,6 +62,7 @@
                     "url": "https://example.com/authors/socrates"
                   }
                 ],
+                "collection": null,
                 "domainMetadata": null,
                 "images": [],
                 "isArticle": true,
@@ -83,6 +85,7 @@
               "isArchived": true,
               "isFavorite": true,
               "tags": [],
+              "corpusItem": null,
               "item": {
                 "__typename": "Item",
                 "remoteID": "archived-item-2",
@@ -96,6 +99,7 @@
                 "wordCount": 500,
                 "domainMetadata": null,
                 "authors": [],
+                "collection": null,
                 "datePublished": "1999-01-01 12:01:01",
                 "excerpt": "Vehicula Nibh Ligula Porta Magna",
                 "images": [],

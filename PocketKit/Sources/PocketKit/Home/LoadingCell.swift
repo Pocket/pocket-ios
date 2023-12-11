@@ -1,5 +1,11 @@
-import UIKit
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+import Localization
+import SharedPocketKit
 import Textile
+import UIKit
 
 class LoadingCell: UICollectionViewCell {
     override init(frame: CGRect) {
@@ -8,24 +14,15 @@ class LoadingCell: UICollectionViewCell {
     }
 
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        fatalError("Storyboards are not welcome here 😆")
     }
 }
 
 extension LoadingCell {
     private func setupContentView() {
         contentView.backgroundColor = .clear
-
-        let activityIndicator = UIActivityIndicatorView(style: .large)
-        activityIndicator.color = UIColor(.ui.grey1)
-        contentView.addSubview(activityIndicator)
-
-        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            activityIndicator.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            activityIndicator.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
-        ])
-
-        activityIndicator.startAnimating()
+        let view = UIView.embedSwiftUIView(PocketLoadingView.loadingIndicator(Localization.LoadingView.message))
+        contentView.addSubview(view)
+        contentView.pinSubviewToAllEdges(view)
     }
 }

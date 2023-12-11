@@ -5,6 +5,16 @@
 "general.error.serverNotResponding.title" = "服务器无响应";
 "general.error.serverNotResponding.detail" = "我们的服务器现在没有响应。请耐心等待。它应该在一个小时内就可以使用。";
 "general.error.serverError" = "您的请求出错了。Pocket 团队已收到通知。请稍后重试。";
+"general.error.sendReport" = "发送报告";
+
+// Report an Issue
+"reportIssue.header" = "报告问题";
+"reportIssue.description" = "感谢您帮助我们改进 Pocket！请向我们提供有关您遇到的问题的更多详细信息。";
+"reportIssue.name" = "名称";
+"reportIssue.email" = "电子邮件";
+"reportIssue.comment" = "发生了什么事？";
+"reportIssue.optional" = "可选";
+"reportIssue.submitIssue.title" = "提交问题";
 
 //Archive
 "archive.empty.header" = "保持您的列表清新整齐";
@@ -70,6 +80,13 @@
 //Saves
 "saves.empty.header" = "开始建立您的 Pocket 列表";
 "saves.empty.button" = "如何保存";
+// - Add Saved Item
+"saves.addSavedItem.title" = "添加 URL";
+"saves.addSavedItem.error" = "请输入有效的 URL";
+"saves.addSavedItem.addButton" = "保存到 Pocket";
+"saves.addSavedItem.cancel" = "取消";
+"saves.addSavedItem.close" = "关闭";
+"saves.addSavedItem.placeholder" = "例如 https://getpocket.com";
 
 // Search
 "search.errorMessage" = "我们遇到了错误，暂时无法为您提供所需的信息。请稍后重试。";
@@ -103,6 +120,9 @@
 "settings.logout.areYouSureMessage" = "您的帐号将被注销，所有已保存供脱机阅读的项目都将从您的设备中删除。";
 "settings.logout.areyousure" = "您确定吗？";
 "settings.help" = "获取帮助和支持";
+
+"settings.alwaysOpenOriginalView" = "始终打开原始视图";
+
 "settings.accountManagement" = "帐号管理";
 "settings.accountManagement.deleteAccount" = "删除帐号";
 "settings.accountManagement.deleteYourAccount" = "删除帐号";
@@ -198,7 +218,6 @@
 "premium.upgradeView.unlimitedHighlights" = "无限突出显示";
 "premium.upgradeView.premiumFonts" = "Premium 字体";
 
-
 //=======================
 //Old format
 
@@ -212,6 +231,9 @@
 "Yes" = "是";
 "No" = "否";
 
+// Loading view
+"loadingView.message" = "正在加载...";
+
 // No internet
 "No Internet Connection" = "无互联网连接";
 "Looks like you're offline. Try checking your mobile data or wifi." = "您可能处于离线状态。尝试检查您的移动数据或 wifi。";
@@ -220,8 +242,6 @@
 "Tags" = "标记";
 "Share" = "分享";
 "carousel.listen" = "朗读";
-
-"Saves" = "保存内容";
 
 "Display Settings" = "显示设置";
 "Font" = "字体";
@@ -297,3 +317,19 @@
 "back.to.pocket" = "返回 Pocket";
 
 "saveToPocket.tapToDismiss" = "点击以取消";
+
+"itemWidgets.loggedOutMessage" = "登录 Pocket 以查看您的内容。";
+"itemWidgets.errorMessage" = "出错了。";
+"itemWidgets.recentSaves.emptyMessage" = "开始建立您的 Pocket 列表。";
+"itemWidgets.recentSaves.title" = "最近保存";
+"itemWidgets.recentSaves.description" = "访问您最近保存的文章。";
+"itemWidgets.recommendations.emptyMessage" = "您可能处于离线状态。请检查您的网络连接。";
+"itemWidgets.recommendations.title" = "推荐";
+"itemWidgets.recommendations.description" = "探索由 Pocket 策划的最发人深省的故事。";
+
+// Collection
+"collection.stories.count" = "%1$@ 个项目";
+
+// Errors
+"error.problemOccurred" = "出现问题";
+"error.redownloading" = "我们正在重新下载您已保存的文章，以改善您的体验。";

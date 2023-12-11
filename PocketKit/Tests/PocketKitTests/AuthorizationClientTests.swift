@@ -11,6 +11,7 @@ class AuthorizationClientTests: XCTestCase {
     var mockAuthenticationSession: MockAuthenticationSession!
 
     override func setUp() {
+        super.setUp()
         mockAuthenticationSession = MockAuthenticationSession()
         client = AuthorizationClient(consumerKey: "the-consumer-key", adjustSignupEventToken: "token") { (_, _, completion) in
             self.mockAuthenticationSession.completionHandler = completion
@@ -67,9 +68,12 @@ extension AuthorizationClientTests {
             expectSessionStart.fulfill()
             return true
         }
+        let expectFirstClientStarted = expectation(description: "started client login")
+        expectFirstClientStarted.expectedFulfillmentCount = 1
 
         Task {
             do {
+                expectFirstClientStarted.fulfill()
                 _ = try await self.client.logIn(from: self)
             } catch {
                 XCTFail("Should not have thrown an error \(error)")
@@ -78,6 +82,8 @@ extension AuthorizationClientTests {
 
         Task {
             do {
+                // wait for our first task to have started before we try the one that should fail.
+                await fulfillment(of: [expectFirstClientStarted], timeout: 10)
                 _ = try await self.client.logIn(from: self)
                 XCTFail("Expected to throw error, but didn't")
             } catch {
@@ -139,7 +145,6 @@ extension AuthorizationClientTests {
             } catch {
                 XCTFail("Should not have thrown an error \(error)")
             }
-
         }
 
         Task {

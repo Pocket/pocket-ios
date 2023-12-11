@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 import Sync
 import Combine
@@ -14,7 +18,8 @@ class HomeRefreshCoordinatorTests: XCTestCase {
     private var taskScheduler: MockBGTaskScheduler!
     private var userDefaults: UserDefaults!
 
-    override func setUpWithError() throws {
+    override func setUp() {
+        super.setUp()
         notificationCenter = NotificationCenter()
         userDefaults = UserDefaults()
         lastRefresh = UserDefaultsLastRefresh(defaults: userDefaults)
@@ -117,8 +122,7 @@ class HomeRefreshCoordinatorTests: XCTestCase {
         coordinator.refresh(isForced: true) { }
 
         wait(for: [fetchExpectation], timeout: 10)
-
-        XCTAssertEqual(source.fetchSlateLineupCall(at: 0)?.identifier, "e39bc22a-6b70-4ed2-8247-4b3f1a516bd1")
+        XCTAssertNotNil(source.fetchSlateLineupCall(at: 0))
     }
 // TODO: Renable once we fix our singleton use in tests
 //    func test_coordinator_whenEnterForeground_whenDataIsNotStale_doesNotRefreshHome() {

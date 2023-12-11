@@ -1,10 +1,14 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Combine
 import SwiftUI
 
 public enum Status: String {
-    case premium = "premium"
-    case free = "free"
-    case unknown = "unknown"
+    case premium
+    case free
+    case unknown
 }
 
 public protocol User {
@@ -22,15 +26,11 @@ public protocol User {
 
 public class PocketUser: User, ObservableObject {
     @Published public private(set) var status: Status = .unknown
-    @AppStorage
-    public var userName: String
-    @AppStorage
-    public var displayName: String
-    @AppStorage
-    public private(set) var email: String
+    @AppStorage public var userName: String
+    @AppStorage public var displayName: String
+    @AppStorage public private(set) var email: String
     public var statusPublisher: Published<Status>.Publisher { $status }
-    @AppStorage
-    private var storedStatus: Status
+    @AppStorage private var storedStatus: Status
 
     private static let userStatusKey = UserDefaults.Key.userStatus
     private static let userNameKey = UserDefaults.Key.userName

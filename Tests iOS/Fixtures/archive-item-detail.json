@@ -13,6 +13,7 @@
                 "isArchived": true,
                 "isFavorite": false,
                 "tags": [],
+                "corpusItem": null,
                 "item": {
                     "__typename": "Item",
                     "remoteID": "archived-item-1",
@@ -35,6 +36,7 @@
                             "url": "https://example.com/authors/socrates"
                         }
                     ],
+                    "collection": null,
                     "domainMetadata": null,
                     "images": [],
                     "isArticle": true,

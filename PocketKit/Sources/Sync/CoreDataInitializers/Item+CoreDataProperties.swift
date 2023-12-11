@@ -16,23 +16,25 @@ extension Item {
     @NSManaged public var datePublished: Date?
     @NSManaged public var domain: String?
     @NSManaged public var excerpt: String?
-    @NSManaged public var givenURL: URL
+    @NSManaged public var givenURL: String
     @NSManaged public var imageness: String?
     @NSManaged public var isArticle: Bool
     @NSManaged public var language: String?
     @NSManaged public var remoteID: String
-    @NSManaged public var resolvedURL: URL?
+    @NSManaged public var resolvedURL: String?
     @NSManaged public var timeToRead: NSNumber?
     @NSManaged public var wordCount: NSNumber?
     @NSManaged public var title: String?
     @NSManaged public var topImageURL: URL?
     @NSManaged public var videoness: String?
     @NSManaged public var authors: NSOrderedSet?
+    @NSManaged public var collection: Collection?
     @NSManaged public var domainMetadata: DomainMetadata?
     @NSManaged public var images: NSOrderedSet?
     @NSManaged public var recommendation: Recommendation?
     @NSManaged public var savedItem: SavedItem?
     @NSManaged public var syndicatedArticle: SyndicatedArticle?
+    @NSManaged public var collectionStories: NSSet?
     @NSManaged public var sharedWithYouHighlight: SharedWithYouHighlight?
 }
 
@@ -100,4 +102,19 @@ extension Item {
 
     @objc(removeImages:)
     @NSManaged public func removeFromImages(_ values: NSOrderedSet)
+}
+
+// MARK: Generated accessors for collectionStories
+extension Item {
+    @objc(addCollectionStoriesObject:)
+    @NSManaged public func addToCollectionStories(_ value: CollectionStory)
+
+    @objc(removeCollectionStoriesObject:)
+    @NSManaged public func removeFromCollectionStories(_ value: CollectionStory)
+
+    @objc(addCollectionStories:)
+    @NSManaged public func addToCollectionStories(_ values: NSSet)
+
+    @objc(removeCollectionStories:)
+    @NSManaged public func removeFromCollectionStories(_ values: NSSet)
 }

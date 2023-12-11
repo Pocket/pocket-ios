@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Combine
 import SwiftUI
 import Sync
@@ -31,7 +35,7 @@ class PocketAddTagsViewModel: AddTagsViewModel {
     /// Fetches recent tags to display to the user only if premium and user has more than 3 tags
     var recentTags: [TagType] {
         guard user.status == .premium && fetchAllTags.count > 3 else { return [] }
-        return recentTagsFactory.recentTags.sorted().compactMap { TagType.recent($0) }
+        return recentTagsFactory.recentTags.compactMap { TagType.recent($0) }.reversed()
     }
 
     /// Fetches all tags associated with item

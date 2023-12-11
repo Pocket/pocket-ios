@@ -5,16 +5,9 @@
 
 public class SharedWithYouDetailsQuery: GraphQLQuery {
   public static let operationName: String = "SharedWithYouDetails"
-  public static let document: ApolloAPI.DocumentType = .notPersisted(
+  public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"""
-      query SharedWithYouDetails($url: String!) {
-        itemByUrl(url: $url) {
-          __typename
-          ...ItemParts
-        }
-      }
-      """#,
+      #"query SharedWithYouDetails($url: String!) { itemByUrl(url: $url) { __typename ...ItemParts } }"#,
       fragments: [ItemParts.self, MarticleTextParts.self, ImageParts.self, MarticleDividerParts.self, MarticleTableParts.self, MarticleHeadingParts.self, MarticleCodeBlockParts.self, VideoParts.self, MarticleBulletedListParts.self, MarticleNumberedListParts.self, MarticleBlockquoteParts.self, DomainMetadataParts.self, SyndicatedArticleParts.self]
     ))
 
@@ -82,6 +75,8 @@ public class SharedWithYouDetailsQuery: GraphQLQuery {
       public var wordCount: Int? { __data["wordCount"] }
       /// List of Authors involved with this article
       public var authors: [ItemParts.Author?]? { __data["authors"] }
+      /// If the item is a collection allow them to get the collection information
+      public var collection: ItemParts.Collection? { __data["collection"] }
       /// The Marticle format of the article, used by clients for native article view.
       public var marticle: [Marticle]? { __data["marticle"] }
       /// A snippet of text from the article
@@ -127,7 +122,7 @@ public class SharedWithYouDetailsQuery: GraphQLQuery {
           public let __data: DataDict
           public init(_dataDict: DataDict) { __data = _dataDict }
 
-          public typealias RootEntityType = ItemByUrl.Marticle
+          public typealias RootEntityType = SharedWithYouDetailsQuery.Data.ItemByUrl.Marticle
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleText }
           public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
             MarticleTextParts.self,
@@ -152,7 +147,7 @@ public class SharedWithYouDetailsQuery: GraphQLQuery {
           public let __data: DataDict
           public init(_dataDict: DataDict) { __data = _dataDict }
 
-          public typealias RootEntityType = ItemByUrl.Marticle
+          public typealias RootEntityType = SharedWithYouDetailsQuery.Data.ItemByUrl.Marticle
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Image }
           public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
             ImageParts.self,
@@ -188,7 +183,7 @@ public class SharedWithYouDetailsQuery: GraphQLQuery {
           public let __data: DataDict
           public init(_dataDict: DataDict) { __data = _dataDict }
 
-          public typealias RootEntityType = ItemByUrl.Marticle
+          public typealias RootEntityType = SharedWithYouDetailsQuery.Data.ItemByUrl.Marticle
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleDivider }
           public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
             MarticleDividerParts.self,
@@ -213,7 +208,7 @@ public class SharedWithYouDetailsQuery: GraphQLQuery {
           public let __data: DataDict
           public init(_dataDict: DataDict) { __data = _dataDict }
 
-          public typealias RootEntityType = ItemByUrl.Marticle
+          public typealias RootEntityType = SharedWithYouDetailsQuery.Data.ItemByUrl.Marticle
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleTable }
           public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
             MarticleTableParts.self,
@@ -238,7 +233,7 @@ public class SharedWithYouDetailsQuery: GraphQLQuery {
           public let __data: DataDict
           public init(_dataDict: DataDict) { __data = _dataDict }
 
-          public typealias RootEntityType = ItemByUrl.Marticle
+          public typealias RootEntityType = SharedWithYouDetailsQuery.Data.ItemByUrl.Marticle
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleHeading }
           public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
             MarticleHeadingParts.self,
@@ -265,7 +260,7 @@ public class SharedWithYouDetailsQuery: GraphQLQuery {
           public let __data: DataDict
           public init(_dataDict: DataDict) { __data = _dataDict }
 
-          public typealias RootEntityType = ItemByUrl.Marticle
+          public typealias RootEntityType = SharedWithYouDetailsQuery.Data.ItemByUrl.Marticle
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleCodeBlock }
           public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
             MarticleCodeBlockParts.self,
@@ -292,7 +287,7 @@ public class SharedWithYouDetailsQuery: GraphQLQuery {
           public let __data: DataDict
           public init(_dataDict: DataDict) { __data = _dataDict }
 
-          public typealias RootEntityType = ItemByUrl.Marticle
+          public typealias RootEntityType = SharedWithYouDetailsQuery.Data.ItemByUrl.Marticle
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Video }
           public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
             VideoParts.self,
@@ -329,7 +324,7 @@ public class SharedWithYouDetailsQuery: GraphQLQuery {
           public let __data: DataDict
           public init(_dataDict: DataDict) { __data = _dataDict }
 
-          public typealias RootEntityType = ItemByUrl.Marticle
+          public typealias RootEntityType = SharedWithYouDetailsQuery.Data.ItemByUrl.Marticle
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleBulletedList }
           public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
             MarticleBulletedListParts.self,
@@ -353,7 +348,7 @@ public class SharedWithYouDetailsQuery: GraphQLQuery {
           public let __data: DataDict
           public init(_dataDict: DataDict) { __data = _dataDict }
 
-          public typealias RootEntityType = ItemByUrl.Marticle
+          public typealias RootEntityType = SharedWithYouDetailsQuery.Data.ItemByUrl.Marticle
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleNumberedList }
           public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
             MarticleNumberedListParts.self,
@@ -377,7 +372,7 @@ public class SharedWithYouDetailsQuery: GraphQLQuery {
           public let __data: DataDict
           public init(_dataDict: DataDict) { __data = _dataDict }
 
-          public typealias RootEntityType = ItemByUrl.Marticle
+          public typealias RootEntityType = SharedWithYouDetailsQuery.Data.ItemByUrl.Marticle
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleBlockquote }
           public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
             MarticleBlockquoteParts.self,

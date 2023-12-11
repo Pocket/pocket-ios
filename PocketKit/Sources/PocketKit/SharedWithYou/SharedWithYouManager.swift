@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Foundation
 import SharedWithYou
 import Sync
@@ -7,7 +11,6 @@ import Apollo
 
 // Handles iOS Shared With You delegates in iOS 16 for any getpocket.com urls shared with a user.
 class SharedWithYouManager: NSObject {
-
     private var highlightCenter: SWHighlightCenterProtocol
     private let source: Source
     private let appSession: AppSession

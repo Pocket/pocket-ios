@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 import Apollo
 import ApolloAPI
@@ -15,6 +19,7 @@ class ItemMutationOperationTests: XCTestCase {
     var task: PersistentSyncTask!
 
     override func setUpWithError() throws {
+        try super.setUpWithError()
         apollo = MockApolloClient()
         space = .testSpace()
         queue = OperationQueue()
@@ -27,6 +32,7 @@ class ItemMutationOperationTests: XCTestCase {
     override func tearDownWithError() throws {
         subscriptions = []
         try space.clear()
+        try super.tearDownWithError()
     }
 
     func subject<Mutation: GraphQLMutation>(
@@ -42,14 +48,17 @@ class ItemMutationOperationTests: XCTestCase {
     }
 
     func test_operation_performsGivenMutation() async throws {
-        try space.createSavedItem(remoteID: "test-item-id")
+        let savedItem = try space.createSavedItem(remoteID: "test-item-id")
 
         apollo.stubPerform(
             toReturnFixtureNamed: "archive",
             asResultType: ArchiveItemMutation.self
         )
 
-        let mutation = ArchiveItemMutation(itemID: "test-item-id")
+        let mutation = ArchiveItemMutation(
+            givenUrl: savedItem.url,
+            timestamp: ISO8601DateFormatter.pocketGraphFormatter.string(from: .now)
+        )
         let service = subject(mutation: mutation)
         _ = await service.execute(syncTaskId: task.objectID)
 
@@ -58,11 +67,11 @@ class ItemMutationOperationTests: XCTestCase {
             at: 0
         )
 
-        XCTAssertEqual(call?.mutation.itemID, "test-item-id")
+        XCTAssertEqual(call?.mutation.givenUrl, savedItem.url)
     }
 
     func test_operation_whenMutationFails_propagatesError() async throws {
-        try space.createSavedItem()
+        let savedItem = try space.createSavedItem()
 
         apollo.stubPerform(
             ofMutationType: ArchiveItemMutation.self,
@@ -78,7 +87,10 @@ class ItemMutationOperationTests: XCTestCase {
             error = e
         }.store(in: &subscriptions)
 
-        let mutation = ArchiveItemMutation(itemID: "test-item-id")
+        let mutation = ArchiveItemMutation(
+            givenUrl: savedItem.url,
+            timestamp: ISO8601DateFormatter.pocketGraphFormatter.string(from: .now)
+        )
         let service = subject(mutation: mutation)
         _ = await service.execute(syncTaskId: task.objectID)
 
@@ -90,7 +102,11 @@ class ItemMutationOperationTests: XCTestCase {
         let initialError = ResponseCodeInterceptor.ResponseCodeError.withStatusCode(500)
         apollo.stubPerform(ofMutationType: ArchiveItemMutation.self, toReturnError: initialError)
 
-        let mutation = ArchiveItemMutation(itemID: "test-item-id")
+        let savedItem = try space.createSavedItem()
+        let mutation = ArchiveItemMutation(
+            givenUrl: savedItem.url,
+            timestamp: ISO8601DateFormatter.pocketGraphFormatter.string(from: .now)
+        )
         let service = subject(mutation: mutation)
         let result = await service.execute(syncTaskId: task.objectID)
 
@@ -109,7 +125,11 @@ class ItemMutationOperationTests: XCTestCase {
 
         apollo.stubPerform(ofMutationType: ArchiveItemMutation.self, toReturnError: initialError)
 
-        let mutation = ArchiveItemMutation(itemID: "test-item-id")
+        let savedItem = try space.createSavedItem()
+        let mutation = ArchiveItemMutation(
+            givenUrl: savedItem.url,
+            timestamp: ISO8601DateFormatter.pocketGraphFormatter.string(from: .now)
+        )
         let service = subject(mutation: mutation)
         let result = await service.execute(syncTaskId: task.objectID)
 

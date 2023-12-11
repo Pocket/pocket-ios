@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import PocketGraph
 import SharedPocketKit
 
@@ -169,6 +173,64 @@ extension ArticleComponent {
     }
 
     init(_ marticle: ItemParts.Marticle) {
+        if let parts = marticle.asMarticleText {
+            self.init(parts.fragments.marticleTextParts)
+            return
+        }
+
+        if let parts = marticle.asImage {
+            self.init(parts.fragments.imageParts)
+            return
+        }
+
+        if let parts = marticle.asMarticleDivider {
+            self.init(parts.fragments.marticleDividerParts)
+            return
+        }
+
+        if let parts = marticle.asMarticleTable {
+            self.init(parts.fragments.marticleTableParts)
+            return
+        }
+
+        if let parts = marticle.asMarticleHeading {
+            self.init(parts.fragments.marticleHeadingParts)
+            return
+        }
+
+        if let parts = marticle.asMarticleCodeBlock {
+            self.init(parts.fragments.marticleCodeBlockParts)
+            return
+        }
+
+        if let videoParts = marticle.asVideo?.fragments.videoParts {
+            do {
+                try self.init(videoParts)
+                return
+            } catch {
+                Log.capture(message: "Invalid source URL for video: \(error)")
+            }
+        }
+
+        if let parts = marticle.asMarticleBulletedList {
+            self.init(parts.fragments.marticleBulletedListParts)
+            return
+        }
+
+        if let parts = marticle.asMarticleNumberedList {
+            self.init(parts.fragments.marticleNumberedListParts)
+            return
+        }
+
+        if let parts = marticle.asMarticleBlockquote {
+            self.init(parts.fragments.marticleBlockquoteParts)
+            return
+        }
+
+        self = .unsupported(UnsupportedComponent(type: marticle.__typename))
+    }
+
+    init(_ marticle: GetCollectionBySlugQuery.Data.Collection.Story.Item.Marticle) {
         if let parts = marticle.asMarticleText {
             self.init(parts.fragments.marticleTextParts)
             return

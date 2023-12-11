@@ -5,7 +5,7 @@ import ApolloTestSupport
 import PocketGraph
 
 public class Video: MockObject {
-  public static let objectType: Object = PocketGraph.Objects.Video
+  public static let objectType: ApolloAPI.Object = PocketGraph.Objects.Video
   public static let _mockFields = MockFields()
   public typealias MockValueCollectionType = Array<Mock<Video>>
 
@@ -31,12 +31,12 @@ public extension Mock where O == Video {
     width: Int? = nil
   ) {
     self.init()
-    self.height = height
-    self.length = length
-    self.src = src
-    self.type = type
-    self.vid = vid
-    self.videoID = videoID
-    self.width = width
+    _setScalar(height, for: \.height)
+    _setScalar(length, for: \.length)
+    _setScalar(src, for: \.src)
+    _setScalar(type, for: \.type)
+    _setScalar(vid, for: \.vid)
+    _setScalar(videoID, for: \.videoID)
+    _setScalar(width, for: \.width)
   }
 }

@@ -34,12 +34,11 @@ class CoreDataSpotlightDelegate: NSCoreDataCoreSpotlightDelegate {
         attributeSet.displayName = savedItem.item?.title
         attributeSet.publishers = (savedItem.item?.authors?.array as? [Author] ?? []).compactMap { $0.name }
         attributeSet.thumbnailURL = savedItem.item?.topImageURL // TODO: Image cache url..
-        attributeSet.contentURL = savedItem.url
+        attributeSet.contentURL = URL(string: savedItem.url)
         attributeSet.contentDescription = savedItem.item?.excerpt
         attributeSet.title = savedItem.item?.title
         attributeSet.contentCreationDate = savedItem.item?.datePublished
 
         return attributeSet
     }
-
 }

@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import SharedPocketKit
 import SwiftUI
 import Textile
@@ -41,8 +45,11 @@ struct SettingsForm: View {
                 topSectionWithLeadingDivider()
                     .textCase(nil)
                 Section(header: Text(Localization.appCustomization).style(.settings.header)) {
-                    SettingsRowToggle(title: Localization.showAppBadgeCount, model: model) {
-                        model.toggleAppBadge()
+                    VStack {
+                        Toggle(Localization.showAppBadgeCount, isOn: model.$appBadgeToggle)
+                            .accessibilityIdentifier("app-badge-toggle")
+                        Toggle(Localization.Settings.alwaysOpenOriginalView, isOn: model.$originalViewToggle)
+                            .accessibilityIdentifier("original-view-toggle")
                     }
                 }
                 .textCase(nil)
@@ -74,6 +81,12 @@ struct SettingsForm: View {
             }
             .listRowBackground(Color(.ui.grey7))
             settingsCredits()
+        }
+        .onChange(of: model.appBadgeToggle) { newValue in
+            model.toggleAppBadge(to: newValue)
+        }
+        .onChange(of: model.originalViewToggle) { newValue in
+            model.toggleOriginalView(to: newValue)
         }
     }
 
@@ -161,7 +174,7 @@ extension SettingsForm {
                         Button(Localization.Settings.logout, role: .destructive) {
                             model.trackLogoutConfirmTapped()
                             model.signOut()
-                        }
+                        }.accessibilityIdentifier("alert-log-out-button")
                     }, message: {
                         Text(Localization.Settings.Logout.areYouSureMessage)
                     }

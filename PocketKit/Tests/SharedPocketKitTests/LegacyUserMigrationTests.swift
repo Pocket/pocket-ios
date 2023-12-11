@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 import RNCryptor
 @testable import SharedPocketKit
@@ -32,6 +36,7 @@ class LegacyUserMigrationTests: XCTestCase {
     }
 
     override func setUp() {
+        super.setUp()
         groupID = "group.com.mozilla.test"
         userDefaults = UserDefaults(suiteName: "LegacyUserMigrationTests")
         encryptedStore = MockEncryptedStore()
@@ -41,6 +46,7 @@ class LegacyUserMigrationTests: XCTestCase {
 
     override func tearDown() {
         UserDefaults.standard.removePersistentDomain(forName: "LegacyUserMigrationTests")
+        super.tearDown()
     }
 }
 
@@ -64,6 +70,7 @@ extension LegacyUserMigrationTests {
 extension LegacyUserMigrationTests {
     func test_perform_whenNotRequired_doesNotThrowError() {
         let migration = subject()
+        userDefaults.set(true, forKey: LegacyUserMigration.orgTransferKey)
         userDefaults.set(true, forKey: LegacyUserMigration.migrationKey)
         userDefaults.set("key", forKey: LegacyUserMigration.decryptionKey)
         encryptedStore.stubDecryptStore { key in
@@ -220,4 +227,74 @@ extension LegacyUserMigrationTests {
         wait(for: [expectation], timeout: 5)
     }
 }
+
+// MARK: - org transfer
+extension LegacyUserMigrationTests {
+    // App update path from 7 (old org) -> 8 (new org, transfer)
+    func test_perform_whenOrgTransferNotCompleted_andOtherwiseNotCompleted_updatesSession() throws {
+        userDefaults.set("key", forKey: LegacyUserMigration.decryptionKey)
+        let migration = subject()
+
+        encryptedStore.stubDecryptStore { key in
+            let correct: [String: Any] = [
+                "guid": "guid",
+                "accessToken": "accessToken",
+                "uid": "uid",
+                "version": "7.0.0"
+            ]
+
+            return try! JSONSerialization.data(withJSONObject: correct)
+        }
+
+        let result = try migration.attemptMigration { }
+
+        XCTAssertTrue(result)
+        XCTAssertEqual(appSession.currentSession?.guid, "guid")
+        XCTAssertEqual(appSession.currentSession?.accessToken, "accessToken")
+        XCTAssertEqual(appSession.currentSession?.userIdentifier, "uid")
+    }
+
+    // App update path from 7 (old org) -> 8 (old org, complete) -> 8 (new org, transfer)
+    func test_perform_whenOrgTransferNotCompleted_butOtherwiseCompleted_updatesSession() throws {
+        userDefaults.set(true, forKey: LegacyUserMigration.migrationKey)
+        userDefaults.set("key", forKey: LegacyUserMigration.decryptionKey)
+        let migration = subject()
+
+        encryptedStore.stubDecryptStore { key in
+            let correct: [String: Any] = [
+                "guid": "guid",
+                "accessToken": "accessToken",
+                "uid": "uid",
+                "version": "8.0.0"
+            ]
+
+            return try! JSONSerialization.data(withJSONObject: correct)
+        }
+
+        let result = try migration.attemptMigration { }
+
+        XCTAssertTrue(result)
+        XCTAssertEqual(appSession.currentSession?.guid, "guid")
+        XCTAssertEqual(appSession.currentSession?.accessToken, "accessToken")
+        XCTAssertEqual(appSession.currentSession?.userIdentifier, "uid")
+    }
+
+    // App update path from: 7 (old org) -> 8 (new org, already transferred)
+    // or 8 (old org) -> 8 (new org, already transferred)
+    func test_perform_whenOrgTransferCompleted_doesNotRun() {
+        userDefaults.set(true, forKey: UserDefaults.Key.orgTransferMigration)
+        let migration = subject()
+
+        do {
+            let result = try migration.attemptMigration {
+                XCTFail("Migration should not be attempted")
+            }
+
+            XCTAssertFalse(result, "Migration should not be attempted")
+        } catch {
+            XCTFail("Error should not be thrown")
+        }
+    }
+}
+
 // swiftlint:enable force_try

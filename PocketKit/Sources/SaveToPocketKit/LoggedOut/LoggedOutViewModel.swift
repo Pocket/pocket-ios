@@ -1,20 +1,14 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import UIKit
 import SharedPocketKit
 import Combine
 import Localization
 
 class LoggedOutViewModel {
-    let infoViewModel = InfoView.Model(
-        style: .error,
-        attributedText: NSAttributedString(
-            string: "Log in to Pocket to save",
-            style: .mainTextError
-        ),
-        attributedDetailText: NSAttributedString(
-            string: "Pocket couldn't save the link. Log in to the Pocket app and try saving again.",
-            style: .detailText
-        )
-    )
+    let infoViewModel: InfoView.Model = .loggedOut
 
     let dismissAttributedText = NSAttributedString(
         string: Localization.SaveToPocket.tapToDismiss,

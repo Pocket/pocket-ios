@@ -29,7 +29,7 @@ public extension Font {
     init(_ descriptor: FontDescriptor) {
         let size = CGFloat(descriptor.size)
 
-        self = .custom(descriptor.family.name, size: size)
+        self = .custom(descriptor.familyName, size: size)
             .weight(Weight(descriptor.weight))
     }
 }
@@ -47,7 +47,7 @@ public extension SwiftUI.TextAlignment {
             self = .leading
         case .right:
             self = .trailing
-        case .center:
+        case .center, .justified:
             self = .center
         }
     }
@@ -65,6 +65,7 @@ public extension Text {
             .foregroundColor(Color(style.colorAsset))
             .multilineTextAlignment(SwiftUI.TextAlignment(style.paragraph.alignment))
             .lineSpacing(style.paragraph.lineSpacing ?? 0)
+            .italic(style.fontDescriptor.slant == .italic)
     }
 }
 

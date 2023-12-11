@@ -1,0 +1,46 @@
+{
+  "configurations" : [
+    {
+      "id" : "E7DE97F6-01C7-4468-B4F3-94691658CBAE",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "skippedTests" : [
+        "AddSavedItemTests",
+        "AddTagsItemTests",
+        "ArchiveAnItemTests",
+        "ArchiveFiltersTests",
+        "ArchiveTests",
+        "CollectionTests",
+        "DeleteAnItemTests",
+        "EditTagsTests",
+        "EmptyStateTests",
+        "ErrorTests",
+        "FavoriteAnItemTests",
+        "HomeTests",
+        "PremiumTests",
+        "PullToRefreshTests",
+        "ReaderTests",
+        "ReportARecommendationTests",
+        "SavesFiltersTests",
+        "SavesTests",
+        "SearchTests\/test_sharingAnItemFromSearch_forPremiumUser_presentsShareSheet()",
+        "SignOutTests"
+      ],
+      "target" : {
+        "containerPath" : "container:Pocket.xcodeproj",
+        "identifier" : "166A81BF2637406C0015AA1D",
+        "name" : "Tests iOS"
+      }
+    }
+  ],
+  "version" : 1
+}

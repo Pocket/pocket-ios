@@ -5,8 +5,29 @@
 import Foundation
 import Sync
 import PKTListen
+import SharedPocketKit
 
 extension SavedItem: PKTListenItem {
+    public var isEligibleForListen: Bool {
+        if remoteID == nil {
+            return false
+        }
+
+        if estimatedAlbumDuration <= 60 {
+            return false
+        }
+
+        guard let language = albumLanguage else {
+            return false
+        }
+
+        if !(PKTListen.supportedLanguages ?? []).contains(language) {
+            return false
+        }
+
+        return item?.isArticle ?? false
+    }
+
     public var albumID: String? {
         self.remoteID
     }
@@ -45,7 +66,7 @@ extension SavedItem: PKTListenItem {
     }
 
     public var albumArtRemoteURL: URL? {
-        imageCacheURL(for: self.topImageURL)
+        CDNURLBuilder().imageCacheURL(for: self.topImageURL)
     }
 
     public var canArchiveAlbum: Bool {
@@ -65,7 +86,7 @@ extension SavedItem: PKTListenItem {
     }
 
     public var givenURL: URL? {
-        self.url
+        URL(percentEncoding: url)
     }
 
     public var localID: String? {
@@ -84,7 +105,7 @@ extension SavedItem: PKTImageResource {
     }
 
     public var imageResourceURL: URL? {
-        imageCacheURL(for: self.topImageURL) ?? fallbackResourceURL
+        CDNURLBuilder().imageCacheURL(for: self.topImageURL) ?? fallbackResourceURL
     }
 
     public var fallbackResourceURL: URL? {

@@ -31,6 +31,7 @@
                                     "name": "tag 0"
                                 }
                             ],
+                            "corpusItem": null,
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "item-1",
@@ -41,9 +42,10 @@
                                 "domain": null,
                                 "language": "en",
                                 "timeToRead": 6,
-                    "wordCount": 500,
+                                "wordCount": 500,
                                 "marticle": #MARTICLE#,
                                 "excerpt": "Cursus Aenean Elit",
+                                "collection": null,
                                 "datePublished": "2021-01-01 12:01:01",
                                 "authors": [
                                     {
@@ -119,22 +121,27 @@
                                     "name": "filter tag 1"
                                 }
                             ],
+                            "corpusItem": null,
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "item-2",
-                                "givenUrl": "https://example.com/item-2",
-                                "resolvedUrl": "https://example.com/item-2",
+                                "givenUrl": "https://getpocket.com/collections/item-2",
+                                "resolvedUrl": "https://getpocket.com/collections/item-2",
                                 "title": "Item 2",
                                 "topImageUrl": "https://example.com/item-2/top-image.jpg",
                                 "domain": "wired.com",
                                 "language": "en",
                                 "timeToRead": 6,
-                    "wordCount": 500,
+                                "wordCount": 500,
                                 "domainMetadata": null,
                                 "marticle": [],
                                 "authors": [],
                                 "datePublished": "2021-01-01 12:01:01",
                                 "excerpt": "Cursus Aenean Elit",
+                                "collection": {
+                                    "__typename": "Collection",
+                                    "slug": "item-2-collection-slug"
+                                },
                                 "images": [
                                     {
                                         "__typename": "[type-name-here]",

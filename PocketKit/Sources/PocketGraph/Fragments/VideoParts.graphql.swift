@@ -4,18 +4,9 @@
 @_exported import ApolloAPI
 
 public struct VideoParts: PocketGraph.SelectionSet, Fragment {
-  public static var fragmentDefinition: StaticString { """
-    fragment VideoParts on Video {
-      __typename
-      height
-      src
-      type
-      vid
-      videoID: videoId
-      width
-      length
-    }
-    """ }
+  public static var fragmentDefinition: StaticString {
+    #"fragment VideoParts on Video { __typename height src type vid videoID: videoId width length }"#
+  }
 
   public let __data: DataDict
   public init(_dataDict: DataDict) { __data = _dataDict }
@@ -56,18 +47,20 @@ public struct VideoParts: PocketGraph.SelectionSet, Fragment {
     width: Int? = nil,
     length: Int? = nil
   ) {
-    self.init(_dataDict: DataDict(data: [
-      "__typename": PocketGraph.Objects.Video.typename,
-      "height": height,
-      "src": src,
-      "type": type,
-      "vid": vid,
-      "videoID": videoID,
-      "width": width,
-      "length": length,
-      "__fulfilled": Set([
-        ObjectIdentifier(Self.self)
-      ])
-    ]))
+    self.init(_dataDict: DataDict(
+      data: [
+        "__typename": PocketGraph.Objects.Video.typename,
+        "height": height,
+        "src": src,
+        "type": type,
+        "vid": vid,
+        "videoID": videoID,
+        "width": width,
+        "length": length,
+      ],
+      fulfilledFragments: [
+        ObjectIdentifier(VideoParts.self)
+      ]
+    ))
   }
 }

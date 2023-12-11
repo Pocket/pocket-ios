@@ -10,7 +10,8 @@ import Sync
 struct TagsFilterView: View {
     @ObservedObject var viewModel: TagsFilterViewModel
 
-    @Environment(\.dismiss) private var dismiss
+    @Environment(\.dismiss)
+    private var dismiss
 
     @State var didTap = false
     @State private var selectedItems = Set<TagType>()
@@ -72,7 +73,8 @@ struct TagsFilterView: View {
 }
 
 struct EditModeView: View {
-    @Environment(\.editMode) var editMode
+    @Environment(\.editMode)
+    var editMode
     @Binding var isEditing: Bool
     @ObservedObject var viewModel: TagsFilterViewModel
 

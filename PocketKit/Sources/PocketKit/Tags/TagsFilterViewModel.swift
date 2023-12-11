@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Combine
 import Sync
 import Analytics
@@ -6,7 +10,6 @@ import Textile
 import SharedPocketKit
 
 class TagsFilterViewModel: ObservableObject {
-
     /// Grab the latest tags from the database on each ask for them to ensure we are up to date
     private var fetchedTags: [Tag] {
         self.source.fetchAllTags() ?? []
@@ -22,7 +25,7 @@ class TagsFilterViewModel: ObservableObject {
     /// Fetches recent tags to display to the user only if premium and user has more than 3 tags
     var recentTags: [TagType] {
         guard user.status == .premium && fetchedTags.count > 3 else { return [] }
-        return recentTagsFactory.recentTags.sorted().compactMap { TagType.recent($0) }
+        return recentTagsFactory.recentTags.compactMap { TagType.recent($0) }.reversed()
     }
 
     @Published var selectedTag: TagType?

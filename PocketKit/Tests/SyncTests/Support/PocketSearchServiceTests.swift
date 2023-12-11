@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 import Apollo
 import PocketGraph
@@ -10,12 +14,14 @@ class PocketSearchServiceTests: XCTestCase {
     var apollo: MockApolloClient!
     var cancellables: [AnyCancellable] = []
 
-    override func setUpWithError() throws {
+    override func setUp() {
+        super.setUp()
         apollo = MockApolloClient()
     }
 
-    override func tearDownWithError() throws {
+    override func tearDown() {
         cancellables = []
+        super.tearDown()
     }
 
     func subject(
@@ -132,13 +138,88 @@ class PocketSearchServiceTests: XCTestCase {
     }
 }
 
+// MARK: - Premium Search Experiment
+extension PocketSearchServiceTests {
+    func test_search_forTitle_fetchesSearchSavedItemsQueryWithCorrectFilter() async throws {
+        apollo.setupSearchListResponse()
+        let service = subject()
+        let searchExpectation = expectation(description: "searchExpectation")
+
+        service.results.dropFirst().first().receive(on: DispatchQueue.main).sink { _ in
+            searchExpectation.fulfill()
+        }.store(in: &cancellables)
+
+        try await service.search(for: "search-term", scope: .premiumSearchByTitle)
+
+        wait(for: [searchExpectation], timeout: 10)
+
+        let call: MockApolloClient.FetchCall<SearchSavedItemsQuery>? = self.apollo.fetchCall(at: 0)
+        XCTAssertEqual(call?.query.term, "search-term")
+        XCTAssertEqual(call?.query.filter.onlyTitleAndURL, true)
+    }
+
+    func test_search_forTag_withNoPrefix_fetchesSearchSavedItemsQueryWithCorrectTerm() async throws {
+        apollo.setupSearchListResponse()
+        let service = subject()
+        let searchExpectation = expectation(description: "searchExpectation")
+
+        service.results.dropFirst().first().receive(on: DispatchQueue.main).sink { _ in
+            searchExpectation.fulfill()
+        }.store(in: &cancellables)
+
+        try await service.search(for: "search term", scope: .premiumSearchByTag)
+
+        wait(for: [searchExpectation], timeout: 10)
+
+        let call: MockApolloClient.FetchCall<SearchSavedItemsQuery>? = self.apollo.fetchCall(at: 0)
+        XCTAssertEqual(call?.query.term, "tag:\"search term\"")
+        XCTAssertEqual(call?.query.filter.status, .init(.none))
+    }
+
+    func test_search_forTag_withPrefix_fetchesSearchSavedItemsQueryWithCorrectTerm() async throws {
+        apollo.setupSearchListResponse()
+        let service = subject()
+        let searchExpectation = expectation(description: "searchExpectation")
+
+        service.results.dropFirst().first().receive(on: DispatchQueue.main).sink { _ in
+            searchExpectation.fulfill()
+        }.store(in: &cancellables)
+
+        try await service.search(for: "#search", scope: .premiumSearchByTag)
+
+        wait(for: [searchExpectation], timeout: 10)
+
+        let call: MockApolloClient.FetchCall<SearchSavedItemsQuery>? = self.apollo.fetchCall(at: 0)
+        XCTAssertEqual(call?.query.term, "#search")
+        XCTAssertEqual(call?.query.filter.status, .init(.none))
+    }
+
+    func test_search_forContent_fetchesSearchSavedItemsQueryWithTerm() async throws {
+        apollo.setupSearchListResponse()
+        let service = subject()
+        let searchExpectation = expectation(description: "searchExpectation")
+
+        service.results.dropFirst().first().receive(on: DispatchQueue.main).sink { _ in
+            searchExpectation.fulfill()
+        }.store(in: &cancellables)
+
+        try await service.search(for: "search-term", scope: .premiumSearchByContent)
+
+        wait(for: [searchExpectation], timeout: 10)
+
+        let call: MockApolloClient.FetchCall<SearchSavedItemsQuery>? = self.apollo.fetchCall(at: 0)
+        XCTAssertEqual(call?.query.term, "search-term")
+        XCTAssertEqual(call?.query.filter.status, .init(.none))
+    }
+}
+
 extension MockApolloClient {
     func setupSearchListResponse(fixtureName: String = "search-list") {
         stubFetch(toReturnFixture: Fixture.load(name: fixtureName), asResultType: SearchSavedItemsQuery.self)
     }
 
     func setupSearchListResponseForPagination(fixtureName: String = "search-list-page-1") {
-        stubFetch { (query: SearchSavedItemsQuery, _, _, queue, completion) in
+        stubFetch { (query: SearchSavedItemsQuery, _, _, _, queue, completion) in
             let resultFixtureName: String
             switch query.pagination.after {
             case nil:

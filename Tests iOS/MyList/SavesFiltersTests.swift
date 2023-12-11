@@ -13,6 +13,7 @@ class SavesFiltersTests: XCTestCase {
     var snowplowMicro = SnowplowMicro()
 
     override func setUp() async throws {
+        try await super.setUp()
         continueAfterFailure = false
 
         let uiApp = XCUIApplication()
@@ -30,9 +31,10 @@ class SavesFiltersTests: XCTestCase {
 
     @MainActor
     override func tearDown() async throws {
-       try server.stop()
-       app.terminate()
-       await snowplowMicro.assertBaselineSnowplowExpectation()
+        try server.stop()
+        app.terminate()
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+        try await super.tearDown()
     }
 
     func test_savesView_tappingFavoritesPill_showsOnlyFavoritedItems() {
@@ -115,5 +117,18 @@ class SavesFiltersTests: XCTestCase {
 
         let tagEvent = await snowplowMicro.getFirstEvent(with: "global-nav.filterTags.selectRecentTag")
         tagEvent!.getUIContext()!.assertHas(type: "button")
+    }
+
+    func test_savesView_tappingSortPill_withSelectedTag_showsFilteredItems() {
+        app.launch().tabBar.savesButton.wait().tap()
+        app.saves.filterButton(for: "Tagged").tap()
+        let tagsFilterView = app.saves.tagsFilterView.wait()
+        tagsFilterView.tag(matching: "tag 0").wait().tap()
+
+        app.saves.filterButton(for: "Sort").wait().tap()
+        app.sortMenu.sortOption("Oldest saved").wait().tap()
+
+        XCTAssertTrue(app.saves.itemView(at: 0).contains(string: "Item 2"))
+        XCTAssertTrue(app.saves.itemView(at: 1).contains(string: "Item 1"))
     }
 }

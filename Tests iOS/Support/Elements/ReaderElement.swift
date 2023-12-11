@@ -15,7 +15,7 @@ struct ReaderElement: PocketUIElement {
         return ReaderToolbarElement(element.navigationBars.element(boundBy: 0))
     }
 
-    var savesBackButton: XCUIElement {
+    var backButton: XCUIElement {
         // This will always be a back button in the Navbar at index 0
         element.navigationBars.buttons.element(boundBy: 0)
     }
@@ -33,7 +33,7 @@ struct ReaderElement: PocketUIElement {
     }
 
     var displaySettingsButton: XCUIElement {
-        element.buttons["Display Settings"]
+        element.buttons["Display settings"]
     }
 
     var favoriteButton: XCUIElement {
@@ -41,7 +41,7 @@ struct ReaderElement: PocketUIElement {
     }
 
     var addTagsButton: XCUIElement {
-        element.buttons["Add Tags"]
+        element.buttons["Edit tags"]
     }
 
     var deleteButton: XCUIElement {
@@ -54,6 +54,10 @@ struct ReaderElement: PocketUIElement {
 
     var deleteYesButton: XCUIElement {
         element.buttons["Yes"]
+    }
+
+    var saveButton: XCUIElement {
+        element.buttons["Save"]
     }
 
     var shareButton: XCUIElement {
@@ -69,11 +73,11 @@ struct ReaderElement: PocketUIElement {
     }
 
     var fontStepperIncreaseButton: XCUIElement {
-        element.collectionViews.steppers["Font Size"].buttons["Increment"]
+        element.collectionViews.buttons["reader-settings-font-size-stepper-Increment"]
     }
 
     var fontStepperDecreaseButton: XCUIElement {
-        element.collectionViews.steppers["Font Size"].buttons["Decrement"]
+        element.collectionViews.buttons["reader-settings-font-size-stepper-Decrement"]
     }
 
     var safariButton: XCUIElement {
@@ -90,7 +94,7 @@ struct ReaderElement: PocketUIElement {
     }
 
     var unsupportedElementOpenButton: XCUIElement {
-        element.buttons["Open in Web View"]
+        element.buttons["Open in web view"]
     }
 
     var articleView: XCUIElement {

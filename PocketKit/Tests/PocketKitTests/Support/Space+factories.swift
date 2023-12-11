@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Foundation
 @testable import Sync
 
@@ -46,7 +50,7 @@ extension Space {
         item: Item? = nil
     ) -> SavedItem {
         backgroundContext.performAndWait {
-            let savedItem: SavedItem = SavedItem(context: backgroundContext, url: URL(string: url)!)
+            let savedItem: SavedItem = SavedItem(context: backgroundContext, url: url)
             let tags: [Tag]? = tags?.map { tag -> Tag in
                 let newTag: Tag = Tag(context: backgroundContext)
                 newTag.name = tag
@@ -58,10 +62,10 @@ extension Space {
             savedItem.isArchived = isArchived
             savedItem.createdAt = createdAt
             savedItem.archivedAt = archivedAt
-            savedItem.url = URL(string: url)!
+            savedItem.url = url
             savedItem.cursor = cursor
             savedItem.tags = NSOrderedSet(array: tags ?? [])
-            savedItem.item = item ?? Item(context: backgroundContext, givenURL: URL(string: url)!, remoteID: remoteID)
+            savedItem.item = item ?? Item(context: backgroundContext, givenURL: url, remoteID: remoteID)
 
             return savedItem
         }
@@ -70,7 +74,7 @@ extension Space {
     @discardableResult
         func buildPendingSavedItem() -> SavedItem {
             backgroundContext.performAndWait {
-                let savedItem: SavedItem = SavedItem(context: backgroundContext, url: URL(string: "https://mozilla.com/example")!)
+                let savedItem: SavedItem = SavedItem(context: backgroundContext, url: "https://mozilla.com/example")
                 savedItem.createdAt = Date()
                 return savedItem
             }
@@ -83,20 +87,15 @@ extension Space {
     func createItem(
         remoteID: String = "item-1",
         title: String = "Item 1",
-        givenURL: URL? = URL(string: "https://example.com/items/item-1"),
+        givenURL: String = "https://example.com/items/item-1",
         isArticle: Bool = true,
         article: Article? = nil
     ) throws -> Item {
-        var url = givenURL
-        if url == nil {
-            url = URL(string: "https://example.com/items/item-1")
-        }
-
         return try backgroundContext.performAndWait {
             let item = buildItem(
                 remoteID: remoteID,
                 title: title,
-                givenURL: url,
+                givenURL: givenURL,
                 isArticle: isArticle,
                 article: article
             )
@@ -110,21 +109,16 @@ extension Space {
     func buildItem(
         remoteID: String = "item-1",
         title: String = "Item 1",
-        givenURL: URL? = URL(string: "https://example.com/items/item-1"),
-        resolvedURL: URL? = nil,
+        givenURL: String = "https://example.com/items/item-1",
+        resolvedURL: String? = nil,
         topImageURL: URL? = nil,
         excerpt: String? = nil,
         isArticle: Bool = true,
         article: Article? = nil,
         syndicatedArticle: SyndicatedArticle? = nil
     ) -> Item {
-        var url = givenURL
-        if url == nil {
-            url = URL(string: "https://example.com/items/item-1")
-        }
-
         return backgroundContext.performAndWait {
-            let item: Item = Item(context: backgroundContext, givenURL: url!, remoteID: remoteID)
+            let item: Item = Item(context: backgroundContext, givenURL: givenURL, remoteID: remoteID)
             item.remoteID = remoteID
             item.title = title
             item.resolvedURL = resolvedURL
@@ -134,6 +128,40 @@ extension Space {
             item.excerpt = excerpt
             item.syndicatedArticle = syndicatedArticle
             return item
+        }
+    }
+}
+
+// MARK: - Collection
+extension Space {
+    @discardableResult
+    func buildCollection(
+        slug: String = "slug-1",
+        title: String = "collection-title",
+        authors: [String] = [],
+        stories: [CollectionStory] = [],
+        item: Item? = nil
+    ) -> Collection {
+        backgroundContext.performAndWait {
+            let collection: Collection = Collection(context: backgroundContext, slug: slug, title: title, authors: NSOrderedSet(array: authors), stories: NSOrderedSet(array: stories))
+            collection.item = item
+
+            return collection
+        }
+    }
+
+    @discardableResult
+    func buildCollectionStory(
+        url: String = "story-url",
+        title: String = "story-title",
+        excerpt: String = "",
+        authors: [String] = [],
+        item: Item? = nil
+    ) -> CollectionStory {
+        backgroundContext.performAndWait {
+            let collectionStory: CollectionStory = CollectionStory(context: backgroundContext, url: url, title: title, excerpt: excerpt, authors: NSOrderedSet(array: authors))
+            collectionStory.item = item
+            return collectionStory
         }
     }
 }

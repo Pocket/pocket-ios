@@ -1,15 +1,44 @@
-//
-//  File.swift
-//  
-//
-//  Created by Daniel Brooks on 9/23/22.
-//
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import Foundation
 import UserNotifications
 @testable import PocketKit
 
-class MockPocketBraze: MockPushNotificationProtocol, BrazeSDKProtocol { }
+class MockPocketBraze: MockPushNotificationProtocol, BrazeSDKProtocol {
+    func logFeatureFlagImpression(id: String) -> Bool { return false }
+}
+
+extension MockPocketBraze {
+    private static let isFeatureFlagEnabled = "isFeatureFlagEnabled"
+    typealias IsFeatureFlagEnabledImpl = (String) -> Bool
+    struct IsFeatureFlagEnabledCall {
+        let id: String
+    }
+
+    func stubIsFeatureFlagEnabled(impl: @escaping IsFeatureFlagEnabledImpl) {
+        implementations[Self.isFeatureFlagEnabled] = impl
+    }
+
+    func isFeatureFlagEnabled(id: String) -> Bool {
+        guard let impl = implementations[Self.isFeatureFlagEnabled] as? IsFeatureFlagEnabledImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.isFeatureFlagEnabled] = (calls[Self.isFeatureFlagEnabled] ?? []) + [IsFeatureFlagEnabledCall(id: id)]
+
+        return impl(id)
+    }
+
+    func isFeatureFlagCall(at index: Int) -> IsFeatureFlagEnabledCall? {
+        guard let calls = calls[Self.isFeatureFlagEnabled] else {
+            return nil
+        }
+
+        return calls[safe: index] as? IsFeatureFlagEnabledCall
+    }
+}
 
 // MARK: Did Receive User Notification
 extension MockPocketBraze {
@@ -48,6 +77,5 @@ extension MockPocketBraze {
     }
 
     func signedInUserDidBeginMigration() {
-
     }
 }

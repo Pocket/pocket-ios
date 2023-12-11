@@ -11,6 +11,7 @@ class EditTagsTests: XCTestCase {
     var snowplowMicro = SnowplowMicro()
 
     override func setUp() async throws {
+        try await super.setUp()
         continueAfterFailure = false
         let uiApp = XCUIApplication()
         app = PocketAppElement(app: uiApp)
@@ -30,6 +31,7 @@ class EditTagsTests: XCTestCase {
         try server.stop()
         app.terminate()
         await snowplowMicro.assertBaselineSnowplowExpectation()
+        try await super.tearDown()
     }
 
     @MainActor

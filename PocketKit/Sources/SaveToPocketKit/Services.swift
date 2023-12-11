@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Foundation
 import Sync
 import SharedPocketKit
@@ -14,6 +18,12 @@ struct Services {
     let userDefaults: UserDefaults
     let notificationCenter: NotificationCenter
     let braze: SaveToBraze
+    let recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService
+
+    /// The user management service that will log a user out when the correct notification is posted.
+    /// This is marked as private since we do not need to access it, but we need it to be around for the lifetime
+    /// of a Services instance. When using `.shared`, this lifetime will exist for the duration of the share extension.
+    private let userManagementService: SaveToUserManagementServiceProtocol
 
     private let persistentContainer: PersistentContainer
 
@@ -48,5 +58,17 @@ struct Services {
             endpoint: Keys.shared.brazeAPIEndpoint,
             groupdID: Keys.shared.groupID
         )
+
+        userManagementService = SaveToUserManagementService(appSession: appSession, user: user, notificationCenter: notificationCenter)
+        recentSavesWidgetUpdateService = RecentSavesWidgetUpdateService(store: UserDefaultsItemWidgetsStore(userDefaults: userDefaults, key: .recentSavesWidget))
+    }
+
+    /// Starts up all services as required.
+    /// - Parameter onReset: The function to call if a service has been reset.
+    /// - Note: `onReset` can be called when a migration within the persistent container fails.
+    func start(onReset: @escaping () -> Void) {
+        if persistentContainer.didReset {
+            onReset()
+        }
     }
 }

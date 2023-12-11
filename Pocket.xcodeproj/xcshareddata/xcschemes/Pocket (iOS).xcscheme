@@ -201,7 +201,7 @@
       </CodeCoverageTargets>
       <TestPlans>
          <TestPlanReference
-            reference = "container:UITests.xctestplan">
+            reference = "container:UITests-1.xctestplan">
          </TestPlanReference>
          <TestPlanReference
             reference = "container:UITests-2.xctestplan">
@@ -218,6 +218,9 @@
          </TestPlanReference>
          <TestPlanReference
             reference = "container:UITestsFlaky.xctestplan">
+         </TestPlanReference>
+         <TestPlanReference
+            reference = "container:UITests-4.xctestplan">
          </TestPlanReference>
       </TestPlans>
       <Testables>
@@ -307,6 +310,14 @@
          <CommandLineArgument
             argument = "clearKeychain"
             isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "skipLegacyAccountMigration"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-com.apple.CoreData.MigrationDebug 1 "
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-com.apple.CoreData.SQLDebug 1"

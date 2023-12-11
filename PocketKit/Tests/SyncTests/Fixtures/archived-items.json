@@ -24,6 +24,7 @@
               "isArchived": true,
               "isFavorite": false,
               "tags": [],
+              "corpusItem": null,
               "item": {
                 "__typename": "Item",
                 "remoteID": "archived-item-2",
@@ -67,6 +68,7 @@
               "isArchived": true,
               "isFavorite": false,
               "tags": [],
+              "corpusItem": null,
               "item": {
                 "__typename": "Item",
                 "remoteID": "archived-item-1",

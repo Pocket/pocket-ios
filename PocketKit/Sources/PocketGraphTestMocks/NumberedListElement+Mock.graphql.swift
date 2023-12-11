@@ -5,7 +5,7 @@ import ApolloTestSupport
 import PocketGraph
 
 public class NumberedListElement: MockObject {
-  public static let objectType: Object = PocketGraph.Objects.NumberedListElement
+  public static let objectType: ApolloAPI.Object = PocketGraph.Objects.NumberedListElement
   public static let _mockFields = MockFields()
   public typealias MockValueCollectionType = Array<Mock<NumberedListElement>>
 
@@ -23,8 +23,8 @@ public extension Mock where O == NumberedListElement {
     level: Int? = nil
   ) {
     self.init()
-    self.content = content
-    self.index = index
-    self.level = level
+    _setScalar(content, for: \.content)
+    _setScalar(index, for: \.index)
+    _setScalar(level, for: \.level)
   }
 }

@@ -98,7 +98,10 @@ public class Space {
             for entity in objectModel.entities {
                 let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: entity.name!)
                 let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-                try backgroundContext.execute(deleteRequest)
+                deleteRequest.resultType = .resultTypeObjectIDs
+                let result = try backgroundContext.execute(deleteRequest) as? NSBatchDeleteResult
+                let changes: [AnyHashable: Any] = [NSDeletedObjectsKey: result?.result as? [NSManagedObjectID] ?? []]
+                NSManagedObjectContext.mergeChanges(fromRemoteContextSave: changes, into: [backgroundContext])
             }
             backgroundContext.reset()
         }
@@ -139,6 +142,57 @@ public class Space {
     }
 }
 
+// MARK: Collection
+extension Space {
+    func fetchCollection(by slug: String, context: NSManagedObjectContext? = nil) throws -> Collection? {
+        return try fetch(Requests.fetchCollection(by: slug), context: context).first
+    }
+
+    func fetchCollectionAuthor(by name: String, context: NSManagedObjectContext? = nil) throws -> CollectionAuthor? {
+        return try fetch(Requests.fetchCollectionAuthor(by: name), context: context).first
+    }
+
+    func fetchCollectionAuthors(by slug: String, context: NSManagedObjectContext? = nil) throws -> [CollectionAuthor] {
+        return try fetch(Requests.fetchCollectionAuthors(by: slug))
+    }
+
+    func fetchCollectionStory(by url: String, context: NSManagedObjectContext? = nil) throws -> CollectionStory? {
+        return try fetch(Requests.fetchCollectionStory(by: url), context: context).first
+    }
+
+    func updateCollection(from remote: Collection.RemoteCollection) throws {
+        let context = makeChildBackgroundContext()
+
+        context.performAndWait { [weak self] in
+            guard let self else { return }
+
+            let collection = (try? fetchCollection(by: remote.slug, context: context)) ??
+            Collection(context: context, slug: remote.slug, title: remote.title, authors: [], stories: [])
+
+            collection.update(from: remote, in: self, context: context)
+        }
+
+        // save the child context
+        try context.performAndWait {
+            guard context.hasChanges else {
+                return
+            }
+            try context.save()
+            // then save the parent context
+            try save()
+        }
+    }
+
+    func makeCollectionStoriesController(slug: String) -> RichFetchedResultsController<CollectionStory> {
+        RichFetchedResultsController(
+            fetchRequest: Requests.fetchCollectionStories(by: slug),
+            managedObjectContext: viewContext,
+            sectionNameKeyPath: nil,
+            cacheName: nil
+        )
+    }
+}
+
 // MARK: Image
 extension Space {
     func makeImagesController() -> NSFetchedResultsController<Image> {
@@ -159,7 +213,7 @@ extension Space {
         return try fetch(Requests.fetchItems())
     }
 
-    func fetchItem(byURL url: URL, context: NSManagedObjectContext? = nil) throws -> Item? {
+    func fetchItem(byURL url: String, context: NSManagedObjectContext? = nil) throws -> Item? {
         return try fetch(Requests.fetchItem(byURL: url), context: context).first
     }
 
@@ -169,17 +223,6 @@ extension Space {
 
     func fetchUnsavedItems() throws -> [Item] {
         return try fetch(Requests.fetchUnsavedItems())
-    }
-
-    func deleteOrphanedItems(context: NSManagedObjectContext) throws {
-        let fetchRequest: NSFetchRequest<Item> = Item.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "recommendation = NULL && savedItem = NULL && sharedWithYouHighlight = NULL")
-        try context.performAndWait {
-            let orphans = try context.fetch(fetchRequest)
-            orphans.forEach {
-                context.delete($0)
-            }
-        }
     }
 }
 
@@ -208,11 +251,11 @@ extension Space {
 
 // MARK: SavedItem
 extension Space {
-    func fetchSavedItem(byURL url: URL, context: NSManagedObjectContext? = nil) throws -> SavedItem? {
+    func fetchSavedItem(byURL url: String, context: NSManagedObjectContext? = nil) throws -> SavedItem? {
         return try fetch(Requests.fetchSavedItem(byURL: url), context: context).first
     }
 
-    func fetchSavedItem(byURL url: URL) throws -> SavedItem? {
+    func fetchSavedItem(byURL url: String) throws -> SavedItem? {
         return try fetch(Requests.fetchSavedItem(byURL: url)).first
     }
 
@@ -220,8 +263,8 @@ extension Space {
         return try fetch(Requests.fetchSavedItems(bySearchTerm: searchTerm, userPremium: isPremium))
     }
 
-    func fetchSavedItems() throws -> [SavedItem] {
-        return try fetch(Requests.fetchSavedItems())
+    func fetchSavedItems(limit: Int? = nil) throws -> [SavedItem] {
+        return try fetch(Requests.fetchSavedItems(limit: limit))
     }
 
     func fetchArchivedItems() throws -> [SavedItem] {
@@ -283,8 +326,8 @@ extension Space {
 
 // MARK: Slate/SlateLineUp
 extension Space {
-    func fetchSlateLineups() throws -> [SlateLineup] {
-        return try fetch(Requests.fetchSlateLineups())
+    func fetchSlateLineups(context: NSManagedObjectContext? = nil) throws -> [SlateLineup] {
+        return try fetch(Requests.fetchSlateLineups(), context: context)
     }
 
     func fetchSlateLineup(byRemoteID id: String, context: NSManagedObjectContext? = nil) throws -> SlateLineup? {
@@ -325,43 +368,45 @@ extension Space {
         )
     }
 
-    func deleteOrphanedSlates(context: NSManagedObjectContext) throws {
-        let fetchRequest: NSFetchRequest<Slate> = Slate.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "slateLineup = NULL")
-
-        try context.performAndWait {
-            let orphans = try context.fetch(fetchRequest)
-            orphans.forEach {
-                context.delete($0)
-            }
-        }
-    }
-
-    /// Updates a `SlateLineup` from the specified remote object, on a child background context
+    /// Updates unified home lineup from the specified remote object
     /// - Parameter remote: the specified remote object
-    func updateLineup(from remote: SlateLineup.RemoteSlateLineup) throws {
+    func updateHomeLineup(from remote: SlateLineup.RemoteHomeLineup) throws {
         let context = makeChildBackgroundContext()
 
-        context.performAndWait { [weak self] in
+        try context.performAndWait { [weak self] in
             guard let self else { return }
+            let lineups = try self.fetchSlateLineups(context: context)
 
-            let lineup = (try? self.fetchSlateLineup(byRemoteID: remote.id, context: context)) ??
-            SlateLineup(context: context, remoteID: remote.id, expermimentID: remote.experimentId, requestID: remote.requestId)
+            lineups.forEach {
+                context.delete($0)
+            }
+
+            let lineup = SlateLineup(context: context, remoteID: remote.id, expermimentID: "", requestID: "")
 
             lineup.update(from: remote, in: self, context: context)
         }
-        // save the child context
+
+        // cleanup and save operations
         try context.performAndWait {
             guard context.hasChanges else {
                 return
             }
-            // purge orphaned slates and items due to recommentation changes
-            try deleteOrphanedSlates(context: context)
-            try deleteOrphanedItems(context: context)
+            // cleanup orphaned entities
+            try purgeOrphans(context: context)
+            // then save the child context
             try context.save()
             // then save the parent context
             try save()
         }
+    }
+
+    private func purgeOrphans(context: NSManagedObjectContext) throws {
+        try deleteOrphanedSlates(context: context)
+        try deleteOrphanedRecommendations(context: context)
+        try deleteOrphanedItems(context: context)
+        try deleteOrphanedCollections(context: context)
+        try deleteOrphanedStories(context: context)
+        try deleteOrphanedSharedWithYouHighlights(context: context)
     }
 }
 
@@ -439,6 +484,71 @@ extension Space {
     /// - Returns: The set of feature flags
     func fetchFeatureFlags(in context: NSManagedObjectContext?) throws -> [FeatureFlag] {
         return try fetch(Requests.fetchFeatureFlags(), context: context)
+    }
+
+    /// Returns an NSFetchedResultsController that fetches FeatureFlag objects.
+    func makeFeatureFlagsController() -> NSFetchedResultsController<FeatureFlag> {
+        let request = Requests.fetchFeatureFlags()
+        request.sortDescriptors = [NSSortDescriptor(key: "name", ascending: false)]
+        let resultsController = NSFetchedResultsController(
+            fetchRequest: request,
+            managedObjectContext: backgroundContext,
+            sectionNameKeyPath: nil,
+            cacheName: nil
+        )
+        return resultsController
+    }
+}
+
+// MARK: cleanup
+private extension Space {
+    /// Removes all the entities matching a given fetch request
+    /// - Parameters:
+    ///   - request: the given fetch request
+    ///   - context: the context where to perform the delete operations
+    func deleteEntities<T: NSManagedObject>(request: NSFetchRequest<T>, context: NSManagedObjectContext) throws {
+        try context.performAndWait {
+            let orphans = try context.fetch(request)
+            orphans.forEach {
+                context.delete($0)
+            }
+        }
+    }
+
+    func deleteOrphanedSlates(context: NSManagedObjectContext) throws {
+        let fetchRequest: NSFetchRequest<Slate> = Slate.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "slateLineup = NULL")
+        try deleteEntities(request: fetchRequest, context: context)
+    }
+
+    func deleteOrphanedRecommendations(context: NSManagedObjectContext) throws {
+        let fetchRequest = Recommendation.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "slate = NULL")
+        try deleteEntities(request: fetchRequest, context: context)
+    }
+
+    func deleteOrphanedItems(context: NSManagedObjectContext) throws {
+        let fetchRequest: NSFetchRequest<Item> = Item.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "recommendation = NULL && savedItem = NULL")
+        try deleteEntities(request: fetchRequest, context: context)
+    }
+
+    func deleteOrphanedCollections(context: NSManagedObjectContext) throws {
+        let fetchRequest = Collection.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "item = NULL")
+        try deleteEntities(request: fetchRequest, context: context)
+    }
+
+    func deleteOrphanedStories(context: NSManagedObjectContext) throws {
+        let fetchRequest = CollectionStory.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "collection = NULL")
+        try deleteEntities(request: fetchRequest, context: context)
+    }
+
+    func deleteOrphanedSharedWithYouHighlights(context: NSManagedObjectContext) throws {
+        let fetchRequest = SharedWithYouHighlight.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "item = NULL")
+        try deleteEntities(request: fetchRequest, context: context)
     }
 }
 

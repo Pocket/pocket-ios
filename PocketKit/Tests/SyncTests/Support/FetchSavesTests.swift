@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 import Combine
 import CoreData
@@ -20,6 +24,7 @@ class FetchSavesTests: XCTestCase {
     var task: PersistentSyncTask!
 
     override func setUpWithError() throws {
+        try super.setUpWithError()
         apollo = MockApolloClient()
         user = MockUser()
         events = PassthroughSubject()
@@ -35,6 +40,7 @@ class FetchSavesTests: XCTestCase {
     override func tearDownWithError() throws {
         cancellables = []
         try space.clear()
+        try super.tearDownWithError()
     }
 
     func subject(
@@ -93,7 +99,7 @@ class FetchSavesTests: XCTestCase {
         let savedItem = savedItems[0]
         XCTAssertEqual(savedItem.cursor, "cursor-1")
         XCTAssertEqual(savedItem.remoteID, "saved-item-1")
-        XCTAssertEqual(savedItem.url, URL(string: "https://example.com/item-1")!)
+        XCTAssertEqual(savedItem.url, "https://example.com/item-1")
         XCTAssertEqual(savedItem.createdAt.timeIntervalSince1970, 0)
         XCTAssertEqual(savedItem.deletedAt?.timeIntervalSince1970, nil)
         XCTAssertEqual(savedItem.isArchived, false)
@@ -105,8 +111,8 @@ class FetchSavesTests: XCTestCase {
 
         let item = savedItem.item
         XCTAssertEqual(item?.remoteID, "item-1")
-        XCTAssertEqual(item?.givenURL, URL(string: "https://given.example.com/item-1")!)
-        XCTAssertEqual(item?.resolvedURL, URL(string: "https://resolved.example.com/item-1")!)
+        XCTAssertEqual(item?.givenURL, "https://given.example.com/item-1")
+        XCTAssertEqual(item?.resolvedURL, "https://resolved.example.com/item-1")
         XCTAssertEqual(item?.title, "Item 1")
         XCTAssertEqual(item?.topImageURL, URL(string: "https://example.com/item-1/top-image.jpg")!)
         XCTAssertEqual(item?.domain, "example.com")
@@ -133,6 +139,26 @@ class FetchSavesTests: XCTestCase {
         XCTAssertEqual(item?.syndicatedArticle?.itemID, "syndicated-article-item-id")
     }
 
+    func test_refresh_whenFetchSucceeds_useCorpusItemPublisherIfItExists() async throws {
+        user.stubSetStatus { _ in }
+        apollo.setupFetchSavesSyncResponse(listFixtureName: "list-with-corpusItem")
+
+        let service = subject()
+        _ = await service.execute(syncTaskId: task.objectID)
+
+        let savedItems = try space.fetchAllSavedItems().sorted { $0.remoteID! < $1.remoteID! }
+        XCTAssertEqual(savedItems.count, 2)
+
+        let savedItem1 = savedItems[0]
+        let item1 = savedItem1.item
+        XCTAssertEqual(savedItem1.remoteID, "saved-item-1")
+        XCTAssertEqual(item1?.domain, "CorpusItemPublisher-1")
+
+        let savedItem2 = savedItems[1]
+        let item2 = savedItem2.item
+        XCTAssertEqual(item2!.domain!, "example.com")
+    }
+
     func test_refresh_whenFetchSucceeds_andResultContainsDuplicateItems_createsSingleItem() async throws {
         user.stubSetStatus { _ in }
         apollo.setupFetchSavesSyncResponse(listFixtureName: "duplicate-list")
@@ -156,7 +182,7 @@ class FetchSavesTests: XCTestCase {
         let service = subject()
         _ = await service.execute(syncTaskId: task.objectID)
 
-        let item = try space.fetchSavedItem(byURL: URL(string: "http://example.com/item-1")!)
+        let item = try space.fetchSavedItem(byURL: "http://example.com/item-1")
         XCTAssertEqual(item?.item?.title, "Updated Item 1")
     }
 
@@ -185,7 +211,7 @@ class FetchSavesTests: XCTestCase {
         var fetches = 0
         user.stubSetStatus { _ in }
         apollo.setupTagsResponse()
-        apollo.stubFetch { [weak self] (query: FetchSavesQuery, _, _, queue, completion) -> Apollo.Cancellable in
+        apollo.stubFetch { [weak self] (query: FetchSavesQuery, _, _, _, queue, completion) -> Apollo.Cancellable in
             defer { fetches += 1 }
 
             let result: Fixture
@@ -222,7 +248,7 @@ class FetchSavesTests: XCTestCase {
 
         user.stubSetStatus { _ in }
         apollo.setupTagsResponse()
-        apollo.stubFetch { [weak self] (query: FetchSavesQuery, _, _, queue, completion) -> Apollo.Cancellable in
+        apollo.stubFetch { [weak self] (query: FetchSavesQuery, _, _, _, queue, completion) -> Apollo.Cancellable in
             defer { fetches += 1 }
 
             let result: Fixture
@@ -275,7 +301,7 @@ class FetchSavesTests: XCTestCase {
         var fetches = 0
         user.stubSetStatus { _ in }
         apollo.setupTagsResponse()
-        apollo.stubFetch { [weak self] (query: FetchSavesQuery, _, _, queue, completion) -> Apollo.Cancellable in
+        apollo.stubFetch { [weak self] (query: FetchSavesQuery, _, _, _, queue, completion) -> Apollo.Cancellable in
             defer { fetches += 1 }
 
             let result: Fixture
@@ -339,7 +365,7 @@ class FetchSavesTests: XCTestCase {
         let service = subject()
         _ = await service.execute(syncTaskId: task.objectID)
 
-        await fulfillment(of: [receivedEvent], timeout: 10)
+        await fulfillment(of: [receivedEvent], timeout: 1)
     }
 
     func test_refresh_whenUpdatedSinceIsNotPresent_onlyFetchesUnreadItems() async {
@@ -357,7 +383,7 @@ class FetchSavesTests: XCTestCase {
         user.stubSetStatus { _ in }
 
         var tagsPageCount = 1
-        apollo.stubFetch { (query: TagsQuery, _, _, queue, completion) in
+        apollo.stubFetch { (query: TagsQuery, _, _, _, queue, completion) in
             defer { tagsPageCount += 1 }
 
             guard tagsPageCount < 3 else {

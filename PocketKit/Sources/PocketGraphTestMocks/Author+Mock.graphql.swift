@@ -5,7 +5,7 @@ import ApolloTestSupport
 import PocketGraph
 
 public class Author: MockObject {
-  public static let objectType: Object = PocketGraph.Objects.Author
+  public static let objectType: ApolloAPI.Object = PocketGraph.Objects.Author
   public static let _mockFields = MockFields()
   public typealias MockValueCollectionType = Array<Mock<Author>>
 
@@ -23,8 +23,8 @@ public extension Mock where O == Author {
     url: String? = nil
   ) {
     self.init()
-    self.id = id
-    self.name = name
-    self.url = url
+    _setScalar(id, for: \.id)
+    _setScalar(name, for: \.name)
+    _setScalar(url, for: \.url)
   }
 }

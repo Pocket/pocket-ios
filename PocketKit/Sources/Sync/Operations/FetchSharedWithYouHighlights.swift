@@ -10,7 +10,6 @@ import SharedPocketKit
 import CoreData
 
 class FetchSharedWithYouHighlights: SyncOperation {
-
     private let apollo: ApolloClientProtocol
     private let space: Space
     private let sharedWithYouHighlights: [PocketSWHighlight]
@@ -65,7 +64,6 @@ class FetchSharedWithYouHighlights: SyncOperation {
     }
 
     private func fetchSharedWithYouHighlights(pocketSWHighlights: [PocketSWHighlight]) async throws {
-
         for pocketSWHighlight in pocketSWHighlights {
             Log.breadcrumb(category: "sync.sharedWithYou", level: .debug, message: "Grabbing sharedWithYouHighlight \(String(describing: pocketSWHighlight.index))")
 
@@ -81,7 +79,6 @@ class FetchSharedWithYouHighlights: SyncOperation {
         }
 
         try self.safeSpace.batchDeleteSharedWithYouHighlightsNotInArray(urls: pocketSWHighlights.compactMap { $0.url })
-
     }
 
     private func fetchSharedWithYouSummary(_ sharedWithYouHighlight: PocketSWHighlight) async throws -> GraphQLResult<SharedWithYouSummaryQuery.Data> {
@@ -99,5 +96,4 @@ class FetchSharedWithYouHighlights: SyncOperation {
 
         try self.safeSpace.updateSharedWithYouHighlight(highlight: highlight, with: itemSummary)
     }
-
 }

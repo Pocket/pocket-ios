@@ -8,5 +8,4 @@ import CoreData
 
 @objc(PersistentSyncTask)
 public class PersistentSyncTask: NSManagedObject {
-
 }

@@ -11,8 +11,10 @@ public extension UserDefaults {
         case recentSearches = "Search.recentSearches"
         case recentTags = "Search.recentTags"
         case toggleAppBadge = "AccountViewModel.ToggleAppBadge"
+        case toggleOriginalView = "AccountViewModel.ToggleOriginalView"
         case appBadgeToggle = "Settings.ToggleAppBadge"
         case legacyUserMigration = "com.mozilla.pocket.next.migration.legacyUser"
+        case orgTransferMigration = "com.mozilla.pocket.next.migration.org"
         case dateLastRefresh = "HomeRefreshCoordinator.dateLastRefreshKey"
         case lastRefreshedTagsAt = "lastRefreshedTagsAt"
         case lastRefreshedArchiveAt = "lastRefreshedArchiveAt"
@@ -22,6 +24,9 @@ public extension UserDefaults {
         case listSelectedSortForSaved = "listSelectedSortForSaved"
         case listSelectedSortForArchive = "listSelectedSortForArchive"
         case readerFontSizeAdjustment = "readerFontSizeAdjustment"
+        case readerScaleFactorIndex = "readerScaleFactorIndex"
+        case readerMarginsIndex = "readerMarginsIndex"
+        case readerTextAlignment = "readerTextAlignment"
         case readerFontFamily = "readerFontFamily"
         case dateLastOpened = "dateLastOpened"
         case dateLastBackgrounded = "dateLastBackgrounded"
@@ -31,6 +36,10 @@ public extension UserDefaults {
         case userEmail = "User.email"
         case userId = "User.userId"
         case startingAppSection = "MainViewModel.StartingAppSection"
+        case widgetsLoggedIn = "RecentSavesWidgetLoggedInKey"
+        case recentSavesWidget = "RecentSavesWidgetKey"
+        case recommendationsWidget = "RecommendationsWidgetKey"
+        case forceRefreshFromExtension = "ForceRefreshFromExtentionKey"
 
         var isRemovable: Bool {
             switch self {

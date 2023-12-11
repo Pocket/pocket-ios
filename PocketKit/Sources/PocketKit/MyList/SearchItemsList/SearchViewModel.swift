@@ -35,7 +35,7 @@ protocol SearchResultActionDelegate: AnyObject {
 }
 
 /// View model that holds business logic for the SearchView
-class SearchViewModel: ObservableObject {
+class DefaultSearchViewModel: ObservableObject {
     static let recentSearchesKey = UserDefaults.Key.recentSearches
 
     private var subscriptions: [AnyCancellable] = []
@@ -44,6 +44,7 @@ class SearchViewModel: ObservableObject {
     private let user: User
     private let store: SubscriptionStore
     private let userDefaults: UserDefaults
+    private var featureFlags: FeatureFlagServiceProtocol
     private let source: Source
     private let premiumUpgradeViewModelFactory: PremiumUpgradeViewModelFactory
     private let notificationCenter: NotificationCenter
@@ -52,6 +53,7 @@ class SearchViewModel: ObservableObject {
     private var savesOnlineSearch: OnlineSearch
     private var archiveOnlineSearch: OnlineSearch
     private var allOnlineSearch: OnlineSearch
+    private var premiumOnlineSearch: PremiumOnlineSearch
     // separated from the subscriptions array as that one gets cleared between searches
     private var userStatusListener: AnyCancellable?
 
@@ -67,11 +69,13 @@ class SearchViewModel: ObservableObject {
         return user.status == .premium
     }
 
+    private(set) var scopeTitles: [String] = SearchScope.defaultScopes.map { $0.rawValue }
     var selectedScope: SearchScope = .saves
 
     @Published var showBanner: Bool = false
     @Published var isPresentingPremiumUpgrade = false
     @Published var isPresentingHooray = false
+    @Published var isPresentingReportIssue = false
     @Published var searchState: SearchViewState?
     @Published var selectedItem: SelectedItem?
     @Published var searchText = "" {
@@ -80,10 +84,29 @@ class SearchViewModel: ObservableObject {
         }
     }
 
+    /// Create the banner details to populate the view
     var bannerData: BannerModifier.BannerData {
         let offlineView = BannerModifier.BannerData(image: .looking, title: Localization.Search.limitedResults, detail: Localization.Search.offlineMessage)
-        let errorView = BannerModifier.BannerData(image: .warning, title: Localization.Search.limitedResults, detail: Localization.Search.Banner.errorMessage)
+        let errorView = BannerModifier.BannerData(
+            image: .warning,
+            title: Localization.Search.limitedResults,
+            detail: Localization.Search.Banner.errorMessage,
+            action: reportButton()
+        )
         return isOffline ? offlineView : errorView
+    }
+
+    /// Handles whether to show a report button for a banner
+    private func reportButton() -> BannerAction? {
+        if featureFlags.isAssigned(flag: .reportIssue) {
+            return BannerAction(
+                text: Localization.General.Error.sendReport,
+                style: PocketButtonStyle(.primary, .small)
+            ) {
+                self.isPresentingReportIssue.toggle()
+            }
+        }
+        return nil
     }
 
     var defaultState: SearchViewState {
@@ -93,22 +116,19 @@ class SearchViewModel: ObservableObject {
         return .emptyState(emptyStateViewModel)
     }
 
-    var scopeTitles: [String] {
-        SearchScope.allCases.map { $0.rawValue }
-    }
-
     private var recentSearches: [String] {
         get {
-            userDefaults.stringArray(forKey: SearchViewModel.recentSearchesKey) ?? []
+            userDefaults.stringArray(forKey: DefaultSearchViewModel.recentSearchesKey) ?? []
         }
         set {
-            userDefaults.set(newValue, forKey: SearchViewModel.recentSearchesKey)
+            userDefaults.set(newValue, forKey: DefaultSearchViewModel.recentSearchesKey)
         }
     }
 
     init(networkPathMonitor: NetworkPathMonitor,
          user: User,
          userDefaults: UserDefaults,
+         featureFlags: FeatureFlagServiceProtocol,
          source: Source,
          tracker: Tracker,
          store: SubscriptionStore,
@@ -117,6 +137,7 @@ class SearchViewModel: ObservableObject {
         self.networkPathMonitor = networkPathMonitor
         self.user = user
         self.userDefaults = userDefaults
+        self.featureFlags = featureFlags
         self.source = source
         self.tracker = tracker
         self.store = store
@@ -128,6 +149,7 @@ class SearchViewModel: ObservableObject {
         savesOnlineSearch = OnlineSearch(source: source, scope: .saves)
         archiveOnlineSearch = OnlineSearch(source: source, scope: .archive)
         allOnlineSearch = OnlineSearch(source: source, scope: .all)
+        premiumOnlineSearch = PremiumOnlineSearch(source: source)
 
         searchState = defaultState
         itemsController.delegate = self
@@ -148,6 +170,16 @@ class SearchViewModel: ObservableObject {
                 }
                 self?.searchState = self?.defaultState
             }
+    }
+
+    /// Updates the scope titles based on whether the user is enrolled in the premium search scopes experiment.
+    func updateScopeTitles() {
+        if featureFlags.isAssigned(flag: .premiumSearchScopesExperiment, variant: nil) {
+            scopeTitles = SearchScope.premiumScopes.map { $0.rawValue }
+            featureFlags.trackFeatureFlagFelt(flag: .premiumSearchScopesExperiment, variant: nil)
+        } else {
+            scopeTitles = SearchScope.defaultScopes.map { $0.rawValue }
+        }
     }
 
     /// Updates the scope user is in and presents an empty state or submits a search
@@ -203,6 +235,7 @@ class SearchViewModel: ObservableObject {
         savesOnlineSearch = OnlineSearch(source: source, scope: .saves)
         archiveOnlineSearch = OnlineSearch(source: source, scope: .archive)
         allOnlineSearch = OnlineSearch(source: source, scope: .all)
+        premiumOnlineSearch = PremiumOnlineSearch(source: source)
     }
 
     /// Resets the search objects if it does not have a cache before each search
@@ -220,6 +253,10 @@ class SearchViewModel: ObservableObject {
 
         if !allOnlineSearch.hasCache(with: term) {
             allOnlineSearch = OnlineSearch(source: source, scope: .all)
+        }
+
+        if !premiumOnlineSearch.hasCache(with: term, scope: selectedScope) {
+            premiumOnlineSearch = PremiumOnlineSearch(source: source)
         }
     }
 
@@ -240,6 +277,10 @@ class SearchViewModel: ObservableObject {
         case .all:
             guard !allOnlineSearch.hasFinishedResults else { return }
             allOnlineSearch.search(with: term, and: true)
+        case .premiumSearchByTitle, .premiumSearchByTag, .premiumSearchByContent:
+            guard !premiumOnlineSearch.hasFinishedResults else { return }
+            premiumOnlineSearch.search(with: term, scope: selectedScope, shouldLoadMoreResults: true)
+            return // TODO: Update for premium search experiment
         }
     }
 
@@ -270,6 +311,9 @@ class SearchViewModel: ObservableObject {
         case .all:
             allOnlineSearch.search(with: term)
             listenForResults(with: term, onlineSearch: allOnlineSearch, scope: .all)
+        case .premiumSearchByTitle, .premiumSearchByTag, .premiumSearchByContent:
+            premiumOnlineSearch.search(with: term, scope: selectedScope)
+            listenForResults(with: term, premiumOnlineSearch: premiumOnlineSearch, scope: selectedScope)
         }
     }
 
@@ -322,7 +366,31 @@ class SearchViewModel: ObservableObject {
                     self.trackSearchResultsPage(pageNumber: onlineSearch.pageNumberLoaded, scope: scope)
                 } else if case .failure(let error) = result {
                     guard case SearchServiceError.noInternet = error else {
-                        self.searchState = .emptyState(ErrorEmptyState())
+                        self.searchState = .emptyState(ErrorEmptyState(featureFlags: featureFlags, user: user))
+                        return
+                    }
+                    self.searchState = .emptyState(OfflineEmptyState(type: scope))
+                }
+            }
+            .store(in: &subscriptions)
+    }
+
+    /// Submit premium experiment search and update `searchState` with proper view
+    /// - Parameters:
+    ///   - term: the term the user enters in search bar
+    ///   - premiumOnlineSearch: object for premium experiment search
+    ///   - scope: the scope that the user is in (i.e. title, tags, content)
+    private func listenForResults(with term: String, premiumOnlineSearch: PremiumOnlineSearch, scope: SearchScope) {
+        premiumOnlineSearch.$results
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] result in
+                guard let self, let result, self.selectedScope == scope else { return }
+                if case .success(let items) = result {
+                    self.searchState = items.isEmpty ? .emptyState(self.searchResultState()) : .searchResults(items)
+                    self.trackSearchResultsPage(pageNumber: premiumOnlineSearch.pageNumberLoaded, scope: scope)
+                } else if case .failure(let error) = result {
+                    guard case SearchServiceError.noInternet = error else {
+                        self.searchState = .emptyState(ErrorEmptyState(featureFlags: featureFlags, user: user))
                         return
                     }
                     self.searchState = .emptyState(OfflineEmptyState(type: scope))
@@ -357,6 +425,8 @@ class SearchViewModel: ObservableObject {
             return NoResultsEmptyState()
         case .archive, .all:
             return isOffline ? OfflineEmptyState(type: selectedScope) : NoResultsEmptyState()
+        case .premiumSearchByTitle, .premiumSearchByTag, .premiumSearchByContent:
+            return isOffline ? OfflineEmptyState(type: selectedScope) : NoResultsEmptyState() // TODO: Update for premium search experiment
         }
     }
 
@@ -371,6 +441,8 @@ class SearchViewModel: ObservableObject {
             return isOffline ? OfflineEmptyState(type: .archive) : SearchEmptyState()
         case .all:
             return GetPremiumEmptyState()
+        case .premiumSearchByTitle, .premiumSearchByTag, .premiumSearchByContent:
+            return isOffline ? OfflineEmptyState(type: .archive) : SearchEmptyState() // TODO: Update for premium search experiment
         }
     }
 
@@ -396,15 +468,22 @@ class SearchViewModel: ObservableObject {
         let currentPathStatus = path?.status
 
         if lastPathStatus == .unsatisfied, currentPathStatus == .satisfied {
-            guard let currentSearchTerm, !currentSearchTerm.isEmpty, selectedScope == .archive || selectedScope == .all else { return }
-            updateSearchResults(with: currentSearchTerm)
+            guard let currentSearchTerm, !currentSearchTerm.isEmpty else { return }
+            switch selectedScope {
+            case .saves:
+                return
+            case .archive, .all:
+                updateSearchResults(with: currentSearchTerm)
+            case .premiumSearchByTitle, .premiumSearchByTag, .premiumSearchByContent:
+                updateSearchResults(with: currentSearchTerm)
+            }
         }
 
         lastPathStatus = currentPathStatus
     }
 }
 
-extension SearchViewModel: SearchResultActionDelegate {
+extension DefaultSearchViewModel: SearchResultActionDelegate {
     func itemViewModel(_ searchItem: PocketItem, index: Int) -> PocketItemViewModel {
         return PocketItemViewModel(
             item: searchItem,
@@ -422,9 +501,8 @@ extension SearchViewModel: SearchResultActionDelegate {
 
     func select(_ searchItem: PocketItem, index: Int) {
         guard
-            let url = searchItem.savedItemURL,
             let savedItem = source.fetchOrCreateSavedItem(
-                with: url,
+                with: searchItem.savedItemURL,
                 and: searchItem.remoteItemParts
             )
         else {
@@ -441,10 +519,14 @@ extension SearchViewModel: SearchResultActionDelegate {
             store: store,
             networkPathMonitor: networkPathMonitor,
             userDefaults: userDefaults,
-            notificationCenter: notificationCenter
+            notificationCenter: notificationCenter,
+            featureFlagService: featureFlags
         )
 
-        if savedItem.shouldOpenInWebView {
+        if let slug = readable.slug, featureFlags.isAssigned(flag: .nativeCollections) {
+            let collectionViewModel = CollectionViewModel(slug: slug, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults, featureFlags: featureFlags, notificationCenter: notificationCenter)
+            selectedItem = .collection(collectionViewModel)
+        } else if savedItem.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
             trackOpenSearchItem(url: savedItem.url, index: index, destination: .internal)
             selectedItem = .webView(readable)
         } else {
@@ -511,13 +593,10 @@ extension SearchViewModel: SearchResultActionDelegate {
     }
 
     func fetchSavedItem(_ searchItem: PocketItem) -> SavedItem? {
-        guard
-            let url = searchItem.savedItemURL,
-            let savedItem = source.fetchOrCreateSavedItem(
-                with: url,
-                and: searchItem.remoteItemParts
-            )
-        else {
+        guard let savedItem = source.fetchOrCreateSavedItem(
+            with: searchItem.savedItemURL,
+            and: searchItem.remoteItemParts
+        ) else {
             Log.capture(message: "Saved Item not created")
             return nil
         }
@@ -526,7 +605,7 @@ extension SearchViewModel: SearchResultActionDelegate {
 }
 
 // MARK: Analytics
-extension SearchViewModel {
+extension DefaultSearchViewModel {
     /// Tracks when user opens search (magnifying glass or pull down)
     func trackOpenSearch() {
         tracker.track(event: Events.Search.openSearch(scope: selectedScope))
@@ -547,11 +626,7 @@ extension SearchViewModel {
     /// - Parameters:
     ///   - url: url associated with the item
     ///   - index: position index of item in the list
-    func trackViewResults(url: URL?, index: Int) {
-        guard let url else {
-            Log.capture(message: "Selected search item without an associated url, not logging analytics for searchCardImpression")
-            return
-        }
+    func trackViewResults(url: String, index: Int) {
         tracker.track(event: Events.Search.searchCardImpression(url: url, positionInList: index, scope: selectedScope))
     }
 
@@ -559,7 +634,7 @@ extension SearchViewModel {
     /// - Parameters:
     ///   - url: url associated with the item
     ///   - index: position index of item in the list
-    func trackOpenSearchItem(url: URL, index: Int, destination: ContentOpen.Destination) {
+    func trackOpenSearchItem(url: String, index: Int, destination: ContentOpen.Destination) {
         tracker.track(event: Events.Search.searchCardContentOpen(url: url, positionInList: index, scope: selectedScope, destination: destination))
     }
 
@@ -586,7 +661,7 @@ extension SearchViewModel {
     }
 }
 
-extension SearchViewModel: SavedItemsControllerDelegate {
+extension DefaultSearchViewModel: SavedItemsControllerDelegate {
     func controller(
         _ controller: SavedItemsController,
         didChange savedItem: SavedItem,
@@ -618,7 +693,7 @@ extension SearchViewModel: SavedItemsControllerDelegate {
 }
 
 // MARK: Premium upgrades
-extension SearchViewModel {
+extension DefaultSearchViewModel {
     @MainActor
     func makePremiumUpgradeViewModel() -> PremiumUpgradeViewModel {
         premiumUpgradeViewModelFactory(.search)
@@ -627,5 +702,16 @@ extension SearchViewModel {
     /// Ttoggle the presentation of `PremiumUpgradeView`
     func showPremiumUpgrade() {
         self.isPresentingPremiumUpgrade = true
+    }
+}
+
+// MARK: Sentry User Feedback Reporting
+extension DefaultSearchViewModel {
+    var userEmail: String {
+        user.email
+    }
+
+    func submitIssue(name: String, email: String, comments: String) {
+        Log.captureUserFeedback(message: "Report an issue", name: name, email: email, comments: comments)
     }
 }

@@ -1,0 +1,95 @@
+{
+    "data": {
+        "homeSlateLineup": {
+            "id": "slate-lineup-1",
+            "__typename": "[some-type-name]",
+            "slates": [
+                {
+                    "__typename": "[some-type-name]",
+                    "id": "slate-1",
+                    "headline": "Slate 1",
+                    "subheadline": "The description of slate 1",
+                    "recommendations": [
+                        {
+                            "__typename": "[some-type-name]",
+                            "id": "slate-1-rec-1",
+                            "corpusItem": {
+                                "__typename": "[some-type-name]",
+                                "id": "item-1",
+                                "url": "https://given.example.com/slate-1-rec-1",
+                                "title": "Slate 1, Recommendation 1",
+                                "excerpt": "Cursus Aenean Elit",
+                                "imageUrl": "http://example.com/slate-1-rec-1/top-image.png",
+                                "publisher":"slate-1-rec-1.example.com",
+                                "target": {
+                                    "__typename": "[some-type-name]",
+                                    "itemId": "slate-1-rec-1-corpusItem-1-syndicated",
+                                    "mainImage": "image-1-1-1",
+                                    "title": "syndicatedTitle-1-1-1",
+                                    "excerpt": "syndicatedExcerpt-1-1-1",
+                                    "publisher": {
+                                      "name": "syndicatedPublisher-1-1-1"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "__typename": "[some-type-name]",
+                            "id": "slate-1-rec-2",
+                            "corpusItem": {
+                                "__typename": "[some-type-name]",
+                                "id": "item-2",
+                                "url": "https://given.example.com/slate-1-rec-2",
+                                "title": "Slate 1, Recommendation 2",
+                                "excerpt": "Cursus Aenean Elit",
+                                "imageUrl": "http://example.com/slate-1-rec-2/top-image.png",
+                                "publisher":"slate-1-rec-2.example.com",
+                                "target": {
+                                    "__typename": "[some-type-name]",
+                                    "itemId": "slate-1-rec-2-corpusItem-2-syndicated",
+                                    "mainImage": "image-1-2-2",
+                                    "title": "syndicatedTitle-1-2-2",
+                                    "excerpt": "syndicatedExcerpt-1-2-2",
+                                    "publisher": {
+                                      "name": "syndicatedPublisher-1-2-2"
+                                    }
+                                }
+                            }
+                        },
+                    ],
+                },
+                {
+                    "__typename": "[some-type-name]",
+                    "id": "slate-2",
+                    "headline": "Slate 2",
+                    "subheadline": "The description of slate 2",
+                    "recommendations": [
+                        {
+                            "__typename": "[some-type-name]",
+                            "id": "slate-2-rec-1",
+                            "corpusItem": {
+                                "__typename": "[some-type-name]",
+                                "id": "item-3",
+                                "url": "https://given.example.com/slate-2-rec-1",
+                                "title": "Slate 2, Recommendation 1",
+                                "excerpt": "Cursus Aenean Elit",
+                                "imageUrl": "http://example.com/slate-2-rec-1/top-image.png",
+                                "publisher":"slate-2-rec-1.example.com",
+                                "target": {
+                                    "__typename": "[some-type-name]",
+                                    "itemId": "slate-2-rec-1-corpusItem-3-syndicated",
+                                    "mainImage": "image-2-1-3",
+                                    "title": "syndicatedTitle-2-1-3",
+                                    "excerpt": "syndicatedExcerpt-2-1-3",
+                                    "publisher": {
+                                      "name": "syndicatedPublisher-2-1-3"
+                                    }
+                                }
+                            }
+                        },
+                    ],
+                },
+            ],
+        }
+    }
+}

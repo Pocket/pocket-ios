@@ -4,14 +4,9 @@
 @_exported import ApolloAPI
 
 public struct CuratedInfoParts: PocketGraph.SelectionSet, Fragment {
-  public static var fragmentDefinition: StaticString { """
-    fragment CuratedInfoParts on CuratedInfo {
-      __typename
-      excerpt
-      imageSrc
-      title
-    }
-    """ }
+  public static var fragmentDefinition: StaticString {
+    #"fragment CuratedInfoParts on CuratedInfo { __typename excerpt imageSrc title }"#
+  }
 
   public let __data: DataDict
   public init(_dataDict: DataDict) { __data = _dataDict }
@@ -33,14 +28,16 @@ public struct CuratedInfoParts: PocketGraph.SelectionSet, Fragment {
     imageSrc: PocketGraph.Url? = nil,
     title: String? = nil
   ) {
-    self.init(_dataDict: DataDict(data: [
-      "__typename": PocketGraph.Objects.CuratedInfo.typename,
-      "excerpt": excerpt,
-      "imageSrc": imageSrc,
-      "title": title,
-      "__fulfilled": Set([
-        ObjectIdentifier(Self.self)
-      ])
-    ]))
+    self.init(_dataDict: DataDict(
+      data: [
+        "__typename": PocketGraph.Objects.CuratedInfo.typename,
+        "excerpt": excerpt,
+        "imageSrc": imageSrc,
+        "title": title,
+      ],
+      fulfilledFragments: [
+        ObjectIdentifier(CuratedInfoParts.self)
+      ]
+    ))
   }
 }

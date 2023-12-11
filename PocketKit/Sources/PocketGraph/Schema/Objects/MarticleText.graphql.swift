@@ -6,7 +6,7 @@ import ApolloAPI
 public extension Objects {
   /// A section of the article's text content, in markdown.
   /// A subset of gfm is supported. See README.md for more information.
-  static let MarticleText = Object(
+  static let MarticleText = ApolloAPI.Object(
     typename: "MarticleText",
     implementedInterfaces: []
   )

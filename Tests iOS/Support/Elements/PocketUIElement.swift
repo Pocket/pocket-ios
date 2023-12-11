@@ -27,7 +27,7 @@ extension PocketUIElement {
 
     @discardableResult
     func wait(
-        timeout: TimeInterval = 20,
+        timeout: TimeInterval = 2,
         file: StaticString = #file,
         line: UInt = #line
     ) -> Self {

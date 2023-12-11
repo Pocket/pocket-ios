@@ -5,7 +5,7 @@ import ApolloAPI
 
 public extension Objects {
   /// An edge in a connection.
-  static let TagEdge = Object(
+  static let TagEdge = ApolloAPI.Object(
     typename: "TagEdge",
     implementedInterfaces: []
   )

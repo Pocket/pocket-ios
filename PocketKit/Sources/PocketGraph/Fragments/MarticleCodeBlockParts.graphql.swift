@@ -4,13 +4,9 @@
 @_exported import ApolloAPI
 
 public struct MarticleCodeBlockParts: PocketGraph.SelectionSet, Fragment {
-  public static var fragmentDefinition: StaticString { """
-    fragment MarticleCodeBlockParts on MarticleCodeBlock {
-      __typename
-      text
-      language
-    }
-    """ }
+  public static var fragmentDefinition: StaticString {
+    #"fragment MarticleCodeBlockParts on MarticleCodeBlock { __typename text language }"#
+  }
 
   public let __data: DataDict
   public init(_dataDict: DataDict) { __data = _dataDict }
@@ -31,13 +27,15 @@ public struct MarticleCodeBlockParts: PocketGraph.SelectionSet, Fragment {
     text: String,
     language: Int? = nil
   ) {
-    self.init(_dataDict: DataDict(data: [
-      "__typename": PocketGraph.Objects.MarticleCodeBlock.typename,
-      "text": text,
-      "language": language,
-      "__fulfilled": Set([
-        ObjectIdentifier(Self.self)
-      ])
-    ]))
+    self.init(_dataDict: DataDict(
+      data: [
+        "__typename": PocketGraph.Objects.MarticleCodeBlock.typename,
+        "text": text,
+        "language": language,
+      ],
+      fulfilledFragments: [
+        ObjectIdentifier(MarticleCodeBlockParts.self)
+      ]
+    ))
   }
 }

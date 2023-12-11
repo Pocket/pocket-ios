@@ -1,11 +1,14 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Sync
 import Combine
 import SharedPocketKit
 import PocketGraph
 
 class MockSearchService: SearchService {
-    @Published
-    var _results: [SearchSavedItem]? = []
+    @Published var _results: [SearchSavedItem]? = []
     var results: Published<[SearchSavedItem]?>.Publisher { $_results }
 
     public var hasFinishedResults: Bool = false

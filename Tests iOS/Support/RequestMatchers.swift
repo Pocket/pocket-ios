@@ -50,7 +50,7 @@ struct ClientAPIRequest {
     }
 
     var isForSlateLineup: Bool {
-        self.operationName == "GetSlateLineup"
+        self.operationName == "HomeSlateLineup"
     }
 
     var isToArchiveAnItem: Bool {
@@ -97,8 +97,8 @@ struct ClientAPIRequest {
         self.operationName == "SavedItemByID" && contains("archived-item-1")
     }
 
-    func isForRecommendationDetail(_ number: Int = 1) -> Bool {
-        self.operationName == "ItemByID" && contains("recommended-item-\(number)")
+    func isForRecommendationDetail(_ rec: String) -> Bool {
+        self.operationName == "ItemByURL" && contains(rec)
     }
 
     var isForReplacingSavedItemTags: Bool {
@@ -107,6 +107,14 @@ struct ClientAPIRequest {
 
     var isForTags: Bool {
         self.operationName == "Tags"
+    }
+
+    var isForSaveTags: Bool {
+        self.operationName == "SavedItemTag"
+    }
+
+    var isForCollection: Bool {
+        self.operationName == "getCollectionBySlug"
     }
 
     var isForDeleteUser: Bool {
@@ -125,6 +133,12 @@ struct ClientAPIRequest {
             return self.operationName == "SearchSavedItems" && contains("filter\":{\"status\":\"ARCHIVED\"}")
         case .all:
             return self.operationName == "SearchSavedItems" && contains("filter\":{}")
+        case .premiumSearchByTitle:
+            return self.operationName == "SearchSavedItems" && contains("filter\":{\"onlyTitleAndURL\"}")
+        case .premiumSearchByTag:
+            return self.operationName == "SearchSavedItems" && contains("filter\":{}") && contains("tag:")
+        case .premiumSearchByContent:
+            return self.operationName == "SearchSavedItems" && contains("filter\":{}")
         }
     }
 
@@ -138,7 +152,6 @@ struct ClientAPIRequest {
 }
 
 extension ClientAPIRequest {
-
     var variableItemId: String {
         self.apolloRequestBody!.variableDict["itemID"] as! String
     }
@@ -157,5 +170,13 @@ extension ClientAPIRequest {
 
     var inputURL: URL {
         URL(string: self.apolloRequestBody!.inputDict["url"] as! String)!
+    }
+
+    var givenURL: URL {
+        URL(string: self.apolloRequestBody!.inputDict["givenUrl"] as! String)!
+    }
+
+    var variableGivenURL: String {
+        apolloRequestBody!.variableDict["givenUrl"] as! String
     }
 }

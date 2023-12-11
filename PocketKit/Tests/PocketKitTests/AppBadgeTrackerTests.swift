@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 import CoreData
 @testable import PocketKit
@@ -18,6 +22,7 @@ final class AppBadgeTrackerTests: XCTestCase {
     private var badgeProvider: MockBadgeProvider!
 
     override func setUp() {
+        super.setUp()
         space = .testSpace()
         source = MockSource()
         source.viewContext = space.viewContext
@@ -38,6 +43,7 @@ final class AppBadgeTrackerTests: XCTestCase {
         userDefaults.removeObject(forKey: AccountViewModel.ToggleAppBadgeKey)
         try space.clear()
         try space.save()
+        try super.tearDownWithError()
     }
 
     func test_on_savedItemsUpdated_noSubscriberCalled() throws {
@@ -60,7 +66,7 @@ final class AppBadgeTrackerTests: XCTestCase {
         userDefaults.setValue(true, forKey: AccountViewModel.ToggleAppBadgeKey)
 
         space.buildSavedItem(item: try space.createItem())
-        space.buildSavedItem(remoteID: "saved-item-2", url: "http://example.com/item-2", isArchived: true, item: try space.createItem(remoteID: "item-2", givenURL: URL(string: "http://example.com/item-2")))
+        space.buildSavedItem(remoteID: "saved-item-2", url: "http://example.com/item-2", isArchived: true, item: try space.createItem(remoteID: "item-2", givenURL: "http://example.com/item-2"))
         try space.save()
 
         NotificationCenter.default.post(name: .listUpdated, object: nil)

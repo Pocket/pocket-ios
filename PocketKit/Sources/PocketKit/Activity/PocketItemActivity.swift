@@ -20,17 +20,17 @@ struct PocketItemActivity: PocketActivity {
     let activityItems: [Any]
     let sender: Any?
 
-    init(url: URL?, additionalText: String? = nil, source: String? = nil, sender: Any? = nil) {
+    init(url: String, additionalText: String? = nil, source: String? = nil, sender: Any? = nil) {
         self.activityItems = Self.activityItems(for: url, additionalText: additionalText, source: source)
         self.sender = sender
         self.source = source
     }
 
-    private static func activityItems(for url: URL?, additionalText: String?, source: String?) -> [Any] {
+    private static func activityItems(for url: String, additionalText: String?, source: String?) -> [Any] {
         // Append utm_source (using pocketShareURL) as necessary if there is a source, else use the original URL
         let itemSourceURL = source.flatMap { pocketShareURL(url, source: $0) } ?? url
         return [
-            itemSourceURL.flatMap(ActivityItemSource.init),
+            URL(percentEncoding: itemSourceURL).flatMap { ActivityItemSource($0) },
             additionalText.flatMap(ActivityItemSource.init)
         ].compactMap { $0 }
     }
@@ -38,7 +38,7 @@ struct PocketItemActivity: PocketActivity {
 
 extension PocketItemActivity {
     static func fromSaves(
-        url: URL?,
+        url: String,
         additionalText: String? = nil,
         sender: Any? = nil
     ) -> PocketItemActivity {
@@ -50,7 +50,7 @@ extension PocketItemActivity {
         )
     }
 
-    static func fromHome(url: URL?, additionalText: String? = nil, sender: Any? = nil) -> PocketItemActivity {
+    static func fromHome(url: String, additionalText: String? = nil, sender: Any? = nil) -> PocketItemActivity {
         return PocketItemActivity(
             url: url,
             additionalText: additionalText,
@@ -60,7 +60,7 @@ extension PocketItemActivity {
     }
 
     static func fromReader(
-        url: URL?,
+        url: String,
         additionalText: String? = nil,
         sender: Any? = nil
     ) -> PocketItemActivity {
@@ -68,6 +68,19 @@ extension PocketItemActivity {
             url: url,
             additionalText: additionalText,
             source: "pocket_reader",
+            sender: sender
+        )
+    }
+
+    static func fromCollection(
+        url: String,
+        additionalText: String? = nil,
+        sender: Any? = nil
+    ) -> PocketItemActivity {
+        return PocketItemActivity(
+            url: url,
+            additionalText: additionalText,
+            source: "pocket_collection",
             sender: sender
         )
     }

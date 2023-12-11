@@ -40,5 +40,9 @@ fragment SavedItemSummary on SavedItem {
     ...ItemSummary
     ...PendingItemParts
   }
+  corpusItem {
+    __typename
+    ...CorpusItemParts
+  }
 }
 

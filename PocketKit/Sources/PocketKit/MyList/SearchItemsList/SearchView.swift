@@ -8,7 +8,7 @@ import Textile
 import Localization
 
 struct SearchView: View {
-    @ObservedObject var viewModel: SearchViewModel
+    @ObservedObject var viewModel: DefaultSearchViewModel
 
     var body: some View {
         Group {
@@ -39,13 +39,15 @@ struct SearchView: View {
 struct ResultsView: View {
     enum Constants {
         static let indexToTriggerNextPage = 15
+        static let maxReadableWidth: CGFloat = 700
     }
 
-    @ObservedObject var viewModel: SearchViewModel
+    @Environment(\.horizontalSizeClass)
+    var sizeClass
+    @ObservedObject var viewModel: DefaultSearchViewModel
+    @State private var showingAlert = false
 
     let results: [PocketItem]
-
-    @State private var showingAlert = false
 
     let swipeTintColor = Color(.ui.teal2)
 
@@ -73,8 +75,14 @@ struct ResultsView: View {
         .listStyle(.plain)
         .accessibilityIdentifier("search-results")
         .banner(data: viewModel.bannerData, show: $viewModel.showBanner, bottomOffset: 0)
+        .sheet(isPresented: $viewModel.isPresentingReportIssue, content: {
+            ReportIssueView(email: viewModel.userEmail, submitIssue: viewModel.submitIssue)
+        })
         .alert(isPresented: $showingAlert) {
             Alert(title: Text(Localization.Search.Error.View.needsInternet), dismissButton: .default(Text("OK")))
+        }
+        .if(sizeClass == .regular) { view in
+            view.frame(width: Constants.maxReadableWidth, height: .infinity, alignment: .center)
         }
     }
 
@@ -103,11 +111,19 @@ struct SearchEmptyView: View {
     }
 
     var body: some View {
-        if let text = viewModel.buttonText {
-            EmptyStateView(viewModel: viewModel) {
-                GetPocketPremiumButton(text: text)
+        if let buttonType = viewModel.buttonType {
+            switch buttonType {
+            case .premium(let text):
+                EmptyStateView(viewModel: viewModel) {
+                    GetPocketPremiumButton(text: text)
+                }.padding(Margins.normal.rawValue)
+            case .reportIssue(let text, let userEmail):
+                EmptyStateView(viewModel: viewModel) {
+                    ReportIssueButton(text: text, userEmail: userEmail)
+                }.padding(Margins.normal.rawValue)
+            default:
+                EmptyView()
             }
-            .padding(Margins.normal.rawValue)
         } else {
             EmptyStateView<EmptyView>(viewModel: viewModel)
                 .padding(Margins.normal.rawValue)
@@ -117,7 +133,7 @@ struct SearchEmptyView: View {
 
 struct GetPocketPremiumButton: View {
     @State var dismissReason: DismissReason = .swipe
-    @EnvironmentObject private var searchViewModel: SearchViewModel
+    @EnvironmentObject private var searchViewModel: DefaultSearchViewModel
     private let text: String
 
     init(text: String) {
@@ -153,7 +169,7 @@ struct GetPocketPremiumButton: View {
 
 // MARK: - Recent Searches Component
 struct RecentSearchView: View {
-    @ObservedObject var viewModel: SearchViewModel
+    @ObservedObject var viewModel: DefaultSearchViewModel
     var recentSearches: [String]
 
     var body: some View {

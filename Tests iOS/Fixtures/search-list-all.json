@@ -26,6 +26,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-1",
@@ -54,6 +55,7 @@
                       "url": "https://example.com/authors/david"
                     }
                   ],
+                  "collection": null,
                   "domainMetadata": {
                     "__typename": "[type-name-here]",
                     "name": "WIRED",
@@ -97,6 +99,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-2",
@@ -139,6 +142,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -168,6 +172,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-3",
@@ -210,6 +215,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -226,7 +232,7 @@
           "hasPreviousPage": false,
           "startCursor": null
         },
-        "totalCount": 2
+        "totalCount": 3
       }
     }
   }

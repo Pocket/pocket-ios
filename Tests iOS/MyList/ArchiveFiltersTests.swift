@@ -13,6 +13,7 @@ class ArchiveFiltersTests: XCTestCase {
     var snowplowMicro = SnowplowMicro()
 
     override func setUp() async throws {
+        try await super.setUp()
         continueAfterFailure = false
 
         let uiApp = XCUIApplication()
@@ -33,6 +34,7 @@ class ArchiveFiltersTests: XCTestCase {
         try server.stop()
         app.terminate()
         await snowplowMicro.assertBaselineSnowplowExpectation()
+        try await super.tearDown()
     }
 
     func test_archiveView_tappingFavoritesPill_togglesDisplayingFavoritedArchivedContent() {
@@ -133,5 +135,18 @@ class ArchiveFiltersTests: XCTestCase {
 
         let tagEvent = await snowplowMicro.getFirstEvent(with: "global-nav.filterTags.selectRecentTag")
         tagEvent!.getUIContext()!.assertHas(type: "button")
+    }
+
+    func test_archiveView_tappingSortPill_withSelectedTag_showsFilteredItems() {
+        app.launch().tabBar.savesButton.wait().tap()
+        app.saves.selectionSwitcher.archiveButton.wait().tap()
+        app.saves.filterButton(for: "Tagged").tap()
+        let tagsFilterView = app.saves.tagsFilterView.wait()
+        tagsFilterView.tag(matching: "tag 0").wait().tap()
+
+        app.saves.filterButton(for: "Sort").wait().tap()
+        app.sortMenu.sortOption("Oldest saved").wait().tap()
+
+        XCTAssertTrue(app.saves.itemView(at: 0).contains(string: "Archived Item 1"))
     }
 }

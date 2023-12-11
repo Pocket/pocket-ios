@@ -5,25 +5,26 @@
 
 public class ArchiveItemMutation: GraphQLMutation {
   public static let operationName: String = "ArchiveItem"
-  public static let document: ApolloAPI.DocumentType = .notPersisted(
+  public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"""
-      mutation ArchiveItem($itemID: ID!) {
-        updateSavedItemArchive(id: $itemID) {
-          __typename
-          id
-        }
-      }
-      """#
+      #"mutation ArchiveItem($givenUrl: Url!, $timestamp: ISOString!) { savedItemArchive(givenUrl: $givenUrl, timestamp: $timestamp) { __typename id } }"#
     ))
 
-  public var itemID: ID
+  public var givenUrl: Url
+  public var timestamp: ISOString
 
-  public init(itemID: ID) {
-    self.itemID = itemID
+  public init(
+    givenUrl: Url,
+    timestamp: ISOString
+  ) {
+    self.givenUrl = givenUrl
+    self.timestamp = timestamp
   }
 
-  public var __variables: Variables? { ["itemID": itemID] }
+  public var __variables: Variables? { [
+    "givenUrl": givenUrl,
+    "timestamp": timestamp
+  ] }
 
   public struct Data: PocketGraph.SelectionSet {
     public let __data: DataDict
@@ -31,16 +32,19 @@ public class ArchiveItemMutation: GraphQLMutation {
 
     public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Mutation }
     public static var __selections: [ApolloAPI.Selection] { [
-      .field("updateSavedItemArchive", UpdateSavedItemArchive.self, arguments: ["id": .variable("itemID")]),
+      .field("savedItemArchive", SavedItemArchive?.self, arguments: [
+        "givenUrl": .variable("givenUrl"),
+        "timestamp": .variable("timestamp")
+      ]),
     ] }
 
-    /// Archives a SavedItem
-    public var updateSavedItemArchive: UpdateSavedItemArchive { __data["updateSavedItemArchive"] }
+    /// Archive a SavedItem (identified by URL)
+    public var savedItemArchive: SavedItemArchive? { __data["savedItemArchive"] }
 
-    /// UpdateSavedItemArchive
+    /// SavedItemArchive
     ///
     /// Parent Type: `SavedItem`
-    public struct UpdateSavedItemArchive: PocketGraph.SelectionSet {
+    public struct SavedItemArchive: PocketGraph.SelectionSet {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 

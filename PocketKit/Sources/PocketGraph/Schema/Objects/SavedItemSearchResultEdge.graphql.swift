@@ -5,7 +5,7 @@ import ApolloAPI
 
 public extension Objects {
   /// An edge in a connection.
-  static let SavedItemSearchResultEdge = Object(
+  static let SavedItemSearchResultEdge = ApolloAPI.Object(
     typename: "SavedItemSearchResultEdge",
     implementedInterfaces: []
   )

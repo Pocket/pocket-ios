@@ -4,17 +4,9 @@
 @_exported import ApolloAPI
 
 public struct MarticleNumberedListParts: PocketGraph.SelectionSet, Fragment {
-  public static var fragmentDefinition: StaticString { """
-    fragment MarticleNumberedListParts on MarticleNumberedList {
-      __typename
-      rows {
-        __typename
-        content
-        level
-        index
-      }
-    }
-    """ }
+  public static var fragmentDefinition: StaticString {
+    #"fragment MarticleNumberedListParts on MarticleNumberedList { __typename rows { __typename content level index } }"#
+  }
 
   public let __data: DataDict
   public init(_dataDict: DataDict) { __data = _dataDict }
@@ -30,13 +22,15 @@ public struct MarticleNumberedListParts: PocketGraph.SelectionSet, Fragment {
   public init(
     rows: [Row]
   ) {
-    self.init(_dataDict: DataDict(data: [
-      "__typename": PocketGraph.Objects.MarticleNumberedList.typename,
-      "rows": rows._fieldData,
-      "__fulfilled": Set([
-        ObjectIdentifier(Self.self)
-      ])
-    ]))
+    self.init(_dataDict: DataDict(
+      data: [
+        "__typename": PocketGraph.Objects.MarticleNumberedList.typename,
+        "rows": rows._fieldData,
+      ],
+      fulfilledFragments: [
+        ObjectIdentifier(MarticleNumberedListParts.self)
+      ]
+    ))
   }
 
   /// Row
@@ -66,15 +60,17 @@ public struct MarticleNumberedListParts: PocketGraph.SelectionSet, Fragment {
       level: Int,
       index: Int
     ) {
-      self.init(_dataDict: DataDict(data: [
-        "__typename": PocketGraph.Objects.NumberedListElement.typename,
-        "content": content,
-        "level": level,
-        "index": index,
-        "__fulfilled": Set([
-          ObjectIdentifier(Self.self)
-        ])
-      ]))
+      self.init(_dataDict: DataDict(
+        data: [
+          "__typename": PocketGraph.Objects.NumberedListElement.typename,
+          "content": content,
+          "level": level,
+          "index": index,
+        ],
+        fulfilledFragments: [
+          ObjectIdentifier(MarticleNumberedListParts.Row.self)
+        ]
+      ))
     }
   }
 }

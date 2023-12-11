@@ -34,6 +34,7 @@
                                     "id": "id-2",
                                     "name": "tag-2"
                                 }],
+                            "corpusItem": null,
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "item-1",
@@ -56,6 +57,7 @@
                                         "url": "https://example.com/authors/eleanor"
                                     }
                                 ],
+                                "collection": null,
                                 "domainMetadata": {
                                     "__typename": "[type-name-here]",
                                     "name": "WIRED",
@@ -100,6 +102,7 @@
                             "isArchived": false,
                             "isFavorite": false,
                             "tags": [],
+                            "corpusItem": null,
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "item-2",
@@ -115,6 +118,7 @@
                                 "excerpt": "Cursus Aenean Elit",
                                 "datePublished": "2021-01-01 12:01:01",
                                 "authors": [],
+                                "collection": null,
                                 "domainMetadata": {
                                     "__typename": "[type-name-here]",
                                     "name": "WIRED",

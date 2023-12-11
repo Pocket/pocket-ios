@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Foundation
 import Analytics
 import Sync
@@ -6,6 +10,8 @@ import Textile
 import SharedPocketKit
 import UIKit
 import Adjust
+import Localization
+import SwiftUI
 
 @MainActor
 public class RootViewModel: ObservableObject {
@@ -17,24 +23,52 @@ public class RootViewModel: ObservableObject {
     private let tracker: Tracker
     private let source: Source
     private let userDefaults: UserDefaults
+    private let widgetsSessionService: WidgetsSessionService
+    private let notificationCenter: NotificationCenter
+    private let refreshCoordinators: [RefreshCoordinator]
 
     private var subscriptions: Set<AnyCancellable> = []
 
     public convenience init() {
-        self.init(appSession: Services.shared.appSession, tracker: Services.shared.tracker, source: Services.shared.source, userDefaults: Services.shared.userDefaults)
+        self.init(services: Services.shared)
+    }
+
+    private convenience init(services: Services) {
+        self.init(
+            appSession: services.appSession,
+            tracker: services.tracker,
+            source: services.source,
+            userDefaults: services.userDefaults,
+            widgetsSessionService: services.widgetsSessionService,
+            notificationCenter: services.notificationCenter,
+            refreshCoordinators: services.refreshCoordinators
+        )
+
+        services.start { [weak self] in
+            guard let self else { return }
+            self.persistentContainerDidReset()
+        }
     }
 
     init(
         appSession: AppSession,
         tracker: Tracker,
         source: Source,
-        userDefaults: UserDefaults
+        userDefaults: UserDefaults,
+        widgetsSessionService: WidgetsSessionService,
+        notificationCenter: NotificationCenter,
+        refreshCoordinators: [RefreshCoordinator]
     ) {
         self.appSession = appSession
         self.tracker = tracker
         self.source = source
         self.userDefaults = userDefaults
+        self.widgetsSessionService = widgetsSessionService
+        self.notificationCenter = notificationCenter
+        self.refreshCoordinators = refreshCoordinators
+    }
 
+    public func start() {
         // Register for login notifications
         NotificationCenter.default.publisher(
             for: .userLoggedIn
@@ -48,7 +82,6 @@ public class RootViewModel: ObservableObject {
         ).sink { [weak self] notification in
             self?.handleSession(session: nil)
         }.store(in: &subscriptions)
-
         // Because session could already be available at init, lets try and use it.
         handleSession(session: appSession.currentSession)
     }
@@ -76,18 +109,56 @@ public class RootViewModel: ObservableObject {
             APIUserEntity(consumerKey: Keys.shared.pocketApiConsumerKey),
             UserEntity(guid: session.guid, userID: session.userIdentifier, adjustAdId: Adjust.adid())
         ])
+        widgetsSessionService.setLoggedIn(true)
         Log.setUserID(session.userIdentifier)
     }
 
     private func tearDownSession() {
         source.clear()
-
+        widgetsSessionService.setLoggedIn(false)
         userDefaults.resetKeys()
+
         tracker.resetPersistentEntities([
             APIUserEntity(consumerKey: Keys.shared.pocketApiConsumerKey)
         ])
 
         Log.clearUser()
         Textiles.clearImageCache()
+    }
+
+    /// Performs actions based on the result of the Services persistent container being reset.
+    private func persistentContainerDidReset() {
+        // Since there will be a loss of on-disk data during a reset (read: destroy / add), we want
+        // to perform the same type of sync we would on initial login, if users are logged in.
+        // An example use case is Home - there is a possibility that Home _had_ content,
+        // but the app was updated (with a failed migration) before the
+        // next allowed refresh interval for Home. Thus, Home wouldn't load data. This is similar across other
+        // portions of the app, such as a user's items.
+        if appSession.currentSession != nil {
+            refreshCoordinators.forEach { $0.refresh(isForced: true) { } }
+        }
+
+        // Upon reset, let the user know (as a toast) that a problem occurred, and that we're redownloading their data
+        let data = BannerModifier.BannerData(
+            image: .error,
+            title: Localization.Error.problemOccurred,
+            detail: Localization.Error.redownloading
+        )
+        notificationCenter.post(name: .bannerRequested, object: data)
+    }
+
+    /// Called when a `ScenePhase` change to active has been detected by the SwiftUI
+    ///  lifecycle (in `PocketApp`, forwarded to here.
+    public func scenePhaseDidChange(_ scenePhase: ScenePhase) {
+        switch scenePhase {
+        case .active:
+            // Upon becoming active, if an extension (e.g SaveTo) requested that we force-refresh the app (e.g due to a
+            // persistent container reset), then perform the same reset logic as if the app had explicitly performed a reset.
+            if userDefaults.bool(forKey: .forceRefreshFromExtension) {
+                persistentContainerDidReset()
+                userDefaults.set(false, forKey: .forceRefreshFromExtension)
+            }
+        default: return
+        }
     }
 }

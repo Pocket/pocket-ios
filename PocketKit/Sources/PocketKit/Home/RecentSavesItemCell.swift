@@ -1,7 +1,12 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Foundation
 import UIKit
 import Textile
 import Localization
+import SharedPocketKit
 
 class RecentSavesItemCell: HomeCarouselItemCell {
     struct Model: HomeCarouselItemCellModel {
@@ -22,19 +27,25 @@ class RecentSavesItemCell: HomeCarouselItemCell {
             self.item = item
             self.favoriteAction = favoriteAction
             self.overflowActions = overflowActions
-            self.thumbnailURL = imageCacheURL(for: item.topImageURL)
+            self.thumbnailURL = CDNURLBuilder().imageCacheURL(for: item.topImageURL)
+        }
+
+        var attributedCollection: NSAttributedString? {
+            guard item.isCollection else { return nil }
+            return NSAttributedString(string: Localization.Constants.collection, style: .recommendation.collection)
         }
 
         var attributedTitle: NSAttributedString {
-            NSAttributedString(string: title, style: .title)
+            NSAttributedString(string: title, style: .recommendation.title)
         }
 
         var attributedDomain: NSAttributedString {
-            return NSAttributedString(string: domain ?? "", style: .domain)
+            let detailString = NSMutableAttributedString(string: domain ?? "", style: .recommendation.domain)
+            return item.isSyndicated ? detailString.addSyndicatedIndicator(with: .recommendation.domain) : detailString
         }
 
         var attributedTimeToRead: NSAttributedString {
-            return NSAttributedString(string: timeToRead ?? "", style: .timeToRead)
+            return NSAttributedString(string: timeToRead ?? "", style: .recommendation.timeToRead)
         }
 
         private var domain: String? {
@@ -54,18 +65,4 @@ class RecentSavesItemCell: HomeCarouselItemCell {
             return Localization.minRead(timeToRead)
         }
     }
-}
-
-private extension Style {
-    static let title: Style = .header.sansSerif.h8.with(color: .ui.black1).with { paragraph in
-        paragraph.with(lineSpacing: 4).with(lineBreakMode: .byTruncatingTail)
-    }
-
-    static let domain: Style = .header.sansSerif.p4.with(color: .ui.grey8).with(weight: .medium).with { paragraph in
-        paragraph.with(lineBreakMode: .byTruncatingTail)
-    }
-
-    static let timeToRead: Style = .header.sansSerif.p4.with(color: .ui.grey8).with { paragraph in
-        paragraph.with(lineBreakMode: .byTruncatingTail)
-    }.with(maxScaleSize: 22)
 }

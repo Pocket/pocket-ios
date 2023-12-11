@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import UIKit
 import Sync
 import Textile
@@ -25,17 +29,17 @@ class ReadableViewController: UIViewController {
     weak var delegate: ReadableViewControllerDelegate?
 
     private var contexts: [Context] {
-        guard let url = readableViewModel.url else {
-            return []
-        }
-
-        let content = ContentContext(url: url)
+        let content = ContentContext(url: readableViewModel.url)
         return [content]
     }
 
     private let readerSettings: ReaderSettings
 
     private var subscriptions: [AnyCancellable] = []
+
+    private var isReloading = false
+
+    private var userScrollProgress: IndexPath?
 
     private lazy var collectionView: UICollectionView = UICollectionView(
         frame: .zero,
@@ -93,10 +97,28 @@ class ReadableViewController: UIViewController {
         readableViewModel.fetchDetailsIfNeeded()
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        guard let userProgress = readableViewModel.readingProgress() else {
+            return
+        }
+
+        collectionView.selectItem(at: userProgress, animated: true, scrollPosition: .centeredVertically)
+    }
+
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         // ensure on device rotate and change the view re-draws
         collectionView.collectionViewLayout.invalidateLayout()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        if let userScrollProgress {
+            readableViewModel.trackReadingProgress(index: userScrollProgress)
+        }
     }
 
     required init?(coder: NSCoder) {
@@ -109,8 +131,11 @@ class ReadableViewController: UIViewController {
     }
 
     private func reload() {
+        guard !isReloading else { return }
+        isReloading = true
         presenters?.forEach { $0.clearCache() }
         collectionView.reloadData()
+        isReloading = false
     }
 
     private func updateContent() {
@@ -134,6 +159,10 @@ extension ReadableViewController: UICollectionViewDelegate {
         if let cell = cell as? YouTubeVideoComponentCell {
             cell.pause()
         }
+    }
+
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        userScrollProgress = collectionView.indexPathsForVisibleItems.sorted().first
     }
 }
 
@@ -290,8 +319,8 @@ extension ReadableViewController {
             // Zero out the default leading/trailing contentInsets, but preserve the default top/bottom values.
             // This ensures each section will be inset horizontally exactly to the readable content width.
             var contentInsets = section.contentInsets
-            contentInsets.leading = 0
-            contentInsets.trailing = 0
+            contentInsets.leading = readerSettings.margins
+            contentInsets.trailing = readerSettings.margins
             contentInsets.top = Constants.metaSectionContentInsets.top
             contentInsets.bottom = Constants.metaSectionContentInsets.bottom
             section.contentInsets = contentInsets
@@ -325,8 +354,8 @@ extension ReadableViewController {
             // Zero out the default leading/trailing contentInsets, but preserve the default top/bottom values.
             // This ensures each section will be inset horizontally exactly to the readable content width.
             var contentInsets = section.contentInsets
-            contentInsets.leading = 0
-            contentInsets.trailing = 0
+            contentInsets.leading = readerSettings.margins
+            contentInsets.trailing = readerSettings.margins
             contentInsets.top = Constants.contentSectionContentInsets.top
             contentInsets.bottom = Constants.metaSectionContentInsets.bottom
             section.contentInsets = contentInsets

@@ -1,9 +1,14 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Foundation
 import SharedPocketKit
 import Sync
 import Combine
 import Analytics
 import Localization
+import WidgetKit
 
 class SavedItemViewModel {
     private let appSession: AppSession
@@ -13,8 +18,11 @@ class SavedItemViewModel {
     private let consumerKey: String
     private let userDefaults: UserDefaults
     private let user: User
+    private let notificationCenter: NotificationCenter
+    private let recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService
 
     private var dismissTimerCancellable: AnyCancellable?
+    private var subscriptions: Set<AnyCancellable> = []
 
     @Published var infoViewModel: InfoView.Model = .empty
 
@@ -42,7 +50,9 @@ class SavedItemViewModel {
          tracker: Tracker,
          consumerKey: String,
          userDefaults: UserDefaults,
-         user: User
+         user: User,
+         notificationCenter: NotificationCenter,
+         recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService
     ) {
         self.appSession = appSession
         self.saveService = saveService
@@ -51,39 +61,72 @@ class SavedItemViewModel {
         self.consumerKey = consumerKey
         self.userDefaults = userDefaults
         self.user = user
+        self.notificationCenter = notificationCenter
+        self.recentSavesWidgetUpdateService = recentSavesWidgetUpdateService
 
         guard appSession.currentSession != nil else { return }
+
+        notificationCenter
+            .publisher(for: .userLoggedOut)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.infoViewModel = .loggedOut
+            }
+            .store(in: &subscriptions)
     }
 
     func save(from context: ExtensionContext?) async {
         guard appSession.currentSession != nil else {
             autodismiss(from: context)
+
             return
         }
 
-        let extensionItems = context?.extensionItems ?? []
+        guard let extensionItems = context?.extensionItems else {
+            tracker.track(event: Events.SaveTo.unableToSave())
+            autodismiss(from: context)
 
+            return
+        }
+
+        guard let url = await parse(extensionItems: extensionItems) else {
+            tracker.track(event: Events.SaveTo.unableToSave())
+            infoViewModel = .error
+
+            return
+        }
+
+        save(url)
+
+        autodismiss(from: context)
+    }
+
+    private func parse(extensionItems: [ExtensionItem]) async -> String? {
         for item in extensionItems {
             guard let url = try? await url(from: item) else {
-                infoViewModel = .error
-                break
+                continue
             }
 
-            tracker.track(event: Events.SaveTo.saveEngagement(url: url))
+            return url
+        }
 
-            let result = saveService.save(url: url)
-            switch result {
-            case .existingItem(let savedItem):
-                self.savedItem = savedItem
-                infoViewModel = .existingItem
-            case .newItem(let savedItem):
-                self.savedItem = savedItem
-                infoViewModel = .newItem
-            case .taggedItem:
-                break
-            }
+        return nil
+    }
 
-            autodismiss(from: context)
+    private func save(_ url: String) {
+        tracker.track(event: Events.SaveTo.saveEngagement(url: url))
+
+        let result = saveService.save(url: url)
+        switch result {
+        case .existingItem(let savedItem):
+            self.savedItem = savedItem
+            infoViewModel = .existingItem
+            recentSavesWidgetUpdateService.insert(savedItem)
+        case .newItem(let savedItem):
+            self.savedItem = savedItem
+            infoViewModel = .newItem
+            recentSavesWidgetUpdateService.insert(savedItem)
+        default:
             break
         }
     }
@@ -144,56 +187,22 @@ extension SavedItemViewModel {
         }
     }
 
-    private func url(from item: ExtensionItem) async throws -> URL? {
+    private func url(from item: ExtensionItem) async throws -> String? {
         guard let providers = item.itemProviders else {
             return nil
         }
 
         for provider in providers {
-            let plainTextUTI = "public.plain-text"
-            let urlUTI = "public.url"
-
-            if provider.hasItemConformingToTypeIdentifier(plainTextUTI) {
-                guard let string = try? await provider.loadItem(forTypeIdentifier: plainTextUTI, options: nil) as? String,
-                      let url = retrieveURLFromString(with: string) else {
-                    continue
-                }
-
-                return url
-            } else if provider.hasItemConformingToTypeIdentifier(urlUTI) {
-                guard let url = try? await provider.loadItem(forTypeIdentifier: urlUTI, options: nil) as? URL else {
-                    continue
-                }
-
-                return url
-            } else {
-                continue
+            if let url = await URLExtractor.url(from: provider) {
+                return URL(string: url)?.absoluteString
             }
         }
 
         return nil
     }
-
-    /// Modified from https://www.hackingwithswift.com/example-code/strings/how-to-detect-a-url-in-a-string-using-nsdatadetector
-    /// - Parameter inputString: string input used to search for a URL
-    /// - Returns: URL found within the string
-    private func retrieveURLFromString(with inputString: String) -> URL? {
-        guard let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue) else {
-            Log.capture(message: "Unable to initialize detector")
-            return nil
-        }
-        let matches = detector.matches(in: inputString, options: [], range: NSRange(location: 0, length: inputString.utf16.count))
-
-        for match in matches {
-            guard let range = Range(match.range, in: inputString) else { continue }
-            let string = String(inputString[range])
-            return URL(string: string)
-        }
-        return nil
-    }
 }
 
-private extension InfoView.Model {
+extension InfoView.Model {
     static let empty = InfoView.Model(
         style: .default,
         attributedText: NSAttributedString(string: ""),
@@ -237,5 +246,17 @@ private extension InfoView.Model {
             style: .mainText
         ),
         attributedDetailText: nil
+    )
+
+    static let loggedOut =  InfoView.Model(
+        style: .error,
+        attributedText: NSAttributedString(
+            string: "Log in to Pocket to save",
+            style: .mainTextError
+        ),
+        attributedDetailText: NSAttributedString(
+            string: "Pocket couldn't save the link. Log in to the Pocket app and try saving again.",
+            style: .detailText
+        )
     )
 }

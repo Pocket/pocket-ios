@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Sync
 import Combine
 import Foundation
@@ -8,6 +12,39 @@ import SharedPocketKit
 import Localization
 
 class SavedItemViewModel: ReadableViewModel {
+    func trackReadingProgress(index: IndexPath) {
+        let baseKey = readingProgressKeyBase(url: item.url)
+
+        userDefaults.setValue(index.section, forKey: baseKey + "section")
+        userDefaults.setValue(index.row, forKey: baseKey + "row")
+    }
+
+    func readingProgress() -> IndexPath? {
+        let baseKey = readingProgressKeyBase(url: item.url)
+
+        guard let section = userDefaults.object(forKey: baseKey + "section") as? Int,
+              let row = userDefaults.object(forKey: baseKey + "row") as? Int else {
+            return nil
+        }
+
+        return IndexPath(row: row, section: section)
+    }
+
+    func deleteReadingProgress() {
+        let baseKey = readingProgressKeyBase(url: item.url)
+
+        userDefaults.removeObject(forKey: baseKey + "section")
+        userDefaults.removeObject(forKey: baseKey + "row")
+    }
+
+    private func readingProgressKeyBase(url: String) -> String {
+        "readingProgress.\(url)."
+    }
+
+    weak var delegate: ReadableViewModelDelegate?
+
+    let readableSource: ReadableSource
+
     let tracker: Tracker
 
     @Published private(set) var _actions: [ItemAction] = []
@@ -35,6 +72,7 @@ class SavedItemViewModel: ReadableViewModel {
     private var store: SubscriptionStore
     private var networkPathMonitor: NetworkPathMonitor
     private let notificationCenter: NotificationCenter
+    private let featureFlagService: FeatureFlagServiceProtocol
 
     init(
         item: SavedItem,
@@ -45,7 +83,9 @@ class SavedItemViewModel: ReadableViewModel {
         store: SubscriptionStore,
         networkPathMonitor: NetworkPathMonitor,
         userDefaults: UserDefaults,
-        notificationCenter: NotificationCenter
+        notificationCenter: NotificationCenter,
+        readableSource: ReadableSource = .app,
+        featureFlagService: FeatureFlagServiceProtocol
     ) {
         self.item = item
         self.source = source
@@ -56,6 +96,8 @@ class SavedItemViewModel: ReadableViewModel {
         self.networkPathMonitor = networkPathMonitor
         self.userDefaults = userDefaults
         self.notificationCenter = notificationCenter
+        self.readableSource = readableSource
+        self.featureFlagService = featureFlagService
 
         item.publisher(for: \.isFavorite).sink { [weak self] _ in
             self?.buildActions()
@@ -66,10 +108,9 @@ class SavedItemViewModel: ReadableViewModel {
         }.store(in: &subscriptions)
     }
 
-    var readerSettings: ReaderSettings {
-        // TODO: inject this
-        ReaderSettings(userDefaults: userDefaults)
-    }
+    lazy var readerSettings: ReaderSettings = {
+        ReaderSettings(tracker: tracker, userDefaults: userDefaults)
+    }()
 
     var components: [ArticleComponent]? {
         item.item?.article?.components
@@ -88,23 +129,43 @@ class SavedItemViewModel: ReadableViewModel {
     }
 
     var domain: String? {
-        item.item?.domainMetadata?.name ?? item.item?.domain ?? item.host
+        item.displayDomain
     }
 
     var publishDate: Date? {
         item.item?.datePublished
     }
 
-    var url: URL? {
+    var url: String {
         item.bestURL
     }
 
-    var isArchived: Bool {
-        item.isArchived
+    var itemSaveStatus: ItemSaveStatus {
+        if item.isArchived {
+            return .archived
+        }
+        return .saved
+        // unsaved option is not applicable to this type since it needs a SavedItem
     }
 
-    var premiumURL: URL? {
+    var isCollection: Bool {
+        item.isCollection
+    }
+
+    var collection: Collection? {
+        item.item?.collection
+    }
+
+    var slug: String? {
+        item.item?.collectionSlug
+    }
+
+    var premiumURL: String? {
         pocketPremiumURL(url, user: user)
+    }
+
+    var isListenSupported: Bool {
+        item.isEligibleForListen
     }
 
     func moveToSaves() {
@@ -112,6 +173,7 @@ class SavedItemViewModel: ReadableViewModel {
     }
 
     func delete() {
+        deleteReadingProgress()
         source.delete(item: item)
         _events.send(.delete)
     }
@@ -152,11 +214,22 @@ class SavedItemViewModel: ReadableViewModel {
     }
 
     func webViewActivityItems(url: URL) -> [UIActivity] {
-        guard let item = source.fetchItem(url), let savedItem = item.savedItem else {
+        guard let item = source.fetchItem(url.absoluteString), let savedItem = item.savedItem else {
             return []
         }
 
         return webViewActivityItems(for: savedItem)
+    }
+
+    func listen() {
+        delegate?.viewModel(
+            self,
+            didRequestListen: ListenConfiguration(
+                title: item.isArchived ? Localization.archive : "Saves",
+                savedItems: [item],
+                featureFlagService: featureFlagService
+            )
+        )
     }
 }
 
@@ -180,12 +253,12 @@ extension SavedItemViewModel {
 
     func favorite() {
         source.favorite(item: item)
-        track(identifier: .itemFavorite)
+        trackFavorite(url: item.url)
     }
 
     func unfavorite() {
         source.unfavorite(item: item)
-        track(identifier: .itemUnfavorite)
+        trackUnfavorite(url: item.url)
     }
 
     func moveFromArchiveToSaves(completion: (Bool) -> Void) {
@@ -194,7 +267,12 @@ extension SavedItemViewModel {
         completion(true)
     }
 
-    func openInWebView(url: URL?) {
+    func save(completion: (Bool) -> Void) {
+        // NO-OP: this type is initialized with a valid SavedItem, which won't need to be saved.
+    }
+
+    func openInWebView(url: String) {
+        guard let url = URL(percentEncoding: url) else { return }
         let updatedURL = pocketPremiumURL(url, user: user)
         presentedWebReaderURL = updatedURL
 
@@ -205,7 +283,7 @@ extension SavedItemViewModel {
         let updatedURL = pocketPremiumURL(url, user: user)
         presentedWebReaderURL = updatedURL
 
-        trackExternalLinkOpen(url: url)
+        trackExternalLinkOpen(url: url.absoluteString)
     }
 
     func archive() {
@@ -246,11 +324,11 @@ extension SavedItemViewModel {
                 self?.fetchDetailsIfNeeded()
             }
         )
-        track(identifier: .itemAddTags)
+        trackAddTags(url: item.url)
     }
 
     private func saveExternalURL(_ url: URL) {
-        source.save(url: url)
+        source.save(url: url.absoluteString)
     }
 
     private func copyExternalURL(_ url: URL) {
@@ -259,7 +337,7 @@ extension SavedItemViewModel {
 
     private func shareExternalURL(_ url: URL) {
         // This view model is used within the context of a view that is presented within the reader
-        sharedActivity = PocketItemActivity.fromReader(url: url)
+        sharedActivity = PocketItemActivity.fromReader(url: url.absoluteString)
     }
 }
 

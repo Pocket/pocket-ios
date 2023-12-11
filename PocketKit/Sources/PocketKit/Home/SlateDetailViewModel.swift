@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Foundation
 import Sync
 import UIKit
@@ -11,7 +15,9 @@ class SlateDetailViewModel {
 
     @Published var snapshot: Snapshot
 
-    @Published var selectedReadableViewModel: RecommendationViewModel?
+    @Published var selectedReadableViewModel: RecommendableItemViewModel?
+
+    @Published var selectedCollectionViewModel: CollectionViewModel?
 
     @Published var presentedWebReaderURL: URL?
 
@@ -27,16 +33,24 @@ class SlateDetailViewModel {
     private let source: Source
     private let tracker: Tracker
     private let user: User
+    private let store: SubscriptionStore
     private let userDefaults: UserDefaults
+    private let networkPathMonitor: NetworkPathMonitor
     private var subscriptions: [AnyCancellable] = []
+    private let featureFlags: FeatureFlagServiceProtocol
+    private let notificationCenter: NotificationCenter
 
-    init(slate: Slate, source: Source, tracker: Tracker, user: User, userDefaults: UserDefaults) {
+    init(slate: Slate, source: Source, tracker: Tracker, user: User, store: SubscriptionStore, userDefaults: UserDefaults, networkPathMonitor: NetworkPathMonitor, featureFlags: FeatureFlagServiceProtocol, notificationCenter: NotificationCenter) {
         self.slate = slate
         self.source = source
         self.tracker = tracker
         self.user = user
+        self.store = store
         self.userDefaults = userDefaults
         self.snapshot = Self.loadingSnapshot()
+        self.featureFlags = featureFlags
+        self.networkPathMonitor = networkPathMonitor
+        self.notificationCenter = notificationCenter
 
         NotificationCenter.default.publisher(
             for: NSManagedObjectContext.didSaveObjectsNotification,
@@ -87,7 +101,8 @@ class SlateDetailViewModel {
                 return
             }
 
-            tracker.track(event: Events.ExpandedSlate.SlateArticleImpression(url: item.givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
+            let givenURL = item.givenURL
+            tracker.track(event: Events.ExpandedSlate.SlateArticleImpression(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
         }
     }
 }
@@ -110,13 +125,17 @@ extension SlateDetailViewModel {
 
         let item = recommendation.item
         var destination: ContentOpen.Destination = .internal
-        if item.shouldOpenInWebView {
-            let url = pocketPremiumURL(item.bestURL, user: user)
+
+        if let slug = recommendation.collection?.slug ?? recommendation.item.collectionSlug, featureFlags.isAssigned(flag: .nativeCollections) {
+            selectedCollectionViewModel = CollectionViewModel(slug: slug, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults, featureFlags: featureFlags, notificationCenter: notificationCenter)
+        } else if item.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
+            guard let bestURL = URL(percentEncoding: item.bestURL) else { return }
+            let url = pocketPremiumURL(bestURL, user: user)
             presentedWebReaderURL = url
             destination = .external
         } else {
-            selectedReadableViewModel = RecommendationViewModel(
-                recommendation: recommendation,
+            selectedReadableViewModel = RecommendableItemViewModel(
+                item: recommendation.item,
                 source: source,
                 tracker: tracker.childTracker(hosting: .articleView.screen),
                 pasteboard: UIPasteboard.general,
@@ -134,7 +153,8 @@ extension SlateDetailViewModel {
             return
         }
 
-        tracker.track(event: Events.ExpandedSlate.SlateArticleContentOpen(url: item.givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID, destination: destination))
+        let givenURL = item.givenURL
+        tracker.track(event: Events.ExpandedSlate.SlateArticleContentOpen(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID, destination: destination))
     }
 }
 
@@ -187,7 +207,8 @@ extension SlateDetailViewModel {
             return
         }
 
-        tracker.track(event: Events.ExpandedSlate.SlateArticleSave(url: item.givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
+        let givenURL = item.givenURL
+        tracker.track(event: Events.ExpandedSlate.SlateArticleSave(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
     }
 
     private func archive(_ recommendation: Recommendation, at indexPath: IndexPath) {
@@ -201,7 +222,8 @@ extension SlateDetailViewModel {
             return
         }
 
-        tracker.track(event: Events.ExpandedSlate.SlateArticleArchive(url: item.givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
+        let givenURL = item.givenURL
+        tracker.track(event: Events.ExpandedSlate.SlateArticleArchive(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
     }
 
     private func report(_ recommendation: Recommendation, at indexPath: IndexPath) {

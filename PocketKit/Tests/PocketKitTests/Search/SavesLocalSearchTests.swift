@@ -14,7 +14,8 @@ class LocalSavesSearchTests: XCTestCase {
     private var user: MockUser!
     private var space: Space!
 
-    override func setUpWithError() throws {
+    override func setUp() {
+        super.setUp()
         source = MockSource()
         user = MockUser()
         space = .testSpace()
@@ -22,6 +23,7 @@ class LocalSavesSearchTests: XCTestCase {
 
     override func tearDownWithError() throws {
         try space.clear()
+        try super.tearDownWithError()
     }
 
     func subject(source: Source? = nil) -> LocalSavesSearch {

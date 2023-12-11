@@ -28,6 +28,7 @@ public class PocketSource: Source {
     private let apollo: ApolloClientProtocol
     private let lastRefresh: LastRefresh
     private let slateService: SlateService
+    private let collectionService: CollectionService
     private let featureFlagService: FeatureFlagLoadingService
     private let networkMonitor: NetworkPathMonitor
     private let retrySignal: PassthroughSubject<Void, Never>
@@ -99,6 +100,7 @@ public class PocketSource: Source {
             operations: OperationFactory(),
             lastRefresh: UserDefaultsLastRefresh(defaults: defaults),
             slateService: APISlateService(apollo: apollo, space: space),
+            collectionService: APICollectionService(apollo: apollo, space: space),
             featureFlagService: APIFeatureFlagService(apollo: apollo, space: space, appSession: appSession),
             networkMonitor: NWPathMonitor(),
             sessionProvider: appSession as! SessionProvider,
@@ -117,6 +119,7 @@ public class PocketSource: Source {
         operations: SyncOperationFactory,
         lastRefresh: LastRefresh,
         slateService: SlateService,
+        collectionService: CollectionService,
         featureFlagService: FeatureFlagLoadingService,
         networkMonitor: NetworkPathMonitor,
         sessionProvider: SessionProvider,
@@ -130,6 +133,7 @@ public class PocketSource: Source {
         self.operations = operations
         self.lastRefresh = lastRefresh
         self.slateService = slateService
+        self.collectionService = collectionService
         self.featureFlagService = featureFlagService
         self.networkMonitor = networkMonitor
         self.retrySignal = .init()
@@ -208,6 +212,14 @@ public class PocketSource: Source {
 
     public func makeSharedWithYouHighlightsController() -> RichFetchedResultsController<SharedWithYouHighlight> {
         space.makeSharedWithYouHighlightsController(limit: SyncConstants.Home.sharedWithYouHighlights)
+    }
+
+    public func makeFeatureFlagsController() -> NSFetchedResultsController<FeatureFlag> {
+        space.makeFeatureFlagsController()
+    }
+
+    public func makeCollectionStoriesController(slug: String) -> RichFetchedResultsController<CollectionStory> {
+        space.makeCollectionStoriesController(slug: slug)
     }
 
     public func viewObject<T: NSManagedObject>(id: NSManagedObjectID) -> T? {
@@ -314,63 +326,75 @@ extension PocketSource {
     public func favorite(item: SavedItem) {
         Log.breadcrumb(category: "sync", level: .debug, message: "Favoriting item with id \(String(describing: item.remoteID))")
         space.performAndWait {
-            guard let item = space.backgroundObject(with: item.objectID) as? SavedItem,
-                  let remoteID = item.remoteID else {
+            guard let savedItem = space.backgroundObject(with: item.objectID) as? SavedItem else {
                 Log.capture(message: "Could not retreive item from background context for mutation")
                 return
             }
 
-            item.isFavorite = true
+            savedItem.isFavorite = true
             do {
                 try space.save()
             } catch {
                 Log.capture(error: error)
             }
 
+            // Fall back to SavedItem.url if a nested item.givenURL does not exist
+            // This may occur when an item has been saved offline, but not yet archived
+            let givenURL = savedItem.item?.givenURL ?? savedItem.url
             let operation = operations.savedItemMutationOperation(
                 apollo: apollo,
                 events: _events,
-                mutation: FavoriteItemMutation(itemID: remoteID)
+                mutation: FavoriteItemMutation(
+                    givenUrl: givenURL,
+                    timestamp: ISO8601DateFormatter.pocketGraphFormatter.string(from: .now)
+                )
             )
 
-            enqueue(operation: operation, task: .favorite(remoteID: remoteID), queue: saveQueue)
+            enqueue(operation: operation, task: .favorite(givenURL: givenURL), queue: saveQueue)
         }
     }
 
     public func unfavorite(item: SavedItem) {
         Log.breadcrumb(category: "sync", level: .debug, message: "Unfavoriting item with id \(String(describing: item.remoteID))")
         space.performAndWait {
-            guard let item = space.backgroundObject(with: item.objectID) as? SavedItem,
-                  let remoteID = item.remoteID else {
+            guard let savedItem = space.backgroundObject(with: item.objectID) as? SavedItem else {
                 Log.capture(message: "Could not retreive item from background context for mutation")
                 return
             }
 
-            item.isFavorite = false
+            savedItem.isFavorite = false
             do {
                 try space.save()
             } catch {
                 Log.capture(error: error)
             }
 
+            // Fall back to SavedItem.url if a nested item.givenURL does not exist
+            // This may occur when an item has been saved offline, but not yet archived
+            let givenURL = savedItem.item?.givenURL ?? savedItem.url
             let operation = operations.savedItemMutationOperation(
                 apollo: apollo,
                 events: _events,
-                mutation: UnfavoriteItemMutation(itemID: remoteID)
+                mutation: UnfavoriteItemMutation(
+                    givenUrl: givenURL,
+                    timestamp: ISO8601DateFormatter.pocketGraphFormatter.string(from: .now)
+                )
             )
-            enqueue(operation: operation, task: .unfavorite(remoteID: remoteID), queue: saveQueue)
+            enqueue(operation: operation, task: .unfavorite(givenURL: givenURL), queue: saveQueue)
         }
     }
 
     public func delete(item savedItem: SavedItem) {
         Log.breadcrumb(category: "sync", level: .debug, message: "Deleting item with id \(String(describing: savedItem.remoteID))")
         space.performAndWait {
-            guard let savedItem = space.backgroundObject(with: savedItem.objectID) as? SavedItem,
-                  let remoteID = savedItem.remoteID else {
+            guard let savedItem = space.backgroundObject(with: savedItem.objectID) as? SavedItem else {
                 Log.capture(message: "Could not retreive item from background context for mutation")
                 return
             }
 
+            // Fall back to SavedItem.url if a nested item.givenURL does not exist
+            // This may occur when an item has been saved offline, but not yet archived
+            let givenURL = savedItem.item?.givenURL ?? savedItem.url
             let item = savedItem.item
 
             space.delete(savedItem)
@@ -388,24 +412,26 @@ extension PocketSource {
             let operation = operations.savedItemMutationOperation(
                 apollo: apollo,
                 events: _events,
-                mutation: DeleteItemMutation(itemID: remoteID)
+                mutation: DeleteItemMutation(
+                    givenUrl: givenURL,
+                    timestamp: ISO8601DateFormatter.pocketGraphFormatter.string(from: .now)
+                )
             )
 
-            enqueue(operation: operation, task: .delete(remoteID: remoteID), queue: saveQueue)
+            enqueue(operation: operation, task: .delete(givenURL: givenURL), queue: saveQueue)
         }
     }
 
     public func archive(item: SavedItem) {
         Log.breadcrumb(category: "sync", level: .debug, message: "Archiving item with id \(String(describing: item.remoteID))")
         space.performAndWait {
-            guard let item = space.backgroundObject(with: item.objectID) as? SavedItem,
-                  let remoteID = item.remoteID else {
+            guard let savedItem = space.backgroundObject(with: item.objectID) as? SavedItem else {
                 Log.capture(message: "Could not retreive item from background context for mutation")
                 return
             }
 
-            item.isArchived = true
-            item.archivedAt = Date()
+            savedItem.isArchived = true
+            savedItem.archivedAt = Date()
 
             do {
                 try space.save()
@@ -413,25 +439,31 @@ extension PocketSource {
                 Log.capture(error: error)
             }
 
+            // Fall back to SavedItem.url if a nested item.givenURL does not exist
+            // This may occur when an item has been saved offline, but not yet archived
+            let givenURL = savedItem.item?.givenURL ?? savedItem.url
             let operation = operations.savedItemMutationOperation(
                 apollo: apollo,
                 events: _events,
-                mutation: ArchiveItemMutation(itemID: remoteID)
+                mutation: ArchiveItemMutation(
+                    givenUrl: givenURL,
+                    timestamp: ISO8601DateFormatter.pocketGraphFormatter.string(from: .now)
+                )
             )
 
-            enqueue(operation: operation, task: .archive(remoteID: remoteID), queue: saveQueue)
+            enqueue(operation: operation, task: .archive(givenURL: givenURL), queue: saveQueue)
         }
     }
 
     public func unarchive(item: SavedItem) {
         Log.breadcrumb(category: "sync", level: .debug, message: "Unarchiving item with id \(String(describing: item.remoteID))")
         space.performAndWait {
-            guard let item = space.backgroundObject(with: item.objectID) as? SavedItem else {
+            guard let savedItem = space.backgroundObject(with: item.objectID) as? SavedItem else {
                 Log.capture(message: "Could not retreive item from background context for mutation")
                 return
             }
-            item.isArchived = false
-            item.createdAt = Date()
+            savedItem.isArchived = false
+            savedItem.createdAt = Date()
 
             do {
                 try space.save()
@@ -440,14 +472,14 @@ extension PocketSource {
             }
 
             let operation = operations.saveItemOperation(
-                managedItemID: item.objectID,
-                url: item.url,
+                managedItemID: savedItem.objectID,
+                url: savedItem.url,
                 events: _events,
                 apollo: apollo,
                 space: space
             )
 
-            enqueue(operation: operation, task: .save(localID: item.objectID.uriRepresentation(), url: item.url), queue: saveQueue)
+            enqueue(operation: operation, task: .save(localID: savedItem.objectID.uriRepresentation(), url: item.url), queue: saveQueue)
         }
     }
 
@@ -467,8 +499,7 @@ extension PocketSource {
     public func addTags(item: SavedItem, tags: [String]) {
         Log.breadcrumb(category: "sync", level: .debug, message: "Adding tags to item with id \(String(describing: item.remoteID))")
         space.performAndWait {
-            guard let item = space.backgroundObject(with: item.objectID) as? SavedItem,
-                  let remoteID = item.remoteID else {
+            guard let item = space.backgroundObject(with: item.objectID) as? SavedItem else {
                 Log.capture(message: "Could not retreive item from background context for mutation")
                 return
             }
@@ -483,13 +514,19 @@ extension PocketSource {
                 Log.capture(error: error)
             }
 
+            guard let mutation = addTagsMutation(for: item, tags: tags),
+            let task = addTagsSyncTask(for: item, tags: tags) else {
+                Log.capture(message: "Could not retreive add tags mutation and sync task for SavedItem")
+                return
+            }
+
             let operation = operations.savedItemMutationOperation(
                 apollo: apollo,
                 events: _events,
-                mutation: getMutation(for: tags, and: remoteID)
+                mutation: mutation
             )
 
-            enqueue(operation: operation, task: .addTags(remoteID: remoteID, tags: tags), queue: saveQueue)
+            enqueue(operation: operation, task: task, queue: saveQueue)
         }
     }
 
@@ -588,18 +625,62 @@ extension PocketSource {
         }
     }
 
-    private func getMutation(for tags: [String], and remoteID: String) -> AnyMutation {
-        let mutation: AnyMutation
+    private func addTagsMutation(for savedItem: SavedItem, tags: [String]) -> AnyMutation? {
         if tags.isEmpty {
-            mutation = AnyMutation(UpdateSavedItemRemoveTagsMutation(savedItemId: remoteID))
+            guard let remoteID = savedItem.remoteID else {
+                Log.capture(message: "Could not retreive remoteID from SavedItem for mutation")
+                return nil
+            }
+
+            return AnyMutation(updateSavedItemRemoveTagsMutation(remoteID: remoteID))
         } else {
-            mutation = AnyMutation(ReplaceSavedItemTagsMutation(input: [SavedItemTagsInput(savedItemId: remoteID, tags: tags)]))
+            guard let givenURL = savedItem.item?.givenURL else {
+                Log.capture(message: "Could not retreive givenURL from SavedItem.Item for mutation")
+                return nil
+            }
+
+            return AnyMutation(savedItemTagMutation(url: givenURL, tags: tags))
         }
-        return mutation
     }
 
-    public func fetchItem(_ url: URL) -> Item? {
+    private func savedItemTagMutation(url: String, tags: [String]) -> SavedItemTagMutation {
+        return SavedItemTagMutation(
+            input: SavedItemTagInput(
+                givenUrl: url,
+                tagNames: tags
+            ),
+            timestamp: ISO8601DateFormatter.pocketGraphFormatter.string(from: .now)
+        )
+    }
+
+    private func updateSavedItemRemoveTagsMutation(remoteID: String) -> UpdateSavedItemRemoveTagsMutation {
+        return UpdateSavedItemRemoveTagsMutation(savedItemId: remoteID)
+    }
+
+    private func addTagsSyncTask(for savedItem: SavedItem, tags: [String]) -> SyncTask? {
+        if tags.isEmpty {
+            guard let remoteID = savedItem.remoteID else {
+                Log.capture(message: "Could not retreive remoteID from SavedItem for mutation")
+                return nil
+            }
+
+            return .clearTags(remoteID: remoteID)
+        } else {
+            guard let givenURL = savedItem.item?.givenURL else {
+                Log.capture(message: "Could not retreive givenURL from SavedItem.Item for mutation")
+                return nil
+            }
+
+            return .addTags(givenURL: givenURL, tags: tags)
+        }
+    }
+
+    public func fetchItem(_ url: String) -> Item? {
         return try? space.fetchItem(byURL: url)
+    }
+
+    public func fetchViewContextItem(_ url: String) -> Item? {
+        return try? space.fetchItem(byURL: url, context: viewContext)
     }
 }
 
@@ -613,7 +694,6 @@ extension PocketSource {
 // MARK: - Feature Flags
 
 extension PocketSource {
-
     public func fetchAllFeatureFlags() async throws {
         try await featureFlagService.fetchFeatureFlags()
     }
@@ -625,21 +705,21 @@ extension PocketSource {
 
 // MARK: - Slates/Recommendations
 extension PocketSource {
-    public func fetchSlateLineup(_ identifier: String) async throws {
-        try await slateService.fetchSlateLineup(identifier)
+    public func fetchUnifiedHomeLineup() async throws {
+        try await slateService.fetchHomeSlateLineup()
     }
 
-    public func fetchDetails(for recommendation: Recommendation) async throws -> Bool {
-        Log.breadcrumb(category: "recommendations", level: .debug, message: "Loading details for Recomendation: \(String(describing: recommendation.remoteID))")
+    public func fetchDetails(for item: Item) async throws -> Bool {
+        Log.breadcrumb(category: "recommendations", level: .debug, message: "Loading details for Recomendation: \(String(describing: item.remoteID))")
 
         guard let remoteItem = try await apollo
-            .fetch(query: ItemByIDQuery(id: recommendation.item.remoteID))
-            .data?.itemByItemId?.fragments.itemParts else {
+            .fetch(query: ItemByURLQuery(url: item.givenURL))
+            .data?.itemByUrl?.fragments.itemParts else {
             return false
         }
 
         return try space.performAndWait {
-            guard let backgroundItem = space.backgroundObject(with: recommendation.item.objectID) as? Item else {
+            guard let backgroundItem = space.backgroundObject(with: item.objectID) as? Item else {
                 Log.capture(message: "Could not fetch a background item when fetching details for Recommendations")
                 return false
             }
@@ -648,6 +728,49 @@ extension PocketSource {
 
             return remoteItem.marticle?.isEmpty == false
         }
+    }
+
+    public func fetchViewItem(from url: String) async throws -> Item? {
+        if let item = fetchViewContextItem(url) {
+            defer {
+                Task {
+                    if let remoteItem = try await apollo
+                        .fetch(query: ItemByURLQuery(url: url))
+                        .data?.itemByUrl?.fragments.itemParts {
+                        try viewContext.performAndWait {
+                            item.update(remote: remoteItem, with: space)
+                            try space.save(context: viewContext)
+                        }
+                    }
+                }
+            }
+            return item
+        }
+
+        guard let remoteItem = try await apollo
+            .fetch(query: ItemByURLQuery(url: url))
+            .data?.itemByUrl?.fragments.itemParts else {
+            return nil
+        }
+
+        let item = Item(context: viewContext, givenURL: url, remoteID: remoteItem.remoteID)
+
+        return try viewContext.performAndWait {
+            item.update(remote: remoteItem, with: space)
+            try space.save(context: viewContext)
+            return item
+        }
+    }
+}
+
+// MARK: - Collections
+extension PocketSource {
+    public func fetchCollection(by slug: String) async throws {
+        try await collectionService.fetchCollection(by: slug)
+    }
+
+    public func fetchCollectionAuthors(by slug: String) -> [CollectionAuthor] {
+        (try? space.fetchCollectionAuthors(by: slug)) ?? []
     }
 }
 
@@ -672,7 +795,7 @@ extension PocketSource {
         }
 
         try space.backgroundContext.performAndWait {
-            let item = try space.fetchItem(byURL: url) ?? Item(context: space.backgroundContext, givenURL: url, remoteID: remoteItem.remoteID)
+            let item = try space.fetchItem(byURL: url.absoluteString) ?? Item(context: space.backgroundContext, givenURL: url.absoluteString, remoteID: remoteItem.remoteID)
             item.update(from: remoteItem, with: self.space)
             sharedWithYouHighlight.item = item
             try space.save()
@@ -783,11 +906,14 @@ extension PocketSource {
             switch persistentTask.syncTaskContainer?.task {
             case .none:
                 break
-            case .favorite(let remoteID):
+            case .favorite(let givenURL):
                 let operation = operations.savedItemMutationOperation(
                     apollo: apollo,
                     events: _events,
-                    mutation: FavoriteItemMutation(itemID: remoteID)
+                    mutation: FavoriteItemMutation(
+                        givenUrl: givenURL,
+                        timestamp: ISO8601DateFormatter.pocketGraphFormatter.string(from: .now)
+                    )
                 )
                 enqueue(operation: operation, persistentTask: persistentTask, queue: self.saveQueue)
             case .fetchSaves:
@@ -823,25 +949,34 @@ extension PocketSource {
                     sharedWithYouHighlights: sharedWithYouHighlights
                 )
                 enqueue(operation: operation, persistentTask: persistentTask, queue: self.fetchSharedWithYouHighlights)
-            case .archive(let remoteID):
+            case .archive(let givenURL):
                 let operation = operations.savedItemMutationOperation(
                     apollo: apollo,
                     events: _events,
-                    mutation: ArchiveItemMutation(itemID: remoteID)
+                    mutation: ArchiveItemMutation(
+                        givenUrl: givenURL,
+                        timestamp: ISO8601DateFormatter.pocketGraphFormatter.string(from: .now)
+                    )
                 )
                 enqueue(operation: operation, persistentTask: persistentTask, queue: self.saveQueue)
-            case .delete(let remoteID):
+            case .delete(let givenURL):
                 let operation = operations.savedItemMutationOperation(
                     apollo: apollo,
                     events: _events,
-                    mutation: DeleteItemMutation(itemID: remoteID)
+                    mutation: DeleteItemMutation(
+                        givenUrl: givenURL,
+                        timestamp: ISO8601DateFormatter.pocketGraphFormatter.string(from: .now)
+                    )
                 )
                 enqueue(operation: operation, persistentTask: persistentTask, queue: self.saveQueue)
-            case .unfavorite(let remoteID):
+            case .unfavorite(let givenURL):
                 let operation = operations.savedItemMutationOperation(
                     apollo: apollo,
                     events: _events,
-                    mutation: UnfavoriteItemMutation(itemID: remoteID)
+                    mutation: UnfavoriteItemMutation(
+                        givenUrl: givenURL,
+                        timestamp: ISO8601DateFormatter.pocketGraphFormatter.string(from: .now)
+                    )
                 )
                 enqueue(operation: operation, persistentTask: persistentTask, queue: self.saveQueue)
             case let .save(localID, itemURL):
@@ -855,11 +990,18 @@ extension PocketSource {
                     space: space
                 )
                 enqueue(operation: operation, persistentTask: persistentTask, queue: self.saveQueue)
-            case .addTags(let remoteID, let tags):
+            case .addTags(let givenURL, let tags):
                 let operation = operations.savedItemMutationOperation(
                     apollo: apollo,
                     events: _events,
-                    mutation: getMutation(for: tags, and: remoteID)
+                    mutation: savedItemTagMutation(url: givenURL, tags: tags)
+                )
+                enqueue(operation: operation, persistentTask: persistentTask, queue: self.saveQueue)
+            case .clearTags(let remoteID):
+                let operation = operations.savedItemMutationOperation(
+                    apollo: apollo,
+                    events: _events,
+                    mutation: updateSavedItemRemoveTagsMutation(remoteID: remoteID)
                 )
                 enqueue(operation: operation, persistentTask: persistentTask, queue: self.saveQueue)
             case .deleteTag(let tagID):
@@ -929,11 +1071,49 @@ extension PocketSource {
                 return
             }
 
-            if let savedItem = try? space.fetchSavedItem(byURL: recommendation.item.givenURL) {
+            let givenURL = recommendation.item.givenURL
+            if let savedItem = try? space.fetchSavedItem(byURL: givenURL) {
                 unarchive(item: savedItem)
             } else {
-                let savedItem: SavedItem = SavedItem(context: space.backgroundContext, url: recommendation.item.givenURL)
+                let savedItem: SavedItem = SavedItem(context: space.backgroundContext, url: givenURL)
                 savedItem.update(from: recommendation)
+                try? space.save()
+
+                save(item: savedItem)
+            }
+        }
+    }
+
+    public func save(item: Item) {
+        space.performAndWait {
+            guard let item = space.backgroundObject(with: item.objectID) as? Item else {
+                return
+            }
+            let givenURL = item.givenURL
+            if let savedItem = try? space.fetchSavedItem(byURL: givenURL) {
+                unarchive(item: savedItem)
+            } else {
+                let savedItem: SavedItem = SavedItem(context: space.backgroundContext, url: givenURL)
+                savedItem.update(from: item)
+                try? space.save()
+
+                save(item: savedItem)
+            }
+        }
+    }
+
+    public func save(collectionStory: CollectionStory) {
+        space.performAndWait {
+            guard let collectionStory = space.backgroundObject(with: collectionStory.objectID) as? CollectionStory,
+            let givenURL = collectionStory.item?.givenURL else {
+                return
+            }
+            if let savedItem = try? space.fetchSavedItem(byURL: givenURL) {
+                unarchive(item: savedItem)
+            } else {
+                let savedItem: SavedItem = SavedItem(context: space.backgroundContext, url: givenURL)
+                savedItem.createdAt = Date()
+                savedItem.item = collectionStory.item
                 try? space.save()
 
                 save(item: savedItem)
@@ -948,6 +1128,16 @@ extension PocketSource {
                 return
             }
 
+            archive(item: savedItem)
+        }
+    }
+
+    public func archive(collectionStory: CollectionStory) {
+        space.performAndWait {
+            guard let collectionStory = space.backgroundObject(with: collectionStory.objectID) as? CollectionStory,
+                  let savedItem = collectionStory.item?.savedItem, savedItem.isArchived == false else {
+                return
+            }
             archive(item: savedItem)
         }
     }
@@ -979,7 +1169,7 @@ extension PocketSource {
 
 // MARK: - URL
 extension PocketSource {
-    public func save(url: URL) {
+    public func save(url: String) {
         space.performAndWait {
             if let savedItem = try? space.fetchSavedItem(byURL: url) {
                 unarchive(item: savedItem)
@@ -1001,7 +1191,7 @@ extension PocketSource {
         try? space.fetchSavedItems(bySearchTerm: search, userPremium: user.status == .premium)
     }
 
-    public func fetchOrCreateSavedItem(with url: URL, and remoteParts: SavedItem.RemoteSavedItem?) -> SavedItem? {
+    public func fetchOrCreateSavedItem(with url: String, and remoteParts: SavedItem.RemoteSavedItem?) -> SavedItem? {
         let savedItem = (try? space.fetchSavedItem(byURL: url))
 
         if let remoteParts {

@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 import Combine
 import Analytics
@@ -18,6 +22,7 @@ class PocketAddTagsViewModelTests: XCTestCase {
     private var networkPathMonitor: MockNetworkPathMonitor!
 
     override func setUp() {
+        super.setUp()
         source = MockSource()
         tracker = MockTracker()
         space = .testSpace()
@@ -34,6 +39,7 @@ class PocketAddTagsViewModelTests: XCTestCase {
         try space.clear()
         networkPathMonitor = nil
         subscriptionStore = nil
+        try await super.tearDown()
     }
 
     private func subject(
@@ -176,7 +182,7 @@ class PocketAddTagsViewModelTests: XCTestCase {
 
         let viewModel = subject(item: item, user: MockUser(status: .premium)) { }
         wait(for: [expectRetrieveTagsCall], timeout: 10)
-        XCTAssertEqual(viewModel.recentTags, [TagType.recent("tag 1"), TagType.recent("tag 2"), TagType.recent("tag 3")])
+        XCTAssertEqual(viewModel.recentTags, [TagType.recent("tag 3"), TagType.recent("tag 2"), TagType.recent("tag 1")])
     }
 
     func test_recentTags_withMoreThanThreeTags_andFreeUser_returnsNoRecentTags() {
@@ -210,17 +216,17 @@ class PocketAddTagsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.recentTags, [])
     }
 
-    func test_allOtherTags_retrievesValidTagNames() {
-        let item = space.buildSavedItem(tags: ["tag 1"])
+    func test_allOtherTags_retrievesValidTagNames_inSortedOrder() {
+        let item = space.buildSavedItem(tags: ["a"])
         let expectRetrieveTagsCall = expectation(description: "expect source.retrieveTags(excluding:)")
         expectRetrieveTagsCall.assertForOverFulfill = false
         source.stubRetrieveTags { [weak self] _ in
             defer { expectRetrieveTagsCall.fulfill() }
             let tag2: Tag = Tag(context: self!.space.backgroundContext)
             let tag3: Tag = Tag(context: self!.space.backgroundContext)
-            tag2.name = "tag 2"
+            tag2.name = "c"
             tag2.remoteID = tag2.name.uppercased()
-            tag3.name = "tag 3"
+            tag3.name = "b"
             return [tag2, tag3]
         }
         source.stubFetchAllTags { return [] }
@@ -229,7 +235,7 @@ class PocketAddTagsViewModelTests: XCTestCase {
         viewModel.allOtherTags()
 
         wait(for: [expectRetrieveTagsCall], timeout: 10)
-        XCTAssertEqual(viewModel.otherTags, [TagType.tag("tag 2"), TagType.tag("tag 3")])
+        XCTAssertEqual(viewModel.otherTags, [TagType.tag("b"), TagType.tag("c")])
         XCTAssertNotNil(source.retrieveTagsCall(at: 0))
     }
 

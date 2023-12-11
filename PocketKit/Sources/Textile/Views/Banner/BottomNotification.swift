@@ -1,5 +1,11 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import SwiftUI
-import UIKit
+
+// Added for code convenience
+public typealias BannerAction = BannerModifier.BannerData.BannerAction
 
 public struct BannerModifier: ViewModifier {
     enum Constants {
@@ -194,6 +200,28 @@ struct BannerModifier_PreviewProvider: PreviewProvider {
             bottomOffset: 0
         )
         .previewDisplayName("Action - Dark")
+        .preferredColorScheme(.dark)
+
+        VStack {
+            Spacer()
+            Text("Some Screen!")
+            Spacer()
+        }
+        .banner(
+            data: BannerModifier.BannerData(
+                image: .warning,
+                title: "Limited search results",
+                detail: "We're experiencing an error and can't show you full search results. Please try again later.",
+                action: BannerModifier.BannerData.BannerAction(
+                    text: "Send a report",
+                    style: PocketButtonStyle(.primary, .small)
+                ) {
+                }
+            ),
+            show: .constant(true),
+            bottomOffset: 0
+        )
+        .previewDisplayName("Error - Dark")
         .preferredColorScheme(.dark)
 
         TabView {

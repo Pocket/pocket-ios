@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Combine
 import Sync
 import Foundation
@@ -7,10 +11,28 @@ import Analytics
 import Localization
 import SharedPocketKit
 
+enum ItemSaveStatus {
+    case unsaved
+    case saved
+    case archived
+}
+
+protocol ReadableViewModelDelegate: AnyObject {
+    /// Called when a ReadableViewModel requests that Listen be presented with a given view model.
+    /// - Parameters:
+    ///   - readableViewModel: The view model requesting that Listen be presented.
+    ///   - viewModel: The view model to use when presenting Listen.
+    func viewModel(_ readableViewModel: ReadableViewModel, didRequestListen configuration: ListenConfiguration)
+}
+
 protocol ReadableViewModel: ReadableViewControllerDelegate {
     typealias EventPublisher = AnyPublisher<ReadableEvent, Never>
 
+    var delegate: ReadableViewModelDelegate? { get set }
+
     var tracker: Tracker { get }
+
+    var readableSource: ReadableSource { get }
 
     var readerSettings: ReaderSettings { get }
     var presentedAlert: PocketAlert? { get set }
@@ -18,6 +40,7 @@ protocol ReadableViewModel: ReadableViewControllerDelegate {
     var presentedWebReaderURL: URL? { get set }
     var isPresentingReaderSettings: Bool? { get set }
 
+    var isListenSupported: Bool { get }
     var actions: Published<[ItemAction]>.Publisher { get }
     var events: EventPublisher { get }
 
@@ -27,16 +50,16 @@ protocol ReadableViewModel: ReadableViewControllerDelegate {
     var authors: [ReadableAuthor]? { get }
     var domain: String? { get }
     var publishDate: Date? { get }
-    var url: URL? { get }
-    var isArchived: Bool { get }
-    var premiumURL: URL? { get }
+    var url: String { get }
+    var itemSaveStatus: ItemSaveStatus { get }
+    var premiumURL: String? { get }
 
     func delete()
     /// Opens an item presented in the reader in a web view instead
     /// - Parameters:
     ///     - url: The URL of the item to open in a web view
     /// - Note: A typical callee of this function will be the handler for when the Safari icon in the navigation bar is tapped
-    func openInWebView(url: URL?)
+    func openInWebView(url: String)
     /// Opens a link that was tapped within an item opened in the reader
     /// - Parameters:
     ///     - url: The URL of the link that was tapped within the reader
@@ -45,12 +68,16 @@ protocol ReadableViewModel: ReadableViewControllerDelegate {
     func openExternalLink(url: URL)
     func archive()
     func moveFromArchiveToSaves(completion: (Bool) -> Void)
+    func save(completion: (Bool) -> Void)
     func fetchDetailsIfNeeded()
     func externalActions(for url: URL) -> [ItemAction]
     func clearPresentedWebReaderURL()
     func unfavorite()
     func favorite()
     func beginBulkEdit()
+    func trackReadingProgress(index: IndexPath)
+    func readingProgress() -> IndexPath?
+    func listen()
 }
 
 // MARK: - ReadableViewControllerDelegate
@@ -69,7 +96,7 @@ extension ReadableViewModel {
 
 extension ReadableViewModel {
     func displaySettings() {
-        track(identifier: .switchToWebView)
+        trackDisplaySettings()
         isPresentingReaderSettings = true
     }
 
@@ -78,13 +105,14 @@ extension ReadableViewModel {
     }
 
     func share(additionalText: String? = nil) {
-        track(identifier: .itemShare)
+        trackShare()
         // Instances conforming to this view model are used within the context
         // of an item presented within the reader
         sharedActivity = PocketItemActivity.fromReader(url: url, additionalText: additionalText)
     }
 
     func confirmDelete() {
+        trackDelete()
         presentedAlert = PocketAlert(
             title: Localization.areYouSureYouWantToDeleteThisItem,
             message: nil,
@@ -100,23 +128,8 @@ extension ReadableViewModel {
     }
 
     private func _delete() {
-        track(identifier: .itemDelete)
         presentedAlert = nil
         delete()
-    }
-
-    func track(identifier: UIContext.Identifier) {
-        guard let url = url else {
-            return
-        }
-
-        let contexts: [Context] = [
-            UIContext.button(identifier: identifier),
-            ContentContext(url: url)
-        ]
-
-        let event = SnowplowEngagement(type: .general, value: nil)
-        tracker.track(event: event, contexts)
     }
 
     func webViewActivityItems(for item: SavedItem) -> [UIActivity] {
@@ -156,44 +169,80 @@ extension ReadableViewModel {
 extension ReadableViewModel {
     /// track when user views unsupported content cell
     func trackUnsupportedContentViewed() {
-        guard let url else {
-            Log.capture(message: "Reader item without an associated url, not logging analytics for unsupportedContentViewed")
-            return
-        }
         tracker.track(event: Events.Reader.unsupportedContentViewed(url: url))
     }
 
     /// track when user taps on button to open unsupported content in web view
     func trackUnsupportedContentButtonTapped() {
-        guard let url else {
-            Log.capture(message: "Reader item without an associated url, not logging analytics for unsupportedContentButtonTapped")
-            return
-        }
         tracker.track(event: Events.Reader.unsupportedContentButtonTapped(url: url))
     }
 
     /// track archive button tapped in reader toolbar
     /// - Parameter url: url of saved item
-    func trackArchiveButtonTapped(url: URL) {
-        tracker.track(event: Events.Reader.archiveClicked(url: url))
+    func trackArchiveButtonTapped(url: String) {
+        tracker.track(event: Events.ReaderToolbar.archiveClicked(url: url))
     }
 
     /// track move to saves from archive button tapped in reader toolbar
     /// - Parameter url: url of saved item
-    func trackMoveFromArchiveToSavesButtonTapped(url: URL) {
-        tracker.track(event: Events.Reader.moveFromArchiveToSavesClicked(url: url))
+    func trackMoveFromArchiveToSavesButtonTapped(url: String) {
+        tracker.track(event: Events.ReaderToolbar.moveFromArchiveToSavesClicked(url: url))
+    }
+
+    /// track overflow menu tapped in reader toolbar
+    func trackOverflow() {
+        tracker.track(event: Events.ReaderToolbar.overflowClicked(url: url))
+    }
+
+    /// track display settings in reader toolbar overflow menu
+    func trackDisplaySettings() {
+        tracker.track(event: Events.ReaderToolbar.textSettingsClicked(url: url))
+    }
+
+    /// track favorite button tapped in reader toolbar overflow menu
+    /// - Parameter url: url of saved item
+    func trackFavorite(url: String) {
+        tracker.track(event: Events.ReaderToolbar.favoriteClicked(url: url))
+    }
+
+    /// track unfavorite button tapped in reader toolbar overflow menu
+    /// - Parameter url: url of saved item
+    func trackUnfavorite(url: String) {
+        tracker.track(event: Events.ReaderToolbar.unfavoriteClicked(url: url))
+    }
+
+    /// track add tags button tapped in reader toolbar overflow menu
+    /// - Parameter url: url of saved item
+    func trackAddTags(url: String) {
+        tracker.track(event: Events.ReaderToolbar.addTagsClicked(url: url))
+    }
+
+    /// track delete button tapped in reader toolbar overflow menu
+    func trackDelete() {
+        tracker.track(event: Events.ReaderToolbar.deleteClicked(url: url))
+    }
+
+    /// track share button tapped in reader toolbar overflow menu
+    func trackShare() {
+        tracker.track(event: Events.ReaderToolbar.shareClicked(url: url))
+    }
+
+    /// track save button tapped in reader toolbar overflow menu
+    func trackSave() {
+        tracker.track(event: Events.ReaderToolbar.saveClicked(url: url))
+    }
+
+    /// track report button tapped in reader toolbar overflow menu
+    func trackReport() {
+        tracker.track(event: Events.ReaderToolbar.reportClicked(url: url))
     }
 
     /// track when user taps on the safari button to open content in web view
     func trackWebViewOpen() {
-        guard let url else {
-            Log.capture(message: "Reader item without an associated url, not logging analytics for openInWebView")
-            return
-        }
-        tracker.track(event: Events.Reader.openInWebView(url: url))
+        tracker.track(event: Events.ReaderToolbar.openInWebView(url: url))
     }
 
-    func trackExternalLinkOpen(url: URL) {
+    func trackExternalLinkOpen(url: String) {
         tracker.track(event: Events.Reader.openExternalLink(url: url))
     }
 }

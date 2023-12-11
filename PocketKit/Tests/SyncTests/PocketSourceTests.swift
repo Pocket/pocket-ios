@@ -19,6 +19,7 @@ class PocketSourceTests: XCTestCase {
     var operations: MockOperationFactory!
     var lastRefresh: MockLastRefresh!
     var slateService: MockSlateService!
+    var collectionService: MockCollectionService!
     var networkMonitor: MockNetworkPathMonitor!
     var sessionProvider: MockSessionProvider!
     var backgroundTaskManager: MockBackgroundTaskManager!
@@ -27,7 +28,8 @@ class PocketSourceTests: XCTestCase {
     var userService: MockUserService!
     var featureFlagService: MockFeatureFlagService!
 
-    override func setUpWithError() throws {
+    override func setUp() {
+        super.setUp()
         space = .testSpace()
         user = MockUser()
         user.stubStandardSetStatus()
@@ -35,6 +37,7 @@ class PocketSourceTests: XCTestCase {
         operations = MockOperationFactory()
         lastRefresh = MockLastRefresh()
         slateService = MockSlateService()
+        collectionService = MockCollectionService()
         networkMonitor = MockNetworkPathMonitor()
         sessionProvider = MockSessionProvider(session: nil)
         backgroundTaskManager = MockBackgroundTaskManager()
@@ -54,6 +57,7 @@ class PocketSourceTests: XCTestCase {
         try space.clear()
         subscriptions = []
         osNotificationCenter.removeAllObservers()
+        try super.tearDownWithError()
     }
 
     func subject(
@@ -63,6 +67,7 @@ class PocketSourceTests: XCTestCase {
         operations: OperationFactory? = nil,
         lastRefresh: LastRefresh? = nil,
         slateService: SlateService? = nil,
+        collectionService: CollectionService? = nil,
         networkMonitor: NetworkPathMonitor? = nil,
         sessionProvider: SessionProvider? = nil,
         osNotificationCenter: OSNotificationCenter? = nil,
@@ -76,6 +81,7 @@ class PocketSourceTests: XCTestCase {
             operations: operations ?? self.operations,
             lastRefresh: lastRefresh ?? self.lastRefresh,
             slateService: slateService ?? self.slateService,
+            collectionService: collectionService ?? self.collectionService,
             featureFlagService: featureFlagService ?? self.featureFlagService,
             networkMonitor: networkMonitor ?? self.networkMonitor,
             sessionProvider: sessionProvider ?? self.sessionProvider,
@@ -207,7 +213,7 @@ class PocketSourceTests: XCTestCase {
         let source = subject()
         source.delete(item: item)
 
-        let fetchedItem = try space.fetchSavedItem(byURL: URL(string: "https://mozilla.com/delete")!)
+        let fetchedItem = try space.fetchSavedItem(byURL: "https://mozilla.com/delete")
         XCTAssertNil(fetchedItem)
         XCTAssertFalse(item.hasChanges)
         wait(for: [expectationToRunOperation], timeout: 10)
@@ -289,8 +295,8 @@ class PocketSourceTests: XCTestCase {
         slateService.stubFetchSlateLineup { _ in }
 
         let source = subject()
-        try await source.fetchSlateLineup("slate-lineup-identifier")
-        XCTAssertEqual(slateService.fetchSlateLineupCall(at: 0)?.identifier, "slate-lineup-identifier")
+        try await source.fetchUnifiedHomeLineup()
+        XCTAssertNotNil(slateService.fetchSlateLineupCall(at: 0))
     }
 
     func test_savesController_returnsAFetchedResultsController() throws {
@@ -308,7 +314,16 @@ class PocketSourceTests: XCTestCase {
         }
         savesResultsController.delegate = delegate
 
-        let item2 = try space.createSavedItem(remoteID: "saved-item-2", url: "http://example.com/item-2", createdAt: .init(timeIntervalSince1970: TimeInterval(0)), item: space.buildItem(remoteID: "item-2", title: "Item 2", givenURL: URL(string: "https://example.com/items/item-2")))
+        let item2 = try space.createSavedItem(
+            remoteID: "saved-item-2",
+            url: "http://example.com/item-2",
+            createdAt: .init(timeIntervalSince1970: TimeInterval(0)),
+            item: space.buildItem(
+                remoteID: "item-2",
+                title: "Item 2",
+                givenURL: "https://example.com/items/item-2"
+            )
+        )
         try space.save()
         try savesResultsController.performFetch()
 
@@ -345,7 +360,7 @@ class PocketSourceTests: XCTestCase {
             }
         }
 
-        let seededItem = space.buildItem(givenURL: URL(string: "https://getpocket.com")!)
+        let seededItem = space.buildItem(givenURL: "https://getpocket.com")
         let recommendation = space.buildRecommendation(item: seededItem)
         try? space.save()
 
@@ -357,7 +372,7 @@ class PocketSourceTests: XCTestCase {
         XCTAssertEqual(savedItems.count, 1)
 
         let savedItem = savedItems[0]
-        XCTAssertEqual(savedItem.url, URL(string: "https://getpocket.com")!)
+        XCTAssertEqual(savedItem.url, "https://getpocket.com")
 
         XCTAssertEqual(savedItem.item, seededItem)
     }
@@ -370,7 +385,7 @@ class PocketSourceTests: XCTestCase {
             }
         }
 
-        let seededItem = space.buildItem(givenURL: URL(string: "https://example.com/item-rec")!)
+        let seededItem = space.buildItem(givenURL: "https://example.com/item-rec")
         let seededSavedItem = space.buildSavedItem(url: "https://example.com/item-rec", isArchived: true, item: seededItem)
         let recommendation = space.buildRecommendation(item: seededItem)
         try? space.save()
@@ -450,11 +465,11 @@ class PocketSourceTests: XCTestCase {
 
         apollo.stubFetch(
             toReturnFixtureNamed: "recommendation-detail",
-            asResultType: ItemByIDQuery.self
+            asResultType: ItemByURLQuery.self
         )
 
         let source = subject()
-        try await source.fetchDetails(for: recommendation)
+        try await source.fetchDetails(for: recommendation.item)
 
         space.backgroundRefresh(recommendation, mergeChanges: true)
         XCTAssertNotNil(recommendation.item.article)
@@ -469,7 +484,7 @@ class PocketSourceTests: XCTestCase {
             }
         }
 
-        let url = URL(string: "https://getpocket.com")!
+        let url = "https://getpocket.com"
 
         let source = subject()
         source.save(url: url)
@@ -487,8 +502,8 @@ class PocketSourceTests: XCTestCase {
             }
         }
 
-        let url = URL(string: "https://getpocket.com")!
-        let seed = space.buildSavedItem(url: url.absoluteString)
+        let url = "https://getpocket.com"
+        let seed = space.buildSavedItem(url: url)
         let seedDate = Date()
         seed.createdAt = seedDate
         try? space.save()
@@ -511,7 +526,7 @@ class PocketSourceTests: XCTestCase {
             }
         }
 
-        let url = URL(string: "https://getpocket.com")!
+        let url = "https://getpocket.com"
         _ = space.buildSavedItem(url: "https://getpocket.com", isArchived: true)
         try? space.save()
 
@@ -713,7 +728,6 @@ extension PocketSourceTests {
     }
 
     func test_fetchOrCreateSavedItem_retrievesItem() throws {
-
         let itemParts = SavedItemParts(
             url: "http://localhost:8080/hello",
             remoteID: "saved-item",
@@ -728,18 +742,18 @@ extension PocketSourceTests {
         )
 
         let source = subject()
-        let savedItem = source.fetchOrCreateSavedItem(with: URL(string: "http://localhost:8080/hello")!, and: itemParts)
+        let savedItem = source.fetchOrCreateSavedItem(with: "http://localhost:8080/hello", and: itemParts)
 
         XCTAssertEqual(savedItem?.remoteID, "saved-item")
         XCTAssertEqual(savedItem?.item?.title, "item-title")
-        XCTAssertEqual(savedItem?.item?.bestURL.absoluteString, "http://localhost:8080/hello")
+        XCTAssertEqual(savedItem?.item?.bestURL, "http://localhost:8080/hello")
     }
 
     private func setupLocalSavesSearch(with urlString: String? = nil) throws {
-        var url: URL?
+        var url: String?
         _ = (1...2).map {
             if let urlString {
-                url = URL(string: urlString + "-\($0)")
+                url = urlString + "-\($0)"
             }
             space.buildSavedItem(
                 remoteID: "saved-item-\($0)",

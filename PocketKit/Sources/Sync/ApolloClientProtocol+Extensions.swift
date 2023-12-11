@@ -13,6 +13,7 @@ public extension ApolloClientProtocol {
             query: query,
             cachePolicy: .fetchIgnoringCacheCompletely,
             contextIdentifier: nil,
+            context: nil,
             queue: queue,
             resultHandler: resultHandler
         )
@@ -47,6 +48,7 @@ public extension ApolloClientProtocol {
             _ = perform(
                 mutation: mutation,
                 publishResultToStore: false,
+                context: nil,
                 queue: .main
             ) { result in
                 switch result {
@@ -75,25 +77,41 @@ public extension ApolloClientProtocol {
                                           line: Int,
                                           column: Int,
                                           funcName: String) {
-
         // Codes we wish to notify the user about
         let notifiableErrorCodes = [429, 500, 503]
+        let skippableErrors = [403]
 
         guard let responseError = error as? ResponseCodeInterceptor.ResponseCodeError else {
-            Log.capture(message: "GraphQl Error - unknown error.", filename: filename, line: line, column: column, funcName: funcName)
+            Log.capture(message: "GraphQl Error - unknown error: \(error)", filename: filename, line: line, column: column, funcName: funcName)
             return
         }
 
-        Log.capture(message: "GraphQl Error - description: \(responseError.errorDescription ?? "no description found").",
+        // If we've received an invalid response code from the server…
+        if case .invalidResponseCode(let response, _) = responseError, let statusCode = response?.statusCode {
+            // …and we shouldn't skip over the error…
+            if skippableErrors.contains(statusCode) == false {
+                // …then capture the error
+                Log.capture(
+                    message: "GraphQl Error - description: \(responseError.errorDescription ?? "no description found").",
                     filename: filename,
                     line: line,
                     column: column,
-                    funcName: funcName)
+                    funcName: funcName
+                )
+            }
 
-        if case .invalidResponseCode(let response, _) = responseError,
-           let code = response?.statusCode,
-           notifiableErrorCodes.contains(code) {
-            NotificationCenter.default.post(name: .serverError, object: code)
+            // …and if we're notifiable, do so
+            if notifiableErrorCodes.contains(statusCode) {
+                NotificationCenter.default.post(name: .serverError, object: statusCode)
+            }
+        } else {
+            Log.capture(
+                message: "GraphQl Error - description: \(responseError.errorDescription ?? "no description found").",
+                filename: filename,
+                line: line,
+                column: column,
+                funcName: funcName
+            )
         }
     }
 }

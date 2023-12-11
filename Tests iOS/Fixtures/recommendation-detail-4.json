@@ -1,7 +1,7 @@
 {
   "data": {
     "__typename": "[type-name-here]",
-    "itemByItemId": {
+    "itemByUrl": {
       "remoteID": "recommended-item-4",
       "__typename": "[some-type-name]",
       "givenUrl": "https://getpocket.com/explore/item/article-4",
@@ -14,6 +14,7 @@
       "authors": [
         
       ],
+      "collection": null,
       "datePublished": "2021-01-01 12:01:01",
       "images": [
         

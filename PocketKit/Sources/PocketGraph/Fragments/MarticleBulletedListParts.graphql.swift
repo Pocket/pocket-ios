@@ -4,16 +4,9 @@
 @_exported import ApolloAPI
 
 public struct MarticleBulletedListParts: PocketGraph.SelectionSet, Fragment {
-  public static var fragmentDefinition: StaticString { """
-    fragment MarticleBulletedListParts on MarticleBulletedList {
-      __typename
-      rows {
-        __typename
-        content
-        level
-      }
-    }
-    """ }
+  public static var fragmentDefinition: StaticString {
+    #"fragment MarticleBulletedListParts on MarticleBulletedList { __typename rows { __typename content level } }"#
+  }
 
   public let __data: DataDict
   public init(_dataDict: DataDict) { __data = _dataDict }
@@ -29,13 +22,15 @@ public struct MarticleBulletedListParts: PocketGraph.SelectionSet, Fragment {
   public init(
     rows: [Row]
   ) {
-    self.init(_dataDict: DataDict(data: [
-      "__typename": PocketGraph.Objects.MarticleBulletedList.typename,
-      "rows": rows._fieldData,
-      "__fulfilled": Set([
-        ObjectIdentifier(Self.self)
-      ])
-    ]))
+    self.init(_dataDict: DataDict(
+      data: [
+        "__typename": PocketGraph.Objects.MarticleBulletedList.typename,
+        "rows": rows._fieldData,
+      ],
+      fulfilledFragments: [
+        ObjectIdentifier(MarticleBulletedListParts.self)
+      ]
+    ))
   }
 
   /// Row
@@ -61,14 +56,16 @@ public struct MarticleBulletedListParts: PocketGraph.SelectionSet, Fragment {
       content: PocketGraph.Markdown,
       level: Int
     ) {
-      self.init(_dataDict: DataDict(data: [
-        "__typename": PocketGraph.Objects.BulletedListElement.typename,
-        "content": content,
-        "level": level,
-        "__fulfilled": Set([
-          ObjectIdentifier(Self.self)
-        ])
-      ]))
+      self.init(_dataDict: DataDict(
+        data: [
+          "__typename": PocketGraph.Objects.BulletedListElement.typename,
+          "content": content,
+          "level": level,
+        ],
+        fulfilledFragments: [
+          ObjectIdentifier(MarticleBulletedListParts.Row.self)
+        ]
+      ))
     }
   }
 }

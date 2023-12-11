@@ -8,13 +8,15 @@ import XCTest
 class RecentTagProviderTests: XCTestCase {
     private var userDefaults: UserDefaults!
 
-    override func setUpWithError() throws {
+    override func setUp() {
+        super.setUp()
         userDefaults = UserDefaults(suiteName: "PocketUserTests")
     }
 
-    override func tearDownWithError() throws {
+    override func tearDown() {
         // Is this better than removing the suite?
         userDefaults.resetKeys()
+        super.tearDown()
     }
 
     func subject(
@@ -24,6 +26,17 @@ class RecentTagProviderTests: XCTestCase {
             userDefaults: userDefaults ?? self.userDefaults,
             key: UserDefaults.Key.recentTags
         )
+    }
+
+    func test_initial_recentTags() throws {
+        let recentTagsProvider = subject()
+        XCTAssertEqual(recentTagsProvider.recentTags, [])
+    }
+
+    func test_getInitialRecentTags_withEmptyTags_hasNoRecentTags() throws {
+        let recentTagsProvider = subject()
+        recentTagsProvider.getInitialRecentTags(with: [])
+        XCTAssertEqual(recentTagsProvider.recentTags, [])
     }
 
     func test_recentTags_showsValidArray() {
@@ -45,6 +58,11 @@ class RecentTagProviderTests: XCTestCase {
         XCTAssertEqual(recentTagsProvider.recentTags, ["tag 0", "tag 1", "tag 2"])
     }
 
+    func test_updateRecentTags_withEmptyTags_hasNoRecentTags() {
+        let recentTagsProvider = subject()
+        recentTagsProvider.updateRecentTags(with: [], and: [])
+        XCTAssertEqual(recentTagsProvider.recentTags, [])
+    }
     func test_updateRecentTags_withNoOriginalTags_andNewInputTag_showsValidArray() {
         let recentTagsProvider = subject()
         recentTagsProvider.updateRecentTags(with: [], and: ["tag 3"])

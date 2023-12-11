@@ -5,7 +5,7 @@ import ApolloTestSupport
 import PocketGraph
 
 public class SavedItemSearchResult: MockObject {
-  public static let objectType: Object = PocketGraph.Objects.SavedItemSearchResult
+  public static let objectType: ApolloAPI.Object = PocketGraph.Objects.SavedItemSearchResult
   public static let _mockFields = MockFields()
   public typealias MockValueCollectionType = Array<Mock<SavedItemSearchResult>>
 
@@ -19,6 +19,6 @@ public extension Mock where O == SavedItemSearchResult {
     savedItem: Mock<SavedItem>? = nil
   ) {
     self.init()
-    self.savedItem = savedItem
+    _setEntity(savedItem, for: \.savedItem)
   }
 }

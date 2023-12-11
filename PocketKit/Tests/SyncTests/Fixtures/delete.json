@@ -1,5 +1,5 @@
 {
     "data": {
-        "deleteSavedItem": "the-item-id"
+        "savedItemDelete": "the-item-id"
     }
 }

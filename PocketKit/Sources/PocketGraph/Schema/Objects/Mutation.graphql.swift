@@ -5,7 +5,7 @@ import ApolloAPI
 
 public extension Objects {
   /// Default Mutation Type
-  static let Mutation = Object(
+  static let Mutation = ApolloAPI.Object(
     typename: "Mutation",
     implementedInterfaces: []
   )

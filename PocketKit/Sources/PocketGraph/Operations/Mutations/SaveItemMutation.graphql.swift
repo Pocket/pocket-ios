@@ -5,17 +5,10 @@
 
 public class SaveItemMutation: GraphQLMutation {
   public static let operationName: String = "SaveItem"
-  public static let document: ApolloAPI.DocumentType = .notPersisted(
+  public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"""
-      mutation SaveItem($input: SavedItemUpsertInput!) {
-        upsertSavedItem(input: $input) {
-          __typename
-          ...SavedItemParts
-        }
-      }
-      """#,
-      fragments: [SavedItemParts.self, TagParts.self, ItemParts.self, MarticleTextParts.self, ImageParts.self, MarticleDividerParts.self, MarticleTableParts.self, MarticleHeadingParts.self, MarticleCodeBlockParts.self, VideoParts.self, MarticleBulletedListParts.self, MarticleNumberedListParts.self, MarticleBlockquoteParts.self, DomainMetadataParts.self, SyndicatedArticleParts.self, PendingItemParts.self]
+      #"mutation SaveItem($input: SavedItemUpsertInput!) { upsertSavedItem(input: $input) { __typename ...SavedItemParts } }"#,
+      fragments: [SavedItemParts.self, TagParts.self, ItemParts.self, MarticleTextParts.self, ImageParts.self, MarticleDividerParts.self, MarticleTableParts.self, MarticleHeadingParts.self, MarticleCodeBlockParts.self, VideoParts.self, MarticleBulletedListParts.self, MarticleNumberedListParts.self, MarticleBlockquoteParts.self, DomainMetadataParts.self, SyndicatedArticleParts.self, PendingItemParts.self, CorpusItemSummary.self]
     ))
 
   public var input: SavedItemUpsertInput
@@ -70,6 +63,8 @@ public class SaveItemMutation: GraphQLMutation {
       public var tags: [Tag]? { __data["tags"] }
       /// Link to the underlying Pocket Item for the URL
       public var item: Item { __data["item"] }
+      /// If the item is in corpus allow the saved item to reference it.  Exposing curated info for consistent UX
+      public var corpusItem: CorpusItem? { __data["corpusItem"] }
 
       public struct Fragments: FragmentContainer {
         public let __data: DataDict
@@ -119,7 +114,7 @@ public class SaveItemMutation: GraphQLMutation {
           public let __data: DataDict
           public init(_dataDict: DataDict) { __data = _dataDict }
 
-          public typealias RootEntityType = UpsertSavedItem.Item
+          public typealias RootEntityType = SaveItemMutation.Data.UpsertSavedItem.Item
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Item }
           public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
             ItemParts.self,
@@ -157,6 +152,8 @@ public class SaveItemMutation: GraphQLMutation {
           public var wordCount: Int? { __data["wordCount"] }
           /// List of Authors involved with this article
           public var authors: [ItemParts.Author?]? { __data["authors"] }
+          /// If the item is a collection allow them to get the collection information
+          public var collection: ItemParts.Collection? { __data["collection"] }
           /// The Marticle format of the article, used by clients for native article view.
           public var marticle: [Marticle]? { __data["marticle"] }
           /// A snippet of text from the article
@@ -202,7 +199,7 @@ public class SaveItemMutation: GraphQLMutation {
               public let __data: DataDict
               public init(_dataDict: DataDict) { __data = _dataDict }
 
-              public typealias RootEntityType = UpsertSavedItem.Item.AsItem.Marticle
+              public typealias RootEntityType = SaveItemMutation.Data.UpsertSavedItem.Item.AsItem.Marticle
               public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleText }
               public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
                 MarticleTextParts.self,
@@ -227,7 +224,7 @@ public class SaveItemMutation: GraphQLMutation {
               public let __data: DataDict
               public init(_dataDict: DataDict) { __data = _dataDict }
 
-              public typealias RootEntityType = UpsertSavedItem.Item.AsItem.Marticle
+              public typealias RootEntityType = SaveItemMutation.Data.UpsertSavedItem.Item.AsItem.Marticle
               public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Image }
               public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
                 ImageParts.self,
@@ -263,7 +260,7 @@ public class SaveItemMutation: GraphQLMutation {
               public let __data: DataDict
               public init(_dataDict: DataDict) { __data = _dataDict }
 
-              public typealias RootEntityType = UpsertSavedItem.Item.AsItem.Marticle
+              public typealias RootEntityType = SaveItemMutation.Data.UpsertSavedItem.Item.AsItem.Marticle
               public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleDivider }
               public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
                 MarticleDividerParts.self,
@@ -288,7 +285,7 @@ public class SaveItemMutation: GraphQLMutation {
               public let __data: DataDict
               public init(_dataDict: DataDict) { __data = _dataDict }
 
-              public typealias RootEntityType = UpsertSavedItem.Item.AsItem.Marticle
+              public typealias RootEntityType = SaveItemMutation.Data.UpsertSavedItem.Item.AsItem.Marticle
               public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleTable }
               public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
                 MarticleTableParts.self,
@@ -313,7 +310,7 @@ public class SaveItemMutation: GraphQLMutation {
               public let __data: DataDict
               public init(_dataDict: DataDict) { __data = _dataDict }
 
-              public typealias RootEntityType = UpsertSavedItem.Item.AsItem.Marticle
+              public typealias RootEntityType = SaveItemMutation.Data.UpsertSavedItem.Item.AsItem.Marticle
               public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleHeading }
               public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
                 MarticleHeadingParts.self,
@@ -340,7 +337,7 @@ public class SaveItemMutation: GraphQLMutation {
               public let __data: DataDict
               public init(_dataDict: DataDict) { __data = _dataDict }
 
-              public typealias RootEntityType = UpsertSavedItem.Item.AsItem.Marticle
+              public typealias RootEntityType = SaveItemMutation.Data.UpsertSavedItem.Item.AsItem.Marticle
               public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleCodeBlock }
               public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
                 MarticleCodeBlockParts.self,
@@ -367,7 +364,7 @@ public class SaveItemMutation: GraphQLMutation {
               public let __data: DataDict
               public init(_dataDict: DataDict) { __data = _dataDict }
 
-              public typealias RootEntityType = UpsertSavedItem.Item.AsItem.Marticle
+              public typealias RootEntityType = SaveItemMutation.Data.UpsertSavedItem.Item.AsItem.Marticle
               public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Video }
               public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
                 VideoParts.self,
@@ -404,7 +401,7 @@ public class SaveItemMutation: GraphQLMutation {
               public let __data: DataDict
               public init(_dataDict: DataDict) { __data = _dataDict }
 
-              public typealias RootEntityType = UpsertSavedItem.Item.AsItem.Marticle
+              public typealias RootEntityType = SaveItemMutation.Data.UpsertSavedItem.Item.AsItem.Marticle
               public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleBulletedList }
               public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
                 MarticleBulletedListParts.self,
@@ -428,7 +425,7 @@ public class SaveItemMutation: GraphQLMutation {
               public let __data: DataDict
               public init(_dataDict: DataDict) { __data = _dataDict }
 
-              public typealias RootEntityType = UpsertSavedItem.Item.AsItem.Marticle
+              public typealias RootEntityType = SaveItemMutation.Data.UpsertSavedItem.Item.AsItem.Marticle
               public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleNumberedList }
               public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
                 MarticleNumberedListParts.self,
@@ -452,7 +449,7 @@ public class SaveItemMutation: GraphQLMutation {
               public let __data: DataDict
               public init(_dataDict: DataDict) { __data = _dataDict }
 
-              public typealias RootEntityType = UpsertSavedItem.Item.AsItem.Marticle
+              public typealias RootEntityType = SaveItemMutation.Data.UpsertSavedItem.Item.AsItem.Marticle
               public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleBlockquote }
               public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
                 MarticleBlockquoteParts.self,
@@ -529,7 +526,7 @@ public class SaveItemMutation: GraphQLMutation {
           public let __data: DataDict
           public init(_dataDict: DataDict) { __data = _dataDict }
 
-          public typealias RootEntityType = UpsertSavedItem.Item
+          public typealias RootEntityType = SaveItemMutation.Data.UpsertSavedItem.Item
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.PendingItem }
           public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
             PendingItemParts.self,
@@ -548,6 +545,26 @@ public class SaveItemMutation: GraphQLMutation {
 
             public var pendingItemParts: PendingItemParts { _toFragment() }
           }
+        }
+      }
+
+      /// UpsertSavedItem.CorpusItem
+      ///
+      /// Parent Type: `CorpusItem`
+      public struct CorpusItem: PocketGraph.SelectionSet {
+        public let __data: DataDict
+        public init(_dataDict: DataDict) { __data = _dataDict }
+
+        public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.CorpusItem }
+
+        /// The name of the online publication that published this story.
+        public var publisher: String { __data["publisher"] }
+
+        public struct Fragments: FragmentContainer {
+          public let __data: DataDict
+          public init(_dataDict: DataDict) { __data = _dataDict }
+
+          public var corpusItemSummary: CorpusItemSummary { _toFragment() }
         }
       }
     }

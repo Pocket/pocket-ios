@@ -1,5 +1,10 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Foundation
 import Apollo
+import Localization
 import PocketGraph
 import SharedPocketKit
 
@@ -43,8 +48,8 @@ public class PocketSaveService: SaveService {
         self.queue = OperationQueue()
     }
 
-    public func save(url: URL) -> SaveServiceStatus {
-        space.performAndWait {
+    public func save(url: String) -> SaveServiceStatus {
+        return space.performAndWait {
             let result = fetchOrCreateSavedItem(url: url)
 
             expiringActivityPerformer.performExpiringActivity(withReason: "com.mozilla.pocket.next.save") { [weak self] expiring in
@@ -93,7 +98,7 @@ public class PocketSaveService: SaveService {
         }
     }
 
-    private func fetchOrCreateSavedItem(url: URL) -> SaveServiceStatus {
+    private func fetchOrCreateSavedItem(url: String) -> SaveServiceStatus {
         return space.performAndWait {
             if let existingItem = try? space.fetchSavedItem(byURL: url) {
                 existingItem.createdAt = Date()
@@ -146,16 +151,20 @@ public class PocketSaveService: SaveService {
                 }
                 queue.addOperation(operation)
             } else {
-                let mutation = ReplaceSavedItemTagsMutation(input: [SavedItemTagsInput(savedItemId: remoteID, tags: names)])
+                let url = savedItem.item?.givenURL ?? savedItem.url
+                let mutation = SavedItemTagMutation(
+                    input: SavedItemTagInput(givenUrl: url, tagNames: names),
+                    timestamp: ISO8601DateFormatter.pocketGraphFormatter.string(from: .now)
+                )
 
-                let operation = SaveOperation<ReplaceSavedItemTagsMutation>(
+                let operation = SaveOperation<SavedItemTagMutation>(
                     apollo: apollo,
                     osNotifications: osNotifications,
                     space: space,
                     savedItem: savedItem,
                     mutation: mutation
                 ) { graphQLResultData in
-                    return (graphQLResultData as? ReplaceSavedItemTagsMutation.Data)?.replaceSavedItemTags.first?.fragments.savedItemParts
+                    return (graphQLResultData as? SavedItemTagMutation.Data)?.savedItemTag?.fragments.savedItemParts
                 }
                 queue.addOperation(operation)
             }
@@ -176,7 +185,7 @@ public class PocketSaveService: SaveService {
                 return
             }
 
-            let mutation =  SaveItemMutation(input: SavedItemUpsertInput(url: savedItem.url.absoluteString))
+            let mutation =  SaveItemMutation(input: SavedItemUpsertInput(url: savedItem.url))
 
             let operation = SaveOperation<SaveItemMutation>(
                 apollo: apollo,
@@ -234,7 +243,7 @@ class SaveOperation<Mutation: GraphQLMutation>: AsyncOperation {
     }
 
     private func performMutation<Mutation: GraphQLMutation>(mutation: Mutation) {
-        task = apollo.perform(mutation: mutation, publishResultToStore: false, queue: .global(qos: .userInitiated)) { [weak self] result in
+        task = apollo.perform(mutation: mutation, publishResultToStore: false, context: nil, queue: .global(qos: .userInitiated)) { [weak self] result in
             guard case .success(let graphQLResult) = result,
                     let data = graphQLResult.data,
                     let savedItemParts = self?.savedItemParts(data) else {

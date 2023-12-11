@@ -11,6 +11,7 @@ class ReaderTests: XCTestCase {
     var snowplowMicro = SnowplowMicro()
 
     override func setUp() async throws {
+        try await super.setUp()
         continueAfterFailure = false
 
         let uiApp = XCUIApplication()
@@ -45,11 +46,12 @@ class ReaderTests: XCTestCase {
         app.terminate()
         await snowplowMicro.assertBaselineSnowplowExpectation()
         try server.stop()
+        try await super.tearDown()
     }
 
     func test_tappingSaves_dismissesReader_andShowsSaves() {
         launchApp_andOpenItem()
-        app.readerView.savesBackButton.tap()
+        app.readerView.backButton.tap()
         app.saves.wait()
     }
 
@@ -96,7 +98,8 @@ class ReaderTests: XCTestCase {
         moveFromArchiveToSavesEvent!.getContentContext()!.assertHas(url: "http://example.com/items/archived-item-1")
     }
 
-    func test_tappingOverflowMenu_showsOverflowOptions() {
+    @MainActor
+    func test_tappingOverflowMenu_showsOverflowOptions() async {
         launchApp_andOpenItem()
         openReaderOverflowMenu()
         XCTAssertTrue(app.readerView.displaySettingsButton.exists)
@@ -104,9 +107,14 @@ class ReaderTests: XCTestCase {
         XCTAssertTrue(app.readerView.addTagsButton.exists)
         XCTAssertTrue(app.readerView.deleteButton.exists)
         XCTAssertTrue(app.readerView.shareButton.exists)
+
+        let overflowEvent = await snowplowMicro.getFirstEvent(with: "reader.toolbar.overflow")
+        overflowEvent!.getUIContext()!.assertHas(type: "button")
+        overflowEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
     }
 
-    func test_tappingDisplaySettings_showsDisplaySettings() {
+    @MainActor
+    func test_tappingDisplaySettings_showsDisplaySettings() async {
         launchApp_andOpenItem()
         openReaderOverflowMenu()
         openDisplaySettings()
@@ -115,54 +123,83 @@ class ReaderTests: XCTestCase {
         openFontMenu()
         XCTAssertTrue(app.readerView.fontSelection(fontName: "Graphik LCG").exists)
         XCTAssertTrue(app.readerView.fontSelection(fontName: "Blanco OSF").exists)
+
+        let textSettingsEvent = await snowplowMicro.getFirstEvent(with: "reader.toolbar.text_settings")
+        textSettingsEvent!.getUIContext()!.assertHas(type: "button")
+        textSettingsEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
     }
 
-//  NOTE: Commented out for now, Daniel is unable to get these to fail locally, but they always fail in CI and on others computers.
-//    func test_tappingDisplaySettings_fontStepperIncreasesFont() {
-//        launchApp_andOpenItem()
-//        openReaderOverflowMenu()
-//        openDisplaySettings()
-//
-//        // XCUITests do not let us access TextView font sizes. 👎🏻
-//        // So we instead grab all text views within reader mode and expect them to increase in height.
-//
-//        let textViews = app.readerView.articleTextViews
-//        let currentHeights: [Double] = textViews.map { textElement in
-//            textElement.frame.height
-//        }
-//        self.tapFontSizeIncreaseButton()
-//        self.tapFontSizeIncreaseButton()
-//        self.tapFontSizeIncreaseButton()
-//
-//        var i = 0
-//        textViews.forEach({ text in
-//            XCTAssertGreaterThan(text.frame.height, currentHeights[i], "Article text view did not grow in height")
-//            i+=1
-//        })
-//    }
-//
-//    func test_tappingDisplaySettings_fontStepperDecreasesFont() {
-//        launchApp_andOpenItem()
-//        openReaderOverflowMenu()
-//        openDisplaySettings()
-//
-//        // XCUITests do not let us access TextView font sizes. 👎🏻
-//        // So we instead grab all text views within reader mode and expect them to decrease in height.
-//
-//        let textViews = app.readerView.articleTextViews
-//        let currentHeights: [Double] = textViews.map { textElement in
-//            textElement.frame.height
-//        }
-//        self.tapFontSizeDecreaseButton()
-//        self.tapFontSizeDecreaseButton()
-//        self.tapFontSizeDecreaseButton()
-//
-//        var i = 0
-//        textViews.forEach({ text in
-//            XCTAssertLessThan(text.frame.height, currentHeights[i], "Article text view did not shrink in height")
-//            i+=1
-//        })
-//    }
+    @MainActor
+    func test_tappingSave_savesItem() async {
+        app.launch()
+
+        // Swipe down to a syndicated item
+        scrollTo(element: app.homeView.recommendationCell("Slate 1, Recommendation 2").element, in: app.homeView.element, direction: .up)
+        app.homeView.recommendationCell("Slate 1, Recommendation 2").wait().tap()
+        app.readerView.readerToolbar.moreButton.wait().tap()
+        app.readerView.saveButton.wait().tap()
+
+        app.readerView.backButton.wait().tap()
+        app.tabBar.savesButton.wait().tap()
+        app.saves.itemView(matching: "Slate 1, Recommendation 2").wait()
+
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+        let reportEvent = await snowplowMicro.getFirstEvent(with: "reader.toolbar.save")
+        reportEvent!.getUIContext()!.assertHas(type: "button")
+        reportEvent!.getContentContext()!.assertHas(url: "https://getpocket.com/explore/item/article-2")
+    }
+
+    func test_tappingDisplaySettings_fontStepperIncreasesFont() {
+        // Given
+        launchApp_andOpenItem()
+        openReaderOverflowMenu()
+        openDisplaySettings()
+
+        // XCUITests do not let us access TextView font sizes. 👎🏻
+        // So we instead grab all text views within reader mode and expect them to increase in height.
+
+        let textViews = app.readerView.articleTextViews
+        let oldTextView = textViews.first!
+        let oldText = oldTextView.value as! String
+        let oldHeight = oldTextView.frame.height
+
+        // When
+        self.tapFontSizeIncreaseButton()
+        self.tapFontSizeIncreaseButton()
+        self.tapFontSizeIncreaseButton()
+
+        // Then
+        let newTextView = textViews.first!
+        let newText = newTextView.value as! String
+        let newHeight = newTextView.frame.height
+        // ensure we are grabbing the same textview
+        XCTAssertEqual(oldText, newText)
+        // then ensure the textview has increased height
+        XCTAssertGreaterThan(newHeight, oldHeight)
+    }
+
+    func test_tappingDisplaySettings_fontStepperDecreasesFont() {
+        launchApp_andOpenItem()
+        openReaderOverflowMenu()
+        openDisplaySettings()
+
+        // XCUITests do not let us access TextView font sizes. 👎🏻
+        // So we instead grab all text views within reader mode and expect them to decrease in height.
+
+        let textViews = app.readerView.articleTextViews
+        let currentHeights: [Double] = textViews.map { textElement in
+            textElement.frame.height
+        }
+        self.tapFontSizeDecreaseButton()
+        self.tapFontSizeDecreaseButton()
+        self.tapFontSizeDecreaseButton()
+
+        var i = 0
+        textViews.forEach({ text in
+            XCTAssertLessThan(text.frame.height, currentHeights[i], "Article text view did not shrink in height")
+            i+=1
+        })
+    }
 
     @MainActor
     func test_tappingWebViewButton_showsSafari() async {
@@ -192,7 +229,8 @@ class ReaderTests: XCTestCase {
         engagementEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
     }
 
-    func test_tappingDeleteNo_dismissesDeleteConfirmation() {
+    @MainActor
+    func test_tappingDeleteNo_dismissesDeleteConfirmation() async {
         launchApp_andOpenItem()
         openReaderOverflowMenu()
         app.readerView.wait().deleteButton.wait().tap()

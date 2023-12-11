@@ -5,13 +5,9 @@
 
 public class DeleteUserMutation: GraphQLMutation {
   public static let operationName: String = "DeleteUser"
-  public static let document: ApolloAPI.DocumentType = .notPersisted(
+  public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"""
-      mutation DeleteUser {
-        deleteUser
-      }
-      """#
+      #"mutation DeleteUser { deleteUser }"#
     ))
 
   public init() {}

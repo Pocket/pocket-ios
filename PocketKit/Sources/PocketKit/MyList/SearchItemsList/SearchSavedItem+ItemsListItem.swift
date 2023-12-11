@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Foundation
 import PocketGraph
 import Sync
@@ -5,6 +9,21 @@ import Localization
 import SharedPocketKit
 
 extension SearchSavedItem: ItemsListItem {
+    var isSyndicated: Bool {
+        return item.asItem?.syndicatedArticle != nil
+    }
+
+    var isCollection: Bool {
+        // TODO: Refactor when working on opening a collection tickets
+        // Parses and ensures that the url has "collections" in the first index and count is greater than 3 (ie. 0 represents "/", 1 represents "collections" and 2 represents the slug)
+        guard let givenURL = item.asItem?.givenUrl, let url = URL(string: givenURL), url.host == "getpocket.com",
+              url.pathComponents.count >= 3,
+              url.pathComponents[safe: 1] == "collections" else {
+            return false
+        }
+        return true
+    }
+
     var displayTitle: String {
         title ?? ""
     }
@@ -50,15 +69,17 @@ extension SearchSavedItem: ItemsListItem {
         item.asItem?.title
     }
 
-    var bestURL: URL? {
-        guard let itemParts = item.asItem else {
-            Log.breadcrumb(category: "search", level: .warning, message: "Skipping updating of Item \(remoteItem.remoteID) because \(item) does not have itemParts")
-            return nil
+    var bestURL: String {
+        if let resolvedURL = item.asItem?.resolvedUrl {
+            return resolvedURL
+        } else if let item = item.asItem {
+            return item.givenUrl
+        } else if let url = item.asPendingItem?.givenUrl {
+            return url
+        } else {
+            Log.capture(message: "Server returned a search item not as Item or PendingItem")
+            return ""
         }
-
-        let resolvedURL = itemParts.resolvedUrl.flatMap(URL.init)
-        let givenURL = URL(string: itemParts.givenUrl)
-        return resolvedURL ?? givenURL
     }
 
     var topImageURL: URL? {
@@ -83,15 +104,15 @@ extension SearchSavedItem: ItemsListItem {
     }
 
     var host: String? {
-        bestURL?.host
+        URL(string: bestURL)?.host(percentEncoded: false)
     }
 
     var tagNames: [String]? {
         remoteItem.tags?.compactMap { $0.name }.sorted()
     }
 
-    var savedItemURL: URL? {
-        URL(string: remoteItem.url)
+    var savedItemURL: String {
+        remoteItem.url
     }
 }
 

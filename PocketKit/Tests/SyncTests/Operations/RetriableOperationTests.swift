@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 import CoreData
 import Combine
@@ -11,6 +15,7 @@ class RetriableOperationTests: XCTestCase {
     var task: PersistentSyncTask!
 
     override func setUpWithError() throws {
+        try super.setUpWithError()
         retrySignal = .init()
         backgroundTaskManager = MockBackgroundTaskManager()
         space = .testSpace()
@@ -72,7 +77,7 @@ class RetriableOperationTests: XCTestCase {
         // NOTE: We need to await after the firstAttempt because it takes a few ms for the
         // retrySubscritpion to get setup after firstAttempt is fullfilled.
         // TODO: Refactor retrySignal to keep track of its number of subscribers and instead wait for that to become 1 instead of this random wait.
-        _ = XCTWaiter.wait(for: [expectation(description: "wait for subscriber")], timeout: 10)
+        _ = XCTWaiter.wait(for: [expectation(description: "wait for subscriber")], timeout: 1)
         retrySignal.send()
         wait(for: [secondAttempt, completed], timeout: 5, enforceOrder: true)
         XCTAssertEqual(try space.fetchPersistentSyncTasks().count, 0)
@@ -111,7 +116,7 @@ class RetriableOperationTests: XCTestCase {
             // NOTE: We need to await after each attempt because it takes a few ms for the
             // retrySubscritpion to get setup after the attempt is fullfilled.
             // TODO: Refactor retrySignal to keep track of its number of subscribers and instead wait for that to become 1 instead of this random wait.
-            _ = XCTWaiter.wait(for: [expectation(description: "wait for subscriber")], timeout: 10)
+            _ = XCTWaiter.wait(for: [expectation(description: "wait for subscriber")], timeout: 1)
             retrySignal.send()
         }
 

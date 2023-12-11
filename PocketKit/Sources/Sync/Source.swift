@@ -1,7 +1,12 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Combine
 import CoreData
 import Foundation
 import SharedWithYou
+import PocketGraph
 
 public enum InitialDownloadState {
     case unknown
@@ -44,7 +49,11 @@ public protocol Source {
 
     func makeSearchService() -> SearchService
 
+    func makeCollectionStoriesController(slug: String) -> RichFetchedResultsController<CollectionStory>
+
     func makeImagesController() -> ImagesController
+
+    func makeFeatureFlagsController() -> NSFetchedResultsController<FeatureFlag>
 
     func viewObject<T: NSManagedObject>(id: NSManagedObjectID) -> T?
 
@@ -74,13 +83,23 @@ public protocol Source {
 
     func filterTags(with input: String, excluding tags: [String]) -> [Tag]?
 
-    func fetchSlateLineup(_ identifier: String) async throws
+    func fetchUnifiedHomeLineup() async throws
+
+    func fetchCollection(by slug: String) async throws
+
+    func fetchCollectionAuthors(by slug: String) -> [CollectionAuthor]
 
     func restore()
 
     func save(recommendation: Recommendation)
 
+    func save(item: Item)
+
+    func save(collectionStory: CollectionStory)
+
     func archive(recommendation: Recommendation)
+
+    func archive(collectionStory: CollectionStory)
 
     func remove(recommendation: Recommendation)
 
@@ -88,7 +107,7 @@ public protocol Source {
 
     func fetchDetails(for savedItem: SavedItem) async throws -> Bool
 
-    func fetchDetails(for recommendation: Recommendation) async throws -> Bool
+    func fetchDetails(for item: Item) async throws -> Bool
 
     func fetchDetails(for sharedWithYouHighlight: SharedWithYouHighlight) async throws
 
@@ -104,13 +123,17 @@ public protocol Source {
     */
     func saveNewSharedWithYouSnapshot(for sharedWithYouHighlights: [PocketSWHighlight]) throws
 
-    func save(url: URL)
+    func save(url: String)
 
-    func fetchItem(_ url: URL) -> Item?
+    func fetchItem(_ url: String) -> Item?
+
+    func fetchViewContextItem(_ url: String) -> Item?
+
+    func fetchViewItem(from url: String) async throws -> Item?
 
     func searchSaves(search: String) -> [SavedItem]?
 
-    func fetchOrCreateSavedItem(with url: URL, and remoteParts: SavedItem.RemoteSavedItem?) -> SavedItem?
+    func fetchOrCreateSavedItem(with url: String, and remoteParts: SavedItem.RemoteSavedItem?) -> SavedItem?
 
     /// Get the count of unread saves
     /// - Returns: Int of unread saves
@@ -134,5 +157,4 @@ public protocol Source {
     func fetchAllFeatureFlags() async throws
 
     func fetchFeatureFlag(by name: String) -> FeatureFlag?
-
 }

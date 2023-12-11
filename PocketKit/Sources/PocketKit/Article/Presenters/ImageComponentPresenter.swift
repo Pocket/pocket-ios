@@ -1,6 +1,11 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Sync
 import UIKit
 import Kingfisher
+import SharedPocketKit
 import Textile
 
 private extension Style {
@@ -67,7 +72,7 @@ class ImageComponentPresenter: ArticleComponentPresenter, ImageComponentCellMode
     }
 
     var image: ImageComponentCell.ImageSpec? {
-        return imageCacheURL(for: component.source).flatMap {
+        return CDNURLBuilder().imageCacheURL(for: component.source).flatMap {
             ImageComponentCell.ImageSpec(
                 source: $0,
                 size: CGSize(

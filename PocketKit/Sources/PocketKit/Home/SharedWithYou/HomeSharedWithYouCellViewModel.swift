@@ -1,9 +1,6 @@
-//
-//  HomeSharedWithYouCellViewModel.swift
-//  
-//
-//  Created by Daniel Brooks on 8/26/22.
-//
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import Foundation
 import Sync
@@ -34,6 +31,9 @@ class HomeSharedWithYouCellViewModel {
 }
 
 extension HomeSharedWithYouCellViewModel: HomeCarouselItemCellModel {
+    var attributedCollection: NSAttributedString? {
+        return nil
+    }
 
     var attributedTitle: NSAttributedString {
         NSAttributedString(string: title ?? "", style: .title)
@@ -79,7 +79,6 @@ extension HomeSharedWithYouCellViewModel: HomeCarouselItemCellModel {
     var saveAction: ItemAction? {
         self.primaryAction
     }
-
 }
 
 private extension Style {

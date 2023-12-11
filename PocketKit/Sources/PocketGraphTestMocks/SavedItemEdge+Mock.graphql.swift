@@ -5,7 +5,7 @@ import ApolloTestSupport
 import PocketGraph
 
 public class SavedItemEdge: MockObject {
-  public static let objectType: Object = PocketGraph.Objects.SavedItemEdge
+  public static let objectType: ApolloAPI.Object = PocketGraph.Objects.SavedItemEdge
   public static let _mockFields = MockFields()
   public typealias MockValueCollectionType = Array<Mock<SavedItemEdge>>
 
@@ -21,7 +21,7 @@ public extension Mock where O == SavedItemEdge {
     node: Mock<SavedItem>? = nil
   ) {
     self.init()
-    self.cursor = cursor
-    self.node = node
+    _setScalar(cursor, for: \.cursor)
+    _setEntity(node, for: \.node)
   }
 }

@@ -1,6 +1,6 @@
 {
     "data": {
-        "updateSavedItemUnFavorite": {
+        "savedItemUnFavorite": {
             "__typename": "[type-name-here]",
             "id": "the-item-id"
         }

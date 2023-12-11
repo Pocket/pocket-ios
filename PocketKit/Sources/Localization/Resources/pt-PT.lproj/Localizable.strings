@@ -5,6 +5,16 @@
 "general.error.serverNotResponding.title" = "O servidor não está a responder";
 "general.error.serverNotResponding.detail" = "O nosso servidor não está a responder neste momento. Aguarde, por favor. Deverá estar disponível dentro de uma hora.";
 "general.error.serverError" = "Algo correu mal com o teu pedido. A equipa do Pocket foi notificada. Tenta novamente mais tarde.";
+"general.error.sendReport" = "Enviar um relatório";
+
+// Report an Issue
+"reportIssue.header" = "Comunicar um problema";
+"reportIssue.description" = "Obrigado por nos ajudar a melhorar o Pocket! Forneça mais detalhes sobre o problema que encontrou.";
+"reportIssue.name" = "Nome";
+"reportIssue.email" = "E-mail";
+"reportIssue.comment" = "O que aconteceu?";
+"reportIssue.optional" = "opcional";
+"reportIssue.submitIssue.title" = "Enviar problema";
 
 //Archive
 "archive.empty.header" = "Mantenha a sua lista atual e organizada";
@@ -70,6 +80,13 @@
 //Saves
 "saves.empty.header" = "Comece a criar a sua Lista do Pocket";
 "saves.empty.button" = "Como Guardar";
+// - Add Saved Item
+"saves.addSavedItem.title" = "Adicionar um URL";
+"saves.addSavedItem.error" = "Introduza um URL válido";
+"saves.addSavedItem.addButton" = "Guardar no Pocket";
+"saves.addSavedItem.cancel" = "Cancelar";
+"saves.addSavedItem.close" = "Fechar";
+"saves.addSavedItem.placeholder" = "p. ex. https://getpocket.com";
 
 // Search
 "search.errorMessage" = "Ocorreu um erro e temporariamente não lhe podemos dar o que precisa. Tente novamente mais tarde.";
@@ -103,6 +120,9 @@
 "settings.logout.areYouSureMessage" = "Vai terminar a sessão na sua conta e todos os itens guardados para visualização offline serão removidos do seu dispositivo.";
 "settings.logout.areyousure" = "Tem a certeza?";
 "settings.help" = "Obter ajuda e assistência";
+
+"settings.alwaysOpenOriginalView" = "Abra sempre a vista original";
+
 "settings.accountManagement" = "Gestão de contas";
 "settings.accountManagement.deleteAccount" = "Eliminar a conta";
 "settings.accountManagement.deleteYourAccount" = "Elimina a tua conta";
@@ -198,7 +218,6 @@
 "premium.upgradeView.unlimitedHighlights" = "Destaques ilimitados";
 "premium.upgradeView.premiumFonts" = "Fontes premium";
 
-
 //=======================
 //Old format
 
@@ -212,6 +231,9 @@
 "Yes" = "Sim";
 "No" = "Não";
 
+// Loading view
+"loadingView.message" = "A carregar...";
+
 // No internet
 "No Internet Connection" = "Sem ligação à Internet";
 "Looks like you're offline. Try checking your mobile data or wifi." = "Parece que está offline. Experimente verificar os seus dados móveis ou Wi-Fi.";
@@ -220,8 +242,6 @@
 "Tags" = "Etiquetas";
 "Share" = "Partilhar";
 "carousel.listen" = "Ouvir";
-
-"Saves" = "Guardados";
 
 "Display Settings" = "Configurações de Visualização";
 "Font" = "Fonte";
@@ -297,3 +317,19 @@
 "back.to.pocket" = "Voltar ao Pocket";
 
 "saveToPocket.tapToDismiss" = "Tocar para dispensar";
+
+"itemWidgets.loggedOutMessage" = "Inicie sessão no Pocket para ver o seu conteúdo.";
+"itemWidgets.errorMessage" = "Algo correu mal.";
+"itemWidgets.recentSaves.emptyMessage" = "Comece a criar a sua Lista do Pocket.";
+"itemWidgets.recentSaves.title" = "Conteúdos Guardados Recentes";
+"itemWidgets.recentSaves.description" = "Aceda aos seus artigos guardados mais recentemente.";
+"itemWidgets.recommendations.emptyMessage" = "Talvez esteja offline. Verifique a sua ligação de rede.";
+"itemWidgets.recommendations.title" = "Recomendações";
+"itemWidgets.recommendations.description" = "Descobre as histórias mais instigantes, com curadoria do Pocket.";
+
+// Collection
+"collection.stories.count" = "%1$@ itens";
+
+// Errors
+"error.problemOccurred" = "Ocorreu um problema";
+"error.redownloading" = "Estamos a descarregar novamente os seus artigos salvos para melhorar a sua experiência.";

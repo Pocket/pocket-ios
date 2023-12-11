@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Foundation
 import Sync
 
@@ -8,10 +12,10 @@ class MockSaveService: SaveService {
 
 extension MockSaveService {
     private static let saveImpl = "CallImpl"
-    typealias SaveImpl = (URL) -> Sync.SaveServiceStatus
+    typealias SaveImpl = (String) -> Sync.SaveServiceStatus
 
     struct SaveCall {
-        let url: URL
+        let url: String
     }
 
     func stubSave(_ impl: @escaping SaveImpl) {
@@ -22,7 +26,7 @@ extension MockSaveService {
         calls[Self.saveImpl]?[index] as? SaveCall
     }
 
-    func save(url: URL) -> Sync.SaveServiceStatus {
+    func save(url: String) -> Sync.SaveServiceStatus {
         guard let impl = implementations[Self.saveImpl] as? SaveImpl else {
             fatalError("\(Self.self).\(#function) is not stubbed")
         }

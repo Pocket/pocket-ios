@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Foundation
 import SharedPocketKit
 import UIKit
@@ -6,14 +10,16 @@ import UIKit
 class MockFeatureFlagService: FeatureFlagServiceProtocol {
     private var implementations: [String: Any] = [:]
     private var calls: [String: [Any]] = [:]
+
+    var shouldDisableReader: Bool = false
 }
 
 // MARK: isAssigned
 extension MockFeatureFlagService {
     static let isAssigned = "isAssigned"
-    typealias IsAssignedImpl = (PocketKit.CurrentFeatureFlags, String?) -> Bool
+    typealias IsAssignedImpl = (SharedPocketKit.CurrentFeatureFlags, String?) -> Bool
     struct IsAssignedCall {
-        let flag: PocketKit.CurrentFeatureFlags
+        let flag: SharedPocketKit.CurrentFeatureFlags
         let variant: String?
     }
 
@@ -21,7 +27,7 @@ extension MockFeatureFlagService {
         implementations[Self.isAssigned] = impl
     }
 
-    func isAssigned(flag: PocketKit.CurrentFeatureFlags, variant: String?) -> Bool {
+    func isAssigned(flag: SharedPocketKit.CurrentFeatureFlags, variant: String?) -> Bool {
         guard let impl = implementations[Self.isAssigned] as? IsAssignedImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
@@ -44,9 +50,9 @@ extension MockFeatureFlagService {
 // MARK: trackFeatureFlagFelt
 extension MockFeatureFlagService {
     static let trackFeatureFlagFelt = "trackFeatureFlagFelt"
-    typealias TrackFeatureFlagFeltImpl = (PocketKit.CurrentFeatureFlags, String?) -> Void
+    typealias TrackFeatureFlagFeltImpl = (SharedPocketKit.CurrentFeatureFlags, String?) -> Void
     struct TrackFeatureFlagFeltCall {
-        let flag: PocketKit.CurrentFeatureFlags
+        let flag: SharedPocketKit.CurrentFeatureFlags
         let variant: String?
     }
 
@@ -54,7 +60,7 @@ extension MockFeatureFlagService {
         implementations[Self.trackFeatureFlagFelt] = impl
     }
 
-    func trackFeatureFlagFelt(flag: PocketKit.CurrentFeatureFlags, variant: String?) {
+    func trackFeatureFlagFelt(flag: SharedPocketKit.CurrentFeatureFlags, variant: String?) {
         guard let impl = implementations[Self.trackFeatureFlagFelt] as? TrackFeatureFlagFeltImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
@@ -77,9 +83,9 @@ extension MockFeatureFlagService {
 // MARK: getPayload
 extension MockFeatureFlagService {
     static let getPayload = "getPayload"
-    typealias GetPayloadImpl = (PocketKit.CurrentFeatureFlags) -> String?
+    typealias GetPayloadImpl = (SharedPocketKit.CurrentFeatureFlags) -> String?
     struct GetPayloadCall {
-        let flag: PocketKit.CurrentFeatureFlags
+        let flag: SharedPocketKit.CurrentFeatureFlags
     }
 
     func stubGetPayload(impl: @escaping GetPayloadImpl) {

@@ -25,6 +25,7 @@
               "isArchived": false,
               "isFavorite": false,
               "tags": [],
+              "corpusItem": null,
               "item": {
                 "__typename": "Item",
                 "remoteID": "item-1",
@@ -40,6 +41,7 @@
                 "excerpt": "Cursus Aenean Elit",
                 "datePublished": "2021-01-01 12:01:01",
                 "authors": [],
+                "collection": null,
                 "domainMetadata": null,
                 "images": [],
                 "isArticle": true,
@@ -62,6 +64,7 @@
               "isArchived": false,
               "isFavorite": false,
               "tags": [],
+              "corpusItem": null,
               "item": {
                 "__typename": "Item",
                 "remoteID": "item-2",
@@ -76,6 +79,10 @@
                 "domainMetadata": null,
                 "marticle": [],
                 "authors": [],
+                "collection": {
+                    "__typename": "Collection",
+                    "slug": "item-2-collection-slug"
+                },
                 "datePublished": "2021-01-01 12:01:01",
                 "excerpt": "Cursus Aenean Elit",
                 "images": [],

@@ -5,16 +5,12 @@
 import SwiftUI
 import Textile
 import Localization
+import SharedPocketKit
 
 struct ReaderSettingsView: View {
-    private enum Constants {
-        static let allowedAdjustments = -6...6
-        static let adjustmentStep = 2
-        static let allowedFontFamilies: [FontDescriptor.Family] = [.graphik, .blanco]
-    }
-
-    @Environment(\.presentationMode) private var presentationMode
-
+    @Environment(\.presentationMode)
+    private var presentationMode
+    @State private var dismissReason: DismissReason = .swipe
     @ObservedObject private var settings: ReaderSettings
 
     init(settings: ReaderSettings) {
@@ -22,25 +18,98 @@ struct ReaderSettingsView: View {
     }
 
     var body: some View {
-        NavigationView {
-            Form {
-                Section(header: Text(Localization.displaySettings)) {
-                    Picker(Localization.font, selection: settings.$fontFamily) {
-                        ForEach(Constants.allowedFontFamilies, id: \.name) { family in
-                            Text(family.name)
-                                .tag(family)
-                        }.navigationBarTitleDisplayMode(.inline)
+        Form {
+            Section(header: Text(Localization.Reader.Settings.title)) {
+                Picker(Localization.Reader.Settings.fontLabel, selection: settings.$fontFamily) {
+                    ForEach(settings.fontSet, id: \.rawValue) { family in
+                        Text(family.rawValue)
+                            .tag(family)
                     }
-
+                    .navigationBarTitleDisplayMode(.inline)
+                }
+                Stepper(
+                    Localization.Reader.Settings.fontSizeLabel,
+                    value: settings.$fontSizeAdjustment,
+                    in: settings.fontSizeAdjustmentRange,
+                    step: settings.fontSizeAdjustmentStep
+                )
+                .accessibilityIdentifier("reader-settings-font-size-stepper")
+                if settings.isPremium {
                     Stepper(
-                        Localization.fontSize,
-                        value: settings.$fontSizeAdjustment,
-                        in: Constants.allowedAdjustments,
-                        step: Constants.adjustmentStep
+                        Localization.Reader.Settings.lineHeightLabel,
+                        value: settings.$lineHeightScaleFactorIndex,
+                        in: settings.settingIndexRange,
+                        step: settings.settingIndexStep
                     )
+                    .accessibilityIdentifier("reader-settings-line-height-stepper")
+                    Stepper(
+                        Localization.Reader.Settings.marginsLabel,
+                        value: settings.$marginsIndex,
+                        in: settings.settingIndexRange,
+                        step: settings.settingIndexStep
+                    )
+                    .accessibilityIdentifier("reader-settings-margins-stepper")
+                    Picker(Localization.Reader.Settings.alignmentLabel, selection: settings.$alignmentOption) {
+                        ForEach(ReaderSettings.AlignmentOption.allCases, id: \.rawValue) { alignment in
+                            Text(alignment.name)
+                                .tag(alignment)
+                        }
+                        .navigationBarTitleDisplayMode(.inline)
+                    }
+                } else {
+                    Button {
+                        settings.presentPremiumUpgrade()
+                    } label: {
+                        HStack(alignment: .top, spacing: 0) {
+                            VStack {
+                                Image(uiImage: UIImage(asset: .premiumIcon))
+                                    .renderingMode(.template)
+                                    .foregroundColor(Color(.ui.teal2))
+                                Spacer()
+                            }
+                            .padding(.trailing)
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text(Localization.Reader.Settings.premiumUpsellLabel)
+                                    .style(.settings.row.active)
+                                Text(Localization.Reader.Settings.premiumUpsellSubtitle)
+                                    .style(.settings.row.subtitle)
+                            }
+                        }
+                        .padding(.top)
+                    }
+                    .sheet(
+                        isPresented: $settings.isPresentingPremiumUpgrade,
+                        onDismiss: {
+                            settings.trackPremiumDismissed(dismissReason: dismissReason)
+                            if dismissReason == .system {
+                                settings.isPresentingHooray = true
+                            }
+                        }
+                    ) {
+                        PremiumUpgradeView(dismissReason: self.$dismissReason, viewModel: settings.makePremiumUpgradeViewModel())
+                    }
+                    .task {
+                        settings.trackPremiumUpsellViewed()
+                    }
                 }
             }
-            .navigationBarHidden(true)
+            .sheet(isPresented: $settings.isPresentingHooray) {
+                PremiumUpgradeSuccessView()
+            }
+            Section {
+                Button {
+                    settings.reset()
+                } label: {
+                    HStack {
+                        Text(Localization.Reader.Settings.resetToDefaultsLabel)
+                        Spacer()
+                        if settings.isUsingDefaults {
+                            Image(systemName: "checkmark")
+                        }
+                    }
+                }
+                .foregroundColor(Color(.ui.black1))
+            }
         }
     }
 }

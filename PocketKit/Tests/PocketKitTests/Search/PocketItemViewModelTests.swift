@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 import Analytics
 import SharedPocketKit
@@ -15,7 +19,8 @@ class PocketItemViewModelTests: XCTestCase {
     private var subscriptionStore: SubscriptionStore!
     private var networkPathMonitor: MockNetworkPathMonitor!
 
-    override func setUpWithError() throws {
+    override func setUp() {
+        super.setUp()
         source = MockSource()
         tracker = MockTracker()
         userDefaults = UserDefaults(suiteName: "PocketItemViewModelTests")
@@ -32,6 +37,7 @@ class PocketItemViewModelTests: XCTestCase {
         try space.clear()
         networkPathMonitor = nil
         subscriptionStore = nil
+        try super.tearDownWithError()
     }
 
     func subject(
@@ -212,7 +218,7 @@ class PocketItemViewModelTests: XCTestCase {
 
         wait(for: [expectFetchSavedItemCall], timeout: 10)
 
-        XCTAssertEqual(viewModel.item.remoteItemParts?.url, pocketItem.savedItemURL?.absoluteString)
+        XCTAssertEqual(viewModel.item.remoteItemParts?.url, pocketItem.savedItemURL)
     }
 
     private func setupSearchItem() -> SearchSavedItem {

@@ -5,7 +5,7 @@ import ApolloTestSupport
 import PocketGraph
 
 public class Image: MockObject {
-  public static let objectType: Object = PocketGraph.Objects.Image
+  public static let objectType: ApolloAPI.Object = PocketGraph.Objects.Image
   public static let _mockFields = MockFields()
   public typealias MockValueCollectionType = Array<Mock<Image>>
 
@@ -32,12 +32,12 @@ public extension Mock where O == Image {
     width: Int? = nil
   ) {
     self.init()
-    self.caption = caption
-    self.credit = credit
-    self.height = height
-    self.imageID = imageID
-    self.imageId = imageId
-    self.src = src
-    self.width = width
+    _setScalar(caption, for: \.caption)
+    _setScalar(credit, for: \.credit)
+    _setScalar(height, for: \.height)
+    _setScalar(imageID, for: \.imageID)
+    _setScalar(imageId, for: \.imageId)
+    _setScalar(src, for: \.src)
+    _setScalar(width, for: \.width)
   }
 }

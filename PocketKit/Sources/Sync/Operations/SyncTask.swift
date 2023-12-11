@@ -1,18 +1,23 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Foundation
 
 enum SyncTask: Codable {
     case fetchSaves
     case fetchArchive
     case fetchTags
-    case fetchSharedWithYouHighlights(sharedWithYouHighlights: [PocketSWHighlight])
-    case favorite(remoteID: String)
-    case unfavorite(remoteID: String)
-    case delete(remoteID: String)
-    case archive(remoteID: String)
-    case save(localID: URL, url: URL)
-    case addTags(remoteID: String, tags: [String])
+    case favorite(givenURL: String)
+    case unfavorite(givenURL: String)
+    case delete(givenURL: String)
+    case archive(givenURL: String)
+    case save(localID: URL, url: String)
+    case addTags(givenURL: String, tags: [String])
+    case clearTags(remoteID: String)
     case deleteTag(remoteID: String)
     case renameTag(remoteID: String, name: String)
+    case fetchSharedWithYouHighlights(sharedWithYouHighlights: [PocketSWHighlight])
 }
 
 public class SyncTaskContainer: NSObject, Codable {

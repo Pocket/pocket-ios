@@ -4,27 +4,9 @@
 @_exported import ApolloAPI
 
 public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
-  public static var fragmentDefinition: StaticString { """
-    fragment SavedItemParts on SavedItem {
-      __typename
-      url
-      remoteID: id
-      isArchived
-      isFavorite
-      _deletedAt
-      _createdAt
-      archivedAt
-      tags {
-        __typename
-        ...TagParts
-      }
-      item {
-        __typename
-        ...ItemParts
-        ...PendingItemParts
-      }
-    }
-    """ }
+  public static var fragmentDefinition: StaticString {
+    #"fragment SavedItemParts on SavedItem { __typename url remoteID: id isArchived isFavorite _deletedAt _createdAt archivedAt tags { __typename ...TagParts } item { __typename ...ItemParts ...PendingItemParts } corpusItem { __typename ...CorpusItemSummary } }"#
+  }
 
   public let __data: DataDict
   public init(_dataDict: DataDict) { __data = _dataDict }
@@ -41,6 +23,7 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
     .field("archivedAt", Int?.self),
     .field("tags", [Tag]?.self),
     .field("item", Item.self),
+    .field("corpusItem", CorpusItem?.self),
   ] }
 
   /// The url the user saved to their list
@@ -61,6 +44,8 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
   public var tags: [Tag]? { __data["tags"] }
   /// Link to the underlying Pocket Item for the URL
   public var item: Item { __data["item"] }
+  /// If the item is in corpus allow the saved item to reference it.  Exposing curated info for consistent UX
+  public var corpusItem: CorpusItem? { __data["corpusItem"] }
 
   public init(
     url: String,
@@ -71,23 +56,27 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
     _createdAt: Int,
     archivedAt: Int? = nil,
     tags: [Tag]? = nil,
-    item: Item
+    item: Item,
+    corpusItem: CorpusItem? = nil
   ) {
-    self.init(_dataDict: DataDict(data: [
-      "__typename": PocketGraph.Objects.SavedItem.typename,
-      "url": url,
-      "remoteID": remoteID,
-      "isArchived": isArchived,
-      "isFavorite": isFavorite,
-      "_deletedAt": _deletedAt,
-      "_createdAt": _createdAt,
-      "archivedAt": archivedAt,
-      "tags": tags._fieldData,
-      "item": item._fieldData,
-      "__fulfilled": Set([
-        ObjectIdentifier(Self.self)
-      ])
-    ]))
+    self.init(_dataDict: DataDict(
+      data: [
+        "__typename": PocketGraph.Objects.SavedItem.typename,
+        "url": url,
+        "remoteID": remoteID,
+        "isArchived": isArchived,
+        "isFavorite": isFavorite,
+        "_deletedAt": _deletedAt,
+        "_createdAt": _createdAt,
+        "archivedAt": archivedAt,
+        "tags": tags._fieldData,
+        "item": item._fieldData,
+        "corpusItem": corpusItem._fieldData,
+      ],
+      fulfilledFragments: [
+        ObjectIdentifier(SavedItemParts.self)
+      ]
+    ))
   }
 
   /// Tag
@@ -119,15 +108,17 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
       name: String,
       id: PocketGraph.ID
     ) {
-      self.init(_dataDict: DataDict(data: [
-        "__typename": PocketGraph.Objects.Tag.typename,
-        "name": name,
-        "id": id,
-        "__fulfilled": Set([
-          ObjectIdentifier(Self.self),
+      self.init(_dataDict: DataDict(
+        data: [
+          "__typename": PocketGraph.Objects.Tag.typename,
+          "name": name,
+          "id": id,
+        ],
+        fulfilledFragments: [
+          ObjectIdentifier(SavedItemParts.Tag.self),
           ObjectIdentifier(TagParts.self)
-        ])
-      ]))
+        ]
+      ))
     }
   }
 
@@ -151,12 +142,14 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
     public init(
       __typename: String
     ) {
-      self.init(_dataDict: DataDict(data: [
-        "__typename": __typename,
-        "__fulfilled": Set([
-          ObjectIdentifier(Self.self)
-        ])
-      ]))
+      self.init(_dataDict: DataDict(
+        data: [
+          "__typename": __typename,
+        ],
+        fulfilledFragments: [
+          ObjectIdentifier(SavedItemParts.Item.self)
+        ]
+      ))
     }
 
     /// Item.AsItem
@@ -203,6 +196,8 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
       public var wordCount: Int? { __data["wordCount"] }
       /// List of Authors involved with this article
       public var authors: [ItemParts.Author?]? { __data["authors"] }
+      /// If the item is a collection allow them to get the collection information
+      public var collection: ItemParts.Collection? { __data["collection"] }
       /// The Marticle format of the article, used by clients for native article view.
       public var marticle: [Marticle]? { __data["marticle"] }
       /// A snippet of text from the article
@@ -236,39 +231,43 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
         hasVideo: GraphQLEnum<PocketGraph.Videoness>? = nil,
         wordCount: Int? = nil,
         authors: [ItemParts.Author?]? = nil,
+        collection: ItemParts.Collection? = nil,
         marticle: [Marticle]? = nil,
         excerpt: String? = nil,
         domainMetadata: DomainMetadata? = nil,
         images: [ItemParts.Image?]? = nil,
         syndicatedArticle: SyndicatedArticle? = nil
       ) {
-        self.init(_dataDict: DataDict(data: [
-          "__typename": PocketGraph.Objects.Item.typename,
-          "remoteID": remoteID,
-          "givenUrl": givenUrl,
-          "resolvedUrl": resolvedUrl,
-          "title": title,
-          "language": language,
-          "topImageUrl": topImageUrl,
-          "timeToRead": timeToRead,
-          "domain": domain,
-          "datePublished": datePublished,
-          "isArticle": isArticle,
-          "hasImage": hasImage,
-          "hasVideo": hasVideo,
-          "wordCount": wordCount,
-          "authors": authors._fieldData,
-          "marticle": marticle._fieldData,
-          "excerpt": excerpt,
-          "domainMetadata": domainMetadata._fieldData,
-          "images": images._fieldData,
-          "syndicatedArticle": syndicatedArticle._fieldData,
-          "__fulfilled": Set([
-            ObjectIdentifier(Self.self),
+        self.init(_dataDict: DataDict(
+          data: [
+            "__typename": PocketGraph.Objects.Item.typename,
+            "remoteID": remoteID,
+            "givenUrl": givenUrl,
+            "resolvedUrl": resolvedUrl,
+            "title": title,
+            "language": language,
+            "topImageUrl": topImageUrl,
+            "timeToRead": timeToRead,
+            "domain": domain,
+            "datePublished": datePublished,
+            "isArticle": isArticle,
+            "hasImage": hasImage,
+            "hasVideo": hasVideo,
+            "wordCount": wordCount,
+            "authors": authors._fieldData,
+            "collection": collection._fieldData,
+            "marticle": marticle._fieldData,
+            "excerpt": excerpt,
+            "domainMetadata": domainMetadata._fieldData,
+            "images": images._fieldData,
+            "syndicatedArticle": syndicatedArticle._fieldData,
+          ],
+          fulfilledFragments: [
             ObjectIdentifier(SavedItemParts.Item.self),
+            ObjectIdentifier(SavedItemParts.Item.AsItem.self),
             ObjectIdentifier(ItemParts.self)
-          ])
-        ]))
+          ]
+        ))
       }
 
       /// Item.AsItem.Marticle
@@ -294,12 +293,14 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
         public init(
           __typename: String
         ) {
-          self.init(_dataDict: DataDict(data: [
-            "__typename": __typename,
-            "__fulfilled": Set([
-              ObjectIdentifier(Self.self)
-            ])
-          ]))
+          self.init(_dataDict: DataDict(
+            data: [
+              "__typename": __typename,
+            ],
+            fulfilledFragments: [
+              ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.self)
+            ]
+          ))
         }
 
         /// Item.AsItem.Marticle.AsMarticleText
@@ -329,15 +330,19 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
           public init(
             content: PocketGraph.Markdown
           ) {
-            self.init(_dataDict: DataDict(data: [
-              "__typename": PocketGraph.Objects.MarticleText.typename,
-              "content": content,
-              "__fulfilled": Set([
-                ObjectIdentifier(Self.self),
+            self.init(_dataDict: DataDict(
+              data: [
+                "__typename": PocketGraph.Objects.MarticleText.typename,
+                "content": content,
+              ],
+              fulfilledFragments: [
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.self),
-                ObjectIdentifier(MarticleTextParts.self)
-              ])
-            ]))
+                ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.AsMarticleText.self),
+                ObjectIdentifier(MarticleTextParts.self),
+                ObjectIdentifier(ItemParts.Marticle.self),
+                ObjectIdentifier(ItemParts.Marticle.AsMarticleText.self)
+              ]
+            ))
           }
         }
 
@@ -384,20 +389,24 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
             height: Int? = nil,
             width: Int? = nil
           ) {
-            self.init(_dataDict: DataDict(data: [
-              "__typename": PocketGraph.Objects.Image.typename,
-              "caption": caption,
-              "credit": credit,
-              "imageID": imageID,
-              "src": src,
-              "height": height,
-              "width": width,
-              "__fulfilled": Set([
-                ObjectIdentifier(Self.self),
+            self.init(_dataDict: DataDict(
+              data: [
+                "__typename": PocketGraph.Objects.Image.typename,
+                "caption": caption,
+                "credit": credit,
+                "imageID": imageID,
+                "src": src,
+                "height": height,
+                "width": width,
+              ],
+              fulfilledFragments: [
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.self),
-                ObjectIdentifier(ImageParts.self)
-              ])
-            ]))
+                ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.AsImage.self),
+                ObjectIdentifier(ImageParts.self),
+                ObjectIdentifier(ItemParts.Marticle.self),
+                ObjectIdentifier(ItemParts.Marticle.AsImage.self)
+              ]
+            ))
           }
         }
 
@@ -428,15 +437,19 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
           public init(
             content: PocketGraph.Markdown
           ) {
-            self.init(_dataDict: DataDict(data: [
-              "__typename": PocketGraph.Objects.MarticleDivider.typename,
-              "content": content,
-              "__fulfilled": Set([
-                ObjectIdentifier(Self.self),
+            self.init(_dataDict: DataDict(
+              data: [
+                "__typename": PocketGraph.Objects.MarticleDivider.typename,
+                "content": content,
+              ],
+              fulfilledFragments: [
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.self),
-                ObjectIdentifier(MarticleDividerParts.self)
-              ])
-            ]))
+                ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.AsMarticleDivider.self),
+                ObjectIdentifier(MarticleDividerParts.self),
+                ObjectIdentifier(ItemParts.Marticle.self),
+                ObjectIdentifier(ItemParts.Marticle.AsMarticleDivider.self)
+              ]
+            ))
           }
         }
 
@@ -467,15 +480,19 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
           public init(
             html: String
           ) {
-            self.init(_dataDict: DataDict(data: [
-              "__typename": PocketGraph.Objects.MarticleTable.typename,
-              "html": html,
-              "__fulfilled": Set([
-                ObjectIdentifier(Self.self),
+            self.init(_dataDict: DataDict(
+              data: [
+                "__typename": PocketGraph.Objects.MarticleTable.typename,
+                "html": html,
+              ],
+              fulfilledFragments: [
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.self),
-                ObjectIdentifier(MarticleTableParts.self)
-              ])
-            ]))
+                ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.AsMarticleTable.self),
+                ObjectIdentifier(MarticleTableParts.self),
+                ObjectIdentifier(ItemParts.Marticle.self),
+                ObjectIdentifier(ItemParts.Marticle.AsMarticleTable.self)
+              ]
+            ))
           }
         }
 
@@ -509,16 +526,20 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
             content: PocketGraph.Markdown,
             level: Int
           ) {
-            self.init(_dataDict: DataDict(data: [
-              "__typename": PocketGraph.Objects.MarticleHeading.typename,
-              "content": content,
-              "level": level,
-              "__fulfilled": Set([
-                ObjectIdentifier(Self.self),
+            self.init(_dataDict: DataDict(
+              data: [
+                "__typename": PocketGraph.Objects.MarticleHeading.typename,
+                "content": content,
+                "level": level,
+              ],
+              fulfilledFragments: [
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.self),
-                ObjectIdentifier(MarticleHeadingParts.self)
-              ])
-            ]))
+                ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.AsMarticleHeading.self),
+                ObjectIdentifier(MarticleHeadingParts.self),
+                ObjectIdentifier(ItemParts.Marticle.self),
+                ObjectIdentifier(ItemParts.Marticle.AsMarticleHeading.self)
+              ]
+            ))
           }
         }
 
@@ -552,16 +573,20 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
             text: String,
             language: Int? = nil
           ) {
-            self.init(_dataDict: DataDict(data: [
-              "__typename": PocketGraph.Objects.MarticleCodeBlock.typename,
-              "text": text,
-              "language": language,
-              "__fulfilled": Set([
-                ObjectIdentifier(Self.self),
+            self.init(_dataDict: DataDict(
+              data: [
+                "__typename": PocketGraph.Objects.MarticleCodeBlock.typename,
+                "text": text,
+                "language": language,
+              ],
+              fulfilledFragments: [
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.self),
-                ObjectIdentifier(MarticleCodeBlockParts.self)
-              ])
-            ]))
+                ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.AsMarticleCodeBlock.self),
+                ObjectIdentifier(MarticleCodeBlockParts.self),
+                ObjectIdentifier(ItemParts.Marticle.self),
+                ObjectIdentifier(ItemParts.Marticle.AsMarticleCodeBlock.self)
+              ]
+            ))
           }
         }
 
@@ -610,21 +635,25 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
             width: Int? = nil,
             length: Int? = nil
           ) {
-            self.init(_dataDict: DataDict(data: [
-              "__typename": PocketGraph.Objects.Video.typename,
-              "height": height,
-              "src": src,
-              "type": type,
-              "vid": vid,
-              "videoID": videoID,
-              "width": width,
-              "length": length,
-              "__fulfilled": Set([
-                ObjectIdentifier(Self.self),
+            self.init(_dataDict: DataDict(
+              data: [
+                "__typename": PocketGraph.Objects.Video.typename,
+                "height": height,
+                "src": src,
+                "type": type,
+                "vid": vid,
+                "videoID": videoID,
+                "width": width,
+                "length": length,
+              ],
+              fulfilledFragments: [
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.self),
-                ObjectIdentifier(VideoParts.self)
-              ])
-            ]))
+                ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.AsVideo.self),
+                ObjectIdentifier(VideoParts.self),
+                ObjectIdentifier(ItemParts.Marticle.self),
+                ObjectIdentifier(ItemParts.Marticle.AsVideo.self)
+              ]
+            ))
           }
         }
 
@@ -654,15 +683,19 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
           public init(
             rows: [MarticleBulletedListParts.Row]
           ) {
-            self.init(_dataDict: DataDict(data: [
-              "__typename": PocketGraph.Objects.MarticleBulletedList.typename,
-              "rows": rows._fieldData,
-              "__fulfilled": Set([
-                ObjectIdentifier(Self.self),
+            self.init(_dataDict: DataDict(
+              data: [
+                "__typename": PocketGraph.Objects.MarticleBulletedList.typename,
+                "rows": rows._fieldData,
+              ],
+              fulfilledFragments: [
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.self),
-                ObjectIdentifier(MarticleBulletedListParts.self)
-              ])
-            ]))
+                ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.AsMarticleBulletedList.self),
+                ObjectIdentifier(MarticleBulletedListParts.self),
+                ObjectIdentifier(ItemParts.Marticle.self),
+                ObjectIdentifier(ItemParts.Marticle.AsMarticleBulletedList.self)
+              ]
+            ))
           }
         }
 
@@ -692,15 +725,19 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
           public init(
             rows: [MarticleNumberedListParts.Row]
           ) {
-            self.init(_dataDict: DataDict(data: [
-              "__typename": PocketGraph.Objects.MarticleNumberedList.typename,
-              "rows": rows._fieldData,
-              "__fulfilled": Set([
-                ObjectIdentifier(Self.self),
+            self.init(_dataDict: DataDict(
+              data: [
+                "__typename": PocketGraph.Objects.MarticleNumberedList.typename,
+                "rows": rows._fieldData,
+              ],
+              fulfilledFragments: [
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.self),
-                ObjectIdentifier(MarticleNumberedListParts.self)
-              ])
-            ]))
+                ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.AsMarticleNumberedList.self),
+                ObjectIdentifier(MarticleNumberedListParts.self),
+                ObjectIdentifier(ItemParts.Marticle.self),
+                ObjectIdentifier(ItemParts.Marticle.AsMarticleNumberedList.self)
+              ]
+            ))
           }
         }
 
@@ -731,15 +768,19 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
           public init(
             content: PocketGraph.Markdown
           ) {
-            self.init(_dataDict: DataDict(data: [
-              "__typename": PocketGraph.Objects.MarticleBlockquote.typename,
-              "content": content,
-              "__fulfilled": Set([
-                ObjectIdentifier(Self.self),
+            self.init(_dataDict: DataDict(
+              data: [
+                "__typename": PocketGraph.Objects.MarticleBlockquote.typename,
+                "content": content,
+              ],
+              fulfilledFragments: [
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.self),
-                ObjectIdentifier(MarticleBlockquoteParts.self)
-              ])
-            ]))
+                ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.AsMarticleBlockquote.self),
+                ObjectIdentifier(MarticleBlockquoteParts.self),
+                ObjectIdentifier(ItemParts.Marticle.self),
+                ObjectIdentifier(ItemParts.Marticle.AsMarticleBlockquote.self)
+              ]
+            ))
           }
         }
       }
@@ -769,15 +810,18 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
           name: String? = nil,
           logo: PocketGraph.Url? = nil
         ) {
-          self.init(_dataDict: DataDict(data: [
-            "__typename": PocketGraph.Objects.DomainMetadata.typename,
-            "name": name,
-            "logo": logo,
-            "__fulfilled": Set([
-              ObjectIdentifier(Self.self),
-              ObjectIdentifier(DomainMetadataParts.self)
-            ])
-          ]))
+          self.init(_dataDict: DataDict(
+            data: [
+              "__typename": PocketGraph.Objects.DomainMetadata.typename,
+              "name": name,
+              "logo": logo,
+            ],
+            fulfilledFragments: [
+              ObjectIdentifier(SavedItemParts.Item.AsItem.DomainMetadata.self),
+              ObjectIdentifier(DomainMetadataParts.self),
+              ObjectIdentifier(ItemParts.DomainMetadata.self)
+            ]
+          ))
         }
       }
 
@@ -815,18 +859,21 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
           excerpt: String? = nil,
           publisher: SyndicatedArticleParts.Publisher? = nil
         ) {
-          self.init(_dataDict: DataDict(data: [
-            "__typename": PocketGraph.Objects.SyndicatedArticle.typename,
-            "itemId": itemId,
-            "mainImage": mainImage,
-            "title": title,
-            "excerpt": excerpt,
-            "publisher": publisher._fieldData,
-            "__fulfilled": Set([
-              ObjectIdentifier(Self.self),
-              ObjectIdentifier(SyndicatedArticleParts.self)
-            ])
-          ]))
+          self.init(_dataDict: DataDict(
+            data: [
+              "__typename": PocketGraph.Objects.SyndicatedArticle.typename,
+              "itemId": itemId,
+              "mainImage": mainImage,
+              "title": title,
+              "excerpt": excerpt,
+              "publisher": publisher._fieldData,
+            ],
+            fulfilledFragments: [
+              ObjectIdentifier(SavedItemParts.Item.AsItem.SyndicatedArticle.self),
+              ObjectIdentifier(SyndicatedArticleParts.self),
+              ObjectIdentifier(ItemParts.SyndicatedArticle.self)
+            ]
+          ))
         }
       }
     }
@@ -862,18 +909,59 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
         givenUrl: PocketGraph.Url,
         status: GraphQLEnum<PocketGraph.PendingItemStatus>? = nil
       ) {
-        self.init(_dataDict: DataDict(data: [
-          "__typename": PocketGraph.Objects.PendingItem.typename,
-          "remoteID": remoteID,
-          "givenUrl": givenUrl,
-          "status": status,
-          "__fulfilled": Set([
-            ObjectIdentifier(Self.self),
+        self.init(_dataDict: DataDict(
+          data: [
+            "__typename": PocketGraph.Objects.PendingItem.typename,
+            "remoteID": remoteID,
+            "givenUrl": givenUrl,
+            "status": status,
+          ],
+          fulfilledFragments: [
             ObjectIdentifier(SavedItemParts.Item.self),
+            ObjectIdentifier(SavedItemParts.Item.AsPendingItem.self),
             ObjectIdentifier(PendingItemParts.self)
-          ])
-        ]))
+          ]
+        ))
       }
+    }
+  }
+
+  /// CorpusItem
+  ///
+  /// Parent Type: `CorpusItem`
+  public struct CorpusItem: PocketGraph.SelectionSet {
+    public let __data: DataDict
+    public init(_dataDict: DataDict) { __data = _dataDict }
+
+    public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.CorpusItem }
+    public static var __selections: [ApolloAPI.Selection] { [
+      .field("__typename", String.self),
+      .fragment(CorpusItemSummary.self),
+    ] }
+
+    /// The name of the online publication that published this story.
+    public var publisher: String { __data["publisher"] }
+
+    public struct Fragments: FragmentContainer {
+      public let __data: DataDict
+      public init(_dataDict: DataDict) { __data = _dataDict }
+
+      public var corpusItemSummary: CorpusItemSummary { _toFragment() }
+    }
+
+    public init(
+      publisher: String
+    ) {
+      self.init(_dataDict: DataDict(
+        data: [
+          "__typename": PocketGraph.Objects.CorpusItem.typename,
+          "publisher": publisher,
+        ],
+        fulfilledFragments: [
+          ObjectIdentifier(SavedItemParts.CorpusItem.self),
+          ObjectIdentifier(CorpusItemSummary.self)
+        ]
+      ))
     }
   }
 }

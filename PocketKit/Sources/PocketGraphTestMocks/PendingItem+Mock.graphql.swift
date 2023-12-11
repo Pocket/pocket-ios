@@ -5,7 +5,7 @@ import ApolloTestSupport
 import PocketGraph
 
 public class PendingItem: MockObject {
-  public static let objectType: Object = PocketGraph.Objects.PendingItem
+  public static let objectType: ApolloAPI.Object = PocketGraph.Objects.PendingItem
   public static let _mockFields = MockFields()
   public typealias MockValueCollectionType = Array<Mock<PendingItem>>
 
@@ -23,8 +23,8 @@ public extension Mock where O == PendingItem {
     status: GraphQLEnum<PocketGraph.PendingItemStatus>? = nil
   ) {
     self.init()
-    self.givenUrl = givenUrl
-    self.remoteID = remoteID
-    self.status = status
+    _setScalar(givenUrl, for: \.givenUrl)
+    _setScalar(remoteID, for: \.remoteID)
+    _setScalar(status, for: \.status)
   }
 }

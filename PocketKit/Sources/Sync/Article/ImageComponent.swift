@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Foundation
 import PocketGraph
 
@@ -27,7 +31,7 @@ extension ImageComponent {
             height: marticle.height.flatMap(UInt.init),
             width: marticle.width.flatMap(UInt.init),
             id: marticle.imageID,
-            source: marticle.src.addingPercentEncoding(withAllowedCharacters: .whitespaces.inverted).flatMap(URL.init)
+            source: marticle.src.addingPercentEncoding(withAllowedCharacters: .whitespaces.inverted).flatMap(URL.init(string:))
         )
     }
 }
@@ -42,6 +46,6 @@ extension ImageComponent: Decodable {
         id = try container.decode(Int.self, forKey: .id)
         source = try container.decode(String.self, forKey: .source)
                    .addingPercentEncoding(withAllowedCharacters: .whitespaces.inverted)
-                   .flatMap(URL.init)
+                   .flatMap(URL.init(string:))
     }
 }

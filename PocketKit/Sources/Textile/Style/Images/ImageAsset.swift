@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 public struct ImageAsset {
     let name: String
 
@@ -66,6 +70,7 @@ extension ImageAsset {
     public static let premiumHoorayLight = ImageAsset("premium.hooray.light")
     public static let premiumHoorayDark = ImageAsset("premium.hooray.dark")
     public static let readerSkeleton = ReaderSkeleton()
+    public static let syndicatedIcon = ImageAsset("syndicated-icon")
 }
 
 public struct ReaderSkeleton {

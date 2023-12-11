@@ -26,6 +26,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-31",
@@ -68,6 +69,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -97,6 +99,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-32",
@@ -139,6 +142,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -168,6 +172,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-33",
@@ -210,6 +215,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -239,6 +245,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-34",
@@ -281,6 +288,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -310,6 +318,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-35",
@@ -352,6 +361,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -381,6 +391,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-36",
@@ -423,6 +434,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -452,6 +464,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-37",
@@ -494,6 +507,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -523,6 +537,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-38",
@@ -565,6 +580,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -594,6 +610,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-39",
@@ -636,6 +653,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",

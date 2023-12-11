@@ -5,25 +5,26 @@
 
 public class FavoriteItemMutation: GraphQLMutation {
   public static let operationName: String = "FavoriteItem"
-  public static let document: ApolloAPI.DocumentType = .notPersisted(
+  public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"""
-      mutation FavoriteItem($itemID: ID!) {
-        updateSavedItemFavorite(id: $itemID) {
-          __typename
-          id
-        }
-      }
-      """#
+      #"mutation FavoriteItem($givenUrl: Url!, $timestamp: ISOString!) { savedItemFavorite(givenUrl: $givenUrl, timestamp: $timestamp) { __typename id } }"#
     ))
 
-  public var itemID: ID
+  public var givenUrl: Url
+  public var timestamp: ISOString
 
-  public init(itemID: ID) {
-    self.itemID = itemID
+  public init(
+    givenUrl: Url,
+    timestamp: ISOString
+  ) {
+    self.givenUrl = givenUrl
+    self.timestamp = timestamp
   }
 
-  public var __variables: Variables? { ["itemID": itemID] }
+  public var __variables: Variables? { [
+    "givenUrl": givenUrl,
+    "timestamp": timestamp
+  ] }
 
   public struct Data: PocketGraph.SelectionSet {
     public let __data: DataDict
@@ -31,16 +32,19 @@ public class FavoriteItemMutation: GraphQLMutation {
 
     public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Mutation }
     public static var __selections: [ApolloAPI.Selection] { [
-      .field("updateSavedItemFavorite", UpdateSavedItemFavorite.self, arguments: ["id": .variable("itemID")]),
+      .field("savedItemFavorite", SavedItemFavorite?.self, arguments: [
+        "givenUrl": .variable("givenUrl"),
+        "timestamp": .variable("timestamp")
+      ]),
     ] }
 
-    /// Favorites a SavedItem
-    public var updateSavedItemFavorite: UpdateSavedItemFavorite { __data["updateSavedItemFavorite"] }
+    /// Favorite a SavedItem (identified by URL)
+    public var savedItemFavorite: SavedItemFavorite? { __data["savedItemFavorite"] }
 
-    /// UpdateSavedItemFavorite
+    /// SavedItemFavorite
     ///
     /// Parent Type: `SavedItem`
-    public struct UpdateSavedItemFavorite: PocketGraph.SelectionSet {
+    public struct SavedItemFavorite: PocketGraph.SelectionSet {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 

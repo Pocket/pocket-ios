@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import SwiftUI
 
 public struct RootView: View {
@@ -28,7 +32,6 @@ public struct RootView: View {
         UINavigationBar.appearance().compactAppearance = navBar
         UINavigationBar.appearance().scrollEdgeAppearance = navBar2
         UINavigationBar.appearance().compactScrollEdgeAppearance = navBar2
-
     }
 
     /// Sets up the tab bar appearance following some of https://stackoverflow.com/questions/56969309/change-tabbed-view-bar-color-swiftui
@@ -60,6 +63,15 @@ public struct RootView: View {
     public var body: some View {
         if let model = model.mainViewModel {
             mainView(model: model)
+                .onOpenURL { url in
+                    model.handle(url)
+                }
+                .onContinueUserActivity("NSUserActivityTypeBrowsingWeb", perform: { userActivity in
+                    guard let url = userActivity.webpageURL else {
+                        return
+                    }
+                    model.handle(url)
+                })
         }
 
         if let model = model.loggedOutViewModel {

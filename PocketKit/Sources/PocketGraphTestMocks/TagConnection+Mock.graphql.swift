@@ -5,7 +5,7 @@ import ApolloTestSupport
 import PocketGraph
 
 public class TagConnection: MockObject {
-  public static let objectType: Object = PocketGraph.Objects.TagConnection
+  public static let objectType: ApolloAPI.Object = PocketGraph.Objects.TagConnection
   public static let _mockFields = MockFields()
   public typealias MockValueCollectionType = Array<Mock<TagConnection>>
 
@@ -19,12 +19,12 @@ public class TagConnection: MockObject {
 public extension Mock where O == TagConnection {
   convenience init(
     edges: [Mock<TagEdge>?]? = nil,
-    pageInfo: Mock<PageInfo>,
-    totalCount: Int
+    pageInfo: Mock<PageInfo>? = nil,
+    totalCount: Int? = nil
   ) {
     self.init()
-    self.edges = edges
-    self.pageInfo = pageInfo
-    self.totalCount = totalCount
+    _setList(edges, for: \.edges)
+    _setEntity(pageInfo, for: \.pageInfo)
+    _setScalar(totalCount, for: \.totalCount)
   }
 }

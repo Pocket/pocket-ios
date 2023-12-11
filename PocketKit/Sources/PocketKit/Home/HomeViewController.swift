@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import UIKit
 import Sync
 import Textile
@@ -15,6 +19,7 @@ struct HomeViewControllerSwiftUI: UIViewControllerRepresentable {
 
     func makeUIViewController(context: UIViewControllerRepresentableContext<Self>) -> UINavigationController {
         let homeViewController = HomeViewController(model: model)
+        homeViewController.updateHeroCardCount()
         let navigationController = UINavigationController(rootViewController: homeViewController)
         navigationController.navigationBar.prefersLargeTitles = true
         navigationController.navigationBar.barTintColor = UIColor(.ui.white1)
@@ -32,6 +37,8 @@ class HomeViewController: UIViewController {
     private var subscriptions: [AnyCancellable] = []
     private var slateDetailSubscriptions: [AnyCancellable] = []
     private var readerSubscriptions: [AnyCancellable] = []
+
+    private var collectionSubscriptions = SubscriptionsStack()
 
     private lazy var layout = UICollectionViewCompositionalLayout { [weak self] sectionIndex, env in
         guard let self = self,
@@ -97,7 +104,6 @@ class HomeViewController: UIViewController {
         collectionView.register(cellClass: RecentSavesItemCell.self)
         collectionView.register(cellClass: RecommendationCarouselCell.self)
         collectionView.register(cellClass: ItemsListOfflineCell.self)
-        collectionView.register(cellClass: RecommendationCellHeroWide.self)
         if #available(iOS 16.0, *) {
             collectionView.register(cellClass: SharedWithYouCell.self)
         }
@@ -135,6 +141,7 @@ class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.accessibilityIdentifier = "home"
+
         observeModelChanges()
 
         collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -189,6 +196,18 @@ class HomeViewController: UIViewController {
         guard traitCollection.userInterfaceIdiom == .phone else { return .all }
         return .portrait
     }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        updateHeroCardCount()
+    }
+
+    func updateHeroCardCount() {
+        if traitCollection.shouldUseWideLayout() {
+            self.model.numberOfHeroItems = 2
+        } else {
+            self.model.numberOfHeroItems = 1
+        }
+    }
 }
 
 extension HomeViewController {
@@ -213,23 +232,13 @@ extension HomeViewController {
             cell.configure(sharedWithYouModel: viewModel)
             return cell
         case .recommendationHero(let objectID):
-            if traitCollection.shouldUseWideLayout() {
-                let cell: RecommendationCellHeroWide = collectionView.dequeueCell(for: indexPath)
-                guard let viewModel = model.recommendationHeroWideViewModel(for: objectID, at: indexPath) else {
-                    return cell
-                }
-
-                cell.configure(model: viewModel)
-                return cell
-            } else {
-                let cell: RecommendationCell = collectionView.dequeueCell(for: indexPath)
-                guard let viewModel = model.recommendationHeroViewModel(for: objectID, at: indexPath) else {
-                    return cell
-                }
-
-                cell.configure(model: viewModel)
+            let cell: RecommendationCell = collectionView.dequeueCell(for: indexPath)
+            guard let viewModel = model.recommendationHeroViewModel(for: objectID, at: indexPath) else {
                 return cell
             }
+
+            cell.configure(model: viewModel)
+            return cell
         case .recommendationCarousel(let objectID):
             let cell: RecommendationCarouselCell = collectionView.dequeueCell(for: indexPath)
             guard let viewModel = model.recommendationCarouselViewModel(for: objectID, at: indexPath) else {
@@ -325,7 +334,7 @@ extension HomeViewController {
         }.store(in: &subscriptions)
 
         model.$selectedRecommendationToReport.sink { [weak self] recommendation in
-            self?.report(recommendation)
+            self?.report(recommendation?.item.givenURL)
         }.store(in: &subscriptions)
 
         model.$presentedAlert.sink { [weak self] alert in
@@ -345,10 +354,10 @@ extension HomeViewController {
         switch readableType {
         case .savedItem(let viewModel):
             show(viewModel)
-        case .recommendation(let viewModel):
+        case .recommendable(let viewModel):
             show(viewModel)
-        case .webViewRecommendation(let viewModel):
-            showRecommendation(forWebView: viewModel)
+        case .webViewRecommendable(let viewModel):
+            showRecommendable(forWebView: viewModel)
             // Since the view model is not publishing a direct request to present a url (e.g presentedWebReaderURL),
             // we'll utilize its premium url to present a premium Pocket web page as necessary
             present(url: viewModel.premiumURL)
@@ -364,13 +373,15 @@ extension HomeViewController {
             present(url: viewModel.premiumURL)
         case .sharedWithYou(let viewModel):
             show(viewModel)
+        case .collection(let viewModel):
+            showCollection(viewModel)
         case .none:
-            readerSubscriptions = []
+            readerSubscriptions.removeAll()
         }
     }
 
     func show(_ viewModel: SlateDetailViewModel?) {
-        slateDetailSubscriptions = []
+        slateDetailSubscriptions.removeAll()
 
         guard let viewModel = viewModel else {
             return
@@ -386,50 +397,59 @@ extension HomeViewController {
         }.store(in: &slateDetailSubscriptions)
 
         viewModel.$selectedRecommendationToReport.sink { [weak self] recommendation in
-            self?.report(recommendation)
+            self?.report(recommendation?.item.givenURL)
         }.store(in: &slateDetailSubscriptions)
 
         viewModel.$presentedWebReaderURL.sink { [weak self] url in
-            self?.present(url: url)
+            self?.present(url: url?.absoluteString)
         }.store(in: &slateDetailSubscriptions)
 
         viewModel.$sharedActivity.sink { [weak self] activity in
             self?.present(activity: activity)
         }.store(in: &slateDetailSubscriptions)
+        viewModel.$selectedCollectionViewModel
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] viewModel in
+            guard let viewModel else { return }
+                self?.showCollection(viewModel)
+            }
+            .store(in: &slateDetailSubscriptions)
     }
 
-    func show(_ recommendation: RecommendationViewModel?) {
-        readerSubscriptions = []
-        guard let recommendation = recommendation else {
+    func show(_ recommendable: RecommendableItemViewModel?) {
+        readerSubscriptions.removeAll()
+        guard let recommendable else {
             return
         }
-
+        resetView(for: recommendable.readableSource)
         navigationController?.pushViewController(
-            ReadableHostViewController(readableViewModel: recommendation),
+            ReadableHostViewController(readableViewModel: recommendable),
             animated: true
         )
 
-        recommendation.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
+        // TODO: Listen
+
+        recommendable.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
             self?.present(alert: alert)
         }.store(in: &readerSubscriptions)
 
-        recommendation.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
+        recommendable.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
             self?.present(activity: activity)
         }.store(in: &readerSubscriptions)
 
-        recommendation.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
-            self?.present(url: url)
+        recommendable.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
+            self?.present(url: url?.absoluteString)
         }.store(in: &readerSubscriptions)
 
-        recommendation.$isPresentingReaderSettings.receive(on: DispatchQueue.main).sink { [weak self] isPresenting in
-            self?.presentReaderSettings(isPresenting, on: recommendation)
+        recommendable.$isPresentingReaderSettings.receive(on: DispatchQueue.main).sink { [weak self] isPresenting in
+            self?.presentReaderSettings(isPresenting, on: recommendable)
         }.store(in: &readerSubscriptions)
 
-        recommendation.$selectedRecommendationToReport.receive(on: DispatchQueue.main).sink { [weak self] selected in
-            self?.report(selected)
+        recommendable.$selectedItemToReport.receive(on: DispatchQueue.main).sink { [weak self] selected in
+            self?.report(selected?.givenURL)
         }.store(in: &readerSubscriptions)
 
-        recommendation.events.receive(on: DispatchQueue.main).sink { [weak self] event in
+        recommendable.events.receive(on: DispatchQueue.main).sink { [weak self] event in
             switch event {
             case .contentUpdated:
                 break
@@ -440,12 +460,15 @@ extension HomeViewController {
     }
 
     func show(_ savedItem: SavedItemViewModel) {
-        readerSubscriptions = []
+        resetView(for: savedItem.readableSource)
+        readerSubscriptions.removeAll()
 
         navigationController?.pushViewController(
             ReadableHostViewController(readableViewModel: savedItem),
             animated: true
         )
+
+        // TODO: Listen
 
         savedItem.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
             self?.present(alert: alert)
@@ -456,7 +479,7 @@ extension HomeViewController {
         }.store(in: &readerSubscriptions)
 
         savedItem.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
-            self?.present(url: url)
+            self?.present(url: url?.absoluteString)
         }.store(in: &readerSubscriptions)
 
         savedItem.$isPresentingReaderSettings.receive(on: DispatchQueue.main).sink { [weak self] isPresenting in
@@ -497,7 +520,7 @@ extension HomeViewController {
         }.store(in: &readerSubscriptions)
 
         sharedWithYouHighlight.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
-            self?.present(url: url)
+            self?.present(url: url?.absoluteString)
         }.store(in: &readerSubscriptions)
 
         sharedWithYouHighlight.$isPresentingReaderSettings.receive(on: DispatchQueue.main).sink { [weak self] isPresenting in
@@ -514,13 +537,51 @@ extension HomeViewController {
         }.store(in: &readerSubscriptions)
     }
 
-    private func showRecommendation(forWebView viewModel: RecommendationViewModel) {
+    private func showCollection(_ viewModel: CollectionViewModel) {
+        resetView(for: viewModel.readableSource)
+        let controller = CollectionViewController(model: viewModel)
+        navigationController?.pushViewController(controller, animated: true)
+
+        var subscriptionSet = Set<AnyCancellable>()
+
+        viewModel.$presentedStoryWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
+            self?.present(url: url?.absoluteString)
+        }.store(in: &subscriptionSet)
+
+        viewModel.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
+            self?.present(alert: alert)
+        }.store(in: &subscriptionSet)
+
+        viewModel.$presentedAddTags.receive(on: DispatchQueue.main).sink { [weak self] addTagsViewModel in
+            self?.present(addTagsViewModel)
+        }.store(in: &subscriptionSet)
+
+        viewModel.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
+            self?.present(activity: activity)
+        }.store(in: &subscriptionSet)
+
+        viewModel.$selectedCollectionItemToReport.receive(on: DispatchQueue.main).sink { [weak self] item in
+            self?.report(item?.givenURL)
+        }.store(in: &subscriptionSet)
+
+        viewModel.$events.receive(on: DispatchQueue.main).sink { [weak self] event in
+            switch event {
+            case .contentUpdated, .none:
+                break
+            case .archive, .delete:
+                self?.popToPreviousScreen()
+            }
+        }.store(in: &readerSubscriptions)
+    }
+
+    private func showRecommendable(forWebView viewModel: RecommendableItemViewModel) {
+        resetView(for: viewModel.readableSource)
         viewModel.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
             self?.present(alert: alert)
         }.store(in: &readerSubscriptions)
 
-        viewModel.$selectedRecommendationToReport.receive(on: DispatchQueue.main).sink { [weak self] recommendation in
-            self?.report(recommendation)
+        viewModel.$selectedItemToReport.receive(on: DispatchQueue.main).sink { [weak self] item in
+            self?.report(item?.givenURL)
         }.store(in: &readerSubscriptions)
 
         viewModel.events.receive(on: DispatchQueue.main).sink { [weak self] event in
@@ -534,6 +595,7 @@ extension HomeViewController {
     }
 
     private func showSavedItem(forWebView viewModel: SavedItemViewModel) {
+        resetView(for: viewModel.readableSource)
         viewModel.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
             self?.present(alert: alert)
         }.store(in: &readerSubscriptions)
@@ -563,13 +625,13 @@ extension HomeViewController {
         }.store(in: &readerSubscriptions)
     }
 
-    func report(_ recommendation: Recommendation?) {
-        guard true, let recommendation = recommendation else {
+    func report(_ givenURL: String?) {
+        guard let givenURL else {
             return
         }
 
         let host = ReportRecommendationHostingController(
-            recommendation: recommendation,
+            givenURL: givenURL,
             tracker: model.tracker.childTracker(hosting: .reportDialog),
             onDismiss: { [weak self] in self?.model.clearRecommendationToReport() }
         )
@@ -604,8 +666,8 @@ extension HomeViewController {
         self.present(activityVC, animated: true)
     }
 
-    private func present(url: URL?) {
-        guard true, let url = url else { return }
+    private func present(url: String?) {
+        guard let string = url, let url = URL(percentEncoding: string) else { return }
 
         let safariVC = SFSafariViewController(url: url)
         safariVC.delegate = self
@@ -639,38 +701,19 @@ extension HomeViewController {
         hostingController.modalPresentationStyle = .formSheet
         self.present(hostingController, animated: true)
     }
+
+    /// Pops to the root and dismiss any modal, if required by the readable source
+    /// - Parameter readableSource: the readable source
+    private func resetView(for readableSource: ReadableSource) {
+        guard readableSource == .widget || readableSource == .external else {
+            return
+        }
+        navigationController?.popToRootViewController(animated: false)
+        dismiss(animated: false)
+    }
 }
 
-extension HomeViewController: UINavigationControllerDelegate {
-    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
-        // By default, when pushing the reader, switching to landscape, and popping,
-        // the list will remain in landscape despite only supporting portrait.
-        // We have to programatically force the device orientation back to portrait,
-        // if the view controller we want to show _only_ supports portrait
-        // (e.g when popping from the reader).
-        if viewController.supportedInterfaceOrientations == .portrait, UIDevice.current.orientation.isLandscape {
-            UIDevice.current.setValue(UIDeviceOrientation.portrait.rawValue, forKey: "orientation")
-        }
-    }
-
-    func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
-        if viewController === self {
-            slateDetailSubscriptions = []
-            model.clearTappedSeeAll()
-            model.clearSelectedItem()
-        }
-
-        if viewController is SlateDetailViewController {
-            model.clearRecommendationToReport()
-            model.tappedSeeAll?.clearSelectedItem()
-        }
-    }
-
-    func navigationControllerSupportedInterfaceOrientations(_ navigationController: UINavigationController) -> UIInterfaceOrientationMask {
-        guard navigationController.traitCollection.userInterfaceIdiom == .phone else { return .all }
-        return navigationController.visibleViewController?.supportedInterfaceOrientations ?? .portrait
-    }
-
+extension HomeViewController {
     private func popToPreviousScreen() {
         if let presentedVC = navigationController?.presentedViewController {
             presentedVC.dismiss(animated: true) { [weak self] in

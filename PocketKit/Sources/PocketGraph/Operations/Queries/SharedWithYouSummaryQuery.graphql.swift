@@ -5,16 +5,9 @@
 
 public class SharedWithYouSummaryQuery: GraphQLQuery {
   public static let operationName: String = "SharedWithYouSummary"
-  public static let document: ApolloAPI.DocumentType = .notPersisted(
+  public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"""
-      query SharedWithYouSummary($url: String!) {
-        itemByUrl(url: $url) {
-          __typename
-          ...ItemSummary
-        }
-      }
-      """#,
+      #"query SharedWithYouSummary($url: String!) { itemByUrl(url: $url) { __typename ...ItemSummary } }"#,
       fragments: [ItemSummary.self, DomainMetadataParts.self, SyndicatedArticleParts.self]
     ))
 

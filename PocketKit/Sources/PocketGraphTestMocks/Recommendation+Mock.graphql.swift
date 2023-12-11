@@ -5,7 +5,7 @@ import ApolloTestSupport
 import PocketGraph
 
 public class Recommendation: MockObject {
-  public static let objectType: Object = PocketGraph.Objects.Recommendation
+  public static let objectType: ApolloAPI.Object = PocketGraph.Objects.Recommendation
   public static let _mockFields = MockFields()
   public typealias MockValueCollectionType = Array<Mock<Recommendation>>
 
@@ -23,8 +23,8 @@ public extension Mock where O == Recommendation {
     item: Mock<Item>? = nil
   ) {
     self.init()
-    self.curatedInfo = curatedInfo
-    self.id = id
-    self.item = item
+    _setEntity(curatedInfo, for: \.curatedInfo)
+    _setScalar(id, for: \.id)
+    _setEntity(item, for: \.item)
   }
 }

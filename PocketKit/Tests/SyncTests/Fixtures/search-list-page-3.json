@@ -26,6 +26,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-5",
@@ -54,6 +55,7 @@
                       "url": "https://example.com/authors/david"
                     }
                   ],
+                  "collection": null,
                   "domainMetadata": {
                     "__typename": "[type-name-here]",
                     "name": "WIRED",

@@ -4,17 +4,9 @@
 @_exported import ApolloAPI
 
 public struct ImageParts: PocketGraph.SelectionSet, Fragment {
-  public static var fragmentDefinition: StaticString { """
-    fragment ImageParts on Image {
-      __typename
-      caption
-      credit
-      imageID: imageId
-      src
-      height
-      width
-    }
-    """ }
+  public static var fragmentDefinition: StaticString {
+    #"fragment ImageParts on Image { __typename caption credit imageID: imageId src height width }"#
+  }
 
   public let __data: DataDict
   public init(_dataDict: DataDict) { __data = _dataDict }
@@ -52,17 +44,19 @@ public struct ImageParts: PocketGraph.SelectionSet, Fragment {
     height: Int? = nil,
     width: Int? = nil
   ) {
-    self.init(_dataDict: DataDict(data: [
-      "__typename": PocketGraph.Objects.Image.typename,
-      "caption": caption,
-      "credit": credit,
-      "imageID": imageID,
-      "src": src,
-      "height": height,
-      "width": width,
-      "__fulfilled": Set([
-        ObjectIdentifier(Self.self)
-      ])
-    ]))
+    self.init(_dataDict: DataDict(
+      data: [
+        "__typename": PocketGraph.Objects.Image.typename,
+        "caption": caption,
+        "credit": credit,
+        "imageID": imageID,
+        "src": src,
+        "height": height,
+        "width": width,
+      ],
+      fulfilledFragments: [
+        ObjectIdentifier(ImageParts.self)
+      ]
+    ))
   }
 }

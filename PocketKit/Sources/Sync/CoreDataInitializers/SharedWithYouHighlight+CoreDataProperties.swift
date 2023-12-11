@@ -7,13 +7,12 @@ import Foundation
 import CoreData
 
 extension SharedWithYouHighlight {
-
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<SharedWithYouHighlight> {
+    @nonobjc
+    public class func fetchRequest() -> NSFetchRequest<SharedWithYouHighlight> {
         return NSFetchRequest<SharedWithYouHighlight>(entityName: "SharedWithYouHighlight")
     }
 
     @NSManaged public var sortOrder: Int32
     @NSManaged public var url: URL
     @NSManaged public var item: Item
-
 }

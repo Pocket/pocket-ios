@@ -13,6 +13,7 @@ class SavesTests: XCTestCase {
     var snowplowMicro = SnowplowMicro()
 
     override func setUpWithError() throws {
+        try super.setUpWithError()
         continueAfterFailure = false
 
         let uiApp = XCUIApplication()
@@ -81,6 +82,7 @@ class SavesTests: XCTestCase {
         try server.stop()
         await snowplowMicro.assertBaselineSnowplowExpectation()
         app.terminate()
+        try await super.tearDown()
     }
 
     func test_savingAnItemFromShareExtension_addsItemToList() {

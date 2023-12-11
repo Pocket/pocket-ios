@@ -2,13 +2,6 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-public extension FontDescriptor.Family {
-    static let graphik: Self = "Graphik LCG"
-    static let blanco: Self = "Blanco OSF"
-    static let doyle: Self = "Doyle"
-    static let monospace: Self = ".AppleSystemUIFontMonospaced"
-}
-
 public extension FontDescriptor.Size {
     static let title: Self = 36
     static let h1: Self = 32
@@ -24,6 +17,7 @@ public extension FontDescriptor.Size {
     static let p3: Self = 16
     static let p4: Self = 14
     static let p5: Self = 12
+    static let p6: Self = 11
     static let body: Self = 20
     static let monospace: Self = 14
 }
@@ -33,11 +27,15 @@ public extension Style {
     static let body = Body()
 
     struct Header {
-        public let sansSerif = SansSerif()
-        public let serif = Serif()
+        public let sansSerif = Graphik()
+        public let serif = GenericTextStyles(with: .blanco)
         public let display = Display()
 
-        public struct SansSerif {
+        public func headerStyles(with family: FontDescriptor.Family) -> GenericTextStyles {
+            GenericTextStyles(with: family)
+        }
+
+        public struct Graphik {
             public let title = Style(family: .graphik, size: .title, weight: .medium)
             public let h1 = Style(family: .graphik, size: .h1, weight: .medium)
             public let h2 = Style(family: .graphik, size: .h2, weight: .medium)
@@ -52,21 +50,39 @@ public extension Style {
             public let p3 = Style(family: .graphik, size: .p3, weight: .regular)
             public let p4 = Style(family: .graphik, size: .p4, weight: .regular)
             public let p5 = Style(family: .graphik, size: .p5, weight: .regular)
+            // widgets
+            public let p6 = Style(family: .graphik, size: .p6, weight: .regular)
+            public let w8 = Style(family: .graphik, size: .p4, weight: .medium)
         }
 
-        public struct Serif {
-            public let title = Style(family: .blanco, size: .title, weight: .bold)
-            public let h1 = Style(family: .blanco, size: .h1, weight: .bold)
-            public let h2 = Style(family: .blanco, size: .h2, weight: .bold)
-            public let h3 = Style(family: .blanco, size: .h3, weight: .bold)
-            public let h4 = Style(family: .blanco, size: .h4, weight: .bold)
-            public let h5 = Style(family: .blanco, size: .h5, weight: .bold)
-            public let h6 = Style(family: .blanco, size: .h6, weight: .bold)
-            public let p1 = Style(family: .blanco, size: .p1, weight: .regular)
-            public let p2 = Style(family: .blanco, size: .p2, weight: .regular)
-            public let p3 = Style(family: .blanco, size: .p3, weight: .regular)
-            public let p4 = Style(family: .blanco, size: .p4, weight: .regular)
-            public let p5 = Style(family: .blanco, size: .p5, weight: .regular)
+        public struct GenericTextStyles {
+            public let title: Style
+            public let h1: Style
+            public let h2: Style
+            public let h3: Style
+            public let h4: Style
+            public let h5: Style
+            public let h6: Style
+            public let p1: Style
+            public let p2: Style
+            public let p3: Style
+            public let p4: Style
+            public let p5: Style
+
+            init(with family: FontDescriptor.Family) {
+                title = Style(family: family, size: .title, weight: .bold)
+                h1 = Style(family: family, size: .h1, weight: .bold)
+                h2 = Style(family: family, size: .h2, weight: .bold)
+                h3 = Style(family: family, size: .h3, weight: .bold)
+                h4 = Style(family: family, size: .h4, weight: .bold)
+                h5 = Style(family: family, size: .h5, weight: .bold)
+                h6 = Style(family: family, size: .h6, weight: .bold)
+                p1 = Style(family: family, size: .p1, weight: .regular)
+                p2 = Style(family: family, size: .p2, weight: .regular)
+                p3 = Style(family: family, size: .p3, weight: .regular)
+                p4 = Style(family: family, size: .p4, weight: .regular)
+                p5 = Style(family: family, size: .p5, weight: .regular)
+            }
         }
     }
 
@@ -99,5 +115,9 @@ public extension Style {
         public let sansSerif = Style(family: .graphik, size: .body, weight: .regular)
         public let serif = Style(family: .blanco, size: .body, weight: .regular)
         public let monospace = Style(family: .monospace, size: .monospace, weight: .regular)
+
+        public func bodyStyle(with family: FontDescriptor.Family) -> Style {
+            Style(family: family, size: .body, weight: .regular)
+        }
     }
 }

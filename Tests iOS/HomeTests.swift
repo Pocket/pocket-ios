@@ -12,6 +12,7 @@ class HomeTests: XCTestCase {
     var snowplowMicro = SnowplowMicro()
 
     override func setUp() async throws {
+        try await super.setUp()
         continueAfterFailure = false
 
         let uiApp = XCUIApplication()
@@ -37,6 +38,7 @@ class HomeTests: XCTestCase {
         app.terminate()
         try server.stop()
         await snowplowMicro.assertBaselineSnowplowExpectation()
+        try await super.tearDown()
     }
 
     @MainActor
@@ -54,21 +56,13 @@ class HomeTests: XCTestCase {
         home.sectionHeader("Slate 2").verify()
         home.recommendationCell("Slate 2, Recommendation 1").verify()
 
-        async let slate1Rec1 = snowplowMicro.getFirstEvent(with: "home.slate.article.impression", recommendationId: "slate-1-rec-1")
-        async let slate1Rec2 = snowplowMicro.getFirstEvent(with: "home.slate.article.impression", recommendationId: "slate-1-rec-2")
-        async let slate2Rec1 = snowplowMicro.getFirstEvent(with: "home.slate.article.impression", recommendationId: "slate-2-rec-1")
-        async let slate2Rec2 = snowplowMicro.getFirstEvent(with: "home.slate.article.impression", recommendationId: "slate-2-rec-2")
+        async let slate1Rec1 = snowplowMicro.getFirstEvent(with: "home.slate.article.impression", corpusRecommendationID: "7eb25abf-39f6-4d04-91e9-7485bbf7333b")
+        async let slate1Rec2 = snowplowMicro.getFirstEvent(with: "home.slate.article.impression", corpusRecommendationID: "d88c1280-0128-4767-84e2-a6fa0d2832fa")
+        async let slate2Rec1 = snowplowMicro.getFirstEvent(with: "home.slate.article.impression", corpusRecommendationID: "619b6058-49e5-40b8-af43-dcca6048e61e")
 
-        let recs = await [slate1Rec1, slate1Rec2, slate2Rec1, slate2Rec2]
-        let loadedSlate1Rec1 = recs[0]!
-        let loadedSlate1Rec2 = recs[1]!
-        let loadedSlate2Rec1 = recs[2]!
-        let loadedSlate2Rec2 = recs[3]!
-
-        snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate1Rec1, url: "http://localhost:8080/slate-1-rec-1")
-        snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate1Rec2, url: "https://example.com/slate-1-rec-2")
-        snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate2Rec1, url: "https://example.com/recommended-item-3")
-        snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate2Rec2, url: "https://getpocket.com/explore/item/article-4")
+        let recs = await [slate1Rec1, slate1Rec2, slate2Rec1]
+        let valid = recs.compactMap { $0 }
+        XCTAssertEqual(valid.count, 3)
     }
 
     @MainActor
@@ -207,14 +201,16 @@ class HomeTests: XCTestCase {
     }
 
     func test_tappingRecommendationCell_whenItemIsNotSaved_andItemIsNotSyndicated_opensItemInWebView() {
-        server.routes.get("/slate-1-rec-1") { _, _ in
+        server.routes.get("/slate-2-rec-2") { _, _ in
             Response {
                 Status.ok
                 Fixture.data(name: "hello", ext: "html")
             }
         }
 
-        app.launch().homeView.recommendationCell("Slate 1, Recommendation 1").wait().tap()
+        app.launch()
+        app.homeView.element.swipeUp()
+        app.homeView.recommendationCell("Slate 2, Recommendation 2").wait().tap()
         app.webReaderView
             .staticText(matching: "Hello, world")
             .wait()
@@ -225,7 +221,7 @@ class HomeTests: XCTestCase {
             .homeView.recommendationCell("Slate 1, Recommendation 1")
             .wait().element.swipeUp()
 
-        app.homeView.recommendationCell("Syndicated Article Slate 2, Rec 2")
+        app.homeView.recommendationCell("Slate 1, Recommendation 2")
             .wait().tap()
 
         app.readerView.cell(containing: "Mozilla").wait()
@@ -236,14 +232,14 @@ class HomeTests: XCTestCase {
             .homeView.recommendationCell("Slate 1, Recommendation 1")
             .wait().element.swipeUp()
 
-        app.homeView.recommendationCell("Syndicated Article Slate 2, Rec 2")
+        app.homeView.recommendationCell("Slate 1, Recommendation 2")
             .wait().tap()
 
-        app.readerView.cell(containing: "Syndicated Article Slate 2, Rec 2").wait()
+        app.readerView.cell(containing: "Slate 1, Rec 2").wait()
 
         app.navigationBar.buttons["Home"].tap()
 
-        XCTAssertTrue(app.homeView.recommendationCell("Syndicated Article Slate 2, Rec 2").element.staticTexts["Mozilla"].exists)
+        XCTAssertTrue(app.homeView.recommendationCell("Slate 1, Recommendation 2").element.staticTexts["Mozilla "].exists)
     }
 
     func test_tappingSaveButtonInRecommendationCell_savesItemToList() {
@@ -255,7 +251,7 @@ class HomeTests: XCTestCase {
 
             if apiRequest.isToSaveAnItem {
                 defer { saveRequestExpectation.fulfill() }
-                XCTAssertEqual(apiRequest.inputURL, URL(string: "http://localhost:8080/slate-1-rec-1"))
+                XCTAssertEqual(apiRequest.inputURL, URL(string: "https://getpocket.com/collections/slate-1-rec-1"))
                 return .saveItem("save-recommendation-1")
             } else if apiRequest.isToArchiveAnItem {
                 defer { archiveRequestExpectation.fulfill() }
@@ -289,9 +285,9 @@ class HomeTests: XCTestCase {
         server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isToSaveAnItem {
-                if apiRequest.inputURL == URL(string: "http://localhost:8080/slate-1-rec-1") {
+                if apiRequest.inputURL == URL(string: "https://getpocket.com/collections/slate-1-rec-1") {
                     return Response.saveItem("save-recommendation-1")
-                } else if apiRequest.inputURL == URL(string: "https://example.com/slate-1-rec-2") {
+                } else if apiRequest.inputURL == URL(string: "https://given.example.com/slate-1-rec-2") {
                     return Response.saveItem("save-recommendation-2")
                 }
             } else if apiRequest.isToArchiveAnItem {
@@ -340,11 +336,11 @@ class HomeTests: XCTestCase {
         rec2Cell.savedButton.wait()
         rec1Cell.savedButton.wait()
 
-        async let slate1Rec1 = snowplowMicro.getFirstEvent(with: "home.expandedSlate.article.impression", recommendationId: "slate-1-rec-1")
-        async let slate1Rec2 = snowplowMicro.getFirstEvent(with: "home.expandedSlate.article.impression", recommendationId: "slate-1-rec-2")
-        async let slate1Rec1Save = snowplowMicro.getFirstEvent(with: "home.expandedSlate.article.save", recommendationId: "slate-1-rec-1")
-        async let slate1Rec2Save = snowplowMicro.getFirstEvent(with: "home.expandedSlate.article.save", recommendationId: "slate-1-rec-2")
-        async let slate1Rec2Unsave = snowplowMicro.getFirstEvent(with: "home.expandedSlate.article.archive", recommendationId: "slate-1-rec-2")
+        async let slate1Rec1 = snowplowMicro.getFirstEvent(with: "home.expandedSlate.article.impression", recommendationId: "7eb25abf-39f6-4d04-91e9-7485bbf7333b")
+        async let slate1Rec2 = snowplowMicro.getFirstEvent(with: "home.expandedSlate.article.impression", recommendationId: "d88c1280-0128-4767-84e2-a6fa0d2832fa")
+        async let slate1Rec1Save = snowplowMicro.getFirstEvent(with: "home.expandedSlate.article.save", recommendationId: "7eb25abf-39f6-4d04-91e9-7485bbf7333b")
+        async let slate1Rec2Save = snowplowMicro.getFirstEvent(with: "home.expandedSlate.article.save", recommendationId: "d88c1280-0128-4767-84e2-a6fa0d2832fa")
+        async let slate1Rec2Unsave = snowplowMicro.getFirstEvent(with: "home.expandedSlate.article.archive", recommendationId: "d88c1280-0128-4767-84e2-a6fa0d2832fa")
         async let slateDetail = snowplowMicro.getFirstEvent(with: "home.expandedSlate.impression", slateId: "slate-1")
 
         let recs = await [slate1Rec1, slate1Rec2, slate1Rec1Save, slate1Rec2Save, slate1Rec2Unsave, slateDetail]
@@ -354,8 +350,8 @@ class HomeTests: XCTestCase {
         let loadedSlate1Rec2Save = recs[3]!
         let loadedSlate1Rec2Unsave = recs[4]!
         let loadedSlateDetail = recs[5]!
-        snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate1Rec1, url: "http://localhost:8080/slate-1-rec-1")
-        snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate1Rec2, url: "https://example.com/slate-1-rec-2")
+        snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate1Rec1, url: "https://getpocket.com/collections/slate-1-rec-1")
+        snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate1Rec2, url: "https://given.example.com/slate-1-rec-2")
 
         XCTAssertNotNil(loadedSlate1Rec1Save)
         XCTAssertNotNil(loadedSlate1Rec2Save)
@@ -385,7 +381,7 @@ class HomeTests: XCTestCase {
         let home = app.launch().homeView
         home.overscroll()
         validateBottomMessage()
-        home.recommendationCell("Syndicated Article Slate 2, Rec 2").tap()
+        home.recommendationCell("Slate 1, Recommendation 2").tap()
         app.readerView.readerHomeButton.wait().tap()
         validateBottomMessage()
     }

@@ -1,0 +1,58 @@
+fragment CorpusItemParts on CorpusItem {
+    id
+    url
+    title
+    excerpt
+    imageUrl
+    publisher
+    target {
+        ... on SyndicatedArticle {
+            __typename
+            ...SyndicatedArticleParts
+        }
+        ... on Collection {
+            __typename
+            ...CollectionSummary
+        }
+    }
+}
+
+fragment CorpusRecommendationParts on CorpusRecommendation {
+    id
+    corpusItem {
+        __typename
+        ...CorpusItemParts
+    }
+}
+
+fragment CorpusSlateParts on CorpusSlate {
+    id
+    headline
+    subheadline
+    recommendations {
+        __typename
+        ...CorpusRecommendationParts
+    }
+}
+
+query HomeSlateLineup($locale: String!) {
+    homeSlateLineup(locale: $locale) {
+        id
+        slates {
+            __typename
+            ...CorpusSlateParts
+        }
+    }
+}
+
+fragment CollectionSummary on Collection {
+    slug
+    authors {
+        __typename
+        ...CollectionAuthorSummary
+    }
+}
+
+fragment CollectionAuthorSummary on CollectionAuthor {
+    name
+}

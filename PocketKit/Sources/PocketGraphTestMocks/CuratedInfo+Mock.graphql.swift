@@ -5,7 +5,7 @@ import ApolloTestSupport
 import PocketGraph
 
 public class CuratedInfo: MockObject {
-  public static let objectType: Object = PocketGraph.Objects.CuratedInfo
+  public static let objectType: ApolloAPI.Object = PocketGraph.Objects.CuratedInfo
   public static let _mockFields = MockFields()
   public typealias MockValueCollectionType = Array<Mock<CuratedInfo>>
 
@@ -23,8 +23,8 @@ public extension Mock where O == CuratedInfo {
     title: String? = nil
   ) {
     self.init()
-    self.excerpt = excerpt
-    self.imageSrc = imageSrc
-    self.title = title
+    _setScalar(excerpt, for: \.excerpt)
+    _setScalar(imageSrc, for: \.imageSrc)
+    _setScalar(title, for: \.title)
   }
 }

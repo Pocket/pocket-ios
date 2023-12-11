@@ -4,13 +4,9 @@
 @_exported import ApolloAPI
 
 public struct DomainMetadataParts: PocketGraph.SelectionSet, Fragment {
-  public static var fragmentDefinition: StaticString { """
-    fragment DomainMetadataParts on DomainMetadata {
-      __typename
-      name
-      logo
-    }
-    """ }
+  public static var fragmentDefinition: StaticString {
+    #"fragment DomainMetadataParts on DomainMetadata { __typename name logo }"#
+  }
 
   public let __data: DataDict
   public init(_dataDict: DataDict) { __data = _dataDict }
@@ -31,13 +27,15 @@ public struct DomainMetadataParts: PocketGraph.SelectionSet, Fragment {
     name: String? = nil,
     logo: PocketGraph.Url? = nil
   ) {
-    self.init(_dataDict: DataDict(data: [
-      "__typename": PocketGraph.Objects.DomainMetadata.typename,
-      "name": name,
-      "logo": logo,
-      "__fulfilled": Set([
-        ObjectIdentifier(Self.self)
-      ])
-    ]))
+    self.init(_dataDict: DataDict(
+      data: [
+        "__typename": PocketGraph.Objects.DomainMetadata.typename,
+        "name": name,
+        "logo": logo,
+      ],
+      fulfilledFragments: [
+        ObjectIdentifier(DomainMetadataParts.self)
+      ]
+    ))
   }
 }

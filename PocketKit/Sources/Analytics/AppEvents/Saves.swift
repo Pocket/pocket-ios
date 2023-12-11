@@ -17,7 +17,7 @@ public extension Events.Saves {
     static func contentOpen(
         destination: ContentOpen.Destination,
         trigger: ContentOpen.Trigger = .click,
-        url: URL
+        url: String
     ) -> ContentOpen {
         return ContentOpen(
             destination: destination,
@@ -25,5 +25,23 @@ public extension Events.Saves {
             contentEntity: ContentEntity(url: url),
             uiEntity: UiEntity(.card, identifier: "saves.card.open")
         )
+    }
+
+    static func userDidOpenAddSavedItem() -> Impression {
+        Impression(
+            component: .screen,
+            requirement: .viewable,
+            uiEntity: UiEntity(.screen, identifier: "saves.addItem.open")
+        )
+    }
+
+    static func userDidDismissAddSavedItem() -> Engagement {
+        Engagement(uiEntity: UiEntity(.button, identifier: "saves.addItem.dismiss"))
+    }
+
+    static func userDidSaveItem(saveSucceeded: Bool) -> Engagement {
+        let identifier = saveSucceeded ? "saves.addItem.success" : "saves.addItem.fail"
+
+        return Engagement(uiEntity: UiEntity(.button, identifier: identifier))
     }
 }

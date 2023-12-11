@@ -25,12 +25,7 @@ extension SavedItem {
 
     public func update(from remote: RemoteSavedItem, with space: Space) {
         remoteID = remote.remoteID
-        guard let url = URL(string: remote.url) else {
-            Log.breadcrumb(category: "sync", level: .warning, message: "Skipping updating of SavedItem \(String(describing: remoteID)) because \(remote.url) is not valid url")
-            return
-        }
-
-        self.url = url
+        url = remote.url
         createdAt = Date(timeIntervalSince1970: TimeInterval(remote._createdAt))
         deletedAt = remote._deletedAt.flatMap(TimeInterval.init).flatMap(Date.init(timeIntervalSince1970:))
         archivedAt = remote.archivedAt.flatMap(TimeInterval.init).flatMap(Date.init(timeIntervalSince1970:))
@@ -54,20 +49,19 @@ extension SavedItem {
 
         if let itemParts = remote.item.asItem?.fragments.itemParts {
             Log.breadcrumb(category: "sync", level: .debug, message: "Updating item parts for \(itemParts.remoteID)")
-            guard let itemUrl = URL(string: itemParts.givenUrl) else {
-                Log.capture(message: "Item parts not a valid url")
-                return
-            }
-            let itemToUpdate = (try? space.fetchItem(byURL: itemUrl, context: context)) ?? Item(context: context, givenURL: itemUrl, remoteID: itemParts.remoteID)
+
+            let givenURL = itemParts.givenUrl
+            let itemToUpdate = (try? space.fetchItem(byURL: givenURL, context: context)) ?? Item(context: context, givenURL: givenURL, remoteID: itemParts.remoteID)
             itemToUpdate.update(remote: itemParts, with: space)
+            if let corpusItem = remote.corpusItem {
+                itemToUpdate.domain = corpusItem.publisher
+            }
             item = itemToUpdate
         } else if let pendingParts = remote.item.asPendingItem?.fragments.pendingItemParts {
             Log.breadcrumb(category: "sync", level: .debug, message: "Updating pending parts for \(pendingParts.remoteID)")
-            guard let itemUrl = URL(string: pendingParts.givenUrl) else {
-                Log.capture(message: "Pending item parts not a valid url")
-                return
-            }
-            let itemToUpdate = (try? space.fetchItem(byURL: itemUrl, context: context)) ?? Item(context: context, givenURL: itemUrl, remoteID: pendingParts.remoteID)
+
+            let givenURL = pendingParts.givenUrl
+            let itemToUpdate = (try? space.fetchItem(byURL: givenURL, context: context)) ?? Item(context: context, givenURL: givenURL, remoteID: pendingParts.remoteID)
             itemToUpdate.update(remote: pendingParts, with: space)
             item = itemToUpdate
         }
@@ -86,14 +80,17 @@ extension SavedItem {
         self.item = sharedWithYouHighlight.item
     }
 
+    public func update(from item: Item) {
+        self.url = item.givenURL
+        self.createdAt = Date()
+
+        self.item = item
+    }
+
     public func update(from summary: SavedItemSummary, with space: Space) {
         remoteID = summary.remoteID
-        guard let url = URL(string: summary.url) else {
-            Log.breadcrumb(category: "sync", level: .warning, message: "Skipping updating of SavedItem \(String(describing: remoteID)) because \(summary.url) is not valid url")
-            return
-        }
 
-        self.url = url
+        url = summary.url
         createdAt = Date(timeIntervalSince1970: TimeInterval(summary._createdAt))
         deletedAt = summary._deletedAt.flatMap(TimeInterval.init).flatMap(Date.init(timeIntervalSince1970:))
         archivedAt = summary.archivedAt.flatMap(TimeInterval.init).flatMap(Date.init(timeIntervalSince1970:))
@@ -114,26 +111,23 @@ extension SavedItem {
             tag.update(remote: summaryTag.fragments.tagParts)
             return tag
         } ?? [])
-
         if let itemSummary = summary.item.asItem?.fragments.itemSummary {
             Log.breadcrumb(category: "sync", level: .debug, message: "Updating item parts from summary for \(itemSummary.remoteID)")
-            guard let itemUrl = URL(string: itemSummary.givenUrl) else {
-                Log.capture(message: "Item parts not a valid url")
-                return
-            }
-            let itemToUpdate = (try? space.fetchItem(byURL: itemUrl, context: context)) ?? Item(context: context, givenURL: itemUrl, remoteID: itemSummary.remoteID)
+
+            let givenURL = itemSummary.givenUrl
+            let itemToUpdate = (try? space.fetchItem(byURL: givenURL, context: context)) ?? Item(context: context, givenURL: givenURL, remoteID: itemSummary.remoteID)
             itemToUpdate.update(from: itemSummary, with: space)
+            if let corpusItem = summary.corpusItem {
+                itemToUpdate.domain = corpusItem.publisher
+            }
             item = itemToUpdate
         } else if let pendingParts = summary.item.asPendingItem?.fragments.pendingItemParts {
             Log.breadcrumb(category: "sync", level: .debug, message: "Updating pending parts from summary for \(pendingParts.remoteID)")
-            guard let itemUrl = URL(string: pendingParts.givenUrl) else {
-                Log.capture(message: "Pending item parts not a valid url")
-                return
-            }
-            let itemToUpdate = (try? space.fetchItem(byURL: itemUrl, context: context)) ?? Item(context: context, givenURL: itemUrl, remoteID: pendingParts.remoteID)
+
+            let givenURL = pendingParts.givenUrl
+            let itemToUpdate = (try? space.fetchItem(byURL: givenURL, context: context)) ?? Item(context: context, givenURL: givenURL, remoteID: pendingParts.remoteID)
             itemToUpdate.update(remote: pendingParts, with: space)
             item = itemToUpdate
         }
-
     }
 }

@@ -5,7 +5,7 @@ import ApolloTestSupport
 import PocketGraph
 
 public class MarticleCodeBlock: MockObject {
-  public static let objectType: Object = PocketGraph.Objects.MarticleCodeBlock
+  public static let objectType: ApolloAPI.Object = PocketGraph.Objects.MarticleCodeBlock
   public static let _mockFields = MockFields()
   public typealias MockValueCollectionType = Array<Mock<MarticleCodeBlock>>
 
@@ -21,7 +21,7 @@ public extension Mock where O == MarticleCodeBlock {
     text: String? = nil
   ) {
     self.init()
-    self.language = language
-    self.text = text
+    _setScalar(language, for: \.language)
+    _setScalar(text, for: \.text)
   }
 }

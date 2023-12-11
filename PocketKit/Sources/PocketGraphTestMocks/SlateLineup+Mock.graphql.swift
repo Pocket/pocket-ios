@@ -5,7 +5,7 @@ import ApolloTestSupport
 import PocketGraph
 
 public class SlateLineup: MockObject {
-  public static let objectType: Object = PocketGraph.Objects.SlateLineup
+  public static let objectType: ApolloAPI.Object = PocketGraph.Objects.SlateLineup
   public static let _mockFields = MockFields()
   public typealias MockValueCollectionType = Array<Mock<SlateLineup>>
 
@@ -25,9 +25,9 @@ public extension Mock where O == SlateLineup {
     slates: [Mock<Slate>]? = nil
   ) {
     self.init()
-    self.experimentId = experimentId
-    self.id = id
-    self.requestId = requestId
-    self.slates = slates
+    _setScalar(experimentId, for: \.experimentId)
+    _setScalar(id, for: \.id)
+    _setScalar(requestId, for: \.requestId)
+    _setList(slates, for: \.slates)
   }
 }

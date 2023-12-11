@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import UIKit
 import SwiftUI
 import Sync
@@ -47,7 +51,7 @@ protocol SelectableViewController: UIViewController {
     func didBecomeSelected(by parent: SavesContainerViewController)
 }
 
-class SavesContainerViewController: UIViewController, UISearchBarDelegate {
+class SavesContainerViewController: UIViewController, UISearchBarDelegate, UISearchControllerDelegate {
     var selectedIndex: Int {
         didSet {
             resetTitleView()
@@ -58,11 +62,12 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
     var isFromSaves: Bool
 
     private let viewControllers: [SelectableViewController]
-    private var searchViewModel: SearchViewModel
+    private var searchViewModel: DefaultSearchViewModel
     private var model: SavesContainerViewModel
 
     private var subscriptions: [AnyCancellable] = []
     private var readableSubscriptions: [AnyCancellable] = []
+    private var collectionSubscriptions = SubscriptionsStack()
 
     init(savesContainerModel: SavesContainerViewModel, viewControllers: [SelectableViewController]) {
         selectedIndex = 0
@@ -86,6 +91,10 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonTapped))
+        addButton.accessibilityIdentifier = "add_saved_item_button"
+        navigationItem.rightBarButtonItem = addButton
+
         view.accessibilityIdentifier = "saves"
         select(child: viewControllers.first)
     }
@@ -97,6 +106,14 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         guard traitCollection.userInterfaceIdiom == .phone else { return .all }
         return .portrait
+    }
+
+    @objc
+    func addButtonTapped() {
+        let addItemView = UIHostingController(rootView: AddSavedItemView(model: model.addSavedItemModel))
+        addItemView.configurePocketDefaultDetents()
+        present(addItemView, animated: true)
+        model.addSavedItemModel.trackShowView()
     }
 
     private func resetTitleView() {
@@ -148,11 +165,11 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
         let searchViewController = UIHostingController(rootView: SearchView(viewModel: searchViewModel))
         searchViewController.view.backgroundColor = UIColor(.ui.white1)
         navigationItem.searchController = UISearchController(searchResultsController: searchViewController)
+        navigationItem.searchController?.delegate = self
         navigationItem.searchController?.searchBar.delegate = self
         navigationItem.searchController?.searchBar.autocapitalizationType = .none
         navigationItem.searchController?.view.accessibilityIdentifier = "search-view"
         navigationItem.searchController?.searchBar.accessibilityHint = "Search"
-        navigationItem.searchController?.searchBar.scopeButtonTitles = searchViewModel.scopeTitles
         navigationItem.searchController?.scopeBarActivation = .onSearchActivation
         navigationItem.preferredSearchBarPlacement = .stacked
         navigationItem.searchController?.showsSearchResultsController = true
@@ -201,16 +218,27 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
     }
 
     func updateSearchScope() {
-        let scope: SearchScope = isFromSaves ? .saves : .archive
-        searchViewModel.updateScope(with: scope)
+        guard let searchController = navigationItem.searchController else { return }
+        let searchBar = searchController.searchBar
 
         if isFromSaves {
-            navigationItem.searchController?.searchBar.selectedScopeButtonIndex = 0
+            searchBar.selectedScopeButtonIndex = 0
         } else {
-            navigationItem.searchController?.searchBar.selectedScopeButtonIndex = 1
+            searchBar.selectedScopeButtonIndex = 1
         }
-        navigationItem.searchController?.isActive = true
-        navigationItem.searchController?.searchBar.becomeFirstResponder()
+        searchController.isActive = true
+        searchController.searchBar.becomeFirstResponder()
+
+        guard let selectedScope = searchBar.scopeButtonTitles?[safe: searchBar.selectedScopeButtonIndex],
+              let scope = SearchScope(rawValue: selectedScope)
+        else { return }
+        searchViewModel.updateScope(with: scope)
+    }
+
+    func willPresentSearchController(_ searchController: UISearchController) {
+        // Update the scope titles, since the user may have been (un)enrolled in the premium search experiment.
+        searchViewModel.updateScopeTitles()
+        navigationItem.searchController?.searchBar.scopeButtonTitles = searchViewModel.scopeTitles
     }
 }
 
@@ -228,16 +256,11 @@ extension SavesContainerViewController {
             }
         }.store(in: &subscriptions)
 
+        model.savedItemsList.delegate = self
+
         // Saves navigation
         model.savedItemsList.$presentedAlert.sink { [weak self] alert in
             self?.present(alert: alert)
-        }.store(in: &subscriptions)
-
-        model.savedItemsList.$presentedListenViewModel.sink { [weak self] listenViewModel in
-            guard let listenViewModel else {
-                return
-            }
-            self?.showListen(listenViewModel: listenViewModel)
         }.store(in: &subscriptions)
 
         model.savedItemsList.$presentedAddTags.sink { [weak self] addTagsViewModel in
@@ -252,7 +275,7 @@ extension SavesContainerViewController {
             self?.present(activity: activity)
         }.store(in: &subscriptions)
 
-        model.savedItemsList.$selectedItem.sink { [weak self] selectedSavedItem in
+        model.savedItemsList.$selectedItem.receive(on: DispatchQueue.main).sink { [weak self] selectedSavedItem in
             guard let selectedSavedItem = selectedSavedItem else { return }
             self?.navigate(selectedItem: selectedSavedItem)
         }.store(in: &subscriptions)
@@ -261,17 +284,12 @@ extension SavesContainerViewController {
             self?.presentSortMenu(presentedSortFilterViewModel: presentedSortFilterViewModel)
         }.store(in: &subscriptions)
 
+        model.archivedItemsList.delegate = self
+
         // Archive navigation
         model.archivedItemsList.$selectedItem.sink { [weak self] selectedArchivedItem in
             guard let selectedArchivedItem = selectedArchivedItem else { return }
             self?.navigate(selectedItem: selectedArchivedItem)
-        }.store(in: &subscriptions)
-
-        model.archivedItemsList.$presentedListenViewModel.sink { [weak self] listenViewModel in
-            guard let listenViewModel else {
-                return
-            }
-            self?.showListen(listenViewModel: listenViewModel)
         }.store(in: &subscriptions)
 
         model.archivedItemsList.$sharedActivity.sink { [weak self] activity in
@@ -295,14 +313,16 @@ extension SavesContainerViewController {
         }.store(in: &subscriptions)
 
         // Search navigation
-        model.searchList.$selectedItem.sink { [weak self] selectedArchivedItem in
-            guard let selectedArchivedItem = selectedArchivedItem else { return }
-            self?.navigate(selectedItem: selectedArchivedItem)
+        model.searchList.$selectedItem.sink { [weak self] selectedItem in
+            guard let selectedItem = selectedItem else { return }
+            self?.navigate(selectedItem: selectedItem)
         }.store(in: &subscriptions)
     }
 
     private func navigate(selectedItem: SelectedItem) {
         switch selectedItem {
+        case .collection(let collection):
+            self.push(collection: collection)
         case .readable(let readable):
             self.push(savedItem: readable)
         case .webView(let readable):
@@ -319,7 +339,7 @@ extension SavesContainerViewController {
                 }
             }.store(in: &readableSubscriptions)
 
-            guard let url = readable?.premiumURL else { return }
+            guard let premiumURL = readable?.premiumURL, let url = URL(percentEncoding: premiumURL) else { return }
             self.present(url: url)
         }
     }
@@ -329,6 +349,8 @@ extension SavesContainerViewController {
             readableSubscriptions = []
             return
         }
+
+        readable.delegate = self
 
         readable.$presentedAlert.sink { [weak self] alert in
             self?.present(alert: alert)
@@ -363,6 +385,125 @@ extension SavesContainerViewController {
             ReadableHostViewController(readableViewModel: readable),
             animated: true
         )
+    }
+
+    func show(_ recommendation: RecommendableItemViewModel?) {
+        readableSubscriptions = []
+        guard let recommendation = recommendation else {
+            return
+        }
+
+        navigationController?.pushViewController(
+            ReadableHostViewController(readableViewModel: recommendation),
+            animated: true
+        )
+
+        recommendation.events.receive(on: DispatchQueue.main).sink { [weak self] event in
+            switch event {
+            case .contentUpdated:
+                break
+            case .archive, .delete:
+                self?.popToPreviousScreen(navigationController: self?.navigationController)
+            }
+        }.store(in: &readableSubscriptions)
+    }
+
+    private func push(collection: CollectionViewModel?) {
+        guard let collection else {
+            readableSubscriptions.removeAll()
+            collectionSubscriptions.empty()
+            return
+        }
+
+        var subscriptionSet = Set<AnyCancellable>()
+
+        collection.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
+            self?.present(alert: alert)
+        }.store(in: &subscriptionSet)
+
+        collection.$presentedAddTags.receive(on: DispatchQueue.main).sink { [weak self] addTagsViewModel in
+            self?.present(viewModel: addTagsViewModel)
+        }.store(in: &subscriptionSet)
+
+        collection.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
+            self?.present(activity: activity)
+        }.store(in: &subscriptionSet)
+
+        collection.$selectedCollectionItemToReport.receive(on: DispatchQueue.main).sink { [weak self] item in
+            self?.report(item?.givenURL)
+        }.store(in: &subscriptionSet)
+
+        collection.$events.receive(on: DispatchQueue.main).sink { [weak self] event in
+            switch event {
+            case .contentUpdated, .none:
+                break
+            case .archive, .delete:
+                self?.popToPreviousScreen(navigationController: self?.navigationController)
+            }
+        }.store(in: &subscriptionSet)
+
+        collection.$selectedItem.receive(on: DispatchQueue.main).sink { [weak self] readableType in
+            switch readableType {
+            case .collection(let collection):
+                self?.push(collection: collection)
+            case .savedItem(let savedItem):
+                self?.push(savedItem: savedItem)
+            case .recommendable(let recommendation):
+                self?.show(recommendation)
+            default:
+                break
+            }
+        }.store(in: &subscriptionSet)
+
+        // whenever a CollectionViewController is popped out, remove all its subscriptions
+        // to avoid retaining a viewModel instance
+        collection.$isBeingDeallocated
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isBeingDeallocated in
+                if isBeingDeallocated {
+                    self?.collectionSubscriptions.pop()
+                }
+            }
+            .store(in: &subscriptionSet)
+
+        // MARK: Story Presentation
+        collection.$presentedStoryWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
+            self?.present(url: url)
+        }.store(in: &subscriptionSet)
+
+        collection.$sharedStoryActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
+            self?.present(activity: activity)
+        }.store(in: &subscriptionSet)
+
+        collection.$selectedStoryToReport.receive(on: DispatchQueue.main).sink { [weak self] item in
+            self?.report(item?.givenURL)
+        }.store(in: &subscriptionSet)
+
+        navigationController?.pushViewController(
+            CollectionViewController(model: collection),
+            animated: true
+        )
+        collectionSubscriptions.push(subscriptionSet)
+    }
+
+    private func report(_ givenURL: String?) {
+        guard let givenURL else {
+            Log.capture(message: "Unable to report item from Saves")
+            return
+        }
+
+        let host = ReportRecommendationHostingController(
+            givenURL: givenURL,
+            tracker: model.tracker,
+            onDismiss: { }
+        )
+
+        host.modalPresentationStyle = .formSheet
+        guard let presentedViewController else {
+            self.present(host, animated: true)
+            return
+        }
+        presentedViewController.present(host, animated: true)
     }
 
     private func present(alert: PocketAlert?) {
@@ -419,10 +560,6 @@ extension SavesContainerViewController {
     }
 
     func presentSortMenu(presentedSortFilterViewModel: SortMenuViewModel?) {
-        guard true else {
-            return
-        }
-
         guard let sortFilterVM = presentedSortFilterViewModel else {
             if navigationController?.presentedViewController is SortMenuViewController {
                 navigationController?.dismiss(animated: true)
@@ -485,10 +622,21 @@ extension SavesContainerViewController: SFSafariViewControllerDelegate {
 }
 
 extension SavesContainerViewController {
-    private func showListen(listenViewModel: ListenViewModel) {
-        let appConfig = PKTListenAppConfiguration(source: listenViewModel)
-        let listen =  PKTListenContainerViewController(configuration: appConfig)
-        listen.title = listenViewModel.title
+    private func showListen(_ configuration: ListenConfiguration) {
+        let listen =  PKTListenContainerViewController(configuration: configuration.toAppConfiguration())
+        listen.title = configuration.title
         self.present(listen, animated: true)
+    }
+}
+
+extension SavesContainerViewController: ReadableViewModelDelegate {
+    func viewModel(_ readableViewModel: ReadableViewModel, didRequestListen configuration: ListenConfiguration) {
+        showListen(configuration)
+    }
+}
+
+extension SavesContainerViewController: ItemsListViewModelDelegate {
+    func viewModel(_ itemsListViewModel: any ItemsListViewModel, didRequestListen configuration: ListenConfiguration) {
+        showListen(configuration)
     }
 }

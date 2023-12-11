@@ -9,6 +9,7 @@ import UIKit
 import Lottie
 import SwiftUI
 
+// TODO: As of Lottie 4.3.0 Lottie is SwiftUI Native and we can remove this wrapper.
 public struct LottieView: UIViewRepresentable {
     public init(_ pocketAnimation: PocketAnimation, loopMode: LottieLoopMode = .loop) {
         self.pocketAnimation = pocketAnimation

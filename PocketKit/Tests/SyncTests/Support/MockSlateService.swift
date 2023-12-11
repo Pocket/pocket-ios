@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 @testable import Sync
 
 class MockSlateService: SlateService {
@@ -17,16 +21,16 @@ extension MockSlateService {
         implementations[Self.fetchSlateLineup] = impl
     }
 
-    func fetchSlateLineup(_ identifier: String) async throws {
+    func fetchHomeSlateLineup() async throws {
         guard let impl = implementations[Self.fetchSlateLineup] as? FetchSlateLineupImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
 
         calls[Self.fetchSlateLineup] = (calls[Self.fetchSlateLineup] ?? []) + [
-            FetchSlateLineupCall(identifier: identifier)
+            FetchSlateLineupCall(identifier: "")
         ]
 
-        try await impl(identifier)
+        try await impl("")
     }
 
     func fetchSlateLineupCall(at index: Int) -> FetchSlateLineupCall? {

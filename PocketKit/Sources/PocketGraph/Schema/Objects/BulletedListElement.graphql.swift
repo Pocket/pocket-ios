@@ -5,7 +5,7 @@ import ApolloAPI
 
 public extension Objects {
   /// Row in a bulleted (unordered list)
-  static let BulletedListElement = Object(
+  static let BulletedListElement = ApolloAPI.Object(
     typename: "BulletedListElement",
     implementedInterfaces: [Interfaces.ListElement.self]
   )

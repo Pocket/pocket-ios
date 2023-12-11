@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Sync
 import Combine
 import UIKit
@@ -8,30 +12,39 @@ import SharedPocketKit
 import SharedWithYou
 
 enum ReadableType {
-    case recommendation(RecommendationViewModel)
+    case recommendable(RecommendableItemViewModel)
     case savedItem(SavedItemViewModel)
-    case webViewRecommendation(RecommendationViewModel)
+    case webViewRecommendable(RecommendableItemViewModel)
     case webViewSavedItem(SavedItemViewModel)
+    case collection(CollectionViewModel)
     case webViewSharedWithYou(SharedWithYouHighlightViewModel)
     case sharedWithYou(SharedWithYouHighlightViewModel)
 
     func clearIsPresentingReaderSettings() {
         switch self {
-        case .recommendation(let recommendationViewModel):
+        case .recommendable(let recommendationViewModel):
             recommendationViewModel.clearIsPresentingReaderSettings()
         case .savedItem(let savedItemViewModel):
             savedItemViewModel.clearIsPresentingReaderSettings()
-        case .webViewRecommendation(let recommendationViewModel):
+        case .webViewRecommendable(let recommendationViewModel):
             recommendationViewModel.clearPresentedWebReaderURL()
         case .webViewSavedItem(let savedItemViewModel):
             savedItemViewModel.clearPresentedWebReaderURL()
+        case .collection:
+            // TODO: NATIVECOLLECTIONS - we might need to do some additional cleanup here
+            break
         case .sharedWithYou(let sharedWithYouViewModel):
             sharedWithYouViewModel.clearIsPresentingReaderSettings()
         case .webViewSharedWithYou(let sharedWithYouViewModel):
             sharedWithYouViewModel.clearPresentedWebReaderURL()
         }
-
     }
+}
+
+enum ReadableSource {
+    case app
+    case widget
+    case external
 }
 
 enum SeeAll {
@@ -103,6 +116,12 @@ class HomeViewModel: NSObject {
 
     @Published var tappedSeeAll: SeeAll?
 
+    var numberOfHeroItems: Int = 1 {
+        didSet {
+            self.snapshot = buildSnapshot()
+        }
+    }
+
     private let source: Source
     let tracker: Tracker
     private let user: User
@@ -112,7 +131,10 @@ class HomeViewModel: NSObject {
     private let notificationCenter: NotificationCenter
     private var subscriptions: [AnyCancellable] = []
     private var recentSavesCount: Int = 0
-    private var store: SubscriptionStore
+    private let featureFlags: FeatureFlagServiceProtocol
+    private let store: SubscriptionStore
+    private let recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService
+    private let recommendationsWidgetUpdateService: RecommendationsWidgetUpdateService
 
     private let recentSavesController: NSFetchedResultsController<SavedItem>
     private let recomendationsController: RichFetchedResultsController<Recommendation>
@@ -126,8 +148,11 @@ class HomeViewModel: NSObject {
         homeRefreshCoordinator: RefreshCoordinator,
         user: User,
         store: SubscriptionStore,
+        recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService,
+        recommendationsWidgetUpdateService: RecommendationsWidgetUpdateService,
         userDefaults: UserDefaults,
-        notificationCenter: NotificationCenter
+        notificationCenter: NotificationCenter,
+        featureFlags: FeatureFlagServiceProtocol
     ) {
         self.source = source
         self.tracker = tracker
@@ -136,8 +161,11 @@ class HomeViewModel: NSObject {
         self.homeRefreshCoordinator = homeRefreshCoordinator
         self.user = user
         self.store = store
+        self.recentSavesWidgetUpdateService = recentSavesWidgetUpdateService
+        self.recommendationsWidgetUpdateService = recommendationsWidgetUpdateService
         self.userDefaults = userDefaults
         self.notificationCenter = notificationCenter
+        self.featureFlags = featureFlags
 
         self.snapshot = {
             return Self.loadingSnapshot()
@@ -238,6 +266,29 @@ extension HomeViewModel {
                     recommendations.prefix(4).map { .recommendationCarousel($0.objectID) },
                     toSection: .slateCarousel(slateId)
                 )
+
+                snapshot.appendItems(
+                        [.recommendationHero(hero.objectID)],
+                        toSection: .slateHero(slateId)
+                    )
+
+                    if numberOfHeroItems == 2 {
+                        let hero2 = recommendations.removeFirst()
+                        snapshot.appendItems(
+                            [.recommendationHero(hero2.objectID)],
+                            toSection: .slateHero(slateId)
+                        )
+                    }
+
+                    guard !recommendations.isEmpty else {
+                        continue
+                    }
+
+                    snapshot.appendSections([.slateCarousel(slateId)])
+                    snapshot.appendItems(
+                        recommendations.prefix(4).map { .recommendationCarousel($0.objectID) },
+                        toSection: .slateCarousel(slateId)
+                    )
             }
         } else {
             snapshot.appendSections([.loading])
@@ -291,28 +342,84 @@ extension HomeViewModel {
             source: source,
             tracker: tracker.childTracker(hosting: .slateDetail.screen),
             user: user,
-            userDefaults: userDefaults
+            store: store,
+            userDefaults: userDefaults,
+            networkPathMonitor: networkPathMonitor,
+            featureFlags: featureFlags,
+            notificationCenter: notificationCenter
         ))
     }
 
-    private func select(recommendation: Recommendation, at indexPath: IndexPath) {
-        let viewModel = RecommendationViewModel(
-            recommendation: recommendation,
-            source: source,
-            tracker: tracker.childTracker(hosting: .articleView.screen),
-            pasteboard: UIPasteboard.general,
-            user: user,
-            userDefaults: userDefaults
-        )
+    func select(externalItem: Item) {
+        var destination: ContentOpen.Destination = .internal
+        if let slug = externalItem.collection?.slug ?? externalItem.collectionSlug {
+            selectedReadableType = .collection(CollectionViewModel(
+                slug: slug,
+                source: source,
+                tracker: tracker,
+                user: user,
+                store: store,
+                networkPathMonitor: networkPathMonitor,
+                userDefaults: userDefaults,
+                featureFlags: featureFlags,
+                notificationCenter: notificationCenter,
+                readableSource: .external
+            ))
+        } else {
+            let viewModel = RecommendableItemViewModel(
+                item: externalItem,
+                source: source,
+                tracker: tracker.childTracker(hosting: .articleView.screen),
+                pasteboard: UIPasteboard.general,
+                user: user,
+                userDefaults: userDefaults,
+                readableSource: .external
+            )
+
+            if externalItem.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
+                selectedReadableType = .webViewRecommendable(viewModel)
+                destination = .external
+            } else {
+                selectedReadableType = .recommendable(viewModel)
+            }
+        }
+        tracker.track(event: Events.Deeplinks.deeplinkArticleContentOpen(url: externalItem.givenURL, destination: destination))
+    }
+
+    func select(recommendation: Recommendation, at indexPath: IndexPath? = nil, readableSource: ReadableSource = .app) {
+        var destination: ContentOpen.Destination = .internal
         let item = recommendation.item
 
-        var destination: ContentOpen.Destination = .internal
-        if item.shouldOpenInWebView {
-            selectedReadableType = .webViewRecommendation(viewModel)
-            destination = .external
+        if let slug = recommendation.collection?.slug ?? recommendation.item.collectionSlug, featureFlags.isAssigned(flag: .nativeCollections) {
+            selectedReadableType = .collection(CollectionViewModel(
+                slug: slug,
+                source: source,
+                tracker: tracker,
+                user: user,
+                store: store,
+                networkPathMonitor: networkPathMonitor,
+                userDefaults: userDefaults,
+                featureFlags: featureFlags,
+                notificationCenter: notificationCenter,
+                readableSource: readableSource
+            ))
         } else {
-            selectedReadableType = .recommendation(viewModel)
-            destination = .internal
+            let viewModel = RecommendableItemViewModel(
+                item: recommendation.item,
+                source: source,
+                tracker: tracker.childTracker(hosting: .articleView.screen),
+                pasteboard: UIPasteboard.general,
+                user: user,
+                userDefaults: userDefaults,
+                readableSource: readableSource
+            )
+
+            if item.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
+                selectedReadableType = .webViewRecommendable(viewModel)
+                destination = .external
+            } else {
+                selectedReadableType = .recommendable(viewModel)
+            }
         }
 
         guard
@@ -323,28 +430,102 @@ extension HomeViewModel {
             return
         }
 
-        tracker.track(event: Events.Home.SlateArticleContentOpen(url: item.givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID, destination: destination))
+        let givenURL = item.givenURL
+        trackSlateArticleOpen(
+            url: givenURL,
+            positionInList: indexPath?.item,
+            slateIndex: indexPath?.section,
+            slate: slate,
+            slateLineup: slateLineup,
+            destination: destination,
+            recommendationId: recommendation.analyticsID,
+            source: readableSource
+        )
     }
 
-    private func select(savedItem: SavedItem, at indexPath: IndexPath) {
-        let viewModel = SavedItemViewModel(
-            item: savedItem,
-            source: source,
-            tracker: tracker.childTracker(hosting: .articleView.screen),
-            pasteboard: UIPasteboard.general,
-            user: user,
-            store: store,
-            networkPathMonitor: networkPathMonitor,
-            userDefaults: userDefaults,
-            notificationCenter: notificationCenter
-        )
-
-        if let item = savedItem.item, item.shouldOpenInWebView {
-            selectedReadableType = .webViewSavedItem(viewModel)
-        } else {
-            selectedReadableType = .savedItem(viewModel)
+    private func trackSlateArticleOpen(
+        url: String,
+        positionInList: Int?,
+        slateIndex: Int?,
+        slate: Slate,
+        slateLineup: SlateLineup,
+        destination: ContentOpen.Destination,
+        recommendationId: String,
+        source: ReadableSource
+    ) {
+        switch source {
+        case .app:
+            tracker.track(event: Events.Home.SlateArticleContentOpen(
+                url: url,
+                positionInList: positionInList,
+                slateId: slate.remoteID,
+                slateRequestId: slate.requestID,
+                slateExperimentId: slate.experimentID,
+                slateIndex: slateIndex,
+                slateLineupId: slateLineup.remoteID,
+                slateLineupRequestId: slateLineup.requestID,
+                slateLineupExperimentId: slateLineup.experimentID,
+                recommendationId: recommendationId,
+                destination: destination
+            ))
+        case .external:
+            tracker.track(event: Events.Deeplinks.deeplinkArticleContentOpen(url: url, destination: destination))
+        case .widget:
+            tracker.track(event: Events.Widgets.slateArticleContentOpen(
+                url: url,
+                recommendationId: recommendationId,
+                destination: destination
+            ))
         }
-        tracker.track(event: Events.Home.RecentSavesCardContentOpen(url: savedItem.url, positionInList: indexPath.item))
+    }
+
+    func select(savedItem: SavedItem, at indexPath: IndexPath? = nil, readableSource: ReadableSource = .app) {
+        if let slug = savedItem.item?.collection?.slug ?? savedItem.item?.collectionSlug, featureFlags.isAssigned(flag: .nativeCollections) {
+            selectedReadableType = .collection(CollectionViewModel(
+                slug: slug,
+                source: source,
+                tracker: tracker,
+                user: user,
+                store: store,
+                networkPathMonitor: networkPathMonitor,
+                userDefaults: userDefaults,
+                featureFlags: featureFlags,
+                notificationCenter: notificationCenter,
+                readableSource: readableSource
+            ))
+        } else {
+            let viewModel = SavedItemViewModel(
+                item: savedItem,
+                source: source,
+                tracker: tracker.childTracker(hosting: .articleView.screen),
+                pasteboard: UIPasteboard.general,
+                user: user,
+                store: store,
+                networkPathMonitor: networkPathMonitor,
+                userDefaults: userDefaults,
+                notificationCenter: notificationCenter,
+                readableSource: readableSource,
+                featureFlagService: featureFlags
+            )
+
+            if let item = savedItem.item, item.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
+                selectedReadableType = .webViewSavedItem(viewModel)
+            } else {
+                selectedReadableType = .savedItem(viewModel)
+            }
+        }
+        trackRecentSavesOpen(url: savedItem.url, positionInList: indexPath?.item, source: readableSource)
+    }
+
+    private func trackRecentSavesOpen(url: String, positionInList: Int?, source: ReadableSource) {
+        switch source {
+        case .app:
+            tracker.track(event: Events.Home.RecentSavesCardContentOpen(url: url, positionInList: positionInList))
+        case .external:
+            tracker.track(event: Events.Deeplinks.deeplinkArticleContentOpen(url: url, destination: .internal))
+        case .widget:
+            tracker.track(event: Events.Widgets.recentSavesCardContentOpen(url: url))
+        }
     }
 
     private func select(sharedWithYouHighlight: SharedWithYouHighlight, at indexPath: IndexPath) {
@@ -358,14 +539,14 @@ extension HomeViewModel {
         )
 
         var destination: ContentOpen.Destination = .internal
-        if sharedWithYouHighlight.item.shouldOpenInWebView {
+        if sharedWithYouHighlight.item.shouldOpenInWebView(override: false) {
             selectedReadableType = .webViewSharedWithYou(viewModel)
             destination = .external
         } else {
             selectedReadableType = .sharedWithYou(viewModel)
             destination = .internal
         }
-        tracker.track(event: Events.Home.SharedWithYouCardContentOpen(url: sharedWithYouHighlight.url, positionInList: indexPath.item, destination: destination))
+        tracker.track(event: Events.Home.SharedWithYouCardContentOpen(url: sharedWithYouHighlight.url.absoluteString, positionInList: indexPath.item, destination: destination))
     }
 }
 
@@ -504,7 +685,7 @@ extension HomeViewModel {
             sharedWithYou: sharedWithYou,
             overflowActions: [
                 .share { [weak self] sender in
-                    self?.sharedActivity = PocketItemActivity(url: sharedWithYou.url, sender: sender)
+                    self?.sharedActivity = PocketItemActivity(url: sharedWithYou.url.absoluteString, sender: sender)
                 },
             ],
             primaryAction: .recommendationPrimary { [weak self] _ in
@@ -521,12 +702,12 @@ extension HomeViewModel {
     }
 
     private func save(_ sharedWithYouHighlight: SharedWithYouHighlight, at indexPath: IndexPath) {
-        tracker.track(event: Events.Home.SharedWithYouCardSave(url: sharedWithYouHighlight.url, positionInList: indexPath.item))
+        tracker.track(event: Events.Home.SharedWithYouCardSave(url: sharedWithYouHighlight.url.absoluteString, positionInList: indexPath.item))
         source.save(sharedWithYouHighlight: sharedWithYouHighlight)
     }
 
     private func archive(_ sharedWithYouHighlight: SharedWithYouHighlight, at indexPath: IndexPath) {
-       tracker.track(event: Events.Home.SharedWithYouCardArchive(url: sharedWithYouHighlight.url, positionInList: indexPath.item))
+        tracker.track(event: Events.Home.SharedWithYouCardArchive(url: sharedWithYouHighlight.url.absoluteString, positionInList: indexPath.item))
        source.archive(sharedWithYouHighlight: sharedWithYouHighlight)
     }
 }
@@ -548,29 +729,14 @@ extension HomeViewModel {
     }
 
     func recommendationHeroViewModel(
-        for objectID: NSManagedObjectID,
+        for objectID: NSManagedObjectID? = nil,
         at indexPath: IndexPath? = nil
     ) -> HomeRecommendationCellViewModel? {
-        guard let recommendation = source.viewObject(id: objectID) as? Recommendation else {
+        guard let objectID = objectID, let recommendation = source.viewObject(id: objectID) as? Recommendation else {
             return nil
         }
 
         return HomeRecommendationCellViewModel(
-            recommendation: recommendation,
-            overflowActions: overflowActions(for: recommendation, at: indexPath),
-            primaryAction: primaryAction(for: recommendation, at: indexPath)
-        )
-    }
-
-    func recommendationHeroWideViewModel(
-        for objectID: NSManagedObjectID,
-        at indexPath: IndexPath? = nil
-    ) -> HomeRecommendationCellHeroWideViewModel? {
-        guard let recommendation = source.viewObject(id: objectID) as? Recommendation else {
-            return nil
-        }
-
-        return HomeRecommendationCellHeroWideViewModel(
             recommendation: recommendation,
             overflowActions: overflowActions(for: recommendation, at: indexPath),
             primaryAction: primaryAction(for: recommendation, at: indexPath)
@@ -633,7 +799,8 @@ extension HomeViewModel {
             return
         }
 
-        tracker.track(event: Events.Home.SlateArticleShare(url: item.givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
+        let givenURL = item.givenURL
+        tracker.track(event: Events.Home.SlateArticleShare(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
     }
 
     private func share(_ savedItem: SavedItem, at indexPath: IndexPath, with sender: Any?) {
@@ -654,7 +821,8 @@ extension HomeViewModel {
             return
         }
 
-        tracker.track(event: Events.Home.SlateArticleSave(url: item.givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
+        let givenURL = item.givenURL
+        tracker.track(event: Events.Home.SlateArticleSave(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
     }
 
     private func archive(_ recommendation: Recommendation, at indexPath: IndexPath) {
@@ -668,7 +836,8 @@ extension HomeViewModel {
             return
         }
 
-        tracker.track(event: Events.Home.SlateArticleArchive(url: item.givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
+        let givenURL = item.givenURL
+        tracker.track(event: Events.Home.SlateArticleArchive(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
     }
 
     private func archive(_ savedItem: SavedItem, at indexPath: IndexPath) {
@@ -702,11 +871,12 @@ extension HomeViewModel {
                 let slate = recommendation.slate,
                 let slateLineup = slate.slateLineup
             else {
-                Log.capture(message: "Tried to display recommendation without slate and slatelineup, not logging analytics")
+                Log.breadcrumb(category: "home", level: .debug, message: "Tried to display recommendation without slate and slatelineup, not logging analytics")
                 return
             }
 
-            tracker.track(event: Events.Home.SlateArticleImpression(url: item.givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
+            let givenURL = item.givenURL
+            tracker.track(event: Events.Home.SlateArticleImpression(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
         }
     }
 }
@@ -764,8 +934,8 @@ extension HomeViewModel {
 extension HomeViewModel {
     func activityItemsForSelectedItem(url: URL) -> [UIActivity] {
         switch selectedReadableType {
-        case .recommendation(let viewModel),
-                .webViewRecommendation(let viewModel):
+        case .recommendable(let viewModel),
+                .webViewRecommendable(let viewModel):
             return viewModel.webViewActivityItems(url: url)
         case .savedItem(let viewModel),
                 .webViewSavedItem(let viewModel):
@@ -773,7 +943,7 @@ extension HomeViewModel {
         case .sharedWithYou(let viewModel),
                 .webViewSharedWithYou(let viewModel):
             return viewModel.webViewActivityItems(url: url)
-        case .none:
+        case .collection, .none:
             return []
         }
     }
@@ -785,9 +955,10 @@ extension HomeViewModel: NSFetchedResultsControllerDelegate {
 
         if controller == self.recentSavesController {
             let reloadedItemIdentifiers: [Cell] = snapshot.reloadedItemIdentifiers.compactMap({ .recentSaves($0 as! NSManagedObjectID) })
-            let reconfiguredItemdIdentifiers: [Cell] = snapshot.reloadedItemIdentifiers.compactMap({ .recentSaves($0 as! NSManagedObjectID) })
+            let reconfiguredItemdIdentifiers: [Cell] = snapshot.reconfiguredItemIdentifiers.compactMap({ .recentSaves($0 as! NSManagedObjectID) })
             newSnapshot.reloadItems(reloadedItemIdentifiers)
             newSnapshot.reconfigureItems(reconfiguredItemdIdentifiers)
+            updateRecentSavesWidget()
         }
 
         if controller == self.sharedWithYouHighlightsController {
@@ -799,6 +970,7 @@ extension HomeViewModel: NSFetchedResultsControllerDelegate {
 
         if isOffline {
             // If we are offline don't try and do anything with Slates, and let the snapshot show the offline
+            setRecommendationsWidgetOffline()
             self.snapshot = newSnapshot
             return
         }
@@ -815,14 +987,48 @@ extension HomeViewModel: NSFetchedResultsControllerDelegate {
             newSnapshot.reloadItems(reloadedItemIdentifiers)
 
             // Gather all variations a recomendation could exist in for reconfigured identifiers
-            var reconfiguredItemIdentifiers: [Cell] = snapshot.reloadedItemIdentifiers.compactMap({ .recommendationHero($0 as! NSManagedObjectID) })
-            reconfiguredItemIdentifiers.append(contentsOf: snapshot.reloadedItemIdentifiers.compactMap({ .recommendationCarousel($0 as! NSManagedObjectID) }))
+            var reconfiguredItemIdentifiers: [Cell] = snapshot.reconfiguredItemIdentifiers.compactMap({ .recommendationHero($0 as! NSManagedObjectID) })
+            reconfiguredItemIdentifiers.append(contentsOf: snapshot.reconfiguredItemIdentifiers.compactMap({ .recommendationCarousel($0 as! NSManagedObjectID) }))
             // Filter to just the ones that exist in our snapshot
             reconfiguredItemIdentifiers = reconfiguredItemIdentifiers.filter({ existingItemIdentifiers.contains($0) })
             // Tell the new snapshot to reconfigure just the ones that exist
             newSnapshot.reconfigureItems(reconfiguredItemIdentifiers)
+            updateRecommendationsWidget()
         }
 
         self.snapshot = newSnapshot
+    }
+}
+
+// MARK: recent saves widget
+private extension HomeViewModel {
+    func updateRecentSavesWidget() {
+        guard let items = recentSavesController.fetchedObjects else {
+            recentSavesWidgetUpdateService.update([])
+            return
+        }
+        // because we might still end up with more items, slice the first n elements anyway.
+        recentSavesWidgetUpdateService.update(Array(items.prefix(SyncConstants.Home.recentSaves)))
+    }
+}
+
+// MARK: Recommendations - Editor's Picks widget
+private extension HomeViewModel {
+    func updateRecommendationsWidget() {
+        guard let sections = recomendationsController.sections, !sections.isEmpty else {
+            setRecommendationsWidgetOffline()
+            return
+        }
+
+        let topics = sections.reduce(into: [String: [Recommendation]]()) {
+            if let recommendations = $1.objects as? [Recommendation], let name = recommendations.first?.slate?.name {
+                $0[name] = recommendations
+            }
+        }
+        recommendationsWidgetUpdateService.update(topics)
+    }
+
+    func setRecommendationsWidgetOffline() {
+        recommendationsWidgetUpdateService.update([:])
     }
 }

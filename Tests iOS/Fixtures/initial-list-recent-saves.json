@@ -25,6 +25,7 @@
                             "isArchived": false,
                             "isFavorite": false,
                             "tags": [],
+                            "corpusItem": null,
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "item-1",
@@ -35,7 +36,7 @@
                                 "domain": null,
                                 "language": "en",
                                 "timeToRead": 6,
-                    "wordCount": 500,
+                                "wordCount": 500,
                                 "marticle": #MARTICLE#,
                                 "excerpt": "Cursus Aenean Elit",
                                 "datePublished": "2021-01-01 12:01:01",
@@ -53,6 +54,7 @@
                                         "url": "https://example.com/authors/david"
                                     }
                                 ],
+                                "collection": null,
                                 "domainMetadata": {
                                     "__typename": "[type-name-here]",
                                     "name": "WIRED",
@@ -87,6 +89,7 @@
                             "isArchived": false,
                             "isFavorite": true,
                             "tags": [],
+                            "corpusItem": null,
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "item-2",
@@ -97,10 +100,14 @@
                                 "domain": "wired.com",
                                 "language": "en",
                                 "timeToRead": 6,
-                    "wordCount": 500,
+                                "wordCount": 500,
                                 "domainMetadata": null,
                                 "marticle": [],
                                 "authors": [],
+                                "collection": {
+                                    "__typename": "Collection",
+                                    "slug": "item-2-collection-slug"
+                                },
                                 "datePublished": "2021-01-01 12:01:01",
                                 "excerpt": "Cursus Aenean Elit",
                                 "images": [
@@ -112,6 +119,7 @@
                                         "imageId": 1
                                     }
                                 ],
+                                "collection": null,
                                 "isArticle": true,
                                 "hasImage": "HAS_IMAGES",
                                 "hasVideo": "HAS_VIDEOS",
@@ -132,6 +140,7 @@
                             "isArchived": false,
                             "isFavorite": false,
                             "tags": [],
+                            "corpusItem": null,
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "item-3",
@@ -142,10 +151,11 @@
                                 "domain": "wired.com",
                                 "language": "en",
                                 "timeToRead": 6,
-                    "wordCount": 500,
+                                "wordCount": 500,
                                 "domainMetadata": null,
                                 "marticle": [],
                                 "authors": [],
+                                "collection": null,
                                 "datePublished": "2021-01-01 12:01:01",
                                 "excerpt": "Cursus Aenean Elit",
                                 "images": [],
@@ -169,6 +179,7 @@
                             "isArchived": false,
                             "isFavorite": false,
                             "tags": [],
+                            "corpusItem": null,
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "item-4",
@@ -179,10 +190,11 @@
                                 "domain": "wired.com",
                                 "language": "en",
                                 "timeToRead": 6,
-                    "wordCount": 500,
+                                "wordCount": 500,
                                 "domainMetadata": null,
                                 "marticle": [],
                                 "authors": [],
+                                "collection": null,
                                 "datePublished": "2021-01-01 12:01:01",
                                 "excerpt": "Cursus Aenean Elit",
                                 "images": [],
@@ -206,6 +218,7 @@
                             "isArchived": false,
                             "isFavorite": false,
                             "tags": [],
+                            "corpusItem": null,
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "item-5",
@@ -216,10 +229,11 @@
                                 "domain": "wired.com",
                                 "language": "en",
                                 "timeToRead": 6,
-                    "wordCount": 500,
+                                "wordCount": 500,
                                 "domainMetadata": null,
                                 "marticle": [],
                                 "authors": [],
+                                "collection": null,
                                 "datePublished": "2021-01-01 12:01:01",
                                 "excerpt": "Cursus Aenean Elit",
                                 "images": [],
@@ -243,6 +257,7 @@
                             "isArchived": false,
                             "isFavorite": false,
                             "tags": [],
+                            "corpusItem": null,
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "item-6",
@@ -253,10 +268,11 @@
                                 "domain": "wired.com",
                                 "language": "en",
                                 "timeToRead": 6,
-                    "wordCount": 500,
+                                "wordCount": 500,
                                 "domainMetadata": null,
                                 "marticle": [],
                                 "authors": [],
+                                "collection": null,
                                 "datePublished": "2021-01-01 12:01:01",
                                 "excerpt": "Cursus Aenean Elit",
                                 "images": [],

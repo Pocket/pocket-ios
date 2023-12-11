@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import UIKit
 import Analytics
 import Textile
@@ -7,10 +11,20 @@ import Sync
 import Adjust
 
 class MainViewController: UIViewController {
+    static let services: Services = {
+        let services = Services.shared
+
+        services.start {
+            services.userDefaults.set(true, forKey: .forceRefreshFromExtension)
+        }
+
+        return services
+    }()
+
     private let childViewController: UIViewController
 
     convenience init() {
-        self.init(services: .shared)
+        self.init(services: Self.services)
     }
 
     convenience init(services: Services) {
@@ -118,7 +132,9 @@ class MainViewController: UIViewController {
                     tracker: Services.shared.tracker.childTracker(hosting: .saveExtension.screen),
                     consumerKey: Keys.shared.pocketApiConsumerKey,
                     userDefaults: userDefaults,
-                    user: Services.shared.user
+                    user: Services.shared.user,
+                    notificationCenter: notificationCenter,
+                    recentSavesWidgetUpdateService: Services.shared.recentSavesWidgetUpdateService
                 )
             )
         }

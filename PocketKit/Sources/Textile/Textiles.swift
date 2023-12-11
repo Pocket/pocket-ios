@@ -16,11 +16,12 @@ public class Textiles {
     }
 
     public static func loadFonts() {
-        guard let fonts = Bundle.module.urls(forResourcesWithExtension: "otf", subdirectory: "Fonts") else {
+        guard let otfFonts = Bundle.module.urls(forResourcesWithExtension: "otf", subdirectory: "Fonts"),
+        let ttfFonts = Bundle.module.urls(forResourcesWithExtension: "ttf", subdirectory: "Fonts") else {
             return
         }
 
-        CTFontManagerRegisterFontURLs(fonts as CFArray, .process, true) { _, _ in
+        CTFontManagerRegisterFontURLs(otfFonts + ttfFonts as CFArray, .process, true) { _, _ in
             return true
         }
     }

@@ -7,7 +7,7 @@ import Foundation
 public struct SyncConstants {
     public  struct Saves {
         /// How many saves we load when a user logs in. As they save and use pocket they may accumilate more, but we only download the amount of latest saves here to start.
-        public static let firstLoadMaxCount = 1000
+        public static let firstLoadMaxCount = 10000
 
         /// How many saves we should load on the first login request for saves, we use a small value here so the user immediately sees content.
         public  static let initalPageSize = 15
@@ -21,7 +21,7 @@ public struct SyncConstants {
 
     public struct Archive {
         /// How many archives we load when a user logs in. As they save and use pocket they may accumilate more, but we only download the amount of latest archives here to start.
-        static let firstLoadMaxCount = 1000
+        static let firstLoadMaxCount = 10000
 
         /// How many archives we should load on the first login request for archives, we use a small value here so the user immediately sees content.
         static let initalPageSize = 15

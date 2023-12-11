@@ -5,6 +5,16 @@
 "general.error.serverNotResponding.title" = "서버가 응답하지 않음";
 "general.error.serverNotResponding.detail" = "현재 서버가 응답하지 않습니다. 잠시만 기다려주세요. 한 시간 이내에 사용할 수 있습니다.";
 "general.error.serverError" = "요청에 문제가 발생했습니다. Pocket 팀에 알림이 전달되었습니다. 나중에 다시 시도하십시오.";
+"general.error.sendReport" = "보고서 보내기";
+
+// Report an Issue
+"reportIssue.header" = "문제 신고하기";
+"reportIssue.description" = "Pocket을 개선하는 데 도움을 주셔서 감사합니다! 발생한 문제에 대해 자세히 알려주세요.";
+"reportIssue.name" = "이름";
+"reportIssue.email" = "이메일";
+"reportIssue.comment" = "문제가 발생했나요?";
+"reportIssue.optional" = "선택 사항";
+"reportIssue.submitIssue.title" = "문제 제출";
 
 //Archive
 "archive.empty.header" = "목록을 깔끔하게 정리해 보세요";
@@ -70,6 +80,13 @@
 //Saves
 "saves.empty.header" = "지금 Pocket 목록 구축을 시작하세요";
 "saves.empty.button" = "저장 방법";
+// - Add Saved Item
+"saves.addSavedItem.title" = "URL 추가";
+"saves.addSavedItem.error" = "유효한 URL을 입력하십시오";
+"saves.addSavedItem.addButton" = "Pocket에 저장";
+"saves.addSavedItem.cancel" = "취소";
+"saves.addSavedItem.close" = "닫기";
+"saves.addSavedItem.placeholder" = "예 https://getpocket.com";
 
 // Search
 "search.errorMessage" = "오류가 발생하여 일시적으로 필요한 정보를 얻을 수 없습니다. 나중에 다시 시도하십시오.";
@@ -78,7 +95,7 @@
 "search.banner.errorMessage." = "오류가 발생하여 전체 검색 결과를 표시할 수 없습니다. 나중에 다시 시도하십시오.";
 "search.error.view.needsInternet" = "이 항목을 보려면 인터넷에 연결되어 있어야 합니다.";
 "search.recent" = "최근 검색 결과";
-"search.recent.empty" = "최근 검색이 여기에 표시되므로 간편하게 다시 검색할 수 있습니다.";
+"search.recent.empty" = "쉽게 다시 돌아갈 수 있도록 최근 검색어가 여기에 표시됩니다.";
 "search.swipe.archive" = "보관소";
 "search.swipe.moveToSaves" = "저장소로 이동";
 "search.edit.banner" = "이 Pocket 버전에서는 검색 결과를 편집할 수 없지만 곧 다시 제공될 예정입니다!";
@@ -103,6 +120,9 @@
 "settings.logout.areYouSureMessage" = "계정이 로그아웃되고 오프라인 보기용으로 저장된 모든 항목이 장치에서 제거됩니다.";
 "settings.logout.areyousure" = "계속하시겠습니까?";
 "settings.help" = "도움말 및 지원 받기";
+
+"settings.alwaysOpenOriginalView" = "항상 원본 보기 열기";
+
 "settings.accountManagement" = "계정 관리";
 "settings.accountManagement.deleteAccount" = "계정 삭제";
 "settings.accountManagement.deleteYourAccount" = "계정 삭제";
@@ -198,7 +218,6 @@
 "premium.upgradeView.unlimitedHighlights" = "무제한 하이라이트";
 "premium.upgradeView.premiumFonts" = "프리미엄 폰트";
 
-
 //=======================
 //Old format
 
@@ -212,6 +231,9 @@
 "Yes" = "예";
 "No" = "아니요";
 
+// Loading view
+"loadingView.message" = "로드 중...";
+
 // No internet
 "No Internet Connection" = "인터넷 연결 없음";
 "Looks like you're offline. Try checking your mobile data or wifi." = "오프라인 상태이신 것 같습니다. 모바일 데이터나 wifi를 확인해 보십시오.";
@@ -220,8 +242,6 @@
 "Tags" = "태그";
 "Share" = "공유";
 "carousel.listen" = "듣기";
-
-"Saves" = "저장";
 
 "Display Settings" = "디스플레이 설정";
 "Font" = "폰트";
@@ -297,3 +317,19 @@
 "back.to.pocket" = "Pocket으로 돌아가기";
 
 "saveToPocket.tapToDismiss" = "해제하려면 누르십시오";
+
+"itemWidgets.loggedOutMessage" = "콘텐츠를 확인하려면 Pocket에 로그인하십시오.";
+"itemWidgets.errorMessage" = "문제가 발생했습니다.";
+"itemWidgets.recentSaves.emptyMessage" = "지금 Pocket 목록 구축을 시작하세요.";
+"itemWidgets.recentSaves.title" = "최근 저장한 내용";
+"itemWidgets.recentSaves.description" = "가장 최근에 저장한 아티클에 액세스합니다.";
+"itemWidgets.recommendations.emptyMessage" = "오프라인 상태일 수 있습니다. 네트워크 연결을 확인하십시오.";
+"itemWidgets.recommendations.title" = "권장 사항";
+"itemWidgets.recommendations.description" = "Pocket에서 선정한 가장 생각을 자극하는 스토리를 확인해 보십시오.";
+
+// Collection
+"collection.stories.count" = "%1$@개 항목";
+
+// Errors
+"error.problemOccurred" = "문제가 발생했습니다.";
+"error.redownloading" = "경험이 개선될 수 있도록 저장된 아티클을 다시 다운로드하고 있습니다.";

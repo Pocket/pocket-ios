@@ -9,7 +9,6 @@ import Combine
 
 /// Refresh coordinator to handle the refreshing of feature flags
 class FeatureFlagsRefreshCoordinator: RefreshCoordinator {
-
     let taskID: String = "com.mozilla.pocket.refresh.featureFlags"
 
     let refreshInterval: TimeInterval? = 60 * 60 * 48 // once every 48 hours.
@@ -37,7 +36,7 @@ class FeatureFlagsRefreshCoordinator: RefreshCoordinator {
     func refresh(isForced: Bool = false, _ completion: @escaping () -> Void) {
         Log.debug("Refresh feature flags called, isForced: \(String(describing: isForced))")
 
-        if isForced, !isRefreshing {
+        if isForced || !isRefreshing {
             Task { [weak self] in
                 guard let self else {
                     Log.captureNilWeakSelf()

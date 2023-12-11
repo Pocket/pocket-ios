@@ -7,8 +7,8 @@ import Foundation
 import CoreData
 
 extension Recommendation {
-
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<Recommendation> {
+    @nonobjc
+    public class func fetchRequest() -> NSFetchRequest<Recommendation> {
         return NSFetchRequest<Recommendation>(entityName: "Recommendation")
     }
 
@@ -21,4 +21,15 @@ extension Recommendation {
     @NSManaged public var slate: Slate?
     @NSManaged public var image: Image?
     @NSManaged public var sortIndex: NSNumber?
+}
+
+extension Recommendation {
+    /// The slug of the associated collection
+    public var collectionSlug: String? {
+        item.collection?.slug
+    }
+
+    public var collection: Collection? {
+        item.collection
+    }
 }

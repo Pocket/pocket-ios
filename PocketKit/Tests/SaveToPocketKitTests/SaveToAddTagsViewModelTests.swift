@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 import Combine
 import Analytics
@@ -21,15 +25,17 @@ class SaveToAddTagsViewModelTests: XCTestCase {
     }
 
     override func setUp() {
+        super.setUp()
         tracker = MockTracker()
         user = MockUser()
         userDefaults = UserDefaults(suiteName: "SaveToAddTagsViewModelTests")
         space = .testSpace()
     }
 
-    override func tearDown() async throws {
+    override func tearDownWithError() throws {
         UserDefaults.standard.removePersistentDomain(forName: "SaveToAddTagsViewModelTests")
         try space.clear()
+        try super.tearDownWithError()
     }
 
     private func subject(
@@ -140,7 +146,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
             }
         ) { _ in
         }
-        XCTAssertEqual(viewModel.recentTags, [TagType.recent("tag 1"), TagType.recent("tag 2"), TagType.recent("tag 3")])
+        XCTAssertEqual(viewModel.recentTags, [TagType.recent("tag 3"), TagType.recent("tag 2"), TagType.recent("tag 1")])
     }
 
     func test_recentTags_withMoreThanThreeTags_andFreeUser_returnsNoRecentTags() throws {
@@ -184,27 +190,46 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.recentTags, [])
     }
 
-    func test_allOtherTags_retrievesValidTagNames() throws {
-        let item = space.buildSavedItem(tags: ["tag 1"])
+    func test_allOtherTags_retrievesValidTagNames_inSortedOrder() throws {
+        let item = space.buildSavedItem(tags: ["a"])
         try space.save()
         let viewModel = subject(
             item: space.viewObject(with: item.objectID) as! SavedItem,
             retrieveAction: { _ in
-            var tags: [Tag] = []
-            for index in 2...3 {
-                let tag: Tag = Tag(context: self.space.viewContext)
-                tag.name = "tag \(index)"
-                tag.remoteID = tag.name.uppercased()
-                tags.append(tag)
-            }
-                return tags
+                let tag2: Tag = Tag(context: self.space.viewContext)
+                let tag3: Tag = Tag(context: self.space.viewContext)
+                tag2.name = "c"
+                tag2.remoteID = tag2.name.uppercased()
+                tag3.name = "b"
+                return [tag2, tag3]
             }
         ) { _ in
         }
 
         viewModel.allOtherTags()
 
-        XCTAssertEqual(viewModel.otherTags, [TagType.tag("tag 2"), TagType.tag("tag 3")])
+        XCTAssertEqual(viewModel.otherTags, [TagType.tag("b"), TagType.tag("c")])
+    }
+
+    func test_recentTags_inMostRecentOrder() throws {
+        let item = space.buildSavedItem(tags: ["a"])
+        try space.save()
+        let viewModel = subject(
+            item: space.viewObject(with: item.objectID) as! SavedItem,
+            retrieveAction: { _ in
+                let tag2: Tag = Tag(context: self.space.viewContext)
+                let tag3: Tag = Tag(context: self.space.viewContext)
+                tag2.name = "c"
+                tag2.remoteID = tag2.name.uppercased()
+                tag3.name = "b"
+                return [tag2, tag3]
+            }
+        ) { _ in
+        }
+
+        viewModel.allOtherTags()
+
+        XCTAssertEqual(viewModel.otherTags, [TagType.tag("b"), TagType.tag("c")])
     }
 
     func test_removeTag_withValidName_updatesTags() throws {

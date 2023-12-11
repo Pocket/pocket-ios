@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Textile
 
 extension Style {
@@ -6,6 +10,7 @@ extension Style {
 
         struct Row {
             let `default`: Style = Style.header.sansSerif.p3.with(color: .ui.black1)
+            let subtitle = Style.header.sansSerif.p4.with(color: .ui.grey3)
             let header: Style = Style.header.sansSerif.p5.with(weight: .medium).with(color: .ui.black1)
             let deactivated: Style = Style.header.sansSerif.p3.with(color: .ui.grey4)
             let active: Style = Style.header.sansSerif.p3.with(color: .ui.teal2)

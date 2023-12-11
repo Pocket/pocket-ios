@@ -1,0 +1,46 @@
+{
+  "data": {
+    "__typename": "[type-name-here]",
+    "itemByUrl": {
+      "remoteID": "recommended-item-2",
+      "__typename": "[some-type-name]",
+      "givenUrl": "https://getpocket.com/explore/item/article-2",
+      "resolvedUrl": "https://getpocket.com/explore/item/article-2",
+      "title": "Slate 1, Recommendation 2",
+      "language": "en",
+      "topImageUrl": "http://example.com/slate-1-rec-2/top-image.png",
+      "timeToRead": 3,
+      "wordCount": 200,
+      "authors": [
+
+      ],
+      "collection": null,
+      "datePublished": "2021-01-01 12:01:01",
+      "images": [
+
+      ],
+      "excerpt": "Cursus Aenean Elit",
+      "domain": "slate-1-rec-2.example.com",
+      "domainMetadata": {
+        "__typename": "DomainMetadata",
+        "name": "Pocket",
+        "logo": "https://getpocket.com/logo.png"
+      },
+      "isArticle": true,
+      "hasImage": "HAS_IMAGES",
+      "hasVideo": "HAS_VIDEOS",
+      "syndicatedArticle": {
+        "__typename": "SyndicatedArticle",
+        "itemId": "recommended-item-1",
+        "title": "Syndicated Article Slate 1, Rec 2",
+        "excerpt": "A better syndicated excerpt",
+        "mainImage": "http://example.com/slate-1-rec-2/top-image.png",
+        "publisher": {
+          "__typename": "Publisher",
+          "name": "Mozilla"
+        }
+      },
+      "marticle": #MARTICLE#
+    }
+  }
+}

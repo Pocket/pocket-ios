@@ -13,7 +13,7 @@ import Network
 import SharedWithYou
 
 struct Services {
-    static let shared: Services = { Services() }()
+    static let shared: Services = Services()
 
     let userDefaults: UserDefaults
     let appSession: AppSession
@@ -36,7 +36,6 @@ struct Services {
     let v3Client: V3ClientProtocol
     let instantSync: InstantSyncProtocol
     let braze: BrazeProtocol
-    let appBadgeSetup: AppBadgeSetup
     let subscriptionStore: SubscriptionStore
     let userManagementService: UserManagementServiceProtocol
     let lastRefresh: LastRefresh
@@ -45,6 +44,9 @@ struct Services {
     let bannerPresenter: BannerPresenter
     let notificationCenter: NotificationCenter
     let sessionBackupUtility: SessionBackupUtility
+    let widgetsSessionService: WidgetsSessionService
+    let recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService
+    let recommendationsWidgetUpdateService: RecommendationsWidgetUpdateService
     let sharedWithYouManager: SharedWithYouManager
     let swHighlightCenter: SWHighlightCenter
 
@@ -155,7 +157,8 @@ struct Services {
         imageManager = ImageManager(
             imagesController: source.makeImagesController(),
             imageRetriever: KingfisherManager.shared,
-            source: source
+            source: source,
+            cdnURLBuilder: CDNURLBuilder()
         )
         imageManager.start()
 
@@ -179,11 +182,6 @@ struct Services {
             instantSync: instantSync
         )
 
-        appBadgeSetup = AppBadgeSetup(
-            source: source,
-            userDefaults: userDefaults,
-            badgeProvider: UIApplication.shared
-        )
         subscriptionStore = PocketSubscriptionStore(user: user, receiptService: AppStoreReceiptService(client: v3Client))
 
         userManagementService = UserManagementService(
@@ -193,7 +191,7 @@ struct Services {
             source: source
         )
 
-        featureFlagService = FeatureFlagService(source: source, tracker: tracker)
+        featureFlagService = FeatureFlagService(source: source, tracker: tracker, userDefaults: userDefaults, braze: braze)
 
         listen = Listen(
             appSession: appSession,
@@ -212,6 +210,10 @@ struct Services {
             notificationCenter: notificationCenter
         )
 
+        recentSavesWidgetUpdateService = RecentSavesWidgetUpdateService(store: UserDefaultsItemWidgetsStore(userDefaults: userDefaults, key: .recentSavesWidget))
+        recommendationsWidgetUpdateService = RecommendationsWidgetUpdateService(store: UserDefaultsItemWidgetsStore(userDefaults: userDefaults, key: .recommendationsWidget))
+        widgetsSessionService = UserDefaultsWidgetSessionService(defaults: userDefaults)
+
         swHighlightCenter = SWHighlightCenter()
 
         sharedWithYouManager = SharedWithYouManager(
@@ -219,6 +221,49 @@ struct Services {
             appSession: appSession,
             highlightCenter: swHighlightCenter
         )
+    }
+
+    /**
+     This used to live in AppDelegate but didFinishLaunching is not called
+     before the SwiftUI lifecycle in iOS 17 to setup everything.
+     */
+    static func initTestUtilsIfPresent(appSession: AppSession, userDefaults: UserDefaults, source: Sync.Source) {
+        if CommandLine.arguments.contains("clearKeychain") {
+            appSession.currentSession = nil
+        }
+
+        if CommandLine.arguments.contains("clearUserDefaults") {
+            userDefaults.resetKeys()
+        }
+
+        if CommandLine.arguments.contains("clearCoreData") {
+            source.clear()
+        }
+
+        if let guid = ProcessInfo.processInfo.environment["sessionGUID"],
+           let accessToken = ProcessInfo.processInfo.environment["accessToken"],
+           let userIdentifier = ProcessInfo.processInfo.environment["sessionUserID"] {
+            appSession.currentSession = Session(
+                guid: guid,
+                accessToken: accessToken,
+                userIdentifier: userIdentifier
+            )
+        }
+    }
+
+    /// Starts up all services as required.
+    /// - Parameter onReset: The function to call if a service has been reset.
+    /// - Note: `onReset` can be called when a migration within the persistent container fails
+    func start(onReset: @escaping () -> Void) {
+        if persistentContainer.didReset {
+            onReset()
+        }
+        SignOutOnFirstLaunch(
+            appSession: appSession,
+            user: user,
+            userDefaults: userDefaults
+        ).signOutOnFirstLaunch()
+        Self.initTestUtilsIfPresent(appSession: appSession, userDefaults: userDefaults, source: source)
     }
 }
 

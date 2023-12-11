@@ -5,7 +5,7 @@ import ApolloTestSupport
 import PocketGraph
 
 public class DomainMetadata: MockObject {
-  public static let objectType: Object = PocketGraph.Objects.DomainMetadata
+  public static let objectType: ApolloAPI.Object = PocketGraph.Objects.DomainMetadata
   public static let _mockFields = MockFields()
   public typealias MockValueCollectionType = Array<Mock<DomainMetadata>>
 
@@ -21,7 +21,7 @@ public extension Mock where O == DomainMetadata {
     name: String? = nil
   ) {
     self.init()
-    self.logo = logo
-    self.name = name
+    _setScalar(logo, for: \.logo)
+    _setScalar(name, for: \.name)
   }
 }

@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import UIKit
 import Sync
 import Analytics
@@ -35,6 +39,7 @@ class SlateDetailViewController: UIViewController {
         return view
     }()
 
+    private let sectionProvider: GridSectionLayoutProvider
     private var overscrollTopConstraint: NSLayoutConstraint?
     private var overscrollOffset = 0
 
@@ -46,6 +51,8 @@ class SlateDetailViewController: UIViewController {
         model: SlateDetailViewModel
     ) {
         self.model = model
+
+        sectionProvider = GridSectionLayoutProvider()
 
         super.init(nibName: nil, bundle: nil)
 
@@ -181,50 +188,10 @@ private extension SlateDetailViewController {
 
             return NSCollectionLayoutSection(group: group)
         case .slate(let slate):
-            let width = environment.container.effectiveContentSize.width
-            let margin: CGFloat = environment.traitCollection.shouldUseWideLayout() ? Margins.iPadNormal.rawValue : Margins.normal.rawValue
-
             let recommendations = slate.recommendations?.compactMap { $0 as? Recommendation } ?? []
+            let viewModels = recommendations.compactMap { model.recommendationViewModel(for: $0.objectID) }
 
-            let components = recommendations.reduce((CGFloat(0), [NSCollectionLayoutItem]())) { result, recommendation in
-                guard let viewModel = self.model.recommendationViewModel(for: recommendation.objectID) else {
-                    return result
-                }
-
-                let currentHeight = result.0
-                let height = RecommendationCell.fullHeight(viewModel: viewModel, availableWidth: width - (margin * 2)) + margin
-                var items = result.1
-                let item = NSCollectionLayoutItem(
-                    layoutSize: NSCollectionLayoutSize(
-                        widthDimension: .fractionalWidth(1),
-                        heightDimension: .absolute(height)
-                    )
-                )
-                item.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0)
-
-                items.append(item)
-
-                return (currentHeight + height, items)
-            }
-
-            let heroGroup = NSCollectionLayoutGroup.vertical(
-                layoutSize: NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1),
-                    heightDimension: .absolute(components.0)
-                ),
-                subitems: components.1
-            )
-
-            let section = NSCollectionLayoutSection(group: heroGroup)
-
-            section.contentInsets = NSDirectionalEdgeInsets(
-                top: 0,
-                leading: margin,
-                bottom: 0,
-                trailing: margin
-            )
-
-            return section
+            return sectionProvider.gridSection(for: viewModels, with: environment, and: view)
         default:
             return .empty()
         }

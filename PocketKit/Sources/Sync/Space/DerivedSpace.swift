@@ -46,7 +46,6 @@ struct DerivedSpace {
         var fetchedTask: PersistentSyncTask?
         context.performAndWait {
             fetchedTask = context.object(with: taskID) as? PersistentSyncTask
-
         }
         guard let task = fetchedTask else {
             return nil
@@ -87,13 +86,14 @@ extension DerivedSpace: SavedItemSpace {
     func updateSavedItems(edges: [SavedItem.SavedItemEdge?], cursor: String) throws {
         updateCursor(cursor)
         for edge in edges {
-            guard let edge = edge, let node = edge.node, let url = URL(string: node.url) else {
+            guard let edge = edge, let node = edge.node else {
                 return
             }
 
             logItemUpdated(itemID: node.remoteID)
 
             context.performAndWait {
+                let url = node.url
                 let item = (try? space.fetchSavedItem(byURL: url, context: context)) ?? SavedItem(context: context, url: url, remoteID: node.remoteID)
                 item.update(from: edge, with: space)
 
@@ -112,13 +112,14 @@ extension DerivedSpace: ArchivedItemSpace {
         updateCursor(cursor)
 
         for edge in edges {
-            guard let edge = edge, let node = edge.node, let url = URL(string: node.url) else {
+            guard let edge = edge, let node = edge.node else {
                 return
             }
 
             logItemUpdated(itemID: node.remoteID)
 
             context.performAndWait {
+                let url = node.url
                 let item = (try? space.fetchSavedItem(byURL: url, context: context)) ?? SavedItem(context: context, url: url, remoteID: node.remoteID)
                 item.update(from: node.fragments.savedItemSummary, with: space)
                 item.cursor = edge.cursor
@@ -149,14 +150,13 @@ extension DerivedSpace: TagSpace {
 }
 
 extension DerivedSpace: SharedWithYouSpace {
-
     func updateSharedWithYouHighlight(highlight: PocketSWHighlight, with remoteParts: ItemSummary) throws {
         guard let url = URL(string: remoteParts.givenUrl) else {
             return
         }
 
         context.performAndWait {
-            let item = (try? space.fetchItem(byURL: url)) ?? Item(context: context, givenURL: url, remoteID: remoteParts.remoteID)
+            let item = (try? space.fetchItem(byURL: url.absoluteString)) ?? Item(context: context, givenURL: url.absoluteString, remoteID: remoteParts.remoteID)
             item.update(from: remoteParts, with: space)
             _ = (try? space.fetchSharedWithYouHighlight(with: highlight.url, in: context)) ?? SharedWithYouHighlight(context: context, url: highlight.url, sortOrder: highlight.index, item: item)
         }

@@ -4,7 +4,7 @@
 import ApolloAPI
 
 public extension Objects {
-  static let NumberedListElement = Object(
+  static let NumberedListElement = ApolloAPI.Object(
     typename: "NumberedListElement",
     implementedInterfaces: [Interfaces.ListElement.self]
   )

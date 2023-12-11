@@ -1,3 +1,7 @@
+fragment CorpusItemSummary on CorpusItem {
+    publisher
+}
+
 fragment SavedItemParts on SavedItem {
   url
   remoteID: id
@@ -13,6 +17,10 @@ fragment SavedItemParts on SavedItem {
     __typename
     ...ItemParts
     ...PendingItemParts
+  }
+  corpusItem {
+    __typename
+    ...CorpusItemSummary
   }
 }
 
@@ -48,26 +56,26 @@ mutation SaveItem($input: SavedItemUpsertInput!) {
   }
 }
 
-mutation FavoriteItem($itemID: ID!) {
-  updateSavedItemFavorite(id: $itemID) {
+mutation FavoriteItem($givenUrl: Url!, $timestamp: ISOString!) {
+  savedItemFavorite(givenUrl: $givenUrl, timestamp: $timestamp) {
     id
   }
 }
 
-mutation UnfavoriteItem($itemID: ID!) {
-  updateSavedItemUnFavorite(id: $itemID) {
+mutation UnfavoriteItem($givenUrl: Url!, $timestamp: ISOString!) {
+  savedItemUnFavorite(givenUrl: $givenUrl, timestamp: $timestamp) {
     id
   }
 }
 
-mutation ArchiveItem($itemID: ID!) {
-  updateSavedItemArchive(id: $itemID) {
+mutation ArchiveItem($givenUrl: Url!, $timestamp: ISOString!) {
+  savedItemArchive(givenUrl: $givenUrl, timestamp: $timestamp) {
     id
   }
 }
 
-mutation DeleteItem($itemID: ID!) {
-  deleteSavedItem(id: $itemID)
+mutation DeleteItem($givenUrl: Url!, $timestamp: ISOString!) {
+  savedItemDelete(givenUrl: $givenUrl, timestamp: $timestamp)
 }
 
 mutation DeleteTag($id: ID!) {
@@ -80,8 +88,8 @@ mutation TagUpdate($input: TagUpdateInput!) {
   }
 }
 
-mutation ReplaceSavedItemTags($input: [SavedItemTagsInput!]!) {
-  replaceSavedItemTags(input: $input) {
+mutation SavedItemTag($input: SavedItemTagInput!, $timestamp: ISOString!) {
+  savedItemTag(input: $input, timestamp: $timestamp) {
     __typename
     ...SavedItemParts
   }
@@ -103,8 +111,8 @@ query SavedItemByID($id: ID!) {
   }
 }
 
-query ItemByID($id: ID!) {
-  itemByItemId(id: $id) {
+query ItemByURL($url: String!) {
+  itemByUrl(url: $url) {
     ...ItemParts
   }
 }

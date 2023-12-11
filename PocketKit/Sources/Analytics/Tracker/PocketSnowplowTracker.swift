@@ -34,6 +34,16 @@ public class PocketSnowplowTracker: SnowplowTracker {
         trackerConfiguration.installAutotracking = false
         trackerConfiguration.exceptionAutotracking = false
         trackerConfiguration.diagnosticAutotracking = false
+        trackerConfiguration.platformContextProperties = [
+            .batteryState,
+            .isPortrait,
+            .language,
+            .lowPowerMode,
+            .networkTechnology,
+            .networkType,
+            .resolution,
+            .scale
+        ]
 
         let optionalTracker = Snowplow.createTracker(
             namespace: appID,

@@ -9,7 +9,6 @@ import Combine
 
 /// Refresh coordinator to handle the refreshing of a Users Save data
 class SavesRefreshCoordinator: RefreshCoordinator {
-
     let taskID: String = "com.mozilla.pocket.refresh.saves"
 
     let refreshInterval: TimeInterval? = 60 * 60

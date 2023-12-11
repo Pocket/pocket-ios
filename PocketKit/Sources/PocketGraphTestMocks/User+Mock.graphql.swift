@@ -5,7 +5,7 @@ import ApolloTestSupport
 import PocketGraph
 
 public class User: MockObject {
-  public static let objectType: Object = PocketGraph.Objects.User
+  public static let objectType: ApolloAPI.Object = PocketGraph.Objects.User
   public static let _mockFields = MockFields()
   public typealias MockValueCollectionType = Array<Mock<User>>
 
@@ -34,13 +34,13 @@ public extension Mock where O == User {
     username: String? = nil
   ) {
     self.init()
-    self.email = email
-    self.isPremium = isPremium
-    self.name = name
-    self.savedItemById = savedItemById
-    self.savedItems = savedItems
-    self.searchSavedItems = searchSavedItems
-    self.tags = tags
-    self.username = username
+    _setScalar(email, for: \.email)
+    _setScalar(isPremium, for: \.isPremium)
+    _setScalar(name, for: \.name)
+    _setEntity(savedItemById, for: \.savedItemById)
+    _setEntity(savedItems, for: \.savedItems)
+    _setEntity(searchSavedItems, for: \.searchSavedItems)
+    _setEntity(tags, for: \.tags)
+    _setScalar(username, for: \.username)
   }
 }

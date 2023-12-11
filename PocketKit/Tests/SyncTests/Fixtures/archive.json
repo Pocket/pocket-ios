@@ -1,6 +1,6 @@
 {
     "data": {
-        "updateSavedItemArchive": {
+        "savedItemArchive": {
             "__typename": "[type-name-here]",
             "id": "the-item-id"
         }

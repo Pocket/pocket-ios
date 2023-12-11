@@ -10,12 +10,15 @@ import NIO
 class FavoriteAnItemTests: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
+    var snowplowMicro = SnowplowMicro()
 
-    override func setUpWithError() throws {
+    override func setUp() async throws {
+        try await super.setUp()
         continueAfterFailure = false
 
         let uiApp = XCUIApplication()
         app = PocketAppElement(app: uiApp)
+        await snowplowMicro.resetSnowplowEvents()
 
         server = Application()
 
@@ -32,6 +35,7 @@ class FavoriteAnItemTests: XCTestCase {
     override func tearDownWithError() throws {
         try server.stop()
         app.terminate()
+        try super.tearDownWithError()
     }
 
     func test_favoritingAndUnfavoritingAnItemFromList_showsFavoritedIcon_andSyncsWithServer() {
@@ -41,11 +45,11 @@ class FavoriteAnItemTests: XCTestCase {
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isToUnfavoriteAnItem {
                 defer { expectUnfavoriteRequest.fulfill() }
-                XCTAssertEqual(apiRequest.variableItemId, "saved-item-2")
+                XCTAssertEqual(apiRequest.variableGivenURL, "http://localhost:8080/hello")
                 return .unfavorite(apiRequest: apiRequest)
             } else if apiRequest.isToFavoriteAnItem {
                 defer { expectFavoriteRequest.fulfill() }
-                XCTAssertEqual(apiRequest.variableItemId, "saved-item-2")
+                XCTAssertEqual(apiRequest.variableGivenURL, "http://localhost:8080/hello")
                 return .favorite(apiRequest: apiRequest)
             }
             return .fallbackResponses(apiRequest: apiRequest)
@@ -56,7 +60,7 @@ class FavoriteAnItemTests: XCTestCase {
 
         let itemCell = app
             .saves
-            .itemView(matching: "Item 2")
+            .itemView(matching: "Item 1")
             .wait()
 
         itemCell.favoriteButton.tap()
@@ -68,18 +72,19 @@ class FavoriteAnItemTests: XCTestCase {
         XCTAssertFalse(itemCell.favoriteButton.isFilled)
     }
 
-    func test_favoritingAndUnfavoritingAnItemFromReader_togglesMenu_andSyncsWithServer() {
+    @MainActor
+    func test_favoritingAndUnfavoritingAnItemFromReader_togglesMenu_andSyncsWithServer() async {
         let expectUnfavoriteRequest = expectation(description: "A request to unfavorite")
         let expectFavoriteRequest = expectation(description: "A request to favorite")
         server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isToUnfavoriteAnItem {
                 defer { expectUnfavoriteRequest.fulfill() }
-                XCTAssertEqual(apiRequest.variableItemId, "saved-item-2")
+                XCTAssertEqual(apiRequest.variableGivenURL, "http://localhost:8080/hello")
                 return .unfavorite(apiRequest: apiRequest)
             } else if apiRequest.isToFavoriteAnItem {
                 defer { expectFavoriteRequest.fulfill() }
-                XCTAssertEqual(apiRequest.variableItemId, "saved-item-2")
+                XCTAssertEqual(apiRequest.variableGivenURL, "http://localhost:8080/hello")
                 return .favorite(apiRequest: apiRequest)
             }
             return .fallbackResponses(apiRequest: apiRequest)
@@ -90,7 +95,7 @@ class FavoriteAnItemTests: XCTestCase {
 
         app
             .saves
-            .itemView(matching: "Item 2")
+            .itemView(matching: "Item 1")
             .wait()
             .tap()
 
@@ -114,6 +119,17 @@ class FavoriteAnItemTests: XCTestCase {
         moreButton.tap()
         app.favoriteButton.wait()
         XCTAssertFalse(app.unfavoriteButton.exists)
+
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+        let events = await [snowplowMicro.getFirstEvent(with: "reader.toolbar.favorite"), snowplowMicro.getFirstEvent(with: "reader.toolbar.unfavorite")]
+
+        let favoriteEvent = events[0]!
+        favoriteEvent.getUIContext()!.assertHas(type: "button")
+        favoriteEvent.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
+
+        let unfavoriteEvent = events[1]!
+        unfavoriteEvent.getUIContext()!.assertHas(type: "button")
+        unfavoriteEvent.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
     }
 
     func test_favoritingAndUnfavoritingAnItemFromArchive_togglesFavoritedIcon_andSyncsWithServer() {
@@ -123,11 +139,11 @@ class FavoriteAnItemTests: XCTestCase {
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isToUnfavoriteAnItem {
                 defer { expectUnfavoriteRequest.fulfill() }
-                XCTAssertEqual(apiRequest.variableItemId, "archived-item-1")
+                XCTAssertEqual(apiRequest.variableGivenURL, "http://example.com/items/archived-item-1")
                 return .unfavorite(apiRequest: apiRequest)
             } else if apiRequest.isToFavoriteAnItem {
                 defer { expectFavoriteRequest.fulfill() }
-                XCTAssertEqual(apiRequest.variableItemId, "archived-item-1")
+                XCTAssertEqual(apiRequest.variableGivenURL, "http://example.com/items/archived-item-1")
                 return .favorite(apiRequest: apiRequest)
             }
             return .fallbackResponses(apiRequest: apiRequest)

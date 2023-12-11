@@ -5,6 +5,16 @@
 "general.error.serverNotResponding.title" = "Сервер не отвечает";
 "general.error.serverNotResponding.detail" = "Наш сервер сейчас не отвечает. Подождите немного. Он должен снова стать доступен в течение часа.";
 "general.error.serverError" = "Возникла проблема с вашим запросом. Уведомление отправлено команде Pocket. Повторите попытку позже.";
+"general.error.sendReport" = "Отправить отчет";
+
+// Report an Issue
+"reportIssue.header" = "Сообщить о проблеме";
+"reportIssue.description" = "Благодарим за помощь в улучшении Pocket! Расскажите нам подробнее о возникшей у вас проблеме.";
+"reportIssue.name" = "Имя";
+"reportIssue.email" = "Электронная почта";
+"reportIssue.comment" = "Опишите проблему";
+"reportIssue.optional" = "необязательно";
+"reportIssue.submitIssue.title" = "Отправить отчет о проблеме";
 
 //Archive
 "archive.empty.header" = "Храните свой список свежим и упорядоченным";
@@ -70,6 +80,13 @@
 //Saves
 "saves.empty.header" = "Начните создавать свой список Pocket";
 "saves.empty.button" = "Как сохранять";
+// - Add Saved Item
+"saves.addSavedItem.title" = "Добавьте URL,";
+"saves.addSavedItem.error" = "Введите правильный URL";
+"saves.addSavedItem.addButton" = "Сохранить в Pocket";
+"saves.addSavedItem.cancel" = "Отмена";
+"saves.addSavedItem.close" = "Закрыть";
+"saves.addSavedItem.placeholder" = "например https://getpocket.com";
 
 // Search
 "search.errorMessage" = "Из-за возникшей ошибки мы временно не можем предоставить вам то, что нужно. Попробуйте позже.";
@@ -78,7 +95,7 @@
 "search.banner.errorMessage." = "Из-за возникшей ошибки мы не можем показать вам полные результаты поиска. Попробуйте позже.";
 "search.error.view.needsInternet" = "Для просмотра этого материала требуется подключение к Интернету.";
 "search.recent" = "Недавно искали";
-"search.recent.empty" = "Здесь отображаются последние поисковые запросы, благодаря чему и можно легко просматривать.";
+"search.recent.empty" = "Последние поисковые запросы появятся здесь, чтобы вы всегда могли их повторить.";
 "search.swipe.archive" = "Архив";
 "search.swipe.moveToSaves" = "Перейти к Сохраненному";
 "search.edit.banner" = "Редактирование результатов поиска недоступно в этой версии Pocket, но это ненадолго!";
@@ -103,6 +120,9 @@
 "settings.logout.areYouSureMessage" = "Будет выполнен выход из учетной записи, и все элементы, сохраненные для офлайн-просмотра, удалятся с вашего устройства.";
 "settings.logout.areyousure" = "Вы уверены?";
 "settings.help" = "Получить помощь и поддержку";
+
+"settings.alwaysOpenOriginalView" = "Всегда открывать просмотр оригинала";
+
 "settings.accountManagement" = "Управление учетной записью";
 "settings.accountManagement.deleteAccount" = "Удалить аккаунт";
 "settings.accountManagement.deleteYourAccount" = "Удалить ваш аккаунт";
@@ -198,7 +218,6 @@
 "premium.upgradeView.unlimitedHighlights" = "Неограниченное количество пометок";
 "premium.upgradeView.premiumFonts" = "Premium-шрифты";
 
-
 //=======================
 //Old format
 
@@ -212,6 +231,9 @@
 "Yes" = "Да";
 "No" = "Нет";
 
+// Loading view
+"loadingView.message" = "Загрузка...";
+
 // No internet
 "No Internet Connection" = "Нет подключения к Интернету";
 "Looks like you're offline. Try checking your mobile data or wifi." = "Похоже, вы не в сети. Проверьте подключение к мобильному интернету или сети wi-fi.";
@@ -220,8 +242,6 @@
 "Tags" = "Теги";
 "Share" = "Поделиться";
 "carousel.listen" = "Слушать";
-
-"Saves" = "Сохраненное";
 
 "Display Settings" = "Отобразить настройки";
 "Font" = "Шрифт";
@@ -297,3 +317,19 @@
 "back.to.pocket" = "Назад к Pocket";
 
 "saveToPocket.tapToDismiss" = "Нажмите, чтобы закрыть";
+
+"itemWidgets.loggedOutMessage" = "Войдите в Pocket, чтобы просмотреть свои материалы.";
+"itemWidgets.errorMessage" = "К сожалению, что-то пошло не так.";
+"itemWidgets.recentSaves.emptyMessage" = "Начните создавать свой список Pocket.";
+"itemWidgets.recentSaves.title" = "Недавно сохраненное";
+"itemWidgets.recentSaves.description" = "Получите доступ к последним сохраненным статьям.";
+"itemWidgets.recommendations.emptyMessage" = "Возможно, вы офлайн. Проверьте подключение к интернету.";
+"itemWidgets.recommendations.title" = "Рекомендации";
+"itemWidgets.recommendations.description" = "Откройте для себя самые интересные и поучительные истории, рекомендованные Pocket.";
+
+// Collection
+"collection.stories.count" = "%1$@ материалов";
+
+// Errors
+"error.problemOccurred" = "Возникла проблема";
+"error.redownloading" = "Мы повторно загружаем ваши сохраненные статьи, чтобы повысить удобство.";

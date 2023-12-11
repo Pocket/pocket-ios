@@ -1,9 +1,18 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import SwiftUI
 
 extension ListItem {
     enum Constants {
         static let verticalPadding: CGFloat = 15
         static let objectSpacing: CGFloat = 10
+
+        static let collection = Collection()
+        struct Collection {
+            let padding: CGFloat = 4
+        }
 
         static let title = Title()
         struct Title {

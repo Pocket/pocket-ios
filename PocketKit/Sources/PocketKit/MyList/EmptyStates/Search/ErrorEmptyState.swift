@@ -5,14 +5,29 @@
 import Foundation
 import Textile
 import Localization
+import SharedPocketKit
 
 struct ErrorEmptyState: EmptyStateViewModel {
+    private var featureFlags: FeatureFlagServiceProtocol
+    private var user: User
+
+    init(featureFlags: FeatureFlagServiceProtocol, user: User) {
+        self.featureFlags = featureFlags
+        self.user = user
+    }
+
     let imageAsset: ImageAsset = .warning
     let maxWidth: CGFloat = Width.normal.rawValue
     let icon: ImageAsset? = nil
     let headline: String? = Localization.General.oops
     let detailText: String? = Localization.Search.errorMessage
-    let buttonText: String? = nil
     let webURL: URL? = nil
     let accessibilityIdentifier = "error-empty-state"
+
+    var buttonType: ButtonType? {
+        if featureFlags.isAssigned(flag: .reportIssue) {
+            return .reportIssue(text: Localization.General.Error.sendReport, email: user.email)
+        }
+        return nil
+    }
 }

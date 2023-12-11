@@ -11,25 +11,27 @@ class ItemExtensionsTests: XCTestCase {
     var space: Space!
 
     override func setUp() {
+        super.setUp()
         space = .testSpace()
     }
 
     override func tearDownWithError() throws {
         try space.clear()
+        try super.tearDownWithError()
     }
 
     func test_shouldOpenInWebView_andIsNotArticle_returnsTrue() throws {
         let savedItem: SavedItem = try space.createSavedItem()
         savedItem.item?.isArticle = false
 
-        XCTAssertEqual(savedItem.shouldOpenInWebView, true)
+        XCTAssertEqual(savedItem.shouldOpenInWebView(override: false), true)
     }
 
     func test_shouldOpenInWebView_andIsArticle_returnsFalse() throws {
         let savedItem: SavedItem = try space.createSavedItem()
         savedItem.item?.isArticle = true
 
-        XCTAssertEqual(savedItem.shouldOpenInWebView, false)
+        XCTAssertEqual(savedItem.shouldOpenInWebView(override: false), false)
     }
 
     func test_shouldOpenInWebView_withArticleComponents_returnsTrue() throws {

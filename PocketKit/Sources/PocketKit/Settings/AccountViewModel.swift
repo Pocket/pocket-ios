@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Analytics
 import Combine
 import SharedPocketKit
@@ -41,8 +45,8 @@ class AccountViewModel: ObservableObject {
     @Published var isPresentingHooray = false
     @Published var isPresentingDebugMenu = false
 
-    @AppStorage
-    public var appBadgeToggle: Bool
+    @AppStorage public var appBadgeToggle: Bool
+    @AppStorage public var originalViewToggle: Bool
 
     private var userStatusListener: AnyCancellable?
 
@@ -82,6 +86,8 @@ class AccountViewModel: ObservableObject {
 
         _appBadgeToggle = AppStorage(wrappedValue: false, UserDefaults.Key.toggleAppBadge, store: userDefaults)
 
+        _originalViewToggle = AppStorage(wrappedValue: false, UserDefaults.Key.toggleOriginalView, store: userDefaults)
+
         userStatusListener = user
             .statusPublisher
             .receive(on: DispatchQueue.main)
@@ -92,24 +98,40 @@ class AccountViewModel: ObservableObject {
 
     /// Calls the user management service to sign the user out.
     func signOut() {
+        Log.breadcrumb(category: "auth", level: .error, message: "User did log out")
         userManagementService.logout()
     }
 
-    func toggleAppBadge() {
-        UNUserNotificationCenter.current().requestAuthorization(options: .badge) {
+    func toggleAppBadge(to isEnabled: Bool) {
+        tracker.track(event: Events.Settings.appBadgeToggled(newValue: isEnabled))
+
+        UNUserNotificationCenter.current().requestAuthorization(options: .badge) { [weak self]
             (granted, error) in
+            guard let self else { return }
+
             guard error == nil && granted == true else {
+                if let error {
+                    Log.capture(error: error)
+                }
+
+                tracker.track(event: Events.Settings.appBadgePermissionDenied())
+
                 self.userDefaults.set(false, forKey: AccountViewModel.ToggleAppBadgeKey)
                 DispatchQueue.main.async { [weak self] in
                     self?.appBadgeToggle = false
                 }
+
                 return
             }
 
-            let currentValue = self.userDefaults.bool(forKey: AccountViewModel.ToggleAppBadgeKey)
-            self.userDefaults.setValue(!currentValue, forKey: AccountViewModel.ToggleAppBadgeKey)
+            self.userDefaults.setValue(isEnabled, forKey: AccountViewModel.ToggleAppBadgeKey)
             self.notificationCenter.post(name: .listUpdated, object: nil)
         }
+    }
+
+    func toggleOriginalView(to isEnabled: Bool) {
+        tracker.track(event: Events.Settings.originalViewToggled(newValue: isEnabled))
+        self.userDefaults.setValue(isEnabled, forKey: UserDefaults.Key.toggleOriginalView)
     }
 
     var showDebugMenu: Bool {
@@ -221,5 +243,26 @@ extension AccountViewModel {
     /// track delete settings row tapped
     func trackDeleteTapped() {
         tracker.track(event: Events.Settings.deleteRowTapped())
+    }
+}
+
+// MARK: reset modal presentation
+extension AccountViewModel {
+    func dismissAll() {
+        isPresentingHelp = false
+        isPresentingTerms = false
+        isPresentingPrivacy = false
+        isPresentingSignOutConfirm = false
+        isPresentingPremiumUpgrade = false
+        isPresentingLicenses = false
+        isPresentingAccountManagement = false
+        isPresentingDeleteYourAccount = false
+        isPresentingCancelationHelp = false
+        isPresentingOfflineView = false
+        isPresentingRestoreSuccessful = false
+        isPresentingRestoreNotSuccessful = false
+        isPresentingPremiumStatus = false
+        isPresentingHooray = false
+        isPresentingDebugMenu = false
     }
 }

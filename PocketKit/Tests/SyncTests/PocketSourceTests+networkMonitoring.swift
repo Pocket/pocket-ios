@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 import PocketGraph
 @testable import Sync
@@ -75,7 +79,7 @@ extension PocketSourceTests {
 
         let source = subject()
         try source.archive(item: space.createSavedItem())
-        _ = XCTWaiter.wait(for: [expectation(description: "wait for last refresh to be avoid its 5.0 second wait")], timeout: 100.0)
+        _ = XCTWaiter.wait(for: [expectation(description: "wait for last refresh to be avoid its 5.0 second wait")], timeout: 1.0)
         wait(for: [firstAttempt], timeout: 10)
 
         networkMonitor.update(status: .unsatisfied)
@@ -122,7 +126,7 @@ extension PocketSourceTests {
         // NOTE: We need to await after each attempt because it takes a few ms for the
         // retrySubscritpion to get setup after the attempt is fullfilled.
         // TODO: Refactor retrySignal to keep track of its number of subscribers and instead wait for that to become 1 instead of this random wait.
-        _ = XCTWaiter.wait(for: [expectation(description: "wait for subscriber")], timeout: 10)
+        _ = XCTWaiter.wait(for: [expectation(description: "wait for subscriber")], timeout: 1)
         source.favorite(item: item)
         wait(for: [retrySignalSent, attemptFavorite], timeout: 10, enforceOrder: true)
     }
@@ -193,7 +197,7 @@ extension PocketSourceTests {
         // NOTE: We need to await after each attempt because it takes a few ms for the
         // retrySubscritpion to get setup after the attempt is fullfilled.
         // TODO: Refactor retrySignal to keep track of its number of subscribers and instead wait for that to become 1 instead of this random wait.
-        _ = XCTWaiter.wait(for: [expectation(description: "wait for subscriber")], timeout: 10)
+        _ = XCTWaiter.wait(for: [expectation(description: "wait for subscriber")], timeout: 1)
         source.retryImmediately()
         wait(for: [retrySignalSent], timeout: 10)
     }

@@ -5,7 +5,7 @@ import ApolloTestSupport
 import PocketGraph
 
 public class MarticleDivider: MockObject {
-  public static let objectType: Object = PocketGraph.Objects.MarticleDivider
+  public static let objectType: ApolloAPI.Object = PocketGraph.Objects.MarticleDivider
   public static let _mockFields = MockFields()
   public typealias MockValueCollectionType = Array<Mock<MarticleDivider>>
 
@@ -19,6 +19,6 @@ public extension Mock where O == MarticleDivider {
     content: PocketGraph.Markdown? = nil
   ) {
     self.init()
-    self.content = content
+    _setScalar(content, for: \.content)
   }
 }

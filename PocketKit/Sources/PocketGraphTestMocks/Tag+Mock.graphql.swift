@@ -5,7 +5,7 @@ import ApolloTestSupport
 import PocketGraph
 
 public class Tag: MockObject {
-  public static let objectType: Object = PocketGraph.Objects.Tag
+  public static let objectType: ApolloAPI.Object = PocketGraph.Objects.Tag
   public static let _mockFields = MockFields()
   public typealias MockValueCollectionType = Array<Mock<Tag>>
 
@@ -21,7 +21,7 @@ public extension Mock where O == Tag {
     name: String? = nil
   ) {
     self.init()
-    self.id = id
-    self.name = name
+    _setScalar(id, for: \.id)
+    _setScalar(name, for: \.name)
   }
 }

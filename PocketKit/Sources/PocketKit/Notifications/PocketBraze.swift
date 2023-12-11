@@ -1,10 +1,13 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Foundation
 import BrazeUI
 import BrazeKit
 import UserNotifications
 import SharedPocketKit
 import UIKit
-import Sync
 
 protocol BrazeSDKProtocol {
     func didReceiveUserNotification(
@@ -13,6 +16,10 @@ protocol BrazeSDKProtocol {
         withCompletionHandler completionHandler: @escaping () -> Void)
 
     func signedInUserDidBeginMigration()
+
+    func isFeatureFlagEnabled(id: String) -> Bool
+
+    func logFeatureFlagImpression(id: String) -> Bool
 }
 
 /**
@@ -24,7 +31,6 @@ typealias BrazeProtocol = BrazeSDKProtocol & PushNotificationProtocol
  Class that is managing our Braze SDK implementation
  */
 class PocketBraze: NSObject {
-
     /// Our Braze SDK Object
     let braze: Braze
 
@@ -38,10 +44,11 @@ class PocketBraze: NSObject {
         // Enable logging of general SDK information (e.g. user changes, etc.)
         configuration.logger.level = .info
         configuration.push.appGroup = groupdId
+        configuration.forwardUniversalLinks = true
         braze = Braze(configuration: configuration)
 
         super.init()
-
+        braze.delegate = self
         // Set up the in app message ui
         let inAppMessageUI = BrazeInAppMessageUI()
         inAppMessageUI.delegate = self
@@ -49,15 +56,42 @@ class PocketBraze: NSObject {
     }
 }
 
+extension PocketBraze: BrazeDelegate {
+    func braze(_ braze: Braze, shouldOpenURL context: Braze.URLContext) -> Bool {
+        context.isUniversalLink = true
+        return true
+    }
+}
+
 /**
  Conforming to our PocketBraze Protocol
  */
 extension PocketBraze: BrazeProtocol {
+    func isFeatureFlagEnabled(id: String) -> Bool {
+        guard let featureFlag = braze.featureFlags.featureFlag(id: id) else {
+            return false
+        }
+
+        return featureFlag.enabled
+    }
+
     func loggedIn(session: SharedPocketKit.Session) {
         DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
             // Braze SDK docs say this needs to be called from the main thread.
             // https://www.braze.com/docs/developer_guide/platform_integration_guides/ios/analytics/setting_user_ids/#assigning-a-user-id
-            self?.braze.changeUser(userId: session.userIdentifier)
+            braze.changeUser(userId: session.userIdentifier)
+            // Was this build deployed through the App Store or through TestFlight?
+            var isTestFlight = false
+            if let receiptURL = Bundle.main.appStoreReceiptURL {
+                isTestFlight = receiptURL.path(percentEncoded: false).contains("sandboxreceipt")
+            }
+            // Could expand to include "development"
+            let deployment = isTestFlight ? "testflight" : "app_store"
+            braze.user.setCustomAttribute(key: "ios_deployment", value: deployment)
+
+            // Request refresh of feature flags when user is initially signed in
+            braze.featureFlags.requestRefresh()
         }
 
         let center = UNUserNotificationCenter.current()
@@ -76,6 +110,28 @@ extension PocketBraze: BrazeProtocol {
 
     func loggedOut(session: SharedPocketKit.Session?) {
         // Waiting on braze support to understand logout
+    }
+
+    /// Logs a feature flag impression by Braze, selectively if the feature flag is being enabled by Braze
+    /// - Parameter id: The id of the feature flag
+    /// - Returns: True if the feature flag impression was logged by Braze, otherwise false
+    func logFeatureFlagImpression(id: String) -> Bool {
+        guard let flag = CurrentFeatureFlags(rawValue: id) else {
+            return false
+        }
+
+        let shouldLog = switch flag {
+        case .premiumSearchScopesExperiment, .bestOf20231PercentSticker, .bestOf20235PercentSticker:
+            true
+        // Make this exhaustive so that when new feature flags are added, we can specify whether Braze should log it
+        case .debugMenu, .disableOnlineListen, .disableReader, .nativeCollections, .profileSampling, .reportIssue, .traceSampling:
+            false
+        }
+
+        if shouldLog {
+            braze.featureFlags.logFeatureFlagImpression(id: id)
+        }
+        return shouldLog
     }
 
     // MARK: Push Notification Events
@@ -143,7 +199,13 @@ extension PocketBraze: UNUserNotificationCenterDelegate {
         didReceive response: UNNotificationResponse,
         withCompletionHandler completionHandler: @escaping () -> Void
     ) {
-        didReceiveUserNotification(center, didReceive: response, withCompletionHandler: completionHandler)
+        // TODO: Refactor this once SwiftUI bug is addressed
+        // we are doing this hack because, from what we have experienced, if the app is in background
+        // the `onContinueUserActivity` call that we have on mainView and handles the urls does not seem to be called until the
+        // app is fully foregrounded. Not a great way, but for now it's the only hacky workaround that we have found
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+            self?.didReceiveUserNotification(center, didReceive: response, withCompletionHandler: completionHandler)
+        }
     }
 
     func userNotificationCenter(

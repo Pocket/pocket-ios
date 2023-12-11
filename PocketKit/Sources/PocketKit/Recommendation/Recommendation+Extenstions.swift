@@ -1,4 +1,9 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Foundation
+import SharedPocketKit
 import Sync
 
 extension Recommendation {
@@ -7,11 +12,11 @@ extension Recommendation {
             return nil
         }
 
-        return imageCacheURL(for: topImageURL)
+        return CDNURLBuilder().imageCacheURL(for: topImageURL)
     }
 
     var bestDomain: String? {
-        item.syndicatedArticle?.publisherName ?? item.domainMetadata?.name ?? item.domain ?? item.bestURL.host
+        item.bestDomain
     }
 
     var bestTitle: String? {

@@ -8,12 +8,15 @@ import Sails
 class ShareAnItemTests: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
+    var snowplowMicro = SnowplowMicro()
 
-    override func setUpWithError() throws {
+    override func setUp() async throws {
+        try await super.setUp()
         continueAfterFailure = false
 
         let uiApp = XCUIApplication()
         app = PocketAppElement(app: uiApp)
+        await snowplowMicro.resetSnowplowEvents()
 
         server = Application()
 
@@ -22,16 +25,16 @@ class ShareAnItemTests: XCTestCase {
         }
 
         try server.start()
-
-        app.launch()
     }
 
     override func tearDownWithError() throws {
         try server.stop()
         app.terminate()
+        try super.tearDownWithError()
     }
 
     func test_sharingAnItemFromList_presentsShareSheet() {
+        app.launch()
         app.tabBar.savesButton.wait().tap()
 
         app
@@ -43,12 +46,14 @@ class ShareAnItemTests: XCTestCase {
         app.shareSheet.wait()
     }
 
-    func test_sharingAnItemFromReader_presentsShareSheet() {
+    @MainActor
+    func test_sharingAnItemFromReader_presentsShareSheet() async {
+        app.launch()
         app.tabBar.savesButton.wait().tap()
 
         app
             .saves
-            .itemView(matching: "Item 2")
+            .itemView(matching: "Item 1")
             .wait()
             .tap()
 
@@ -63,6 +68,11 @@ class ShareAnItemTests: XCTestCase {
             .tap()
 
         app.shareSheet.wait()
+
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+        let overflowEvent = await snowplowMicro.getFirstEvent(with: "reader.toolbar.share")
+        overflowEvent!.getUIContext()!.assertHas(type: "button")
+        overflowEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
     }
 
     func test_shareFromHome_sharingARecommendation_sharingFromSlate() {

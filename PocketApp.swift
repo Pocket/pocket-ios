@@ -9,9 +9,21 @@ import SwiftUI
 struct PocketApp: App {
     @UIApplicationDelegateAdaptor var delegate: PocketAppDelegate
 
+    @Environment(\.scenePhase)
+    var scenePhase
+
+    let rootViewModel: RootViewModel
+
+    init() {
+        self.rootViewModel = RootViewModel()
+        rootViewModel.start()
+    }
+
     var body: some Scene {
         WindowGroup {
-            RootView(model: RootViewModel())
+            RootView(model: rootViewModel)
+        }.onChange(of: scenePhase) { newValue in
+            rootViewModel.scenePhaseDidChange(newValue)
         }
     }
 }

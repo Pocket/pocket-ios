@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 import Analytics
 import Combine
@@ -12,6 +16,7 @@ class SortMenuViewModelTests: XCTestCase {
     private var subscriptions: [AnyCancellable] = []
 
     override func setUp() {
+        super.setUp()
         source = MockSource()
         tracker = MockTracker()
         listOptions = .saved(userDefaults: .standard)
@@ -20,6 +25,7 @@ class SortMenuViewModelTests: XCTestCase {
 
     override func tearDown() {
         subscriptions = []
+        super.tearDown()
     }
 
     private func subject(

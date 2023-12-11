@@ -1,9 +1,6 @@
-//
-//  File.swift
-//  
-//
-//  Created by David Skuza on 4/24/23.
-//
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import Foundation
 
@@ -19,20 +16,18 @@ public extension Events.SaveTo {
     /// Fired when a user opens the Save extension, since we cannot directly interact with
     /// the tapping of the icon from the share sheet. The Save extension is the entrypoint
     /// for that tap, so treat the opening of the Save extension as an engagement.
-    static func saveEngagement(url: URL) -> Event {
+    static func saveEngagement(url: String) -> Event {
         return Engagement(
+            .save(contentEntity: ContentEntity(url: url)),
             uiEntity: UiEntity(
                 .screen,
                 identifier: "save-extension.opened"
-            ),
-            extraEntities: [
-                ContentEntity(url: url)
-            ]
+            )
         )
     }
 
     /// Fired when a user taps on "Add Tags" from the Save extension
-    static func addTagsEngagement(url: URL) -> Event {
+    static func addTagsEngagement(url: String) -> Event {
         return Engagement(
             uiEntity: UiEntity(
                 .button,
@@ -43,11 +38,16 @@ public extension Events.SaveTo {
             ]
         )
     }
+
+    /// Fired when the extension was unable to find a URL to save
+    static func unableToSave() -> Event {
+        return System(type: .unableToSave, source: .saveToPocketKit)
+    }
 }
 
 public extension Events.SaveTo.Tags {
     /// Fired when user taps on "Save" button in `Add Tags` screen for an item
-    static func saveTags(itemUrl: URL) -> Event {
+    static func saveTags(itemUrl: String) -> Event {
         return Engagement(
             .general,
             uiEntity: UiEntity(
@@ -66,7 +66,7 @@ public extension Events.SaveTo.Tags {
     /// - Parameters:
     ///     - tag: The tag added to an item.
     ///     - itemUrl: The url of the item to which a new tag was added.
-    static func addTag(_ tag: String, itemUrl: URL) -> Event {
+    static func addTag(_ tag: String, itemUrl: String) -> Event {
         return Engagement(
             .general,
             value: tag,
@@ -86,7 +86,7 @@ public extension Events.SaveTo.Tags {
     /// - Parameters:
     ///     - tag: The tag that was removed from the list of input tags.
     ///     - itemUrl: The url of the item to which a tag was removed.
-    static func removeInputTag(_ tag: String, itemUrl: URL) -> Event {
+    static func removeInputTag(_ tag: String, itemUrl: String) -> Event {
         return Engagement(
             .general,
             value: tag,
@@ -103,7 +103,7 @@ public extension Events.SaveTo.Tags {
     }
 
     /// Fired when a user enters text in the text field in the `Add Tags` screen for an item and includes component detail of text user entered
-    static func userEntersText(itemUrl: URL, text: String) -> Event {
+    static func userEntersText(itemUrl: String, text: String) -> Event {
         return Engagement(
             .general,
             uiEntity: UiEntity(
@@ -120,7 +120,7 @@ public extension Events.SaveTo.Tags {
     }
 
     /// Fired when a user views all of their tags in the `Add Tags` screen for an item
-    static func allTagsImpression(itemUrl: URL) -> Event {
+    static func allTagsImpression(itemUrl: String) -> Event {
         return Impression(
             component: .screen,
             requirement: .viewable,
@@ -135,7 +135,7 @@ public extension Events.SaveTo.Tags {
     }
 
     /// Fired when a user views filtered tags in the `Add Tags` screen for an item
-    static func filteredTagsImpression(itemUrl: URL) -> Event {
+    static func filteredTagsImpression(itemUrl: String) -> Event {
         return Impression(
             component: .screen,
             requirement: .viewable,
@@ -256,5 +256,4 @@ public extension Events.SaveTo.Tags {
             )
         )
     }
-
 }

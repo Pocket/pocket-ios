@@ -26,6 +26,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-1",
@@ -68,6 +69,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -97,6 +99,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-2",
@@ -139,6 +142,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -168,6 +172,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-3",
@@ -210,6 +215,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -239,6 +245,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-4",
@@ -281,6 +288,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -310,6 +318,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-5",
@@ -352,6 +361,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -381,6 +391,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-6",
@@ -423,6 +434,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -452,6 +464,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-7",
@@ -494,6 +507,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -523,6 +537,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-8",
@@ -565,6 +580,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -594,6 +610,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-9",
@@ -636,6 +653,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -665,6 +683,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-10",
@@ -707,6 +726,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -736,6 +756,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-11",
@@ -778,6 +799,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -807,6 +829,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-12",
@@ -849,6 +872,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -878,6 +902,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-13",
@@ -920,6 +945,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -949,6 +975,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-14",
@@ -991,6 +1018,7 @@
                       "imageId": 1
                     }
                   ],
+                 "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -1020,6 +1048,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-15",
@@ -1062,6 +1091,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -1091,6 +1121,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-16",
@@ -1133,6 +1164,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -1162,6 +1194,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-17",
@@ -1204,6 +1237,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -1233,6 +1267,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-18",
@@ -1275,6 +1310,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -1304,6 +1340,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-19",
@@ -1346,6 +1383,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -1375,6 +1413,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-20",
@@ -1417,6 +1456,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -1446,6 +1486,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-21",
@@ -1488,6 +1529,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -1517,6 +1559,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-22",
@@ -1559,6 +1602,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -1588,6 +1632,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-23",
@@ -1630,6 +1675,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -1659,6 +1705,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-24",
@@ -1701,6 +1748,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -1730,6 +1778,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-25",
@@ -1772,6 +1821,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -1801,6 +1851,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-26",
@@ -1843,6 +1894,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -1872,6 +1924,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-27",
@@ -1914,6 +1967,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -1943,6 +1997,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-28",
@@ -1985,6 +2040,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -2014,6 +2070,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-29",
@@ -2056,6 +2113,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",
@@ -2085,6 +2143,7 @@
                     "name": "tag 0"
                   }
                 ],
+                "corpusItem": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-30",
@@ -2127,6 +2186,7 @@
                       "imageId": 1
                     }
                   ],
+                  "collection": null,
                   "isArticle": true,
                   "hasImage": "HAS_IMAGES",
                   "hasVideo": "HAS_VIDEOS",

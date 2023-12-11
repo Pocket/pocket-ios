@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 import Combine
 import Textile
@@ -15,6 +19,7 @@ class TagsFilterViewModelTests: XCTestCase {
     private var user: MockUser!
 
     override func setUp() {
+        super.setUp()
         space = .testSpace()
         source = MockSource()
         tracker = MockTracker()
@@ -28,6 +33,7 @@ class TagsFilterViewModelTests: XCTestCase {
         source = nil
         subscriptions = []
         try space.clear()
+        try await super.tearDown()
     }
 
     private func subject(
@@ -59,10 +65,10 @@ class TagsFilterViewModelTests: XCTestCase {
         _ = try? space.createSavedItem(createdAt: Date() + 1, tags: ["tag 2"])
         _ = try? space.createSavedItem(createdAt: Date() + 2, tags: ["tag 3"])
         _ = try? space.createSavedItem(createdAt: Date() + 3, tags: ["tag 4"])
+
         let savedTags = try? space.fetchTags(isArchived: false)
         let viewModel = subject(user: MockUser(status: .premium), fetchedTags: savedTags) { }
-
-        XCTAssertEqual(viewModel.recentTags, [TagType.recent("tag 1"), TagType.recent("tag 2"), TagType.recent("tag 3")])
+        XCTAssertEqual(viewModel.recentTags, [TagType.recent("tag 3"), TagType.recent("tag 2"), TagType.recent("tag 1")])
     }
 
     func test_recentTags_withMoreThanThreeTags_andFreeUser_returnsNoRecentTags() {

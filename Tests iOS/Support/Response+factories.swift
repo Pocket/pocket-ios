@@ -47,7 +47,7 @@ extension Response {
         saves("archived-favorite-items")
     }
 
-    static func slateLineup(_ fixtureName: String = "slates") -> Response {
+    static func slateLineup(_ fixtureName: String = "corpusSlates") -> Response {
         fixture(named: fixtureName)
     }
 
@@ -76,7 +76,7 @@ extension Response {
     static func delete(apiRequest: ClientAPIRequest) -> Response {
         return .init(
             mock: Mock<Mutation>(
-                deleteSavedItem: apiRequest.variableItemId
+                savedItemDelete: apiRequest.variableGivenURL
             )
         )
     }
@@ -100,6 +100,25 @@ extension Response {
         )
     }
 
+    static func saveTags(apiRequest: ClientAPIRequest) -> Response {
+        return .init(
+            mock: Mock<Mutation>(
+                savedItemTag: Mock<SavedItem>(
+                    item: createMockSavedItem(item: createMockItem(givenUrl: apiRequest.givenURL.absoluteString)),
+                    url: apiRequest.givenURL.absoluteString
+                )
+            )
+        )
+    }
+
+    static func collection(fixtureName: String = "collection-saves") -> Response {
+        Response {
+            Status.ok
+            Fixture.load(name: fixtureName)
+                .data
+        }
+    }
+
     /// To send a request to unarchive an item or move from saves, uses same mutation response as `saveItem(apiRequest:)`
     /// - Parameter apiRequest: apiRequest that is requesting a response
     /// - Returns: returns mock response for `upsertSavedItem`
@@ -110,8 +129,8 @@ extension Response {
     static func archive(apiRequest: ClientAPIRequest) -> Response {
         return .init(
             mock: Mock<Mutation>(
-                updateSavedItemArchive: Mock<SavedItem>(
-                    id: apiRequest.variableItemId
+                savedItemArchive: Mock<SavedItem>(
+                    id: apiRequest.variableGivenURL
                 )
             )
         )
@@ -120,8 +139,8 @@ extension Response {
     static func favorite(apiRequest: ClientAPIRequest) -> Response {
         return .init(
             mock: Mock<Mutation>(
-                updateSavedItemFavorite: Mock<SavedItem>(
-                    id: apiRequest.variableItemId
+                savedItemFavorite: Mock<SavedItem>(
+                    id: apiRequest.variableGivenURL
                 )
             )
         )
@@ -130,8 +149,8 @@ extension Response {
     static func unfavorite(apiRequest: ClientAPIRequest) -> Response {
         return .init(
             mock: Mock<Mutation>(
-                updateSavedItemUnFavorite: Mock<SavedItem>(
-                    id: apiRequest.variableItemId
+                savedItemUnFavorite: Mock<SavedItem>(
+                    id: apiRequest.variableGivenURL
                 )
             )
         )
@@ -237,6 +256,8 @@ extension Response {
             fixtureName = "search-list-archive"
         case .all:
             fixtureName = "search-list-all"
+        case .premiumSearchByTitle, .premiumSearchByTag, .premiumSearchByContent:
+            fixtureName = "search-list-all"
         }
 
         return Response {
@@ -272,11 +293,23 @@ extension Response {
                             assigned: true,
                             name: "temp.feature.variant",
                             variant: "theVariant"
+                        ),
+                        Mock<UnleashAssignment>(
+                            assigned: true,
+                            name: "perm.ios.native_collections"
                         )
                     ]
                 )
             )
         )
+    }
+
+    static func featureFlags(with fixtureName: String) -> Response {
+        Response {
+            Status.ok
+            Fixture.load(name: fixtureName)
+                .data
+        }
     }
 
     static func fixture(named fixtureName: String) -> Response {
@@ -311,13 +344,13 @@ extension Response {
             return .archive(apiRequest: apiRequest)
         } else if apiRequest.isToSaveAnItem {
             return .saveItem(apiRequest: apiRequest)
-        } else if apiRequest.isForRecommendationDetail(1) {
+        } else if apiRequest.isForRecommendationDetail("slate-1-rec-1") {
             return .recommendationDetail(1)
-        } else if apiRequest.isForRecommendationDetail(2) {
+        } else if apiRequest.isForRecommendationDetail("slate-1-rec-2") {
             return .recommendationDetail(2)
-        } else if apiRequest.isForRecommendationDetail(3) {
+        } else if apiRequest.isForRecommendationDetail("slate-2-rec-1") {
             return .recommendationDetail(3)
-        } else if apiRequest.isForRecommendationDetail(4) {
+        } else if apiRequest.isForRecommendationDetail("slate-2-rec-2") {
             return .recommendationDetail(4)
         } else if apiRequest.isForArchivedItemDetail {
             return .archiveItemDetail()
@@ -341,6 +374,10 @@ extension Response {
             return .searchList(.archive)
         } else if apiRequest.isForFeatureFlags {
             return .featureFlags()
+        } else if apiRequest.isForSaveTags {
+            return .saveTags(apiRequest: apiRequest)
+        } else if apiRequest.isForCollection {
+            return .collection()
         } else {
             fatalError("Unexpected request")
         }

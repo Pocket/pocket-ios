@@ -10,6 +10,7 @@ class EmptyStateTests: XCTestCase {
     var app: PocketAppElement!
 
     override func setUpWithError() throws {
+        try super.setUpWithError()
         continueAfterFailure = false
 
         let uiApp = XCUIApplication()
@@ -27,6 +28,7 @@ class EmptyStateTests: XCTestCase {
     override func tearDownWithError() throws {
         try server.stop()
         app.terminate()
+        try super.tearDownWithError()
     }
 
     func testSavesAndArchive_showsEmptyStateView() {

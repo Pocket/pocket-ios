@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 import Combine
 import Analytics
@@ -15,13 +19,21 @@ class SlateDetailViewModelTests: XCTestCase {
     var subscriptions: Set<AnyCancellable> = []
     var user: User!
     var userDefaults: UserDefaults!
+    var featureFlags: MockFeatureFlagService!
+    private var subscriptionStore: SubscriptionStore!
+    private var networkPathMonitor: MockNetworkPathMonitor!
+    private var notificationCenter: NotificationCenter!
 
     override func setUp() {
+        super.setUp()
         source = MockSource()
         tracker = MockTracker()
         space = .testSpace()
-        userDefaults = .standard
+        userDefaults = UserDefaults(suiteName: "SlateDetailViewModelTests")
         user = PocketUser(userDefaults: userDefaults)
+        networkPathMonitor = MockNetworkPathMonitor()
+        subscriptionStore = MockSubscriptionStore()
+        notificationCenter = .default
         source.stubViewObject { identifier in
             self.space.viewObject(with: identifier)
         }
@@ -29,11 +41,15 @@ class SlateDetailViewModelTests: XCTestCase {
         source.stubViewRefresh { object, flag in
             self.space.viewContext.refresh(object, mergeChanges: flag)
         }
+
+        featureFlags = MockFeatureFlagService()
     }
 
     override func tearDownWithError() throws {
+        userDefaults.removePersistentDomain(forName: "SlateDetailViewModelTests")
         subscriptions = []
         try space.clear()
+        try super.tearDownWithError()
     }
 
     func subject(
@@ -41,14 +57,19 @@ class SlateDetailViewModelTests: XCTestCase {
         source: Source? = nil,
         tracker: Tracker? = nil,
         user: User? = nil,
-        userDefaults: UserDefaults? = nil
+        userDefaults: UserDefaults? = nil,
+        notificationCenter: NotificationCenter? = nil
     ) -> SlateDetailViewModel {
         SlateDetailViewModel(
             slate: slate,
             source: source ?? self.source,
             tracker: tracker ?? self.tracker,
             user: user ?? self.user,
-            userDefaults: userDefaults ?? self.userDefaults
+            store: subscriptionStore ?? self.subscriptionStore,
+            userDefaults: userDefaults ?? self.userDefaults,
+            networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor,
+            featureFlags: featureFlags,
+            notificationCenter: notificationCenter ?? self.notificationCenter
         )
     }
 
@@ -147,6 +168,14 @@ class SlateDetailViewModelTests: XCTestCase {
             readableExpectation.fulfill()
         }.store(in: &subscriptions)
 
+        featureFlags.stubIsAssigned { flag, variant in
+            if flag == .disableReader {
+                return false
+            }
+            XCTFail("Unknown feature flag")
+            return false
+        }
+
         viewModel.select(
             cell: .recommendation(recommendation.objectID),
             at: IndexPath(item: 0, section: 0)
@@ -167,6 +196,14 @@ class SlateDetailViewModelTests: XCTestCase {
         viewModel.$presentedWebReaderURL.filter { $0 != nil }.sink { readable in
             urlExpectation.fulfill()
         }.store(in: &subscriptions)
+
+        featureFlags.stubIsAssigned { flag, variant in
+            if flag == .disableReader {
+                return false
+            }
+            XCTFail("Unknown feature flag")
+            return false
+        }
 
         do {
             item.isArticle = false
@@ -193,6 +230,35 @@ class SlateDetailViewModelTests: XCTestCase {
         }
 
         wait(for: [urlExpectation], timeout: 10)
+    }
+
+    func test_selectCell_whenSelectingRecommendation_withSettingsOriginalViewEnabled_setsWebViewURL() throws {
+        let savedItem = try space.createSavedItem(item: space.buildItem())
+        let recommendation = space.buildRecommendation(item: savedItem.item!)
+        let slate = try space.createSlate(recommendations: [recommendation])
+        try space.save()
+        let viewModel = subject(slate: space.viewObject(with: slate.objectID) as! Slate)
+        featureFlags.shouldDisableReader = true
+
+        let webViewExpectation = expectation(description: "expected to set web view url")
+        viewModel.$presentedWebReaderURL.dropFirst().sink { readable in
+            webViewExpectation.fulfill()
+        }.store(in: &subscriptions)
+
+        featureFlags.stubIsAssigned { flag, variant in
+            if flag == .disableReader {
+                return false
+            }
+            XCTFail("Unknown feature flag")
+            return false
+        }
+
+        viewModel.select(
+            cell: .recommendation(recommendation.objectID),
+            at: IndexPath(item: 0, section: 0)
+        )
+
+        wait(for: [webViewExpectation], timeout: 10)
     }
 
     func test_reportAction_forRecommendation_updatesSelectedRecommendationToReport() throws {

@@ -4,7 +4,7 @@
 import ApolloAPI
 
 public extension Objects {
-  static let SavedItemSearchResult = Object(
+  static let SavedItemSearchResult = ApolloAPI.Object(
     typename: "SavedItemSearchResult",
     implementedInterfaces: []
   )

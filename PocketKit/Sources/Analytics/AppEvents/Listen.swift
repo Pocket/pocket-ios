@@ -14,13 +14,12 @@ public extension Events {
 }
 
 public extension Events.Listen {
-
     /// Fired when an Item is impressed in the listen view
     /// - Parameters:
     ///   - url: URL of the item
     ///   - positionInList: Index of the item in the list
     /// - Returns: Impression event
-    static func ItemImpression(url: URL, positionInList: Int) -> Impression {
+    static func ItemImpression(url: String, positionInList: Int) -> Impression {
         return Impression(
             component: .card,
             requirement: .viewable,
@@ -40,7 +39,7 @@ public extension Events.Listen {
     ///   - url: URL of the item
     ///   - controlType: How the playback started
     /// - Returns: Engagement event
-    static func StartPlayback(url: URL, controlType: ControlType) -> Engagement {
+    static func StartPlayback(url: String, controlType: ControlType) -> Engagement {
         return Engagement(
             .general,
             uiEntity: UiEntity(
@@ -59,7 +58,7 @@ public extension Events.Listen {
     ///   - url: URL of the item
     ///   - controlType: How the playback resumed
     /// - Returns: Engagement event
-    static func ResumePlayback(url: URL, controlType: ControlType) -> Engagement {
+    static func ResumePlayback(url: String, controlType: ControlType) -> Engagement {
         return Engagement(
             .general,
             uiEntity: UiEntity(
@@ -78,7 +77,7 @@ public extension Events.Listen {
     ///   - url: URL of the item
     ///   - controlType: How the playback paused
     /// - Returns: Engagement event
-    static func PausePlayback(url: URL, controlType: ControlType) -> Engagement {
+    static func PausePlayback(url: String, controlType: ControlType) -> Engagement {
         return Engagement(
             .general,
             uiEntity: UiEntity(
@@ -97,7 +96,7 @@ public extension Events.Listen {
     ///   - url: URL of the item
     ///   - controlType: How the playback fast forwarded
     /// - Returns: Engagement event
-    static func FastForward(url: URL, controlType: ControlType) -> Engagement {
+    static func FastForward(url: String, controlType: ControlType) -> Engagement {
         return Engagement(
             .general,
             uiEntity: UiEntity(
@@ -116,7 +115,7 @@ public extension Events.Listen {
     ///   - url: URL of the item
     ///   - controlType: How the playback rewound
     /// - Returns: Engagement event
-    static func Rewind(url: URL, controlType: ControlType) -> Engagement {
+    static func Rewind(url: String, controlType: ControlType) -> Engagement {
         return Engagement(
             .general,
             uiEntity: UiEntity(
@@ -135,7 +134,7 @@ public extension Events.Listen {
     ///   - url: URL of the item
     ///   - controlType: How the playback skipped forward
     /// - Returns: Engagement event
-    static func SkipNext(url: URL, controlType: ControlType) -> Engagement {
+    static func SkipNext(url: String, controlType: ControlType) -> Engagement {
         return Engagement(
             .general,
             uiEntity: UiEntity(
@@ -154,7 +153,7 @@ public extension Events.Listen {
     ///   - url: URL of the item
     ///   - controlType: How the playback skipped backward
     /// - Returns: Engagement event
-    static func SkipBack(url: URL, controlType: ControlType) -> Engagement {
+    static func SkipBack(url: String, controlType: ControlType) -> Engagement {
         return Engagement(
             .general,
             uiEntity: UiEntity(
@@ -174,7 +173,7 @@ public extension Events.Listen {
     ///   - controlType: How the playback skipped backward
     ///   - speed: The speed of the playback
     /// - Returns: Engagement event
-    static func SetSpeed(url: URL, controlType: ControlType, speed: Double) -> Engagement {
+    static func SetSpeed(url: String, controlType: ControlType, speed: Double) -> Engagement {
         return Engagement(
             .general,
             uiEntity: UiEntity(
@@ -194,7 +193,7 @@ public extension Events.Listen {
     ///   - url: URL of the item
     ///   - controlType: How the playback was finished
     /// - Returns: Engagement event
-    static func FinsihedListen(url: URL, controlType: ControlType) -> Engagement {
+    static func FinsihedListen(url: String, controlType: ControlType) -> Engagement {
         return Engagement(
             .general,
             uiEntity: UiEntity(
@@ -275,7 +274,7 @@ public extension Events.Listen {
     ///   - url: URL of the item
     ///   - position: Position in the list
     /// - Returns: Engagement event
-    static func Archived(url: URL, position: Int) -> Engagement {
+    static func Archived(url: String, position: Int) -> Engagement {
         return Engagement(
             uiEntity: UiEntity(
                 .button,
@@ -293,7 +292,7 @@ public extension Events.Listen {
     ///   - url: URL of the item
     ///   - position: Position in the list
     /// - Returns: Engagement event
-    static func MoveFromArchiveToSaves(url: URL, position: Int) -> Engagement {
+    static func MoveFromArchiveToSaves(url: String, position: Int) -> Engagement {
         return Engagement(
             .save(contentEntity: ContentEntity(url: url)),
             uiEntity: UiEntity(

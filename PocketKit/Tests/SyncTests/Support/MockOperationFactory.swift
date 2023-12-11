@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Foundation
 import Apollo
 import ApolloAPI
@@ -276,7 +280,7 @@ extension MockOperationFactory {
 
 // MARK: - saveItemOperation
 extension MockOperationFactory {
-    typealias SaveItemOperationImpl = (NSManagedObjectID, URL, SyncEvents, ApolloClientProtocol, Space) -> SyncOperation
+    typealias SaveItemOperationImpl = (NSManagedObjectID, String, SyncEvents, ApolloClientProtocol, Space) -> SyncOperation
 
     func stubSaveItemOperation(_ impl: @escaping SaveItemOperationImpl) {
         implementations["saveItemOperation"] = impl
@@ -284,7 +288,7 @@ extension MockOperationFactory {
 
     func saveItemOperation(
         managedItemID: NSManagedObjectID,
-        url: URL,
+        url: String,
         events: SyncEvents,
         apollo: ApolloClientProtocol,
         space: Space

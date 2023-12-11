@@ -5,6 +5,10 @@
 import XCTest
 import Sails
 import NIO
+import Apollo
+import ApolloAPI
+import ApolloTestSupport
+import PocketGraphTestMocks
 
 class SearchTests: XCTestCase {
     var server: Application!
@@ -12,6 +16,7 @@ class SearchTests: XCTestCase {
     var snowplowMicro = SnowplowMicro()
 
     override func setUp() async throws {
+        try await super.setUp()
         continueAfterFailure = false
 
         let uiApp = XCUIApplication()
@@ -27,9 +32,10 @@ class SearchTests: XCTestCase {
 
     @MainActor
     override func tearDown() async throws {
-       try server.stop()
-       app.terminate()
-       await snowplowMicro.assertBaselineSnowplowExpectation()
+        try server.stop()
+        app.terminate()
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+        try await super.tearDown()
     }
 
     // MARK: - Saves: Search
@@ -328,7 +334,7 @@ class SearchTests: XCTestCase {
 
     // MARK: - Search Error State
     func test_search_showsErrorView() {
-        server.routes.post("/graphql") { request, eventLoop -> FutureResponse in
+        server.routes.post("/graphql") { request, eventLoop -> Response in
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isForSearch(.archive) {
                 return Response(status: .internalServerError)
@@ -342,7 +348,6 @@ class SearchTests: XCTestCase {
         let searchField = app.navigationBar.searchFields["Search"].wait()
         searchField.tap()
         searchField.typeText("item\n")
-
         app.saves.searchEmptyStateView(for: "error-empty-state").wait()
     }
 
@@ -363,6 +368,19 @@ class SearchTests: XCTestCase {
         searchField.typeText("item\n")
 
         XCTAssertTrue(app.saves.searchView.hasBanner(with: "Limited search results"))
+        // TODO: Fix tests after addressing issue with other server error banner
+//        app.saves.searchView.banner(with: "Send a report").tap()
+//        openReportIssueView()
+    }
+
+    private func openReportIssueView() {
+        let reportIssueView = app.reportIssueView.wait()
+        reportIssueView.nameField.wait().tap()
+        reportIssueView.nameField.wait().typeText("First Last")
+        reportIssueView.commentSection.wait().tap()
+        reportIssueView.commentSection.wait().typeText("An error has occurred when searching")
+        XCTAssertEqual(reportIssueView.nameField.value as! String, "First Last")
+        XCTAssertEqual(reportIssueView.commentSection.value as! String, "An error has occurred when searching")
     }
 
     // MARK: Search Actions
@@ -422,7 +440,7 @@ class SearchTests: XCTestCase {
         searchEvent2!.getUIContext()!.assertHas(componentDetail: "saves")
         searchEvent2!.getContentContext()!.assertHas(url: "http://localhost:8080/hello-2")
     }
-
+    // TODO: FLAKEY - To be investigated: share sheet does not always appear in ui tests.
     @MainActor
     func test_sharingAnItemFromSearch_forPremiumUser_presentsShareSheet() async {
         stubGraphQLEndpoint(isPremium: true)

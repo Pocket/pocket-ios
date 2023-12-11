@@ -9,7 +9,6 @@ import Combine
 
 /// Refresh coordinator to handle the refreshing of all unresolved saves
 class UnresolvedSavesRefreshCoordinator: RefreshCoordinator {
-
     let taskID: String = "com.mozilla.pocket.refresh.unresolved"
 
     let refreshInterval: TimeInterval? = 60 * 60

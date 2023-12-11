@@ -5,7 +5,7 @@ import ApolloTestSupport
 import PocketGraph
 
 public class MarticleBlockquote: MockObject {
-  public static let objectType: Object = PocketGraph.Objects.MarticleBlockquote
+  public static let objectType: ApolloAPI.Object = PocketGraph.Objects.MarticleBlockquote
   public static let _mockFields = MockFields()
   public typealias MockValueCollectionType = Array<Mock<MarticleBlockquote>>
 
@@ -19,6 +19,6 @@ public extension Mock where O == MarticleBlockquote {
     content: PocketGraph.Markdown? = nil
   ) {
     self.init()
-    self.content = content
+    _setScalar(content, for: \.content)
   }
 }
