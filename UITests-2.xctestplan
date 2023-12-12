@@ -78,6 +78,7 @@
         "EditTagsTests",
         "EmptyStateTests",
         "FavoriteAnItemTests",
+        "HomeTests\/test_pullToRefresh_fetchesUpdatedContent()",
         "HomeTests\/test_tappingRecentSavesItem_showsWebViewWhenItemIsVideo()",
         "HomeTests\/test_tappingRecentSavesSavesButton_opensSavesView()",
         "ListenTests",

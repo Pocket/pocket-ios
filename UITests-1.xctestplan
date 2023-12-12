@@ -77,6 +77,8 @@
         "ArchiveFiltersTests\/test_archiveView_sortingNoTagFilter_showFilteredItems()",
         "ArchiveFiltersTests\/test_archiveView_tappingTaggedFilter_showsFilteredItems()",
         "BannerViewTests\/test_foregroundingTheApp_withAlreadySavedURL_showsSaveFromClipboardBannerAndBringsItemToTop()",
+        "CollectionTests\/test_sharingStory_fromCollection()",
+        "CollectionTests\/test_tappingDeleteNoFromOverflowMenu_dismissesDeleteConfirmation()",
         "DeleteAnItemTests\/test_deletingAnItemFromCollection_deletesItem_andPopsBackToList()",
         "ErrorTests",
         "HomeTests",
