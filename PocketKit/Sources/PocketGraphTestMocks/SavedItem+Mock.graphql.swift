@@ -12,6 +12,7 @@ public class SavedItem: MockObject {
   public struct MockFields {
     @Field<Int>("_createdAt") public var _createdAt
     @Field<Int>("_deletedAt") public var _deletedAt
+    @Field<SavedItemAnnotations>("annotations") public var annotations
     @Field<Int>("archivedAt") public var archivedAt
     @Field<CorpusItem>("corpusItem") public var corpusItem
     @Field<PocketGraph.ID>("id") public var id
@@ -28,6 +29,7 @@ public extension Mock where O == SavedItem {
   convenience init(
     _createdAt: Int? = nil,
     _deletedAt: Int? = nil,
+    annotations: Mock<SavedItemAnnotations>? = nil,
     archivedAt: Int? = nil,
     corpusItem: Mock<CorpusItem>? = nil,
     id: PocketGraph.ID? = nil,
@@ -41,6 +43,7 @@ public extension Mock where O == SavedItem {
     self.init()
     _setScalar(_createdAt, for: \._createdAt)
     _setScalar(_deletedAt, for: \._deletedAt)
+    _setEntity(annotations, for: \.annotations)
     _setScalar(archivedAt, for: \.archivedAt)
     _setEntity(corpusItem, for: \.corpusItem)
     _setScalar(id, for: \.id)

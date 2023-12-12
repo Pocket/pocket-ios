@@ -63,6 +63,8 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "CorpusSlateLineup": return PocketGraph.Objects.CorpusSlateLineup
     case "CorpusSlate": return PocketGraph.Objects.CorpusSlate
     case "CorpusRecommendation": return PocketGraph.Objects.CorpusRecommendation
+    case "SavedItemAnnotations": return PocketGraph.Objects.SavedItemAnnotations
+    case "Highlight": return PocketGraph.Objects.Highlight
     case "TagConnection": return PocketGraph.Objects.TagConnection
     case "TagEdge": return PocketGraph.Objects.TagEdge
     case "SavedItemSearchResultConnection": return PocketGraph.Objects.SavedItemSearchResultConnection

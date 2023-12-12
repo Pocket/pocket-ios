@@ -28,7 +28,7 @@ public class HomeSlateLineupQuery: GraphQLQuery {
       .field("homeSlateLineup", HomeSlateLineup.self, arguments: ["locale": .variable("locale")]),
     ] }
 
-    /// Get ranked corpus slates and recommendations to deliver a unified Home experience. 
+    /// Get ranked corpus slates and recommendations to deliver a unified Home experience. The locale argument determines the UI and recommendation content language.
     public var homeSlateLineup: HomeSlateLineup { __data["homeSlateLineup"] }
 
     /// HomeSlateLineup
