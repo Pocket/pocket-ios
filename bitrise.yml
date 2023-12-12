@@ -114,7 +114,7 @@ workflows:
           inputs:
             - packages: swiftlint
       - activate-ssh-key@4: {}
-      - git-clone@7: {}
+      - git-clone@8.1: {}
       - certificate-and-profile-installer@1: {}
       - file-downloader@1:
           inputs:
@@ -164,7 +164,7 @@ workflows:
   _danger:
     steps:
       - activate-ssh-key@4: {}
-      - git-clone@7: {}
+      - git-clone@8.1: {}
       - script@1:
           inputs:
             - content: |
@@ -249,7 +249,7 @@ workflows:
     steps:
       - activate-ssh-key@4: {}
       #clone the repo so we can get our fastlane files.
-      - git-clone@6: {}
+      - git-clone@8.1: {}
       - pull-intermediate-files@1:
           inputs:
             - artifact_sources: release-build.release-build
