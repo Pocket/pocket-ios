@@ -31,11 +31,13 @@ fragment SavedItemParts on SavedItem {
 }
 
 fragment HighlightParts on Highlight {
+  __typename
   _createdAt
   _updatedAt
   patch
   quote
   version
+  id
 }
 
 fragment TagParts on Tag {

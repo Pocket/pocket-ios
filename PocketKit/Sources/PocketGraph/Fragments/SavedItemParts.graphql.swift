@@ -1031,6 +1031,8 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
       public var quote: String { __data["quote"] }
       /// Version number for highlight data specification
       public var version: Int { __data["version"] }
+      /// The ID for this Highlight annotation
+      public var id: PocketGraph.ID { __data["id"] }
 
       public struct Fragments: FragmentContainer {
         public let __data: DataDict
@@ -1044,7 +1046,8 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
         _updatedAt: PocketGraph.Timestamp,
         patch: String,
         quote: String,
-        version: Int
+        version: Int,
+        id: PocketGraph.ID
       ) {
         self.init(_dataDict: DataDict(
           data: [
@@ -1054,6 +1057,7 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
             "patch": patch,
             "quote": quote,
             "version": version,
+            "id": id,
           ],
           fulfilledFragments: [
             ObjectIdentifier(SavedItemParts.Annotations.Highlight.self),

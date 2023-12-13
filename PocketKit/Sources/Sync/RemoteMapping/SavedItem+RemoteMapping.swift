@@ -31,6 +31,8 @@ extension SavedItem {
         archivedAt = remote.archivedAt.flatMap(TimeInterval.init).flatMap(Date.init(timeIntervalSince1970:))
         isArchived = remote.isArchived
         isFavorite = remote.isFavorite
+        if let annotations = remote.annotations, let highlights = annotations.highlights, !highlights.isEmpty {
+        }
 
         guard let context = managedObjectContext else {
             Log.capture(message: "Managed context was nil")

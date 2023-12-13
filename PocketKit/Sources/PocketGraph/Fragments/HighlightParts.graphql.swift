@@ -5,7 +5,7 @@
 
 public struct HighlightParts: PocketGraph.SelectionSet, Fragment {
   public static var fragmentDefinition: StaticString {
-    #"fragment HighlightParts on Highlight { __typename _createdAt _updatedAt patch quote version }"#
+    #"fragment HighlightParts on Highlight { __typename _createdAt _updatedAt patch quote version id }"#
   }
 
   public let __data: DataDict
@@ -19,6 +19,7 @@ public struct HighlightParts: PocketGraph.SelectionSet, Fragment {
     .field("patch", String.self),
     .field("quote", String.self),
     .field("version", Int.self),
+    .field("id", PocketGraph.ID.self),
   ] }
 
   /// When the Highlight was created
@@ -39,13 +40,16 @@ public struct HighlightParts: PocketGraph.SelectionSet, Fragment {
   public var quote: String { __data["quote"] }
   /// Version number for highlight data specification
   public var version: Int { __data["version"] }
+  /// The ID for this Highlight annotation
+  public var id: PocketGraph.ID { __data["id"] }
 
   public init(
     _createdAt: PocketGraph.Timestamp,
     _updatedAt: PocketGraph.Timestamp,
     patch: String,
     quote: String,
-    version: Int
+    version: Int,
+    id: PocketGraph.ID
   ) {
     self.init(_dataDict: DataDict(
       data: [
@@ -55,6 +59,7 @@ public struct HighlightParts: PocketGraph.SelectionSet, Fragment {
         "patch": patch,
         "quote": quote,
         "version": version,
+        "id": id,
       ],
       fulfilledFragments: [
         ObjectIdentifier(HighlightParts.self)
