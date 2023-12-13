@@ -28,7 +28,8 @@ public class Highlight: NSManagedObject {
         updatedAt: Date,
         patch: String,
         quote: String,
-        version: Int16
+        version: Int16,
+        remoteID: String? = nil
     ) {
         let entity = NSEntityDescription.entity(forEntityName: "Highlight", in: context)!
         super.init(entity: entity, insertInto: context)
@@ -37,5 +38,6 @@ public class Highlight: NSManagedObject {
         self.patch = patch
         self.quote = quote
         self.version = version
+        self.remoteID = remoteID
     }
 }

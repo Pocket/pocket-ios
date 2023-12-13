@@ -193,6 +193,36 @@ extension Space {
     }
 }
 
+// MARK: Highlights
+extension Space {
+    func fetchOrCreateHighlight(
+        _ ID: String,
+        createdAt: Date,
+        updatedAt: Date,
+        patch: String,
+        quote: String,
+        version: Int16,
+        context: NSManagedObjectContext? = nil
+    ) -> Highlight {
+        let context = context ?? backgroundContext
+        let fetchRequest = Requests.fetchHighlight(by: ID)
+        fetchRequest.fetchLimit = 1
+        if let fetchedHighlight = (try? fetch(fetchRequest, context: context).first) {
+            return fetchedHighlight
+        }
+        let newHighlight = Highlight(
+            context: context,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            patch: patch,
+            quote: quote,
+            version: version,
+            remoteID: ID
+        )
+        return newHighlight
+    }
+}
+
 // MARK: Image
 extension Space {
     func makeImagesController() -> NSFetchedResultsController<Image> {
