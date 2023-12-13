@@ -212,12 +212,12 @@ extension Space {
         }
         let newHighlight = Highlight(
             context: context,
+            remoteID: ID,
             createdAt: createdAt,
             updatedAt: updatedAt,
             patch: patch,
             quote: quote,
-            version: version,
-            remoteID: ID
+            version: version
         )
         return newHighlight
     }

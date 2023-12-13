@@ -24,20 +24,20 @@ public class Highlight: NSManagedObject {
 
     public init(
         context: NSManagedObjectContext,
+        remoteID: String,
         createdAt: Date,
         updatedAt: Date,
         patch: String,
         quote: String,
-        version: Int16,
-        remoteID: String? = nil
+        version: Int16
     ) {
         let entity = NSEntityDescription.entity(forEntityName: "Highlight", in: context)!
         super.init(entity: entity, insertInto: context)
+        self.remoteID = remoteID
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.patch = patch
         self.quote = quote
         self.version = version
-        self.remoteID = remoteID
     }
 }
