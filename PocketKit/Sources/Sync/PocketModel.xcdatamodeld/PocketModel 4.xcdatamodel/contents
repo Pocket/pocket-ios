@@ -56,6 +56,7 @@
         <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="patch" attributeType="String"/>
         <attribute name="quote" attributeType="String"/>
+        <attribute name="remoteID" optional="YES" attributeType="String"/>
         <attribute name="updatedAt" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="version" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="savedItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SavedItem" inverseName="highlights" inverseEntity="SavedItem"/>

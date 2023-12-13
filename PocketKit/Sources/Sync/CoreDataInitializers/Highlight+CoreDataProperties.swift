@@ -12,10 +12,11 @@ extension Highlight {
         return NSFetchRequest<Highlight>(entityName: "Highlight")
     }
 
-    @NSManaged public var createdAt: Date?
-    @NSManaged public var updatedAt: Date?
-    @NSManaged public var patch: String?
-    @NSManaged public var quote: String?
+    @NSManaged public var createdAt: Date
+    @NSManaged public var patch: String
+    @NSManaged public var quote: String
+    @NSManaged public var updatedAt: Date
     @NSManaged public var version: Int16
+    @NSManaged public var remoteID: String?
     @NSManaged public var savedItem: SavedItem?
 }
