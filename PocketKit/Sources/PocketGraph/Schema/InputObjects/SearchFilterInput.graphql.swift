@@ -12,12 +12,14 @@ public struct SearchFilterInput: InputObject {
 
   public init(
     isFavorite: GraphQLNullable<Bool> = nil,
+    onlyTitleAndURL: GraphQLNullable<Bool> = nil,
     contentType: GraphQLNullable<GraphQLEnum<SearchItemsContentType>> = nil,
     status: GraphQLNullable<GraphQLEnum<SearchItemsStatusFilter>> = nil,
     domain: GraphQLNullable<String> = nil
   ) {
     __data = InputDict([
       "isFavorite": isFavorite,
+      "onlyTitleAndURL": onlyTitleAndURL,
       "contentType": contentType,
       "status": status,
       "domain": domain
@@ -28,6 +30,13 @@ public struct SearchFilterInput: InputObject {
   public var isFavorite: GraphQLNullable<Bool> {
     get { __data["isFavorite"] }
     set { __data["isFavorite"] = newValue }
+  }
+
+  /// Optional, filter to get user items only based on title and url, ie Free Search
+  /// Note, though that if this is selected and the user is premium, they will not get search highligthing.
+  public var onlyTitleAndURL: GraphQLNullable<Bool> {
+    get { __data["onlyTitleAndURL"] }
+    set { __data["onlyTitleAndURL"] = newValue }
   }
 
   /// Optional, filter to get SavedItems based on content type
