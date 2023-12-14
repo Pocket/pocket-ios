@@ -69,6 +69,7 @@
 		658140EA29A5993C00346848 /* SnowplowMicro.swift in Sources */ = {isa = PBXBuildFile; fileRef = 658140E929A5993C00346848 /* SnowplowMicro.swift */; };
 		658140EC29A59A0C00346848 /* HTTPDataDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 658140EB29A59A0C00346848 /* HTTPDataDownloader.swift */; };
 		65BE918E29A5B9AF00B13BF1 /* AnyCodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65BE918D29A5B9AF00B13BF1 /* AnyCodable.swift */; };
+		65CDBC872B2B80D400F334B7 /* MessagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CDBC862B2B80D400F334B7 /* MessagesViewController.swift */; };
 		65D3105229CEACF100952D64 /* PKTListenResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 65D3105129CEACEE00952D64 /* PKTListenResources.bundle */; };
 		65EC272728BA8AD50075E1DF /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65EC272628BA8AD50075E1DF /* UserNotifications.framework */; };
 		65EC272928BA8AD50075E1DF /* UserNotificationsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65EC272828BA8AD50075E1DF /* UserNotificationsUI.framework */; };
@@ -262,6 +263,7 @@
 		65BE9F5C2B228AA90059C3C4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		65BE9F5E2B228AA90059C3C4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		65BE9F682B2297E40059C3C4 /* iMessageExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = iMessageExtension.entitlements; sourceTree = "<group>"; };
+		65CDBC862B2B80D400F334B7 /* MessagesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesViewController.swift; sourceTree = "<group>"; };
 		65D3105129CEACEE00952D64 /* PKTListenResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = PKTListenResources.bundle; sourceTree = "<group>"; };
 		65EC272528BA8AD50075E1DF /* PushNotificationStoryExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PushNotificationStoryExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		65EC272628BA8AD50075E1DF /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
@@ -564,6 +566,7 @@
 				65BE9F682B2297E40059C3C4 /* iMessageExtension.entitlements */,
 				65BE9F5C2B228AA90059C3C4 /* Assets.xcassets */,
 				65BE9F5E2B228AA90059C3C4 /* Info.plist */,
+				65CDBC862B2B80D400F334B7 /* MessagesViewController.swift */,
 			);
 			path = iMessageExtension;
 			sourceTree = "<group>";
@@ -807,6 +810,7 @@
 					};
 					656A99D42B237F6300FCFDC4 = {
 						CreatedOnToolsVersion = 15.0.1;
+						LastSwiftMigration = 1510;
 					};
 					65EC272428BA8AD50075E1DF = {
 						CreatedOnToolsVersion = 13.4.1;
@@ -1059,6 +1063,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				65CDBC872B2B80D400F334B7 /* MessagesViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1434,6 +1439,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = iMessageExtension/iMessageExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -1461,6 +1467,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1472,6 +1479,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = iMessageExtension/iMessageExtension.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -1499,6 +1507,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1510,6 +1519,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "iMessage App Icon";
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = iMessageExtension/iMessageExtension.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
