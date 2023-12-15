@@ -62,7 +62,6 @@ class ImageManager {
     func start() {
         imagesController.delegate = self
         try? imagesController.performFetch()
-
         // handle(images: imagesController.images)
     }
 }
