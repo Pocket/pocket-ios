@@ -8,6 +8,10 @@
 		<data>
 		K/mbaRX1iff+34iDIqANRdR8cUM=
 		</data>
+		<key>ios-arm64/.DS_Store</key>
+		<data>
+		3y++sUAKzaCQmjLBz2v0kvESHgc=
+		</data>
 		<key>ios-arm64/DiffMatchPatch.framework/DiffMatchPatch</key>
 		<data>
 		D1Br4/OirQdNrT2Ss6B5ClFBvLM=
@@ -37,17 +41,9 @@
 		<data>
 		3IxJYEah671NdEMbu47tyINYAdI=
 		</data>
-		<key>ios-arm64/dSYMs/DiffMatchPatch.framework.dSYM/Contents/Info.plist</key>
+		<key>ios-arm64_x86_64-maccatalyst/.DS_Store</key>
 		<data>
-		8WgoxrafwFPnICl9m9914mu07VY=
-		</data>
-		<key>ios-arm64/dSYMs/DiffMatchPatch.framework.dSYM/Contents/Resources/DWARF/DiffMatchPatch</key>
-		<data>
-		EZnxoHLZK8jIALZ0EOrD57EoRfU=
-		</data>
-		<key>ios-arm64/dSYMs/DiffMatchPatch.framework.dSYM/Contents/Resources/Relocations/aarch64/DiffMatchPatch.yml</key>
-		<data>
-		DHchroUXjE+ju251Oc1HEcoOsIM=
+		3y++sUAKzaCQmjLBz2v0kvESHgc=
 		</data>
 		<key>ios-arm64_x86_64-maccatalyst/DiffMatchPatch.framework/Versions/A/DiffMatchPatch</key>
 		<data>
@@ -78,21 +74,9 @@
 		<data>
 		1BSRQBseh9fgDP6wz6Nti0ByIxw=
 		</data>
-		<key>ios-arm64_x86_64-maccatalyst/dSYMs/DiffMatchPatch.framework.dSYM/Contents/Info.plist</key>
+		<key>ios-arm64_x86_64-simulator/.DS_Store</key>
 		<data>
-		8WgoxrafwFPnICl9m9914mu07VY=
-		</data>
-		<key>ios-arm64_x86_64-maccatalyst/dSYMs/DiffMatchPatch.framework.dSYM/Contents/Resources/DWARF/DiffMatchPatch</key>
-		<data>
-		hgVCz2HNRUgtwO/ulxebzft4X9s=
-		</data>
-		<key>ios-arm64_x86_64-maccatalyst/dSYMs/DiffMatchPatch.framework.dSYM/Contents/Resources/Relocations/aarch64/DiffMatchPatch.yml</key>
-		<data>
-		w4+1aNIL7P4wfGXfJKlViN3qk4c=
-		</data>
-		<key>ios-arm64_x86_64-maccatalyst/dSYMs/DiffMatchPatch.framework.dSYM/Contents/Resources/Relocations/x86_64/DiffMatchPatch.yml</key>
-		<data>
-		2s0F+A1/JRHvlWRD+Tumj06l+T8=
+		3y++sUAKzaCQmjLBz2v0kvESHgc=
 		</data>
 		<key>ios-arm64_x86_64-simulator/DiffMatchPatch.framework/DiffMatchPatch</key>
 		<data>
@@ -122,26 +106,6 @@
 		<key>ios-arm64_x86_64-simulator/DiffMatchPatch.framework/_CodeSignature/CodeResources</key>
 		<data>
 		3RSWYznZf+oSX3D3/BAWs/rCcek=
-		</data>
-		<key>ios-arm64_x86_64-simulator/dSYMs/.DS_Store</key>
-		<data>
-		8lSQY0mbFvOF0yrpGUemP0gsSEc=
-		</data>
-		<key>ios-arm64_x86_64-simulator/dSYMs/DiffMatchPatch.framework.dSYM/Contents/Info.plist</key>
-		<data>
-		8WgoxrafwFPnICl9m9914mu07VY=
-		</data>
-		<key>ios-arm64_x86_64-simulator/dSYMs/DiffMatchPatch.framework.dSYM/Contents/Resources/DWARF/DiffMatchPatch</key>
-		<data>
-		2tKJqWf49ppyWvQXb/E1R1tF1aA=
-		</data>
-		<key>ios-arm64_x86_64-simulator/dSYMs/DiffMatchPatch.framework.dSYM/Contents/Resources/Relocations/aarch64/DiffMatchPatch.yml</key>
-		<data>
-		Wlc9qJ2rTz14gmGDSF9js80CneI=
-		</data>
-		<key>ios-arm64_x86_64-simulator/dSYMs/DiffMatchPatch.framework.dSYM/Contents/Resources/Relocations/x86_64/DiffMatchPatch.yml</key>
-		<data>
-		dpcYPawotagOV91AfxvQL6vifcY=
 		</data>
 	</dict>
 	<key>files2</key>
@@ -212,39 +176,6 @@
 			<key>hash2</key>
 			<data>
 			/v6jrVkbbSLI9YIqfMVX3jdl1Apvo2874EyXQ1cwoUc=
-			</data>
-		</dict>
-		<key>ios-arm64/dSYMs/DiffMatchPatch.framework.dSYM/Contents/Info.plist</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			8WgoxrafwFPnICl9m9914mu07VY=
-			</data>
-			<key>hash2</key>
-			<data>
-			iglhCwifnHJ5gYNbQzL0MRNJOCjyuymB6CXOosx5YWo=
-			</data>
-		</dict>
-		<key>ios-arm64/dSYMs/DiffMatchPatch.framework.dSYM/Contents/Resources/DWARF/DiffMatchPatch</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			EZnxoHLZK8jIALZ0EOrD57EoRfU=
-			</data>
-			<key>hash2</key>
-			<data>
-			GUjyoSTmnbTtjqyCV4czJX0s1tpeQ+R96XmXhp0ADtA=
-			</data>
-		</dict>
-		<key>ios-arm64/dSYMs/DiffMatchPatch.framework.dSYM/Contents/Resources/Relocations/aarch64/DiffMatchPatch.yml</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			DHchroUXjE+ju251Oc1HEcoOsIM=
-			</data>
-			<key>hash2</key>
-			<data>
-			5g0EO5USFVg2o2sdgefOdPS7xj6HevJA7DZTIOMXmmM=
 			</data>
 		</dict>
 		<key>ios-arm64_x86_64-maccatalyst/DiffMatchPatch.framework/DiffMatchPatch</key>
@@ -340,50 +271,6 @@
 			<key>symlink</key>
 			<string>A</string>
 		</dict>
-		<key>ios-arm64_x86_64-maccatalyst/dSYMs/DiffMatchPatch.framework.dSYM/Contents/Info.plist</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			8WgoxrafwFPnICl9m9914mu07VY=
-			</data>
-			<key>hash2</key>
-			<data>
-			iglhCwifnHJ5gYNbQzL0MRNJOCjyuymB6CXOosx5YWo=
-			</data>
-		</dict>
-		<key>ios-arm64_x86_64-maccatalyst/dSYMs/DiffMatchPatch.framework.dSYM/Contents/Resources/DWARF/DiffMatchPatch</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			hgVCz2HNRUgtwO/ulxebzft4X9s=
-			</data>
-			<key>hash2</key>
-			<data>
-			/zxaq08XFr9/8INeX52yukj3/D4fTxjwjoWT6oYlCQc=
-			</data>
-		</dict>
-		<key>ios-arm64_x86_64-maccatalyst/dSYMs/DiffMatchPatch.framework.dSYM/Contents/Resources/Relocations/aarch64/DiffMatchPatch.yml</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			w4+1aNIL7P4wfGXfJKlViN3qk4c=
-			</data>
-			<key>hash2</key>
-			<data>
-			guawUDlOUYrw8yW7WoXEEI/sqDumQStWWhmpOAvmtN0=
-			</data>
-		</dict>
-		<key>ios-arm64_x86_64-maccatalyst/dSYMs/DiffMatchPatch.framework.dSYM/Contents/Resources/Relocations/x86_64/DiffMatchPatch.yml</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			2s0F+A1/JRHvlWRD+Tumj06l+T8=
-			</data>
-			<key>hash2</key>
-			<data>
-			qk0xaIVihbcjtJKdiItA+ZhfQnPgjSgdEssALRQSXqM=
-			</data>
-		</dict>
 		<key>ios-arm64_x86_64-simulator/DiffMatchPatch.framework/DiffMatchPatch</key>
 		<dict>
 			<key>hash</key>
@@ -450,50 +337,6 @@
 			<key>hash2</key>
 			<data>
 			ARS0XVZrmyylE+DoWdA024zOFi1zz+lTJhSz8hs8SVg=
-			</data>
-		</dict>
-		<key>ios-arm64_x86_64-simulator/dSYMs/DiffMatchPatch.framework.dSYM/Contents/Info.plist</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			8WgoxrafwFPnICl9m9914mu07VY=
-			</data>
-			<key>hash2</key>
-			<data>
-			iglhCwifnHJ5gYNbQzL0MRNJOCjyuymB6CXOosx5YWo=
-			</data>
-		</dict>
-		<key>ios-arm64_x86_64-simulator/dSYMs/DiffMatchPatch.framework.dSYM/Contents/Resources/DWARF/DiffMatchPatch</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			2tKJqWf49ppyWvQXb/E1R1tF1aA=
-			</data>
-			<key>hash2</key>
-			<data>
-			6QS2LDGgSBSGsJ8KjSOMcXjxxTMuRYZoJIQzc6nPMtc=
-			</data>
-		</dict>
-		<key>ios-arm64_x86_64-simulator/dSYMs/DiffMatchPatch.framework.dSYM/Contents/Resources/Relocations/aarch64/DiffMatchPatch.yml</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			Wlc9qJ2rTz14gmGDSF9js80CneI=
-			</data>
-			<key>hash2</key>
-			<data>
-			ZuduAAAcUzo1Sbp8vSjhWyiXptuvFhtPohS7ZBp9Dc4=
-			</data>
-		</dict>
-		<key>ios-arm64_x86_64-simulator/dSYMs/DiffMatchPatch.framework.dSYM/Contents/Resources/Relocations/x86_64/DiffMatchPatch.yml</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			dpcYPawotagOV91AfxvQL6vifcY=
-			</data>
-			<key>hash2</key>
-			<data>
-			MVpot/aEyXJqXjUwggslE1VFKvjp6bgqsY1NKQwxCVo=
 			</data>
 		</dict>
 	</dict>
