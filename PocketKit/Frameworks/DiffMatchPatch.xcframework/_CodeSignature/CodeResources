@@ -4,6 +4,10 @@
 <dict>
 	<key>files</key>
 	<dict>
+		<key>.DS_Store</key>
+		<data>
+		K/mbaRX1iff+34iDIqANRdR8cUM=
+		</data>
 		<key>ios-arm64/DiffMatchPatch.framework/DiffMatchPatch</key>
 		<data>
 		D1Br4/OirQdNrT2Ss6B5ClFBvLM=
