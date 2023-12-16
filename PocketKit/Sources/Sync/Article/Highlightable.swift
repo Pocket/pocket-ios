@@ -1,8 +1,7 @@
-//
-//  File.swift
-//  
-//
-//  Created by Giorgio Ruscigno on 12/15/23.
-//
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import Foundation
+public protocol Highlightable {
+    var content: String { get }
+}
