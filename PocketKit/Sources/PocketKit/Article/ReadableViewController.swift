@@ -99,10 +99,7 @@ class ReadableViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        // TODO: dummy code to generate a temporary call, remove.
-        if let viewModel = readableViewModel as? SavedItemViewModel, let art = viewModel.patchArticle() {
-            print(art)
-        }
+
         guard let userProgress = readableViewModel.readingProgress() else {
             return
         }

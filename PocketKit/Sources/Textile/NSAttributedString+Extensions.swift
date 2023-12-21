@@ -12,15 +12,56 @@ public extension NSAttributedString {
     }
 
     static func styled(markdown: String, styler: Styler) -> NSAttributedString? {
-        let d = Down(markdownString: markdown)
+        let renderer = Down(markdownString: markdown)
 
         do {
-            return try d.toAttributedString(styler: styler)
+            let renderedContent = try renderer.toAttributedString(styler: styler)
+            return renderedContent.highlighted()
         } catch {
             print(error)
         }
 
         return nil
+    }
+
+    private func highlighted() -> NSAttributedString {
+        let highlightableString = self.string
+        guard highlightableString.contains("pkt_tag_annotation>") else {
+            return self
+        }
+        let scanner = Scanner(string: highlightableString)
+
+        var highlightableRanges = [Range<String.Index>]()
+        var indexStack = [String.Index]()
+
+        while !scanner.isAtEnd {
+            guard scanner.scanUpToString("pkt_tag_annotation>") != nil else {
+                continue
+            }
+            let beforeIndex = max(highlightableString.index(before: scanner.currentIndex), highlightableString.startIndex)
+            let character = String(highlightableString[beforeIndex])
+            if character == "<" {
+                indexStack.append(scanner.currentIndex)
+            }
+            if character == "/" {
+                let tagIndex = highlightableString.index(before: beforeIndex)
+                if let upperBound = indexStack.popLast() {
+                    let range = Range<String.Index>(uncheckedBounds: (upperBound, tagIndex))
+                    highlightableRanges.append(range)
+                }
+            }
+            if !scanner.isAtEnd {
+                scanner.currentIndex = highlightableString.index(after: scanner.currentIndex)
+            }
+        }
+        let mutable = NSMutableAttributedString(attributedString: self)
+        highlightableRanges.forEach {
+            let nsRange = NSRange($0, in: highlightableString)
+            mutable.addAttribute(.backgroundColor, value: UIColor.yellow, range: nsRange)
+        }
+        mutable.mutableString.replaceOccurrences(of: "<pkt_tag_annotation>", with: "", range: NSRange(location: 0, length: mutable.mutableString.length))
+        mutable.mutableString.replaceOccurrences(of: "</pkt_tag_annotation>", with: "", range: NSRange(location: 0, length: mutable.mutableString.length))
+        return mutable
     }
 
     static func collectionStyler(bodyStyle: Style? = nil) -> Styler {
