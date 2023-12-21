@@ -11,12 +11,28 @@ public struct NumberedListComponent: Codable, Equatable, Hashable {
         public let content: Markdown
         public let level: UInt
         public let index: UInt
+
+        public init(content: Markdown, level: UInt, index: UInt) {
+            self.content = content
+            self.level = level
+            self.index = index
+        }
+    }
+
+    public init(rows: [Row]) {
+        self.rows = rows
     }
 }
 
 extension NumberedListComponent {
     init(_ marticle: MarticleNumberedListParts) {
         self.init(rows: marticle.rows.map(NumberedListComponent.Row.init))
+    }
+}
+
+extension NumberedListComponent: Highlightable {
+    public var content: String {
+        rows.map { $0.content }.joined(separator: "\n")
     }
 }
 

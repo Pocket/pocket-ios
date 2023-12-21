@@ -7,6 +7,11 @@ import PocketGraph
 public struct HeadingComponent: MarkdownComponent, Codable, Equatable, Hashable {
     public let content: Markdown
     public let level: UInt
+
+    public init(content: Markdown, level: UInt) {
+        self.content = content
+        self.level = level
+    }
 }
 
 extension HeadingComponent {

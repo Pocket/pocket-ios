@@ -99,7 +99,10 @@ class ReadableViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-
+        // TODO: dummy code to generate a temporary call, remove.
+        if let viewModel = readableViewModel as? SavedItemViewModel, let art = viewModel.patchArticle() {
+            print(art)
+        }
         guard let userProgress = readableViewModel.readingProgress() else {
             return
         }
@@ -143,9 +146,10 @@ class ReadableViewController: UIViewController {
             readableViewModel: readableViewModel,
             readerSettings: readerSettings
         )
-
-        presenters = readableViewModel
-            .components?
+        guard let components = readableViewModel.components else {
+            return
+        }
+        presenters = components
             .filter { !$0.isEmpty }.map { presenter(for: $0) }
 
         DispatchQueue.main.async {

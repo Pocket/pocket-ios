@@ -10,12 +10,27 @@ public struct BulletedListComponent: Codable, Equatable, Hashable {
     public struct Row: Codable, Equatable, Hashable {
         public let content: Markdown
         public let level: UInt
+
+        public init(content: Markdown, level: UInt) {
+            self.content = content
+            self.level = level
+        }
+    }
+
+    public init(rows: [Row]) {
+        self.rows = rows
     }
 }
 
 extension BulletedListComponent {
     init(_ marticle: MarticleBulletedListParts) {
         self.init(rows: marticle.rows.map(BulletedListComponent.Row.init))
+    }
+}
+
+extension BulletedListComponent: Highlightable {
+    public var content: String {
+        rows.map { $0.content }.joined(separator: "\n")
     }
 }
 

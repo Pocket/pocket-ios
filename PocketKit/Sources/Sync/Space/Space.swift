@@ -206,7 +206,6 @@ extension Space {
     ) -> Highlight {
         let context = context ?? backgroundContext
         let fetchRequest = Requests.fetchHighlight(by: ID)
-        fetchRequest.fetchLimit = 1
         if let fetchedHighlight = (try? fetch(fetchRequest, context: context).first) {
             return fetchedHighlight
         }
@@ -220,6 +219,16 @@ extension Space {
             version: version
         )
         return newHighlight
+    }
+
+    func fetchHighlights(by url: String, context: NSManagedObjectContext? = nil) -> [Highlight]? {
+        let context = context ?? backgroundContext
+        let fetchRequest = Requests.fetchHighlights(by: url)
+        return try? fetch(fetchRequest, context: context)
+    }
+
+    func fetchHighlightsOnViewContext(by url: String) -> [Highlight]? {
+        fetchHighlights(by: url, context: viewContext)
     }
 }
 

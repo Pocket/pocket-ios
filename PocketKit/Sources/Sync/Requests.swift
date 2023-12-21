@@ -184,6 +184,12 @@ public enum Requests {
         return request
     }
 
+    public static func fetchHighlights(by savedItemUrl: String) -> NSFetchRequest<Highlight> {
+        let request = Highlight.fetchRequest()
+        request.predicate = NSPredicate(format: "savedItem.url = %@", savedItemUrl)
+        return request
+    }
+
     public static func fetchTags() -> NSFetchRequest<Tag> {
         return Tag.fetchRequest()
     }
