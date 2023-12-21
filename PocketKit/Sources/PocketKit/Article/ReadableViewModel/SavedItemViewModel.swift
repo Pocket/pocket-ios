@@ -254,6 +254,7 @@ class SavedItemViewModel: ReadableViewModel {
                     patchedIndex += 1
                 case .heading(let headingComponent):
                     mergedComponents.append(.heading(HeadingComponent(content: content, level: headingComponent.level)))
+                    patchedIndex += 1
                 case .codeBlock(let codeBlockComponent):
                     mergedComponents.append(.codeBlock(CodeBlockComponent(language: codeBlockComponent.language, text: content)))
                     patchedIndex += 1
