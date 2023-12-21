@@ -224,14 +224,14 @@ class SavedItemViewModel: ReadableViewModel {
         }
         guard let patchedResult = diffMatchPatch.patch_apply(totalPatches, to: rawText)?.first as? String else {
             Log.capture(message: "Unable to patch article")
-            return nil
+            return item.item?.article?.components
         }
         do {
             let normalizedComponents = try normalizedComponents(patchedResult)
-            return mergedComponents(normalizedComponents)
+            return mergedComponents(normalizedComponents) ?? item.item?.article?.components
         } catch {
             Log.capture(error: error)
-            return nil
+            return item.item?.article?.components
         }
     }
 
@@ -293,7 +293,7 @@ class SavedItemViewModel: ReadableViewModel {
 
         while !scanner.isAtEnd {
             guard scanner.scanUpToString("pkt_") != nil else {
-                continue
+                return patchedComponents
             }
             let beforeIndex = max(patchedBlob.index(before: scanner.currentIndex), patchedBlob.startIndex)
             let character = String(patchedBlob[beforeIndex])
