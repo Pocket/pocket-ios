@@ -114,16 +114,14 @@ class SavedItemViewModel: ReadableViewModel {
     }()
 
     var components: [ArticleComponent]? {
-        // TODO: once working, this call will be replaced by
-        // patchArticle() ?? item.item?.article?.components
-        item.item?.article?.components
+        patchArticle()
     }
 
     var highlightableComponents: [Highlightable] {
-        guard let components else {
+        guard let originalComponents = item.item?.article?.components else {
             return []
         }
-        return components.compactMap { component in
+        return originalComponents.compactMap { component in
             if case let .text(textComponent) = component {
                 return textComponent
             }
@@ -212,7 +210,7 @@ class SavedItemViewModel: ReadableViewModel {
     /// Evaluates the patches that represent highlights on the entire artticle text
     func patchArticle() -> [ArticleComponent]? {
         guard let highlights = source.fetchViewContextHighlights(item.url), !rawText.isEmpty else {
-            return nil
+            return item.item?.article?.components
         }
         let patches = highlights.map { $0.patch }
         let diffMatchPatch = DiffMatchPatch()
@@ -238,7 +236,7 @@ class SavedItemViewModel: ReadableViewModel {
     }
 
     func mergedComponents(_ patchedComponents: [String]) -> [ArticleComponent]? {
-        guard let components,
+        guard let components = item.item?.article?.components,
                 components.count >= patchedComponents.count,
                 !patchedComponents.isEmpty else {
             return nil
