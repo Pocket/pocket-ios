@@ -196,27 +196,30 @@ class SavedItemViewModel: ReadableViewModel {
         item.isEligibleForListen
     }
 
-    static let componentSeparator = "<_pkt_break>"
+    static let componentSeparator = "<_pkt_>"
 
     var rawText: String {
         var blob = String()
 
-        highlightableComponents.forEach {
-            blob.append($0.content + Self.componentSeparator)
+        highlightableComponents.enumerated().forEach {
+            blob.append($0.element.content)
+            if $0.offset < highlightableComponents.count - 1 {
+                blob.append(Self.componentSeparator)
+            }
         }
         return blob
     }
 
     /// Evaluates the patches that represent highlights on the entire artticle text
     func patchArticle() -> [ArticleComponent]? {
-        guard let highlights = source.fetchViewContextHighlights(item.url), !rawText.isEmpty else {
+        guard let highlights = item.highlights?.array as? [Highlight], !rawText.isEmpty else {
             return item.item?.article?.components
         }
         let patches = highlights.map { $0.patch }
         let diffMatchPatch = DiffMatchPatch()
         // TODO: these are pretty broad parameters that seem to work in many common cases. We might need to tweak these and use an iterative approach for faster performance.
         diffMatchPatch.match_Distance = 3000
-        diffMatchPatch.match_Threshold = 0.8
+        diffMatchPatch.match_Threshold = 0.65
         let totalPatches = patches.reduce(into: [Patch]()) {
             if let patches = try? diffMatchPatch.patch_(fromText: $1) as? [Patch] {
                 $0.append(contentsOf: patches)
@@ -284,8 +287,6 @@ class SavedItemViewModel: ReadableViewModel {
 
     func normalizedComponents(_ patchedBlob: String) throws -> [String] {
         var patchedComponents = patchedBlob.components(separatedBy: Self.componentSeparator)
-        // because we use a postfix tag as separator, the last element will be an empty string that we don't need
-        patchedComponents.removeLast()
 
         let scanner = Scanner(string: patchedBlob)
         var componentCursor = 0
