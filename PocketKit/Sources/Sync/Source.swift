@@ -132,7 +132,7 @@ public protocol Source {
 
     func fetchFeatureFlag(by name: String) -> FeatureFlag?
 
-    // MARK: -
+    // MARK: - Object Helpers
 
     func fetchUnknownObject(uri: URL) -> NSManagedObject?
 }

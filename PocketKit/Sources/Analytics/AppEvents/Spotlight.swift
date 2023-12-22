@@ -8,7 +8,7 @@ public extension Events {
 }
 
 public extension Events.Spotlight {
-    /// Fired when a user taps a card in the `Recent Saves Widget`
+    /// Fired when a user taps an Item from `Spotlight Search`
     static func spotlightSearchContentOpen(url: String) -> ContentOpen {
         return ContentOpen(
             contentEntity:

@@ -271,22 +271,6 @@ public class PocketSource: Source {
 
 // MARK: - Saves/Archive items
 extension PocketSource {
-    public func fetchUnknownObject(uri: URL) -> NSManagedObject? {
-        guard let objectID = space.backgroundContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: uri) else {
-            Log.info("Could not create object id for uri \(uri)")
-            return nil
-        }
-
-        do {
-            return try space.backgroundContext.performAndWait {
-                return try space.backgroundContext.existingObject(with: objectID)
-            }
-        } catch {
-            Log.info("Could not find object id for uri \(uri)")
-            return nil
-        }
-    }
-
     public func refreshSaves(completion: (() -> Void)? = nil) {
         let operation = operations.fetchSaves(
             apollo: apollo,
@@ -1143,5 +1127,24 @@ extension PocketSource {
     /// - Returns: Int of unread saves
     public func unreadSaves() throws -> Int {
         return try space.fetch(Requests.fetchSavedItems()).count
+    }
+}
+
+// MARK: - Object Helpers
+extension PocketSource {
+    public func fetchUnknownObject(uri: URL) -> NSManagedObject? {
+        guard let objectID = space.backgroundContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: uri) else {
+            Log.info("Could not create object id for uri \(uri)")
+            return nil
+        }
+
+        do {
+            return try space.backgroundContext.performAndWait {
+                return try space.backgroundContext.existingObject(with: objectID)
+            }
+        } catch {
+            Log.info("Could not find object id for uri \(uri)")
+            return nil
+        }
     }
 }
