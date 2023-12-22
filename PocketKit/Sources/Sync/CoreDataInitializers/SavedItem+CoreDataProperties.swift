@@ -23,6 +23,7 @@ extension SavedItem {
     @NSManaged public var item: Item?
     @NSManaged public var savedItemUpdatedNotification: SavedItemUpdatedNotification?
     @NSManaged public var tags: NSOrderedSet?
+    @NSManaged public var highlights: NSOrderedSet?
     @NSManaged public var unresolvedSavedItem: UnresolvedSavedItem?
 }
 

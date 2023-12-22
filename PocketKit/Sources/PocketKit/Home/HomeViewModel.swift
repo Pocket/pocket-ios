@@ -37,6 +37,7 @@ enum ReadableType {
 enum ReadableSource {
     case app
     case widget
+    case spotlight
     case external
 }
 
@@ -433,6 +434,9 @@ extension HomeViewModel {
                 recommendationId: recommendationId,
                 destination: destination
             ))
+        case .spotlight:
+            // Spot light never indexes recs.
+            Log.breadcrumb(category: "spotlight", level: .warning, message: "Somehow entered slate open from Spotlight, which should not happen")
         }
     }
 
@@ -482,6 +486,8 @@ extension HomeViewModel {
             tracker.track(event: Events.Deeplinks.deeplinkArticleContentOpen(url: url, destination: .internal))
         case .widget:
             tracker.track(event: Events.Widgets.recentSavesCardContentOpen(url: url))
+        case .spotlight:
+            tracker.track(event: Events.Spotlight.spotlightSearchContentOpen(url: url))
         }
     }
 }

@@ -6,6 +6,10 @@ import PocketGraph
 
 public struct TextComponent: MarkdownComponent, Codable, Equatable, Hashable {
     public let content: Markdown
+
+    public init(content: Markdown) {
+        self.content = content
+    }
 }
 
 extension TextComponent {

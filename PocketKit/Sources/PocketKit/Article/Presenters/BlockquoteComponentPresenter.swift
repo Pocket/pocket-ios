@@ -61,7 +61,7 @@ class BlockquoteComponentPresenter: ArticleComponentPresenter {
                 with: readerSettings,
                 bodyStyle: .blockquote.modified(by: readerSettings)
             )
-        )
+        )?.highlighted()
 
         return cachedAttributedBlockquote
     }

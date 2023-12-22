@@ -22,7 +22,8 @@ let package = Package(
         .library(name: "Localization", targets: ["Localization"]),
         .library(name: "PKTListen", targets: ["PKTListen"]),
         .library(name: "ItemWidgetsKit", targets: ["ItemWidgetsKit"]),
-        .library(name: "PocketStickerKit", targets: ["PocketStickerKit"])
+        .library(name: "PocketStickerKit", targets: ["PocketStickerKit"]),
+        .library(name: "DiffMatchPatch", targets: ["DiffMatchPatch"])
     ],
     dependencies: [
         .package(url: "https://github.com/apollographql/apollo-ios.git", exact: "1.7.1"),
@@ -41,6 +42,10 @@ let package = Package(
             name: "PKTListen",
             url: "https://github.com/Pocket/pocket-ios/releases/download/release%2Fv8.2.0-offline-tts/PKTListen.xcframework.zip",
             checksum: "47a318af51ff3196d142ede33fe1da33f93b6d6c459b5834e0968bb4b02406e9"
+        ),
+        .binaryTarget(
+            name: "DiffMatchPatch",
+            path: "Frameworks/DiffMatchPatch.xcframework"
         ),
         .target(
             name: "ItemWidgetsKit",
@@ -75,6 +80,7 @@ let package = Package(
                 "SharedPocketKit",
                 "Localization",
                 "PKTListen",
+                "DiffMatchPatch",
                 .product(name: "YouTubePlayerKit", package: "YouTubePlayerKit"),
                 .product(name: "BrazeKit", package: "braze-swift-sdk"),
                 .product(name: "BrazeUI", package: "braze-swift-sdk"),

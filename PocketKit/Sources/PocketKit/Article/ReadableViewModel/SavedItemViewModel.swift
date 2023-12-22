@@ -113,7 +113,11 @@ class SavedItemViewModel: ReadableViewModel {
     }()
 
     var components: [ArticleComponent]? {
-        item.item?.article?.components
+        guard let highlights = item.highlights?.array as? [Highlight] else {
+            return item.item?.article?.components
+        }
+        let patches = highlights.map { $0.patch }
+        return item.item?.article?.components.highlighted(patches)
     }
 
     var textAlignment: Textile.TextAlignment {

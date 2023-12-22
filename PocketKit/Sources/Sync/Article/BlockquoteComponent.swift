@@ -4,8 +4,12 @@
 
 import PocketGraph
 
-public struct BlockquoteComponent: Codable, Equatable, Hashable {
+public struct BlockquoteComponent: Codable, Equatable, Hashable, MarkdownComponent {
     public let content: Markdown
+
+    public init(content: Markdown) {
+        self.content = content
+    }
 }
 
 extension BlockquoteComponent {

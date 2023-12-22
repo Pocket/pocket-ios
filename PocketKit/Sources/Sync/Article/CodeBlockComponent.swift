@@ -7,6 +7,11 @@ import PocketGraph
 public struct CodeBlockComponent: Codable, Equatable, Hashable {
     public let language: Int?
     public let text: String
+
+    public init(language: Int?, text: String) {
+        self.language = language
+        self.text = text
+    }
 }
 
 extension CodeBlockComponent {
@@ -15,5 +20,11 @@ extension CodeBlockComponent {
             language: marticle.language,
             text: marticle.text
         )
+    }
+}
+
+extension CodeBlockComponent: Highlightable {
+    public var content: String {
+        text
     }
 }

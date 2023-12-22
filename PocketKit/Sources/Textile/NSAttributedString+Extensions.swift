@@ -12,10 +12,10 @@ public extension NSAttributedString {
     }
 
     static func styled(markdown: String, styler: Styler) -> NSAttributedString? {
-        let d = Down(markdownString: markdown)
+        let renderer = Down(markdownString: markdown)
 
         do {
-            return try d.toAttributedString(styler: styler)
+            return try renderer.toAttributedString(styler: styler)
         } catch {
             print(error)
         }

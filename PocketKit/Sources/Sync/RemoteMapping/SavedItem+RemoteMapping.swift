@@ -24,6 +24,11 @@ extension SavedItem {
     }
 
     public func update(from remote: RemoteSavedItem, with space: Space) {
+        guard let context = managedObjectContext else {
+            Log.capture(message: "Managed context was nil")
+            return
+        }
+
         remoteID = remote.remoteID
         url = remote.url
         createdAt = Date(timeIntervalSince1970: TimeInterval(remote._createdAt))
@@ -31,10 +36,21 @@ extension SavedItem {
         archivedAt = remote.archivedAt.flatMap(TimeInterval.init).flatMap(Date.init(timeIntervalSince1970:))
         isArchived = remote.isArchived
         isFavorite = remote.isFavorite
-
-        guard let context = managedObjectContext else {
-            Log.capture(message: "Managed context was nil")
-            return
+        if let annotations = remote.annotations, let remoteHighlights = annotations.highlights, !remoteHighlights.isEmpty {
+            let highlightsArray = remoteHighlights.compactMap { $0 }.map {
+                space.fetchOrCreateHighlight(
+                    $0.id,
+                    createdAt: Date(timeIntervalSince1970: TimeInterval($0._createdAt)!),
+                    updatedAt: Date(timeIntervalSince1970: TimeInterval($0._updatedAt)!),
+                    patch: $0.patch,
+                    quote: $0.quote,
+                    version: Int16($0.version),
+                    context: context
+                )
+            }
+            highlights = NSOrderedSet(array: highlightsArray)
+        } else {
+            highlights = nil
         }
 
         if let tags = tags {

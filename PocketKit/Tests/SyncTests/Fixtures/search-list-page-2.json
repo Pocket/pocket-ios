@@ -27,6 +27,7 @@
                   }
                 ],
                 "corpusItem": null,
+                "annotations": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-3",
@@ -100,6 +101,7 @@
                   }
                 ],
                 "corpusItem": null,
+                "annotations": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-4",
