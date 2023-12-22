@@ -103,8 +103,6 @@ public protocol Source {
 
     func fetchViewContextItem(_ url: String) -> Item?
 
-    func fetchViewContextHighlights(_ url: String) -> [Highlight]?
-
     func fetchViewItem(from url: String) async throws -> Item?
 
     func searchSaves(search: String) -> [SavedItem]?

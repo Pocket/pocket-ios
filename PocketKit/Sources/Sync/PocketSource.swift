@@ -686,13 +686,6 @@ extension PocketSource {
     }
 }
 
-// MARK: Highlights
-extension PocketSource {
-    public func fetchViewContextHighlights(_ url: String) -> [Highlight]? {
-        space.fetchHighlightsOnViewContext(by: url)
-    }
-}
-
 // MARK: - Slates/Recommendations
 extension PocketSource {
     public func fetchUnifiedHomeLineup() async throws {

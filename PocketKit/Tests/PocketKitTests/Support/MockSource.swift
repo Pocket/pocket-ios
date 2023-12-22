@@ -8,10 +8,6 @@ import CoreData
 import Combine
 
 class MockSource: Source {
-    func fetchViewContextHighlights(_ url: String) -> [Sync.Highlight]? {
-        nil
-    }
-
     func fetchViewItem(from url: String) async throws -> Sync.Item? {
         nil
     }
