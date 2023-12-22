@@ -2101,7 +2101,7 @@
 			repositoryURL = "https://github.com/adjust/ios_sdk";
 			requirement = {
 				kind = exactVersion;
-				version = 4.36.0;
+				version = 4.37.0;
 			};
 		};
 		650EEABA29F35499004D66BD /* XCRemoteSwiftPackageReference "apollo-ios" */ = {
