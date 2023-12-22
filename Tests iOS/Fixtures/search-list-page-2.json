@@ -27,6 +27,7 @@
                   }
                 ],
                 "corpusItem": null,
+                "annotations": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-31",
@@ -100,6 +101,7 @@
                   }
                 ],
                 "corpusItem": null,
+                "annotations": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-32",
@@ -173,6 +175,7 @@
                   }
                 ],
                 "corpusItem": null,
+                "annotations": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-33",
@@ -246,6 +249,7 @@
                   }
                 ],
                 "corpusItem": null,
+                "annotations": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-34",
@@ -319,6 +323,7 @@
                   }
                 ],
                 "corpusItem": null,
+                "annotations": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-35",
@@ -392,6 +397,7 @@
                   }
                 ],
                 "corpusItem": null,
+                "annotations": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-36",
@@ -465,6 +471,7 @@
                   }
                 ],
                 "corpusItem": null,
+                "annotations": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-37",
@@ -538,6 +545,7 @@
                   }
                 ],
                 "corpusItem": null,
+                "annotations": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-38",
@@ -611,6 +619,7 @@
                   }
                 ],
                 "corpusItem": null,
+                "annotations": null,
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-39",

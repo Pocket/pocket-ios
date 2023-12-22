@@ -8,7 +8,7 @@ public class UpdateSavedItemRemoveTagsMutation: GraphQLMutation {
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
       #"mutation UpdateSavedItemRemoveTags($savedItemId: ID!) { updateSavedItemRemoveTags(savedItemId: $savedItemId) { __typename ...SavedItemParts } }"#,
-      fragments: [CorpusItemSummary.self, DomainMetadataParts.self, ImageParts.self, ItemParts.self, MarticleBlockquoteParts.self, MarticleBulletedListParts.self, MarticleCodeBlockParts.self, MarticleDividerParts.self, MarticleHeadingParts.self, MarticleNumberedListParts.self, MarticleTableParts.self, MarticleTextParts.self, PendingItemParts.self, SavedItemParts.self, SyndicatedArticleParts.self, TagParts.self, VideoParts.self]
+      fragments: [CorpusItemSummary.self, DomainMetadataParts.self, HighlightParts.self, ImageParts.self, ItemParts.self, MarticleBlockquoteParts.self, MarticleBulletedListParts.self, MarticleCodeBlockParts.self, MarticleDividerParts.self, MarticleHeadingParts.self, MarticleNumberedListParts.self, MarticleTableParts.self, MarticleTextParts.self, PendingItemParts.self, SavedItemParts.self, SyndicatedArticleParts.self, TagParts.self, VideoParts.self]
     ))
 
   public var savedItemId: ID
@@ -68,6 +68,8 @@ public class UpdateSavedItemRemoveTagsMutation: GraphQLMutation {
       public var item: Item { __data["item"] }
       /// If the item is in corpus allow the saved item to reference it.  Exposing curated info for consistent UX
       public var corpusItem: CorpusItem? { __data["corpusItem"] }
+      /// Annotations associated to this SavedItem
+      public var annotations: SavedItemParts.Annotations? { __data["annotations"] }
 
       public struct Fragments: FragmentContainer {
         public let __data: DataDict

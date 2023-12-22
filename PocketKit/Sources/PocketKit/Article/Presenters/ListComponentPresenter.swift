@@ -88,7 +88,7 @@ class ListComponentPresenter: ArticleComponentPresenter {
             attributedContent.append(content)
         }
 
-        cachedAttributedContent = attributedContent
+        cachedAttributedContent = attributedContent.highlighted()
 
         return cachedAttributedContent
     }

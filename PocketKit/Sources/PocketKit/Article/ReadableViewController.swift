@@ -143,9 +143,10 @@ class ReadableViewController: UIViewController {
             readableViewModel: readableViewModel,
             readerSettings: readerSettings
         )
-
-        presenters = readableViewModel
-            .components?
+        guard let components = readableViewModel.components else {
+            return
+        }
+        presenters = components
             .filter { !$0.isEmpty }.map { presenter(for: $0) }
 
         DispatchQueue.main.async {

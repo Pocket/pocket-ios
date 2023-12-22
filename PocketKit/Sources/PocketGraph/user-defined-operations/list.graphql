@@ -22,6 +22,22 @@ fragment SavedItemParts on SavedItem {
     __typename
     ...CorpusItemSummary
   }
+  annotations {
+    highlights {
+        __typename
+        ...HighlightParts
+    }
+  }
+}
+
+fragment HighlightParts on Highlight {
+  __typename
+  _createdAt
+  _updatedAt
+  patch
+  quote
+  version
+  id
 }
 
 fragment TagParts on Tag {

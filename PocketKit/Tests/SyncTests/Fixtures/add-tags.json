@@ -22,6 +22,7 @@
                 }
             ],
             "corpusItem": null,
+            "annotations": null,
             "item": {
                 "__typename": "Item",
                 "remoteID": "item-1",

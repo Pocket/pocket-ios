@@ -38,6 +38,7 @@
                                 "__typename": "CorpusItem",
                                 "publisher":"CorpusItemPublisher-1"
                             },
+                            "annotations": null,
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "item-1",
@@ -106,6 +107,7 @@
                             "isFavorite": false,
                             "tags": [],
                             "corpusItem": null,
+                            "annotations": null,
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "item-2",

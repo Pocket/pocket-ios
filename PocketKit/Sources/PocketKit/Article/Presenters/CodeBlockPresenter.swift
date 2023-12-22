@@ -49,7 +49,7 @@ class CodeBlockPresenter: ArticleComponentPresenter {
         cachedCodeBlock = NSAttributedString(
             string: component.text,
             style: .codeBlock.modified(by: readerSettings)
-        )
+        ).highlighted()
 
         return cachedCodeBlock
     }
