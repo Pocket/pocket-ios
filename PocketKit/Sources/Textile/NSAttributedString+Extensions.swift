@@ -15,8 +15,7 @@ public extension NSAttributedString {
         let renderer = Down(markdownString: markdown)
 
         do {
-            let renderedContent = try renderer.toAttributedString(styler: styler)
-            return renderedContent.highlighted()
+            return try renderer.toAttributedString(styler: styler)
         } catch {
             print(error)
         }
@@ -24,7 +23,7 @@ public extension NSAttributedString {
         return nil
     }
 
-    private func highlighted() -> NSAttributedString {
+    func highlighted() -> NSAttributedString {
         let highlightableString = self.string
         guard highlightableString.contains("pkt_tag_annotation>") else {
             return self

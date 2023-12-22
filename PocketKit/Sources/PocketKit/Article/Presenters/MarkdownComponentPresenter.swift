@@ -70,7 +70,7 @@ class MarkdownComponentPresenter: ArticleComponentPresenter {
         cachedContent = NSAttributedString.styled(
             markdown: component.content,
             styler: NSMutableAttributedString.defaultStyler(with: readerSettings)
-        )
+        )?.highlighted()
 
         return cachedContent
     }
