@@ -49,6 +49,8 @@ extension SavedItem {
                 )
             }
             highlights = NSOrderedSet(array: highlightsArray)
+        } else {
+            highlights = nil
         }
 
         if let tags = tags {

@@ -8,9 +8,9 @@ import Sync
 import UIKit
 
 extension Array where Element == ArticleComponent {
-    /// Apply an array of patches to an array of `ArticleComponent`
+    /// Apply an array of patches to an array of `ArticleComponent`, using `DiffMatchPatch`
     /// - Parameter patches: the patches to apply
-    /// - Returns: the patched components
+    /// - Returns: the patched components, or self, in case of errors
     func highlighted(_ patches: [String]) -> [ArticleComponent] {
         let text = rawText
         guard !text.isEmpty else {
@@ -19,11 +19,13 @@ extension Array where Element == ArticleComponent {
         let diffMatchPatch = DiffMatchPatch()
         diffMatchPatch.match_Distance = HighlightConstants.diffMatchPatchDistance
         diffMatchPatch.match_Threshold = HighlightConstants.diffMatchPatchThreshold
+        // convert text patches into Patch objects
         let totalPatches = patches.reduce(into: [Patch]()) {
             if let patches = try? diffMatchPatch.patch_(fromText: $1) as? [Patch] {
                 $0.append(contentsOf: patches)
             }
         }
+        // feed the array of Patch to DiffMatchPatch
         guard let patchedResult = diffMatchPatch.patch_apply(totalPatches, to: text)?.first as? String else {
             Log.capture(message: "Unable to patch article")
             return self
@@ -37,6 +39,7 @@ extension Array where Element == ArticleComponent {
         }
     }
 
+    /// Extract highlightable components from the current array (excluding images, videos, etc)
     private var highlightableComponents: [Highlightable] {
         return self.compactMap { component in
             if case let .text(textComponent) = component {
@@ -61,18 +64,17 @@ extension Array where Element == ArticleComponent {
         }
     }
 
+    /// Convert the highlightable components into a markdown blob
+    /// components in the blob are separated by the separator tag
     private var rawText: String {
-        var blob = String()
-
-        highlightableComponents.enumerated().forEach {
-            blob.append($0.element.content)
-            if $0.offset < highlightableComponents.count - 1 {
-                blob.append(HighlightConstants.componentSeparator)
-            }
-        }
-        return blob
+        highlightableComponents
+            .map { $0.content }
+            .joined(separator: HighlightConstants.componentSeparator)
     }
 
+    /// Merge patched component back into current array
+    /// - Parameter patchedComponents: array of patched components
+    /// - Returns: the array resulting from the merge
     private func mergedComponents(_ patchedComponents: [String]) -> [ArticleComponent]? {
         guard
                 self.count >= patchedComponents.count,
@@ -81,7 +83,7 @@ extension Array where Element == ArticleComponent {
         }
         var mergedComponents = [ArticleComponent]()
         var patchedIndex = 0
-
+        // cycle over the current array and, if a corresponding patched component is found, replace it
         forEach {
             if let content = patchedComponents[safe: patchedIndex] {
                 switch $0 {
@@ -96,7 +98,7 @@ extension Array where Element == ArticleComponent {
                     patchedIndex += 1
                 case .bulletedList(let bulletedListComponent):
                     let levels = bulletedListComponent.rows.map { $0.level }
-                    let rows = content.components(separatedBy: "\n").enumerated().map { row in
+                    let rows = content.components(separatedBy: HighlightConstants.listRowSeparator).enumerated().map { row in
                         BulletedListComponent.Row(content: row.element, level: UInt(levels[row.offset]))
                     }
                     mergedComponents.append(.bulletedList(BulletedListComponent(rows: rows)))
@@ -104,7 +106,7 @@ extension Array where Element == ArticleComponent {
                 case .numberedList(let numberedListComponent):
                     let levels = numberedListComponent.rows.map { $0.level }
                     let indexes = numberedListComponent.rows.map { $0.index }
-                    let rows = content.components(separatedBy: "\n").enumerated().map { row in
+                    let rows = content.components(separatedBy: HighlightConstants.listRowSeparator).enumerated().map { row in
                         NumberedListComponent.Row(content: row.element, level: UInt(levels[row.offset]), index: UInt(indexes[row.offset]))
                     }
                     mergedComponents.append(.numberedList(NumberedListComponent(rows: rows)))
