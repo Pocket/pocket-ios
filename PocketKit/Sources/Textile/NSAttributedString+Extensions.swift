@@ -56,7 +56,7 @@ public extension NSAttributedString {
         let mutable = NSMutableAttributedString(attributedString: self)
         highlightableRanges.forEach {
             let nsRange = NSRange($0, in: highlightableString)
-            mutable.addAttribute(.backgroundColor, value: UIColor.yellow, range: nsRange)
+            mutable.addAttribute(.backgroundColor, value: UIColor(displayP3Red: 250/255, green: 233/255, blue: 199/255, alpha: 0.8), range: nsRange)
             mutable.addAttribute(.foregroundColor, value: UIColor.black, range: nsRange)
         }
         mutable.mutableString.replaceOccurrences(of: "<pkt_tag_annotation>", with: "", range: NSRange(location: 0, length: mutable.mutableString.length))
