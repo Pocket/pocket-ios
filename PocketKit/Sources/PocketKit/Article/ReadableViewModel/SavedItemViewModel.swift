@@ -10,7 +10,6 @@ import Analytics
 import UIKit
 import SharedPocketKit
 import Localization
-import DiffMatchPatch
 
 class SavedItemViewModel: ReadableViewModel {
     func trackReadingProgress(index: IndexPath) {
@@ -114,34 +113,11 @@ class SavedItemViewModel: ReadableViewModel {
     }()
 
     var components: [ArticleComponent]? {
-        patchArticle()
-    }
-
-    var highlightableComponents: [Highlightable] {
-        guard let originalComponents = item.item?.article?.components else {
-            return []
+        guard let highlights = item.highlights?.array as? [Highlight] else {
+            return item.item?.article?.components
         }
-        return originalComponents.compactMap { component in
-            if case let .text(textComponent) = component {
-                return textComponent
-            }
-            if case let .blockquote(blockquoteComponent) = component {
-                return blockquoteComponent
-            }
-            if case let .bulletedList(bulletedListComponent) = component {
-                return bulletedListComponent
-            }
-            if case let .codeBlock(codeBlockComponent) = component {
-                return codeBlockComponent
-            }
-            if case let .heading(headingComponent) = component {
-                return headingComponent
-            }
-            if case let .numberedList(numberedListComponent) = component {
-                return numberedListComponent
-            }
-            return nil
-        }
+        let patches = highlights.map { $0.patch }
+        return item.item?.article?.components.highlighted(patches)
     }
 
     var textAlignment: Textile.TextAlignment {
@@ -194,141 +170,6 @@ class SavedItemViewModel: ReadableViewModel {
 
     var isListenSupported: Bool {
         item.isEligibleForListen
-    }
-
-    static let componentSeparator = "<_pkt_>"
-
-    var rawText: String {
-        var blob = String()
-
-        highlightableComponents.enumerated().forEach {
-            blob.append($0.element.content)
-            if $0.offset < highlightableComponents.count - 1 {
-                blob.append(Self.componentSeparator)
-            }
-        }
-        return blob
-    }
-
-    /// Evaluates the patches that represent highlights on the entire artticle text
-    func patchArticle() -> [ArticleComponent]? {
-        guard let highlights = item.highlights?.array as? [Highlight], !rawText.isEmpty else {
-            return item.item?.article?.components
-        }
-        let patches = highlights.map { $0.patch }
-        let diffMatchPatch = DiffMatchPatch()
-        // TODO: these are pretty broad parameters that seem to work in many common cases. We might need to tweak these and use an iterative approach for faster performance.
-        diffMatchPatch.match_Distance = 3000
-        diffMatchPatch.match_Threshold = 0.65
-        let totalPatches = patches.reduce(into: [Patch]()) {
-            if let patches = try? diffMatchPatch.patch_(fromText: $1) as? [Patch] {
-                $0.append(contentsOf: patches)
-            }
-        }
-        guard let patchedResult = diffMatchPatch.patch_apply(totalPatches, to: rawText)?.first as? String else {
-            Log.capture(message: "Unable to patch article")
-            return item.item?.article?.components
-        }
-        do {
-            let normalizedComponents = try normalizedComponents(patchedResult)
-            return mergedComponents(normalizedComponents) ?? item.item?.article?.components
-        } catch {
-            Log.capture(error: error)
-            return item.item?.article?.components
-        }
-    }
-
-    func mergedComponents(_ patchedComponents: [String]) -> [ArticleComponent]? {
-        guard let components = item.item?.article?.components,
-                components.count >= patchedComponents.count,
-                !patchedComponents.isEmpty else {
-            return nil
-        }
-        var mergedComponents = [ArticleComponent]()
-        var patchedIndex = 0
-
-        components.forEach {
-            if let content = patchedComponents[safe: patchedIndex] {
-                switch $0 {
-                case .text:
-                    mergedComponents.append(.text(TextComponent(content: content)))
-                    patchedIndex += 1
-                case .heading(let headingComponent):
-                    mergedComponents.append(.heading(HeadingComponent(content: content, level: headingComponent.level)))
-                    patchedIndex += 1
-                case .codeBlock(let codeBlockComponent):
-                    mergedComponents.append(.codeBlock(CodeBlockComponent(language: codeBlockComponent.language, text: content)))
-                    patchedIndex += 1
-                case .bulletedList(let bulletedListComponent):
-                    let levels = bulletedListComponent.rows.map { $0.level }
-                    let rows = content.components(separatedBy: "\n").enumerated().map { row in
-                        BulletedListComponent.Row(content: row.element, level: UInt(levels[row.offset]))
-                    }
-                    mergedComponents.append(.bulletedList(BulletedListComponent(rows: rows)))
-                    patchedIndex += 1
-                case .numberedList(let numberedListComponent):
-                    let levels = numberedListComponent.rows.map { $0.level }
-                    let indexes = numberedListComponent.rows.map { $0.index }
-                    let rows = content.components(separatedBy: "\n").enumerated().map { row in
-                        NumberedListComponent.Row(content: row.element, level: UInt(levels[row.offset]), index: UInt(indexes[row.offset]))
-                    }
-                    mergedComponents.append(.numberedList(NumberedListComponent(rows: rows)))
-                    patchedIndex += 1
-                case .blockquote:
-                    mergedComponents.append(.blockquote(BlockquoteComponent(content: content)))
-                    patchedIndex += 1
-                default:
-                    mergedComponents.append($0)
-                }
-            }
-        }
-        return mergedComponents
-    }
-
-    func normalizedComponents(_ patchedBlob: String) throws -> [String] {
-        var patchedComponents = patchedBlob.components(separatedBy: Self.componentSeparator)
-
-        let scanner = Scanner(string: patchedBlob)
-        var componentCursor = 0
-        var tagStack = [String]()
-
-        while !scanner.isAtEnd {
-            guard scanner.scanUpToString("pkt_") != nil else {
-                return patchedComponents
-            }
-            let beforeIndex = max(patchedBlob.index(before: scanner.currentIndex), patchedBlob.startIndex)
-            let character = String(patchedBlob[beforeIndex])
-            if character == "<" {
-                tagStack.append("<pkt_tag_annotation>")
-            }
-            if character == "/" {
-                guard !tagStack.isEmpty else {
-                    // in the entire blob, we are not supposed to find a closing tag without an opening tag
-                    throw HighlightError.invalidPatch(componentCursor)
-                }
-                tagStack.removeLast()
-            }
-            if character == "_" {
-                if !tagStack.isEmpty {
-                    // no pending highlights, let's just move on
-                    // continue
-
-                    var currentComponent = patchedComponents[componentCursor]
-                    var nextComponent = patchedComponents[componentCursor + 1]
-                    tagStack.forEach {
-                        currentComponent.insert(contentsOf: "</pkt_tag_annotation>", at: currentComponent.endIndex)
-                        nextComponent.insert(contentsOf: $0, at: nextComponent.startIndex)
-                    }
-                    patchedComponents[componentCursor] = currentComponent
-                    patchedComponents[componentCursor + 1] = nextComponent
-                }
-                componentCursor += 1
-            }
-            if !scanner.isAtEnd {
-                scanner.currentIndex = patchedBlob.index(after: scanner.currentIndex)
-            }
-        }
-        return patchedComponents
     }
 
     func moveToSaves() {
@@ -516,9 +357,4 @@ extension SavedItemViewModel {
     func clearSharedActivity() {
         sharedActivity = nil
     }
-}
-
-enum HighlightError: Error {
-    case noPatches
-    case invalidPatch(Int)
 }
