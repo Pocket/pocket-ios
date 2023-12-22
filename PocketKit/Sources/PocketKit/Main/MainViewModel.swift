@@ -10,6 +10,7 @@ import BackgroundTasks
 import UIKit
 import Textile
 import Localization
+import CoreSpotlight
 
 @MainActor
 class MainViewModel: ObservableObject {
@@ -224,8 +225,10 @@ extension MainViewModel {
     }
 
     @MainActor
-    func handleSpotlight(uri coreDataURI: URL) {
-        guard let unknownObject = source.fetchUnknownObject(uri: coreDataURI),
+    func handleSpotlight(_ userActivity: NSUserActivity) {
+        guard let coreDataString = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String,
+              let coreDataURI = URL(string: coreDataString),
+              let unknownObject = source.fetchUnknownObject(uri: coreDataURI),
               let object = source.viewObject(id: unknownObject.objectID) else {
             return
         }

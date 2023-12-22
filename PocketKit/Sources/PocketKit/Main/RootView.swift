@@ -76,10 +76,7 @@ public struct RootView: View {
                 // Continues opening an Item that a user tapped on.
                 // we could also listen on CSQueryContinuationActionType which will contiunue a search.
                 .onContinueUserActivity(CSSearchableItemActionType, perform: { userActivity in
-                    guard let coreDataString = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String, let coreDataURI = URL(string: coreDataString) else {
-                        return
-                    }
-                    model.handleSpotlight(uri: coreDataURI)
+                    model.handleSpotlight(userActivity)
                 })
         }
 
