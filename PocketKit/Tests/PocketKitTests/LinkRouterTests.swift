@@ -24,11 +24,14 @@ class LinkRouterTests: XCTestCase {
         let syndicatedRoute = SyndicationRoute { _, _ in
             XCTFail("Syndicated route should not have been matched")
         }
+        let spotlightRoute = SpotlightRoute { _, _ in
+            XCTFail("Spotlight route should not have been matched")
+        }
         let fallbackAction: (URL) -> Void = { _ in
             XCTFail("Fallback action should not have been triggered")
         }
         router.setFallbackAction(fallbackAction)
-        router.addRoutes([collectionRoute, syndicatedRoute, widgetRoute])
+        router.addRoutes([collectionRoute, syndicatedRoute, widgetRoute, spotlightRoute])
         // When
         await router.matchRoute(from: URL(string: widgetItemUrlString)!)
         // Then
@@ -52,11 +55,14 @@ class LinkRouterTests: XCTestCase {
         let widgetRoute = WidgetRoute { _, _ in
             XCTFail("Widget route should not have been matched")
         }
+        let spotlightRoute = SpotlightRoute { _, _ in
+            XCTFail("Spotlight route should not have been matched")
+        }
         let fallbackAction: (URL) -> Void = { _ in
             XCTFail("Fallback action should not have been triggered")
         }
         router.setFallbackAction(fallbackAction)
-        router.addRoutes([collectionRoute, syndicatedRoute, widgetRoute])
+        router.addRoutes([collectionRoute, syndicatedRoute, widgetRoute, spotlightRoute])
         // When
         await router.matchRoute(from: URL(string: collectionItemUrlString)!)
         // Then
@@ -80,15 +86,49 @@ class LinkRouterTests: XCTestCase {
         let widgetRoute = WidgetRoute { _, _ in
             XCTFail("Widget route should not have been matched")
         }
+        let spotlightRoute = SpotlightRoute { _, _ in
+            XCTFail("Spotlight route should not have been matched")
+        }
         let fallbackAction: (URL) -> Void = { _ in
             XCTFail("Fallback action should not have been triggered")
         }
         router.setFallbackAction(fallbackAction)
-        router.addRoutes([collectionRoute, syndicatedRoute, widgetRoute])
+        router.addRoutes([collectionRoute, syndicatedRoute, widgetRoute, spotlightRoute])
         // When
         await router.matchRoute(from: URL(string: syndicatedItemUrlString)!)
         // Then
         await fulfillment(of: [syndicatedRouteExpectation], timeout: 1)
+    }
+
+    func testSpotlightRoute() async {
+        // Given
+        let spotlightRouteExpectation = expectation(description: "Spotlight route matched")
+        let spotlightItemUrlString = "spotlight:/itemURL?url=https://example.com/this_is_an_article/"
+        var router = LinkRouter()
+        let spotlightRoute = SpotlightRoute { url, source in
+            XCTAssertEqual(url.absoluteString, "https://example.com/this_is_an_article/")
+            XCTAssertEqual(source, .spotlight)
+            spotlightRouteExpectation.fulfill()
+        }
+
+        let collectionRoute = CollectionRoute { _, _ in
+            XCTFail("Collection route should not have been matched")
+        }
+        let syndicatedRoute = SyndicationRoute { _, _ in
+            XCTFail("Syndicated route should not have been matched")
+        }
+        let widgetRoute = WidgetRoute { _, _ in
+            XCTFail("Widget route should not have been matched")
+        }
+        let fallbackAction: (URL) -> Void = { _ in
+            XCTFail("Fallback action should not have been triggered")
+        }
+        router.setFallbackAction(fallbackAction)
+        router.addRoutes([collectionRoute, syndicatedRoute, widgetRoute, spotlightRoute])
+        // When
+        await router.matchRoute(from: URL(string: spotlightItemUrlString)!)
+        // Then
+        await fulfillment(of: [spotlightRouteExpectation], timeout: 1)
     }
 
     func testImproperUrlTriggersFallbackAction() async {
