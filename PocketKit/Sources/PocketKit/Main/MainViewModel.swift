@@ -223,6 +223,23 @@ extension MainViewModel {
         linkRouter.matchRoute(from: url)
     }
 
+    @MainActor
+    func handleSpotlight(uri coreDataURI: URL) {
+        guard let unknownObject = source.fetchUnknownObject(uri: coreDataURI),
+              let object = source.viewObject(id: unknownObject.objectID) else {
+            return
+        }
+
+        // Not pretty, but an easy way to re-use our deeplinking code, we buid a new deep link from our coredata SavedItem object and let the router do its thing.
+        if let savedItem: SavedItem = object as? SavedItem {
+            var components = URLComponents()
+            components.scheme = "spotlight"
+            components.path = "/itemURL"
+            components.queryItems = [URLQueryItem(name: "url", value: savedItem.url)]
+            linkRouter.matchRoute(from: components.url!)
+        }
+    }
+
     private func setupLinkRouter() {
         let fallbackAction: (URL) -> Void = { url in
             UIApplication.shared.open(url)
@@ -256,6 +273,7 @@ extension MainViewModel {
         let widgetRoute = WidgetRoute(action: routingAction)
         let collectionRoute = CollectionRoute(action: routingAction)
         let syndicatedRoute = SyndicationRoute(action: routingAction)
-        linkRouter.addRoutes([widgetRoute, collectionRoute, syndicatedRoute])
+        let spotlightRoute = SpotlightRoute(action: routingAction)
+        linkRouter.addRoutes([widgetRoute, collectionRoute, syndicatedRoute, spotlightRoute])
     }
 }

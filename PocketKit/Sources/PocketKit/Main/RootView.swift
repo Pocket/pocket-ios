@@ -3,6 +3,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import SwiftUI
+import CoreSpotlight
 
 public struct RootView: View {
     @ObservedObject var model: RootViewModel
@@ -66,11 +67,19 @@ public struct RootView: View {
                 .onOpenURL { url in
                     model.handle(url)
                 }
-                .onContinueUserActivity("NSUserActivityTypeBrowsingWeb", perform: { userActivity in
+                .onContinueUserActivity(NSUserActivityTypeBrowsingWeb, perform: { userActivity in
                     guard let url = userActivity.webpageURL else {
                         return
                     }
                     model.handle(url)
+                })
+                // Continues opening an Item that a user tapped on.
+                // we could also liston on CSQueryContinuationActionType which will contiunue a search.
+                .onContinueUserActivity(CSSearchableItemActionType, perform: { userActivity in
+                    guard let coreDataString = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String, let coreDataURI = URL(string: coreDataString) else {
+                        return
+                    }
+                    model.handleSpotlight(uri: coreDataURI)
                 })
         }
 

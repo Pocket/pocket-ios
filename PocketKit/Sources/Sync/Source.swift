@@ -131,4 +131,8 @@ public protocol Source {
     func fetchAllFeatureFlags() async throws
 
     func fetchFeatureFlag(by name: String) -> FeatureFlag?
+
+    // MARK: -
+
+    func fetchUnknownObject(uri: URL) -> NSManagedObject?
 }

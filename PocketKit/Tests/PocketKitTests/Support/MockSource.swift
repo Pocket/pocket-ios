@@ -1585,3 +1585,36 @@ extension MockSource {
         return calls[index] as? FetchCollectionCall
     }
  }
+
+extension MockSource {
+    private static let fetchUnknownObject = "fetchUnknownObject"
+    typealias FetchUnknownObjectImpl = (URL) -> NSManagedObject?
+
+    struct FetchUnknownObjectCall {
+        let uri: URL
+    }
+
+    func stubFetchUnknownObject(impl: @escaping FetchUnknownObjectImpl) {
+        implementations[Self.fetchUnknownObject] = impl
+    }
+
+    func fetchUnknownObject(uri: URL) -> NSManagedObject? {
+        guard let impl = implementations[Self.fetchUnknownObject] as? FetchUnknownObjectImpl else {
+            fatalError("\(Self.self)#\(#function) has not been stubbed")
+        }
+
+        calls[Self.fetchUnknownObject] = (calls[Self.fetchUnknownObject] ?? []) + [
+            FetchUnknownObjectCall(uri: uri)
+        ]
+
+        return impl(uri)
+    }
+
+    func fetchUnknownObject(at index: Int) -> FetchUnknownObjectCall? {
+        guard let calls = calls[Self.fetchUnknownObject], calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? FetchUnknownObjectCall
+    }
+}
