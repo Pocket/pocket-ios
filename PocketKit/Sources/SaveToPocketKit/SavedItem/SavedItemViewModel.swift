@@ -39,6 +39,11 @@ class SavedItemViewModel {
         )
     }
 
+    let openInPocket = NSAttributedString(
+        string: Localization.SaveToPocket.openInPocket,
+        style: .buttonText
+    )
+
     let dismissAttributedText = NSAttributedString(
         string: Localization.SaveToPocket.tapToDismiss,
         style: .dismiss
@@ -99,6 +104,50 @@ class SavedItemViewModel {
         save(url)
 
         autodismiss(from: context)
+    }
+
+    @MainActor
+    func open(from context: ExtensionContext?) async {
+        guard appSession.currentSession != nil else {
+            autodismiss(from: context)
+
+            return
+        }
+
+        guard let extensionItems = context?.extensionItems else {
+            tracker.track(event: Events.SaveTo.unableToOpen())
+            autodismiss(from: context)
+
+            return
+        }
+
+        guard let url = await parse(extensionItems: extensionItems) else {
+            tracker.track(event: Events.SaveTo.unableToOpen())
+            infoViewModel = .error
+
+            return
+        }
+
+        var components = URLComponents()
+        components.scheme = "pocketSaveTo"
+        components.path = "//itemURL"
+        components.queryItems = [URLQueryItem(name: "url", value: url)]
+
+        guard let context, let deepLinkURL = components.url else {
+            tracker.track(event: Events.SaveTo.unableToOpen())
+            autodismiss(from: context)
+
+            return
+        }
+
+        context.open(url: deepLinkURL, completionHandler: { [weak self] success in
+            if !success {
+                self?.tracker.track(event: Events.SaveTo.unableToOpen())
+                return
+            }
+
+            self?.autodismiss(from: context)
+        })
     }
 
     private func parse(extensionItems: [ExtensionItem]) async -> String? {

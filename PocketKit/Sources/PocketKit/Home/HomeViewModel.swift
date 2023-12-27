@@ -38,6 +38,7 @@ enum ReadableSource {
     case app
     case widget
     case spotlight
+    case saveTo
     case external
 }
 
@@ -437,6 +438,9 @@ extension HomeViewModel {
         case .spotlight:
             // Spot light never indexes recs.
             Log.breadcrumb(category: "spotlight", level: .warning, message: "Somehow entered slate open from Spotlight, which should not happen")
+        case .saveTo:
+            // Spot light never indexes recs.
+            Log.breadcrumb(category: "saveTo", level: .warning, message: "Somehow entered slate open from saveTo Extension, which should not happen")
         }
     }
 
@@ -488,6 +492,8 @@ extension HomeViewModel {
             tracker.track(event: Events.Widgets.recentSavesCardContentOpen(url: url))
         case .spotlight:
             tracker.track(event: Events.Spotlight.spotlightSearchContentOpen(url: url))
+        case .saveTo:
+            tracker.track(event: Events.SaveTo.open(url: url))
         }
     }
 }

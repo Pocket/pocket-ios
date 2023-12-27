@@ -277,6 +277,7 @@ extension MainViewModel {
         let collectionRoute = CollectionRoute(action: routingAction)
         let syndicatedRoute = SyndicationRoute(action: routingAction)
         let spotlightRoute = SpotlightRoute(action: routingAction)
-        linkRouter.addRoutes([widgetRoute, collectionRoute, syndicatedRoute, spotlightRoute])
+        let saveToOpenRoute = SaveToOpenRoute(action: routingAction)
+        linkRouter.addRoutes([widgetRoute, collectionRoute, syndicatedRoute, spotlightRoute, saveToOpenRoute])
     }
 }

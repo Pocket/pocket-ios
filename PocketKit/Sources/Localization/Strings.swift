@@ -426,6 +426,8 @@ public enum Localization {
     }
   }
   public enum SaveToPocket {
+    /// Open in Pocket
+    public static let openInPocket = Localization.tr("Localizable", "saveToPocket.openInPocket", fallback: "Open in Pocket")
     /// Tap to dismiss
     public static let tapToDismiss = Localization.tr("Localizable", "saveToPocket.tapToDismiss", fallback: "Tap to dismiss")
   }

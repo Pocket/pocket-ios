@@ -26,6 +26,18 @@ public extension Events.SaveTo {
         )
     }
 
+    /// Fired when a user taps open from the save extension
+    static func open(url: String) -> Event {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .screen,
+                identifier: "save-extension.openInPocket.tapped"
+            ),
+            extraEntities: [ContentEntity(url: url)]
+        )
+    }
+
     /// Fired when a user taps on "Add Tags" from the Save extension
     static func addTagsEngagement(url: String) -> Event {
         return Engagement(
@@ -42,6 +54,11 @@ public extension Events.SaveTo {
     /// Fired when the extension was unable to find a URL to save
     static func unableToSave() -> Event {
         return System(type: .unableToSave, source: .saveToPocketKit)
+    }
+
+    /// Fired when the extension was unable to find a URL to open
+    static func unableToOpen() -> Event {
+        return System(type: .unableToOpen, source: .saveToPocketKit)
     }
 }
 

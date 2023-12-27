@@ -326,6 +326,7 @@
 "back.to.pocket" = "Back to Pocket";
 
 "saveToPocket.tapToDismiss" = "Tap to dismiss";
+"saveToPocket.openInPocket" = "Open in Pocket";
 
 "itemWidgets.loggedOutMessage" = "Log in to Pocket to see your content.";
 "itemWidgets.errorMessage" = "Something went wrong.";

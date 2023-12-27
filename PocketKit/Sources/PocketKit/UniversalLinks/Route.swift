@@ -63,6 +63,26 @@ struct WidgetRoute: Route {
     }
 }
 
+struct SaveToOpenRoute: Route {
+    let scheme = "pocketSaveTo"
+    let path = "/itemURL"
+    let source: ReadableSource = .saveTo
+    let action: (URL, ReadableSource) -> Void
+
+    init(action: @escaping (URL, ReadableSource) -> Void) {
+        self.action = action
+    }
+
+    func matchedUrlString(from url: URL) -> String? {
+        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
+              components.scheme == scheme,
+              components.path == path else {
+            return nil
+        }
+        return components.queryItems?.first(where: { $0.name == "url" })?.value
+    }
+}
+
 struct CollectionRoute: Route {
     let scheme = "https"
     let path =  "/collections/"

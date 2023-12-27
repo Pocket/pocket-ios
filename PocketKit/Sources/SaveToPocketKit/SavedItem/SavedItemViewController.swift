@@ -33,6 +33,22 @@ class SavedItemViewController: UIViewController {
         return button
     }()
 
+    private lazy var openInPocketButton: UIButton = {
+        var configuration: UIButton.Configuration = .filled()
+        configuration.background.backgroundColor = UIColor(.ui.teal2).resolvedColor(with: UITraitCollection(userInterfaceStyle: .light))
+        configuration.background.cornerRadius = 13
+        configuration.contentInsets = NSDirectionalEdgeInsets(top: 13, leading: 0, bottom: 13, trailing: 0)
+        configuration.attributedTitle = AttributedString(viewModel.openInPocket)
+
+        let button = UIButton(
+            configuration: configuration,
+            primaryAction: nil
+        )
+
+        button.accessibilityIdentifier = "open-in-pocket-button"
+        return button
+    }()
+
     init(viewModel: SavedItemViewModel) {
         self.viewModel = viewModel
 
@@ -50,6 +66,12 @@ class SavedItemViewController: UIViewController {
             self?.viewModel.cancelDismissTimer()
             self?.viewModel.showAddTagsView(from: self?.extensionContext)
         }, for: .primaryActionTriggered)
+
+        openInPocketButton.addAction(UIAction { [weak self] _ in
+            Task { @MainActor in
+                await self?.viewModel.open(from: self?.extensionContext)
+            }
+        }, for: .primaryActionTriggered)
     }
 
     required init?(coder: NSCoder) {
@@ -65,11 +87,13 @@ class SavedItemViewController: UIViewController {
         view.addSubview(infoView)
         view.addSubview(dismissLabel)
         view.addSubview(addTagsButton)
+        view.addSubview(openInPocketButton)
 
         imageView.translatesAutoresizingMaskIntoConstraints = false
         infoView.translatesAutoresizingMaskIntoConstraints = false
         dismissLabel.translatesAutoresizingMaskIntoConstraints = false
         addTagsButton.translatesAutoresizingMaskIntoConstraints = false
+        openInPocketButton.translatesAutoresizingMaskIntoConstraints = false
 
         let capsuleTopConstraint = NSLayoutConstraint(
             item: infoView,
@@ -89,6 +113,11 @@ class SavedItemViewController: UIViewController {
             addTagsButton.bottomAnchor.constraint(equalTo: dismissLabel.topAnchor, constant: -16),
             addTagsButton.safeAreaLayoutGuide.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             addTagsButton.safeAreaLayoutGuide.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+
+            capsuleTopConstraint,
+            openInPocketButton.bottomAnchor.constraint(equalTo: addTagsButton.topAnchor, constant: -16),
+            openInPocketButton.safeAreaLayoutGuide.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            openInPocketButton.safeAreaLayoutGuide.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
 
             dismissLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             dismissLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)

@@ -8,11 +8,17 @@ public protocol ExtensionContext {
     var extensionItems: [ExtensionItem] { get }
 
     func completeRequest(returningItems items: [Any]?, completionHandler: ((Bool) -> Void)?)
+
+    func open(url: URL, completionHandler: ((Bool) -> Void)?)
 }
 
 extension NSExtensionContext: ExtensionContext {
     public var extensionItems: [ExtensionItem] {
         inputItems.compactMap { $0 as? ExtensionItem }
+    }
+
+    public func open(url: URL, completionHandler: ((Bool) -> Void)?) {
+        open(url, completionHandler: completionHandler)
     }
 }
 
