@@ -35,8 +35,10 @@ struct PremiumStatusView: View {
         .manageSubscriptionsSheet(isPresented: $presentManageSubscriptions)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("premium-status-view")
-        .task {
-            await viewModel.getInfo()
+        .onAppear {
+            Task {
+                await viewModel.getInfo()
+            }
         }
         .padding([.leading, .trailing], Constants.verticalPadding)
         .alert(

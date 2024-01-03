@@ -96,12 +96,7 @@ public class V3Client: NSObject, V3ClientProtocol {
         request: URLRequest,
         decodingStrategy: JSONDecoder.KeyDecodingStrategy = .convertFromSnakeCase
     )  async throws -> T  where T: Decodable {
-        let (data, response): (Data, URLResponse)
-        do {
-            (data, response) = try await urlSession.data(for: request, delegate: nil)
-        } catch {
-            throw Error.generic(error)
-        }
+        let (data, response) = try await urlSession.data(for: request, delegate: nil)
         let httpResponse = try response.httpUrlResponse()
 
         // TODO: V3 almost always returns a 200 even when errors, so we will need to check the x-status-code header in the future
