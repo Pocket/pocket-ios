@@ -16,11 +16,19 @@ extension Array where Element == ArticleComponent {
         guard !text.isEmpty else {
             return self
         }
+        let sortedPatches = patches.sorted {
+            guard let firstIndex = textIndex(patch: $0),
+                    let secondIndex = textIndex(patch: $1) else {
+                // if there's no comparison to be made, just keep the existing order
+                return true
+            }
+            return firstIndex < secondIndex
+        }
         let diffMatchPatch = DiffMatchPatch()
         diffMatchPatch.match_Distance = HighlightConstants.diffMatchPatchDistance
         diffMatchPatch.match_Threshold = HighlightConstants.diffMatchPatchThreshold
         // convert text patches into Patch objects
-        let totalPatches = patches.reduce(into: [Patch]()) {
+        let totalPatches = sortedPatches.reduce(into: [Patch]()) {
             if let patches = try? diffMatchPatch.patch_(fromText: $1) as? [Patch] {
                 $0.append(contentsOf: patches)
             }
@@ -70,6 +78,22 @@ extension Array where Element == ArticleComponent {
         highlightableComponents
             .map { $0.content }
             .joined(separator: HighlightConstants.componentSeparator)
+    }
+
+    /// Extract the first text index from a patch
+    /// - Parameter patch: the patch
+    /// - Returns: the text index as Integer, if it was found, or nil
+    private func textIndex(patch: String) -> Int? {
+        guard let regex = try? Regex(HighlightConstants.indexPattern),
+                let match = patch.firstMatch(of: regex),
+              // we want the match to capture the value
+              match.count > 1,
+              // and we want the capture to contain a valid string
+              let matchedString = match[1].substring else {
+            return nil
+        }
+        // return the integer value, if the string contains a valid number, or nil
+        return Int(matchedString)
     }
 
     /// Merge patched component back into current array
@@ -240,6 +264,8 @@ private enum HighlightConstants {
     static let startTagIdentifier = "<"
     static let endTagIdentifier = "/"
     static let separatorIdentifier = "_"
+    /// Regex to find text indexes in patches
+    static let indexPattern = "@@[ \t]-([0-9]+),"
     /// colors
     static let highlightColor = UIColor(displayP3Red: 250/255, green: 233/255, blue: 199/255, alpha: 0.8)
     static let highlightedTextColor = UIColor.black
