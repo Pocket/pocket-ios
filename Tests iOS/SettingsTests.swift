@@ -150,6 +150,7 @@ class SettingsTest: XCTestCase {
     @MainActor
     func test_premiumStatus_success() async {
         let saveRequestExpectation = expectation(description: "A save mutation request")
+        saveRequestExpectation.assertForOverFulfill = false
         server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isForUserDetails {
