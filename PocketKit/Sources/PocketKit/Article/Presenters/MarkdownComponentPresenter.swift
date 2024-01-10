@@ -7,6 +7,8 @@ import Sync
 import UIKit
 
 class MarkdownComponentPresenter: ArticleComponentPresenter {
+    var highlights = [ArticleComponentHighlight]()
+
     enum ComponentType {
         case heading
         case body
@@ -67,10 +69,12 @@ class MarkdownComponentPresenter: ArticleComponentPresenter {
     }
 
     private func loadContent() -> NSAttributedString? {
-        cachedContent = NSAttributedString.styled(
+        let highlightedString = NSAttributedString.styled(
             markdown: component.content,
             styler: NSMutableAttributedString.defaultStyler(with: readerSettings)
         )?.highlighted()
+        cachedContent = highlightedString?.content
+        highlights = highlightedString?.highlights ?? []
 
         return cachedContent
     }

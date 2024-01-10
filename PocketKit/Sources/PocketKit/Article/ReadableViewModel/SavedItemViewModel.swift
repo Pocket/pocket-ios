@@ -113,7 +113,7 @@ class SavedItemViewModel: ReadableViewModel {
     }()
 
     var components: [ArticleComponent]? {
-        guard let highlights = item.highlights?.array as? [Highlight] else {
+        guard let highlights = item.highlights?.array as? [Highlight], !highlights.isEmpty else {
             return item.item?.article?.components
         }
         let patches = highlights.map { $0.patch }

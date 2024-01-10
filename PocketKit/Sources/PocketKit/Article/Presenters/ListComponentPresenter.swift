@@ -18,6 +18,8 @@ protocol ListComponentElement {
 }
 
 class ListComponentPresenter: ArticleComponentPresenter {
+    var highlights = [ArticleComponentHighlight]()
+
     private let component: ListComponent
     private let readerSettings: ReaderSettings
 
@@ -88,7 +90,9 @@ class ListComponentPresenter: ArticleComponentPresenter {
             attributedContent.append(content)
         }
 
-        cachedAttributedContent = attributedContent.highlighted()
+        let highlightedString = attributedContent.highlighted()
+        cachedAttributedContent = highlightedString.content
+        highlights = highlightedString.highlights
 
         return cachedAttributedContent
     }

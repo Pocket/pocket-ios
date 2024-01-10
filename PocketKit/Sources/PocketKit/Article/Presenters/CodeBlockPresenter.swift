@@ -11,6 +11,8 @@ private extension Style {
 }
 
 class CodeBlockPresenter: ArticleComponentPresenter {
+    var highlights = [ArticleComponentHighlight]()
+
     private let component: CodeBlockComponent
 
     private let readerSettings: ReaderSettings
@@ -46,10 +48,12 @@ class CodeBlockPresenter: ArticleComponentPresenter {
     }
 
     private func loadCodeBlock() -> NSAttributedString? {
-        cachedCodeBlock = NSAttributedString(
+        let highlightedString = NSAttributedString(
             string: component.text,
             style: .codeBlock.modified(by: readerSettings)
         ).highlighted()
+        cachedCodeBlock = highlightedString.content
+        highlights = highlightedString.highlights
 
         return cachedCodeBlock
     }

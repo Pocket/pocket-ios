@@ -6,6 +6,8 @@ import Sync
 import UIKit
 
 class UnsupportedComponentPresenter: ArticleComponentPresenter {
+    var highlights = [ArticleComponentHighlight]()
+
     private let readableViewModel: ReadableViewModel?
 
     init(readableViewModel: ReadableViewModel?) {

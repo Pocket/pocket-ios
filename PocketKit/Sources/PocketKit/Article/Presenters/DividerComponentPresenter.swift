@@ -6,6 +6,8 @@ import Sync
 import UIKit
 
 class DividerComponentPresenter: ArticleComponentPresenter {
+    var highlights = [ArticleComponentHighlight]()
+
     private let component: DividerComponent
 
     init(component: DividerComponent) {

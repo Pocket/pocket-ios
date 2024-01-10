@@ -7,6 +7,19 @@ import SharedPocketKit
 import Sync
 import UIKit
 
+/// Component highlight, represented by its quote and range in the component
+struct ArticleComponentHighlight {
+    let range: Range<String.Index>
+    let quote: String
+}
+
+/// Highlighted string, represented by an attributed string with highlighted text,
+/// and a list of corresponding component highlights
+struct HighlightedString {
+    let content: NSAttributedString
+    let highlights: [ArticleComponentHighlight]
+}
+
 extension Array where Element == ArticleComponent {
     /// Apply an array of patches to an array of `ArticleComponent`, using `DiffMatchPatch`
     /// - Parameter patches: the patches to apply
@@ -39,8 +52,8 @@ extension Array where Element == ArticleComponent {
             return self
         }
         do {
-            let normalizedComponents = try normalizedComponents(patchedResult)
-            return mergedComponents(normalizedComponents) ?? self
+            let textComponents = try textComponentsWithHighlights(patchedResult)
+            return mergedComponents(textComponents)
         } catch {
             Log.capture(error: error)
             return self
@@ -96,20 +109,19 @@ extension Array where Element == ArticleComponent {
         return Int(matchedString)
     }
 
-    /// Merge patched component back into current array
-    /// - Parameter patchedComponents: array of patched components
+    /// Merge text components back into the current array of `ArticleComponent`
+    /// - Parameter patchedComponents: array of text components
     /// - Returns: the array resulting from the merge
-    private func mergedComponents(_ patchedComponents: [String]) -> [ArticleComponent]? {
-        guard
-                self.count >= patchedComponents.count,
-                !patchedComponents.isEmpty else {
-            return nil
+    private func mergedComponents(_ textComponents: [String]) -> [ArticleComponent] {
+        guard self.count >= textComponents.count,
+              !textComponents.isEmpty else {
+            return self
         }
         var mergedComponents = [ArticleComponent]()
         var patchedIndex = 0
         // cycle over the current array and, if a corresponding patched component is found, replace it
         forEach {
-            if let content = patchedComponents[safe: patchedIndex] {
+            if let content = textComponents[safe: patchedIndex] {
                 switch $0 {
                 case .text:
                     mergedComponents.append(.text(TextComponent(content: content)))
@@ -123,7 +135,7 @@ extension Array where Element == ArticleComponent {
                 case .bulletedList(let bulletedListComponent):
                     let levels = bulletedListComponent.rows.map { $0.level }
                     let rows = content.components(separatedBy: HighlightConstants.listRowSeparator).enumerated().map { row in
-                        BulletedListComponent.Row(content: row.element, level: UInt(levels[row.offset]))
+                        BulletedListComponent.Row(content: row.element, level: UInt(levels[Swift.min(row.offset, levels.count - 1)]))
                     }
                     mergedComponents.append(.bulletedList(BulletedListComponent(rows: rows)))
                     patchedIndex += 1
@@ -146,10 +158,16 @@ extension Array where Element == ArticleComponent {
         return mergedComponents
     }
 
-    private func normalizedComponents(_ patchedBlob: String) throws -> [String] {
-        var patchedComponents = patchedBlob.components(separatedBy: HighlightConstants.componentSeparator)
+    /// Extract text components, identified by the separator tag, from a blob.
+    /// Highlights are delimited by the corresponding start and end tag.
+    /// If an highlight spans more than one component, it gets broken up
+    /// into multiple highlights, one per component.
+    /// - Parameter text: the text blob that contains separator tags and highlights.
+    /// - Returns: The array of text components with highlights.
+    private func textComponentsWithHighlights(_ text: String) throws -> [String] {
+        var patchedComponents = text.components(separatedBy: HighlightConstants.componentSeparator)
 
-        let scanner = Scanner(string: patchedBlob)
+        let scanner = Scanner(string: text)
         var componentCursor = 0
         var tagStack = [String]()
 
@@ -157,15 +175,17 @@ extension Array where Element == ArticleComponent {
             guard scanner.scanUpToString(HighlightConstants.commonTag) != nil else {
                 return patchedComponents
             }
-            let beforeIndex = Swift.max(patchedBlob.index(before: scanner.currentIndex), patchedBlob.startIndex)
-            let character = String(patchedBlob[beforeIndex])
+            let beforeIndex = Swift.max(text.index(before: scanner.currentIndex), text.startIndex)
+            let character = String(text[beforeIndex])
             if character == HighlightConstants.startTagIdentifier {
                 tagStack.append(HighlightConstants.highlightStartTag)
             }
             if character == HighlightConstants.endTagIdentifier {
                 guard !tagStack.isEmpty else {
                     // in the entire blob, we are not supposed to find a closing tag without an opening tag
-                    throw HighlightError.invalidPatch(componentCursor)
+                    // if we do, it's probably an error from the Diff Match Patch: continue but log the error
+                    Log.capture(message: "Error parsing highlights at index \(componentCursor)")
+                    continue
                 }
                 tagStack.removeLast()
             }
@@ -183,7 +203,7 @@ extension Array where Element == ArticleComponent {
                 componentCursor += 1
             }
             if !scanner.isAtEnd {
-                scanner.currentIndex = patchedBlob.index(after: scanner.currentIndex)
+                scanner.currentIndex = text.index(after: scanner.currentIndex)
             }
         }
         return patchedComponents
@@ -191,15 +211,29 @@ extension Array where Element == ArticleComponent {
 }
 
 extension NSAttributedString {
-    func highlighted() -> NSAttributedString {
+    /// Apply highlights to an attributed string.
+    /// If an attributed string contains highlight tags, those are removed
+    /// and a highlight background color and text are applied to the
+    /// corresponding range.
+    /// - Returns: The highlighted attributed string.
+    func highlighted() -> HighlightedString {
         let highlightableString = self.string
         guard highlightableString.contains(HighlightConstants.commonHighlightTag) else {
-            return self
+            return HighlightedString(content: self, highlights: [])
         }
+        // a copy of the original string, that will reflect the visible text
+        // we will remove tags in place and store highlight ranges on this one
+        // it will be used to edit existing highlights directly on the component string
+        var resultingString = highlightableString
         let scanner = Scanner(string: highlightableString)
-
+        // Ranges that will be used to apply the highlights to the attributed string
         var highlightableRanges = [Range<String.Index>]()
+        // Equivalent ranges on the string without the highlight tags. Used to keep track of highlighted ranges in the reader
+        var resultingRanges = [Range<String.Index>]()
+        // Stack that stores indexes representing the lower bound of an highlightable range
         var indexStack = [String.Index]()
+        // Same as above, on the copy
+        var resultingIndexStack = [String.Index]()
 
         while !scanner.isAtEnd {
             guard scanner.scanUpToString(HighlightConstants.commonHighlightTag) != nil else {
@@ -207,14 +241,33 @@ extension NSAttributedString {
             }
             let beforeIndex = max(highlightableString.index(before: scanner.currentIndex), highlightableString.startIndex)
             let character = String(highlightableString[beforeIndex])
+            // Found the start of a highlight
             if character == HighlightConstants.startTagIdentifier {
-                indexStack.append(scanner.currentIndex)
+                indexStack.append(beforeIndex)
+                if let range = resultingString.firstRange(of: HighlightConstants.highlightStartTag) {
+                    // remove the tag from the copy string
+                    resultingString.removeSubrange(range)
+                    resultingIndexStack.append(range.lowerBound)
+                }
             }
+            // Found the end of a highlight
             if character == HighlightConstants.endTagIdentifier {
                 let tagIndex = highlightableString.index(before: beforeIndex)
-                if let upperBound = indexStack.popLast() {
-                    let range = Range<String.Index>(uncheckedBounds: (upperBound, tagIndex))
+                if let lowerBound = indexStack.popLast(),
+                   // if the stack is not empty, it means we have overlapping highlights
+                   // which we will merge onto a single one
+                   indexStack.isEmpty {
+                    let range = Range<String.Index>(uncheckedBounds: (lowerBound, tagIndex))
                     highlightableRanges.append(range)
+                }
+                if let range = resultingString.firstRange(of: HighlightConstants.highlightEndTag) {
+                    // remove the tag from the copy string
+                    resultingString.removeSubrange(range)
+                    if let resultingLowerBound = resultingIndexStack.popLast(),
+                       // same logic of overlapping highlights applies here
+                       resultingIndexStack.isEmpty {
+                        resultingRanges.append(Range<String.Index>(uncheckedBounds: (resultingLowerBound, range.lowerBound)))
+                    }
                 }
             }
             if !scanner.isAtEnd {
@@ -243,7 +296,10 @@ extension NSAttributedString {
                 length: mutable.mutableString.length
             )
         )
-        return mutable
+        let highlights = resultingRanges.map {
+            ArticleComponentHighlight(range: $0, quote: String(resultingString[$0]))
+        }
+        return HighlightedString(content: mutable, highlights: highlights)
     }
 }
 
@@ -269,9 +325,4 @@ private enum HighlightConstants {
     /// colors
     static let highlightColor = UIColor(displayP3Red: 250/255, green: 233/255, blue: 199/255, alpha: 0.8)
     static let highlightedTextColor = UIColor.black
-}
-
-enum HighlightError: Error {
-    case noPatches
-    case invalidPatch(Int)
 }

@@ -16,6 +16,8 @@ private extension Style {
 }
 
 class BlockquoteComponentPresenter: ArticleComponentPresenter {
+    var highlights = [ArticleComponentHighlight]()
+
     private let component: BlockquoteComponent
 
     private let readerSettings: ReaderSettings
@@ -55,13 +57,15 @@ class BlockquoteComponentPresenter: ArticleComponentPresenter {
     }
 
     private func loadAttributedBlockquote() -> NSAttributedString? {
-        cachedAttributedBlockquote = NSAttributedString.styled(
+        let highlightedString = NSAttributedString.styled(
             markdown: component.content,
             styler: NSAttributedString.defaultStyler(
                 with: readerSettings,
                 bodyStyle: .blockquote.modified(by: readerSettings)
             )
         )?.highlighted()
+        highlights = highlightedString?.highlights ?? []
+        cachedAttributedBlockquote = highlightedString?.content
 
         return cachedAttributedBlockquote
     }

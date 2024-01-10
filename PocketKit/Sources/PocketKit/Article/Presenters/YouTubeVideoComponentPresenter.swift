@@ -9,6 +9,8 @@ import CoreGraphics
 import UIKit
 
 class YouTubeVideoComponentPresenter: ArticleComponentPresenter {
+    var highlights = [ArticleComponentHighlight]()
+
     private let component: VideoComponent
     private let readableViewModel: ReadableViewModel?
 

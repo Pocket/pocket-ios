@@ -6,6 +6,8 @@ import Sync
 import UIKit
 
 class VimeoComponentPresenter: ArticleComponentPresenter {
+    var highlights = [ArticleComponentHighlight]()
+
     private let oEmbedService: OEmbedService
     private let readableViewModel: ReadableViewModel?
     private let component: VideoComponent

@@ -27,6 +27,8 @@ private extension Style {
 }
 
 class ImageComponentPresenter: ArticleComponentPresenter, ImageComponentCellModel {
+    var highlights = [ArticleComponentHighlight]()
+
     private let component: ImageComponent
 
     private let readerSettings: ReaderSettings
