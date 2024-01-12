@@ -47,12 +47,13 @@ extension Array where Element == ArticleComponent {
             }
         }
         // feed the array of Patch to DiffMatchPatch
-        guard let patchedResult = diffMatchPatch.patch_apply(totalPatches, to: text)?.first as? String else {
+        let patchedOutput = diffMatchPatch.patch_apply(totalPatches, to: text)
+        guard let patchedText = patchedOutput?.first as? String else {
             Log.capture(message: "Unable to patch article")
             return self
         }
         do {
-            let textComponents = try textComponentsWithHighlights(patchedResult)
+            let textComponents = try textComponentsWithHighlights(patchedText)
             return mergedComponents(textComponents)
         } catch {
             Log.capture(error: error)
@@ -165,9 +166,10 @@ extension Array where Element == ArticleComponent {
     /// - Parameter text: the text blob that contains separator tags and highlights.
     /// - Returns: The array of text components with highlights.
     private func textComponentsWithHighlights(_ text: String) throws -> [String] {
-        var patchedComponents = text.components(separatedBy: HighlightConstants.componentSeparator)
+        let parseableText = text.replacingOccurrences(of: HighlightConstants.componentSeparator, with: HighlightConstants.parserSeparator)
+        var patchedComponents = parseableText.components(separatedBy: HighlightConstants.parserSeparator)
 
-        let scanner = Scanner(string: text)
+        let scanner = Scanner(string: parseableText)
         var componentCursor = 0
         var tagStack = [String]()
 
@@ -175,8 +177,8 @@ extension Array where Element == ArticleComponent {
             guard scanner.scanUpToString(HighlightConstants.commonTag) != nil else {
                 return patchedComponents
             }
-            let beforeIndex = Swift.max(text.index(before: scanner.currentIndex), text.startIndex)
-            let character = String(text[beforeIndex])
+            let beforeIndex = Swift.max(parseableText.index(before: scanner.currentIndex), parseableText.startIndex)
+            let character = String(parseableText[beforeIndex])
             if character == HighlightConstants.startTagIdentifier {
                 tagStack.append(HighlightConstants.highlightStartTag)
             }
@@ -203,7 +205,7 @@ extension Array where Element == ArticleComponent {
                 componentCursor += 1
             }
             if !scanner.isAtEnd {
-                scanner.currentIndex = text.index(after: scanner.currentIndex)
+                scanner.currentIndex = parseableText.index(after: scanner.currentIndex)
             }
         }
         return patchedComponents
@@ -308,7 +310,8 @@ private enum HighlightConstants {
     static let diffMatchPatchDistance = 3000
     static let diffMatchPatchThreshold = 0.65
     /// separators
-    static let componentSeparator = "<_pkt_>"
+    static let componentSeparator = "[||]"
+    static let parserSeparator = "<_pkt_>"
     static let listRowSeparator = "\n"
     /// tags & identifiers
     static let highlightStartTag = "<pkt_tag_annotation>"
