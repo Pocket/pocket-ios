@@ -26,7 +26,7 @@ let package = Package(
         .library(name: "DiffMatchPatch", targets: ["DiffMatchPatch"])
     ],
     dependencies: [
-        .package(url: "https://github.com/apollographql/apollo-ios.git", branch: "main"),
+        .package(url: "https://github.com/apollographql/apollo-ios.git", exact: "1.8.0"),
         .package(url: "https://github.com/onevcat/Kingfisher.git", exact: "7.10.1"),
         .package(url: "https://github.com/getsentry/sentry-cocoa.git", exact: "8.17.2"),
         .package(url: "https://github.com/snowplow/snowplow-objc-tracker", exact: "5.6.0"),

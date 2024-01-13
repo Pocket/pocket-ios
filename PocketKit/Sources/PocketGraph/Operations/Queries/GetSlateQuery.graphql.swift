@@ -66,7 +66,7 @@ public class GetSlateQuery: GraphQLQuery {
       /// The description of the the slate
       public var description: String? { __data["description"] }
       /// An ordered list of the recommendations to show to the user
-      public var recommendations: [SlateParts.Recommendation] { __data["recommendations"] }
+      public var recommendations: [Recommendation] { __data["recommendations"] }
 
       public struct Fragments: FragmentContainer {
         public let __data: DataDict
@@ -74,6 +74,8 @@ public class GetSlateQuery: GraphQLQuery {
 
         public var slateParts: SlateParts { _toFragment() }
       }
+
+      public typealias Recommendation = SlateParts.Recommendation
     }
   }
 }

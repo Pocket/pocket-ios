@@ -136,8 +136,8 @@ public struct CorpusRecommendationParts: PocketGraph.SelectionSet, Fragment {
         public typealias RootEntityType = CorpusRecommendationParts.CorpusItem.Target
         public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.SyndicatedArticle }
         public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
-          SyndicatedArticleParts.self,
-          CorpusItemParts.Target.AsSyndicatedArticle.self
+          CorpusItemParts.Target.AsSyndicatedArticle.self,
+          SyndicatedArticleParts.self
         ] }
 
         /// The item id of this Syndicated Article
@@ -149,7 +149,7 @@ public struct CorpusRecommendationParts: PocketGraph.SelectionSet, Fragment {
         /// Excerpt 
         public var excerpt: String? { __data["excerpt"] }
         /// The manually set publisher information for this article
-        public var publisher: SyndicatedArticleParts.Publisher? { __data["publisher"] }
+        public var publisher: Publisher? { __data["publisher"] }
 
         public struct Fragments: FragmentContainer {
           public let __data: DataDict
@@ -163,7 +163,7 @@ public struct CorpusRecommendationParts: PocketGraph.SelectionSet, Fragment {
           mainImage: String? = nil,
           title: String,
           excerpt: String? = nil,
-          publisher: SyndicatedArticleParts.Publisher? = nil
+          publisher: Publisher? = nil
         ) {
           self.init(_dataDict: DataDict(
             data: [
@@ -177,12 +177,14 @@ public struct CorpusRecommendationParts: PocketGraph.SelectionSet, Fragment {
             fulfilledFragments: [
               ObjectIdentifier(CorpusRecommendationParts.CorpusItem.Target.self),
               ObjectIdentifier(CorpusRecommendationParts.CorpusItem.Target.AsSyndicatedArticle.self),
-              ObjectIdentifier(SyndicatedArticleParts.self),
               ObjectIdentifier(CorpusItemParts.Target.self),
-              ObjectIdentifier(CorpusItemParts.Target.AsSyndicatedArticle.self)
+              ObjectIdentifier(CorpusItemParts.Target.AsSyndicatedArticle.self),
+              ObjectIdentifier(SyndicatedArticleParts.self)
             ]
           ))
         }
+
+        public typealias Publisher = SyndicatedArticleParts.Publisher
       }
 
       /// CorpusItem.Target.AsCollection
@@ -195,8 +197,8 @@ public struct CorpusRecommendationParts: PocketGraph.SelectionSet, Fragment {
         public typealias RootEntityType = CorpusRecommendationParts.CorpusItem.Target
         public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Collection }
         public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
-          CollectionSummary.self,
-          CorpusItemParts.Target.AsCollection.self
+          CorpusItemParts.Target.AsCollection.self,
+          CollectionSummary.self
         ] }
 
         public var slug: String { __data["slug"] }
@@ -222,9 +224,9 @@ public struct CorpusRecommendationParts: PocketGraph.SelectionSet, Fragment {
             fulfilledFragments: [
               ObjectIdentifier(CorpusRecommendationParts.CorpusItem.Target.self),
               ObjectIdentifier(CorpusRecommendationParts.CorpusItem.Target.AsCollection.self),
-              ObjectIdentifier(CollectionSummary.self),
               ObjectIdentifier(CorpusItemParts.Target.self),
-              ObjectIdentifier(CorpusItemParts.Target.AsCollection.self)
+              ObjectIdentifier(CorpusItemParts.Target.AsCollection.self),
+              ObjectIdentifier(CollectionSummary.self)
             ]
           ))
         }
@@ -257,8 +259,8 @@ public struct CorpusRecommendationParts: PocketGraph.SelectionSet, Fragment {
               ],
               fulfilledFragments: [
                 ObjectIdentifier(CorpusRecommendationParts.CorpusItem.Target.AsCollection.Author.self),
-                ObjectIdentifier(CollectionAuthorSummary.self),
-                ObjectIdentifier(CollectionSummary.Author.self)
+                ObjectIdentifier(CollectionSummary.Author.self),
+                ObjectIdentifier(CollectionAuthorSummary.self)
               ]
             ))
           }

@@ -82,7 +82,7 @@ public class SavedItemByIDQuery: GraphQLQuery {
         /// If the item is in corpus allow the saved item to reference it.  Exposing curated info for consistent UX
         public var corpusItem: CorpusItem? { __data["corpusItem"] }
         /// Annotations associated to this SavedItem
-        public var annotations: SavedItemParts.Annotations? { __data["annotations"] }
+        public var annotations: Annotations? { __data["annotations"] }
 
         public struct Fragments: FragmentContainer {
           public let __data: DataDict
@@ -135,8 +135,8 @@ public class SavedItemByIDQuery: GraphQLQuery {
             public typealias RootEntityType = SavedItemByIDQuery.Data.User.SavedItemById.Item
             public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Item }
             public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
-              ItemParts.self,
-              SavedItemParts.Item.AsItem.self
+              SavedItemParts.Item.AsItem.self,
+              ItemParts.self
             ] }
 
             /// The Item entity is owned by the Parser service.
@@ -169,9 +169,9 @@ public class SavedItemByIDQuery: GraphQLQuery {
             /// Number of words in the article
             public var wordCount: Int? { __data["wordCount"] }
             /// List of Authors involved with this article
-            public var authors: [ItemParts.Author?]? { __data["authors"] }
+            public var authors: [Author?]? { __data["authors"] }
             /// If the item is a collection allow them to get the collection information
-            public var collection: ItemParts.Collection? { __data["collection"] }
+            public var collection: Collection? { __data["collection"] }
             /// The Marticle format of the article, used by clients for native article view.
             public var marticle: [Marticle]? { __data["marticle"] }
             /// A snippet of text from the article
@@ -179,7 +179,7 @@ public class SavedItemByIDQuery: GraphQLQuery {
             /// Additional information about the item domain, when present, use this for displaying the domain name
             public var domainMetadata: DomainMetadata? { __data["domainMetadata"] }
             /// Array of images within an article
-            public var images: [ItemParts.Image?]? { __data["images"] }
+            public var images: [Image?]? { __data["images"] }
             /// If the item has a syndicated counterpart the syndication information
             public var syndicatedArticle: SyndicatedArticle? { __data["syndicatedArticle"] }
 
@@ -189,6 +189,10 @@ public class SavedItemByIDQuery: GraphQLQuery {
 
               public var itemParts: ItemParts { _toFragment() }
             }
+
+            public typealias Author = ItemParts.Author
+
+            public typealias Collection = ItemParts.Collection
 
             /// User.SavedItemById.Item.AsItem.Marticle
             ///
@@ -220,8 +224,8 @@ public class SavedItemByIDQuery: GraphQLQuery {
                 public typealias RootEntityType = SavedItemByIDQuery.Data.User.SavedItemById.Item.AsItem.Marticle
                 public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleText }
                 public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
-                  MarticleTextParts.self,
-                  ItemParts.Marticle.AsMarticleText.self
+                  ItemParts.Marticle.AsMarticleText.self,
+                  MarticleTextParts.self
                 ] }
 
                 /// Markdown text content. Typically, a paragraph.
@@ -245,8 +249,8 @@ public class SavedItemByIDQuery: GraphQLQuery {
                 public typealias RootEntityType = SavedItemByIDQuery.Data.User.SavedItemById.Item.AsItem.Marticle
                 public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Image }
                 public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
-                  ImageParts.self,
-                  ItemParts.Marticle.AsImage.self
+                  ItemParts.Marticle.AsImage.self,
+                  ImageParts.self
                 ] }
 
                 /// A caption or description of the image
@@ -281,8 +285,8 @@ public class SavedItemByIDQuery: GraphQLQuery {
                 public typealias RootEntityType = SavedItemByIDQuery.Data.User.SavedItemById.Item.AsItem.Marticle
                 public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleDivider }
                 public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
-                  MarticleDividerParts.self,
-                  ItemParts.Marticle.AsMarticleDivider.self
+                  ItemParts.Marticle.AsMarticleDivider.self,
+                  MarticleDividerParts.self
                 ] }
 
                 /// Always '---'; provided for convenience if building a markdown string
@@ -306,8 +310,8 @@ public class SavedItemByIDQuery: GraphQLQuery {
                 public typealias RootEntityType = SavedItemByIDQuery.Data.User.SavedItemById.Item.AsItem.Marticle
                 public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleTable }
                 public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
-                  MarticleTableParts.self,
-                  ItemParts.Marticle.AsMarticleTable.self
+                  ItemParts.Marticle.AsMarticleTable.self,
+                  MarticleTableParts.self
                 ] }
 
                 /// Raw HTML representation of the table.
@@ -331,8 +335,8 @@ public class SavedItemByIDQuery: GraphQLQuery {
                 public typealias RootEntityType = SavedItemByIDQuery.Data.User.SavedItemById.Item.AsItem.Marticle
                 public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleHeading }
                 public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
-                  MarticleHeadingParts.self,
-                  ItemParts.Marticle.AsMarticleHeading.self
+                  ItemParts.Marticle.AsMarticleHeading.self,
+                  MarticleHeadingParts.self
                 ] }
 
                 /// Heading text, in markdown.
@@ -358,8 +362,8 @@ public class SavedItemByIDQuery: GraphQLQuery {
                 public typealias RootEntityType = SavedItemByIDQuery.Data.User.SavedItemById.Item.AsItem.Marticle
                 public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleCodeBlock }
                 public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
-                  MarticleCodeBlockParts.self,
-                  ItemParts.Marticle.AsMarticleCodeBlock.self
+                  ItemParts.Marticle.AsMarticleCodeBlock.self,
+                  MarticleCodeBlockParts.self
                 ] }
 
                 /// Content of a pre tag
@@ -385,8 +389,8 @@ public class SavedItemByIDQuery: GraphQLQuery {
                 public typealias RootEntityType = SavedItemByIDQuery.Data.User.SavedItemById.Item.AsItem.Marticle
                 public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Video }
                 public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
-                  VideoParts.self,
-                  ItemParts.Marticle.AsVideo.self
+                  ItemParts.Marticle.AsVideo.self,
+                  VideoParts.self
                 ] }
 
                 /// If known, the height of the video in px
@@ -422,11 +426,11 @@ public class SavedItemByIDQuery: GraphQLQuery {
                 public typealias RootEntityType = SavedItemByIDQuery.Data.User.SavedItemById.Item.AsItem.Marticle
                 public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleBulletedList }
                 public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
-                  MarticleBulletedListParts.self,
-                  ItemParts.Marticle.AsMarticleBulletedList.self
+                  ItemParts.Marticle.AsMarticleBulletedList.self,
+                  MarticleBulletedListParts.self
                 ] }
 
-                public var rows: [MarticleBulletedListParts.Row] { __data["rows"] }
+                public var rows: [Row] { __data["rows"] }
 
                 public struct Fragments: FragmentContainer {
                   public let __data: DataDict
@@ -434,6 +438,8 @@ public class SavedItemByIDQuery: GraphQLQuery {
 
                   public var marticleBulletedListParts: MarticleBulletedListParts { _toFragment() }
                 }
+
+                public typealias Row = MarticleBulletedListParts.Row
               }
 
               /// User.SavedItemById.Item.AsItem.Marticle.AsMarticleNumberedList
@@ -446,11 +452,11 @@ public class SavedItemByIDQuery: GraphQLQuery {
                 public typealias RootEntityType = SavedItemByIDQuery.Data.User.SavedItemById.Item.AsItem.Marticle
                 public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleNumberedList }
                 public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
-                  MarticleNumberedListParts.self,
-                  ItemParts.Marticle.AsMarticleNumberedList.self
+                  ItemParts.Marticle.AsMarticleNumberedList.self,
+                  MarticleNumberedListParts.self
                 ] }
 
-                public var rows: [MarticleNumberedListParts.Row] { __data["rows"] }
+                public var rows: [Row] { __data["rows"] }
 
                 public struct Fragments: FragmentContainer {
                   public let __data: DataDict
@@ -458,6 +464,8 @@ public class SavedItemByIDQuery: GraphQLQuery {
 
                   public var marticleNumberedListParts: MarticleNumberedListParts { _toFragment() }
                 }
+
+                public typealias Row = MarticleNumberedListParts.Row
               }
 
               /// User.SavedItemById.Item.AsItem.Marticle.AsMarticleBlockquote
@@ -470,8 +478,8 @@ public class SavedItemByIDQuery: GraphQLQuery {
                 public typealias RootEntityType = SavedItemByIDQuery.Data.User.SavedItemById.Item.AsItem.Marticle
                 public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleBlockquote }
                 public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
-                  MarticleBlockquoteParts.self,
-                  ItemParts.Marticle.AsMarticleBlockquote.self
+                  ItemParts.Marticle.AsMarticleBlockquote.self,
+                  MarticleBlockquoteParts.self
                 ] }
 
                 /// Markdown text content.
@@ -508,6 +516,8 @@ public class SavedItemByIDQuery: GraphQLQuery {
               }
             }
 
+            public typealias Image = ItemParts.Image
+
             /// User.SavedItemById.Item.AsItem.SyndicatedArticle
             ///
             /// Parent Type: `SyndicatedArticle`
@@ -526,7 +536,7 @@ public class SavedItemByIDQuery: GraphQLQuery {
               /// Excerpt 
               public var excerpt: String? { __data["excerpt"] }
               /// The manually set publisher information for this article
-              public var publisher: SyndicatedArticleParts.Publisher? { __data["publisher"] }
+              public var publisher: Publisher? { __data["publisher"] }
 
               public struct Fragments: FragmentContainer {
                 public let __data: DataDict
@@ -534,6 +544,8 @@ public class SavedItemByIDQuery: GraphQLQuery {
 
                 public var syndicatedArticleParts: SyndicatedArticleParts { _toFragment() }
               }
+
+              public typealias Publisher = SyndicatedArticleParts.Publisher
             }
           }
 
@@ -547,8 +559,8 @@ public class SavedItemByIDQuery: GraphQLQuery {
             public typealias RootEntityType = SavedItemByIDQuery.Data.User.SavedItemById.Item
             public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.PendingItem }
             public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
-              PendingItemParts.self,
-              SavedItemParts.Item.AsPendingItem.self
+              SavedItemParts.Item.AsPendingItem.self,
+              PendingItemParts.self
             ] }
 
             /// URL of the item that the user gave for the SavedItem
@@ -585,6 +597,8 @@ public class SavedItemByIDQuery: GraphQLQuery {
             public var corpusItemSummary: CorpusItemSummary { _toFragment() }
           }
         }
+
+        public typealias Annotations = SavedItemParts.Annotations
       }
     }
   }

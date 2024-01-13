@@ -595,7 +595,7 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
         .fragment(MarticleBulletedListParts.self),
       ] }
 
-      public var rows: [MarticleBulletedListParts.Row] { __data["rows"] }
+      public var rows: [Row] { __data["rows"] }
 
       public struct Fragments: FragmentContainer {
         public let __data: DataDict
@@ -605,7 +605,7 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
       }
 
       public init(
-        rows: [MarticleBulletedListParts.Row]
+        rows: [Row]
       ) {
         self.init(_dataDict: DataDict(
           data: [
@@ -619,6 +619,8 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
           ]
         ))
       }
+
+      public typealias Row = MarticleBulletedListParts.Row
     }
 
     /// Marticle.AsMarticleNumberedList
@@ -634,7 +636,7 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
         .fragment(MarticleNumberedListParts.self),
       ] }
 
-      public var rows: [MarticleNumberedListParts.Row] { __data["rows"] }
+      public var rows: [Row] { __data["rows"] }
 
       public struct Fragments: FragmentContainer {
         public let __data: DataDict
@@ -644,7 +646,7 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
       }
 
       public init(
-        rows: [MarticleNumberedListParts.Row]
+        rows: [Row]
       ) {
         self.init(_dataDict: DataDict(
           data: [
@@ -658,6 +660,8 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
           ]
         ))
       }
+
+      public typealias Row = MarticleNumberedListParts.Row
     }
 
     /// Marticle.AsMarticleBlockquote
@@ -813,7 +817,7 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
     /// Excerpt 
     public var excerpt: String? { __data["excerpt"] }
     /// The manually set publisher information for this article
-    public var publisher: SyndicatedArticleParts.Publisher? { __data["publisher"] }
+    public var publisher: Publisher? { __data["publisher"] }
 
     public struct Fragments: FragmentContainer {
       public let __data: DataDict
@@ -827,7 +831,7 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
       mainImage: String? = nil,
       title: String,
       excerpt: String? = nil,
-      publisher: SyndicatedArticleParts.Publisher? = nil
+      publisher: Publisher? = nil
     ) {
       self.init(_dataDict: DataDict(
         data: [
@@ -844,5 +848,7 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
         ]
       ))
     }
+
+    public typealias Publisher = SyndicatedArticleParts.Publisher
   }
 }

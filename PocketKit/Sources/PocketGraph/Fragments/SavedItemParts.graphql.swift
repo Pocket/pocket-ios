@@ -200,9 +200,9 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
       /// Number of words in the article
       public var wordCount: Int? { __data["wordCount"] }
       /// List of Authors involved with this article
-      public var authors: [ItemParts.Author?]? { __data["authors"] }
+      public var authors: [Author?]? { __data["authors"] }
       /// If the item is a collection allow them to get the collection information
-      public var collection: ItemParts.Collection? { __data["collection"] }
+      public var collection: Collection? { __data["collection"] }
       /// The Marticle format of the article, used by clients for native article view.
       public var marticle: [Marticle]? { __data["marticle"] }
       /// A snippet of text from the article
@@ -210,7 +210,7 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
       /// Additional information about the item domain, when present, use this for displaying the domain name
       public var domainMetadata: DomainMetadata? { __data["domainMetadata"] }
       /// Array of images within an article
-      public var images: [ItemParts.Image?]? { __data["images"] }
+      public var images: [Image?]? { __data["images"] }
       /// If the item has a syndicated counterpart the syndication information
       public var syndicatedArticle: SyndicatedArticle? { __data["syndicatedArticle"] }
 
@@ -235,12 +235,12 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
         hasImage: GraphQLEnum<PocketGraph.Imageness>? = nil,
         hasVideo: GraphQLEnum<PocketGraph.Videoness>? = nil,
         wordCount: Int? = nil,
-        authors: [ItemParts.Author?]? = nil,
-        collection: ItemParts.Collection? = nil,
+        authors: [Author?]? = nil,
+        collection: Collection? = nil,
         marticle: [Marticle]? = nil,
         excerpt: String? = nil,
         domainMetadata: DomainMetadata? = nil,
-        images: [ItemParts.Image?]? = nil,
+        images: [Image?]? = nil,
         syndicatedArticle: SyndicatedArticle? = nil
       ) {
         self.init(_dataDict: DataDict(
@@ -274,6 +274,10 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
           ]
         ))
       }
+
+      public typealias Author = ItemParts.Author
+
+      public typealias Collection = ItemParts.Collection
 
       /// Item.AsItem.Marticle
       ///
@@ -318,8 +322,8 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
           public typealias RootEntityType = SavedItemParts.Item.AsItem.Marticle
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleText }
           public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
-            MarticleTextParts.self,
-            ItemParts.Marticle.AsMarticleText.self
+            ItemParts.Marticle.AsMarticleText.self,
+            MarticleTextParts.self
           ] }
 
           /// Markdown text content. Typically, a paragraph.
@@ -343,9 +347,9 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
               fulfilledFragments: [
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.self),
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.AsMarticleText.self),
-                ObjectIdentifier(MarticleTextParts.self),
                 ObjectIdentifier(ItemParts.Marticle.self),
-                ObjectIdentifier(ItemParts.Marticle.AsMarticleText.self)
+                ObjectIdentifier(ItemParts.Marticle.AsMarticleText.self),
+                ObjectIdentifier(MarticleTextParts.self)
               ]
             ))
           }
@@ -361,8 +365,8 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
           public typealias RootEntityType = SavedItemParts.Item.AsItem.Marticle
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Image }
           public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
-            ImageParts.self,
-            ItemParts.Marticle.AsImage.self
+            ItemParts.Marticle.AsImage.self,
+            ImageParts.self
           ] }
 
           /// A caption or description of the image
@@ -407,9 +411,9 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
               fulfilledFragments: [
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.self),
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.AsImage.self),
-                ObjectIdentifier(ImageParts.self),
                 ObjectIdentifier(ItemParts.Marticle.self),
-                ObjectIdentifier(ItemParts.Marticle.AsImage.self)
+                ObjectIdentifier(ItemParts.Marticle.AsImage.self),
+                ObjectIdentifier(ImageParts.self)
               ]
             ))
           }
@@ -425,8 +429,8 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
           public typealias RootEntityType = SavedItemParts.Item.AsItem.Marticle
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleDivider }
           public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
-            MarticleDividerParts.self,
-            ItemParts.Marticle.AsMarticleDivider.self
+            ItemParts.Marticle.AsMarticleDivider.self,
+            MarticleDividerParts.self
           ] }
 
           /// Always '---'; provided for convenience if building a markdown string
@@ -450,9 +454,9 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
               fulfilledFragments: [
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.self),
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.AsMarticleDivider.self),
-                ObjectIdentifier(MarticleDividerParts.self),
                 ObjectIdentifier(ItemParts.Marticle.self),
-                ObjectIdentifier(ItemParts.Marticle.AsMarticleDivider.self)
+                ObjectIdentifier(ItemParts.Marticle.AsMarticleDivider.self),
+                ObjectIdentifier(MarticleDividerParts.self)
               ]
             ))
           }
@@ -468,8 +472,8 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
           public typealias RootEntityType = SavedItemParts.Item.AsItem.Marticle
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleTable }
           public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
-            MarticleTableParts.self,
-            ItemParts.Marticle.AsMarticleTable.self
+            ItemParts.Marticle.AsMarticleTable.self,
+            MarticleTableParts.self
           ] }
 
           /// Raw HTML representation of the table.
@@ -493,9 +497,9 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
               fulfilledFragments: [
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.self),
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.AsMarticleTable.self),
-                ObjectIdentifier(MarticleTableParts.self),
                 ObjectIdentifier(ItemParts.Marticle.self),
-                ObjectIdentifier(ItemParts.Marticle.AsMarticleTable.self)
+                ObjectIdentifier(ItemParts.Marticle.AsMarticleTable.self),
+                ObjectIdentifier(MarticleTableParts.self)
               ]
             ))
           }
@@ -511,8 +515,8 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
           public typealias RootEntityType = SavedItemParts.Item.AsItem.Marticle
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleHeading }
           public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
-            MarticleHeadingParts.self,
-            ItemParts.Marticle.AsMarticleHeading.self
+            ItemParts.Marticle.AsMarticleHeading.self,
+            MarticleHeadingParts.self
           ] }
 
           /// Heading text, in markdown.
@@ -540,9 +544,9 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
               fulfilledFragments: [
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.self),
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.AsMarticleHeading.self),
-                ObjectIdentifier(MarticleHeadingParts.self),
                 ObjectIdentifier(ItemParts.Marticle.self),
-                ObjectIdentifier(ItemParts.Marticle.AsMarticleHeading.self)
+                ObjectIdentifier(ItemParts.Marticle.AsMarticleHeading.self),
+                ObjectIdentifier(MarticleHeadingParts.self)
               ]
             ))
           }
@@ -558,8 +562,8 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
           public typealias RootEntityType = SavedItemParts.Item.AsItem.Marticle
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleCodeBlock }
           public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
-            MarticleCodeBlockParts.self,
-            ItemParts.Marticle.AsMarticleCodeBlock.self
+            ItemParts.Marticle.AsMarticleCodeBlock.self,
+            MarticleCodeBlockParts.self
           ] }
 
           /// Content of a pre tag
@@ -587,9 +591,9 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
               fulfilledFragments: [
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.self),
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.AsMarticleCodeBlock.self),
-                ObjectIdentifier(MarticleCodeBlockParts.self),
                 ObjectIdentifier(ItemParts.Marticle.self),
-                ObjectIdentifier(ItemParts.Marticle.AsMarticleCodeBlock.self)
+                ObjectIdentifier(ItemParts.Marticle.AsMarticleCodeBlock.self),
+                ObjectIdentifier(MarticleCodeBlockParts.self)
               ]
             ))
           }
@@ -605,8 +609,8 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
           public typealias RootEntityType = SavedItemParts.Item.AsItem.Marticle
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Video }
           public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
-            VideoParts.self,
-            ItemParts.Marticle.AsVideo.self
+            ItemParts.Marticle.AsVideo.self,
+            VideoParts.self
           ] }
 
           /// If known, the height of the video in px
@@ -654,9 +658,9 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
               fulfilledFragments: [
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.self),
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.AsVideo.self),
-                ObjectIdentifier(VideoParts.self),
                 ObjectIdentifier(ItemParts.Marticle.self),
-                ObjectIdentifier(ItemParts.Marticle.AsVideo.self)
+                ObjectIdentifier(ItemParts.Marticle.AsVideo.self),
+                ObjectIdentifier(VideoParts.self)
               ]
             ))
           }
@@ -672,11 +676,11 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
           public typealias RootEntityType = SavedItemParts.Item.AsItem.Marticle
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleBulletedList }
           public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
-            MarticleBulletedListParts.self,
-            ItemParts.Marticle.AsMarticleBulletedList.self
+            ItemParts.Marticle.AsMarticleBulletedList.self,
+            MarticleBulletedListParts.self
           ] }
 
-          public var rows: [MarticleBulletedListParts.Row] { __data["rows"] }
+          public var rows: [Row] { __data["rows"] }
 
           public struct Fragments: FragmentContainer {
             public let __data: DataDict
@@ -686,7 +690,7 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
           }
 
           public init(
-            rows: [MarticleBulletedListParts.Row]
+            rows: [Row]
           ) {
             self.init(_dataDict: DataDict(
               data: [
@@ -696,12 +700,14 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
               fulfilledFragments: [
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.self),
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.AsMarticleBulletedList.self),
-                ObjectIdentifier(MarticleBulletedListParts.self),
                 ObjectIdentifier(ItemParts.Marticle.self),
-                ObjectIdentifier(ItemParts.Marticle.AsMarticleBulletedList.self)
+                ObjectIdentifier(ItemParts.Marticle.AsMarticleBulletedList.self),
+                ObjectIdentifier(MarticleBulletedListParts.self)
               ]
             ))
           }
+
+          public typealias Row = MarticleBulletedListParts.Row
         }
 
         /// Item.AsItem.Marticle.AsMarticleNumberedList
@@ -714,11 +720,11 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
           public typealias RootEntityType = SavedItemParts.Item.AsItem.Marticle
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleNumberedList }
           public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
-            MarticleNumberedListParts.self,
-            ItemParts.Marticle.AsMarticleNumberedList.self
+            ItemParts.Marticle.AsMarticleNumberedList.self,
+            MarticleNumberedListParts.self
           ] }
 
-          public var rows: [MarticleNumberedListParts.Row] { __data["rows"] }
+          public var rows: [Row] { __data["rows"] }
 
           public struct Fragments: FragmentContainer {
             public let __data: DataDict
@@ -728,7 +734,7 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
           }
 
           public init(
-            rows: [MarticleNumberedListParts.Row]
+            rows: [Row]
           ) {
             self.init(_dataDict: DataDict(
               data: [
@@ -738,12 +744,14 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
               fulfilledFragments: [
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.self),
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.AsMarticleNumberedList.self),
-                ObjectIdentifier(MarticleNumberedListParts.self),
                 ObjectIdentifier(ItemParts.Marticle.self),
-                ObjectIdentifier(ItemParts.Marticle.AsMarticleNumberedList.self)
+                ObjectIdentifier(ItemParts.Marticle.AsMarticleNumberedList.self),
+                ObjectIdentifier(MarticleNumberedListParts.self)
               ]
             ))
           }
+
+          public typealias Row = MarticleNumberedListParts.Row
         }
 
         /// Item.AsItem.Marticle.AsMarticleBlockquote
@@ -756,8 +764,8 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
           public typealias RootEntityType = SavedItemParts.Item.AsItem.Marticle
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleBlockquote }
           public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
-            MarticleBlockquoteParts.self,
-            ItemParts.Marticle.AsMarticleBlockquote.self
+            ItemParts.Marticle.AsMarticleBlockquote.self,
+            MarticleBlockquoteParts.self
           ] }
 
           /// Markdown text content.
@@ -781,9 +789,9 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
               fulfilledFragments: [
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.self),
                 ObjectIdentifier(SavedItemParts.Item.AsItem.Marticle.AsMarticleBlockquote.self),
-                ObjectIdentifier(MarticleBlockquoteParts.self),
                 ObjectIdentifier(ItemParts.Marticle.self),
-                ObjectIdentifier(ItemParts.Marticle.AsMarticleBlockquote.self)
+                ObjectIdentifier(ItemParts.Marticle.AsMarticleBlockquote.self),
+                ObjectIdentifier(MarticleBlockquoteParts.self)
               ]
             ))
           }
@@ -823,12 +831,14 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
             ],
             fulfilledFragments: [
               ObjectIdentifier(SavedItemParts.Item.AsItem.DomainMetadata.self),
-              ObjectIdentifier(DomainMetadataParts.self),
-              ObjectIdentifier(ItemParts.DomainMetadata.self)
+              ObjectIdentifier(ItemParts.DomainMetadata.self),
+              ObjectIdentifier(DomainMetadataParts.self)
             ]
           ))
         }
       }
+
+      public typealias Image = ItemParts.Image
 
       /// Item.AsItem.SyndicatedArticle
       ///
@@ -848,7 +858,7 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
         /// Excerpt 
         public var excerpt: String? { __data["excerpt"] }
         /// The manually set publisher information for this article
-        public var publisher: SyndicatedArticleParts.Publisher? { __data["publisher"] }
+        public var publisher: Publisher? { __data["publisher"] }
 
         public struct Fragments: FragmentContainer {
           public let __data: DataDict
@@ -862,7 +872,7 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
           mainImage: String? = nil,
           title: String,
           excerpt: String? = nil,
-          publisher: SyndicatedArticleParts.Publisher? = nil
+          publisher: Publisher? = nil
         ) {
           self.init(_dataDict: DataDict(
             data: [
@@ -875,11 +885,13 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
             ],
             fulfilledFragments: [
               ObjectIdentifier(SavedItemParts.Item.AsItem.SyndicatedArticle.self),
-              ObjectIdentifier(SyndicatedArticleParts.self),
-              ObjectIdentifier(ItemParts.SyndicatedArticle.self)
+              ObjectIdentifier(ItemParts.SyndicatedArticle.self),
+              ObjectIdentifier(SyndicatedArticleParts.self)
             ]
           ))
         }
+
+        public typealias Publisher = SyndicatedArticleParts.Publisher
       }
     }
 

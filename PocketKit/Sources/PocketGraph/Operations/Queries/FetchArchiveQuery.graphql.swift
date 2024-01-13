@@ -209,8 +209,8 @@ public class FetchArchiveQuery: GraphQLQuery {
                 public typealias RootEntityType = FetchArchiveQuery.Data.User.SavedItems.Edge.Node.Item
                 public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Item }
                 public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
-                  ItemSummary.self,
-                  SavedItemSummary.Item.AsItem.self
+                  SavedItemSummary.Item.AsItem.self,
+                  ItemSummary.self
                 ] }
 
                 /// The Item entity is owned by the Parser service.
@@ -243,13 +243,13 @@ public class FetchArchiveQuery: GraphQLQuery {
                 /// Number of words in the article
                 public var wordCount: Int? { __data["wordCount"] }
                 /// List of Authors involved with this article
-                public var authors: [ItemSummary.Author?]? { __data["authors"] }
+                public var authors: [Author?]? { __data["authors"] }
                 /// A snippet of text from the article
                 public var excerpt: String? { __data["excerpt"] }
                 /// Additional information about the item domain, when present, use this for displaying the domain name
                 public var domainMetadata: DomainMetadata? { __data["domainMetadata"] }
                 /// Array of images within an article
-                public var images: [ItemSummary.Image?]? { __data["images"] }
+                public var images: [Image?]? { __data["images"] }
                 /// If the item has a syndicated counterpart the syndication information
                 public var syndicatedArticle: SyndicatedArticle? { __data["syndicatedArticle"] }
 
@@ -259,6 +259,8 @@ public class FetchArchiveQuery: GraphQLQuery {
 
                   public var itemSummary: ItemSummary { _toFragment() }
                 }
+
+                public typealias Author = ItemSummary.Author
 
                 /// User.SavedItems.Edge.Node.Item.AsItem.DomainMetadata
                 ///
@@ -282,6 +284,8 @@ public class FetchArchiveQuery: GraphQLQuery {
                   }
                 }
 
+                public typealias Image = ItemSummary.Image
+
                 /// User.SavedItems.Edge.Node.Item.AsItem.SyndicatedArticle
                 ///
                 /// Parent Type: `SyndicatedArticle`
@@ -300,7 +304,7 @@ public class FetchArchiveQuery: GraphQLQuery {
                   /// Excerpt 
                   public var excerpt: String? { __data["excerpt"] }
                   /// The manually set publisher information for this article
-                  public var publisher: SyndicatedArticleParts.Publisher? { __data["publisher"] }
+                  public var publisher: Publisher? { __data["publisher"] }
 
                   public struct Fragments: FragmentContainer {
                     public let __data: DataDict
@@ -308,6 +312,8 @@ public class FetchArchiveQuery: GraphQLQuery {
 
                     public var syndicatedArticleParts: SyndicatedArticleParts { _toFragment() }
                   }
+
+                  public typealias Publisher = SyndicatedArticleParts.Publisher
                 }
               }
 
@@ -321,8 +327,8 @@ public class FetchArchiveQuery: GraphQLQuery {
                 public typealias RootEntityType = FetchArchiveQuery.Data.User.SavedItems.Edge.Node.Item
                 public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.PendingItem }
                 public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
-                  PendingItemParts.self,
-                  SavedItemSummary.Item.AsPendingItem.self
+                  SavedItemSummary.Item.AsPendingItem.self,
+                  PendingItemParts.self
                 ] }
 
                 /// URL of the item that the user gave for the SavedItem
@@ -393,8 +399,8 @@ public class FetchArchiveQuery: GraphQLQuery {
                   public typealias RootEntityType = FetchArchiveQuery.Data.User.SavedItems.Edge.Node.CorpusItem.Target
                   public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.SyndicatedArticle }
                   public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
-                    SyndicatedArticleParts.self,
-                    CorpusItemParts.Target.AsSyndicatedArticle.self
+                    CorpusItemParts.Target.AsSyndicatedArticle.self,
+                    SyndicatedArticleParts.self
                   ] }
 
                   /// The item id of this Syndicated Article
@@ -406,7 +412,7 @@ public class FetchArchiveQuery: GraphQLQuery {
                   /// Excerpt 
                   public var excerpt: String? { __data["excerpt"] }
                   /// The manually set publisher information for this article
-                  public var publisher: SyndicatedArticleParts.Publisher? { __data["publisher"] }
+                  public var publisher: Publisher? { __data["publisher"] }
 
                   public struct Fragments: FragmentContainer {
                     public let __data: DataDict
@@ -414,6 +420,8 @@ public class FetchArchiveQuery: GraphQLQuery {
 
                     public var syndicatedArticleParts: SyndicatedArticleParts { _toFragment() }
                   }
+
+                  public typealias Publisher = SyndicatedArticleParts.Publisher
                 }
 
                 /// User.SavedItems.Edge.Node.CorpusItem.Target.AsCollection
@@ -426,8 +434,8 @@ public class FetchArchiveQuery: GraphQLQuery {
                   public typealias RootEntityType = FetchArchiveQuery.Data.User.SavedItems.Edge.Node.CorpusItem.Target
                   public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Collection }
                   public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
-                    CollectionSummary.self,
-                    CorpusItemParts.Target.AsCollection.self
+                    CorpusItemParts.Target.AsCollection.self,
+                    CollectionSummary.self
                   ] }
 
                   public var slug: String { __data["slug"] }

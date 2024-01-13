@@ -142,13 +142,13 @@ public struct SlateParts: PocketGraph.SelectionSet, Fragment {
       /// Number of words in the article
       public var wordCount: Int? { __data["wordCount"] }
       /// List of Authors involved with this article
-      public var authors: [ItemSummary.Author?]? { __data["authors"] }
+      public var authors: [Author?]? { __data["authors"] }
       /// A snippet of text from the article
       public var excerpt: String? { __data["excerpt"] }
       /// Additional information about the item domain, when present, use this for displaying the domain name
       public var domainMetadata: DomainMetadata? { __data["domainMetadata"] }
       /// Array of images within an article
-      public var images: [ItemSummary.Image?]? { __data["images"] }
+      public var images: [Image?]? { __data["images"] }
       /// If the item has a syndicated counterpart the syndication information
       public var syndicatedArticle: SyndicatedArticle? { __data["syndicatedArticle"] }
 
@@ -173,10 +173,10 @@ public struct SlateParts: PocketGraph.SelectionSet, Fragment {
         hasImage: GraphQLEnum<PocketGraph.Imageness>? = nil,
         hasVideo: GraphQLEnum<PocketGraph.Videoness>? = nil,
         wordCount: Int? = nil,
-        authors: [ItemSummary.Author?]? = nil,
+        authors: [Author?]? = nil,
         excerpt: String? = nil,
         domainMetadata: DomainMetadata? = nil,
-        images: [ItemSummary.Image?]? = nil,
+        images: [Image?]? = nil,
         syndicatedArticle: SyndicatedArticle? = nil
       ) {
         self.init(_dataDict: DataDict(
@@ -207,6 +207,8 @@ public struct SlateParts: PocketGraph.SelectionSet, Fragment {
           ]
         ))
       }
+
+      public typealias Author = ItemSummary.Author
 
       /// Recommendation.Item.DomainMetadata
       ///
@@ -241,12 +243,14 @@ public struct SlateParts: PocketGraph.SelectionSet, Fragment {
             ],
             fulfilledFragments: [
               ObjectIdentifier(SlateParts.Recommendation.Item.DomainMetadata.self),
-              ObjectIdentifier(DomainMetadataParts.self),
-              ObjectIdentifier(ItemSummary.DomainMetadata.self)
+              ObjectIdentifier(ItemSummary.DomainMetadata.self),
+              ObjectIdentifier(DomainMetadataParts.self)
             ]
           ))
         }
       }
+
+      public typealias Image = ItemSummary.Image
 
       /// Recommendation.Item.SyndicatedArticle
       ///
@@ -266,7 +270,7 @@ public struct SlateParts: PocketGraph.SelectionSet, Fragment {
         /// Excerpt 
         public var excerpt: String? { __data["excerpt"] }
         /// The manually set publisher information for this article
-        public var publisher: SyndicatedArticleParts.Publisher? { __data["publisher"] }
+        public var publisher: Publisher? { __data["publisher"] }
 
         public struct Fragments: FragmentContainer {
           public let __data: DataDict
@@ -280,7 +284,7 @@ public struct SlateParts: PocketGraph.SelectionSet, Fragment {
           mainImage: String? = nil,
           title: String,
           excerpt: String? = nil,
-          publisher: SyndicatedArticleParts.Publisher? = nil
+          publisher: Publisher? = nil
         ) {
           self.init(_dataDict: DataDict(
             data: [
@@ -293,11 +297,13 @@ public struct SlateParts: PocketGraph.SelectionSet, Fragment {
             ],
             fulfilledFragments: [
               ObjectIdentifier(SlateParts.Recommendation.Item.SyndicatedArticle.self),
-              ObjectIdentifier(SyndicatedArticleParts.self),
-              ObjectIdentifier(ItemSummary.SyndicatedArticle.self)
+              ObjectIdentifier(ItemSummary.SyndicatedArticle.self),
+              ObjectIdentifier(SyndicatedArticleParts.self)
             ]
           ))
         }
+
+        public typealias Publisher = SyndicatedArticleParts.Publisher
       }
     }
 

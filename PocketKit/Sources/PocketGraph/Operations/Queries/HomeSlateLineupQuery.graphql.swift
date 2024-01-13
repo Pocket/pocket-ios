@@ -153,8 +153,8 @@ public class HomeSlateLineupQuery: GraphQLQuery {
                 public typealias RootEntityType = HomeSlateLineupQuery.Data.HomeSlateLineup.Slate.Recommendation.CorpusItem.Target
                 public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.SyndicatedArticle }
                 public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
-                  SyndicatedArticleParts.self,
-                  CorpusItemParts.Target.AsSyndicatedArticle.self
+                  CorpusItemParts.Target.AsSyndicatedArticle.self,
+                  SyndicatedArticleParts.self
                 ] }
 
                 /// The item id of this Syndicated Article
@@ -166,7 +166,7 @@ public class HomeSlateLineupQuery: GraphQLQuery {
                 /// Excerpt 
                 public var excerpt: String? { __data["excerpt"] }
                 /// The manually set publisher information for this article
-                public var publisher: SyndicatedArticleParts.Publisher? { __data["publisher"] }
+                public var publisher: Publisher? { __data["publisher"] }
 
                 public struct Fragments: FragmentContainer {
                   public let __data: DataDict
@@ -174,6 +174,8 @@ public class HomeSlateLineupQuery: GraphQLQuery {
 
                   public var syndicatedArticleParts: SyndicatedArticleParts { _toFragment() }
                 }
+
+                public typealias Publisher = SyndicatedArticleParts.Publisher
               }
 
               /// HomeSlateLineup.Slate.Recommendation.CorpusItem.Target.AsCollection
@@ -186,8 +188,8 @@ public class HomeSlateLineupQuery: GraphQLQuery {
                 public typealias RootEntityType = HomeSlateLineupQuery.Data.HomeSlateLineup.Slate.Recommendation.CorpusItem.Target
                 public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Collection }
                 public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
-                  CollectionSummary.self,
-                  CorpusItemParts.Target.AsCollection.self
+                  CorpusItemParts.Target.AsCollection.self,
+                  CollectionSummary.self
                 ] }
 
                 public var slug: String { __data["slug"] }

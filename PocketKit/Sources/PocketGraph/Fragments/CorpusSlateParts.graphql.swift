@@ -144,8 +144,8 @@ public struct CorpusSlateParts: PocketGraph.SelectionSet, Fragment {
           ],
           fulfilledFragments: [
             ObjectIdentifier(CorpusSlateParts.Recommendation.CorpusItem.self),
-            ObjectIdentifier(CorpusItemParts.self),
-            ObjectIdentifier(CorpusRecommendationParts.CorpusItem.self)
+            ObjectIdentifier(CorpusRecommendationParts.CorpusItem.self),
+            ObjectIdentifier(CorpusItemParts.self)
           ]
         ))
       }
@@ -185,8 +185,8 @@ public struct CorpusSlateParts: PocketGraph.SelectionSet, Fragment {
           public typealias RootEntityType = CorpusSlateParts.Recommendation.CorpusItem.Target
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.SyndicatedArticle }
           public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
-            SyndicatedArticleParts.self,
-            CorpusItemParts.Target.AsSyndicatedArticle.self
+            CorpusItemParts.Target.AsSyndicatedArticle.self,
+            SyndicatedArticleParts.self
           ] }
 
           /// The item id of this Syndicated Article
@@ -198,7 +198,7 @@ public struct CorpusSlateParts: PocketGraph.SelectionSet, Fragment {
           /// Excerpt 
           public var excerpt: String? { __data["excerpt"] }
           /// The manually set publisher information for this article
-          public var publisher: SyndicatedArticleParts.Publisher? { __data["publisher"] }
+          public var publisher: Publisher? { __data["publisher"] }
 
           public struct Fragments: FragmentContainer {
             public let __data: DataDict
@@ -212,7 +212,7 @@ public struct CorpusSlateParts: PocketGraph.SelectionSet, Fragment {
             mainImage: String? = nil,
             title: String,
             excerpt: String? = nil,
-            publisher: SyndicatedArticleParts.Publisher? = nil
+            publisher: Publisher? = nil
           ) {
             self.init(_dataDict: DataDict(
               data: [
@@ -226,12 +226,14 @@ public struct CorpusSlateParts: PocketGraph.SelectionSet, Fragment {
               fulfilledFragments: [
                 ObjectIdentifier(CorpusSlateParts.Recommendation.CorpusItem.Target.self),
                 ObjectIdentifier(CorpusSlateParts.Recommendation.CorpusItem.Target.AsSyndicatedArticle.self),
-                ObjectIdentifier(SyndicatedArticleParts.self),
                 ObjectIdentifier(CorpusItemParts.Target.self),
-                ObjectIdentifier(CorpusItemParts.Target.AsSyndicatedArticle.self)
+                ObjectIdentifier(CorpusItemParts.Target.AsSyndicatedArticle.self),
+                ObjectIdentifier(SyndicatedArticleParts.self)
               ]
             ))
           }
+
+          public typealias Publisher = SyndicatedArticleParts.Publisher
         }
 
         /// Recommendation.CorpusItem.Target.AsCollection
@@ -244,8 +246,8 @@ public struct CorpusSlateParts: PocketGraph.SelectionSet, Fragment {
           public typealias RootEntityType = CorpusSlateParts.Recommendation.CorpusItem.Target
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Collection }
           public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
-            CollectionSummary.self,
-            CorpusItemParts.Target.AsCollection.self
+            CorpusItemParts.Target.AsCollection.self,
+            CollectionSummary.self
           ] }
 
           public var slug: String { __data["slug"] }
@@ -271,9 +273,9 @@ public struct CorpusSlateParts: PocketGraph.SelectionSet, Fragment {
               fulfilledFragments: [
                 ObjectIdentifier(CorpusSlateParts.Recommendation.CorpusItem.Target.self),
                 ObjectIdentifier(CorpusSlateParts.Recommendation.CorpusItem.Target.AsCollection.self),
-                ObjectIdentifier(CollectionSummary.self),
                 ObjectIdentifier(CorpusItemParts.Target.self),
-                ObjectIdentifier(CorpusItemParts.Target.AsCollection.self)
+                ObjectIdentifier(CorpusItemParts.Target.AsCollection.self),
+                ObjectIdentifier(CollectionSummary.self)
               ]
             ))
           }
@@ -306,8 +308,8 @@ public struct CorpusSlateParts: PocketGraph.SelectionSet, Fragment {
                 ],
                 fulfilledFragments: [
                   ObjectIdentifier(CorpusSlateParts.Recommendation.CorpusItem.Target.AsCollection.Author.self),
-                  ObjectIdentifier(CollectionAuthorSummary.self),
-                  ObjectIdentifier(CollectionSummary.Author.self)
+                  ObjectIdentifier(CollectionSummary.Author.self),
+                  ObjectIdentifier(CollectionAuthorSummary.self)
                 ]
               ))
             }

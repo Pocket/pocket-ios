@@ -116,7 +116,7 @@ public struct CorpusItemParts: PocketGraph.SelectionSet, Fragment {
       /// Excerpt 
       public var excerpt: String? { __data["excerpt"] }
       /// The manually set publisher information for this article
-      public var publisher: SyndicatedArticleParts.Publisher? { __data["publisher"] }
+      public var publisher: Publisher? { __data["publisher"] }
 
       public struct Fragments: FragmentContainer {
         public let __data: DataDict
@@ -130,7 +130,7 @@ public struct CorpusItemParts: PocketGraph.SelectionSet, Fragment {
         mainImage: String? = nil,
         title: String,
         excerpt: String? = nil,
-        publisher: SyndicatedArticleParts.Publisher? = nil
+        publisher: Publisher? = nil
       ) {
         self.init(_dataDict: DataDict(
           data: [
@@ -148,6 +148,8 @@ public struct CorpusItemParts: PocketGraph.SelectionSet, Fragment {
           ]
         ))
       }
+
+      public typealias Publisher = SyndicatedArticleParts.Publisher
     }
 
     /// Target.AsCollection
@@ -219,8 +221,8 @@ public struct CorpusItemParts: PocketGraph.SelectionSet, Fragment {
             ],
             fulfilledFragments: [
               ObjectIdentifier(CorpusItemParts.Target.AsCollection.Author.self),
-              ObjectIdentifier(CollectionAuthorSummary.self),
-              ObjectIdentifier(CollectionSummary.Author.self)
+              ObjectIdentifier(CollectionSummary.Author.self),
+              ObjectIdentifier(CollectionAuthorSummary.self)
             ]
           ))
         }
