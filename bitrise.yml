@@ -141,7 +141,7 @@ workflows:
                 set -e
 
                 cd PocketKit
-                swift package --allow-writing-to-package-directory apollo-cli-install
+                swift package --allow-writing-to-package-directory apollo-cli-install --allow-network-connections all
                 ./apollo-ios-cli fetch-schema
                 ./apollo-ios-cli generate
 
