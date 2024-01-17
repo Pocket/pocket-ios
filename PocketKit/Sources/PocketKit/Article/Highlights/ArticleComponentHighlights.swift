@@ -7,9 +7,10 @@ import SharedPocketKit
 import Sync
 import UIKit
 
-/// Component highlight, represented by its quote and range in the component
-struct ArticleComponentHighlight {
-    let range: Range<String.Index>
+struct HighlightedQuote: Identifiable {
+    let id: UUID
+    let index: Int
+    let indexPath: IndexPath
     let quote: String
 }
 
@@ -17,7 +18,7 @@ struct ArticleComponentHighlight {
 /// and a list of corresponding component highlights
 struct HighlightedString {
     let content: NSAttributedString
-    let highlights: [ArticleComponentHighlight]
+    let highlightInexes: [Int]?
 }
 
 extension Array where Element == ArticleComponent {
@@ -29,19 +30,17 @@ extension Array where Element == ArticleComponent {
         guard !text.isEmpty else {
             return self
         }
-        let sortedPatches = patches.sorted {
-            guard let firstIndex = textIndex(patch: $0),
-                    let secondIndex = textIndex(patch: $1) else {
-                // if there's no comparison to be made, just keep the existing order
-                return true
-            }
-            return firstIndex < secondIndex
+
+        let indexedPatches = patches.enumerated().map { patch in
+            let newElement = patch.element.replacingOccurrences(of: "%3Cpkt_tag_annotation%3E", with: "%3Cpkt_tag_annotation_\(patch.offset)%3E")
+            return newElement
         }
+
         let diffMatchPatch = DiffMatchPatch()
         diffMatchPatch.match_Distance = HighlightConstants.diffMatchPatchDistance
         diffMatchPatch.match_Threshold = HighlightConstants.diffMatchPatchThreshold
         // convert text patches into Patch objects
-        let totalPatches = sortedPatches.reduce(into: [Patch]()) {
+        let totalPatches = indexedPatches.reduce(into: [Patch]()) {
             if let patches = try? diffMatchPatch.patch_(fromText: $1) as? [Patch] {
                 $0.append(contentsOf: patches)
             }
@@ -92,22 +91,6 @@ extension Array where Element == ArticleComponent {
         highlightableComponents
             .map { $0.content }
             .joined(separator: HighlightConstants.componentSeparator)
-    }
-
-    /// Extract the first text index from a patch
-    /// - Parameter patch: the patch
-    /// - Returns: the text index as Integer, if it was found, or nil
-    private func textIndex(patch: String) -> Int? {
-        guard let regex = try? Regex(HighlightConstants.indexPattern),
-                let match = patch.firstMatch(of: regex),
-              // we want the match to capture the value
-              match.count > 1,
-              // and we want the capture to contain a valid string
-              let matchedString = match[1].substring else {
-            return nil
-        }
-        // return the integer value, if the string contains a valid number, or nil
-        return Int(matchedString)
     }
 
     /// Merge text components back into the current array of `ArticleComponent`
@@ -221,7 +204,7 @@ extension NSAttributedString {
     func highlighted() -> HighlightedString {
         let highlightableString = self.string
         guard highlightableString.contains(HighlightConstants.commonHighlightTag) else {
-            return HighlightedString(content: self, highlights: [])
+            return HighlightedString(content: self, highlightInexes: nil)
         }
         // a copy of the original string, that will reflect the visible text
         // we will remove tags in place and store highlight ranges on this one
@@ -237,6 +220,8 @@ extension NSAttributedString {
         // Same as above, on the copy
         var resultingIndexStack = [String.Index]()
 
+        var highlightIndexes = [Int]()
+
         while !scanner.isAtEnd {
             guard scanner.scanUpToString(HighlightConstants.commonHighlightTag) != nil else {
                 continue
@@ -246,8 +231,20 @@ extension NSAttributedString {
             // Found the start of a highlight
             if character == HighlightConstants.startTagIdentifier {
                 indexStack.append(beforeIndex)
-                if let range = resultingString.firstRange(of: HighlightConstants.highlightStartTag) {
-                    // remove the tag from the copy string
+                // first subcase: found the start of an highlight with an index
+                if let regex = try? Regex(HighlightConstants.highlightIndexPattern),
+                   let match = resultingString.firstMatch(of: regex),
+                   // we want the match to capture the value
+                   match.count > 1,
+                   // and we want the capture to contain a valid string
+                   let matchedString = match[1].substring,
+                   let range = resultingString.firstRange(of: HighlightConstants.indexedTag(String(matchedString))),
+                   let index = Int(matchedString) {
+                    highlightIndexes.append(index)
+                    resultingString.removeSubrange(range)
+                    resultingIndexStack.append(range.lowerBound)
+                    // second subcase: found continuation of existing highlight that spans more than one component
+                } else if let range = resultingString.firstRange(of: HighlightConstants.highlightStartTag) {
                     resultingString.removeSubrange(range)
                     resultingIndexStack.append(range.lowerBound)
                 }
@@ -276,32 +273,30 @@ extension NSAttributedString {
                 scanner.currentIndex = highlightableString.index(after: scanner.currentIndex)
             }
         }
+
         let mutable = NSMutableAttributedString(attributedString: self)
         highlightableRanges.forEach {
             let nsRange = NSRange($0, in: highlightableString)
             mutable.addAttribute(.backgroundColor, value: HighlightConstants.highlightColor, range: nsRange)
             mutable.addAttribute(.foregroundColor, value: HighlightConstants.highlightedTextColor, range: nsRange)
         }
-        mutable.mutableString.replaceOccurrences(
-            of: HighlightConstants.highlightStartTag,
-            with: "",
-            range: NSRange(
-                location: 0,
-                length: mutable.mutableString.length
+
+        let tagsToRemove =
+        highlightIndexes.map { HighlightConstants.indexedTag("\($0)") } +
+        [HighlightConstants.highlightStartTag] +
+        [HighlightConstants.highlightEndTag]
+
+        tagsToRemove.forEach {
+            mutable.mutableString.replaceOccurrences(
+                of: $0,
+                with: "",
+                range: NSRange(
+                    location: 0,
+                    length: mutable.mutableString.length
+                )
             )
-        )
-        mutable.mutableString.replaceOccurrences(
-            of: HighlightConstants.highlightEndTag,
-            with: "",
-            range: NSRange(
-                location: 0,
-                length: mutable.mutableString.length
-            )
-        )
-        let highlights = resultingRanges.map {
-            ArticleComponentHighlight(range: $0, quote: String(resultingString[$0]))
         }
-        return HighlightedString(content: mutable, highlights: highlights)
+        return HighlightedString(content: mutable, highlightInexes: highlightIndexes)
     }
 }
 
@@ -319,12 +314,16 @@ private enum HighlightConstants {
     // tag to scan the string for highlights: common to start, end and component separator
     static let commonTag = "pkt_"
     // tag to scan the attributed string in order to apply highlights
-    static let commonHighlightTag = "pkt_tag_annotation>"
+    static let commonHighlightTag = "pkt_tag_annotation"
     static let startTagIdentifier = "<"
     static let endTagIdentifier = "/"
     static let separatorIdentifier = "_"
-    /// Regex to find text indexes in patches
-    static let indexPattern = "@@[ \t]-([0-9]+),"
+    // Regex to find highlight indexes in tags
+    static let highlightIndexPattern = "_([0-9]+)>"
+    // Indexed tag builder
+    static func indexedTag(_ index: String) -> String {
+        "<pkt_tag_annotation_\(index)>"
+    }
     /// colors
     static let highlightColor = UIColor(displayP3Red: 250/255, green: 233/255, blue: 199/255, alpha: 0.8)
     static let highlightedTextColor = UIColor.black
