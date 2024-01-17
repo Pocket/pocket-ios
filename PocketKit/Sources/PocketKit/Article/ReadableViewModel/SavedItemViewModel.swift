@@ -112,6 +112,37 @@ class SavedItemViewModel: ReadableViewModel {
         ReaderSettings(tracker: tracker, userDefaults: userDefaults)
     }()
 
+    /// Array of fetched highlights, sorted by patch index
+    var highlights: [Highlight]? {
+        guard let highlights = item.highlights?.array as? [Highlight], !highlights.isEmpty else {
+            return nil
+        }
+        return highlights.sorted {
+            guard let firstIndex = textIndex(patch: $0.patch),
+                  let secondIndex = textIndex(patch: $1.patch) else {
+                // if there's no comparison to be made, just keep the existing order
+                return true
+            }
+            return firstIndex < secondIndex
+        }
+    }
+
+    /// Extract the first text index from a patch
+    /// - Parameter patch: the patch
+    /// - Returns: the text index as Integer, if it was found, or nil
+    private func textIndex(patch: String) -> Int? {
+        guard let regex = try? Regex("@@[ \t]-([0-9]+),"),
+                let match = patch.firstMatch(of: regex),
+              // we want the match to capture the value
+              match.count > 1,
+              // and we want the capture to contain a valid string
+              let matchedString = match[1].substring else {
+            return nil
+        }
+        // return the integer value, if the string contains a valid number, or nil
+        return Int(matchedString)
+    }
+
     var components: [ArticleComponent]? {
         guard featureFlagService.isAssigned(flag: .marticleHighlights),
                 let highlights = item.highlights?.array as? [Highlight],
