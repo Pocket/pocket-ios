@@ -6,12 +6,15 @@ import Sync
 import UIKit
 
 class DividerComponentPresenter: ArticleComponentPresenter {
-    var highlights = [ArticleComponentHighlight]()
+    var componentIndex: Int
+
+    var highlightIndexes: [Int]?
 
     private let component: DividerComponent
 
-    init(component: DividerComponent) {
+    init(component: DividerComponent, componentIndex: Int) {
         self.component = component
+        self.componentIndex = componentIndex
     }
 
     func size(for availableWidth: CGFloat) -> CGSize {

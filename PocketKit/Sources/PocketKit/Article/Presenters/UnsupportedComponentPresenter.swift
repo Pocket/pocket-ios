@@ -6,12 +6,15 @@ import Sync
 import UIKit
 
 class UnsupportedComponentPresenter: ArticleComponentPresenter {
-    var highlights = [ArticleComponentHighlight]()
+    var componentIndex: Int
+
+    var highlightIndexes: [Int]?
 
     private let readableViewModel: ReadableViewModel?
 
-    init(readableViewModel: ReadableViewModel?) {
+    init(readableViewModel: ReadableViewModel?, componentIndex: Int) {
         self.readableViewModel = readableViewModel
+        self.componentIndex = componentIndex
     }
 
     func cell(for indexPath: IndexPath, in collectionView: UICollectionView) -> UICollectionViewCell {

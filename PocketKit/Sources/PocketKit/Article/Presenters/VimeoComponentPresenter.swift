@@ -6,7 +6,9 @@ import Sync
 import UIKit
 
 class VimeoComponentPresenter: ArticleComponentPresenter {
-    var highlights = [ArticleComponentHighlight]()
+    var componentIndex: Int
+
+    var highlightIndexes: [Int]?
 
     private let oEmbedService: OEmbedService
     private let readableViewModel: ReadableViewModel?
@@ -20,11 +22,13 @@ class VimeoComponentPresenter: ArticleComponentPresenter {
         oEmbedService: OEmbedService,
         readableViewModel: ReadableViewModel?,
         component: VideoComponent,
+        componentIndex: Int,
         onContentLoaded: @escaping () -> Void
     ) {
         self.oEmbedService = oEmbedService
         self.readableViewModel = readableViewModel
         self.component = component
+        self.componentIndex = componentIndex
         self.onContentLoaded = onContentLoaded
     }
 

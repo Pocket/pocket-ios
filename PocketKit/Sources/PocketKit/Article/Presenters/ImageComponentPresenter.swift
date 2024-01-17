@@ -27,7 +27,9 @@ private extension Style {
 }
 
 class ImageComponentPresenter: ArticleComponentPresenter, ImageComponentCellModel {
-    var highlights = [ArticleComponentHighlight]()
+    var componentIndex: Int
+
+    var highlightIndexes: [Int]?
 
     private let component: ImageComponent
 
@@ -49,9 +51,10 @@ class ImageComponentPresenter: ArticleComponentPresenter, ImageComponentCellMode
         cachedAttributedCredit ?? loadAttributedCredit()
     }
 
-    init(component: ImageComponent, readerSettings: ReaderSettings, onUpdate: @escaping () -> Void) {
+    init(component: ImageComponent, readerSettings: ReaderSettings, componentIndex: Int, onUpdate: @escaping () -> Void) {
         self.component = component
         self.readerSettings = readerSettings
+        self.componentIndex = componentIndex
         self.onUpdate = onUpdate
     }
 

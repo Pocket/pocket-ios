@@ -7,7 +7,9 @@ import Sync
 import UIKit
 
 class MarkdownComponentPresenter: ArticleComponentPresenter {
-    var highlights = [ArticleComponentHighlight]()
+    var componentIndex: Int
+
+    var highlightIndexes: [Int]?
 
     enum ComponentType {
         case heading
@@ -37,11 +39,13 @@ class MarkdownComponentPresenter: ArticleComponentPresenter {
     init(
         component: MarkdownComponent,
         readerSettings: ReaderSettings,
-        componentType: ComponentType
+        componentType: ComponentType,
+        componentIndex: Int
     ) {
         self.component = component
         self.readerSettings = readerSettings
         self.componentType = componentType
+        self.componentIndex = componentIndex
     }
 
     func size(for availableWidth: CGFloat) -> CGSize {
@@ -74,7 +78,7 @@ class MarkdownComponentPresenter: ArticleComponentPresenter {
             styler: NSMutableAttributedString.defaultStyler(with: readerSettings)
         )?.highlighted()
         cachedContent = highlightedString?.content
-        highlights = highlightedString?.highlights ?? []
+        highlightIndexes = highlightedString?.highlightInexes
 
         return cachedContent
     }

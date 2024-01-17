@@ -11,7 +11,9 @@ private extension Style {
 }
 
 class CodeBlockPresenter: ArticleComponentPresenter {
-    var highlights = [ArticleComponentHighlight]()
+    var componentIndex: Int
+
+    var highlightIndexes: [Int]?
 
     private let component: CodeBlockComponent
 
@@ -22,9 +24,10 @@ class CodeBlockPresenter: ArticleComponentPresenter {
         cachedCodeBlock ?? loadCodeBlock()
     }
 
-    init(component: CodeBlockComponent, readerSettings: ReaderSettings) {
+    init(component: CodeBlockComponent, readerSettings: ReaderSettings, componentIndex: Int) {
         self.component = component
         self.readerSettings = readerSettings
+        self.componentIndex = componentIndex
     }
 
     func size(for availableWidth: CGFloat) -> CGSize {
@@ -53,7 +56,7 @@ class CodeBlockPresenter: ArticleComponentPresenter {
             style: .codeBlock.modified(by: readerSettings)
         ).highlighted()
         cachedCodeBlock = highlightedString.content
-        highlights = highlightedString.highlights
+        highlightIndexes = highlightedString.highlightInexes
 
         return cachedCodeBlock
     }

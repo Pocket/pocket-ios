@@ -18,7 +18,9 @@ protocol ListComponentElement {
 }
 
 class ListComponentPresenter: ArticleComponentPresenter {
-    var highlights = [ArticleComponentHighlight]()
+    var componentIndex: Int
+
+    var highlightIndexes: [Int]?
 
     private let component: ListComponent
     private let readerSettings: ReaderSettings
@@ -28,9 +30,10 @@ class ListComponentPresenter: ArticleComponentPresenter {
         cachedAttributedContent ?? loadAttributedContent()
     }
 
-    init(component: ListComponent, readerSettings: ReaderSettings) {
+    init(component: ListComponent, readerSettings: ReaderSettings, componentIndex: Int) {
         self.component = component
         self.readerSettings = readerSettings
+        self.componentIndex = componentIndex
     }
 
     func size(for availableWidth: CGFloat) -> CGSize {
@@ -92,7 +95,7 @@ class ListComponentPresenter: ArticleComponentPresenter {
 
         let highlightedString = attributedContent.highlighted()
         cachedAttributedContent = highlightedString.content
-        highlights = highlightedString.highlights
+        highlightIndexes = highlightedString.highlightInexes
 
         return cachedAttributedContent
     }

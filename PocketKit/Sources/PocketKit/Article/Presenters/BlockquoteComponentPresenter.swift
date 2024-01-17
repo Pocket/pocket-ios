@@ -16,7 +16,9 @@ private extension Style {
 }
 
 class BlockquoteComponentPresenter: ArticleComponentPresenter {
-    var highlights = [ArticleComponentHighlight]()
+    var componentIndex: Int
+
+    var highlightIndexes: [Int]?
 
     private let component: BlockquoteComponent
 
@@ -27,9 +29,10 @@ class BlockquoteComponentPresenter: ArticleComponentPresenter {
         cachedAttributedBlockquote ?? loadAttributedBlockquote()
     }
 
-    init(component: BlockquoteComponent, readerSettings: ReaderSettings) {
+    init(component: BlockquoteComponent, readerSettings: ReaderSettings, componentIndex: Int) {
         self.component = component
         self.readerSettings = readerSettings
+        self.componentIndex = componentIndex
     }
 
     func size(for availableWidth: CGFloat) -> CGSize {
@@ -64,7 +67,7 @@ class BlockquoteComponentPresenter: ArticleComponentPresenter {
                 bodyStyle: .blockquote.modified(by: readerSettings)
             )
         )?.highlighted()
-        highlights = highlightedString?.highlights ?? []
+        highlightIndexes = highlightedString?.highlightInexes
         cachedAttributedBlockquote = highlightedString?.content
 
         return cachedAttributedBlockquote

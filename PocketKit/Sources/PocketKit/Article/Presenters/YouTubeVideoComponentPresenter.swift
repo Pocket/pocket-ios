@@ -9,7 +9,9 @@ import CoreGraphics
 import UIKit
 
 class YouTubeVideoComponentPresenter: ArticleComponentPresenter {
-    var highlights = [ArticleComponentHighlight]()
+    var componentIndex: Int
+
+    var highlightIndexes: [Int]?
 
     private let component: VideoComponent
     private let readableViewModel: ReadableViewModel?
@@ -18,10 +20,12 @@ class YouTubeVideoComponentPresenter: ArticleComponentPresenter {
 
     init(
         component: VideoComponent,
-        readableViewModel: ReadableViewModel?
+        readableViewModel: ReadableViewModel?,
+        componentIndex: Int
     ) {
         self.component = component
         self.readableViewModel = readableViewModel
+        self.componentIndex = componentIndex
     }
 
     func size(for availableWidth: CGFloat) -> CGSize {
