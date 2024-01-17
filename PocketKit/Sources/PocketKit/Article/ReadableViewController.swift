@@ -41,6 +41,8 @@ class ReadableViewController: UIViewController {
 
     private var userScrollProgress: IndexPath?
 
+    private var highlightedQuotes = [HighlightedQuote]()
+
     private lazy var collectionView: UICollectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: layout
@@ -99,6 +101,22 @@ class ReadableViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        presenters?.forEach { presenter in
+            if let viewModel = readableViewModel as? SavedItemViewModel,
+               let indexes = presenter.highlightIndexes,
+               let highlights = viewModel.highlights {
+                indexes.forEach {
+                    highlightedQuotes.append(
+                        HighlightedQuote(
+                            id: UUID(uuidString: highlights[safe: $0]!.remoteID!)!,
+                            index: $0,
+                            indexPath: IndexPath(item: presenter.componentIndex, section: 1),
+                            quote: highlights[safe: $0]?.quote ?? ""
+                        )
+                    )
+                }
+            }
+        }
 
         guard let userProgress = readableViewModel.readingProgress() else {
             return
@@ -147,7 +165,9 @@ class ReadableViewController: UIViewController {
             return
         }
         presenters = components
-            .filter { !$0.isEmpty }.map { presenter(for: $0) }
+            .enumerated()
+            .filter { !$0.element.isEmpty }
+            .map { presenter(for: $0.element, at: $0.offset) }
 
         DispatchQueue.main.async {
             self.collectionView.reloadData()
@@ -367,48 +387,50 @@ extension ReadableViewController {
 }
 
 extension ReadableViewController {
-    func presenter(for component: ArticleComponent) -> ArticleComponentPresenter {
+    func presenter(for component: ArticleComponent, at index: Int) -> ArticleComponentPresenter {
         switch component {
         case .text(let component):
-            return MarkdownComponentPresenter(component: component, readerSettings: readerSettings, componentType: .body)
+            return MarkdownComponentPresenter(component: component, readerSettings: readerSettings, componentType: .body, componentIndex: index)
         case .heading(let component):
-            return MarkdownComponentPresenter(component: component, readerSettings: readerSettings, componentType: .heading)
+            return MarkdownComponentPresenter(component: component, readerSettings: readerSettings, componentType: .heading, componentIndex: index)
         case .image(let component):
-            return ImageComponentPresenter(component: component, readerSettings: readerSettings) { [weak self] in
+            return ImageComponentPresenter(component: component, readerSettings: readerSettings, componentIndex: index) { [weak self] in
                 self?.layout.invalidateLayout()
             }
         case .divider(let component):
-            return DividerComponentPresenter(component: component)
+            return DividerComponentPresenter(component: component, componentIndex: index)
         case .codeBlock(let component):
-            return CodeBlockPresenter(component: component, readerSettings: readerSettings)
+            return CodeBlockPresenter(component: component, readerSettings: readerSettings, componentIndex: index)
         case .bulletedList(let component):
-            return ListComponentPresenter(component: component, readerSettings: readerSettings)
+            return ListComponentPresenter(component: component, readerSettings: readerSettings, componentIndex: index)
         case .numberedList(let component):
-            return ListComponentPresenter(component: component, readerSettings: readerSettings)
+            return ListComponentPresenter(component: component, readerSettings: readerSettings, componentIndex: index)
         case .table:
-            return UnsupportedComponentPresenter(readableViewModel: readableViewModel)
+            return UnsupportedComponentPresenter(readableViewModel: readableViewModel, componentIndex: index)
         case .blockquote(let component):
-            return BlockquoteComponentPresenter(component: component, readerSettings: readerSettings)
+            return BlockquoteComponentPresenter(component: component, readerSettings: readerSettings, componentIndex: index)
         case .video(let component):
             switch component.type {
             case .youtube:
                 return YouTubeVideoComponentPresenter(
                     component: component,
-                    readableViewModel: readableViewModel
+                    readableViewModel: readableViewModel,
+                    componentIndex: index
                 )
             case .vimeoLink, .vimeoIframe, .vimeoMoogaloop:
                 return VimeoComponentPresenter(
                     oEmbedService: OEmbedService(session: URLSession.shared),
                     readableViewModel: readableViewModel,
-                    component: component
+                    component: component,
+                    componentIndex: index
                 ) { [weak self] in
                     self?.layout.invalidateLayout()
                 }
             default:
-                return UnsupportedComponentPresenter(readableViewModel: readableViewModel)
+                return UnsupportedComponentPresenter(readableViewModel: readableViewModel, componentIndex: index)
             }
         default:
-            return UnsupportedComponentPresenter(readableViewModel: readableViewModel)
+            return UnsupportedComponentPresenter(readableViewModel: readableViewModel, componentIndex: index)
         }
     }
 }
