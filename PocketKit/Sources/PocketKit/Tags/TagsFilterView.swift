@@ -24,7 +24,7 @@ struct TagsFilterView: View {
     private var tags: FetchedResults<Tag>
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ScrollViewReader { scrollView in
                 List(selection: $selectedItems) {
                     let tagAction = { (tag: TagType) in
