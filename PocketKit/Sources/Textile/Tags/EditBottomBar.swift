@@ -6,7 +6,8 @@ import SwiftUI
 import Localization
 
 public struct EditBottomBar: ViewModifier {
-    let isEditing: Bool
+    @Environment(\.editMode)
+    var editMode
     let selectedItems: Set<TagType>
     let onDelete: () -> Void
     let onRename: (String) -> Void
@@ -14,8 +15,7 @@ public struct EditBottomBar: ViewModifier {
     @State var showDeleteAlert: Bool = false
     @State private var name = ""
 
-    public init(isEditing: Bool, selectedItems: Set<TagType>, onDelete: @escaping () -> Void, onRename: @escaping (String) -> Void) {
-        self.isEditing = isEditing
+    public init(selectedItems: Set<TagType>, onDelete: @escaping () -> Void, onRename: @escaping (String) -> Void) {
         self.selectedItems = selectedItems
         self.onDelete = onDelete
         self.onRename = onRename
@@ -24,7 +24,7 @@ public struct EditBottomBar: ViewModifier {
     public func body(content: Content) -> some View {
         ZStack(alignment: .bottom) {
             content
-            if isEditing {
+            if editMode?.wrappedValue == .active {
                 HStack {
                     Button(Localization.rename) {
                         showRenameAlert.toggle()
@@ -64,63 +64,7 @@ public struct EditBottomBar: ViewModifier {
 }
 
 extension View {
-    public func editBottomBar(isEditing: Bool, selectedItems: Set<TagType>, onDelete: @escaping () -> Void, onRename: @escaping (String) -> Void) -> some View {
-        self.modifier(EditBottomBar(isEditing: isEditing, selectedItems: selectedItems, onDelete: onDelete, onRename: onRename))
-    }
-}
-
-struct EditBottomBar_Previews: PreviewProvider {
-    static var previews: some View {
-        VStack {
-            Text("Edit Bottom Bar Demo")
-            Spacer()
-        }
-        .editBottomBar(isEditing: true, selectedItems: [TagType.tag("tag 0")]) {
-            print("Delete Action Taken")
-        } onRename: { text in
-            print("Rename Action Taken")
-        }
-        .padding(30)
-        .previewDisplayName("Light")
-        .preferredColorScheme(.light)
-
-        VStack {
-            Text("Edit Bottom Bar Demo")
-            Spacer()
-        }
-        .editBottomBar(isEditing: true, selectedItems: [TagType.tag("tag 0")]) {
-            print("Delete Action Taken")
-        } onRename: { text in
-            print("Rename Action Taken")
-        }
-        .padding(30)
-        .previewDisplayName("Dark")
-        .preferredColorScheme(.light)
-
-        VStack {
-            Text("Edit Bottom Bar Demo")
-            Spacer()
-        }
-        .editBottomBar(isEditing: true, selectedItems: []) {
-            print("Delete Action Taken")
-        } onRename: { text in
-            print("Rename Action Taken")
-        }
-        .padding(30)
-        .previewDisplayName("Light - Disable")
-        .preferredColorScheme(.light)
-
-        VStack {
-            Text("Edit Bottom Bar Demo")
-            Spacer()
-        }
-        .editBottomBar(isEditing: true, selectedItems: []) {
-            print("Delete Action Taken")
-        } onRename: { text in
-            print("Rename Action Taken")
-        }
-        .padding(30)
-        .previewDisplayName("Dark - Disable")
-        .preferredColorScheme(.light)
+    public func editBottomBar(selectedItems: Set<TagType>, onDelete: @escaping () -> Void, onRename: @escaping (String) -> Void) -> some View {
+        self.modifier(EditBottomBar(selectedItems: selectedItems, onDelete: onDelete, onRename: onRename))
     }
 }

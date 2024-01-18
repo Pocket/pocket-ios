@@ -13,9 +13,11 @@ struct TagsFilterView: View {
     @Environment(\.dismiss)
     private var dismiss
 
+    @Environment(\.editMode)
+    var editMode
+
     @State var didTap = false
     @State private var selectedItems = Set<TagType>()
-    @State private var isEditing = false
     @State private var renameTagText = ""
 
     @FetchRequest(sortDescriptors: [
@@ -33,18 +35,18 @@ struct TagsFilterView: View {
                         dismiss()
                     }
                     TagsCell(tag: .notTagged, tagAction: tagAction)
-                        .disabled(isEditing)
+                        .disabled(editMode?.wrappedValue == .active)
                     TagsSectionView(
-                        showRecentTags: !isEditing && !viewModel.recentTags.isEmpty,
                         recentTags: viewModel.recentTags,
                         allTags: tags.map { .tag($0.name) },
                         tagAction: tagAction
-                    ).disabled(isEditing)
+                    )
+                    .disabled(editMode?.wrappedValue == .active)
                 }
                 .listRowInsets(EdgeInsets())
                 .navigationBarTitleDisplayMode(.inline)
-                .tagsHeaderToolBar($isEditing, viewModel: viewModel)
-                .editBottomBar(isEditing: isEditing, selectedItems: selectedItems) {
+                .tagsHeaderToolBar(viewModel: viewModel)
+                .editBottomBar(selectedItems: selectedItems) {
                     viewModel.delete(tags: Array(selectedItems.compactMap({ $0.name })))
                     selectedItems.removeAll()
                 } onRename: { text in
@@ -68,28 +70,26 @@ struct TagsFilterView: View {
             guard !didTap else { return }
             viewModel.selectAllAction()
         }
-        .environment(\.editMode, isEditing ? .constant(.active) : .constant(.inactive))
     }
 }
 
 struct EditModeView: View {
     @Environment(\.editMode)
     var editMode
-    @Binding var isEditing: Bool
     @ObservedObject var viewModel: TagsFilterViewModel
 
     var body: some View {
         EditButton()
-            .onChange(of: editMode?.wrappedValue.isEditing, perform: { newValue in
-                isEditing = newValue ?? false
-                if isEditing { viewModel.trackEditAsOverflowAnalytics() }
+            .onChange(of: editMode?.wrappedValue, perform: { newValue in
+                if newValue == .active {
+                    viewModel.trackEditAsOverflowAnalytics()
+                }
             })
             .accessibilityIdentifier("edit-button")
     }
 }
 
 struct TagsHeaderToolBar: ViewModifier {
-    @Binding var isEditing: Bool
     @ObservedObject var viewModel: TagsFilterViewModel
     func body(content: Content) -> some View {
         content
@@ -101,7 +101,7 @@ struct TagsHeaderToolBar: ViewModifier {
                     Image(asset: .tag).foregroundColor(Color(.ui.grey5))
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    EditModeView(isEditing: $isEditing, viewModel: viewModel)
+                    EditModeView(viewModel: viewModel)
                 }
             }
             .toolbarBackground(Color(.ui.white1))
@@ -109,7 +109,7 @@ struct TagsHeaderToolBar: ViewModifier {
 }
 
 extension View {
-    func tagsHeaderToolBar(_ isEditing: Binding<Bool>, viewModel: TagsFilterViewModel) -> some View {
-        modifier(TagsHeaderToolBar(isEditing: isEditing, viewModel: viewModel))
+    func tagsHeaderToolBar(viewModel: TagsFilterViewModel) -> some View {
+        modifier(TagsHeaderToolBar(viewModel: viewModel))
     }
 }

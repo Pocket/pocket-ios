@@ -21,7 +21,6 @@ public struct TagsListView: View {
         if !usersTags.isEmpty {
             List {
                 TagsSectionView(
-                    showRecentTags: !recentTags.isEmpty,
                     recentTags: recentTags,
                     allTags: usersTags,
                     tagAction: tagAction

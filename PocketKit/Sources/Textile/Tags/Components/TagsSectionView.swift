@@ -6,13 +6,13 @@ import SwiftUI
 import Localization
 
 public struct TagsSectionView: View {
+    @Environment(\.editMode)
+    var editMode
     let recentTags: [TagType]
     let allTags: [TagType]
     let tagAction: (TagType) -> Void
-    let showRecentTags: Bool
 
-    public init(showRecentTags: Bool, recentTags: [TagType], allTags: [TagType], tagAction: @escaping (TagType) -> Void) {
-        self.showRecentTags = showRecentTags
+    public init(recentTags: [TagType], allTags: [TagType], tagAction: @escaping (TagType) -> Void) {
         self.recentTags = recentTags
         self.allTags = allTags
         self.tagAction = tagAction
@@ -20,7 +20,7 @@ public struct TagsSectionView: View {
 
     public var body: some View {
         Group {
-            if showRecentTags {
+            if editMode?.wrappedValue == .inactive, !recentTags.isEmpty {
                 Section(header: Text(Localization.Tags.Section.recentTags).style(.tags.sectionHeader)) {
                     ForEach(recentTags, id: \.self) { tag in
                         TagsCell(tag: tag, tagAction: tagAction)
@@ -34,33 +34,5 @@ public struct TagsSectionView: View {
             }
             .accessibilityIdentifier("all-tags-section")
         }
-    }
-}
-
-struct TagsSectionView_Previews: PreviewProvider {
-    static var previews: some View {
-        let tagAction = { (tag: TagType) -> Void in
-            print("\(tag.name) action")
-        }
-
-        TagsSectionView(
-            showRecentTags: true,
-            recentTags: [TagType.recent("tag 0"), TagType.recent("tag 1"), TagType.recent("tag 2")],
-            allTags: [TagType.tag("tag 0"), TagType.tag("tag 1"), TagType.tag("tag 2")],
-            tagAction: tagAction
-        )
-        .previewLayout(.sizeThatFits)
-        .previewDisplayName("Light")
-        .preferredColorScheme(.light)
-
-        TagsSectionView(
-            showRecentTags: true,
-            recentTags: [TagType.recent("tag 0"), TagType.recent("tag 1"), TagType.recent("tag 2")],
-            allTags: [TagType.tag("tag 0"), TagType.tag("tag 1"), TagType.tag("tag 2")],
-            tagAction: tagAction
-        )
-        .previewLayout(.sizeThatFits)
-        .previewDisplayName("Dark")
-        .preferredColorScheme(.dark)
     }
 }
