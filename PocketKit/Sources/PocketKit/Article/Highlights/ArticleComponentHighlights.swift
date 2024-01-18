@@ -8,7 +8,8 @@ import Sync
 import UIKit
 
 struct HighlightedQuote: Identifiable {
-    let id: UUID
+    var id = UUID()
+    let remoteID: String?
     let index: Int
     let indexPath: IndexPath
     let quote: String

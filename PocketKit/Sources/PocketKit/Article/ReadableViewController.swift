@@ -101,22 +101,7 @@ class ReadableViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        presenters?.forEach { presenter in
-            if let viewModel = readableViewModel as? SavedItemViewModel,
-               let indexes = presenter.highlightIndexes,
-               let highlights = viewModel.highlights {
-                indexes.forEach {
-                    highlightedQuotes.append(
-                        HighlightedQuote(
-                            id: UUID(uuidString: highlights[safe: $0]!.remoteID!)!,
-                            index: $0,
-                            indexPath: IndexPath(item: presenter.componentIndex, section: 1),
-                            quote: highlights[safe: $0]?.quote ?? ""
-                        )
-                    )
-                }
-            }
-        }
+        fetchQuotes()
 
         guard let userProgress = readableViewModel.readingProgress() else {
             return
@@ -431,6 +416,31 @@ extension ReadableViewController {
             }
         default:
             return UnsupportedComponentPresenter(readableViewModel: readableViewModel, componentIndex: index)
+        }
+    }
+}
+
+// MARK: Highlights
+extension ReadableViewController {
+    /// Builds the highlighted quotes list from the presenters
+    private func fetchQuotes() {
+        presenters?.forEach { presenter in
+            if let viewModel = readableViewModel as? SavedItemViewModel,
+               let indexes = presenter.highlightIndexes,
+               let highlights = viewModel.highlights {
+                indexes.forEach {
+                    if let highlight = highlights[safe: $0] {
+                        highlightedQuotes.append(
+                            HighlightedQuote(
+                                remoteID: highlight.remoteID,
+                                index: $0,
+                                indexPath: IndexPath(item: presenter.componentIndex, section: 1),
+                                quote: highlight.quote
+                            )
+                        )
+                    }
+                }
+            }
         }
     }
 }
