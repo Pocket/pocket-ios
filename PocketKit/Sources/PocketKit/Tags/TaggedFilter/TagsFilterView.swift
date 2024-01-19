@@ -35,14 +35,14 @@ struct TagsFilterView: View {
                         dismiss()
                     }
                     TagsCell(tag: .notTagged, tagAction: tagAction)
-                        .disabled(editMode?.wrappedValue == .active)
+                        .disabled(editMode?.wrappedValue.isEditing == true)
                     TagsSectionView(
-                        showRecentTags: editMode?.wrappedValue == .inactive && !viewModel.recentTags.isEmpty,
+                        showRecentTags: editMode?.wrappedValue.isEditing == false && !viewModel.recentTags.isEmpty,
                         recentTags: viewModel.recentTags,
                         allTags: tags.map { .tag($0.name) },
                         tagAction: tagAction
                     )
-                    .disabled(editMode?.wrappedValue == .active)
+                    .disabled(editMode?.wrappedValue.isEditing == true)
                 }
                 .listRowInsets(EdgeInsets())
                 .navigationBarTitleDisplayMode(.inline)

@@ -25,38 +25,39 @@ struct EditTagsBottomBar: ViewModifier {
     public func body(content: Content) -> some View {
         ZStack(alignment: .bottom) {
             content
-            if editMode?.wrappedValue == .active {
+            if editMode?.wrappedValue.isEditing == true {
                 HStack {
                     Button(Localization.rename) {
                         showRenameAlert.toggle()
                     }
+                    .accessibilityIdentifier("rename-button")
+                    .disabled(selectedItems.count != 1)
                     .alert(Localization.Tags.renameTag, isPresented: $showRenameAlert) {
-                        TextField("", text: $name)
+                        TextField(Localization.Tags.RenameTag.prompt, text: $name)
                             .autocapitalization(.none)
                         Button(Localization.cancel, role: .cancel, action: {})
                         Button("OK") {
                             onRename(name)
                             name = ""
                         }
+                        .disabled(name.isEmpty)
                     } message: {
                         Text(Localization.Tags.RenameTag.message)
                     }
-                    .disabled(selectedItems.count != 1)
-                    .accessibilityIdentifier("rename-button")
 
                     Spacer()
 
                     Button(Localization.delete) {
                         showDeleteAlert.toggle()
                     }
+                    .accessibilityIdentifier("delete-button")
+                    .disabled(selectedItems.isEmpty)
                     .alert(Localization.Tags.deleteTag, isPresented: $showDeleteAlert) {
                         Button(Localization.cancel, role: .cancel, action: {})
                         Button(Localization.delete, role: .destructive, action: onDelete)
                     } message: {
                         Text(Localization.Tags.DeleteTag.message)
                     }
-                    .disabled(selectedItems.isEmpty)
-                    .accessibilityIdentifier("delete-button")
                 }
                 .padding()
                 .background()
