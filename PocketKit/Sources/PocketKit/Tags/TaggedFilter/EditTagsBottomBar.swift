@@ -25,24 +25,16 @@ struct EditTagsBottomBar: ViewModifier {
                     }
                     .accessibilityIdentifier("rename-button")
                     .disabled(selectedItems.count != 1)
-                    .alert(Localization.Tags.renameTag, isPresented: $showRenameAlert) {
+                    .alert(Localization.Tags.deleteTag, isPresented: $showRenameAlert) {
                         TextField(Localization.Tags.RenameTag.prompt, text: $name)
                             .autocapitalization(.none)
                         Button(Localization.cancel, role: .cancel, action: {})
-                        if #available(iOS 17.0, *) {
-                            Button("OK") {
-                                onRename(name)
-                                name = ""
-                            }
-                            .disabled(name.isEmpty)
-                        } else {
-                            Button("OK") {
-                                onRename(name)
-                                name = ""
-                            }
-                        }
+                        Button(Localization.rename, role: .destructive, action: {
+                            onRename(name)
+                            name = ""
+                        })
                     } message: {
-                        Text(Localization.Tags.RenameTag.message)
+                        Text(Localization.Tags.DeleteTag.message)
                     }
 
                     Spacer()
@@ -54,7 +46,9 @@ struct EditTagsBottomBar: ViewModifier {
                     .disabled(selectedItems.isEmpty)
                     .alert(Localization.Tags.deleteTag, isPresented: $showDeleteAlert) {
                         Button(Localization.cancel, role: .cancel, action: {})
-                        Button(Localization.delete, role: .destructive, action: onDelete)
+                        Button(Localization.delete, role: .destructive, action: {
+                            onDelete()
+                        })
                     } message: {
                         Text(Localization.Tags.DeleteTag.message)
                     }
