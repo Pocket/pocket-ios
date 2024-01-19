@@ -45,7 +45,7 @@ struct TagsFilterView: View {
                 }
                 .listRowInsets(EdgeInsets())
                 .navigationBarTitleDisplayMode(.inline)
-                .tagsHeaderToolBar(viewModel: viewModel)
+                .tagsFilterToolBar(viewModel: viewModel)
                 .editBottomBar(selectedItems: selectedItems) {
                     viewModel.delete(tags: Array(selectedItems.compactMap({ $0.name })))
                     selectedItems.removeAll()
@@ -70,46 +70,5 @@ struct TagsFilterView: View {
             guard !didTap else { return }
             viewModel.selectAllAction()
         }
-    }
-}
-
-struct EditModeView: View {
-    @Environment(\.editMode)
-    var editMode
-    @ObservedObject var viewModel: TagsFilterViewModel
-
-    var body: some View {
-        EditButton()
-            .onChange(of: editMode?.wrappedValue, perform: { newValue in
-                if newValue == .active {
-                    viewModel.trackEditAsOverflowAnalytics()
-                }
-            })
-            .accessibilityIdentifier("edit-button")
-    }
-}
-
-struct TagsHeaderToolBar: ViewModifier {
-    @ObservedObject var viewModel: TagsFilterViewModel
-    func body(content: Content) -> some View {
-        content
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Text(Localization.tags).style(.tags.sectionHeader)
-                }
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Image(asset: .tag).foregroundColor(Color(.ui.grey5))
-                }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditModeView(viewModel: viewModel)
-                }
-            }
-            .toolbarBackground(Color(.ui.white1))
-    }
-}
-
-extension View {
-    func tagsHeaderToolBar(viewModel: TagsFilterViewModel) -> some View {
-        modifier(TagsHeaderToolBar(viewModel: viewModel))
     }
 }

@@ -4,8 +4,9 @@
 
 import SwiftUI
 import Localization
+import Textile
 
-public struct EditBottomBar: ViewModifier {
+struct EditTagsBottomBar: ViewModifier {
     @Environment(\.editMode)
     var editMode
     let selectedItems: Set<TagType>
@@ -65,6 +66,6 @@ public struct EditBottomBar: ViewModifier {
 
 extension View {
     public func editBottomBar(selectedItems: Set<TagType>, onDelete: @escaping () -> Void, onRename: @escaping (String) -> Void) -> some View {
-        self.modifier(EditBottomBar(selectedItems: selectedItems, onDelete: onDelete, onRename: onRename))
+        self.modifier(EditTagsBottomBar(selectedItems: selectedItems, onDelete: onDelete, onRename: onRename))
     }
 }
