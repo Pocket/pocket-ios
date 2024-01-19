@@ -55,7 +55,7 @@ class EditTagsTests: XCTestCase {
 
         tagsFilterView.renameButton.tap()
         app.alert.element.textFields.firstMatch.typeText("rename tag 1")
-        app.alert.ok.wait().tap()
+        app.alert.rename.wait().tap()
 
         tagsFilterView.tag(matching: "rename tag 1").wait()
         waitForDisappearance(of: tagsFilterView.tag(matching: "tag 1"))

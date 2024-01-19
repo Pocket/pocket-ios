@@ -30,4 +30,8 @@ struct AlertElement: PocketUIElement {
     var ok: XCUIElement {
         element.buttons["OK"]
     }
+
+    var rename: XCUIElement {
+        element.buttons["Rename"]
+    }
 }
