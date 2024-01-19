@@ -123,8 +123,7 @@ extension PocketBraze: BrazeProtocol {
         let shouldLog = switch flag {
         case .premiumSearchScopesExperiment, .bestOf20231PercentSticker, .bestOf20235PercentSticker:
             true
-        // Make this exhaustive so that when new feature flags are added, we can specify whether Braze should log it
-        case .debugMenu, .disableOnlineListen, .disableReader, .nativeCollections, .profileSampling, .reportIssue, .traceSampling:
+        default:
             false
         }
 
