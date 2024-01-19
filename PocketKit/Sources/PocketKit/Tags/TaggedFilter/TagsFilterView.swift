@@ -37,6 +37,7 @@ struct TagsFilterView: View {
                     TagsCell(tag: .notTagged, tagAction: tagAction)
                         .disabled(editMode?.wrappedValue == .active)
                     TagsSectionView(
+                        showRecentTags: editMode?.wrappedValue == .inactive && !viewModel.recentTags.isEmpty,
                         recentTags: viewModel.recentTags,
                         allTags: tags.map { .tag($0.name) },
                         tagAction: tagAction
