@@ -16,9 +16,11 @@ struct TagsFilterToolBar: ViewModifier {
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     Text(Localization.tags).style(.tags.sectionHeader)
+                        .accessibilityIdentifier("tags-filter-title")
                 }
                 ToolbarItem(placement: .navigationBarLeading) {
                     Image(asset: .tag).foregroundColor(Color(.ui.grey5))
+                        .accessibilityIdentifier("tags-filter-icon")
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     EditButton()
