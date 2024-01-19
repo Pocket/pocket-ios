@@ -29,11 +29,18 @@ struct EditTagsBottomBar: ViewModifier {
                         TextField(Localization.Tags.RenameTag.prompt, text: $name)
                             .autocapitalization(.none)
                         Button(Localization.cancel, role: .cancel, action: {})
-                        Button("OK") {
-                            onRename(name)
-                            name = ""
+                        if #available(iOS 17.0, *) {
+                            Button("OK") {
+                                onRename(name)
+                                name = ""
+                            }
+                            .disabled(name.isEmpty)
+                        } else {
+                            Button("OK") {
+                                onRename(name)
+                                name = ""
+                            }
                         }
-                        .disabled(name.isEmpty)
                     } message: {
                         Text(Localization.Tags.RenameTag.message)
                     }
