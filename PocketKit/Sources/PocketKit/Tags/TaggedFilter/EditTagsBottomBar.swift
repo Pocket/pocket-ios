@@ -12,8 +12,8 @@ struct EditTagsBottomBar: ViewModifier {
     let selectedItems: Set<TagType>
     let onDelete: () -> Void
     let onRename: (String) -> Void
-    @State var showRenameAlert: Bool = false
-    @State var showDeleteAlert: Bool = false
+    @State private var showRenameAlert: Bool = false
+    @State private var showDeleteAlert: Bool = false
     @State private var name = ""
 
     public init(selectedItems: Set<TagType>, onDelete: @escaping () -> Void, onRename: @escaping (String) -> Void) {
