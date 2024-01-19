@@ -7,8 +7,7 @@ import Localization
 import Textile
 
 struct EditTagsBottomBar: ViewModifier {
-    @Environment(\.editMode)
-    var editMode
+    @Binding var editMode: EditMode
     let selectedItems: Set<TagType>
     let onDelete: () -> Void
     let onRename: (String) -> Void
@@ -16,16 +15,10 @@ struct EditTagsBottomBar: ViewModifier {
     @State private var showDeleteAlert: Bool = false
     @State private var name = ""
 
-    public init(selectedItems: Set<TagType>, onDelete: @escaping () -> Void, onRename: @escaping (String) -> Void) {
-        self.selectedItems = selectedItems
-        self.onDelete = onDelete
-        self.onRename = onRename
-    }
-
     public func body(content: Content) -> some View {
         ZStack(alignment: .bottom) {
             content
-            if editMode?.wrappedValue.isEditing == true {
+            if editMode.isEditing == true {
                 HStack {
                     Button(Localization.rename) {
                         showRenameAlert.toggle()
@@ -67,7 +60,7 @@ struct EditTagsBottomBar: ViewModifier {
 }
 
 extension View {
-    public func editBottomBar(selectedItems: Set<TagType>, onDelete: @escaping () -> Void, onRename: @escaping (String) -> Void) -> some View {
-        self.modifier(EditTagsBottomBar(selectedItems: selectedItems, onDelete: onDelete, onRename: onRename))
+    public func editBottomBar(editMode: Binding<EditMode>, selectedItems: Set<TagType>, onDelete: @escaping () -> Void, onRename: @escaping (String) -> Void) -> some View {
+        self.modifier(EditTagsBottomBar(editMode: editMode, selectedItems: selectedItems, onDelete: onDelete, onRename: onRename))
     }
 }

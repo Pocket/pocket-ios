@@ -8,10 +8,8 @@ import Localization
 import Sync
 
 struct TagsFilterToolBar: ViewModifier {
+    @Binding var editMode: EditMode
     @ObservedObject var viewModel: TagsFilterViewModel
-
-    @Environment(\.editMode)
-    var editMode
 
     func body(content: Content) -> some View {
         content
@@ -24,20 +22,16 @@ struct TagsFilterToolBar: ViewModifier {
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     EditButton()
-                        .onChange(of: editMode?.wrappedValue, perform: { newValue in
-                            if newValue == .active {
-                                viewModel.trackEditAsOverflowAnalytics()
-                            }
-                        })
                         .accessibilityIdentifier("edit-button")
                 }
             }
             .toolbarBackground(Color(.ui.white1))
+            .environment(\.editMode, $editMode)
     }
 }
 
 extension View {
-    func tagsFilterToolBar(viewModel: TagsFilterViewModel) -> some View {
-        modifier(TagsFilterToolBar(viewModel: viewModel))
+    func tagsFilterToolBar(_ editMode: Binding<EditMode>, viewModel: TagsFilterViewModel) -> some View {
+        modifier(TagsFilterToolBar(editMode: editMode, viewModel: viewModel))
     }
 }

@@ -13,11 +13,9 @@ struct TagsFilterView: View {
     @Environment(\.dismiss)
     private var dismiss
 
-    @Environment(\.editMode)
-    var editMode
-
     @State var didTap = false
     @State private var selectedItems = Set<TagType>()
+    @State private var editMode: EditMode = .inactive
     @State private var renameTagText = ""
 
     @FetchRequest(sortDescriptors: [
@@ -35,19 +33,18 @@ struct TagsFilterView: View {
                         dismiss()
                     }
                     TagsCell(tag: .notTagged, tagAction: tagAction)
-                        .disabled(editMode?.wrappedValue.isEditing == true)
+                        .disabled(editMode.isEditing)
                     TagsSectionView(
-                        showRecentTags: editMode?.wrappedValue.isEditing == false && !viewModel.recentTags.isEmpty,
+                        showRecentTags: !editMode.isEditing && !viewModel.recentTags.isEmpty,
                         recentTags: viewModel.recentTags,
                         allTags: tags.map { .tag($0.name) },
                         tagAction: tagAction
-                    )
-                    .disabled(editMode?.wrappedValue.isEditing == true)
+                    ).disabled(editMode.isEditing)
                 }
                 .listRowInsets(EdgeInsets())
                 .navigationBarTitleDisplayMode(.inline)
-                .tagsFilterToolBar(viewModel: viewModel)
-                .editBottomBar(selectedItems: selectedItems) {
+                .tagsFilterToolBar($editMode, viewModel: viewModel)
+                .editBottomBar(editMode: $editMode, selectedItems: selectedItems) {
                     viewModel.delete(tags: Array(selectedItems.compactMap({ $0.name })))
                     selectedItems.removeAll()
                 } onRename: { text in
