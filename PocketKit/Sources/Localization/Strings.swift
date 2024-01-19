@@ -655,8 +655,8 @@ public enum Localization {
     public enum RenameTag {
       /// Enter a new name for this tag
       public static let message = Localization.tr("Localizable", "tags.renameTag.message", fallback: "Enter a new name for this tag")
-      /// tag name
-      public static let prompt = Localization.tr("Localizable", "tags.renameTag.prompt", fallback: "tag name")
+      /// Tag name
+      public static let prompt = Localization.tr("Localizable", "tags.renameTag.prompt", fallback: "Tag name")
     }
     public enum Section {
       /// Recent tags
