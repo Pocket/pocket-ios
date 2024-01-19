@@ -33,6 +33,7 @@ struct EditTagsBottomBar: ViewModifier {
                     .alert(Localization.Tags.renameTag, isPresented: $showRenameAlert) {
                         TextField("", text: $name)
                             .autocapitalization(.none)
+                        Button(Localization.cancel, role: .cancel, action: {})
                         Button("OK") {
                             onRename(name)
                             name = ""
