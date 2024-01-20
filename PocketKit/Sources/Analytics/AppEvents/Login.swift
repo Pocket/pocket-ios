@@ -12,7 +12,7 @@ public extension Events {
 // MARK: Delete Account Events
 public extension Events.Login {
     /// Fired when a user sees the exit survey banner
-    static func DeleteAccountExitSurveyBannerImpression() -> Impression {
+    static func deleteAccountExitSurveyBannerImpression() -> Impression {
         return Impression(
             component: .ui,
             requirement: .viewable,
@@ -23,24 +23,33 @@ public extension Events.Login {
         )
     }
 
-    /// Fired when a user clicks the exit survey banner
-    static func DeleteAccountExitSurveyBannerClick() -> Engagement {
+    /// Fired when a user taps the exit survey banner
+    static func deleteAccountExitSurveyBannerTap() -> Engagement {
         return Engagement(
             uiEntity: UiEntity(
                 .button,
-                identifier: "login.accountdelete.banner.exitsurvey.click"
+                identifier: "login.accountdelete.banner.exitsurvey.tap"
             )
         )
     }
 
     /// Fired when a user sees the exit survey
-    static func DeleteAccountExitSurveyImpression() -> Impression {
+    static func deleteAccountExitSurveyImpression() -> Impression {
         return Impression(
             component: .ui,
             requirement: .viewable,
             uiEntity: UiEntity(
                 .screen,
                 identifier: "login.accountdelete.exitsurvey"
+            )
+        )
+    }
+
+    static func continueButtonTapped() -> Engagement {
+        return Engagement(
+            uiEntity: UiEntity(
+                .button,
+                identifier: "login.continue.tapped"
             )
         )
     }
