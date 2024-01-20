@@ -28,7 +28,7 @@ public extension Events.Login {
         return Engagement(
             uiEntity: UiEntity(
                 .button,
-                identifier: "login.accountdelete.banner.exitsurvey.tap"
+                identifier: "login.accountdelete.banner.exitsurvey.click"
             )
         )
     }
