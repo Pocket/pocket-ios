@@ -29,8 +29,9 @@ class AuthorizationClientTests: XCTestCase {
 
 extension AuthorizationClientTests {
     func test_logIn_onSuccess_returnsAccessTokenAndUserIdentifier() async throws {
-        mockAuthenticationSession.url = URL(string: "pocket://fxa?guid=test-guid&access_token=test-access-token&id=test-id")
+        mockAuthenticationSession.url = URL(string: "pocket://fxa?guid=test-guid&type=login&access_token=test-access-token&id=test-id")
         let response = try await client.authenticate(from: self)
+        XCTAssertEqual(response.type, "login")
         XCTAssertEqual(response.guid, "test-guid")
         XCTAssertEqual(response.accessToken, "test-access-token")
         XCTAssertEqual(response.userIdentifier, "test-id")

@@ -235,7 +235,7 @@ class SettingsTest: XCTestCase {
         let surveyButton = app.surveyBannerButton.wait()
         surveyButton.tap()
         app.webView.wait()
-        let events =  await [snowplowMicro.getFirstEvent(with: "login.accountdelete.banner.exitsurvey.click"), snowplowMicro.getFirstEvent(with: "login.accountdelete.exitsurvey")]
+        let events =  await [snowplowMicro.getFirstEvent(with: "login.accountdelete.banner.exitsurvey.tap"), snowplowMicro.getFirstEvent(with: "login.accountdelete.exitsurvey")]
         XCTAssertNotNil(events[0])
         XCTAssertNotNil(events[1])
     }
