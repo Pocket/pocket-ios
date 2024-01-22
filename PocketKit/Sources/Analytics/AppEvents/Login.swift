@@ -45,11 +45,32 @@ public extension Events.Login {
         )
     }
 
+    /// Continue button was tapped
     static func continueButtonTapped() -> Engagement {
         return Engagement(
             uiEntity: UiEntity(
                 .button,
                 identifier: "login.continue.tapped"
+            )
+        )
+    }
+
+    /// Login complete
+    static func loginComplete() -> Engagement {
+        return Engagement(
+            uiEntity: UiEntity(
+                .button,
+                identifier: "login.login.complete"
+            )
+        )
+    }
+
+    /// Signup complete
+    static func signupComplete() -> Engagement {
+        return Engagement(
+            uiEntity: UiEntity(
+                .button,
+                identifier: "login.signup.complete"
             )
         )
     }

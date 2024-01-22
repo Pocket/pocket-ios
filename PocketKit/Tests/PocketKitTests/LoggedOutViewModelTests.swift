@@ -22,7 +22,8 @@ class LoggedOutViewModelTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        authorizationClient = AuthorizationClient(consumerKey: "the-consumer-key", adjustSignupEventToken: "token") { (_, _, completion) in
+        let mockTracker = MockTracker()
+        authorizationClient = AuthorizationClient(consumerKey: "the-consumer-key", adjustSignupEventToken: "token", tracker: mockTracker) { (_, _, completion) in
             self.mockAuthenticationSession.completionHandler = completion
             return self.mockAuthenticationSession
         }

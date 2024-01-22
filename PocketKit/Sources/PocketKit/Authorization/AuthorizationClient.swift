@@ -2,12 +2,13 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import Foundation
-import AuthenticationServices
-import Sync
 import Adjust
-import SharedPocketKit
+import Analytics
+import AuthenticationServices
+import Foundation
 import Localization
+import SharedPocketKit
+import Sync
 
 public class AuthorizationClient {
     typealias AuthenticationSessionFactory = (URL, String?, @escaping ASWebAuthenticationSession.CompletionHandler) -> AuthenticationSession
@@ -16,15 +17,18 @@ public class AuthorizationClient {
 
     private let consumerKey: String
     private let adjustSignupEventToken: String
+    private let tracker: Tracker
     private let authenticationSessionFactory: AuthenticationSessionFactory
 
     init(
         consumerKey: String,
         adjustSignupEventToken: String,
+        tracker: Tracker,
         authenticationSessionFactory: @escaping AuthenticationSessionFactory
     ) {
         self.consumerKey = consumerKey
         self.adjustSignupEventToken = adjustSignupEventToken
+        self.tracker = tracker
         self.authenticationSessionFactory = authenticationSessionFactory
     }
 
@@ -42,10 +46,17 @@ public class AuthorizationClient {
         if response.type == "signup" {
             Task { [weak self] in
                 guard let self else {
-                    Log.capture(message: "weak self logging adjust")
                     return
                 }
-               Adjust.trackEvent(ADJEvent(eventToken: self.adjustSignupEventToken))
+                self.tracker.track(event: Events.Login.signupComplete())
+                Adjust.trackEvent(ADJEvent(eventToken: self.adjustSignupEventToken))
+            }
+        } else {
+            Task { [weak self] in
+                guard let self else {
+                    return
+                }
+                self.tracker.track(event: Events.Login.loginComplete())
             }
         }
         return response
