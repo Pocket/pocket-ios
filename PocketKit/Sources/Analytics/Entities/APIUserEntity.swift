@@ -18,7 +18,11 @@ public struct APIUserEntity: Entity {
     public init(consumerKey: String) {
         let components = consumerKey.components(separatedBy: "-")
         let id: UInt
-        if let identifier = components.first, let apiID = UInt(identifier) {
+        if ProcessInfo.processInfo.isiOSAppOnMac {
+            // Hack to attribute analytics to our Mac Version of Pocket.
+            // In the future we need to do something more with ouir app id.
+            id = 8775
+        } else if let identifier = components.first, let apiID = UInt(identifier) {
             id = apiID
         } else {
             id = 1

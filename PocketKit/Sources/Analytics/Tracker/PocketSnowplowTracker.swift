@@ -45,6 +45,11 @@ public class PocketSnowplowTracker: SnowplowTracker {
             .scale
         ]
 
+        if ProcessInfo.processInfo.isiOSAppOnMac {
+            trackerConfiguration.devicePlatform = .desktop
+            trackerConfiguration.appId = "pocket-mac-next"
+        }
+
         let optionalTracker = Snowplow.createTracker(
             namespace: appID,
             network: networkConfiguration,
