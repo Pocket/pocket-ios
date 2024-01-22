@@ -12,8 +12,7 @@ import Analytics
 import SharedPocketKit
 
 enum LoggedOutAction {
-    case logIn
-    case signUp
+    case authenticate
 }
 
 class LoggedOutViewModel: ObservableObject {
@@ -106,29 +105,25 @@ class LoggedOutViewModel: ObservableObject {
     @MainActor
     func exitSurveyButtonClicked() {
         self.isPresentingExitSurvey.toggle()
-        tracker.track(event: Events.Login.DeleteAccountExitSurveyBannerClick())
+        tracker.track(event: Events.Login.deleteAccountExitSurveyBannerTap())
     }
 
     func exitSurveyAppeared() {
-        tracker.track(event: Events.Login.DeleteAccountExitSurveyImpression())
+        tracker.track(event: Events.Login.deleteAccountExitSurveyImpression())
     }
 
     func trackExitSurveyBannerImpression() {
-        tracker.track(event: Events.Login.DeleteAccountExitSurveyBannerImpression())
+        tracker.track(event: Events.Login.deleteAccountExitSurveyBannerImpression())
     }
 
     @MainActor
-    func logIn() {
+    func authenticate() {
         guard appSession.currentSession == nil else {
             return
         }
 
-        lastAction = .logIn
-
-        tracker.track(
-            event: SnowplowEngagement(type: .general, value: nil),
-            [UIContext.button(identifier: .logIn)]
-        )
+        lastAction = .authenticate
+        tracker.track(event: Events.Login.continueButtonTapped())
 
         guard !isOffline else {
             automaticallyDismissed = false
@@ -137,44 +132,16 @@ class LoggedOutViewModel: ObservableObject {
         }
 
         Task { [weak self] in
-            await self?.authenticate(authorizationClient.logIn)
-        }
-    }
-
-    @MainActor
-    func signUp() {
-        guard appSession.currentSession == nil else {
-            return
-        }
-
-        lastAction = .signUp
-
-        tracker.track(
-            event: SnowplowEngagement(type: .general, value: nil),
-            [UIContext.button(identifier: .signUp)]
-        )
-
-        guard !isOffline else {
-            automaticallyDismissed = false
-            isPresentingOfflineView = true
-            return
-        }
-
-        Task { [weak self] in
-            await self?.authenticate(authorizationClient.signUp)
+            guard let self else {
+                return
+            }
+            await self.authenticate(self.authorizationClient.authenticate)
         }
     }
 
     func offlineViewDidDisappear() {
-        if automaticallyDismissed {
-            switch lastAction {
-            case .logIn:
-                Task { await logIn() }
-            case .signUp:
-                Task { await signUp() }
-            default:
-                return
-            }
+        if automaticallyDismissed, case .authenticate = lastAction {
+            Task { await authenticate() }
         }
     }
 

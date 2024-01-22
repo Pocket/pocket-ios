@@ -62,16 +62,17 @@ struct Services {
         lastRefresh = UserDefaultsLastRefresh(defaults: userDefaults)
         urlSession = URLSession.shared
 
+        let snowplow = PocketSnowplowTracker()
+        tracker = PocketTracker(snowplow: snowplow)
+
         appSession = AppSession(groupID: Keys.shared.groupID)
         authClient = AuthorizationClient(
             consumerKey: Keys.shared.pocketApiConsumerKey,
             adjustSignupEventToken: Keys.shared.adjustSignUpEventToken,
+            tracker: tracker,
             authenticationSessionFactory: ASWebAuthenticationSession.init
         )
         user = PocketUser(userDefaults: userDefaults)
-
-        let snowplow = PocketSnowplowTracker()
-        tracker = PocketTracker(snowplow: snowplow)
 
         source = PocketSource(
             space: persistentContainer.rootSpace,

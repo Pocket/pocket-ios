@@ -13,7 +13,8 @@ class AuthorizationClientTests: XCTestCase {
     override func setUp() {
         super.setUp()
         mockAuthenticationSession = MockAuthenticationSession()
-        client = AuthorizationClient(consumerKey: "the-consumer-key", adjustSignupEventToken: "token") { (_, _, completion) in
+        let mockTracker = MockTracker()
+        client = AuthorizationClient(consumerKey: "the-consumer-key", adjustSignupEventToken: "token", tracker: mockTracker) { (_, _, completion) in
             self.mockAuthenticationSession.completionHandler = completion
             return self.mockAuthenticationSession
         }
@@ -29,8 +30,9 @@ class AuthorizationClientTests: XCTestCase {
 
 extension AuthorizationClientTests {
     func test_logIn_onSuccess_returnsAccessTokenAndUserIdentifier() async throws {
-        mockAuthenticationSession.url = URL(string: "pocket://fxa?guid=test-guid&access_token=test-access-token&id=test-id")
-        let response = try await client.logIn(from: self)
+        mockAuthenticationSession.url = URL(string: "pocket://fxa?guid=test-guid&type=login&access_token=test-access-token&id=test-id")
+        let response = try await client.authenticate(from: self)
+        XCTAssertEqual(response.type, "login")
         XCTAssertEqual(response.guid, "test-guid")
         XCTAssertEqual(response.accessToken, "test-access-token")
         XCTAssertEqual(response.userIdentifier, "test-id")
@@ -39,7 +41,7 @@ extension AuthorizationClientTests {
     func test_logIn_onSessionError_throwsErrorFromAuthenticationSession() async {
         mockAuthenticationSession.error = FakeError.error
         do {
-            _ = try await client.logIn(from: self)
+            _ = try await client.authenticate(from: self)
             XCTFail("Expected to throw error, but didn't")
         } catch {
             XCTAssertTrue(error is AuthorizationClient.Error)
@@ -50,7 +52,7 @@ extension AuthorizationClientTests {
     func test_logIn_onInvalidRedirect_throwsInvalidRedirectError() async {
         mockAuthenticationSession.url = URL(string: "pocket://fxa")!
         do {
-            _ = try await client.logIn(from: self)
+            _ = try await client.authenticate(from: self)
             XCTFail("Expected to throw error, but didn't")
         } catch {
             XCTAssertTrue(error is AuthorizationClient.Error)
@@ -74,7 +76,7 @@ extension AuthorizationClientTests {
         Task {
             do {
                 expectFirstClientStarted.fulfill()
-                _ = try await self.client.logIn(from: self)
+                _ = try await self.client.authenticate(from: self)
             } catch {
                 XCTFail("Should not have thrown an error \(error)")
             }
@@ -84,72 +86,7 @@ extension AuthorizationClientTests {
             do {
                 // wait for our first task to have started before we try the one that should fail.
                 await fulfillment(of: [expectFirstClientStarted], timeout: 10)
-                _ = try await self.client.logIn(from: self)
-                XCTFail("Expected to throw error, but didn't")
-            } catch {
-                XCTAssertTrue(error is AuthorizationClient.Error)
-                XCTAssertEqual(error as? AuthorizationClient.Error, .alreadyAuthenticating)
-            }
-        }
-
-        await fulfillment(of: [expectSessionStart], timeout: 10)
-    }
-}
-
-extension AuthorizationClientTests {
-    func test_signUp_onSuccess_returnsAccessTokenAndUserIdentifier() async throws {
-        mockAuthenticationSession.url = URL(string: "pocket://fxa?guid=test-guid&access_token=test-access-token&id=test-id")
-        let response = try await client.signUp(from: self)
-        XCTAssertEqual(response.guid, "test-guid")
-        XCTAssertEqual(response.accessToken, "test-access-token")
-        XCTAssertEqual(response.userIdentifier, "test-id")
-    }
-
-    func test_signUp_onSessionError_throwsErrorFromAuthenticationSession() async {
-        mockAuthenticationSession.error = FakeError.error
-        do {
-            _ = try await client.signUp(from: self)
-            XCTFail("Expected to throw error, but didn't")
-        } catch {
-            XCTAssertTrue(error is AuthorizationClient.Error)
-            XCTAssertEqual(error as? AuthorizationClient.Error, .other(FakeError.error))
-        }
-    }
-
-    func test_signUp_onInvalidRedirect_throwsInvalidRedirectError() async {
-        mockAuthenticationSession.url = URL(string: "pocket://fxa")!
-        do {
-            _ = try await client.signUp(from: self)
-            XCTFail("Expected to throw error, but didn't")
-        } catch {
-            XCTAssertTrue(error is AuthorizationClient.Error)
-            XCTAssertEqual(error as? AuthorizationClient.Error, .invalidRedirect)
-        }
-    }
-
-    @MainActor
-    func test_signUp_startsOnlyOneSession() async {
-        mockAuthenticationSession.url = URL(string: "pocket://fxa?guid=test-guid&access_token=test-access-token&id=test-id")
-
-        let expectSessionStart = expectation(description: "expected session start")
-        expectSessionStart.expectedFulfillmentCount = 2
-        expectSessionStart.isInverted = true
-        mockAuthenticationSession.stubStart {
-            expectSessionStart.fulfill()
-            return true
-        }
-
-        Task {
-            do {
-                _ = try await self.client.signUp(from: self)
-            } catch {
-                XCTFail("Should not have thrown an error \(error)")
-            }
-        }
-
-        Task {
-            do {
-                _ = try await self.client.signUp(from: self)
+                _ = try await self.client.authenticate(from: self)
                 XCTFail("Expected to throw error, but didn't")
             } catch {
                 XCTAssertTrue(error is AuthorizationClient.Error)

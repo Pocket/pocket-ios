@@ -12,7 +12,7 @@ public extension Events {
 // MARK: Delete Account Events
 public extension Events.Login {
     /// Fired when a user sees the exit survey banner
-    static func DeleteAccountExitSurveyBannerImpression() -> Impression {
+    static func deleteAccountExitSurveyBannerImpression() -> Impression {
         return Impression(
             component: .ui,
             requirement: .viewable,
@@ -23,8 +23,8 @@ public extension Events.Login {
         )
     }
 
-    /// Fired when a user clicks the exit survey banner
-    static func DeleteAccountExitSurveyBannerClick() -> Engagement {
+    /// Fired when a user taps the exit survey banner
+    static func deleteAccountExitSurveyBannerTap() -> Engagement {
         return Engagement(
             uiEntity: UiEntity(
                 .button,
@@ -34,13 +34,43 @@ public extension Events.Login {
     }
 
     /// Fired when a user sees the exit survey
-    static func DeleteAccountExitSurveyImpression() -> Impression {
+    static func deleteAccountExitSurveyImpression() -> Impression {
         return Impression(
             component: .ui,
             requirement: .viewable,
             uiEntity: UiEntity(
                 .screen,
                 identifier: "login.accountdelete.exitsurvey"
+            )
+        )
+    }
+
+    /// Continue button was tapped
+    static func continueButtonTapped() -> Engagement {
+        return Engagement(
+            uiEntity: UiEntity(
+                .button,
+                identifier: "login.continue.tapped"
+            )
+        )
+    }
+
+    /// Login complete
+    static func loginComplete() -> Engagement {
+        return Engagement(
+            uiEntity: UiEntity(
+                .button,
+                identifier: "login.login.complete"
+            )
+        )
+    }
+
+    /// Signup complete
+    static func signupComplete() -> Engagement {
+        return Engagement(
+            uiEntity: UiEntity(
+                .button,
+                identifier: "login.signup.complete"
             )
         )
     }

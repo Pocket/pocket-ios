@@ -303,6 +303,8 @@ public enum Localization {
     public static let message = Localization.tr("Localizable", "loadingView.message", fallback: "Loading...")
   }
   public enum LoggedOut {
+    /// Continue
+    public static let `continue` = Localization.tr("Localizable", "loggedOut.continue", fallback: "Continue")
     public enum Offline {
       /// Looks like you're offline. Try checking your mobile data or wifi.
       public static let detail = Localization.tr("Localizable", "loggedOut.offline.detail", fallback: "Looks like you're offline. Try checking your mobile data or wifi.")

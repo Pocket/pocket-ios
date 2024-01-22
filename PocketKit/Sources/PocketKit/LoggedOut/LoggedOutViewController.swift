@@ -147,20 +147,13 @@ private struct LoggedOutActionsView: View {
     var body: some View {
         VStack {
             Button {
-                viewModel.signUp()
+                viewModel.authenticate()
             } label: {
-                Text(Localization.signUp).style(.header.sansSerif.h8.with(color: .ui.white))
+                Text(Localization.LoggedOut.continue).style(.header.sansSerif.h8.with(color: .ui.white))
                     .padding(EdgeInsets(top: 12, leading: 0, bottom: 12, trailing: 0))
                     .frame(maxWidth: 320)
-            }.buttonStyle(ActionsPrimaryButtonStyle())
-
-            Button {
-                viewModel.logIn()
-            } label: {
-                Text(Localization.logIn)
-                    .style(.header.sansSerif.p4)
-                    .padding(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
             }
+            .buttonStyle(ActionsPrimaryButtonStyle())
         }
     }
 }
