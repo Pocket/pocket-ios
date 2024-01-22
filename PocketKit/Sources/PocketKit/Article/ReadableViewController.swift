@@ -424,9 +424,11 @@ extension ReadableViewController {
 extension ReadableViewController {
     /// Builds the highlighted quotes list from the presenters
     private func fetchQuotes() {
+        guard let viewModel = readableViewModel as? SavedItemViewModel else {
+            return
+        }
         presenters?.forEach { presenter in
-            if let viewModel = readableViewModel as? SavedItemViewModel,
-               let indexes = presenter.highlightIndexes,
+            if let indexes = presenter.highlightIndexes,
                let highlights = viewModel.highlights {
                 indexes.forEach {
                     if let highlight = highlights[safe: $0] {
