@@ -38,7 +38,7 @@ extension ItemAction {
             accessibilityIdentifier: "item-action-save",
             image: UIImage(asset: .save),
             handler: { sender in
-                Haptics.saveTap()
+                Haptics.defaultTap()
                 handler(sender)
             }
         )
@@ -51,7 +51,7 @@ extension ItemAction {
             accessibilityIdentifier: "item-action-archive",
             image: UIImage(asset: .archive),
             handler: { sender in
-                Haptics.archiveTap()
+                Haptics.defaultTap()
                 handler(sender)
             }
         )
@@ -64,7 +64,20 @@ extension ItemAction {
             accessibilityIdentifier: "item-action-delete",
             image: UIImage(asset: .delete),
             handler: { sender in
-                Haptics.deleteTap()
+                Haptics.defaultTap()
+                handler(sender)
+            }
+        )
+    }
+
+    static func showHighlights(_ handler: @escaping (Any?) -> Void) -> ItemAction {
+        return ItemAction(
+            title: Localization.ItemAction.showHighlights,
+            identifier: .addTagsItem,
+            accessibilityIdentifier: "item-action-show-highlights",
+            image: UIImage(asset: .highlights),
+            handler: { sender in
+                Haptics.defaultTap()
                 handler(sender)
             }
         )
@@ -77,7 +90,7 @@ extension ItemAction {
             accessibilityIdentifier: "item-action-add-tags",
             image: UIImage(asset: .tag),
             handler: { sender in
-                Haptics.addTagsTap()
+                Haptics.defaultTap()
                 handler(sender)
             }
         )
@@ -90,7 +103,7 @@ extension ItemAction {
             accessibilityIdentifier: "item-action-add-tags",
             image: UIImage(asset: .tag),
             handler: { sender in
-                Haptics.addTagsTap()
+                Haptics.defaultTap()
                 handler(sender)
             }
         )
@@ -103,7 +116,7 @@ extension ItemAction {
             accessibilityIdentifier: "item-action-move-to-saves",
             image: UIImage(asset: .save),
             handler: { sender in
-                Haptics.moveToSavesTap()
+                Haptics.defaultTap()
                 handler(sender)
             }
         )
@@ -117,7 +130,7 @@ extension ItemAction {
             image: UIImage(asset: .favorite)
                 .withTintColor(UIColor(.ui.grey8), renderingMode: .alwaysOriginal),
             handler: { sender in
-                Haptics.favoriteTap()
+                Haptics.defaultTap()
                 handler(sender)
             }
         )
@@ -132,7 +145,7 @@ extension ItemAction {
             image: UIImage(asset: .favoriteFilled)
                 .withTintColor(UIColor(.branding.amber4), renderingMode: .alwaysOriginal),
             handler: { sender in
-                Haptics.unfavoriteTap()
+                Haptics.defaultTap()
                 handler(sender)
             }
         )
@@ -145,7 +158,7 @@ extension ItemAction {
             accessibilityIdentifier: "item-action-share",
             image: UIImage(asset: .share),
             handler: { sender in
-                Haptics.shareTap()
+                Haptics.defaultTap()
                 handler(sender)
             }
         )
@@ -158,7 +171,7 @@ extension ItemAction {
             accessibilityIdentifier: "item-action-display-settings",
             image: UIImage(systemName: "textformat.size"),
             handler: { sender in
-                Haptics.displaySettingsTap()
+                Haptics.defaultTap()
                 handler(sender)
             }
         )
@@ -171,7 +184,7 @@ extension ItemAction {
             accessibilityIdentifier: "item-action-report",
             image: UIImage(asset: .alert),
             handler: { sender in
-                Haptics.reportTap()
+                Haptics.defaultTap()
                 handler(sender)
             }
         )
@@ -184,7 +197,7 @@ extension ItemAction {
             accessibilityIdentifier: "item-action-recommendation-primary",
             image: nil,
             handler: { sender in
-                Haptics.recomendationPrimaryTap()
+                Haptics.defaultTap()
                 handler(sender)
             }
         )
@@ -197,7 +210,7 @@ extension ItemAction {
             accessibilityIdentifier: "item-action-copy-link",
             image: UIImage(systemName: "link"),
             handler: { sender in
-                Haptics.copyLinkTap()
+                Haptics.defaultTap()
                 handler(sender)
             }
         )
@@ -210,7 +223,7 @@ extension ItemAction {
             accessibilityIdentifier: "item-action-open",
             image: UIImage(systemName: "safari"),
             handler: { sender in
-                Haptics.openItemTap()
+                Haptics.defaultTap()
                 handler(sender)
             }
         )

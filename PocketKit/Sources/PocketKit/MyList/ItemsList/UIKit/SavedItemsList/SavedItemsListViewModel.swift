@@ -399,7 +399,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             return nil
         }
         return UIAction(title: "", handler: { [weak self] _ in
-            Haptics.overflowTap()
+            Haptics.defaultTap()
             self?.trackButton(item: item, identifier: .itemOverflow)
         })
     }
@@ -409,7 +409,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             return nil
         }
         return ItemAction(title: "", identifier: UIAction.Identifier(rawValue: ""), accessibilityIdentifier: "", image: nil) { [weak self] _ in
-            Haptics.overflowTap()
+            Haptics.defaultTap()
             self?.trackButton(item: item, identifier: .itemOverflow)
         }
     }

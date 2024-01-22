@@ -45,6 +45,7 @@
 "itemAction.report" = "Report";
 "itemAction.save" = "Save";
 "itemAction.share" = "Share";
+"itemAction.showHighlights" = "Highlights";
 
 //ItemList
 "itemlist.filter.search" = "Search";

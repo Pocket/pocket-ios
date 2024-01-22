@@ -253,6 +253,8 @@ public enum Localization {
     public static let save = Localization.tr("Localizable", "itemAction.save", fallback: "Save")
     /// Share
     public static let share = Localization.tr("Localizable", "itemAction.share", fallback: "Share")
+    /// Highlights
+    public static let showHighlights = Localization.tr("Localizable", "itemAction.showHighlights", fallback: "Highlights")
     /// Unfavorite
     public static let unfavorite = Localization.tr("Localizable", "itemAction.unfavorite", fallback: "Unfavorite")
   }

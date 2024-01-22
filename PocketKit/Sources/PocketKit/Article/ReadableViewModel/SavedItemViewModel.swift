@@ -63,6 +63,8 @@ class SavedItemViewModel: ReadableViewModel {
 
     @Published var isPresentingReaderSettings: Bool?
 
+    @Published private(set) var isPresentingHighlights = false
+
     private let item: SavedItem
     private let source: Source
     private let pasteboard: Pasteboard
@@ -337,6 +339,12 @@ extension SavedItemViewModel {
         )
 
         notificationCenter.post(name: .bannerRequested, object: bannerData)
+    }
+
+    private func highlightsAction() -> ItemAction {
+        .showHighlights { [weak self] _ in
+            self?.isPresentingHighlights = true
+        }
     }
 
     private func tagsAction() -> ItemAction {

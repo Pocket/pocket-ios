@@ -47,73 +47,8 @@ extension Haptics {
         Haptics.shared.haptic(.play(.rigid))
     }
 
-    /// Item saved
-    public static func saveTap() {
-        Haptics.shared.haptic(.play(.medium))
-    }
-
-    /// Moved from archive to saves
-    public static func moveToSavesTap() {
-        Haptics.shared.haptic(.play(.medium))
-    }
-
-    /// Deleted item
-    public static func deleteTap() {
-        Haptics.shared.haptic(.play(.medium))
-    }
-
-    /// Archived an item
-    public static func archiveTap() {
-        Haptics.shared.haptic(.play(.medium))
-    }
-
-    /// Favorited an item
-    public static func favoriteTap() {
-        Haptics.shared.haptic(.play(.medium))
-    }
-
-    /// Unfavorited an item
-    public static func unfavoriteTap() {
-        Haptics.shared.haptic(.play(.medium))
-    }
-
-    /// Tapped add tags
-    public static func addTagsTap() {
-        Haptics.shared.haptic(.play(.medium))
-    }
-
-    /// Tapped share
-    public static func shareTap() {
-        Haptics.shared.haptic(.play(.medium))
-    }
-
-    /// Tapped overlflow menu on item cells
-    public static func overflowTap() {
-        Haptics.shared.haptic(.play(.medium))
-    }
-
-    /// Tapped display settings in reader mode
-    public static func displaySettingsTap() {
-        Haptics.shared.haptic(.play(.medium))
-    }
-
-    /// Tapped report a rec
-    public static func reportTap() {
-        Haptics.shared.haptic(.play(.medium))
-    }
-
-    /// Tapped copy link
-    public static func copyLinkTap() {
-        Haptics.shared.haptic(.play(.medium))
-    }
-
-    /// Opened an item
-    public static func openItemTap() {
-        Haptics.shared.haptic(.play(.medium))
-    }
-
-    /// Tapped the primary button on a recomendation
-    public static func recomendationPrimaryTap() {
+    /// Default haptic used in most taps
+    public static func defaultTap() {
         Haptics.shared.haptic(.play(.medium))
     }
 }
