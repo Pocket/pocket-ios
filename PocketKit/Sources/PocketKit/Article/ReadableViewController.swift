@@ -95,8 +95,12 @@ class ReadableViewController: UIViewController {
                 .$isPresentingHighlights
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] isPresenting in
+                    guard let self else {
+                        return
+                    }
                     if isPresenting {
-                        // TODO: Show highlights view here
+                        let controller = HighlightsViewController(highlights: highlightedQuotes.sorted { $0.index < $1.index })
+                        present(controller, animated: true)
                     }
                 }
                 .store(in: &subscriptions)
