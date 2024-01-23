@@ -73,7 +73,7 @@ extension ItemAction {
     static func showHighlights(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
             title: Localization.ItemAction.showHighlights,
-            identifier: .addTagsItem,
+            identifier: .showHighlightsItem,
             accessibilityIdentifier: "item-action-show-highlights",
             image: UIImage(asset: .highlights),
             handler: { sender in
@@ -244,6 +244,7 @@ extension UIAction.Identifier {
     static let seeAllPrimary = UIAction.Identifier(rawValue: "see-all-primary")
     static let copyLink = UIAction.Identifier(rawValue: "copy-link")
     static let open = UIAction.Identifier(rawValue: "open")
+    static let showHighlightsItem = UIAction.Identifier(rawValue: "show-highlights-item")
 }
 
 extension UIAction {

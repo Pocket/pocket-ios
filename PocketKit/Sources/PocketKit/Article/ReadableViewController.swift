@@ -88,6 +88,19 @@ class ReadableViewController: UIViewController {
             guard case .contentUpdated = event else { return }
             self?.updateContent()
         }.store(in: &subscriptions)
+
+        // we only want highlights for saved items
+        if let viewModel = readableViewModel as? SavedItemViewModel {
+            viewModel
+                .$isPresentingHighlights
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] isPresenting in
+                    if isPresenting {
+                        // TODO: Show highlights view here
+                    }
+                }
+                .store(in: &subscriptions)
+        }
     }
 
     override func loadView() {
