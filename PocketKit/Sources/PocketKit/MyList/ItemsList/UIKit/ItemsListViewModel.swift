@@ -63,6 +63,7 @@ enum ItemsListFilter: String, Hashable, CaseIterable {
     case listen = "Listen"
     case tagged = "Tagged"
     case favorites = "Favorites"
+    case highlights = "Highlights"
     case sortAndFilter = "Sort/Filter"
 
     var image: UIImage? {
@@ -77,6 +78,8 @@ enum ItemsListFilter: String, Hashable, CaseIterable {
             return UIImage(asset: .favorite)
         case .sortAndFilter:
             return UIImage(asset: .sortFilter)
+        case .highlights:
+            return UIImage(asset: .highlights)
         }
     }
 
@@ -92,6 +95,8 @@ enum ItemsListFilter: String, Hashable, CaseIterable {
             return Localization.Itemlist.Filter.sortFilter
         case .listen:
             return Localization.Carousel.listen
+        case .highlights:
+            return Localization.Itemlist.Filter.highlightsFilter
         }
     }
 }

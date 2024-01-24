@@ -2,6 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import Localization
 import SwiftUI
 import Textile
 
@@ -30,7 +31,7 @@ struct HighlightsView: View {
             }
             .frame(width: 36)
             VStack(alignment: .leading) {
-                Text("Highlights")
+                Text(Localization.ItemAction.showHighlights)
                     .font(.title3)
                     .bold()
                     .foregroundColor(Color(.ui.grey8))

@@ -185,6 +185,8 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
                 return nil
             case .sortAndFilter:
                 return nil
+            case .highlights:
+                return NSPredicate(format: "highlights.@count > 0")
             }
         }
         applySorting()

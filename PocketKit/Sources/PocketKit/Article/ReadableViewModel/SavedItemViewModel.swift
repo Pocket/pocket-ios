@@ -284,11 +284,13 @@ extension SavedItemViewModel {
         _actions = [
             .displaySettings { [weak self] _ in self?.displaySettings() },
             favoriteAction,
-            highlightsAction(),
             tagsAction(),
             .delete { [weak self] _ in self?.confirmDelete() },
             .share { [weak self] _ in self?.share() }
         ]
+        if let highlights, !highlights.isEmpty {
+            _actions.insert(highlightsAction(), at: 2)
+        }
     }
 
     func favorite() {
