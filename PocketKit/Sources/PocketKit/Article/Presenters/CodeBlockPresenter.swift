@@ -50,6 +50,11 @@ class CodeBlockPresenter: ArticleComponentPresenter {
         cachedCodeBlock = nil
     }
 
+    func loadContent() {
+        loadCodeBlock()
+    }
+
+    @discardableResult
     private func loadCodeBlock() -> NSAttributedString? {
         let highlightedString = NSAttributedString(
             string: component.text,

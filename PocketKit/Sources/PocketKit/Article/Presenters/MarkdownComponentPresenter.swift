@@ -33,7 +33,7 @@ class MarkdownComponentPresenter: ArticleComponentPresenter {
 
     private var cachedContent: NSAttributedString?
     private var content: NSAttributedString? {
-        cachedContent ?? loadContent()
+        cachedContent ?? loadMarkdownContent()
     }
 
     init(
@@ -72,7 +72,12 @@ class MarkdownComponentPresenter: ArticleComponentPresenter {
         cachedContent = nil
     }
 
-    private func loadContent() -> NSAttributedString? {
+    func loadContent() {
+        loadMarkdownContent()
+    }
+
+    @discardableResult
+    private func loadMarkdownContent() -> NSAttributedString? {
         let highlightedString = NSAttributedString.styled(
             markdown: component.content,
             styler: NSMutableAttributedString.defaultStyler(with: readerSettings)

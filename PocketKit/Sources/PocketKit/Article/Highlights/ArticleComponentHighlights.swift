@@ -63,6 +63,7 @@ extension Array where Element == ArticleComponent {
 
     /// Extract highlightable components from the current array (excluding images, videos, etc)
     private var highlightableComponents: [Highlightable] {
+        // TODO: add support for image caption highlights?
         return self.compactMap { component in
             if case let .text(textComponent) = component {
                 return textComponent

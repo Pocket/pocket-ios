@@ -90,6 +90,10 @@ class VimeoComponentPresenter: ArticleComponentPresenter {
     func clearCache() {
         // no op
     }
+
+    func loadContent() {
+        // no op
+    }
 }
 
 extension VimeoComponentPresenter: VimeoComponentCellDelegate {

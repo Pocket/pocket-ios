@@ -479,6 +479,31 @@ extension PocketSource {
         enqueue(operation: operation, task: .save(localID: item.objectID.uriRepresentation(), url: item.url), queue: saveQueue)
     }
 
+    public func deleteHighlight(highlight: Highlight) {
+        Log.breadcrumb(category: "sync", level: .debug, message: "Deleting a single highlight")
+        space.performAndWait {
+            guard let highlight = space.backgroundObject(with: highlight.objectID) as? Highlight, let remoteID = highlight.remoteID else {
+                Log.capture(message: "Could not retreive highlight from background context for mutation")
+                return
+            }
+
+            do {
+                try space.deleteHighlight(by: remoteID)
+                try space.save()
+            } catch {
+                Log.capture(error: error)
+            }
+
+            let operation = operations.savedItemMutationOperation(
+                apollo: apollo,
+                events: _events,
+                mutation: DeleteSavedItemHighlightMutation(highlightId: remoteID)
+            )
+
+            enqueue(operation: operation, task: .deleteHighlight(remoteID: remoteID), queue: saveQueue)
+        }
+    }
+
     public func addTags(item: SavedItem, tags: [String]) {
         Log.breadcrumb(category: "sync", level: .debug, message: "Adding tags to item with id \(String(describing: item.remoteID))")
         space.performAndWait {
@@ -923,6 +948,13 @@ extension PocketSource {
                     apollo: apollo,
                     events: _events,
                     mutation: TagUpdateMutation(input: TagUpdateInput(id: remoteID, name: name))
+                )
+                enqueue(operation: operation, persistentTask: persistentTask, queue: self.saveQueue)
+            case .deleteHighlight(let ID):
+                let operation = operations.savedItemMutationOperation(
+                    apollo: apollo,
+                    events: _events,
+                    mutation: DeleteSavedItemHighlightMutation(highlightId: ID)
                 )
                 enqueue(operation: operation, persistentTask: persistentTask, queue: self.saveQueue)
             }

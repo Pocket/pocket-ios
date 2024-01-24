@@ -99,6 +99,8 @@ public protocol Source {
 
     func save(url: String)
 
+    func deleteHighlight(highlight: Highlight)
+
     func fetchItem(_ url: String) -> Item?
 
     func fetchViewContextItem(_ url: String) -> Item?

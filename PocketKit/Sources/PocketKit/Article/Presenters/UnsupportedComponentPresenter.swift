@@ -34,6 +34,10 @@ class UnsupportedComponentPresenter: ArticleComponentPresenter {
         // no op
     }
 
+    func loadContent() {
+        // no op
+    }
+
     private func handleShowInWebReaderButtonTap() {
         readableViewModel?.showWebReader()
         readableViewModel?.trackUnsupportedContentButtonTapped()

@@ -135,6 +135,10 @@ class ImageComponentPresenter: ArticleComponentPresenter, ImageComponentCellMode
         lastImageSize = nil
     }
 
+    func loadContent() {
+        // TODO: add support for image caption highlights?
+    }
+
     private func loadAttributedCredit() -> NSAttributedString? {
         cachedAttributedCredit = component.credit.flatMap {
             NSAttributedString(

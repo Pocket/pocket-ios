@@ -122,7 +122,6 @@ class ReadableViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        fetchQuotes()
 
         guard let userProgress = readableViewModel.readingProgress() else {
             return
@@ -175,6 +174,10 @@ class ReadableViewController: UIViewController {
             .filter { !$0.element.isEmpty }
             .map { presenter(for: $0.element, at: $0.offset) }
 
+        presenters?.forEach {
+            $0.loadContent()
+        }
+        fetchQuotes()
         DispatchQueue.main.async {
             self.collectionView.reloadData()
         }

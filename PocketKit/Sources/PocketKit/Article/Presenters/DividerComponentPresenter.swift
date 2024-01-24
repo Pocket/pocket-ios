@@ -29,4 +29,8 @@ class DividerComponentPresenter: ArticleComponentPresenter {
     func clearCache() {
         // no op
     }
+
+    func loadContent() {
+        // no op
+    }
 }

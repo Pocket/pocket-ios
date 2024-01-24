@@ -32,8 +32,12 @@ struct HighlightRow: View {
                         .frame(width: 20, height: 20)
                         .foregroundColor(Color(.ui.grey8))
                 }
+
                 Button {
-                    // TODO: Add action
+                    modalDismiss()
+                    if let ID = highlightedQuote.remoteID {
+                        viewModel.deleteHighlight(ID)
+                    }
                 } label: {
                     Image(asset: .delete)
                         .resizable()

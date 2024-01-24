@@ -221,6 +221,13 @@ extension Space {
         return newHighlight
     }
 
+    func fetchHighlight(by ID: String, context: NSManagedObjectContext? = nil) throws -> Highlight? {
+        let context =  context ?? backgroundContext
+        let fetchRequest = Requests.fetchHighlight(by: ID)
+        fetchRequest.fetchLimit = 1
+        return try fetch(fetchRequest, context: context).first
+    }
+
     func fetchHighlights(by url: String, context: NSManagedObjectContext? = nil) -> [Highlight]? {
         let context = context ?? backgroundContext
         let fetchRequest = Requests.fetchHighlights(by: url)
@@ -229,6 +236,14 @@ extension Space {
 
     func fetchHighlightsOnViewContext(by url: String) -> [Highlight]? {
         fetchHighlights(by: url, context: viewContext)
+    }
+
+    func deleteHighlight(by ID: String, context: NSManagedObjectContext? = nil) throws {
+        let context =  context ?? backgroundContext
+        let fetchRequest = Requests.fetchHighlight(by: ID)
+        fetchRequest.fetchLimit = 1
+        let highlight = try fetch(fetchRequest)
+        delete(highlight)
     }
 }
 

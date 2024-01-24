@@ -57,6 +57,11 @@ class ListComponentPresenter: ArticleComponentPresenter {
         cachedAttributedContent = nil
     }
 
+    func loadContent() {
+        loadAttributedContent()
+    }
+
+    @discardableResult
     private func loadAttributedContent() -> NSAttributedString? {
         let attributedContent = NSMutableAttributedString()
         for (index, element) in component.elements.enumerated() {

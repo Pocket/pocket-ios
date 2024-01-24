@@ -406,7 +406,12 @@ extension SavedItemViewModel {
     }
 
     func deleteHighlight(_ ID: String) {
-        // TODO: add deletion code
+        guard let highlight = (highlights?.first { $0.remoteID == ID }) else {
+            return
+        }
+
+        source.deleteHighlight(highlight: highlight)
+        _events.send(.contentUpdated)
     }
 
     func shareHighlight(_ quote: String) {

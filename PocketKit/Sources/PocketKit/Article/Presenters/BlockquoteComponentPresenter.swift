@@ -59,6 +59,11 @@ class BlockquoteComponentPresenter: ArticleComponentPresenter {
         cachedAttributedBlockquote = nil
     }
 
+    func loadContent() {
+        loadAttributedBlockquote()
+    }
+
+    @discardableResult
     private func loadAttributedBlockquote() -> NSAttributedString? {
         let highlightedString = NSAttributedString.styled(
             markdown: component.content,
