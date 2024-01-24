@@ -99,7 +99,11 @@ class ReadableViewController: UIViewController {
                         return
                     }
                     if isPresenting {
-                        let controller = HighlightsViewController(highlights: highlightedQuotes.sorted { $0.index < $1.index })
+                        let controller =
+                        HighlightsViewController(
+                            highlights: highlightedQuotes.sorted { $0.index < $1.index },
+                            viewModel: viewModel
+                        )
                         present(controller, animated: true)
                     }
                 }

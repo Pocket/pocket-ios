@@ -7,6 +7,9 @@ import Textile
 
 struct HighlightRow: View {
     let highlightedQuote: HighlightedQuote
+    @ObservedObject var viewModel: SavedItemViewModel
+    let modalDismiss: DismissAction
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
@@ -21,7 +24,8 @@ struct HighlightRow: View {
             HStack(spacing: 16) {
                 Spacer()
                 Button {
-                    // TODO: Add action
+                    modalDismiss()
+                    viewModel.shareHighlight(highlightedQuote.quote)
                 } label: {
                     Image(asset: .share)
                         .resizable()
@@ -45,8 +49,4 @@ private extension HighlightRow {
     enum Appearance {
         static let dividerColor = Color(uiColor: UIColor(red: 144/255, green: 19/255, blue: 36/255, alpha: 1))
     }
-}
-
-#Preview {
-    HighlightRow(highlightedQuote: HighlightedQuote(remoteID: "", index: 0, indexPath: IndexPath(), quote: "This is a sample highlight"))
 }

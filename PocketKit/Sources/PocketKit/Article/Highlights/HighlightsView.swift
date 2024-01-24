@@ -7,8 +7,8 @@ import SwiftUI
 import Textile
 
 class HighlightsViewController: UIHostingController<HighlightsView> {
-    convenience init(highlights: [HighlightedQuote]) {
-        self.init(rootView: HighlightsView(highlights: highlights))
+    convenience init(highlights: [HighlightedQuote], viewModel: SavedItemViewModel) {
+        self.init(rootView: HighlightsView(highlights: highlights, viewModel: viewModel))
     }
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
@@ -19,6 +19,10 @@ class HighlightsViewController: UIHostingController<HighlightsView> {
 
 struct HighlightsView: View {
     let highlights: [HighlightedQuote]
+    @ObservedObject var viewModel: SavedItemViewModel
+    @Environment(\.dismiss)
+    private var dismiss
+
     var body: some View {
         HStack {
             VStack {
@@ -40,7 +44,7 @@ struct HighlightsView: View {
                     .padding(.leading)
                     .padding(.trailing)
                 List(highlights) { highlight in
-                    HighlightRow(highlightedQuote: highlight)
+                    HighlightRow(highlightedQuote: highlight, viewModel: viewModel, modalDismiss: dismiss)
                         .listRowSeparator(.hidden)
                 }
                 .listStyle(.plain)
@@ -49,8 +53,4 @@ struct HighlightsView: View {
         }
         .padding(.top)
     }
-}
-
-#Preview {
-    HighlightsView(highlights: [HighlightedQuote(remoteID: "", index: 0, indexPath: IndexPath(), quote: "This is a sample highlight")])
 }
