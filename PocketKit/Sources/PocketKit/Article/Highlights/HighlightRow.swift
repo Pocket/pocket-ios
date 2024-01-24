@@ -13,6 +13,7 @@ struct HighlightRow: View {
                 Divider()
                     .frame(width: 4)
                     .overlay(Appearance.dividerColor)
+                    .clipShape(.rect(cornerRadius: 2))
                 Text(highlightedQuote.quote)
             }
             .font(.body)

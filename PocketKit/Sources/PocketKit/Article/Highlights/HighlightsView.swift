@@ -25,7 +25,7 @@ struct HighlightsView: View {
                     .resizable()
                     .frame(width: 24, height: 24)
                     .foregroundColor(Color(.ui.grey8))
-                    .padding(.leading)
+                    .padding(.leading, 36)
                 Spacer()
             }
             .frame(width: 36)
