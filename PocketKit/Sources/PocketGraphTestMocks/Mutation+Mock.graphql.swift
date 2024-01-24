@@ -10,6 +10,7 @@ public class Mutation: MockObject {
   public typealias MockValueCollectionType = Array<Mock<Mutation>>
 
   public struct MockFields {
+    @Field<PocketGraph.ID>("deleteSavedItemHighlight") public var deleteSavedItemHighlight
     @Field<PocketGraph.ID>("deleteTag") public var deleteTag
     @Field<PocketGraph.ID>("deleteUser") public var deleteUser
     @Field<SavedItem>("savedItemArchive") public var savedItemArchive
@@ -26,6 +27,7 @@ public class Mutation: MockObject {
 
 public extension Mock where O == Mutation {
   convenience init(
+    deleteSavedItemHighlight: PocketGraph.ID? = nil,
     deleteTag: PocketGraph.ID? = nil,
     deleteUser: PocketGraph.ID? = nil,
     savedItemArchive: Mock<SavedItem>? = nil,
@@ -38,6 +40,7 @@ public extension Mock where O == Mutation {
     upsertSavedItem: Mock<SavedItem>? = nil
   ) {
     self.init()
+    _setScalar(deleteSavedItemHighlight, for: \.deleteSavedItemHighlight)
     _setScalar(deleteTag, for: \.deleteTag)
     _setScalar(deleteUser, for: \.deleteUser)
     _setEntity(savedItemArchive, for: \.savedItemArchive)

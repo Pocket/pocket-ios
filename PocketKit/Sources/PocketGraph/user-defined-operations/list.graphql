@@ -118,6 +118,10 @@ mutation UpdateSavedItemRemoveTags($savedItemId: ID!) {
   }
 }
 
+mutation DeleteSavedItemHighlight($highlightId: ID!) {
+  deleteSavedItemHighlight(id: $highlightId)
+}
+
 query SavedItemByID($id: ID!) {
   user {
     savedItemById(id: $id) {
