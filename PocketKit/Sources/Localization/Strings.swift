@@ -292,6 +292,8 @@ public enum Localization {
       public static let all = Localization.tr("Localizable", "itemlist.filter.all", fallback: "All")
       /// Favorites
       public static let favorites = Localization.tr("Localizable", "itemlist.filter.favorites", fallback: "Favorites")
+      /// Highlights
+      public static let highlightsFilter = Localization.tr("Localizable", "itemlist.filter.highlightsFilter", fallback: "Highlights")
       /// Search
       public static let search = Localization.tr("Localizable", "itemlist.filter.search", fallback: "Search")
       /// Sort
