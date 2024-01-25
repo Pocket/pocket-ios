@@ -249,7 +249,7 @@ extension SavedItemViewModel {
             .delete { [weak self] _ in self?.confirmDelete() },
             .share { [weak self] _ in self?.share() }
         ]
-        if let highlights, !highlights.isEmpty {
+        if let highlights, !highlights.isEmpty, featureFlagService.isAssigned(flag: .marticleHighlights) {
             _actions.insert(highlightsAction(), at: 2)
         }
     }

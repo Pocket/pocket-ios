@@ -84,7 +84,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     private var subscriptions: [AnyCancellable] = []
     private var store: SubscriptionStore
     private var networkPathMonitor: NetworkPathMonitor
-    private var featureFlags: FeatureFlagServiceProtocol
+    let featureFlags: FeatureFlagServiceProtocol
 
     private var selectedFilters: Set<ItemsListFilter>
     private let availableFilters: [ItemsListFilter]
@@ -488,7 +488,11 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         let sections: [ItemsListSection] = [.filters]
         snapshot.appendSections(sections)
 
-        var cases = ItemsListFilter.allCases
+        let cases: [ItemsListFilter] =
+        featureFlags.isAssigned(flag: .marticleHighlights) ?
+        ItemsListFilter.allCases :
+        [.all, .listen, .tagged, .favorites, .sortAndFilter]
+
         snapshot.appendItems(
             cases.map { ItemsListCell<ItemIdentifier>.filterButton($0) },
             toSection: .filters
