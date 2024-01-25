@@ -32,6 +32,7 @@ struct HighlightRow: View {
                         .frame(width: 20, height: 20)
                         .foregroundColor(Color(.ui.grey8))
                 }
+                .buttonStyle(BorderlessButtonStyle())
 
                 Button {
                     modalDismiss()
@@ -44,6 +45,7 @@ struct HighlightRow: View {
                         .frame(width: 20, height: 20)
                         .foregroundColor(Color(.ui.grey8))
                 }
+                .buttonStyle(BorderlessButtonStyle())
             }
         }
     }

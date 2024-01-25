@@ -448,6 +448,7 @@ extension ReadableViewController {
 extension ReadableViewController {
     /// Builds the highlighted quotes list from the presenters
     private func fetchQuotes() {
+        highlightedQuotes.removeAll()
         guard let viewModel = readableViewModel as? SavedItemViewModel else {
             return
         }
