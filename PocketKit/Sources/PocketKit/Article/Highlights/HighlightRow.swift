@@ -15,7 +15,7 @@ struct HighlightRow: View {
             HStack {
                 Divider()
                     .frame(width: 4)
-                    .overlay(Appearance.dividerColor)
+                    .overlay(Color(.branding.amber3))
                     .clipShape(.rect(cornerRadius: 2))
                 Text(highlightedQuote.quote)
             }
@@ -51,8 +51,3 @@ struct HighlightRow: View {
     }
 }
 
-private extension HighlightRow {
-    enum Appearance {
-        static let dividerColor = Color(uiColor: UIColor(red: 144/255, green: 19/255, blue: 36/255, alpha: 1))
-    }
-}
