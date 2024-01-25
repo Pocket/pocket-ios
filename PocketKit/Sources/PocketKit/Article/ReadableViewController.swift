@@ -108,6 +108,16 @@ class ReadableViewController: UIViewController {
                     }
                 }
                 .store(in: &subscriptions)
+            viewModel
+                .$highlightIndexPath
+                .receive(on: DispatchSerialQueue.main)
+                .sink { [weak self] indexPath in
+                    guard let self, let indexPath else {
+                        return
+                    }
+                    collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredVertically)
+                }
+                .store(in: &subscriptions)
         }
     }
 

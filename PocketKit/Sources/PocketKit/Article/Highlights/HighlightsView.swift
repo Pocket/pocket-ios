@@ -46,6 +46,10 @@ struct HighlightsView: View {
                 List(highlights) { highlight in
                     HighlightRow(highlightedQuote: highlight, viewModel: viewModel, modalDismiss: dismiss)
                         .listRowSeparator(.hidden)
+                        .onTapGesture {
+                            dismiss()
+                            viewModel.scrollToIndexPath(highlight.indexPath)
+                        }
                 }
                 .listStyle(.plain)
             }

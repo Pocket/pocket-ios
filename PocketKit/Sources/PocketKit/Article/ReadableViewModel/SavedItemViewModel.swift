@@ -65,6 +65,8 @@ class SavedItemViewModel: ReadableViewModel, ObservableObject {
 
     @Published private(set) var isPresentingHighlights = false
 
+    @Published private(set) var highlightIndexPath: IndexPath?
+
     private let item: SavedItem
     private let source: Source
     private let pasteboard: Pasteboard
@@ -416,5 +418,9 @@ extension SavedItemViewModel {
 
     func shareHighlight(_ quote: String) {
         sharedActivity = PocketItemActivity.fromReader(url: url, additionalText: quote)
+    }
+
+    func scrollToIndexPath(_ indexPath: IndexPath) {
+        highlightIndexPath = indexPath
     }
 }
