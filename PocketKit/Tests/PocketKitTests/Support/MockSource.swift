@@ -8,6 +8,9 @@ import CoreData
 import Combine
 
 class MockSource: Source {
+    func deleteHighlight(highlight: Sync.Highlight) {
+    }
+
     func fetchViewItem(from url: String) async throws -> Sync.Item? {
         nil
     }
