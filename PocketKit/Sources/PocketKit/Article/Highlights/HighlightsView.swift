@@ -10,11 +10,6 @@ class HighlightsViewController: UIHostingController<HighlightsView> {
     convenience init(highlights: [HighlightedQuote], viewModel: SavedItemViewModel) {
         self.init(rootView: HighlightsView(highlights: highlights, viewModel: viewModel))
     }
-
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        guard traitCollection.userInterfaceIdiom == .phone else { return .all }
-        return .portrait
-    }
 }
 
 struct HighlightsView: View {
