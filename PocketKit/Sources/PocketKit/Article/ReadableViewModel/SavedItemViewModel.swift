@@ -375,7 +375,7 @@ extension SavedItemViewModel {
             guard let firstIndex = textIndex(patch: $0.patch),
                   let secondIndex = textIndex(patch: $1.patch) else {
                 // if there's no comparison to be made, just keep the existing order
-                return true
+                return false
             }
             return firstIndex < secondIndex
         }

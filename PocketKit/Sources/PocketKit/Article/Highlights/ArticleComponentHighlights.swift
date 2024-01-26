@@ -83,6 +83,9 @@ extension Array where Element == ArticleComponent {
             if case let .numberedList(numberedListComponent) = component {
                 return numberedListComponent
             }
+            if case let .image(imageComponent) = component {
+                return imageComponent
+            }
             return nil
         }
     }
@@ -136,6 +139,32 @@ extension Array where Element == ArticleComponent {
                 case .blockquote:
                     mergedComponents.append(.blockquote(BlockquoteComponent(content: content)))
                     patchedIndex += 1
+                case .image(let imageComponent):
+                    var caption: String?
+                    var credit: String?
+                    if imageComponent.caption != nil, imageComponent.credit != nil, content.contains(HighlightConstants.captionCreditSeparator) {
+                        let captionComponents = content.components(separatedBy: HighlightConstants.captionCreditSeparator)
+                        if captionComponents.count == 2 {
+                            caption = captionComponents[0]
+                            credit = captionComponents[1]
+                        }
+                    } else if imageComponent.caption != nil, imageComponent.credit == nil {
+                        caption = content
+                    } else if imageComponent.caption == nil, imageComponent.credit != nil {
+                        credit = content
+                    }
+                    mergedComponents.append(
+                        .image(
+                            ImageComponent(
+                                caption: caption,
+                                credit: credit,
+                                height: imageComponent.height,
+                                width: imageComponent.width,
+                                id: imageComponent.id,
+                                source: imageComponent.source
+                            )
+                        )
+                    )
                 default:
                     mergedComponents.append($0)
                 }
@@ -310,6 +339,7 @@ private enum HighlightConstants {
     static let componentSeparator = "[||]"
     static let parserSeparator = "<_pkt_>"
     static let listRowSeparator = "\n"
+    static let captionCreditSeparator = "[-]"
     /// tags & identifiers
     static let highlightStartTag = "<pkt_tag_annotation>"
     static let highlightEndTag = "</pkt_tag_annotation>"

@@ -72,8 +72,9 @@ class ImageComponentPresenter: ArticleComponentPresenter, ImageComponentCellMode
 
             base.append(attributedCredit)
         }
-
-        return base
+        let highlightedBase = base.highlighted()
+        highlightIndexes = highlightedBase.highlightInexes
+        return highlightedBase.content
     }
 
     var image: ImageComponentCell.ImageSpec? {
@@ -136,9 +137,11 @@ class ImageComponentPresenter: ArticleComponentPresenter, ImageComponentCellMode
     }
 
     func loadContent() {
-        // TODO: add support for image caption highlights?
+        loadAttributedCaption()
+        loadAttributedCredit()
     }
 
+    @discardableResult
     private func loadAttributedCredit() -> NSAttributedString? {
         cachedAttributedCredit = component.credit.flatMap {
             NSAttributedString(
@@ -150,6 +153,7 @@ class ImageComponentPresenter: ArticleComponentPresenter, ImageComponentCellMode
         return cachedAttributedCredit
     }
 
+    @discardableResult
     private func loadAttributedCaption() -> NSAttributedString? {
         cachedAttributedCaption = component.caption.flatMap {
             NSAttributedString(

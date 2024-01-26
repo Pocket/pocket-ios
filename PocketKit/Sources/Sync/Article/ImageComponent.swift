@@ -21,6 +21,32 @@ public struct ImageComponent: Encodable, Equatable, Hashable {
         case id = "imageID"
         case source = "src"
     }
+
+    public init(caption: String?, credit: String?, height: UInt?, width: UInt?, id: Int, source: URL?) {
+        self.caption = caption
+        self.credit = credit
+        self.height = height
+        self.width = width
+        self.id = id
+        self.source = source
+    }
+}
+
+extension ImageComponent: Highlightable {
+    public var content: String {
+        var base = String()
+        if let caption, !caption.isEmpty {
+            base.append(caption)
+        }
+
+        if let credit {
+            if let caption, !caption.isEmpty {
+                base.append("[-]")
+            }
+            base.append(credit)
+        }
+        return base
+    }
 }
 
 extension ImageComponent {
