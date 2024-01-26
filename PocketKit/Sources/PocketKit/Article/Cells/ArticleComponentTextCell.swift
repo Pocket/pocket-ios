@@ -61,7 +61,7 @@ class ArticleComponentTextView: UITextView {
         isScrollEnabled = false
         delegate = self
 
-        linkTextAttributes = [.foregroundColor: UIColor(.ui.textfieldURL) as Any]
+        linkTextAttributes = [.foregroundColor: UIColor(.ui.black1)]
 
         interactions
             .filter { $0 is UIContextMenuInteraction }
