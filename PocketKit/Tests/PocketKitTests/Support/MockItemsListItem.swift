@@ -7,6 +7,14 @@ import Localization
 @testable import PocketKit
 
 struct MockItemsListItem: ItemsListItem {
+    var hasHighlights: Bool {
+        false
+    }
+
+    var highlightsCount: Int {
+        0
+    }
+
     var displayTitle: String {
         title ?? bestURL ?? ""
     }
