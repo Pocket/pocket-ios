@@ -399,7 +399,7 @@ extension SavedItemViewModel {
 
     var components: [ArticleComponent]? {
         guard featureFlagService.isAssigned(flag: .marticleHighlights),
-                let highlights = item.highlights?.array as? [Highlight],
+                let highlights,
                 !highlights.isEmpty else {
             return item.item?.article?.components
         }

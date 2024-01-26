@@ -142,16 +142,16 @@ extension Array where Element == ArticleComponent {
                 case .image(let imageComponent):
                     var caption: String?
                     var credit: String?
-                    if imageComponent.caption != nil, imageComponent.credit != nil, content.contains(HighlightConstants.captionCreditSeparator) {
+                    if let originalCaption = imageComponent.caption, !originalCaption.isEmpty, let originalCredit = imageComponent.credit, !originalCredit.isEmpty, content.contains(HighlightConstants.captionCreditSeparator) {
                         let captionComponents = content.components(separatedBy: HighlightConstants.captionCreditSeparator)
                         if captionComponents.count == 2 {
                             caption = captionComponents[0]
                             credit = captionComponents[1]
                         }
-                    } else if imageComponent.caption != nil, imageComponent.credit == nil {
-                        caption = content
-                    } else if imageComponent.caption == nil, imageComponent.credit != nil {
-                        credit = content
+                    } else if let originalCaption = imageComponent.caption, imageComponent.credit == nil || imageComponent.credit?.isEmpty == true {
+                        caption = originalCaption.isEmpty ? originalCaption : content
+                    } else if imageComponent.caption == nil || imageComponent.caption?.isEmpty == true, let originalCredit = imageComponent.credit {
+                        credit = originalCredit.isEmpty ? originalCredit : content
                     }
                     mergedComponents.append(
                         .image(
@@ -165,6 +165,7 @@ extension Array where Element == ArticleComponent {
                             )
                         )
                     )
+                    patchedIndex += 1
                 default:
                     mergedComponents.append($0)
                 }

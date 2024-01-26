@@ -137,8 +137,8 @@ class ImageComponentPresenter: ArticleComponentPresenter, ImageComponentCellMode
     }
 
     func loadContent() {
-        loadAttributedCaption()
-        loadAttributedCredit()
+        // calling caption will load the highlighted content
+        _ = caption
     }
 
     @discardableResult
