@@ -73,6 +73,14 @@ class ItemsListItemPresenter {
         return CDNURLBuilder().imageCacheURL(for: item.topImageURL)
     }
 
+    var hasHighlights: Bool {
+        item.hasHighlights
+    }
+
+    var highlightsCount: Int {
+        item.highlightsCount
+    }
+
     private var title: String {
         item.displayTitle
     }
@@ -87,13 +95,15 @@ class ItemsListItemPresenter {
 
     private var tags: [String]? {
         guard let names = item.tagNames else { return nil }
-        let tagsCount = min(names.count, 2)
+        let highlightAddOn = hasHighlights ? 1 : 0
+        let tagsCount = min(names.count, 2 - highlightAddOn)
         return tagsCount > 0 ? Array(names[..<tagsCount]) : nil
     }
 
     private var otherTagsCount: Int? {
         guard let count = item.tagNames?.count else { return nil }
-        return count > 2 ? count - 2 : nil
+        let highlightAddOn = hasHighlights ? 1 : 0
+        return count + highlightAddOn > 2 ? count + highlightAddOn - 2 : nil
     }
 
     private var timeToRead: String? {

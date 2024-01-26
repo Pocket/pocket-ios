@@ -324,7 +324,9 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
                 overflowActions: [],
                 filterByTagAction: nil,
                 trackOverflow: nil,
-                swiftUITrackOverflow: nil
+                swiftUITrackOverflow: nil,
+                hasHighlights: false,
+                highlightsCount: 0
             )
 
             return
@@ -342,7 +344,9 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
             overflowActions: model.overflowActions(for: objectID),
             filterByTagAction: model.filterByTagAction(),
             trackOverflow: model.trackOverflow(for: objectID),
-            swiftUITrackOverflow: model.swiftUITrackOverflow(for: objectID)
+            swiftUITrackOverflow: model.swiftUITrackOverflow(for: objectID),
+            hasHighlights: presenter.hasHighlights,
+            highlightsCount: presenter.highlightsCount
         )
     }
 

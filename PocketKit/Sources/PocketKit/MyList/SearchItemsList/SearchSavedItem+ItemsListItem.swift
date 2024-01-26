@@ -114,6 +114,14 @@ extension SearchSavedItem: ItemsListItem {
     var savedItemURL: String {
         remoteItem.url
     }
+    // TODO: we might add support for highlights icon in search
+    var hasHighlights: Bool {
+        false
+    }
+
+    var highlightsCount: Int {
+        0
+    }
 }
 
 extension SavedItemParts.Item.AsItem.DomainMetadata: ItemsListItemDomainMetadata { }

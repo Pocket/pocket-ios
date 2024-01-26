@@ -25,6 +25,8 @@ protocol ItemsListItem {
     var cursor: String? { get }
     var isCollection: Bool { get }
     var isSyndicated: Bool { get }
+    var hasHighlights: Bool { get }
+    var highlightsCount: Int { get }
 }
 
 extension ItemsListItem {

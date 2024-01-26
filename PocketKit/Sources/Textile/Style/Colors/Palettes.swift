@@ -41,6 +41,8 @@ public struct UIPalette {
     public let black1 = ColorAsset.ui("black1")
     public let border = ColorAsset.ui("border")
     public let skeletonCellImageBackground = ColorAsset.ui("skeletonCellImageBackground")
+
+    public let highlight = ColorAsset.ui("Highlight")
 }
 
 public struct BrandingPalette {
@@ -49,6 +51,8 @@ public struct BrandingPalette {
     public let amber3 = ColorAsset.branding("amber3")
     public let amber4 = ColorAsset.branding("amber4")
     public let amber5 = ColorAsset.branding("amber5")
+    public let amber6 = ColorAsset.branding("amber6")
+    public let amber7 = ColorAsset.branding("amber7")
 
     public let apricot1 = ColorAsset.branding("apricot1")
     public let apricot2 = ColorAsset.branding("apricot2")

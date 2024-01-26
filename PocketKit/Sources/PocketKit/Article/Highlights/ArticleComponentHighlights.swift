@@ -310,7 +310,6 @@ extension NSAttributedString {
         highlightableRanges.forEach {
             let nsRange = NSRange($0, in: highlightableString)
             mutable.addAttribute(.backgroundColor, value: HighlightConstants.highlightColor, range: nsRange)
-            mutable.addAttribute(.foregroundColor, value: HighlightConstants.highlightedTextColor, range: nsRange)
         }
 
         let tagsToRemove =
@@ -358,6 +357,5 @@ private enum HighlightConstants {
         "<pkt_tag_annotation_\(index)>"
     }
     /// colors
-    static let highlightColor = UIColor(displayP3Red: 250/255, green: 233/255, blue: 199/255, alpha: 0.8)
-    static let highlightedTextColor = UIColor.black
+    static let highlightColor = UIColor(.ui.highlight)
 }
