@@ -4,6 +4,7 @@
 
 import UIKit
 import Kingfisher
+import Textile
 
 class ItemsListItemCell: UICollectionViewListCell {
     var model: Model? {
@@ -125,6 +126,22 @@ class ItemsListItemCell: UICollectionViewListCell {
 
         return stack
     }()
+
+    private func makeHighlightsButton() -> UIButton {
+        var config = UIButton.Configuration.plain()
+        config.image = UIImage(asset: .highlights)
+            .resized(to: CGSize(width: 13, height: 13))
+            .withTintColor(UIColor(.branding.amber7))
+        config.imagePadding = 5
+
+        config.background.cornerRadius = 4
+        config.background.backgroundColor = UIColor(.branding.amber6).withAlphaComponent(0.2)
+        config.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5)
+
+        let button = UIButton(configuration: config, primaryAction: nil)
+        button.accessibilityIdentifier = "highlights-button"
+        return button
+    }
 
     private var tagButton: UIButton {
         var config = UIButton.Configuration.plain()
@@ -251,6 +268,9 @@ extension ItemsListItemCell {
         let filterByTagAction: UIAction?
         let trackOverflow: UIAction?
         let swiftUITrackOverflow: ItemAction?
+
+        let hasHighlights: Bool
+        let highlightsCount: Int
     }
 
     override func updateConfiguration(using state: UICellConfigurationState) {
@@ -279,6 +299,17 @@ extension ItemsListItemCell {
             view.removeFromSuperview()
         }
 
+        if let number = model?.highlightsCount, number > 0 {
+            let highlightStyle: Style = .header.sansSerif.p5.with(color: .branding.amber7).with(weight: .medium).with { paragraph in
+                paragraph
+                    .with(lineBreakMode: .byTruncatingTail)
+            }
+            let button = makeHighlightsButton()
+            button.isUserInteractionEnabled = false
+            button.configuration?.attributedTitle = AttributedString(NSAttributedString(string: "\(number)", style: highlightStyle))
+            tagsStack.addArrangedSubview(button)
+        }
+
         if let attributedTags = state.model?.attributedTags {
             attributedTags.forEach { attributedTag in
                 let button = tagButton
@@ -292,6 +323,7 @@ extension ItemsListItemCell {
             countLabel.attributedText = state.model?.attributedTagCount
             tagsStack.addArrangedSubview(countLabel)
         }
+        tagsStack.addArrangedSubview(UIView())
 
         favoriteButton.accessibilityLabel = state.model?.favoriteAction?.title
         favoriteButton.accessibilityIdentifier = state.model?.favoriteAction?.accessibilityIdentifier
