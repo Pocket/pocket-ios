@@ -299,14 +299,14 @@ extension ItemsListItemCell {
             view.removeFromSuperview()
         }
 
-        if let number = model?.highlightsCount, number > 0 {
+        if let highlightsCount = model?.highlightsCount, highlightsCount > 0 {
             let highlightStyle: Style = .header.sansSerif.p5.with(color: .branding.amber7).with(weight: .medium).with { paragraph in
                 paragraph
                     .with(lineBreakMode: .byTruncatingTail)
             }
             let button = makeHighlightsButton()
             button.isUserInteractionEnabled = false
-            button.configuration?.attributedTitle = AttributedString(NSAttributedString(string: "\(number)", style: highlightStyle))
+            button.configuration?.attributedTitle = AttributedString(NSAttributedString(string: "\(highlightsCount)", style: highlightStyle))
             tagsStack.addArrangedSubview(button)
         }
 
