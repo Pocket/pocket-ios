@@ -59,3 +59,14 @@ extension SavedItem {
     @objc(removeTags:)
     @NSManaged public func removeFromTags(_ values: NSOrderedSet)
 }
+
+// MARK: Convenience properties
+extension SavedItem {
+    public var hasHighlights: Bool {
+        highlightsCount > 0
+    }
+
+    public var highlightsCount: Int {
+        highlights?.count ?? 0
+    }
+}
