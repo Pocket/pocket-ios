@@ -135,7 +135,7 @@ class ItemsListItemCell: UICollectionViewListCell {
         config.imagePadding = 5
 
         config.background.cornerRadius = 4
-        config.background.backgroundColor = UIColor(.branding.amber6).withAlphaComponent(0.2)
+        config.background.backgroundColor = UIColor(.branding.amber6)
         config.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5)
 
         let button = UIButton(configuration: config, primaryAction: nil)
