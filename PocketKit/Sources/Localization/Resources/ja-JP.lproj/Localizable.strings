@@ -45,6 +45,7 @@
 "itemAction.report" = "報告する";
 "itemAction.save" = "保存";
 "itemAction.share" = "共有";
+"itemAction.showHighlights" = "Highlights";
 
 //ItemList
 "itemlist.filter.search" = "検索";
@@ -52,6 +53,7 @@
 "itemlist.filter.tagged" = "タグ付けしました";
 "itemlist.filter.favorites" = "お気に入り";
 "itemlist.filter.sortFilter" = "並び替え";
+"itemlist.filter.highlightsFilter" = "Highlights";
 "itemList.edit.banner" = "このバージョンの Pocket でリストの編集を利用することはできませんが、間もなく利用できるようになります！";
 
 //List view
@@ -184,6 +186,7 @@
 
 "tags.renameTag" = "タグの名前を変更する";
 "tags.renameTag.message" = "このタグの新しい名前を入力";
+"tags.renameTag.prompt" = "Tag name";
 
 //Reader 
 "reader.activity.save" = "保存";
@@ -193,6 +196,19 @@
 "reader.activity.favorite" = "お気に入り";
 "reader.activity.unfavorite" = "お気に入り解除";
 "reader.activity.moveToSaves" = "保存アイテムに移動";
+
+// Reader Settings
+"reader.settings.title" = "Display settings";
+"reader.settings.fontLabel"  = "Font";
+"reader.settings.fontSizeLabel" = "Font size";
+"reader.settings.lineHeightLabel" = "Line height";
+"reader.settings.marginsLabel" = "Margins";
+"reader.settings.alignmentLabel" = "Alignment";
+"reader.settings.resetToDefaultsLabel" = "Reset to defaults";
+"reader.settings.premiumUpsellLabel" = "Unlock more options";
+"reader.settings.premiumUpsellSubtitle" = "Premium fonts, text formatting and more.";
+"reader.settings.alignmentNatural" = "Default";
+"reader.settings.alignmentJustified" = "Justified";
 
 //Recommendation
 "recommendation.save" = "保存";
@@ -242,10 +258,6 @@
 "Tags" = "タグ";
 "Share" = "共有";
 "carousel.listen" = "聴く";
-
-"Display Settings" = "表示設定";
-"Font" = "フォント";
-"Font Size" = "フォントサイズ";
 
 "Copy link" = "リンクをコピー";
 "Copy link with selection" = "選択してリンクをコピー";
@@ -329,6 +341,9 @@
 
 // Collection
 "collection.stories.count" = "%1$@ 件のアイテム";
+
+// Logged out
+"loggedOut.continue" = "続行";
 
 // Errors
 "error.problemOccurred" = "問題が発生しました";
