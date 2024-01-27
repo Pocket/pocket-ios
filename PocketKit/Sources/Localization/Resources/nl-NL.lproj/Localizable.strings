@@ -45,6 +45,7 @@
 "itemAction.report" = "Rapporteren";
 "itemAction.save" = "Opslaan";
 "itemAction.share" = "Delen";
+"itemAction.showHighlights" = "Highlights";
 
 //ItemList
 "itemlist.filter.search" = "Zoeken";
@@ -52,6 +53,7 @@
 "itemlist.filter.tagged" = "Getagd";
 "itemlist.filter.favorites" = "Favorieten";
 "itemlist.filter.sortFilter" = "Sorteren";
+"itemlist.filter.highlightsFilter" = "Highlights";
 "itemList.edit.banner" = "Het bewerken van je lijst is niet beschikbaar in deze versie van Pocket, maar komt binnenkort terug!";
 
 //List view
@@ -184,6 +186,7 @@
 
 "tags.renameTag" = "Hernoem tag";
 "tags.renameTag.message" = "Voer een nieuwe naam voor deze tag in";
+"tags.renameTag.prompt" = "Tag name";
 
 //Reader 
 "reader.activity.save" = "Opslaan";
@@ -193,6 +196,19 @@
 "reader.activity.favorite" = "Favoriet";
 "reader.activity.unfavorite" = "Verwijderen uit Favorieten";
 "reader.activity.moveToSaves" = "Verplaatsen naar Opgeslagen";
+
+// Reader Settings
+"reader.settings.title" = "Display settings";
+"reader.settings.fontLabel"  = "Font";
+"reader.settings.fontSizeLabel" = "Font size";
+"reader.settings.lineHeightLabel" = "Line height";
+"reader.settings.marginsLabel" = "Margins";
+"reader.settings.alignmentLabel" = "Alignment";
+"reader.settings.resetToDefaultsLabel" = "Reset to defaults";
+"reader.settings.premiumUpsellLabel" = "Unlock more options";
+"reader.settings.premiumUpsellSubtitle" = "Premium fonts, text formatting and more.";
+"reader.settings.alignmentNatural" = "Default";
+"reader.settings.alignmentJustified" = "Justified";
 
 //Recommendation
 "recommendation.save" = "Opslaan";
@@ -242,10 +258,6 @@
 "Tags" = "Tags";
 "Share" = "Delen";
 "carousel.listen" = "Luisteren";
-
-"Display Settings" = "Instellingen weergeven";
-"Font" = "Lettertype";
-"Font Size" = "Lettergrootte";
 
 "Copy link" = "Kopieer link";
 "Copy link with selection" = "Link met selectie kopiëren";
@@ -329,6 +341,9 @@
 
 // Collection
 "collection.stories.count" = "%1$@ items";
+
+// Logged out
+"loggedOut.continue" = "Doorgaan";
 
 // Errors
 "error.problemOccurred" = "Er is een probleem opgetreden";
