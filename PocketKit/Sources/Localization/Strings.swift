@@ -178,6 +178,10 @@ public enum Localization {
       }
     }
   }
+  public enum EditAction {
+    /// Highlight
+    public static let highlight = Localization.tr("Localizable", "editAction.highlight", fallback: "Highlight")
+  }
   public enum Error {
     /// A problem occurred
     public static let problemOccurred = Localization.tr("Localizable", "error.problemOccurred", fallback: "A problem occurred")

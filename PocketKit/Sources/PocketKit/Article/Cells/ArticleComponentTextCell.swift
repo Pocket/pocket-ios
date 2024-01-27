@@ -2,8 +2,9 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import UIKit
+import Localization
 import Textile
+import UIKit
 
 // An object that conforms to this protocol is commonly capable of responding to
 // (overridden) events that occur within a PocketTextView nested within a PocketTextCell.
@@ -77,6 +78,11 @@ class ArticleComponentTextView: UITextView {
     func _share(_ sender: Any?) {
         actionDelegate?.articleComponentTextViewDidSelectShareAction(self)
     }
+
+    private func applyHighlight() {
+        // TODO: add implementation
+        print(selectedRange)
+    }
 }
 
 extension ArticleComponentTextView: UITextViewDelegate {
@@ -87,6 +93,36 @@ extension ArticleComponentTextView: UITextViewDelegate {
         interaction: UITextItemInteraction
     ) -> Bool {
         return actionDelegate?.articleComponentTextView(self, shouldOpenURL: URL) ?? true
+    }
+
+    func textView(_ textView: UITextView, editMenuForTextIn range: NSRange, suggestedActions: [UIMenuElement]) -> UIMenu? {
+        let highlightAction = UIAction(title: Localization.EditAction.highlight) { [weak self] action in
+            self?.applyHighlight()
+        }
+        // check if the bounds of the selected range overlap an existing highlight,
+        // otherwise don't include the highlight action
+        let lowerbound = self.attributedText.attributes(at: range.lowerBound, effectiveRange: nil)[.backgroundColor]
+        let upperbound = self.attributedText.attributes(at: range.upperBound, effectiveRange: nil)[.backgroundColor]
+
+        guard !isHighlighted(lowerbound), !isHighlighted(upperbound) else {
+            return UIMenu(children: suggestedActions)
+        }
+
+        var newActions = suggestedActions
+
+        if newActions.count > 1 {
+            newActions.insert(highlightAction, at: 1)
+        } else {
+            newActions.append(highlightAction)
+        }
+        return UIMenu(children: newActions)
+    }
+
+    private func isHighlighted(_ attribute: Any?) -> Bool {
+        if let attribute = attribute as? UIColor, attribute == UIColor(.ui.highlight) {
+            return true
+        }
+        return false
     }
 }
 
