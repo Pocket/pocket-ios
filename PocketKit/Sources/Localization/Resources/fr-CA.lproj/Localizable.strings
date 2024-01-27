@@ -45,6 +45,7 @@
 "itemAction.report" = "Signaler";
 "itemAction.save" = "Sauvegarder";
 "itemAction.share" = "Partager";
+"itemAction.showHighlights" = "Highlights";
 
 //ItemList
 "itemlist.filter.search" = "Rechercher";
@@ -52,6 +53,7 @@
 "itemlist.filter.tagged" = "Balisé";
 "itemlist.filter.favorites" = "Favoris";
 "itemlist.filter.sortFilter" = "Organiser";
+"itemlist.filter.highlightsFilter" = "Highlights";
 "itemList.edit.banner" = "La modification de votre liste n'est pas disponible dans cette version de Pocket, mais elle sera bientôt de retour!";
 
 //List view
@@ -184,6 +186,7 @@
 
 "tags.renameTag" = "Renommer la balise";
 "tags.renameTag.message" = "Entrez un nouveau nom pour cette balise";
+"tags.renameTag.prompt" = "Tag name";
 
 //Reader 
 "reader.activity.save" = "Sauvegarder";
@@ -193,6 +196,19 @@
 "reader.activity.favorite" = "Marquer";
 "reader.activity.unfavorite" = "Retirer des favoris";
 "reader.activity.moveToSaves" = "Déplacer vers les Sauvegardes";
+
+// Reader Settings
+"reader.settings.title" = "Display settings";
+"reader.settings.fontLabel"  = "Font";
+"reader.settings.fontSizeLabel" = "Font size";
+"reader.settings.lineHeightLabel" = "Line height";
+"reader.settings.marginsLabel" = "Margins";
+"reader.settings.alignmentLabel" = "Alignment";
+"reader.settings.resetToDefaultsLabel" = "Reset to defaults";
+"reader.settings.premiumUpsellLabel" = "Unlock more options";
+"reader.settings.premiumUpsellSubtitle" = "Premium fonts, text formatting and more.";
+"reader.settings.alignmentNatural" = "Default";
+"reader.settings.alignmentJustified" = "Justified";
 
 //Recommendation
 "recommendation.save" = "Sauvegarder";
@@ -242,10 +258,6 @@
 "Tags" = "Balises";
 "Share" = "Partager";
 "carousel.listen" = "Écouter";
-
-"Display Settings" = "Paramètres d'affichage";
-"Font" = "Police";
-"Font Size" = "Taille de la police";
 
 "Copy link" = "Copier le lien";
 "Copy link with selection" = "Copier le lien avec la sélection";
@@ -329,6 +341,9 @@
 
 // Collection
 "collection.stories.count" = "%1$@ éléments";
+
+// Logged out
+"loggedOut.continue" = "Continuer";
 
 // Errors
 "error.problemOccurred" = "Un problème est survenu";
