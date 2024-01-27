@@ -45,6 +45,7 @@
 "itemAction.report" = "报告";
 "itemAction.save" = "保存";
 "itemAction.share" = "分享";
+"itemAction.showHighlights" = "Highlights";
 
 //ItemList
 "itemlist.filter.search" = "搜索";
@@ -52,6 +53,7 @@
 "itemlist.filter.tagged" = "已标记";
 "itemlist.filter.favorites" = "收藏夹";
 "itemlist.filter.sortFilter" = "排序";
+"itemlist.filter.highlightsFilter" = "Highlights";
 "itemList.edit.banner" = "暂时无法在此 Pocket 版本中编辑您的列表，但很快就会恢复此功能！";
 
 //List view
@@ -184,6 +186,7 @@
 
 "tags.renameTag" = "重命名标记";
 "tags.renameTag.message" = "为此标记输入新名称";
+"tags.renameTag.prompt" = "Tag name";
 
 //Reader 
 "reader.activity.save" = "保存";
@@ -193,6 +196,19 @@
 "reader.activity.favorite" = "添加到收藏夹";
 "reader.activity.unfavorite" = "取消收藏";
 "reader.activity.moveToSaves" = "移至“保存内容”";
+
+// Reader Settings
+"reader.settings.title" = "Display settings";
+"reader.settings.fontLabel"  = "Font";
+"reader.settings.fontSizeLabel" = "Font size";
+"reader.settings.lineHeightLabel" = "Line height";
+"reader.settings.marginsLabel" = "Margins";
+"reader.settings.alignmentLabel" = "Alignment";
+"reader.settings.resetToDefaultsLabel" = "Reset to defaults";
+"reader.settings.premiumUpsellLabel" = "Unlock more options";
+"reader.settings.premiumUpsellSubtitle" = "Premium fonts, text formatting and more.";
+"reader.settings.alignmentNatural" = "Default";
+"reader.settings.alignmentJustified" = "Justified";
 
 //Recommendation
 "recommendation.save" = "保存";
@@ -242,10 +258,6 @@
 "Tags" = "标记";
 "Share" = "分享";
 "carousel.listen" = "朗读";
-
-"Display Settings" = "显示设置";
-"Font" = "字体";
-"Font Size" = "字体大小";
 
 "Copy link" = "复制链接";
 "Copy link with selection" = "复制带选择的链接";
@@ -329,6 +341,9 @@
 
 // Collection
 "collection.stories.count" = "%1$@ 个项目";
+
+// Logged out
+"loggedOut.continue" = "继续";
 
 // Errors
 "error.problemOccurred" = "出现问题";
