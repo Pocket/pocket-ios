@@ -45,6 +45,7 @@
 "itemAction.report" = "Denunciar";
 "itemAction.save" = "Salvar";
 "itemAction.share" = "Compartilhar";
+"itemAction.showHighlights" = "Highlights";
 
 //ItemList
 "itemlist.filter.search" = "Procurar";
@@ -52,6 +53,7 @@
 "itemlist.filter.tagged" = "Com tag ";
 "itemlist.filter.favorites" = "Favoritos";
 "itemlist.filter.sortFilter" = "Ordenar";
+"itemlist.filter.highlightsFilter" = "Highlights";
 "itemList.edit.banner" = "Não é possível editar a sua lista nesta versão do Pocket, mas em breve será!";
 
 //List view
@@ -184,6 +186,7 @@
 
 "tags.renameTag" = "Renomear tag";
 "tags.renameTag.message" = "Digite um novo nome para esta tag";
+"tags.renameTag.prompt" = "Tag name";
 
 //Reader 
 "reader.activity.save" = "Salvar";
@@ -193,6 +196,19 @@
 "reader.activity.favorite" = "Curtir";
 "reader.activity.unfavorite" = "Descurtir";
 "reader.activity.moveToSaves" = "Mover para Salvos";
+
+// Reader Settings
+"reader.settings.title" = "Display settings";
+"reader.settings.fontLabel"  = "Font";
+"reader.settings.fontSizeLabel" = "Font size";
+"reader.settings.lineHeightLabel" = "Line height";
+"reader.settings.marginsLabel" = "Margins";
+"reader.settings.alignmentLabel" = "Alignment";
+"reader.settings.resetToDefaultsLabel" = "Reset to defaults";
+"reader.settings.premiumUpsellLabel" = "Unlock more options";
+"reader.settings.premiumUpsellSubtitle" = "Premium fonts, text formatting and more.";
+"reader.settings.alignmentNatural" = "Default";
+"reader.settings.alignmentJustified" = "Justified";
 
 //Recommendation
 "recommendation.save" = "Salvar";
@@ -242,10 +258,6 @@
 "Tags" = "Tags";
 "Share" = "Compartilhar";
 "carousel.listen" = "Escutar";
-
-"Display Settings" = "Exibir Configurações";
-"Font" = "Fonte";
-"Font Size" = "Tamanho da fonte";
 
 "Copy link" = "Copiar link";
 "Copy link with selection" = "Copiar link com seleção";
@@ -329,6 +341,9 @@
 
 // Collection
 "collection.stories.count" = "%1$@ itens";
+
+// Logged out
+"loggedOut.continue" = "Continuar";
 
 // Errors
 "error.problemOccurred" = "Ocorreu um problema";
