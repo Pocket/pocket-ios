@@ -16,6 +16,8 @@ private extension Style {
 }
 
 class BlockquoteComponentPresenter: ArticleComponentPresenter {
+    var onHighlight: ((Int, NSRange) -> Void)?
+
     var componentIndex: Int
 
     var highlightIndexes: [Int]?
@@ -49,9 +51,12 @@ class BlockquoteComponentPresenter: ArticleComponentPresenter {
         } ?? .zero
     }
 
-    func cell(for indexPath: IndexPath, in collectionView: UICollectionView) -> UICollectionViewCell {
+    func cell(for indexPath: IndexPath, in collectionView: UICollectionView, onHighlight: ((Int, NSRange) -> Void)?) -> UICollectionViewCell {
         let cell: BlockquoteComponentCell = collectionView.dequeueCell(for: indexPath)
         cell.attributedBlockquote = attributedBlockquote
+        cell.componentIndex = componentIndex
+        cell.onHighlight = onHighlight
+
         return cell
     }
 

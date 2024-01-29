@@ -32,7 +32,7 @@ class YouTubeVideoComponentPresenter: ArticleComponentPresenter {
         CGSize(width: availableWidth, height: availableWidth * 9 / 16)
     }
 
-    func cell(for indexPath: IndexPath, in collectionView: UICollectionView) -> UICollectionViewCell {
+    func cell(for indexPath: IndexPath, in collectionView: UICollectionView, onHighlight: ((Int, NSRange) -> Void)?) -> UICollectionViewCell {
         let cell: YouTubeVideoComponentCell = collectionView.dequeueCell(for: indexPath)
 
         cell.onError = { [weak self] in

@@ -5,6 +5,10 @@
 import UIKit
 
 class ArticleMetadataCell: UICollectionViewCell, ArticleComponentTextCell, ArticleComponentTextViewDelegate {
+    var componentIndex: Int = 0
+
+    var onHighlight: ((Int, NSRange) -> Void)?
+
     enum Constants {
         static let stackSpacing: CGFloat = 14
         static let layoutMargins: UIEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 14, right: 0)

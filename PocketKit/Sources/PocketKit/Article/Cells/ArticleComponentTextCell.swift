@@ -18,6 +18,8 @@ protocol ArticleComponentTextCellDelegate: AnyObject {
 // commonly performed within the cell, typically interactions with a PocketTextView.
 protocol ArticleComponentTextCell: ArticleComponentTextViewDelegate {
     var delegate: ArticleComponentTextCellDelegate? { get set }
+    var componentIndex: Int { get set }
+    var onHighlight: ((Int, NSRange) -> Void)? { get set }
 }
 
 // Apply default implementations of PocketTextViewDelegate callbacks
@@ -49,6 +51,8 @@ protocol ArticleComponentTextViewDelegate: AnyObject {
 // and delegates the response to these actions to its delegate.
 class ArticleComponentTextView: UITextView {
     var actionDelegate: ArticleComponentTextViewDelegate?
+
+    var onHighlight: ((NSRange) -> Void)?
 
     private var urlTextRange: UITextRange?
 
@@ -83,8 +87,7 @@ class ArticleComponentTextView: UITextView {
         let mutable = NSMutableAttributedString(attributedString: self.attributedText)
         mutable.addAttribute(.backgroundColor, value: UIColor(.ui.highlight), range: range)
         self.attributedText = mutable
-        // TODO: add implementation to apply the patch and send it to the backend
-
+        onHighlight?(range)
     }
 }
 

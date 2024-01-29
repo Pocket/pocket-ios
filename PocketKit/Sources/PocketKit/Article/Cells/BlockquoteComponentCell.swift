@@ -5,6 +5,10 @@
 import UIKit
 
 class BlockquoteComponentCell: UICollectionViewCell, ArticleComponentTextCell, ArticleComponentTextViewDelegate {
+    var componentIndex: Int = 0
+
+    var onHighlight: ((Int, NSRange) -> Void)?
+
     enum Constants {
         static let dividerWidth: CGFloat = 3
         static let stackSpacing: CGFloat = 12
@@ -54,6 +58,12 @@ class BlockquoteComponentCell: UICollectionViewCell, ArticleComponentTextCell, A
             textView.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor),
             textView.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor),
         ])
+        textView.onHighlight = { [weak self] range in
+            guard let self else {
+                return
+            }
+            onHighlight?(componentIndex, range)
+        }
     }
 
     required init?(coder: NSCoder) {

@@ -17,7 +17,7 @@ class UnsupportedComponentPresenter: ArticleComponentPresenter {
         self.componentIndex = componentIndex
     }
 
-    func cell(for indexPath: IndexPath, in collectionView: UICollectionView) -> UICollectionViewCell {
+    func cell(for indexPath: IndexPath, in collectionView: UICollectionView, onHighlight: ((Int, NSRange) -> Void)?) -> UICollectionViewCell {
         let cell: UnsupportedComponentCell = collectionView.dequeueCell(for: indexPath)
         cell.action = { [weak self] in
             self?.handleShowInWebReaderButtonTap()

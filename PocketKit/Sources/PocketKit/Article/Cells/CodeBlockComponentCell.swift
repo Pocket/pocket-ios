@@ -5,6 +5,10 @@
 import UIKit
 
 class CodeBlockComponentCell: UICollectionViewCell, ArticleComponentTextCell, ArticleComponentTextViewDelegate {
+    var componentIndex: Int = 0
+
+    var onHighlight: ((Int, NSRange) -> Void)?
+
     enum Constants {
         static let contentInset = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
     }
@@ -46,6 +50,13 @@ class CodeBlockComponentCell: UICollectionViewCell, ArticleComponentTextCell, Ar
             textView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             textView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor)
         ])
+
+        textView.onHighlight = { [weak self] range in
+            guard let self else {
+                return
+            }
+            onHighlight?(componentIndex, range)
+        }
     }
 
     required init?(coder: NSCoder) {

@@ -5,6 +5,10 @@
 import UIKit
 
 class MarkdownComponentCell: UICollectionViewCell, ArticleComponentTextCell, ArticleComponentTextViewDelegate {
+    var componentIndex: Int = 0
+
+    var onHighlight: ((Int, NSRange) -> Void)?
+
     enum Constants {
         enum Heading {
             static let layoutMargins = UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0)
@@ -45,6 +49,13 @@ class MarkdownComponentCell: UICollectionViewCell, ArticleComponentTextCell, Art
             // set lower priority to avoid conflict if content turns out to be blank
                 .with(priority: .defaultLow)
         ])
+
+        textView.onHighlight = { [weak self] range in
+            guard let self else {
+                return
+            }
+            onHighlight?(componentIndex, range)
+        }
     }
 
     var attributedContent: NSAttributedString? {
