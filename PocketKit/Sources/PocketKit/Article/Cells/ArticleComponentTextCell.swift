@@ -79,9 +79,12 @@ class ArticleComponentTextView: UITextView {
         actionDelegate?.articleComponentTextViewDidSelectShareAction(self)
     }
 
-    private func applyHighlight() {
-        // TODO: add implementation
-        print(selectedRange)
+    private func applyHighlight(_ range: NSRange) {
+        let mutable = NSMutableAttributedString(attributedString: self.attributedText)
+        mutable.addAttribute(.backgroundColor, value: UIColor(.ui.highlight), range: range)
+        self.attributedText = mutable
+        // TODO: add implementation to apply the patch and send it to the backend
+
     }
 }
 
@@ -97,14 +100,9 @@ extension ArticleComponentTextView: UITextViewDelegate {
 
     func textView(_ textView: UITextView, editMenuForTextIn range: NSRange, suggestedActions: [UIMenuElement]) -> UIMenu? {
         let highlightAction = UIAction(title: Localization.EditAction.highlight) { [weak self] action in
-            self?.applyHighlight()
+            self?.applyHighlight(range)
         }
-        // check if the bounds of the selected range overlap an existing highlight,
-        // otherwise don't include the highlight action
-        let lowerbound = self.attributedText.attributes(at: range.lowerBound, effectiveRange: nil)[.backgroundColor]
-        let upperbound = self.attributedText.attributes(at: range.upperBound, effectiveRange: nil)[.backgroundColor]
-
-        guard !isHighlighted(lowerbound), !isHighlighted(upperbound) else {
+        guard !attributedText.isHighlighted(in: range) else {
             return UIMenu(children: suggestedActions)
         }
 
@@ -116,13 +114,6 @@ extension ArticleComponentTextView: UITextViewDelegate {
             newActions.append(highlightAction)
         }
         return UIMenu(children: newActions)
-    }
-
-    private func isHighlighted(_ attribute: Any?) -> Bool {
-        if let attribute = attribute as? UIColor, attribute == UIColor(.ui.highlight) {
-            return true
-        }
-        return false
     }
 }
 
@@ -163,5 +154,20 @@ extension ArticleComponentTextView: UIContextMenuInteractionDelegate {
         previewParameters.backgroundColor = .clear
         let preview = UITargetedPreview(view: self, parameters: previewParameters)
         return preview
+    }
+}
+
+private extension NSAttributedString {
+    /// Checks if an highlight already exists anywhere in the range
+    /// - Parameter range: the provided range
+    /// - Returns: true if highlighted text is found, false otherwise
+    func isHighlighted(in range: NSRange) -> Bool {
+        var isHighlighted = false
+        enumerateAttribute(.backgroundColor, in: range) { value, range, _ in
+            if let color = value as? UIColor, color == UIColor(.ui.highlight) {
+                isHighlighted = true
+            }
+        }
+        return isHighlighted
     }
 }
