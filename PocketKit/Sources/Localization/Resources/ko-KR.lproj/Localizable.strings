@@ -45,6 +45,7 @@
 "itemAction.report" = "보고서";
 "itemAction.save" = "저장";
 "itemAction.share" = "공유";
+"itemAction.showHighlights" = "Highlights";
 
 //ItemList
 "itemlist.filter.search" = "검색";
@@ -52,6 +53,7 @@
 "itemlist.filter.tagged" = "태그 지정됨";
 "itemlist.filter.favorites" = "즐겨찾기";
 "itemlist.filter.sortFilter" = "정렬";
+"itemlist.filter.highlightsFilter" = "Highlights";
 "itemList.edit.banner" = "이 Pocket 버전에서는 목록을 편집할 수 없지만 곧 다시 제공될 예정입니다!";
 
 //List view
@@ -184,6 +186,7 @@
 
 "tags.renameTag" = "태그 이름 바꾸기";
 "tags.renameTag.message" = "이 태그에 대한 새 이름 입력";
+"tags.renameTag.prompt" = "Tag name";
 
 //Reader 
 "reader.activity.save" = "저장";
@@ -193,6 +196,19 @@
 "reader.activity.favorite" = "즐겨찾기";
 "reader.activity.unfavorite" = "즐겨찾기 해제";
 "reader.activity.moveToSaves" = "저장소로 이동";
+
+// Reader Settings
+"reader.settings.title" = "Display settings";
+"reader.settings.fontLabel"  = "Font";
+"reader.settings.fontSizeLabel" = "Font size";
+"reader.settings.lineHeightLabel" = "Line height";
+"reader.settings.marginsLabel" = "Margins";
+"reader.settings.alignmentLabel" = "Alignment";
+"reader.settings.resetToDefaultsLabel" = "Reset to defaults";
+"reader.settings.premiumUpsellLabel" = "Unlock more options";
+"reader.settings.premiumUpsellSubtitle" = "Premium fonts, text formatting and more.";
+"reader.settings.alignmentNatural" = "Default";
+"reader.settings.alignmentJustified" = "Justified";
 
 //Recommendation
 "recommendation.save" = "저장";
@@ -242,10 +258,6 @@
 "Tags" = "태그";
 "Share" = "공유";
 "carousel.listen" = "듣기";
-
-"Display Settings" = "디스플레이 설정";
-"Font" = "폰트";
-"Font Size" = "폰트 크기";
 
 "Copy link" = "링크 복사";
 "Copy link with selection" = "선택 항목이 있는 링크 복사";
@@ -329,6 +341,9 @@
 
 // Collection
 "collection.stories.count" = "%1$@개 항목";
+
+// Logged out
+"loggedOut.continue" = "Continue";
 
 // Errors
 "error.problemOccurred" = "문제가 발생했습니다.";

@@ -45,6 +45,7 @@
 "itemAction.report" = "Melden";
 "itemAction.save" = "Speichern";
 "itemAction.share" = "Teilen";
+"itemAction.showHighlights" = "Highlights";
 
 //ItemList
 "itemlist.filter.search" = "Suche";
@@ -52,6 +53,7 @@
 "itemlist.filter.tagged" = "Getaggt";
 "itemlist.filter.favorites" = "Favoriten";
 "itemlist.filter.sortFilter" = "Sortieren";
+"itemlist.filter.highlightsFilter" = "Highlights";
 "itemList.edit.banner" = "Das Bearbeiten deiner Liste ist in dieser Version von Pocket nicht möglich, wird aber bald wieder verfügbar sein!";
 
 //List view
@@ -184,6 +186,7 @@
 
 "tags.renameTag" = "Tag umbenennen";
 "tags.renameTag.message" = "Gib einen neuen Namen für dieses Tag ein.";
+"tags.renameTag.prompt" = "Tag name";
 
 //Reader 
 "reader.activity.save" = "Speichern";
@@ -193,6 +196,19 @@
 "reader.activity.favorite" = "Als Favorit markieren";
 "reader.activity.unfavorite" = "Favorit aufheben";
 "reader.activity.moveToSaves" = "Zu „Gespeichert“ verschieben";
+
+// Reader Settings
+"reader.settings.title" = "Display settings";
+"reader.settings.fontLabel"  = "Font";
+"reader.settings.fontSizeLabel" = "Font size";
+"reader.settings.lineHeightLabel" = "Line height";
+"reader.settings.marginsLabel" = "Margins";
+"reader.settings.alignmentLabel" = "Alignment";
+"reader.settings.resetToDefaultsLabel" = "Reset to defaults";
+"reader.settings.premiumUpsellLabel" = "Unlock more options";
+"reader.settings.premiumUpsellSubtitle" = "Premium fonts, text formatting and more.";
+"reader.settings.alignmentNatural" = "Default";
+"reader.settings.alignmentJustified" = "Justified";
 
 //Recommendation
 "recommendation.save" = "Speichern";
@@ -242,10 +258,6 @@
 "Tags" = "Tags";
 "Share" = "Teilen";
 "carousel.listen" = "Anhören";
-
-"Display Settings" = "Anzeigeeinstellungen";
-"Font" = "Schriftart";
-"Font Size" = "Schriftgröße";
 
 "Copy link" = "Link kopieren";
 "Copy link with selection" = "Link mit Auswahl kopieren";
@@ -323,12 +335,15 @@
 "itemWidgets.recentSaves.emptyMessage" = "Beginne mit dem Erstellen deiner Pocket-Liste.";
 "itemWidgets.recentSaves.title" = "Kürzlich gespeichert";
 "itemWidgets.recentSaves.description" = "Greife auf deine kürzlich gespeicherten Artikel zu.";
-"itemWidgets.recommendations.emptyMessage" = "Es könnte sein, dass du offline bist.Bitte überprüfe deine Internetverbindung.";
+"itemWidgets.recommendations.emptyMessage" = "Es könnte sein, dass du offline bist. Bitte überprüfe deine Internetverbindung.";
 "itemWidgets.recommendations.title" = "Empfehlungen";
 "itemWidgets.recommendations.description" = "Entdecke die Geschichten, die am meisten zum Nachdenken anregen – kuratiert von Pocket.";
 
 // Collection
 "collection.stories.count" = "%1$@ Elemente";
+
+// Logged out
+"loggedOut.continue" = "Continue";
 
 // Errors
 "error.problemOccurred" = "Ein Problem ist aufgetreten";

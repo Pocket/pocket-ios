@@ -45,6 +45,7 @@
 "itemAction.report" = "Пожаловаться";
 "itemAction.save" = "Сохранить";
 "itemAction.share" = "Поделиться";
+"itemAction.showHighlights" = "Highlights";
 
 //ItemList
 "itemlist.filter.search" = "Поиск";
@@ -52,6 +53,7 @@
 "itemlist.filter.tagged" = "Обозначено тегом";
 "itemlist.filter.favorites" = "Избранное";
 "itemlist.filter.sortFilter" = "Сортировка";
+"itemlist.filter.highlightsFilter" = "Highlights";
 "itemList.edit.banner" = "Редактирование списка недоступно в этой версии Pocket, но это ненадолго!";
 
 //List view
@@ -184,6 +186,7 @@
 
 "tags.renameTag" = "Изменить тег";
 "tags.renameTag.message" = "Введите новое название этого тега";
+"tags.renameTag.prompt" = "Tag name";
 
 //Reader 
 "reader.activity.save" = "Сохранить";
@@ -193,6 +196,19 @@
 "reader.activity.favorite" = "Избранное";
 "reader.activity.unfavorite" = "Удалить из Избранного";
 "reader.activity.moveToSaves" = "Перейти к Сохраненному";
+
+// Reader Settings
+"reader.settings.title" = "Display settings";
+"reader.settings.fontLabel"  = "Font";
+"reader.settings.fontSizeLabel" = "Font size";
+"reader.settings.lineHeightLabel" = "Line height";
+"reader.settings.marginsLabel" = "Margins";
+"reader.settings.alignmentLabel" = "Alignment";
+"reader.settings.resetToDefaultsLabel" = "Reset to defaults";
+"reader.settings.premiumUpsellLabel" = "Unlock more options";
+"reader.settings.premiumUpsellSubtitle" = "Premium fonts, text formatting and more.";
+"reader.settings.alignmentNatural" = "Default";
+"reader.settings.alignmentJustified" = "Justified";
 
 //Recommendation
 "recommendation.save" = "Сохранить";
@@ -242,10 +258,6 @@
 "Tags" = "Теги";
 "Share" = "Поделиться";
 "carousel.listen" = "Слушать";
-
-"Display Settings" = "Отобразить настройки";
-"Font" = "Шрифт";
-"Font Size" = "Размер шрифта";
 
 "Copy link" = "Скопировать ссылку";
 "Copy link with selection" = "Скопировать ссылку с выделением";
@@ -329,6 +341,9 @@
 
 // Collection
 "collection.stories.count" = "%1$@ материалов";
+
+// Logged out
+"loggedOut.continue" = "Продолжить";
 
 // Errors
 "error.problemOccurred" = "Возникла проблема";

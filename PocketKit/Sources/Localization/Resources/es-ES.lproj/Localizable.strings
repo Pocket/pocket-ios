@@ -45,6 +45,7 @@
 "itemAction.report" = "Denunciar";
 "itemAction.save" = "Guardar";
 "itemAction.share" = "Compartir";
+"itemAction.showHighlights" = "Highlights";
 
 //ItemList
 "itemlist.filter.search" = "Buscar";
@@ -52,6 +53,7 @@
 "itemlist.filter.tagged" = "Etiquetado";
 "itemlist.filter.favorites" = "Favoritos";
 "itemlist.filter.sortFilter" = "Ordenar";
+"itemlist.filter.highlightsFilter" = "Highlights";
 "itemList.edit.banner" = "En esta versión de Pocket no está disponible la edición de tu lista, pero volverá pronto.";
 
 //List view
@@ -184,6 +186,7 @@
 
 "tags.renameTag" = "Renombrar etiqueta";
 "tags.renameTag.message" = "Escribe un nuevo nombre para esta etiqueta";
+"tags.renameTag.prompt" = "Tag name";
 
 //Reader 
 "reader.activity.save" = "Guardar";
@@ -193,6 +196,19 @@
 "reader.activity.favorite" = "Marcar como favorito";
 "reader.activity.unfavorite" = "Quitar de Favoritos";
 "reader.activity.moveToSaves" = "Mover a Guardados";
+
+// Reader Settings
+"reader.settings.title" = "Display settings";
+"reader.settings.fontLabel"  = "Font";
+"reader.settings.fontSizeLabel" = "Font size";
+"reader.settings.lineHeightLabel" = "Line height";
+"reader.settings.marginsLabel" = "Margins";
+"reader.settings.alignmentLabel" = "Alignment";
+"reader.settings.resetToDefaultsLabel" = "Reset to defaults";
+"reader.settings.premiumUpsellLabel" = "Unlock more options";
+"reader.settings.premiumUpsellSubtitle" = "Premium fonts, text formatting and more.";
+"reader.settings.alignmentNatural" = "Default";
+"reader.settings.alignmentJustified" = "Justified";
 
 //Recommendation
 "recommendation.save" = "Guardar";
@@ -242,10 +258,6 @@
 "Tags" = "Etiquetas";
 "Share" = "Compartir";
 "carousel.listen" = "Escucha";
-
-"Display Settings" = "Opciones de aspecto";
-"Font" = "Fuente";
-"Font Size" = "Tamaño de fuente";
 
 "Copy link" = "Copiar enlace";
 "Copy link with selection" = "Copiar enlace con selección";
@@ -329,6 +341,9 @@
 
 // Collection
 "collection.stories.count" = "%1$@ ítems";
+
+// Logged out
+"loggedOut.continue" = "Continue";
 
 // Errors
 "error.problemOccurred" = "Ha habido un problema";
