@@ -416,6 +416,42 @@ extension SavedItemViewModel {
         _events.send(.contentUpdated)
     }
 
+    func saveHighlight(componentIndex: Int, range: NSRange) {
+        // find the component to be highlighted
+        guard let component = item.item?.article?.components[safe: componentIndex] else {
+            Log.capture(message: "Unable to find component to highlight")
+            return
+        }
+        // extract the markdown component
+        var content: String?
+        switch component {
+        case .blockquote(let blockQuote):
+            content = blockQuote.content
+        case .codeBlock(let codeBlock):
+            content = codeBlock.content
+        case .bulletedList(let bulletList):
+            content = bulletList.content
+        case .heading(let heading):
+            content = heading.content
+        case .image(let image):
+            content = image.content
+        case .numberedList(let numberedList):
+            content = numberedList.content
+        case .text(let text):
+            content = text.content
+        default:
+            break
+        }
+        // find the substring to highlight
+        guard var content, let stringRange = Range(range, in: content) else {
+            Log.capture(message: "Unable to find match in string to highlight")
+            return
+        }
+        let highlightString = content[stringRange]
+        // apply the highlight tags
+        content.replaceSubrange(stringRange, with: "<pkt_tag_annotation>" + highlightString + "</pkt_tag_annotation>")
+    }
+
     func shareHighlight(_ quote: String) {
         sharedActivity = PocketItemActivity.fromReader(url: url, additionalText: quote)
     }
