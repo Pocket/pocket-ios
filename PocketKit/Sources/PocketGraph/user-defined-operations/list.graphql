@@ -122,6 +122,13 @@ mutation DeleteSavedItemHighlight($highlightId: ID!) {
   deleteSavedItemHighlight(id: $highlightId)
 }
 
+mutation CreateSavedItemHighlights($input: [CreateHighlightInput!]!) {
+  createSavedItemHighlights(input: $input) {
+    __typename
+    ...HighlightParts
+  }
+}
+
 query SavedItemByID($id: ID!) {
   user {
     savedItemById(id: $id) {
