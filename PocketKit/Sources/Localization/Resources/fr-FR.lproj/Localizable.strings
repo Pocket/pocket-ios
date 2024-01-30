@@ -186,7 +186,7 @@
 
 "tags.renameTag" = "Renommer le label";
 "tags.renameTag.message" = "Saisissez le nouveau nom du label";
-"tags.renameTag.prompt" = "Tag name";
+"tags.renameTag.prompt" = "Nom du label";
 
 //Reader 
 "reader.activity.save" = "Enregistrer";
