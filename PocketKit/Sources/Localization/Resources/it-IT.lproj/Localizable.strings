@@ -343,7 +343,7 @@
 "collection.stories.count" = "%1$@ contenuti";
 
 // Logged out
-"loggedOut.continue" = "Continue";
+"loggedOut.continue" = "Continua";
 
 // Errors
 "error.problemOccurred" = "Si è verificato un problema";

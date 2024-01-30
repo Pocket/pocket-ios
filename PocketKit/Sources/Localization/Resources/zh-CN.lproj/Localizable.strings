@@ -343,7 +343,7 @@
 "collection.stories.count" = "%1$@ 个项目";
 
 // Logged out
-"loggedOut.continue" = "Continue";
+"loggedOut.continue" = "继续";
 
 // Errors
 "error.problemOccurred" = "出现问题";

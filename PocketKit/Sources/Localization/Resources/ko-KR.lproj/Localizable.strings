@@ -343,7 +343,7 @@
 "collection.stories.count" = "%1$@개 항목";
 
 // Logged out
-"loggedOut.continue" = "Continue";
+"loggedOut.continue" = "계속";
 
 // Errors
 "error.problemOccurred" = "문제가 발생했습니다.";

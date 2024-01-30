@@ -45,7 +45,7 @@
 "itemAction.report" = "Denunciar";
 "itemAction.save" = "Guardar";
 "itemAction.share" = "Compartir";
-"itemAction.showHighlights" = "Highlights";
+"itemAction.showHighlights" = "Destacados";
 
 //ItemList
 "itemlist.filter.search" = "Buscar";
@@ -53,7 +53,7 @@
 "itemlist.filter.tagged" = "Etiquetado";
 "itemlist.filter.favorites" = "Favoritos";
 "itemlist.filter.sortFilter" = "Ordenar";
-"itemlist.filter.highlightsFilter" = "Highlights";
+"itemlist.filter.highlightsFilter" = "Destacados";
 "itemList.edit.banner" = "En esta versión de Pocket no está disponible la edición de tu lista, pero volverá pronto.";
 
 //List view
@@ -343,7 +343,7 @@
 "collection.stories.count" = "%1$@ ítems";
 
 // Logged out
-"loggedOut.continue" = "Continue";
+"loggedOut.continue" = "Continuar";
 
 // Errors
 "error.problemOccurred" = "Ha habido un problema";
