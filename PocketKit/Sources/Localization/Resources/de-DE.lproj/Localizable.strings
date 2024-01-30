@@ -186,7 +186,7 @@
 
 "tags.renameTag" = "Tag umbenennen";
 "tags.renameTag.message" = "Gib einen neuen Namen für dieses Tag ein.";
-"tags.renameTag.prompt" = "Tag name";
+"tags.renameTag.prompt" = "Tag-Name";
 
 //Reader 
 "reader.activity.save" = "Speichern";
