@@ -506,7 +506,7 @@ extension PocketSource {
 
     public func addHighlight(itemIID: NSManagedObjectID, patch: String, quote: String) {
         space.performAndWait {
-            guard let savedItem = space.backgroundObject(with: itemIID) as? SavedItem, let context = savedItem.managedObjectContext else {
+            guard let savedItem = space.backgroundObject(with: itemIID) as? SavedItem, let context = savedItem.managedObjectContext, let itemID = savedItem.remoteID else {
                 Log.capture(message: "Could not retreive Saved Item to add highlight from background context for mutation")
                 return
             }
@@ -532,7 +532,17 @@ extension PocketSource {
                 Log.capture(error: error)
             }
 
-            let mutation = CreateSavedItemHighlightsMutation(input: [CreateHighlightInput(quote: quote, patch: patch, version: 2, itemId: remoteID)])
+            let mutation = CreateSavedItemHighlightsMutation(
+                input: [
+                    CreateHighlightInput(
+                        id: .some(remoteID),
+                        quote: quote,
+                        patch: patch,
+                        version: 2,
+                        itemId: itemID
+                    )
+                ]
+            )
 
             let operation = operations.savedItemMutationOperation(
                 apollo: apollo,
