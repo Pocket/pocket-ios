@@ -186,7 +186,7 @@
 
 "tags.renameTag" = "重命名标记";
 "tags.renameTag.message" = "为此标记输入新名称";
-"tags.renameTag.prompt" = "Tag name";
+"tags.renameTag.prompt" = "标签名称";
 
 //Reader 
 "reader.activity.save" = "保存";

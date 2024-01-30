@@ -186,7 +186,7 @@
 
 "tags.renameTag" = "태그 이름 바꾸기";
 "tags.renameTag.message" = "이 태그에 대한 새 이름 입력";
-"tags.renameTag.prompt" = "Tag name";
+"tags.renameTag.prompt" = "태그 이름";
 
 //Reader 
 "reader.activity.save" = "저장";

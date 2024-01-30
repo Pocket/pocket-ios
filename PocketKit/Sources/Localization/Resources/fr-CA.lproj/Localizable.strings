@@ -186,7 +186,7 @@
 
 "tags.renameTag" = "Renommer la balise";
 "tags.renameTag.message" = "Entrez un nouveau nom pour cette balise";
-"tags.renameTag.prompt" = "Tag name";
+"tags.renameTag.prompt" = "Nom de la balise";
 
 //Reader 
 "reader.activity.save" = "Sauvegarder";
