@@ -404,13 +404,13 @@ extension SavedItemViewModel {
             return
         }
 
-        let highlightString = content[stringRange]
+        let quote = String(content[stringRange])
 
         // merge the new patch with the new patch
         guard let mergedContent = mergeHighlights(
             previousContent,
             unpatchedContent: content,
-            highlighableString: String(highlightString),
+            highlighableString: quote,
             range: stringRange
         ) else {
             Log.capture(message: "Unable to merge new patch into existing component")
@@ -439,7 +439,8 @@ extension SavedItemViewModel {
             Log.capture(message: "Unable to evaluate new patch")
             return
         }
-        source.addHighlight(itemIID: item.objectID, patch: textPatch, quote: String(highlightString))
+        source.addHighlight(itemIID: item.objectID, patch: textPatch, quote: quote)
+        _events.send(.contentUpdated)
     }
 
     func deleteHighlight(_ ID: String) {
