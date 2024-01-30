@@ -4,6 +4,7 @@
 
 import Sync
 import Combine
+import DiffMatchPatch
 import Foundation
 import Textile
 import Analytics
@@ -417,39 +418,151 @@ extension SavedItemViewModel {
     }
 
     func saveHighlight(componentIndex: Int, range: NSRange) {
-        // find the component to be highlighted
-        guard let component = item.item?.article?.components[safe: componentIndex] else {
-            Log.capture(message: "Unable to find component to highlight")
+        // find the component to be highlighted, without patches
+        guard let component = item.item?.article?.components[safe: componentIndex],
+              let content = getContent(from: component),
+              // find the range to highlight
+              let stringRange = Range(range, in: content),
+              // get the previously patched component/content
+              let previousComponent = components?[safe: componentIndex],
+              let previousContent = getContent(from: previousComponent) else {
+            Log.capture(message: "Unable to find a substring to highlight")
             return
         }
-        // extract the markdown component
-        var content: String?
+
+        let highlightString = content[stringRange]
+
+        // merge the new patch with the new patch
+        guard let mergedContent = mergeHighlights(
+            previousContent,
+            unpatchedContent: content,
+            highlighableString: String(highlightString),
+            range: stringRange
+        ) else {
+            Log.capture(message: "Unable to merge new patch into existing component")
+            return
+        }
+        let updatedComponent = replaceContent(mergedContent, in: previousComponent)
+        guard let previousComponents = components else {
+            Log.capture(message: "Unable to construct the blob to patch")
+            return
+        }
+
+        var newComponents = previousComponents
+        guard newComponents.count > componentIndex else {
+            Log.capture(message: "Invalid blob to patch")
+            return
+        }
+
+        newComponents[componentIndex] = updatedComponent
+
+        let previousBlob = previousComponents.rawText
+        let newBlob = newComponents.rawText
+
+        let diffMatchPatch = DiffMatchPatch()
+        guard let patch = diffMatchPatch.patch_make(fromOldString: previousBlob, andNewString: newBlob).firstObject as? Patch else {
+            return
+        }
+        print(patch)
+    }
+
+    /// Extracts the markdown portion (if it exists)  from an `ArticleComponent`
+    /// - Parameter component: the component to parse
+    /// - Returns: the markdown, if it exists, or nil
+    private func getContent(from component: ArticleComponent) -> String? {
         switch component {
         case .blockquote(let blockQuote):
-            content = blockQuote.content
+            return blockQuote.content
         case .codeBlock(let codeBlock):
-            content = codeBlock.content
+            return codeBlock.content
         case .bulletedList(let bulletList):
-            content = bulletList.content
+            return bulletList.content
         case .heading(let heading):
-            content = heading.content
+            return heading.content
         case .image(let image):
-            content = image.content
+            return image.content
         case .numberedList(let numberedList):
-            content = numberedList.content
+            return numberedList.content
         case .text(let text):
-            content = text.content
+            return text.content
         default:
-            break
+            return nil
         }
-        // find the substring to highlight
-        guard var content, let stringRange = Range(range, in: content) else {
-            Log.capture(message: "Unable to find match in string to highlight")
-            return
+    }
+
+    /// Merge the proposed highlight into a previously patched content (that is: content that could already contain highlights)
+    /// - Parameters:
+    ///   - previousContent: the previous content
+    ///   - unpatchedContent: same as above, but without any patch
+    ///   - highlightString: the substring to be highlighted
+    /// - Returns: the merged contents
+    private func mergeHighlights(_ previousContent: String, unpatchedContent: String, highlighableString: String, range: Range<String.Index>) -> String? {
+        let ranges = unpatchedContent.ranges(of: highlighableString)
+        // Find the match in the unpatched string, which is what comes from the textview
+        let highlightableRange = ranges.enumerated().filter { $0.element == range }
+        guard let higlightableIndex = highlightableRange.first?.offset else {
+            return nil
         }
-        let highlightString = content[stringRange]
-        // apply the highlight tags
-        content.replaceSubrange(stringRange, with: "<pkt_tag_annotation>" + highlightString + "</pkt_tag_annotation>")
+        // then find the same match in the already patched string (component)
+        let patchedRanges = previousContent.ranges(of: highlighableString)
+        guard let highlightablePatchedRange = patchedRanges[safe: higlightableIndex] else {
+            return nil
+        }
+        var newContent = previousContent
+        newContent.replaceSubrange(highlightablePatchedRange, with: "<pkt_tag_annotation>" + highlighableString + "</pkt_tag_annotation>")
+        return newContent
+    }
+
+    private func replaceContent(_ content: String, in component: ArticleComponent) -> ArticleComponent {
+        switch component {
+        case .text:
+            return .text(TextComponent(content: content))
+        case .image(let imageComponent):
+            var caption: String?
+            var credit: String?
+            if let originalCaption = imageComponent.caption, !originalCaption.isEmpty, let originalCredit = imageComponent.credit, !originalCredit.isEmpty, content.contains("[-]") {
+                let captionComponents = content.components(separatedBy: "[-]")
+                if captionComponents.count == 2 {
+                    caption = captionComponents[0]
+                    credit = captionComponents[1]
+                }
+            } else if let originalCaption = imageComponent.caption, imageComponent.credit == nil || imageComponent.credit?.isEmpty == true {
+                caption = originalCaption.isEmpty ? originalCaption : content
+            } else if imageComponent.caption == nil || imageComponent.caption?.isEmpty == true, let originalCredit = imageComponent.credit {
+                credit = originalCredit.isEmpty ? originalCredit : content
+            }
+            return .image(
+                    ImageComponent(
+                        caption: caption,
+                        credit: credit,
+                        height: imageComponent.height,
+                        width: imageComponent.width,
+                        id: imageComponent.id,
+                        source: imageComponent.source
+                    )
+                )
+        case .heading(let headingComponent):
+            return .heading(HeadingComponent(content: content, level: headingComponent.level))
+        case .codeBlock(let codeBlockComponent):
+            return .codeBlock(CodeBlockComponent(language: codeBlockComponent.language, text: content))
+        case .bulletedList(let bulletedListComponent):
+            let levels = bulletedListComponent.rows.map { $0.level }
+            let rows = content.components(separatedBy: "\n").enumerated().map { row in
+                BulletedListComponent.Row(content: row.element, level: UInt(levels[Swift.min(row.offset, levels.count - 1)]))
+            }
+            return .bulletedList(BulletedListComponent(rows: rows))
+        case .numberedList(let numberedListComponent):
+            let levels = numberedListComponent.rows.map { $0.level }
+            let indexes = numberedListComponent.rows.map { $0.index }
+            let rows = content.components(separatedBy: "\n").enumerated().map { row in
+                NumberedListComponent.Row(content: row.element, level: UInt(levels[row.offset]), index: UInt(indexes[row.offset]))
+            }
+            return .numberedList(NumberedListComponent(rows: rows))
+        case .blockquote:
+            return .blockquote(BlockquoteComponent(content: content))
+        case .unsupported, .video, .table, .divider:
+            return component
+        }
     }
 
     func shareHighlight(_ quote: String) {

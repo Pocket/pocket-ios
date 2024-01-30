@@ -92,7 +92,7 @@ extension Array where Element == ArticleComponent {
 
     /// Convert the highlightable components into a markdown blob
     /// components in the blob are separated by the separator tag
-    private var rawText: String {
+    var rawText: String {
         highlightableComponents
             .map { $0.content }
             .joined(separator: HighlightConstants.componentSeparator)
