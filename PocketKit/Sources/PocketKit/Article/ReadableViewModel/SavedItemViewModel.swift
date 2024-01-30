@@ -434,11 +434,12 @@ extension SavedItemViewModel {
         let newBlob = newComponents.rawText
 
         let diffMatchPatch = DiffMatchPatch()
-        guard let patch = diffMatchPatch.patch_make(fromOldString: previousBlob, andNewString: newBlob).firstObject as? Patch else {
+        guard let patch = diffMatchPatch.patch_make(fromOldString: previousBlob, andNewString: newBlob),
+                let textPatch = diffMatchPatch.patch_(toText: patch) else {
             Log.capture(message: "Unable to evaluate new patch")
             return
         }
-        print(patch)
+        source.addHighlight(itemIID: item.objectID, patch: textPatch, quote: String(highlightString))
     }
 
     func deleteHighlight(_ ID: String) {

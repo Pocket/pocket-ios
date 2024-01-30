@@ -101,6 +101,8 @@ public protocol Source {
 
     func deleteHighlight(highlight: Highlight)
 
+    func addHighlight(itemIID: NSManagedObjectID, patch: String, quote: String)
+
     func fetchItem(_ url: String) -> Item?
 
     func fetchViewContextItem(_ url: String) -> Item?

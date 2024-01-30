@@ -504,6 +504,46 @@ extension PocketSource {
         }
     }
 
+    public func addHighlight(itemIID: NSManagedObjectID, patch: String, quote: String) {
+        space.performAndWait {
+            guard let savedItem = space.backgroundObject(with: itemIID) as? SavedItem, let context = savedItem.managedObjectContext else {
+                Log.capture(message: "Could not retreive Saved Item to add highlight from background context for mutation")
+                return
+            }
+
+            let remoteID = UUID().uuidString
+
+            let highlight = Highlight(
+                context: context,
+                remoteID: remoteID,
+                createdAt: Date(),
+                updatedAt: Date(),
+                patch: patch,
+                quote: quote,
+                version: 2
+            )
+            var highlights = (savedItem.highlights?.array ?? [])
+            highlights.append(highlight)
+            savedItem.highlights = NSOrderedSet(array: highlights)
+
+            do {
+                try space.save()
+            } catch {
+                Log.capture(error: error)
+            }
+
+            let mutation = CreateSavedItemHighlightsMutation(input: [CreateHighlightInput(quote: quote, patch: patch, version: 2, itemId: remoteID)])
+
+            let operation = operations.savedItemMutationOperation(
+                apollo: apollo,
+                events: _events,
+                mutation: mutation
+            )
+
+            enqueue(operation: operation, task: .createHighlight(quote: quote, patch: patch, version: 2, itemId: remoteID), queue: saveQueue)
+        }
+    }
+
     public func addTags(item: SavedItem, tags: [String]) {
         Log.breadcrumb(category: "sync", level: .debug, message: "Adding tags to item with id \(String(describing: item.remoteID))")
         space.performAndWait {
@@ -955,6 +995,22 @@ extension PocketSource {
                     apollo: apollo,
                     events: _events,
                     mutation: DeleteSavedItemHighlightMutation(highlightId: ID)
+                )
+                enqueue(operation: operation, persistentTask: persistentTask, queue: self.saveQueue)
+            case .some(.createHighlight(quote: let quote, patch: let patch, version: let version, itemId: let itemId)):
+                let operation = operations.savedItemMutationOperation(
+                    apollo: apollo,
+                    events: _events,
+                    mutation: CreateSavedItemHighlightsMutation(
+                        input: [
+                            CreateHighlightInput(
+                                quote: quote,
+                                patch: patch,
+                                version: version,
+                                itemId: itemId
+                            )
+                        ]
+                    )
                 )
                 enqueue(operation: operation, persistentTask: persistentTask, queue: self.saveQueue)
             }

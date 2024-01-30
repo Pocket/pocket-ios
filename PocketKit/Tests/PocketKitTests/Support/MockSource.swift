@@ -8,6 +8,9 @@ import CoreData
 import Combine
 
 class MockSource: Source {
+    func addHighlight(itemIID: NSManagedObjectID, patch: String, quote: String) {
+    }
+
     func deleteHighlight(highlight: Sync.Highlight) {
     }
 
