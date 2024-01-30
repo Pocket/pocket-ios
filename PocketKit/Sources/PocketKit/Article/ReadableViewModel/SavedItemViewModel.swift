@@ -308,6 +308,7 @@ extension SavedItemViewModel {
     private func highlightsAction() -> ItemAction {
         .showHighlights { [weak self] _ in
             self?.isPresentingHighlights = true
+            self?.tracker.track(event: Events.ReaderToolbar.viewHighlights())
         }
     }
 
@@ -441,6 +442,7 @@ extension SavedItemViewModel {
         }
         source.addHighlight(itemIID: item.objectID, patch: textPatch, quote: quote)
         _events.send(.contentUpdated)
+        tracker.track(event: Events.Reader.addHighlight())
     }
 
     func deleteHighlight(_ ID: String) {
@@ -450,10 +452,12 @@ extension SavedItemViewModel {
 
         source.deleteHighlight(highlight: highlight)
         _events.send(.contentUpdated)
+        tracker.track(event: Events.Reader.removeHighlight())
     }
 
     func shareHighlight(_ quote: String) {
         sharedActivity = PocketItemActivity.fromReader(url: url, additionalText: quote)
+        tracker.track(event: Events.Reader.shareHighlight())
     }
 
     func scrollToIndexPath(_ indexPath: IndexPath) {

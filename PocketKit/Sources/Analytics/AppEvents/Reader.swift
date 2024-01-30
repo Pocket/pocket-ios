@@ -90,4 +90,37 @@ public extension Events.Reader {
             )
         )
     }
+
+    /// User taps the `Highlight` button in the context menu of a selection
+    static func addHighlight() -> Event {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "reader.add-highlight"
+            )
+        )
+    }
+
+    /// User taps the remove (trash icon) button on an highlight in the highlights list modal
+    static func removeHighlight() -> Event {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "reader.remove-highlight"
+            )
+        )
+    }
+
+    /// User taps the share (icon) button on an highlight in the highlights list modal
+    static func shareHighlight() -> Event {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "reader.share-highlight"
+            )
+        )
+    }
 }

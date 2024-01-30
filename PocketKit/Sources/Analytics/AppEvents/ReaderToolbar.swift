@@ -181,4 +181,16 @@ public extension Events.ReaderToolbar {
             ]
         )
     }
+
+    /// User taps the `Highlights` button in the overflow menu
+    static func viewHighlights() -> Event {
+        return Impression(
+            component: .ui,
+            requirement: .viewable,
+            uiEntity: UiEntity(
+                .dialog,
+                identifier: "reader.toolbar.highlights"
+            )
+        )
+    }
 }
