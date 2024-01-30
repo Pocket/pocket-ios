@@ -449,14 +449,22 @@ extension SavedItemViewModel {
         source.deleteHighlight(highlight: highlight)
         _events.send(.contentUpdated)
     }
+
+    func shareHighlight(_ quote: String) {
+        sharedActivity = PocketItemActivity.fromReader(url: url, additionalText: quote)
+    }
+
+    func scrollToIndexPath(_ indexPath: IndexPath) {
+        highlightIndexPath = indexPath
+    }
 }
 
 // MARK: Highlights helpers
-extension SavedItemViewModel {
+private extension SavedItemViewModel {
     /// Extract the first text index from a patch
     /// - Parameter patch: the patch
     /// - Returns: the text index as Integer, if it was found, or nil
-    private func textIndex(patch: String) -> Int? {
+    func textIndex(patch: String) -> Int? {
         guard let regex = try? Regex("@@[ \t]-([0-9]+),"),
                 let match = patch.firstMatch(of: regex),
               // we want the match to capture the value
@@ -469,18 +477,10 @@ extension SavedItemViewModel {
         return Int(matchedString)
     }
 
-    func shareHighlight(_ quote: String) {
-        sharedActivity = PocketItemActivity.fromReader(url: url, additionalText: quote)
-    }
-
-    func scrollToIndexPath(_ indexPath: IndexPath) {
-        highlightIndexPath = indexPath
-    }
-
     /// Extracts the markdown portion (if it exists)  from an `ArticleComponent`
     /// - Parameter component: the component to parse
     /// - Returns: the markdown, if it exists, or nil
-    private func getContent(from component: ArticleComponent) -> String? {
+    func getContent(from component: ArticleComponent) -> String? {
         switch component {
         case .blockquote(let blockQuote):
             return blockQuote.content
@@ -507,7 +507,7 @@ extension SavedItemViewModel {
     ///   - unpatchedContent: same as above, but without any patch
     ///   - highlightString: the substring to be highlighted
     /// - Returns: the merged contents
-    private func mergeHighlights(_ previousContent: String, unpatchedContent: String, highlighableString: String, range: Range<String.Index>) -> String? {
+    func mergeHighlights(_ previousContent: String, unpatchedContent: String, highlighableString: String, range: Range<String.Index>) -> String? {
         let ranges = unpatchedContent.ranges(of: highlighableString)
         // Find the match in the unpatched string, which is what comes from the textview
         let highlightableRange = ranges.enumerated().filter { $0.element == range }
@@ -524,7 +524,7 @@ extension SavedItemViewModel {
         return newContent
     }
 
-    private func replaceContent(_ content: String, in component: ArticleComponent) -> ArticleComponent {
+    func replaceContent(_ content: String, in component: ArticleComponent) -> ArticleComponent {
         switch component {
         case .text:
             return .text(TextComponent(content: content))
