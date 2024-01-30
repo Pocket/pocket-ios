@@ -5,7 +5,6 @@
 import Sync
 import Combine
 import DiffMatchPatch
-import Foundation
 import Textile
 import Analytics
 import UIKit
@@ -367,6 +366,16 @@ extension SavedItemViewModel {
 
 // MARK: Highlights
 extension SavedItemViewModel {
+    var components: [ArticleComponent]? {
+        guard featureFlagService.isAssigned(flag: .marticleHighlights),
+              let highlights,
+              !highlights.isEmpty else {
+            return item.item?.article?.components
+        }
+        let patches = highlights.map { $0.patch }
+        return item.item?.article?.components.highlighted(patches)
+    }
+
     /// Array of fetched highlights, sorted by patch index
     var highlights: [Highlight]? {
         guard let highlights = item.highlights?.array as? [Highlight], !highlights.isEmpty else {
@@ -380,41 +389,6 @@ extension SavedItemViewModel {
             }
             return firstIndex < secondIndex
         }
-    }
-
-    /// Extract the first text index from a patch
-    /// - Parameter patch: the patch
-    /// - Returns: the text index as Integer, if it was found, or nil
-    private func textIndex(patch: String) -> Int? {
-        guard let regex = try? Regex("@@[ \t]-([0-9]+),"),
-                let match = patch.firstMatch(of: regex),
-              // we want the match to capture the value
-              match.count > 1,
-              // and we want the capture to contain a valid string
-              let matchedString = match[1].substring else {
-            return nil
-        }
-        // return the integer value, if the string contains a valid number, or nil
-        return Int(matchedString)
-    }
-
-    var components: [ArticleComponent]? {
-        guard featureFlagService.isAssigned(flag: .marticleHighlights),
-                let highlights,
-                !highlights.isEmpty else {
-            return item.item?.article?.components
-        }
-        let patches = highlights.map { $0.patch }
-        return item.item?.article?.components.highlighted(patches)
-    }
-
-    func deleteHighlight(_ ID: String) {
-        guard let highlight = (highlights?.first { $0.remoteID == ID }) else {
-            return
-        }
-
-        source.deleteHighlight(highlight: highlight)
-        _events.send(.contentUpdated)
     }
 
     func saveHighlight(componentIndex: Int, range: NSRange) {
@@ -461,9 +435,46 @@ extension SavedItemViewModel {
 
         let diffMatchPatch = DiffMatchPatch()
         guard let patch = diffMatchPatch.patch_make(fromOldString: previousBlob, andNewString: newBlob).firstObject as? Patch else {
+            Log.capture(message: "Unable to evaluate new patch")
             return
         }
         print(patch)
+    }
+
+    func deleteHighlight(_ ID: String) {
+        guard let highlight = (highlights?.first { $0.remoteID == ID }) else {
+            return
+        }
+
+        source.deleteHighlight(highlight: highlight)
+        _events.send(.contentUpdated)
+    }
+}
+
+// MARK: Highlights helpers
+extension SavedItemViewModel {
+    /// Extract the first text index from a patch
+    /// - Parameter patch: the patch
+    /// - Returns: the text index as Integer, if it was found, or nil
+    private func textIndex(patch: String) -> Int? {
+        guard let regex = try? Regex("@@[ \t]-([0-9]+),"),
+                let match = patch.firstMatch(of: regex),
+              // we want the match to capture the value
+              match.count > 1,
+              // and we want the capture to contain a valid string
+              let matchedString = match[1].substring else {
+            return nil
+        }
+        // return the integer value, if the string contains a valid number, or nil
+        return Int(matchedString)
+    }
+
+    func shareHighlight(_ quote: String) {
+        sharedActivity = PocketItemActivity.fromReader(url: url, additionalText: quote)
+    }
+
+    func scrollToIndexPath(_ indexPath: IndexPath) {
+        highlightIndexPath = indexPath
     }
 
     /// Extracts the markdown portion (if it exists)  from an `ArticleComponent`
@@ -563,13 +574,5 @@ extension SavedItemViewModel {
         case .unsupported, .video, .table, .divider:
             return component
         }
-    }
-
-    func shareHighlight(_ quote: String) {
-        sharedActivity = PocketItemActivity.fromReader(url: url, additionalText: quote)
-    }
-
-    func scrollToIndexPath(_ indexPath: IndexPath) {
-        highlightIndexPath = indexPath
     }
 }
