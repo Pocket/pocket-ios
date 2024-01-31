@@ -40,6 +40,7 @@ public extension UserDefaults {
         case recentSavesWidget = "RecentSavesWidgetKey"
         case recommendationsWidget = "RecommendationsWidgetKey"
         case forceRefreshFromExtension = "ForceRefreshFromExtentionKey"
+        case lastLaunchedAppVersion = "LastLaunchedAppVersion"
 
         var isRemovable: Bool {
             switch self {
