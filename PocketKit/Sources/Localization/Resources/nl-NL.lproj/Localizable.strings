@@ -47,6 +47,9 @@
 "itemAction.share" = "Delen";
 "itemAction.showHighlights" = "Highlights";
 
+// Edit Actions
+"editAction.highlight" = "Highlight";
+
 //ItemList
 "itemlist.filter.search" = "Zoeken";
 "itemlist.filter.all" = "Alle";

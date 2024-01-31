@@ -47,6 +47,9 @@
 "itemAction.share" = "分享";
 "itemAction.showHighlights" = "Highlights";
 
+// Edit Actions
+"editAction.highlight" = "标记";
+
 //ItemList
 "itemlist.filter.search" = "搜索";
 "itemlist.filter.all" = "全部";

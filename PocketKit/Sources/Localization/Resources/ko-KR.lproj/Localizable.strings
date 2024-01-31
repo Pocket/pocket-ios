@@ -47,6 +47,9 @@
 "itemAction.share" = "공유";
 "itemAction.showHighlights" = "Highlights";
 
+// Edit Actions
+"editAction.highlight" = "하이라이트";
+
 //ItemList
 "itemlist.filter.search" = "검색";
 "itemlist.filter.all" = "전체";

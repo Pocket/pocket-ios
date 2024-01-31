@@ -47,6 +47,9 @@
 "itemAction.share" = "Teilen";
 "itemAction.showHighlights" = "Highlights";
 
+// Edit Actions
+"editAction.highlight" = "Highlight";
+
 //ItemList
 "itemlist.filter.search" = "Suche";
 "itemlist.filter.all" = "Alles";
