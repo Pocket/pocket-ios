@@ -95,17 +95,15 @@ class ReadableViewController: UIViewController {
                 .$isPresentingHighlights
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] isPresenting in
-                    guard let self else {
+                    guard let self, isPresenting else {
                         return
                     }
-                    if isPresenting {
-                        let controller =
-                        HighlightsViewController(
-                            highlights: highlightedQuotes.sorted { $0.index < $1.index },
-                            viewModel: viewModel
-                        )
-                        present(controller, animated: true)
-                    }
+                    let controller =
+                    HighlightsViewController(
+                        highlights: highlightedQuotes.sorted { $0.index < $1.index },
+                        viewModel: viewModel
+                    )
+                    present(controller, animated: true)
                 }
                 .store(in: &subscriptions)
             viewModel
@@ -116,6 +114,26 @@ class ReadableViewController: UIViewController {
                         return
                     }
                     collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredVertically)
+                }
+                .store(in: &subscriptions)
+
+            viewModel.$isPresentingPremiumUpsell
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] isPresenting in
+                    guard let self, isPresenting else {
+                        return
+                    }
+                    self.present(viewModel.makePremiumUpgradeViewController(), animated: true)
+                }
+                .store(in: &subscriptions)
+
+            viewModel.$isPresentingHooray
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] isPresenting in
+                    guard let self, isPresenting else {
+                        return
+                    }
+                    self.present(viewModel.makeHoorayViewController(), animated: true)
                 }
                 .store(in: &subscriptions)
         }
