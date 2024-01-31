@@ -47,6 +47,9 @@
 "itemAction.share" = "Condividi";
 "itemAction.showHighlights" = "Highlights";
 
+// Edit Actions
+"editAction.highlight" = "In evidenza";
+
 //ItemList
 "itemlist.filter.search" = "Cerca";
 "itemlist.filter.all" = "Tutti";
