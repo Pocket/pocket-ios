@@ -271,7 +271,7 @@ extension SavedItemViewModel {
             .delete { [weak self] _ in self?.confirmDelete() },
             .share { [weak self] _ in self?.share() }
         ]
-        if let highlights, !highlights.isEmpty, featureFlagService.isAssigned(flag: .marticleHighlights) {
+        if let highlights, !highlights.isEmpty {
             _actions.insert(highlightsAction(), at: 2)
         }
     }
@@ -390,8 +390,7 @@ extension SavedItemViewModel {
 // MARK: Highlights
 extension SavedItemViewModel {
     var components: [ArticleComponent]? {
-        guard featureFlagService.isAssigned(flag: .marticleHighlights),
-              let highlights,
+        guard let highlights,
               !highlights.isEmpty else {
             return item.item?.article?.components
         }
