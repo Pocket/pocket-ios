@@ -646,6 +646,9 @@ extension SavedItemViewModel {
     }
 
     func makePremiumUpgradeViewController() -> UIViewController {
+        defer {
+            tracker.track(event: Events.Reader.highlightUpsellViewed())
+        }
         let viewModel = makePremiumViewModel()
         return UIHostingController(rootView: PremiumUpgradeView(dismissReason: dismissReason, viewModel: viewModel))
     }

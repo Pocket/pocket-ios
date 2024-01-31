@@ -123,4 +123,16 @@ public extension Events.Reader {
             )
         )
     }
+
+    /// User taps the `Highlights` button in the overflow menu
+    static func highlightUpsellViewed() -> Event {
+        return Impression(
+            component: .ui,
+            requirement: .viewable,
+            uiEntity: UiEntity(
+                .dialog,
+                identifier: "reader.upsell-highlight"
+            )
+        )
+    }
 }
