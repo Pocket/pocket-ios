@@ -271,11 +271,11 @@ extension ReadableViewController: UICollectionViewDataSource {
 
             return metaCell
         default:
-            let cell = presenters[indexPath.item].cell(for: indexPath, in: collectionView) { [weak self] index, range in
+            let cell = presenters[indexPath.item].cell(for: indexPath, in: collectionView) { [weak self] index, range, quote, text in
                 guard let self, let viewModel = readableViewModel as? SavedItemViewModel else {
                     return
                 }
-                viewModel.saveHighlight(componentIndex: index, range: range)
+                viewModel.saveHighlight(componentIndex: index, range: range, quote: quote, text: text)
             }
             if let cell = cell as? ArticleComponentTextCell {
                 cell.delegate = self

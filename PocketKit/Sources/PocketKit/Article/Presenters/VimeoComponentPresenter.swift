@@ -33,7 +33,7 @@ class VimeoComponentPresenter: ArticleComponentPresenter {
     }
 
     @MainActor
-    func cell(for indexPath: IndexPath, in collectionView: UICollectionView, onHighlight: ((Int, NSRange) -> Void)?) -> UICollectionViewCell {
+    func cell(for indexPath: IndexPath, in collectionView: UICollectionView, onHighlight: ((Int, NSRange, String, String) -> Void)?) -> UICollectionViewCell {
         let vimeoCell: VimeoComponentCell = collectionView.dequeueCell(for: indexPath)
         vimeoCell.delegate = self
         vimeoCell.mode = .loading(content: nil)

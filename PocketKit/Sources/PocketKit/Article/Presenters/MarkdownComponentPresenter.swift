@@ -60,7 +60,7 @@ class MarkdownComponentPresenter: ArticleComponentPresenter {
         return size
     }
 
-    func cell(for indexPath: IndexPath, in collectionView: UICollectionView, onHighlight: ((Int, NSRange) -> Void)?) -> UICollectionViewCell {
+    func cell(for indexPath: IndexPath, in collectionView: UICollectionView, onHighlight: ((Int, NSRange, String, String) -> Void)?) -> UICollectionViewCell {
         let cell: MarkdownComponentCell = collectionView.dequeueCell(for: indexPath)
         cell.contentView.layoutMargins = componentType.margins
         cell.attributedContent = content

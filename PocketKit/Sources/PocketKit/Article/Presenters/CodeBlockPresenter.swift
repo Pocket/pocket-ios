@@ -40,7 +40,7 @@ class CodeBlockPresenter: ArticleComponentPresenter {
         } ?? .zero
     }
 
-    func cell(for indexPath: IndexPath, in collectionView: UICollectionView, onHighlight: ((Int, NSRange) -> Void)?) -> UICollectionViewCell {
+    func cell(for indexPath: IndexPath, in collectionView: UICollectionView, onHighlight: ((Int, NSRange, String, String) -> Void)?) -> UICollectionViewCell {
         let cell: CodeBlockComponentCell = collectionView.dequeueCell(for: indexPath)
         cell.textView.attributedText = codeBlock
         cell.componentIndex = componentIndex

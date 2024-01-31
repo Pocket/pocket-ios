@@ -51,7 +51,7 @@ class BlockquoteComponentPresenter: ArticleComponentPresenter {
         } ?? .zero
     }
 
-    func cell(for indexPath: IndexPath, in collectionView: UICollectionView, onHighlight: ((Int, NSRange) -> Void)?) -> UICollectionViewCell {
+    func cell(for indexPath: IndexPath, in collectionView: UICollectionView, onHighlight: ((Int, NSRange, String, String) -> Void)?) -> UICollectionViewCell {
         let cell: BlockquoteComponentCell = collectionView.dequeueCell(for: indexPath)
         cell.attributedBlockquote = attributedBlockquote
         cell.componentIndex = componentIndex

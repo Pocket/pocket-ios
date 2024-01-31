@@ -7,7 +7,7 @@ import UIKit
 class MarkdownComponentCell: UICollectionViewCell, ArticleComponentTextCell, ArticleComponentTextViewDelegate {
     var componentIndex: Int = 0
 
-    var onHighlight: ((Int, NSRange) -> Void)?
+    var onHighlight: ((Int, NSRange, String, String) -> Void)?
 
     enum Constants {
         enum Heading {
@@ -50,11 +50,11 @@ class MarkdownComponentCell: UICollectionViewCell, ArticleComponentTextCell, Art
                 .with(priority: .defaultLow)
         ])
 
-        textView.onHighlight = { [weak self] range in
+        textView.onHighlight = { [weak self] range, quote, text in
             guard let self else {
                 return
             }
-            onHighlight?(componentIndex, range)
+            onHighlight?(componentIndex, range, quote, text)
         }
     }
 

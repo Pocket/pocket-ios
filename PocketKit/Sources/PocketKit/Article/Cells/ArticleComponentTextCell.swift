@@ -19,7 +19,7 @@ protocol ArticleComponentTextCellDelegate: AnyObject {
 protocol ArticleComponentTextCell: ArticleComponentTextViewDelegate {
     var delegate: ArticleComponentTextCellDelegate? { get set }
     var componentIndex: Int { get set }
-    var onHighlight: ((Int, NSRange) -> Void)? { get set }
+    var onHighlight: ((Int, NSRange, String, String) -> Void)? { get set }
 }
 
 // Apply default implementations of PocketTextViewDelegate callbacks
@@ -52,7 +52,7 @@ protocol ArticleComponentTextViewDelegate: AnyObject {
 class ArticleComponentTextView: UITextView {
     var actionDelegate: ArticleComponentTextViewDelegate?
 
-    var onHighlight: ((NSRange) -> Void)?
+    var onHighlight: ((NSRange, String, String) -> Void)?
 
     private var urlTextRange: UITextRange?
 
@@ -86,8 +86,9 @@ class ArticleComponentTextView: UITextView {
     private func applyHighlight(_ range: NSRange) {
         let mutable = NSMutableAttributedString(attributedString: self.attributedText)
         mutable.addAttribute(.backgroundColor, value: UIColor(.ui.highlight), range: range)
+        let quote = mutable.mutableString.substring(with: range)
         self.attributedText = mutable
-        onHighlight?(range)
+        onHighlight?(range, quote, String(mutable.mutableString))
     }
 }
 
