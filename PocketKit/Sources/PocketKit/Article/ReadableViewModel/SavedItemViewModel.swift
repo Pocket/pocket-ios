@@ -65,6 +65,8 @@ class SavedItemViewModel: ReadableViewModel, ObservableObject {
 
     @Published private(set) var isPresentingHighlights = false
 
+    @Published private(set) var isPresentingPremiumUpsell = false
+
     @Published private(set) var highlightIndexPath: IndexPath?
 
     private let item: SavedItem
@@ -392,7 +394,15 @@ extension SavedItemViewModel {
         }
     }
 
+    var canAddHighlight: Bool {
+        (highlights?.count ?? 0) < 3 || Services.shared.user.status == .premium
+    }
+
     func saveHighlight(componentIndex: Int, range: NSRange) {
+        guard canAddHighlight else {
+            isPresentingPremiumUpsell = true
+            return
+        }
         // find the component to be highlighted, without patches
         guard let component = item.item?.article?.components[safe: componentIndex],
               let content = getContent(from: component),
