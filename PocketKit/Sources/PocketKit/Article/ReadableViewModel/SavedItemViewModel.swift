@@ -418,7 +418,7 @@ extension SavedItemViewModel {
         (highlights?.count ?? 0) < 3 || Services.shared.user.status == .premium
     }
 
-    func saveHighlight(componentIndex: Int, range: NSRange) {
+    func saveHighlight(componentIndex: Int, range: NSRange, quote: String, text: String) {
         guard canAddHighlight else {
             isPresentingPremiumUpsell = true
             return
@@ -435,14 +435,16 @@ extension SavedItemViewModel {
             return
         }
 
-        let quote = String(content[stringRange])
+        let proposedQuote = String(content[stringRange])
 
         // merge the new patch with the new patch
         guard let mergedContent = mergeHighlights(
             previousContent,
             unpatchedContent: content,
-            highlighableString: quote,
-            range: stringRange
+            quote: quote,
+            proposedQuote: proposedQuote,
+            range: stringRange,
+            rawText: text
         ) else {
             Log.capture(message: "Unable to merge new patch into existing component")
             return
@@ -543,21 +545,42 @@ private extension SavedItemViewModel {
     ///   - unpatchedContent: same as above, but without any patch
     ///   - highlightString: the substring to be highlighted
     /// - Returns: the merged contents
-    func mergeHighlights(_ previousContent: String, unpatchedContent: String, highlighableString: String, range: Range<String.Index>) -> String? {
-        let ranges = unpatchedContent.ranges(of: highlighableString)
-        // Find the match in the unpatched string, which is what comes from the textview
-        let highlightableRange = ranges.enumerated().filter { $0.element == range }
-        guard let higlightableIndex = highlightableRange.first?.offset else {
-            return nil
+    func mergeHighlights(
+        _ previousContent: String,
+        unpatchedContent: String,
+        quote: String,
+        proposedQuote: String,
+        range: Range<String.Index>,
+        rawText: String
+    ) -> String? {
+        // First case: we found an exact match: just patch it
+        if quote == proposedQuote, unpatchedContent == rawText {
+            var newContent = previousContent
+            newContent.replaceSubrange(range, with: "<pkt_tag_annotation>" + quote + "</pkt_tag_annotation>")
+            return newContent
+            // Second case: quote and proposed quote don't match
+            // (e.g. because there's additional markdown in the range):
+            // we need to use the fuzzy logic to find it
+        } else {
+             // make sure we are using the right quote in the right text
+            guard rawText[range] == quote else {
+                Log.capture(message: "Unable to apply highlight: match not found in component markdown - step 1")
+                return nil
+            }
+            var patchedRawText = rawText
+            patchedRawText.replaceSubrange(range, with: "<pkt_tag_annotation>" + quote + "</pkt_tag_annotation>")
+            let diffMatchPatch = DiffMatchPatch()
+            guard let patch = diffMatchPatch.patch_make(fromOldString: rawText, andNewString: patchedRawText) as? [Patch] else {
+                Log.capture(message: "Unable to apply highlight: match not found in component markdown - step 2")
+                return nil
+            }
+            let patched = diffMatchPatch.patch_apply(patch, to: previousContent)
+            guard let patchedMarkdown = patched?.first as? String else {
+                Log.capture(message: "Unable to apply highlight: match not found in component markdown - step 3")
+                return nil
+            }
+            return patchedMarkdown
         }
-        // then find the same match in the already patched string (component)
-        let patchedRanges = previousContent.ranges(of: highlighableString)
-        guard let highlightablePatchedRange = patchedRanges[safe: higlightableIndex] else {
-            return nil
-        }
-        var newContent = previousContent
-        newContent.replaceSubrange(highlightablePatchedRange, with: "<pkt_tag_annotation>" + highlighableString + "</pkt_tag_annotation>")
-        return newContent
     }
 
     func replaceContent(_ content: String, in component: ArticleComponent) -> ArticleComponent {
