@@ -539,11 +539,15 @@ private extension SavedItemViewModel {
         }
     }
 
-    /// Merge the proposed highlight into a previously patched content (that is: content that could already contain highlights)
+    /// Merge the proposed highlight into a previously patched content (that is: content that could already contain highlights), in the current component
     /// - Parameters:
     ///   - previousContent: the previous content
     ///   - unpatchedContent: same as above, but without any patch
     ///   - highlightString: the substring to be highlighted
+    ///   - quote: the original quote to be highlighted, extracted from the text that users see in the article
+    ///   - proposedQuote: a proposed quote is the portion of text found in the unpatched parkdown, at the same location of the original quote
+    ///   - range: the range of the original quote
+    ///   - rawText: the original text  that users see in the article
     /// - Returns: the merged contents
     func mergeHighlights(
         _ previousContent: String,
