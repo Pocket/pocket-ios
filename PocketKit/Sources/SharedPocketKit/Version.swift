@@ -8,28 +8,23 @@ import Foundation
  Helper struct for comparing app versions
  */
 public struct Version: Comparable, Codable {
-    let major: Int
-    let minor: Int
-    let patch: Int
+    var _version: String
 
     public init(_ versionString: String) {
-        let components = versionString.components(separatedBy: ".").compactMap { Int($0) }
-        major = components[safe: 0] ?? 0
-        minor = components[safe: 1] ?? 0
-        patch = components[safe: 2] ?? 0
+        _version = versionString
     }
 
     public static func < (lhs: Version, rhs: Version) -> Bool {
-        if lhs.major != rhs.major {
-            return lhs.major < rhs.major
-        } else if lhs.minor != rhs.minor {
-            return lhs.minor < rhs.minor
-        } else {
-            return lhs.patch < rhs.patch
+        let result = lhs._version.compare(rhs._version, options: .numeric)
+        if result == .orderedAscending {
+            return true
+        } else if result == .orderedDescending {
+            return false
         }
+        return false
     }
 
     public static func == (lhs: Version, rhs: Version) -> Bool {
-        return lhs.major == rhs.major && lhs.minor == rhs.minor && lhs.patch == rhs.patch
+        return lhs._version.compare(rhs._version, options: .numeric) == .orderedSame
     }
 }
