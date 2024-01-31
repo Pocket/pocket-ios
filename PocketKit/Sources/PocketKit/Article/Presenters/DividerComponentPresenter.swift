@@ -21,7 +21,7 @@ class DividerComponentPresenter: ArticleComponentPresenter {
         CGSize(width: availableWidth, height: 32 + DividerComponentCell.Constants.dividerHeight)
     }
 
-    func cell(for indexPath: IndexPath, in collectionView: UICollectionView, onHighlight: ((Int, NSRange) -> Void)?) -> UICollectionViewCell {
+    func cell(for indexPath: IndexPath, in collectionView: UICollectionView, onHighlight: ((Int, NSRange, String, String) -> Void)?) -> UICollectionViewCell {
         let cell: DividerComponentCell = collectionView.dequeueCell(for: indexPath)
         return cell
     }

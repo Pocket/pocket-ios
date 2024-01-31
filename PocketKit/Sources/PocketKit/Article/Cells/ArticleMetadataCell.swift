@@ -7,7 +7,7 @@ import UIKit
 class ArticleMetadataCell: UICollectionViewCell, ArticleComponentTextCell, ArticleComponentTextViewDelegate {
     var componentIndex: Int = 0
 
-    var onHighlight: ((Int, NSRange) -> Void)?
+    var onHighlight: ((Int, NSRange, String, String) -> Void)?
 
     enum Constants {
         static let stackSpacing: CGFloat = 14

@@ -46,7 +46,7 @@ class ListComponentPresenter: ArticleComponentPresenter {
         } ?? .zero
     }
 
-    func cell(for indexPath: IndexPath, in collectionView: UICollectionView, onHighlight: ((Int, NSRange) -> Void)?) -> UICollectionViewCell {
+    func cell(for indexPath: IndexPath, in collectionView: UICollectionView, onHighlight: ((Int, NSRange, String, String) -> Void)?) -> UICollectionViewCell {
         let cell: MarkdownComponentCell = collectionView.dequeueCell(for: indexPath)
         cell.attributedContent = attributedContent
         cell.contentView.layoutMargins = MarkdownComponentCell.Constants.List.layoutMargins

@@ -119,7 +119,7 @@ class ImageComponentPresenter: ArticleComponentPresenter, ImageComponentCellMode
         return CGSize(width: availableWidth, height: height)
     }
 
-    func cell(for indexPath: IndexPath, in collectionView: UICollectionView, onHighlight: ((Int, NSRange) -> Void)?) -> UICollectionViewCell {
+    func cell(for indexPath: IndexPath, in collectionView: UICollectionView, onHighlight: ((Int, NSRange, String, String) -> Void)?) -> UICollectionViewCell {
         let cell: ImageComponentCell = collectionView.dequeueCell(for: indexPath)
 
         cell.configure(model: self) { [weak self] image in
