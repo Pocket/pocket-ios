@@ -47,6 +47,9 @@
 "itemAction.share" = "Поделиться";
 "itemAction.showHighlights" = "Highlights";
 
+// Edit Actions
+"editAction.highlight" = "Выделить";
+
 //ItemList
 "itemlist.filter.search" = "Поиск";
 "itemlist.filter.all" = "Все";
