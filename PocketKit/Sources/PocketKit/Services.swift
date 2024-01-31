@@ -38,6 +38,7 @@ struct Services {
     let subscriptionStore: SubscriptionStore
     let userManagementService: UserManagementServiceProtocol
     let lastRefresh: LastRefresh
+    let lastLaunchedAppVersion: LastLaunchedAppVersion
     let featureFlagService: FeatureFlagService
     let listen: Listen
     let bannerPresenter: BannerPresenter
@@ -54,12 +55,13 @@ struct Services {
             fatalError("UserDefaults with suite name \(Keys.shared.groupID) must exist.")
         }
         userDefaults = sharedUserDefaults
-
+        lastLaunchedAppVersion = UserDefaultsLastLaunchedAppVersion(defaults: userDefaults)
+        lastRefresh = UserDefaultsLastRefresh(defaults: userDefaults)
+        Self.handleUpgrades(lastLaunchedAppVersion: lastLaunchedAppVersion, lastRefresh: lastRefresh)
         notificationCenter = .default
 
         persistentContainer = .init(storage: .shared, groupID: Keys.shared.groupID)
 
-        lastRefresh = UserDefaultsLastRefresh(defaults: userDefaults)
         urlSession = URLSession.shared
 
         let snowplow = PocketSnowplowTracker()
@@ -211,6 +213,32 @@ struct Services {
         recentSavesWidgetUpdateService = RecentSavesWidgetUpdateService(store: UserDefaultsItemWidgetsStore(userDefaults: userDefaults, key: .recentSavesWidget))
         recommendationsWidgetUpdateService = RecommendationsWidgetUpdateService(store: UserDefaultsItemWidgetsStore(userDefaults: userDefaults, key: .recommendationsWidget))
         widgetsSessionService = UserDefaultsWidgetSessionService(defaults: userDefaults)
+    }
+
+    /**
+     Handle upgrades from different versions of the app.
+     Currently this executes before any services are created but after we have loaded User Defaults
+     // In the future this could instead send out a NSNotication that performs operations within each class themselves handling their own data.
+     */
+    static func handleUpgrades(lastLaunchedAppVersion: LastLaunchedAppVersion, lastRefresh: LastRefresh) {
+        let lastLaunchVersion: Version? = lastLaunchedAppVersion.lastLaunch?.appVersion
+        if lastLaunchVersion == nil || lastLaunchVersion! < Version("8.4.0") {
+            // Reset our last sync dates if the previous app was < 8.4.0
+            //    OR if lastLaunchVersion does not exist, because we used to not save it.
+            // Trigger a resync of all the users data so that we download highlights data.
+            // This reset needs to happen before our refresh coordinators try and download data.
+            lastRefresh.reset()
+        }
+
+        // Any version after 8.4.0, if lastLaunch is empty we should not need to run ANY migrations because that means the version is below 8.4.0 or a new install/launch because we started saving the LastLaunch verison in 8.4.0
+        guard lastLaunchVersion != nil else {
+            // Save off the new launch version and that we finished launching.
+            lastLaunchedAppVersion.launched()
+            return
+        }
+
+        // Other upgrades for version numbers can go here.
+        lastLaunchedAppVersion.launched()
     }
 
     /**
