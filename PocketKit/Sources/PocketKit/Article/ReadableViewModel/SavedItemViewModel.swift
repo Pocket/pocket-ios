@@ -10,6 +10,8 @@ import Analytics
 import UIKit
 import SharedPocketKit
 import Localization
+import Network
+import SwiftUI
 
 class SavedItemViewModel: ReadableViewModel, ObservableObject {
     func trackReadingProgress(index: IndexPath) {
@@ -67,6 +69,16 @@ class SavedItemViewModel: ReadableViewModel, ObservableObject {
 
     @Published private(set) var isPresentingPremiumUpsell = false
 
+    @Published private(set) var isPresentingHooray = false
+
+    private var _dismissReason: DismissReason = .swipe {
+        willSet {
+            if newValue == .system {
+                isPresentingHooray = true
+            }
+        }
+    }
+
     @Published private(set) var highlightIndexPath: IndexPath?
 
     private let item: SavedItem
@@ -113,6 +125,14 @@ class SavedItemViewModel: ReadableViewModel, ObservableObject {
             self?.buildActions()
         }.store(in: &subscriptions)
     }
+
+    lazy var dismissReason: Binding<DismissReason> = {
+        .init(get: {
+            self._dismissReason
+        }, set: { reason in
+            self._dismissReason = reason
+        })
+    }()
 
     lazy var readerSettings: ReaderSettings = {
         ReaderSettings(tracker: tracker, userDefaults: userDefaults)
@@ -590,5 +610,21 @@ private extension SavedItemViewModel {
         case .unsupported, .video, .table, .divider:
             return component
         }
+    }
+}
+
+// MARK: Premium upsell
+extension SavedItemViewModel {
+    func makePremiumViewModel() -> PremiumUpgradeViewModel {
+        PremiumUpgradeViewModel(store: Services.shared.subscriptionStore, tracker: tracker, source: .highlights, networkPathMonitor: NWPathMonitor())
+    }
+
+    func makePremiumUpgradeViewController() -> UIViewController {
+        let viewModel = makePremiumViewModel()
+        return UIHostingController(rootView: PremiumUpgradeView(dismissReason: dismissReason, viewModel: viewModel))
+    }
+
+    func makeHoorayViewController() -> UIViewController {
+        UIHostingController(rootView: PremiumUpgradeSuccessView())
     }
 }
