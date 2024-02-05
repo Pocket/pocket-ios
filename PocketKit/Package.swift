@@ -30,6 +30,7 @@ let package = Package(
         .package(url: "https://github.com/onevcat/Kingfisher.git", exact: "7.10.2"),
         .package(url: "https://github.com/getsentry/sentry-cocoa.git", exact: "8.19.0"),
         .package(url: "https://github.com/snowplow/snowplow-objc-tracker", exact: "6.0.0"),
+        .package(url: "https://github.com/ccgus/fmdb", from: "2.7.6"),
         .package(url: "https://github.com/airbnb/lottie-ios.git", exact: "4.4.0"),
         .package(url: "https://github.com/johnxnguyen/Down", exact: "0.11.0"),
         .package(url: "https://github.com/SvenTiigi/YouTubePlayerKit.git", exact: "1.6.0"),
@@ -84,7 +85,9 @@ let package = Package(
                 .product(name: "YouTubePlayerKit", package: "YouTubePlayerKit"),
                 .product(name: "BrazeKit", package: "braze-swift-sdk"),
                 .product(name: "BrazeUI", package: "braze-swift-sdk"),
-                .product(name: "Adjust", package: "ios_sdk")
+                .product(name: "Adjust", package: "ios_sdk"),
+                // Used by listen, ideally we put this there, but there were some c99 compilker issues, this used to be included by snowplow but is not anymore
+                .product(name: "FMDB", package: "fmdb")
             ],
             linkerSettings: [.unsafeFlags(["-ObjC"])] // Needed to load categories in PKTListen
         ),
