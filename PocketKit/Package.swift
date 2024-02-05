@@ -33,7 +33,7 @@ let package = Package(
         .package(url: "https://github.com/ccgus/fmdb", from: "2.7.6"),
         .package(url: "https://github.com/airbnb/lottie-ios.git", exact: "4.4.0"),
         .package(url: "https://github.com/johnxnguyen/Down", exact: "0.11.0"),
-        .package(url: "https://github.com/SvenTiigi/YouTubePlayerKit.git", exact: "1.6.0"),
+        .package(url: "https://github.com/SvenTiigi/YouTubePlayerKit.git", exact: "1.7.0"),
         .package(url: "https://github.com/braze-inc/braze-swift-sdk.git", exact: "7.6.0"),
         .package(url: "https://github.com/adjust/ios_sdk", exact: "4.37.0"),
         .package(url: "https://github.com/RNCryptor/RNCryptor.git", exact: "5.1.0"),
