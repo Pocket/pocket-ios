@@ -28,15 +28,6 @@
       }
     },
     {
-      "identity" : "fmdb",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/ccgus/fmdb",
-      "state" : {
-        "revision" : "e6e1c0eff4f115c46a850db9dc92fb41a01a8b55",
-        "version" : "2.7.8"
-      }
-    },
-    {
       "identity" : "ios_sdk",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/adjust/ios_sdk",
@@ -95,8 +86,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/snowplow/snowplow-objc-tracker",
       "state" : {
-        "revision" : "cc136256383ed50c754219895e34d25c48650314",
-        "version" : "5.6.0"
+        "revision" : "e86d218bd88ec522f6bd120afbd1badcb8ec0f69",
+        "version" : "6.0.0"
       }
     },
     {
