@@ -27,11 +27,12 @@ public class PocketSnowplowTracker: SnowplowTracker {
         trackerConfiguration.applicationContext = true
         trackerConfiguration.platformContext = true
         trackerConfiguration.geoLocationContext = false
-        trackerConfiguration.sessionContext = false
+        trackerConfiguration.sessionContext = true
         trackerConfiguration.screenContext = true
+        trackerConfiguration.deepLinkContext = true
         trackerConfiguration.screenViewAutotracking = true
-        trackerConfiguration.lifecycleAutotracking = false
-        trackerConfiguration.installAutotracking = false
+        trackerConfiguration.lifecycleAutotracking = true
+        trackerConfiguration.installAutotracking = true
         trackerConfiguration.exceptionAutotracking = false
         trackerConfiguration.diagnosticAutotracking = false
         trackerConfiguration.platformContextProperties = [
@@ -55,10 +56,6 @@ public class PocketSnowplowTracker: SnowplowTracker {
             network: networkConfiguration,
             configurations: [trackerConfiguration]
         )
-
-        guard let optionalTracker else {
-            fatalError("snowplow tracker did not inititalize")
-        }
 
         tracker = optionalTracker
         _ = Snowplow.setAsDefault(tracker: tracker)
