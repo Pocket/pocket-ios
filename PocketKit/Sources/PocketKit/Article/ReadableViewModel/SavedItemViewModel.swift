@@ -426,7 +426,7 @@ extension SavedItemViewModel {
         guard let component = item.item?.article?.components[safe: componentIndex],
               let content = getContent(from: component),
               // find the range to highlight
-              let stringRange = Range(range, in: content),
+              let stringRange = Range(range, in: text),
               // get the previously patched component/content
               let previousComponent = components?[safe: componentIndex],
               let previousContent = getContent(from: previousComponent) else {
