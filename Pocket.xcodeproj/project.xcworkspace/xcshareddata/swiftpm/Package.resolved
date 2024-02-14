@@ -104,8 +104,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/snowplow/snowplow-objc-tracker",
       "state" : {
-        "revision" : "e86d218bd88ec522f6bd120afbd1badcb8ec0f69",
-        "version" : "6.0.0"
+        "revision" : "6b50e444ce15a8e092427edb67d27a8b6cbd96ae",
+        "version" : "6.0.1"
       }
     },
     {
