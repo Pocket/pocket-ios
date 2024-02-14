@@ -27,7 +27,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apollographql/apollo-ios.git", exact: "1.9.0"),
-        .package(url: "https://github.com/onevcat/Kingfisher.git", exact: "7.10.2"),
+        .package(url: "https://github.com/onevcat/Kingfisher.git", exact: "7.11.0"),
         .package(url: "https://github.com/getsentry/sentry-cocoa.git", exact: "8.20.0"),
         .package(url: "https://github.com/snowplow/snowplow-objc-tracker", exact: "6.0.0"),
         .package(url: "https://github.com/ccgus/fmdb", from: "2.7.6"),
