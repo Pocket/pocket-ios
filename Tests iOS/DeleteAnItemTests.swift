@@ -103,51 +103,6 @@ class DeleteAnItemTests: XCTestCase {
         deleteEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
     }
 
-    @MainActor
-    func test_deletingAnItemFromCollection_deletesItem_andPopsBackToList() async {
-        let deletionExpectation = expectation(description: "A delete request to the server")
-        server.routes.post("/graphql") { request, _ -> Response in
-            let apiRequest = ClientAPIRequest(request)
-            if apiRequest.isToDeleteAnItem {
-                defer { deletionExpectation.fulfill() }
-                XCTAssertEqual(apiRequest.variableGivenURL, "https://getpocket.com/collections/item-2")
-                return .delete(apiRequest: apiRequest)
-            }
-
-            return Response.fallbackResponses(apiRequest: apiRequest)
-        }
-        app.launch()
-        app.tabBar.savesButton.wait().tap()
-
-        let itemCell = app
-            .saves
-            .itemView(matching: "Item 2")
-            .wait()
-
-        itemCell.tap()
-
-        app
-            .readerView
-            .wait()
-            .readerToolbar
-            .wait()
-            .moreButton
-            .wait()
-            .tap()
-
-        app.deleteButton.wait().tap()
-        app.alert.yes.wait().tap()
-        await fulfillment(of: [deletionExpectation], timeout: 10)
-
-        app.saves.wait()
-        waitForDisappearance(of: itemCell)
-
-        await snowplowMicro.assertBaselineSnowplowExpectation()
-        let deleteEvent = await snowplowMicro.getFirstEvent(with: "collection.overflow.delete")
-        deleteEvent!.getUIContext()!.assertHas(type: "button")
-        deleteEvent!.getContentContext()!.assertHas(url: "https://getpocket.com/collections/item-2")
-    }
-
     func test_deletingAnItem_fromArchive_removesItFromList_andSyncsWithServer() {
         let deletionExpectation = expectation(description: "A delete request to the server")
         server.routes.post("/graphql") { request, _ -> Response in

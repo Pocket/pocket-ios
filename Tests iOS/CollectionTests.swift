@@ -46,7 +46,7 @@ class CollectionTests: XCTestCase {
 
     @MainActor
     func test_tappingCollectionItem_fromSaves_showsNativeCollectionView() async {
-        openCollectionFromSaves()
+        _ = openCollectionFromSaves()
 
         let screenViewEvent = await snowplowMicro.getFirstEvent(with: "collection.screen")
         screenViewEvent!.getUIContext()!.assertHas(type: "screen")
@@ -74,7 +74,7 @@ class CollectionTests: XCTestCase {
 
     @MainActor
     func test_tappingArchiveAndSaveNavBarButton_forSavedItem_archivesAndSavesCollection() async {
-        openCollectionFromSaves()
+        _ = openCollectionFromSaves()
         app.collectionView.archiveButton.wait().tap()
         app.saves.wait()
         app.saves.selectionSwitcher.archiveButton.tap()
@@ -97,7 +97,7 @@ class CollectionTests: XCTestCase {
 
     @MainActor
     func test_tappingOverflowMenu_fromSavedCollection_showsOverflowOptions() async {
-        openCollectionFromSaves()
+        _ = openCollectionFromSaves()
         app.collectionView.overflowButton.wait().tap()
 
         XCTAssertTrue(app.collectionView.favoriteButton.exists)
@@ -112,7 +112,7 @@ class CollectionTests: XCTestCase {
 
     @MainActor
     func test_tappingFavoriteAndUnfavoriteFromOverflowMenu_forSavedCollection_showsShare() async {
-        openCollectionFromSaves()
+        _ = openCollectionFromSaves()
         app.collectionView.overflowButton.wait().tap()
         app.collectionView.favoriteButton.wait().tap()
         app.collectionView.overflowButton.wait().tap()
@@ -131,7 +131,7 @@ class CollectionTests: XCTestCase {
 
     @MainActor
     func test_tappingAddTagsFromOverflowMenu_forSavedCollection_showsShare() async {
-        openCollectionFromSaves()
+        _ = openCollectionFromSaves()
         app.collectionView.overflowButton.wait().tap()
         app.collectionView.addTagsButton.wait().tap()
 
@@ -148,7 +148,7 @@ class CollectionTests: XCTestCase {
 
     @MainActor
     func test_tappingDeleteNoFromOverflowMenu_dismissesDeleteConfirmation() async {
-        openCollectionFromSaves()
+        _ = openCollectionFromSaves()
         app.collectionView.overflowButton.wait().tap()
         app.collectionView.deleteButton.wait().tap()
         app.collectionView.deleteNoButton.wait().tap()
@@ -167,11 +167,12 @@ class CollectionTests: XCTestCase {
 
     @MainActor
     func test_tappingDeleteYesFromOverflowMenu_dismissesAndDeletesCollection() async {
-        openCollectionFromSaves()
+        let collectionCell = openCollectionFromSaves()
         app.collectionView.overflowButton.wait().tap()
         app.collectionView.deleteButton.wait().tap()
         app.collectionView.deleteYesButton.wait().tap()
         app.saves.wait()
+        waitForDisappearance(of: collectionCell)
 
         async let overflowEvent = await snowplowMicro.getFirstEvent(with: "collection.overflow")
         async let deleteEvent = await snowplowMicro.getFirstEvent(with: "collection.overflow.delete")
@@ -186,7 +187,7 @@ class CollectionTests: XCTestCase {
 
     @MainActor
     func test_tappingShareFromOverflowMenu_forSavedCollection_showsShare() async {
-        openCollectionFromSaves()
+        _ = openCollectionFromSaves()
         app.collectionView.overflowButton.wait().tap()
         XCTAssertTrue(app.collectionView.shareButton.exists)
         app.shareButton.wait().tap()
@@ -240,7 +241,7 @@ class CollectionTests: XCTestCase {
 
     @MainActor
     func test_tappingStory_fromCollection_opensContent() async {
-        openCollectionFromSaves()
+        _ = openCollectionFromSaves()
         app.collectionView.cell(containing: "Collection Story 1").wait().tap()
 
         let openEvent = await snowplowMicro.getFirstEvent(with: "collection.story.open")
@@ -249,7 +250,7 @@ class CollectionTests: XCTestCase {
 
     @MainActor
     func test_savingAndunsavingStory_fromCollection_opensContent() async {
-        openCollectionFromSaves()
+        _ = openCollectionFromSaves()
         app.collectionView.cell(containing: "Collection Story 1").savedButton.wait().tap()
 
         app.collectionView.cell(containing: "Collection Story 1").saveButton.wait().tap()
@@ -266,7 +267,7 @@ class CollectionTests: XCTestCase {
 
     @MainActor
     func test_sharingStory_fromCollection() async {
-        openCollectionFromSaves()
+        _ = openCollectionFromSaves()
         app.collectionView.cell(containing: "Collection Story 1").overflowButton.wait().tap()
         app.shareButton.wait().tap()
 
@@ -276,7 +277,7 @@ class CollectionTests: XCTestCase {
 
     @MainActor
     func test_reportingStory_fromCollection() async {
-        openCollectionFromSaves()
+        _ = openCollectionFromSaves()
         app.collectionView.cell(containing: "Collection Story 1").overflowButton.wait().tap()
         app.reportButton.wait().tap()
 
@@ -284,7 +285,7 @@ class CollectionTests: XCTestCase {
         openEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
     }
 
-    private func openCollectionFromSaves() {
+    private func openCollectionFromSaves() -> ItemRowElement {
         app.launch().tabBar.savesButton.wait().tap()
         let collectionItem = app
             .saves
@@ -292,6 +293,7 @@ class CollectionTests: XCTestCase {
             .wait()
         XCTAssertTrue(collectionItem.collectionLabel.exists)
         collectionItem.tap()
+        return collectionItem
     }
 
     private func openCollectionFromHome() {
