@@ -25,6 +25,10 @@ class HomeRefreshCoordinator: RefreshCoordinator {
     private let source: Source
     var isRefreshing: Bool = false
 
+    // In memory date holder to ensure that we don't allow force refreshes to occur one after the other
+    var forceRefreshedAt: Date?
+    let forceRefreshInterval: TimeInterval = 30
+
     init(notificationCenter: NotificationCenter, taskScheduler: BGTaskSchedulerProtocol, appSession: AppSession, source: Source, lastRefresh: LastRefresh) {
         self.notificationCenter = notificationCenter
         self.taskScheduler = taskScheduler
@@ -44,6 +48,9 @@ class HomeRefreshCoordinator: RefreshCoordinator {
                     return
                 }
                 do {
+                    if isForced {
+                        forceRefreshedAt = Date()
+                    }
                     self.isRefreshing = true
                     try await self.source.fetchUnifiedHomeLineup()
                     self.lastRefresh.refreshedHome()
@@ -70,8 +77,12 @@ class HomeRefreshCoordinator: RefreshCoordinator {
         guard let lastRefreshHome = lastRefresh.lastRefreshHome  else {
             return true
         }
-        let timeSinceLastRefresh = Date().timeIntervalSince(Date(timeIntervalSince1970: lastRefreshHome))
 
-        return timeSinceLastRefresh >= refreshInterval! || isForced
+        guard isForced, let forceRefreshedAt else {
+            let timeSinceLastRefresh = Date().timeIntervalSince(Date(timeIntervalSince1970: lastRefreshHome))
+            return timeSinceLastRefresh >= refreshInterval! || isForced
+        }
+
+        return forceRefreshedAt.addingTimeInterval(forceRefreshInterval) < Date()
     }
 }
