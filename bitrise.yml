@@ -218,8 +218,8 @@ workflows:
                 ## It uses the values in MICRO_IGLU_REGISTRY_URL and MICRO_IGLU_API_KEY
                 echo "Run snowplow"
                 brew install wget openjdk
-                wget https://github.com/snowplow-incubator/snowplow-micro/releases/download/micro-1.7.2/snowplow-micro-1.7.2.jar
-                java -jar snowplow-micro-1.7.2.jar &
+                wget https://github.com/snowplow-incubator/snowplow-micro/releases/download/micro-2.0.0/snowplow-micro-2.0.0.jar
+                java -jar snowplow-micro-2.0.0.jar &
 
   #Builds a release build that could be uploaded to App Store Connect
   release-build:
