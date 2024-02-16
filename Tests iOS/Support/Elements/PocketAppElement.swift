@@ -176,6 +176,13 @@ struct PocketAppElement {
         return self
     }
 
+    @discardableResult
+    func waitForHomeToLoad() -> HomeViewElement {
+        self.homeView.savedItemCell("Item 1").wait()
+        self.homeView.recommendationCell("Slate 1, Recommendation 1").wait()
+        return self.homeView
+    }
+
     func terminate() {
         app.terminate()
     }

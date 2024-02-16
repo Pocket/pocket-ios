@@ -43,7 +43,7 @@ class HomeTests: XCTestCase {
 
     @MainActor
     func test_navigatingToHomeTab_showsASectionForEachSlate() async {
-        let home = app.launch().homeView
+        let home = app.launch().waitForHomeToLoad()
 
         home.sectionHeader("Slate 1").wait()
         home.element.swipeUp()
@@ -67,7 +67,7 @@ class HomeTests: XCTestCase {
 
     @MainActor
     func test_navigatingToHomeTab_showsRecentlySavedItems() async {
-        let home = app.launch().homeView.wait()
+        let home = app.launch().waitForHomeToLoad()
         home.savedItemCell("Item 1").wait()
         home.savedItemCell("Item 2").wait()
         home.savedItemCell("Item 1").swipeLeft(velocity: .fast)
@@ -77,7 +77,7 @@ class HomeTests: XCTestCase {
 
     @MainActor
     func test_tappingRecentSavesItem_showsReader() async {
-        let home = app.launch().homeView.wait()
+        let home = app.launch().waitForHomeToLoad()
         home.savedItemCell("Item 1").wait().tap()
         app.readerView.wait()
         app.readerView.cell(containing: "Commodo Consectetur Dapibus").wait()
@@ -114,7 +114,7 @@ class HomeTests: XCTestCase {
     }
 
     func test_favoritingRecentSavesItem_shouldShowFavoriteInSaves() {
-        let home = app.launch().homeView.wait()
+        let home = app.launch().waitForHomeToLoad()
         home.savedItemCell("Item 1").wait()
         home.recentSavesView(matching: "Item 1").favoriteButton.tap()
         XCTAssertTrue(home.recentSavesView(matching: "Item 1").favoriteButton.isFilled)
@@ -125,7 +125,7 @@ class HomeTests: XCTestCase {
     }
 
     func test_unfavoritingRecentSavesItem_shouldNotAppearForFavoriteInSaves() {
-        let home = app.launch().homeView.wait()
+        let home = app.launch().waitForHomeToLoad()
         home.savedItemCell("Item 2").wait()
         XCTAssertTrue(home.recentSavesView(matching: "Item 2").favoriteButton.isFilled)
         home.recentSavesView(matching: "Item 2").favoriteButton.tap()
@@ -137,7 +137,7 @@ class HomeTests: XCTestCase {
     }
 
     func test_archivingRecentSavesItem_removesItemFromRecentSaves() {
-        let home = app.launch().homeView.wait()
+        let home = app.launch().waitForHomeToLoad()
         home.savedItemCell("Item 1").wait()
         home.recentSavesView(matching: "Item 1").overflowButton.wait().tap()
         app.archiveButton.wait().tap()
@@ -146,7 +146,7 @@ class HomeTests: XCTestCase {
     }
 
     func test_deletingRecentSavesItem_removesItemFromRecentSaves() {
-        let home = app.launch().homeView.wait()
+        let home = app.launch().waitForHomeToLoad()
         home.savedItemCell("Item 1").wait()
         home.recentSavesView(matching: "Item 1").overflowButton.wait().tap()
         app.deleteButton.wait().tap()
@@ -158,7 +158,7 @@ class HomeTests: XCTestCase {
     }
 
     func test_sharingRecentSavesItem_removesItemFromRecentSaves() {
-        let home = app.launch().homeView.wait()
+        let home = app.launch().waitForHomeToLoad()
         home.savedItemCell("Item 1").wait()
         home.recentSavesView(matching: "Item 1").overflowButton.wait().tap()
         app.shareButton.wait().tap()
@@ -172,7 +172,7 @@ class HomeTests: XCTestCase {
     }
 
     func test_tappingSlatesSeeAllButton_showsSlateDetailView() {
-        let home = app.launch().homeView
+        let home = app.launch().waitForHomeToLoad()
 
         home.sectionHeader("Slate 1").seeAllButton.wait().tap()
         app.slateDetailView.recommendationCell("Slate 1, Recommendation 1").wait()
@@ -186,7 +186,7 @@ class HomeTests: XCTestCase {
     }
 
     func test_slateDetails_savingARecommendation_addsItemToList() {
-        let home = app.launch().homeView
+        let home = app.launch().waitForHomeToLoad()
         home.sectionHeader("Slate 1").seeAllButton.wait().tap()
 
         let cell = app.slateDetailView
@@ -207,8 +207,7 @@ class HomeTests: XCTestCase {
                 Fixture.data(name: "hello", ext: "html")
             }
         }
-
-        app.launch()
+        app.launch().waitForHomeToLoad()
         app.homeView.element.swipeUp()
         app.homeView.recommendationCell("Slate 2, Recommendation 2").wait().tap()
         app.webReaderView
@@ -217,8 +216,9 @@ class HomeTests: XCTestCase {
     }
 
     func test_tappingRecommendationCell_whenItemIsNotSaved_andItemIsSyndicated_opensItemInReaderView() {
-        app.launch()
-            .homeView.recommendationCell("Slate 1, Recommendation 1")
+        app.launch().waitForHomeToLoad()
+
+        app.homeView.recommendationCell("Slate 1, Recommendation 1")
             .wait().element.swipeUp()
 
         app.homeView.recommendationCell("Slate 1, Recommendation 2")
@@ -229,7 +229,8 @@ class HomeTests: XCTestCase {
 
     func test_tappingRecommendationCell_whenItemIsNotSaved_andItemIsSyndicated_andUserGoesBack_SyndicationInfoStays() {
         app.launch()
-            .homeView.recommendationCell("Slate 1, Recommendation 1")
+            .waitForHomeToLoad()
+            .recommendationCell("Slate 1, Recommendation 1")
             .wait().element.swipeUp()
 
         app.homeView.recommendationCell("Slate 1, Recommendation 2")
@@ -260,7 +261,7 @@ class HomeTests: XCTestCase {
             return .fallbackResponses(apiRequest: apiRequest)
         }
 
-        let cell = app.launch().homeView.recommendationCell("Slate 1, Recommendation 1")
+        let cell = app.launch().waitForHomeToLoad().recommendationCell("Slate 1, Recommendation 1")
         cell.saveButton.tap()
         cell.savedButton.wait()
 
@@ -301,8 +302,7 @@ class HomeTests: XCTestCase {
             return .fallbackResponses(apiRequest: apiRequest)
         }
 
-        app.launch()
-            .homeView
+        app.launch().waitForHomeToLoad()
             .sectionHeader("Slate 1")
             .seeAllButton
             .wait().tap()
@@ -360,7 +360,7 @@ class HomeTests: XCTestCase {
     }
 
     func test_returningFromSaves_maintainsHomePosition() {
-        let home = app.launch().homeView
+        let home = app.launch().waitForHomeToLoad()
         home.overscroll()
         validateBottomMessage()
         app.tabBar.savesButton.tap()
@@ -369,7 +369,7 @@ class HomeTests: XCTestCase {
     }
 
     func test_returningFromSettings_maintainsHomePosition() {
-        let home = app.launch().homeView
+        let home = app.launch().waitForHomeToLoad()
         home.overscroll()
         validateBottomMessage()
         app.tabBar.settingsButton.tap()
@@ -378,7 +378,7 @@ class HomeTests: XCTestCase {
     }
 
     func test_returningFromReader_maintainsHomePosition() {
-        let home = app.launch().homeView
+        let home = app.launch().waitForHomeToLoad()
         home.overscroll()
         validateBottomMessage()
         home.recommendationCell("Slate 1, Recommendation 2").tap()
@@ -387,7 +387,7 @@ class HomeTests: XCTestCase {
     }
 
     func test_returningFromSeeAll_maintainsHomePosition() {
-        let home = app.launch().homeView
+        let home = app.launch().waitForHomeToLoad()
         home.overscroll()
         validateBottomMessage()
         home.seeAllCollectionButton.tap()
@@ -436,7 +436,7 @@ extension HomeTests {
             }
             return .fallbackResponses(apiRequest: apiRequest)
         }
-        let home = app.launch().homeView
+        let home = app.launch().waitForHomeToLoad()
         home.recommendationCell("Slate 1, Recommendation 1").wait()
 
         home.pullToRefresh()
@@ -449,7 +449,7 @@ extension HomeTests {
     // Started failing in Xcode 13.2.1
     // Error: Failed to determine hittability of "home-overscroll" Other: Activation point invalid and no suggested hit points based on element frame
     func xtest_overscrollingHome_showsOverscrollView() {
-        let home = app.homeView
+        let home = app.launch().waitForHomeToLoad()
         let overscrollView = home.overscrollView
 
         home.sectionHeader("Slate 1").wait()
@@ -476,18 +476,18 @@ extension HomeTests {
             return .fallbackResponses(apiRequest: apiRequest)
         }
 
-        app.launch().homeView.wait()
+        let homeView = app.launch().waitForHomeToLoad()
 
         // If an item isn't initially visible (e.g "Item 3"),
         // take the first cell and swipe left so that it becomes visible.
         // This works because the fixture for "Saves" contains 3 items.
         // The first two tests for "Item 1" and "Item 2" work because
         // they are on-screen, but we have to scroll for "Item 3".
-        if !app.homeView.savedItemCell(item).exists {
-            app.homeView.savedItemCell(at: 0).swipeLeft()
+        if !homeView.savedItemCell(item).exists {
+            homeView.savedItemCell(at: 0).swipeLeft()
         }
 
-        app.homeView.savedItemCell(item).wait().tap()
+        homeView.savedItemCell(item).wait().tap()
 
         app
             .webReaderView
