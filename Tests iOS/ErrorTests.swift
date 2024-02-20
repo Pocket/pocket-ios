@@ -43,16 +43,14 @@ class ErrorTests: XCTestCase {
 
     func test_serverError_banner_for_throttled_user() {
         configureThrottledUser()
-        app.launch()
-
-        XCTAssert(app.saves.element.staticTexts["Our server is not responding right now. Please bear with us. It should be available within an hour."].exists)
+                app.launch()
+        app.saves.element.staticTexts["Our server is not responding right now. Please bear with us. It should be available within an hour."].wait()
     }
 
     func test_serverError_banner_for_internal_server_error() {
         configureInternalServerErrorUser()
         app.launch()
-
-        XCTAssert(app.saves.element.staticTexts["Something went wrong with your request. The Pocket team has been notified. Please try again later."].exists)
+        app.saves.element.staticTexts["Something went wrong with your request. The Pocket team has been notified. Please try again later."].wait()
     }
 
     /// Set user to throttled

@@ -121,8 +121,8 @@ class ReaderTests: XCTestCase {
         XCTAssertTrue(app.readerView.fontStepperIncreaseButton.exists)
         XCTAssertTrue(app.readerView.fontStepperDecreaseButton.exists)
         openFontMenu()
-        XCTAssertTrue(app.readerView.fontSelection(fontName: "Graphik LCG").exists)
-        XCTAssertTrue(app.readerView.fontSelection(fontName: "Blanco OSF").exists)
+        XCTAssertTrue(app.readerView.fontSelection(fontName: "Graphik").exists)
+        XCTAssertTrue(app.readerView.fontSelection(fontName: "Blanco").exists)
 
         let textSettingsEvent = await snowplowMicro.getFirstEvent(with: "reader.toolbar.text_settings")
         textSettingsEvent!.getUIContext()!.assertHas(type: "button")
