@@ -207,7 +207,7 @@ class SnowplowMicro {
     internal func snowplowRequest(path: String, method: String = "GET", shouldWait: Bool = true) async -> Data {
         if shouldWait {
             // For now we wait 1 seconds for snowplow data to be available because the iOS app flushes it to the server.
-            _ = await XCTWaiter.fulfillment(of: [XCTestExpectation(description: "Wait 5 seconds for snowplow data to be available.")], timeout: 1.0)
+            _ = await XCTWaiter.fulfillment(of: [XCTestExpectation(description: "Wait 1 seconds for snowplow data to be available.")], timeout: 1.0)
         }
         let data = try! await self.client.httpData(from: URL(string: "http://localhost:9090\(path)")!, method: method)
         return data
@@ -217,7 +217,7 @@ class SnowplowMicro {
      Resets snowplow micro events and event counter
      */
     func resetSnowplowEvents() async {
-        _ = await snowplowRequest(path: "/micro/reset", method: "POST", shouldWait: false)
+        _ = await snowplowRequest(path: "/micro/reset", method: "POST", shouldWait: true)
     }
 
     /**
@@ -365,8 +365,11 @@ extension SnowplowMicro {
     internal func assertAPIUser(for event: SnowplowMicroEvent) {
         let apiUser = event.getAPIUserContext()
         XCTAssertNotNil(apiUser, "API User not found in analytics event")
-        XCTAssertEqual(apiUser!.dataDict()["api_id"] as! Int, 5512)
-        XCTAssertEqual(apiUser!.dataDict()["client_version"] as! String, "1")
+        guard let data = apiUser?.dataDict() else {
+            return
+        }
+        XCTAssertEqual(data["api_id"] as! Int, 5512)
+        XCTAssertEqual(data["client_version"] as! String, "1")
     }
 
     /**
@@ -401,8 +404,11 @@ extension SnowplowMicro {
         }
 
         XCTAssertNotNil(user, "User not found in analytics event")
-        XCTAssertEqual(user!.dataDict()["hashed_user_id"] as! String, "session-user-id")
-        XCTAssertEqual(user!.dataDict()["hashed_guid"] as! String, "session-guid")
+        guard let data = user?.dataDict() else {
+            return
+        }
+        XCTAssertEqual(data["hashed_user_id"] as! String, "session-user-id")
+        XCTAssertEqual(data["hashed_guid"] as! String, "session-guid")
     }
 }
 
