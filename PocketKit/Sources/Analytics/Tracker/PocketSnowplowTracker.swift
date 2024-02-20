@@ -63,6 +63,7 @@ public class PocketSnowplowTracker: SnowplowTracker {
         #if DEBUG || DEBUG_ALPHA_NEUE
         // We are using a debug build, emit analytics instantly for testing instead of batches
         tracker.emitter?.bufferOption = .single
+        tracker.emitter?.emitRange = 1
         #endif
 
         _ = tracker.globalContexts?.add(tag: "persistent-entities", contextGenerator: GlobalContext(generator: {  event in
