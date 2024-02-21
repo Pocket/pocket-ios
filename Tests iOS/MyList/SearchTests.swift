@@ -440,32 +440,6 @@ class SearchTests: XCTestCase {
         searchEvent2!.getUIContext()!.assertHas(componentDetail: "saves")
         searchEvent2!.getContentContext()!.assertHas(url: "http://localhost:8080/hello-2")
     }
-    // TODO: DISABLED FLAKEY - To be investigated: share sheet does not always appear in ui tests.
-    @MainActor
-    func xtest_sharingAnItemFromSearch_forPremiumUser_presentsShareSheet() async {
-        stubGraphQLEndpoint(isPremium: true)
-        app.launch()
-        tapSearch()
-
-        let searchField = app.navigationBar.searchFields["Search"].wait()
-        searchField.tap()
-        searchField.typeText("item\n")
-        app.saves.searchView.searchResultsView.wait()
-
-        let itemCell = app
-            .saves.searchView
-            .searchItemCell(matching: "Item 2")
-            .wait()
-
-        itemCell.shareButton.wait().tap()
-
-        app.shareSheet.wait()
-
-        let searchEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search.share")
-        searchEvent!.getUIContext()!.assertHas(type: "button")
-        searchEvent!.getUIContext()!.assertHas(componentDetail: "saves")
-        searchEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello-2")
-    }
 
     @MainActor
     func test_addTagsFromSearch_forPremiumUser_showsAddTagsView() async {
