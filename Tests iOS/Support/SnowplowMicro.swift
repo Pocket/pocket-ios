@@ -217,7 +217,7 @@ class SnowplowMicro {
      Resets snowplow micro events and event counter
      */
     func resetSnowplowEvents() async {
-        _ = await snowplowRequest(path: "/micro/reset", method: "POST", shouldWait: true)
+        _ = await snowplowRequest(path: "/micro/reset", method: "POST", shouldWait: false)
     }
 
     /**
@@ -352,10 +352,23 @@ extension SnowplowMicro {
      Ensure that Snowplow micro does not have any bad events.
      */
     func assertAllEventsHaveUserAndApiUser() async {
+        // These 2 events can happen before we have a logged in user, so they are allowed to not have our user contexts associated.
+        // Theoretically, we should always have api_user but the way we currently init it makes it not the case.
+        // Given these 2 events are new as of Snowplow 6.0 and not actively used in our analytics,
+        //    we aren't going to refactor as of 2/20/2024 to ensure api_user always exists.
+        let eventsWithNoUserInfo = [
+            "iglu:com.snowplowanalytics.mobile/application_lifecycle/jsonschema/1-0-0",
+            "iglu:com.snowplowanalytics.mobile/application_install/jsonschema/1-0-0"
+        ]
         let allGoodEvents: [SnowplowMicroEvent] = await self.getGoodSnowplowEvents()
         allGoodEvents.forEach { event in
-            self.assertAPIUser(for: event)
-            self.assertUser(for: event)
+            if eventsWithNoUserInfo.contains(event.schema) {
+                XCTAssertNil(event.getAPIUserContext())
+                XCTAssertNil(event.getUserContext())
+            } else {
+                self.assertAPIUser(for: event)
+                self.assertUser(for: event)
+            }
         }
     }
 
@@ -364,8 +377,8 @@ extension SnowplowMicro {
      */
     internal func assertAPIUser(for event: SnowplowMicroEvent) {
         let apiUser = event.getAPIUserContext()
-        XCTAssertNotNil(apiUser, "API User not found in analytics event")
         guard let data = apiUser?.dataDict() else {
+            XCTFail("API User not found in analytics event")
             return
         }
         XCTAssertEqual(data["api_id"] as! Int, 5512)
