@@ -132,7 +132,7 @@ struct SavesElement: PocketUIElement {
 
     @discardableResult
     func wait(
-        timeout: TimeInterval = 30,
+        timeout: TimeInterval = 3,
         file: StaticString = #file,
         line: UInt = #line
     ) -> Self {
