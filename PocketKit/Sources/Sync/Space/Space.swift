@@ -52,8 +52,9 @@ public class Space {
         }
     }
 
-    func delete(_ objects: [NSManagedObject]) {
-        backgroundContext.performAndWait { objects.compactMap({ backgroundObject(with: $0.objectID) }).forEach(backgroundContext.delete(_:)) }
+    func delete(_ objects: [NSManagedObject], context: NSManagedObjectContext? = nil) {
+        let context = context ?? backgroundContext
+        context.performAndWait { objects.compactMap({ backgroundObject(with: $0.objectID) }).forEach(backgroundContext.delete(_:)) }
     }
 
     /// Saves the specified  context. If context is nil, saves `backgroundContext`
@@ -221,29 +222,12 @@ extension Space {
         return newHighlight
     }
 
-    func fetchHighlight(by ID: String, context: NSManagedObjectContext? = nil) throws -> Highlight? {
-        let context =  context ?? backgroundContext
-        let fetchRequest = Requests.fetchHighlight(by: ID)
-        fetchRequest.fetchLimit = 1
-        return try fetch(fetchRequest, context: context).first
-    }
-
-    func fetchHighlights(by url: String, context: NSManagedObjectContext? = nil) -> [Highlight]? {
-        let context = context ?? backgroundContext
-        let fetchRequest = Requests.fetchHighlights(by: url)
-        return try? fetch(fetchRequest, context: context)
-    }
-
-    func fetchHighlightsOnViewContext(by url: String) -> [Highlight]? {
-        fetchHighlights(by: url, context: viewContext)
-    }
-
     func deleteHighlight(by ID: String, context: NSManagedObjectContext? = nil) throws {
         let context =  context ?? backgroundContext
         let fetchRequest = Requests.fetchHighlight(by: ID)
         fetchRequest.fetchLimit = 1
-        let highlight = try fetch(fetchRequest)
-        delete(highlight)
+        let highlight = try fetch(fetchRequest, context: context)
+        delete(highlight, context: context)
     }
 }
 
