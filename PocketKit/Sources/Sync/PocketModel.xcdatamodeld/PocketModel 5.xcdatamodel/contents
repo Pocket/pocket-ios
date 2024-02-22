@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22522" systemVersion="23C64" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22522" systemVersion="23C71" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Author" representedClassName="Author" syncable="YES">
         <attribute name="id" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
@@ -91,6 +91,7 @@
         <relationship name="images" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Image" inverseName="item" inverseEntity="Image"/>
         <relationship name="recommendation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Recommendation" inverseName="item" inverseEntity="Recommendation"/>
         <relationship name="savedItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SavedItem" inverseName="item" inverseEntity="SavedItem"/>
+        <relationship name="sharedWithYouItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SharedWithYouItem" inverseName="item" inverseEntity="SharedWithYouItem"/>
         <relationship name="syndicatedArticle" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SyndicatedArticle" inverseName="item" inverseEntity="SyndicatedArticle"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
@@ -141,6 +142,11 @@
     </entity>
     <entity name="SavedItemUpdatedNotification" representedClassName="SavedItemUpdatedNotification" syncable="YES">
         <relationship name="savedItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SavedItem" inverseName="savedItemUpdatedNotification" inverseEntity="SavedItem"/>
+    </entity>
+    <entity name="SharedWithYouItem" representedClassName="SharedWithYouItem" syncable="YES">
+        <attribute name="sortOrder" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="url" attributeType="String"/>
+        <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="sharedWithYouItem" inverseEntity="Item"/>
     </entity>
     <entity name="Slate" representedClassName="Slate" syncable="YES">
         <attribute name="experimentID" attributeType="String"/>
