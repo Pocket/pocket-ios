@@ -9,6 +9,7 @@ import CoreData
 import Analytics
 import Localization
 import SharedPocketKit
+import SharedWithYou
 
 enum ReadableType {
     case recommendable(RecommendableItemViewModel)
@@ -131,6 +132,8 @@ class HomeViewModel: NSObject {
     private let recentSavesController: NSFetchedResultsController<SavedItem>
     private let recomendationsController: RichFetchedResultsController<Recommendation>
 
+    private let sharedWithYouStore: SharedWithYouStore
+
     init(
         source: Source,
         tracker: Tracker,
@@ -142,7 +145,8 @@ class HomeViewModel: NSObject {
         recommendationsWidgetUpdateService: RecommendationsWidgetUpdateService,
         userDefaults: UserDefaults,
         notificationCenter: NotificationCenter,
-        featureFlags: FeatureFlagServiceProtocol
+        featureFlags: FeatureFlagServiceProtocol,
+        sharedWithYouStore: SharedWithYouStore
     ) {
         self.source = source
         self.tracker = tracker
@@ -156,6 +160,7 @@ class HomeViewModel: NSObject {
         self.userDefaults = userDefaults
         self.notificationCenter = notificationCenter
         self.featureFlags = featureFlags
+        self.sharedWithYouStore = sharedWithYouStore
 
         self.snapshot = {
             return Self.loadingSnapshot()
