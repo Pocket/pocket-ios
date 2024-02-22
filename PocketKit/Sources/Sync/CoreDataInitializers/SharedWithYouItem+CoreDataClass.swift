@@ -8,5 +8,30 @@ import CoreData
 
 @objc(SharedWithYouItem)
 public class SharedWithYouItem: NSManagedObject {
+    @available(*, unavailable)
+        public init() {
+            fatalError()
+        }
 
+        @available(*, unavailable)
+        public init(context: NSManagedObjectContext) {
+            fatalError()
+        }
+
+        internal override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?) {
+            super.init(entity: entity, insertInto: context)
+        }
+
+        public init(
+            context: NSManagedObjectContext,
+            url: String,
+            sortOrder: Int32,
+            item: Item
+        ) {
+            let entity = NSEntityDescription.entity(forEntityName: "SharedWithYouItem", in: context)!
+            super.init(entity: entity, insertInto: context)
+            self.url = url
+            self.sortOrder = sortOrder
+            self.item = item
+        }
 }

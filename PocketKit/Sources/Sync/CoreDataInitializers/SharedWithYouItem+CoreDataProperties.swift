@@ -6,15 +6,13 @@
 import Foundation
 import CoreData
 
-
 extension SharedWithYouItem {
-
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<SharedWithYouItem> {
+    @nonobjc
+    public class func fetchRequest() -> NSFetchRequest<SharedWithYouItem> {
         return NSFetchRequest<SharedWithYouItem>(entityName: "SharedWithYouItem")
     }
 
-    @NSManaged public var url: String?
+    @NSManaged public var url: String
     @NSManaged public var sortOrder: Int32
-    @NSManaged public var item: Item?
-
+    @NSManaged public var item: Item
 }
