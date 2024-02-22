@@ -39,9 +39,6 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "CorpusItem": return PocketGraph.Objects.CorpusItem
     case "Collection": return PocketGraph.Objects.Collection
     case "CollectionAuthor": return PocketGraph.Objects.CollectionAuthor
-    case "Mutation": return PocketGraph.Objects.Mutation
-    case "CollectionStory": return PocketGraph.Objects.CollectionStory
-    case "CollectionStoryAuthor": return PocketGraph.Objects.CollectionStoryAuthor
     case "MarticleText": return PocketGraph.Objects.MarticleText
     case "MarticleDivider": return PocketGraph.Objects.MarticleDivider
     case "MarticleTable": return PocketGraph.Objects.MarticleTable
@@ -54,6 +51,9 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "UnMarseable": return PocketGraph.Objects.UnMarseable
     case "BulletedListElement": return PocketGraph.Objects.BulletedListElement
     case "NumberedListElement": return PocketGraph.Objects.NumberedListElement
+    case "Mutation": return PocketGraph.Objects.Mutation
+    case "CollectionStory": return PocketGraph.Objects.CollectionStory
+    case "CollectionStoryAuthor": return PocketGraph.Objects.CollectionStoryAuthor
     case "SlateLineup": return PocketGraph.Objects.SlateLineup
     case "Slate": return PocketGraph.Objects.Slate
     case "Recommendation": return PocketGraph.Objects.Recommendation

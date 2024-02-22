@@ -1,0 +1,11 @@
+query SharedWithYouSummary($url: String!) {
+  itemByUrl(url: $url) {
+    ...ItemSummary
+  }
+}
+
+query SharedWithYouDetails($url: String!) {
+  itemByUrl(url: $url) {
+    ...ItemParts
+  }
+}
