@@ -56,6 +56,22 @@ class StickerBrowserController: MSStickerBrowserViewController {
             _userStickers.append(pocketSticker)
         }
 
+        if let savedHandsSticker = try? MSSticker(item: .SavedHands) {
+            _userStickers.append(savedHandsSticker)
+        }
+
+        if let savedSticker = try? MSSticker(item: .Saved) {
+            _userStickers.append(savedSticker)
+        }
+
+        if let readItLater1Sticker = try? MSSticker(item: .ReadItLater1) {
+            _userStickers.append(readItLater1Sticker)
+        }
+
+        if let readItLater2Sticker = try? MSSticker(item: .ReadItLater2) {
+            _userStickers.append(readItLater2Sticker)
+        }
+
         if braze.isFeatureFlagEnabled(flag: .bestOf20231PercentSticker), let bestOf20231PercentSticker = try? MSSticker(item: .BestOf2023Top1Percent) {
             _userStickers.append(bestOf20231PercentSticker)
             _ = braze.logFeatureFlagImpression(flag: .bestOf20231PercentSticker)

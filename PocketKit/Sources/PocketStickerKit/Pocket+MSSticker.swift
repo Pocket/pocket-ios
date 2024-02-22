@@ -13,7 +13,11 @@ extension MSSticker {
   enum PocketSticker: String {
     case BestOf2023Top1Percent,
          BestOf2023Top5Percent,
-         PocketLogo
+         PocketLogo,
+         SavedHands,
+         Saved,
+         ReadItLater1,
+         ReadItLater2
   }
 
   // https://developer.apple.com/design/human-interface-guidelines/imessage-apps-and-stickers
