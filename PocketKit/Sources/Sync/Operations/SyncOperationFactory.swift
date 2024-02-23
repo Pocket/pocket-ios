@@ -33,6 +33,12 @@ protocol SyncOperationFactory {
         lastRefresh: LastRefresh
     ) -> SyncOperation
 
+    func fetchSharedWithYouItems(
+            apollo: ApolloClientProtocol,
+            space: Space,
+            urls: [String]
+        ) -> SyncOperation
+
     func savedItemMutationOperation<Mutation: GraphQLMutation>(
         apollo: ApolloClientProtocol,
         events: SyncEvents,
@@ -98,6 +104,18 @@ class OperationFactory: SyncOperationFactory {
             space: space,
             events: events,
             lastRefresh: lastRefresh
+        )
+    }
+
+    func fetchSharedWithYouItems(
+        apollo: ApolloClientProtocol,
+        space: Space,
+        urls: [String]
+    ) -> SyncOperation {
+        return FetchSharedWithYouItems(
+            apollo: apollo,
+            space: space,
+            urls: urls
         )
     }
 

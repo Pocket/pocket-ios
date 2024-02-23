@@ -19,6 +19,7 @@ enum SyncTask: Codable {
     case renameTag(remoteID: String, name: String)
     case deleteHighlight(remoteID: String)
     case createHighlight(quote: String, patch: String, version: Int, itemId: String)
+    case fetchSharedWithYouItems(urls: [String])
 }
 
 public class SyncTaskContainer: NSObject, Codable {
