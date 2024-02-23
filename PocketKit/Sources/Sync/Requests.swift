@@ -90,7 +90,7 @@ public enum Requests {
         Slate.fetchRequest()
     }
 
-    public static func fetchRecomendations(by lineupIdentifier: String) -> RichFetchRequest<Recommendation> {
+    public static func fetchRecomendations() -> RichFetchRequest<Recommendation> {
         let request = RichFetchRequest<Recommendation>(entityName: "Recommendation")
         // We only search for valid recommendations without specifying a lineup, since the lineup will be only 1 (from unified home)
         request.predicate = NSPredicate(format: "item != NULL")
@@ -272,6 +272,38 @@ public enum Requests {
         let request = fetchFeatureFlags()
         request.predicate = NSPredicate(format: "name = %@", name)
         request.fetchLimit = 1
+        return request
+    }
+    public static func fetchSharedWithYouItem() -> NSFetchRequest<SharedWithYouItem> {
+        SharedWithYouItem.fetchRequest()
+    }
+
+    public static func fetchAllSharedWithYouItems() -> NSFetchRequest<SharedWithYouItem> {
+        let request: NSFetchRequest<SharedWithYouItem> = SharedWithYouItem.fetchRequest()
+
+        request.sortDescriptors = [
+            NSSortDescriptor(keyPath: \SharedWithYouItem.sortOrder, ascending: true),
+            NSSortDescriptor(key: "item.title", ascending: true)
+        ]
+
+        return request
+    }
+
+    public static func fetchSharedWithYouItems(limit: Int? = nil) -> RichFetchRequest<SharedWithYouItem> {
+        let request = RichFetchRequest<SharedWithYouItem>(entityName: "SharedWithYouHighlight")
+        request.sortDescriptors = [
+            NSSortDescriptor(keyPath: \SharedWithYouItem.sortOrder, ascending: true),
+            NSSortDescriptor(keyPath: \SharedWithYouItem.item.title, ascending: true)
+        ]
+        request.relationshipKeyPathsForRefreshing = [
+            #keyPath(SharedWithYouItem.item.title),
+            #keyPath(SharedWithYouItem.item.savedItem.archivedAt),
+            #keyPath(SharedWithYouItem.item.savedItem.isFavorite),
+            #keyPath(SharedWithYouItem.item.savedItem.createdAt),
+        ]
+        if let limit = limit {
+            request.fetchLimit = limit
+        }
         return request
     }
 }

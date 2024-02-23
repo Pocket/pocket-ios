@@ -55,7 +55,5 @@ public struct SyncConstants {
 
         /// How many recent saves to show
         public static let recentSaves = 5
-
-        public static let slateLineupIdentifier = "e39bc22a-6b70-4ed2-8247-4b3f1a516bd1"
     }
 }

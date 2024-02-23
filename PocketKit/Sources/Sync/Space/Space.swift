@@ -277,9 +277,9 @@ extension Space {
         return try fetch(request, context: context).first
     }
 
-    func makeRecomendationsSlateLineupController(by lineupIdentifier: String) -> RichFetchedResultsController<Recommendation> {
+    func makeRecomendationsSlateLineupController() -> RichFetchedResultsController<Recommendation> {
         RichFetchedResultsController(
-            fetchRequest: Requests.fetchRecomendations(by: lineupIdentifier),
+            fetchRequest: Requests.fetchRecomendations(),
             managedObjectContext: viewContext,
             sectionNameKeyPath: "slate.sortIndex",
             cacheName: nil
@@ -350,6 +350,25 @@ extension Space {
             sectionNameKeyPath: nil,
             cacheName: nil
         )
+    }
+}
+
+// MARK: Shared With You
+extension Space {
+    func makeSharedWithYouController(limit: Int? = nil) -> RichFetchedResultsController<SharedWithYouItem> {
+        RichFetchedResultsController(
+            fetchRequest: Requests.fetchSharedWithYouItems(limit: limit),
+            managedObjectContext: viewContext,
+            sectionNameKeyPath: nil,
+            cacheName: nil
+        )
+    }
+
+    func fetchSharedWithYouHighlight(with url: String, in context: NSManagedObjectContext?) throws -> SharedWithYouItem? {
+        let request = Requests.fetchSharedWithYouItem()
+        request.predicate = NSPredicate(format: "url = %@", url)
+        request.fetchLimit = 1
+        return try fetch(request, context: context).first
     }
 }
 
@@ -435,6 +454,7 @@ extension Space {
         try deleteOrphanedItems(context: context)
         try deleteOrphanedCollections(context: context)
         try deleteOrphanedStories(context: context)
+        try deleteOrphanedSharedWithYouItems(context: context)
     }
 }
 
@@ -570,6 +590,12 @@ private extension Space {
     func deleteOrphanedStories(context: NSManagedObjectContext) throws {
         let fetchRequest = CollectionStory.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "collection = NULL")
+        try deleteEntities(request: fetchRequest, context: context)
+    }
+
+    func deleteOrphanedSharedWithYouItems(context: NSManagedObjectContext) throws {
+        let fetchRequest = SharedWithYouItem.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "item = NULL")
         try deleteEntities(request: fetchRequest, context: context)
     }
 }

@@ -6,6 +6,7 @@ import Combine
 import CoreData
 import Foundation
 import PocketGraph
+import SharedWithYou
 
 public enum InitialDownloadState {
     case unknown
@@ -130,7 +131,7 @@ public protocol Source {
 
     func refreshTags(completion: (() -> Void)?)
 
-    // MARK: -
+    // MARK: - Feature flags
 
     func fetchAllFeatureFlags() async throws
 
@@ -139,4 +140,8 @@ public protocol Source {
     // MARK: - Object Helpers
 
     func fetchUnknownObject(uri: URL) -> NSManagedObject?
+
+    // MARK: Shared With You
+    func updateSharedWithYouItems(with highlights: [SWHighlight])
+    func makeSharedWithYouController() -> RichFetchedResultsController<SharedWithYouItem>
 }

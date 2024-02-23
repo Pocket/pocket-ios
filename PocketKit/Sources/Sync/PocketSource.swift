@@ -8,6 +8,7 @@ import Combine
 import Network
 import PocketGraph
 import SharedPocketKit
+import SharedWithYou
 
 public typealias SyncEvents = PassthroughSubject<SyncEvent, Never>
 
@@ -198,7 +199,7 @@ public class PocketSource: Source {
     }
 
     public func makeHomeController() -> RichFetchedResultsController<Recommendation> {
-        space.makeRecomendationsSlateLineupController(by: SyncConstants.Home.slateLineupIdentifier)
+        space.makeRecomendationsSlateLineupController()
     }
 
     public func makeFeatureFlagsController() -> NSFetchedResultsController<FeatureFlag> {
@@ -1187,6 +1188,17 @@ extension PocketSource {
                 save(item: savedItem)
             }
         }
+    }
+}
+
+// MARK: Shared With You
+extension PocketSource {
+    public func updateSharedWithYouItems(with highlights: [SWHighlight]) {
+        // TODO: Add implementation
+    }
+
+    public func makeSharedWithYouController() -> RichFetchedResultsController<SharedWithYouItem> {
+        space.makeSharedWithYouController()
     }
 }
 
