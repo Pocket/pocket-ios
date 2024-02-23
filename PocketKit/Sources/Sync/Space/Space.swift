@@ -364,7 +364,7 @@ extension Space {
         )
     }
 
-    func fetchSharedWithYouHighlight(with url: String, in context: NSManagedObjectContext?) throws -> SharedWithYouItem? {
+    func fetchSharedWithYouItem(with url: String, in context: NSManagedObjectContext?) throws -> SharedWithYouItem? {
         let request = Requests.fetchSharedWithYouItem()
         request.predicate = NSPredicate(format: "url = %@", url)
         request.fetchLimit = 1

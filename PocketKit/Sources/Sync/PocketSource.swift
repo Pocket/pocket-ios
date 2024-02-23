@@ -39,38 +39,47 @@ public class PocketSource: Source {
     private let userService: UserService
 
     private let operations: SyncOperationFactory
+
+    /// Instantiate a serial operation queue with background QOS
+    /// - Parameter queueName: the name of the queue to be instantiated
+    /// - Returns: the queue
+    private static func makeBackgroundQueue(_ queueName: String) -> OperationQueue {
+        let queue = OperationQueue()
+        queue.maxConcurrentOperationCount = 1
+        queue.qualityOfService = .background
+        queue.name = queueName
+        return queue
+    }
+
     private let saveQueue: OperationQueue = {
-        let q = OperationQueue()
-        // need to save data to the server 1 at a time cause a user can favorite, then unfavorite in a specific order.
-        q.maxConcurrentOperationCount = 1
-        q.qualityOfService = .background
-        q.name = "com.mozilla.pocket.save"
-        return q
+        makeBackgroundQueue("com.mozilla.pocket.save")
     }()
 
     private let fetchSavesQueue: OperationQueue = {
-        let q = OperationQueue()
-        q.maxConcurrentOperationCount = 1
-        q.qualityOfService = .background
-        q.name = "com.mozilla.pocket.fetch.saves"
-        return q
+        makeBackgroundQueue("com.mozilla.pocket.fetch.saves")
     }()
 
     private let fetchArchiveQueue: OperationQueue = {
-        let q = OperationQueue()
-        q.maxConcurrentOperationCount = 1
-        q.qualityOfService = .background
-        q.name = "com.mozilla.pocket.fetch.archive"
-        return q
+        makeBackgroundQueue("com.mozilla.pocket.fetch.archive")
     }()
 
     private let fetchTagsQueue: OperationQueue = {
-        let q = OperationQueue()
-        q.maxConcurrentOperationCount = 1
-        q.qualityOfService = .background
-        q.name = "com.mozilla.pocket.fetch.tags"
-        return q
+        makeBackgroundQueue("com.mozilla.pocket.fetch.tags")
     }()
+
+    private let fetchSharedWithYouQueue: OperationQueue = {
+        makeBackgroundQueue("com.mozilla.pocket.fetch.sharedWithYou")
+    }()
+
+    private var allQueues: [OperationQueue] {
+        [
+            saveQueue,
+            fetchSavesQueue,
+            fetchArchiveQueue,
+            fetchTagsQueue,
+            fetchSharedWithYouQueue
+        ]
+    }
 
     public convenience init(
         space: Space,
@@ -222,26 +231,31 @@ public class PocketSource: Source {
         retrySignal.send()
     }
 
+    private func shouldSuspendQueues(_ isSuspended: Bool) {
+        allQueues.forEach {
+            $0.isSuspended = isSuspended
+        }
+    }
+
+    private func suspendQueues() {
+        shouldSuspendQueues(true)
+    }
+
+    private func resumeQueues() {
+        shouldSuspendQueues(false)
+    }
+
     private func observeNetworkStatus() {
         networkMonitor.start(queue: .global(qos: .background))
         networkMonitor.updateHandler = { [weak self] path in
             switch path.status {
             case .unsatisfied, .requiresConnection:
-                self?.fetchSavesQueue.isSuspended = true
-                self?.fetchArchiveQueue.isSuspended = true
-                self?.saveQueue.isSuspended = true
-                self?.fetchTagsQueue.isSuspended = true
+                self?.suspendQueues()
             case .satisfied:
-                self?.fetchSavesQueue.isSuspended = false
-                self?.fetchArchiveQueue.isSuspended = false
-                self?.saveQueue.isSuspended = false
-                self?.fetchTagsQueue.isSuspended = false
+                self?.resumeQueues()
                 self?.retrySignal.send()
             @unknown default:
-                self?.fetchSavesQueue.isSuspended = false
-                self?.fetchArchiveQueue.isSuspended = false
-                self?.saveQueue.isSuspended = false
-                self?.fetchTagsQueue.isSuspended = false
+                self?.resumeQueues()
             }
         }
     }
@@ -249,10 +263,9 @@ public class PocketSource: Source {
     // Exposed to tests to facilitate waiting for all operations to finish
     // Should not be used outside of a testing context
     func drain(_ completion: @escaping () -> Void) {
-        self.fetchSavesQueue.waitUntilAllOperationsAreFinished()
-        self.fetchArchiveQueue.waitUntilAllOperationsAreFinished()
-        self.saveQueue.waitUntilAllOperationsAreFinished()
-        self.fetchTagsQueue.waitUntilAllOperationsAreFinished()
+        allQueues.forEach {
+            $0.waitUntilAllOperationsAreFinished()
+        }
         completion()
     }
 
@@ -1024,6 +1037,9 @@ extension PocketSource {
                     )
                 )
                 enqueue(operation: operation, persistentTask: persistentTask, queue: self.saveQueue)
+            case .fetchSharedWithYouItems(let urls):
+                let operation = operations.fetchSharedWithYouItems(apollo: apollo, space: space, urls: urls)
+                enqueue(operation: operation, persistentTask: persistentTask, queue: fetchSharedWithYouQueue)
             }
         }
     }
@@ -1193,7 +1209,7 @@ extension PocketSource {
 
 // MARK: Shared With You
 extension PocketSource {
-    public func updateSharedWithYouItems(with highlights: [SWHighlight]) {
+    public func updateSharedWithYouItems(with urls: [String]) {
         // TODO: Add implementation
     }
 

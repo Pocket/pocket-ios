@@ -142,6 +142,6 @@ public protocol Source {
     func fetchUnknownObject(uri: URL) -> NSManagedObject?
 
     // MARK: Shared With You
-    func updateSharedWithYouItems(with highlights: [SWHighlight])
+    func updateSharedWithYouItems(with urls: [String])
     func makeSharedWithYouController() -> RichFetchedResultsController<SharedWithYouItem>
 }

@@ -4,6 +4,7 @@
 
 import CoreData
 import SharedPocketKit
+import PocketGraph
 
 /// Protocol representing a type that exposes a (read only) task cursor
 protocol Paginated {
@@ -21,6 +22,11 @@ protocol ArchivedItemSpace: Paginated {
 
 protocol TagSpace: Paginated {
     func updateTags(edges: [Tag.TagEdge?], cursor: String?) throws
+}
+
+protocol SharedWithYouSpace {
+    func cleanupSharedWithYouItems(validUrls: [String]) throws
+    func updateSharedWithYouItem(url: String, sortOrder: Int, remote: ItemSummary) throws
 }
 
 /// A type that handles save operations on paginated data,
@@ -138,6 +144,35 @@ extension DerivedSpace: TagSpace {
                 let tag = space.fetchOrCreateTag(byName: node.name, context: context)
                 tag.update(remote: node.fragments.tagParts)
             }
+        }
+        try saveContexts()
+    }
+}
+
+extension DerivedSpace: SharedWithYouSpace {
+    func cleanupSharedWithYouItems(validUrls: [String]) throws {
+        try context.performAndWait {
+            let fetchRequest = SharedWithYouItem.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "NOT %K IN %@", #keyPath(SharedWithYouItem.url), validUrls)
+
+            let itemsToDelete = try context.fetch(fetchRequest)
+
+            itemsToDelete.forEach {
+                space.delete($0, in: context)
+            }
+        }
+        try saveContexts()
+    }
+
+    func updateSharedWithYouItem(url: String, sortOrder: Int, remote: ItemSummary) throws {
+        try context.performAndWait {
+            let item = try space.fetchItem(byURL: remote.givenUrl) ??
+            Item(context: context, givenURL: remote.givenUrl, remoteID: remote.remoteID)
+            item.update(from: remote, with: space)
+
+            let sharedWithYouItem = try space.fetchSharedWithYouItem(with: url, in: context) ??
+            SharedWithYouItem(context: context, url: url, sortOrder: Int32(sortOrder), item: item)
+            sharedWithYouItem.sortOrder = Int32(sortOrder)
         }
         try saveContexts()
     }
