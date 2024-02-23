@@ -166,7 +166,7 @@ extension DerivedSpace: SharedWithYouSpace {
 
     func updateSharedWithYouItem(url: String, sortOrder: Int, remote: ItemSummary) throws {
         try context.performAndWait {
-            let item = try space.fetchItem(byURL: remote.givenUrl) ??
+            let item = try space.fetchItem(byURL: remote.givenUrl, context: context) ??
             Item(context: context, givenURL: remote.givenUrl, remoteID: remote.remoteID)
             item.update(from: remote, with: space)
 

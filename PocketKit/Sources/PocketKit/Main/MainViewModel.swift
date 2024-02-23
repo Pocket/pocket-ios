@@ -90,8 +90,7 @@ class MainViewModel: ObservableObject {
                 recommendationsWidgetUpdateService: Services.shared.recommendationsWidgetUpdateService,
                 userDefaults: Services.shared.userDefaults,
                 notificationCenter: Services.shared.notificationCenter,
-                featureFlags: Services.shared.featureFlagService,
-                sharedWithYouStore: Services.shared.sharedWithYouStore
+                featureFlags: Services.shared.featureFlagService
             ),
             account: AccountViewModel(
                 appSession: Services.shared.appSession,

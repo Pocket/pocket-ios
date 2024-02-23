@@ -45,6 +45,7 @@ enum ReadableSource {
 enum SeeAll {
     case saves
     case slate(SlateDetailViewModel)
+    // TODO: Add shared with you
 
     func clearRecommendationToReport() {
         switch self {
@@ -131,8 +132,7 @@ class HomeViewModel: NSObject {
 
     private let recentSavesController: NSFetchedResultsController<SavedItem>
     private let recomendationsController: RichFetchedResultsController<Recommendation>
-
-    private let sharedWithYouStore: SharedWithYouStore
+    private let sharedWithYouController: RichFetchedResultsController<SharedWithYouItem>
 
     init(
         source: Source,
@@ -145,8 +145,7 @@ class HomeViewModel: NSObject {
         recommendationsWidgetUpdateService: RecommendationsWidgetUpdateService,
         userDefaults: UserDefaults,
         notificationCenter: NotificationCenter,
-        featureFlags: FeatureFlagServiceProtocol,
-        sharedWithYouStore: SharedWithYouStore
+        featureFlags: FeatureFlagServiceProtocol
     ) {
         self.source = source
         self.tracker = tracker
@@ -160,7 +159,6 @@ class HomeViewModel: NSObject {
         self.userDefaults = userDefaults
         self.notificationCenter = notificationCenter
         self.featureFlags = featureFlags
-        self.sharedWithYouStore = sharedWithYouStore
 
         self.snapshot = {
             return Self.loadingSnapshot()
@@ -168,10 +166,12 @@ class HomeViewModel: NSObject {
 
         self.recentSavesController = source.makeRecentSavesController()
         self.recomendationsController = source.makeHomeController()
+        self.sharedWithYouController = source.makeSharedWithYouController()
 
         super.init()
         self.recentSavesController.delegate = self
         self.recomendationsController.delegate = self
+        self.sharedWithYouController.delegate = self
 
         networkPathMonitor.updateHandler = { [weak self] path in
             if path.status == .satisfied {
@@ -188,8 +188,9 @@ class HomeViewModel: NSObject {
     /// Fetch the latest data from core data and get the NSFetechedResults Controllers subscribing to updates
     func fetch() {
         do {
-            try self.recentSavesController.performFetch()
-            try self.recomendationsController.performFetch()
+            try recentSavesController.performFetch()
+            try recomendationsController.performFetch()
+            try sharedWithYouController.performFetch()
         } catch {
             Log.capture(error: error)
         }
@@ -216,10 +217,9 @@ class HomeViewModel: NSObject {
 // MARK: - Snapshot building
 extension HomeViewModel {
     private func buildSnapshot() -> Snapshot {
-        let recentSaves = self.recentSavesController.fetchedObjects
-
         var snapshot = Snapshot()
 
+        let recentSaves = self.recentSavesController.fetchedObjects
         if let recentSaves, !recentSaves.isEmpty {
             recentSavesCount = recentSaves.count
             snapshot.appendSections([.recentSaves])
@@ -274,6 +274,11 @@ extension HomeViewModel {
             )
         }
 
+        if let sharedWithYouItems = sharedWithYouController.fetchedObjects as? [SharedWithYouItem], !sharedWithYouItems.isEmpty {
+            snapshot.appendSections([.sharedWithYou])
+            snapshot.appendItems(sharedWithYouItems.map { .sharedWithYou($0.objectID) }, toSection: .sharedWithYou)
+        }
+
         return snapshot
     }
 }
@@ -296,6 +301,11 @@ extension HomeViewModel {
             }
 
             select(recommendation: recommendation, at: indexPath)
+        case .sharedWithYou(let objectID):
+            guard let sharedWithYouItem = source.viewObject(id: objectID) as? SharedWithYouItem else {
+                return
+            }
+            select(sharedWithYouItem: sharedWithYouItem, at: indexPath)
         }
     }
 
@@ -483,6 +493,40 @@ extension HomeViewModel {
         trackRecentSavesOpen(url: savedItem.url, positionInList: indexPath?.item, source: readableSource)
     }
 
+    func select(sharedWithYouItem: SharedWithYouItem, at indexPath: IndexPath, readableSource: ReadableSource = .app) {
+        if let slug = sharedWithYouItem.item.collectionSlug, featureFlags.isAssigned(flag: .nativeCollections) {
+            selectedReadableType = .collection(CollectionViewModel(
+                slug: slug,
+                source: source,
+                tracker: tracker,
+                user: user,
+                store: store,
+                networkPathMonitor: networkPathMonitor,
+                userDefaults: userDefaults,
+                featureFlags: featureFlags,
+                notificationCenter: notificationCenter,
+                readableSource: readableSource
+            ))
+        } else {
+            let viewModel = RecommendableItemViewModel(
+                item: sharedWithYouItem.item,
+                source: source,
+                tracker: tracker,
+                pasteboard: UIPasteboard.general,
+                user: user,
+                userDefaults: userDefaults,
+                readableSource: readableSource
+            )
+
+            if sharedWithYouItem.item.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
+                selectedReadableType = .webViewRecommendable(viewModel)
+            } else {
+                selectedReadableType = .recommendable(viewModel)
+            }
+        }
+        // TODO: add analytics
+    }
+
     private func trackRecentSavesOpen(url: String, positionInList: Int?, source: ReadableSource) {
         switch source {
         case .app:
@@ -521,6 +565,12 @@ extension HomeViewModel {
             ) { [weak self] in
                 self?.select(slate: slate)
             }
+        case .sharedWithYou:
+            return .init(
+                name: SWHighlightCenter.highlightCollectionTitle,
+                buttonTitle: Localization.seeAll,
+                buttonImage: UIImage(asset: .chevronRight)
+            )
         case .loading, .slateCarousel, .offline:
             return nil
         }
@@ -742,7 +792,7 @@ extension HomeViewModel {
 extension HomeViewModel {
     func willDisplay(_ cell: HomeViewModel.Cell, at indexPath: IndexPath) {
         switch cell {
-        case .loading, .offline:
+        case .loading, .offline, .sharedWithYou:
             return
         case .recentSaves(let objectID):
             guard let savedItem = source.viewObject(id: objectID) as? SavedItem else {
@@ -779,6 +829,7 @@ extension HomeViewModel {
         case recentSaves
         case slateHero(NSManagedObjectID)
         case slateCarousel(NSManagedObjectID)
+        case sharedWithYou
         case offline
     }
 
@@ -787,6 +838,7 @@ extension HomeViewModel {
         case recentSaves(NSManagedObjectID)
         case recommendationHero(NSManagedObjectID)
         case recommendationCarousel(NSManagedObjectID)
+        case sharedWithYou(NSManagedObjectID)
         case offline
     }
 }

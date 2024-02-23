@@ -68,8 +68,8 @@ class FetchSharedWithYouItems: SyncOperation {
         for url in urls.enumerated() {
             Log.breadcrumb(category: "sync.sharedWithYou", level: .debug, message: "Grabbing sharedWithYouItem \(url.offset)")
 
-            if let item = (try? self.space.fetchSharedWithYouItem(with: url.element, in: space.backgroundContext))?.item {
-                Log.breadcrumb(category: "sync.sharedWithYou", level: .debug, message: "Skipping sharedWithYouItem \(url.offset) because we already have it's data, itemId: \(item.remoteID)")
+            if let item = try self.space.fetchSharedWithYouItem(with: url.element, in: space.backgroundContext)?.item {
+                Log.breadcrumb(category: "sync.sharedWithYou", level: .debug, message: "Skipping sharedWithYouItem \(url.offset) because we already have its data, itemId: \(item.remoteID)")
                 continue
             }
 
