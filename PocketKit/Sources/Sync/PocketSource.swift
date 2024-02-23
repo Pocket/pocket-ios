@@ -1210,7 +1210,8 @@ extension PocketSource {
 // MARK: Shared With You
 extension PocketSource {
     public func updateSharedWithYouItems(with urls: [String]) {
-        // TODO: Add implementation
+        let operation = operations.fetchSharedWithYouItems(apollo: apollo, space: space, urls: urls)
+        enqueue(operation: operation, task: .fetchSharedWithYouItems(urls: urls), queue: fetchSharedWithYouQueue)
     }
 
     public func makeSharedWithYouController() -> RichFetchedResultsController<SharedWithYouItem> {
