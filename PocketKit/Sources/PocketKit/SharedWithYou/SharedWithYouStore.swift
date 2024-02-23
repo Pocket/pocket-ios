@@ -4,16 +4,19 @@
 
 import Foundation
 import SharedWithYou
+import Sync
 
 /// Shared With You highlights store
-final class SharedWithYouStore: NSObject, ObservableObject {
+final class SharedWithYouStore: NSObject {
     private let highlightCenter: SWHighlightCenter
+    private let source: Source
 
-    @Published var highlights: [SWHighlight]
+    private(set) var highlights: [SWHighlight]
 
-    init(highlightCenter: SWHighlightCenter? = nil) {
+    init(highlightCenter: SWHighlightCenter? = nil, source: Source) {
         self.highlightCenter = highlightCenter ?? SWHighlightCenter()
         self.highlights = self.highlightCenter.highlights
+        self.source = source
         super.init()
         self.highlightCenter.delegate = self
     }
@@ -25,6 +28,9 @@ extension SharedWithYouStore: SWHighlightCenterDelegate {
         // if the list is different (either by elements or sort order) replace it
         if highlightCenter.highlights != self.highlights {
             self.highlights = highlightCenter.highlights
+            // Update local storage with the new highlights, which will trigger a UI update
+            // via the associated RichFetchedResultController
+            source.updateSharedWithYouItems(with: highlightCenter.highlights.map { $0.url.absoluteString })
         }
     }
 }
