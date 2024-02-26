@@ -43,10 +43,7 @@ class AppStoreReceiptService: NSObject, ReceiptService {
     func send(_ product: Product) async throws {
         // on simulators, we typically use a local test environment, and don't want
         // to send the receipt to the backend
-        #if targetEnvironment(simulator)
-        return
-        #endif
-
+        #if !targetEnvironment(simulator)
         // Ensure we have a receipt to work with from StoreKit 1
         _ = try await withCheckedThrowingContinuation { [unowned self] continuation in
             storeKit1Continuations.append(continuation)
@@ -69,6 +66,7 @@ class AppStoreReceiptService: NSObject, ReceiptService {
             currency: currency,
             transactionType: transactionType
         )
+        #endif
     }
 }
 
