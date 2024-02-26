@@ -23,7 +23,7 @@
 		166BAD0B2656E76B00E401F0 /* ReaderElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166BAD062656E76B00E401F0 /* ReaderElement.swift */; };
 		166BAD0C2656E76B00E401F0 /* SavesElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166BAD072656E76B00E401F0 /* SavesElement.swift */; };
 		166BAD0D2656E76B00E401F0 /* PocketAppElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166BAD082656E76B00E401F0 /* PocketAppElement.swift */; };
-		166DF27427E9160A00C03BF4 /* SaveToPocket.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = F204A76027E22EC50010E155 /* SaveToPocket.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		166DF27427E9160A00C03BF4 /* SaveToPocket.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F204A76027E22EC50010E155 /* SaveToPocket.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		166EFAE8268281F300A027CD /* ReaderToolbarElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166EFAE7268281F300A027CD /* ReaderToolbarElement.swift */; };
 		166EFAEA2682821300A027CD /* WebReaderElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166EFAE92682821300A027CD /* WebReaderElement.swift */; };
 		166F8F2726D0488900F898E3 /* XCUIElement+wait.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166F8F2626D0488900F898E3 /* XCUIElement+wait.swift */; };
@@ -54,7 +54,7 @@
 		650EEAB929F35395004D66BD /* PocketGraphTestMocks in Frameworks */ = {isa = PBXBuildFile; productRef = 650EEAB829F35395004D66BD /* PocketGraphTestMocks */; };
 		650EEABC29F35499004D66BD /* ApolloTestSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 650EEABB29F35499004D66BD /* ApolloTestSupport */; };
 		650FECCE28BA85F300A3CB0C /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 650FECCD28BA85F300A3CB0C /* NotificationService.swift */; };
-		650FECD228BA85F300A3CB0C /* PushNotificationServiceExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 650FECCB28BA85F300A3CB0C /* PushNotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		650FECD228BA85F300A3CB0C /* PushNotificationServiceExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 650FECCB28BA85F300A3CB0C /* PushNotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		65167B6F2909904200343FA8 /* BrazeNotificationService in Frameworks */ = {isa = PBXBuildFile; productRef = 65167B6E2909904200343FA8 /* BrazeNotificationService */; };
 		65167B712909904200343FA8 /* BrazePushStory in Frameworks */ = {isa = PBXBuildFile; productRef = 65167B702909904200343FA8 /* BrazePushStory */; };
 		6544202329B1B17C002B12F2 /* DeleteConfirmationViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6544202229B1B17C002B12F2 /* DeleteConfirmationViewElement.swift */; };
@@ -62,7 +62,7 @@
 		656041EE29B18105007E7CD0 /* SettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656041ED29B18105007E7CD0 /* SettingsTests.swift */; };
 		656041F029B182AF007E7CD0 /* AccountManagementViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656041EF29B182AF007E7CD0 /* AccountManagementViewElement.swift */; };
 		656A99D62B237F6300FCFDC4 /* Messages.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65BE9F542B228AA80059C3C4 /* Messages.framework */; };
-		656A99E22B237F6300FCFDC4 /* iMessageExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 656A99D52B237F6300FCFDC4 /* iMessageExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		656A99E22B237F6300FCFDC4 /* iMessageExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 656A99D52B237F6300FCFDC4 /* iMessageExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		656A99E82B237FC500FCFDC4 /* PocketStickerKit in Frameworks */ = {isa = PBXBuildFile; productRef = 656A99E72B237FC500FCFDC4 /* PocketStickerKit */; };
 		656A99EB2B23828200FCFDC4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 65BE9F5C2B228AA90059C3C4 /* Assets.xcassets */; };
 		656BF0732A09A5EC008BA8E3 /* ErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656BF0722A09A5EC008BA8E3 /* ErrorTests.swift */; };
@@ -74,7 +74,7 @@
 		65EC272728BA8AD50075E1DF /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65EC272628BA8AD50075E1DF /* UserNotifications.framework */; };
 		65EC272928BA8AD50075E1DF /* UserNotificationsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65EC272828BA8AD50075E1DF /* UserNotificationsUI.framework */; };
 		65EC272C28BA8AD50075E1DF /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EC272B28BA8AD50075E1DF /* NotificationViewController.swift */; };
-		65EC273328BA8AD50075E1DF /* PushNotificationStoryExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 65EC272528BA8AD50075E1DF /* PushNotificationStoryExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		65EC273328BA8AD50075E1DF /* PushNotificationStoryExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 65EC272528BA8AD50075E1DF /* PushNotificationStoryExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		8A3B77BD29E0AEEB00AD71D0 /* PocketKit in Frameworks */ = {isa = PBXBuildFile; productRef = 8A3B77BC29E0AEEB00AD71D0 /* PocketKit */; };
 		8A3E3DBC2864DB0500483564 /* EmptyStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A3E3DBB2864DB0500483564 /* EmptyStateTests.swift */; };
 		8A3EAA5128AACC9500392057 /* AddTagsItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A3EAA5028AACC9500392057 /* AddTagsItemTests.swift */; };
@@ -94,7 +94,7 @@
 		AA2E89052A0D8847004A27BD /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2E89042A0D8847004A27BD /* SwiftUI.framework */; };
 		AA2E89082A0D8848004A27BD /* ItemWidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2E89072A0D8848004A27BD /* ItemWidgetsBundle.swift */; };
 		AA2E890C2A0D8849004A27BD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA2E890B2A0D8849004A27BD /* Assets.xcassets */; };
-		AA2E89102A0D8849004A27BD /* ItemWidgets.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = AA2E89012A0D8847004A27BD /* ItemWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		AA2E89102A0D8849004A27BD /* ItemWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = AA2E89012A0D8847004A27BD /* ItemWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		AA69A28429B7FC6E00BBA644 /* SearchGetPremiumEmptyViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA69A28329B7FC6E00BBA644 /* SearchGetPremiumEmptyViewElement.swift */; };
 		AA7D6A2B2995F0A20094FD18 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA7D6A2A2995F0A20094FD18 /* StoreKit.framework */; };
 		AA9DB97429B6E6480046AEF6 /* Test_Subscriptions.storekit in Resources */ = {isa = PBXBuildFile; fileRef = AA909ACC299F4D5400F90FA7 /* Test_Subscriptions.storekit */; };
@@ -161,19 +161,19 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		166DF27727E9160A00C03BF4 /* Embed App Extensions */ = {
+		166DF27727E9160A00C03BF4 /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 12;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				AA2E89102A0D8849004A27BD /* ItemWidgets.appex in Embed App Extensions */,
-				166DF27427E9160A00C03BF4 /* SaveToPocket.appex in Embed App Extensions */,
-				65EC273328BA8AD50075E1DF /* PushNotificationStoryExtension.appex in Embed App Extensions */,
-				650FECD228BA85F300A3CB0C /* PushNotificationServiceExtension.appex in Embed App Extensions */,
-				656A99E22B237F6300FCFDC4 /* iMessageExtension.appex in Embed App Extensions */,
+				AA2E89102A0D8849004A27BD /* ItemWidgets.appex in Embed Foundation Extensions */,
+				166DF27427E9160A00C03BF4 /* SaveToPocket.appex in Embed Foundation Extensions */,
+				65EC273328BA8AD50075E1DF /* PushNotificationStoryExtension.appex in Embed Foundation Extensions */,
+				650FECD228BA85F300A3CB0C /* PushNotificationServiceExtension.appex in Embed Foundation Extensions */,
+				656A99E22B237F6300FCFDC4 /* iMessageExtension.appex in Embed Foundation Extensions */,
 			);
-			name = "Embed App Extensions";
+			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		F220F2B0264DC0DE0064D272 /* Embed Frameworks */ = {
@@ -640,7 +640,7 @@
 				166A81AD2637406C0015AA1D /* Frameworks */,
 				166A81AE2637406C0015AA1D /* Resources */,
 				F220F2B0264DC0DE0064D272 /* Embed Frameworks */,
-				166DF27727E9160A00C03BF4 /* Embed App Extensions */,
+				166DF27727E9160A00C03BF4 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
@@ -794,8 +794,9 @@
 		166A81A42637406B0015AA1D /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 1300;
+				LastUpgradeCheck = 1520;
 				TargetAttributes = {
 					166A81AF2637406C0015AA1D = {
 						CreatedOnToolsVersion = 12.5;
@@ -1166,6 +1167,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = EX3VH4YFCH;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -1231,6 +1233,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = EX3VH4YFCH;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -1658,6 +1661,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = EX3VH4YFCH;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
