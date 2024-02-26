@@ -517,14 +517,15 @@ extension HomeViewModel {
                 userDefaults: userDefaults,
                 readableSource: readableSource
             )
-
+            var destination: ContentOpen.Destination = .internal
             if sharedWithYouItem.item.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
                 selectedReadableType = .webViewRecommendable(viewModel)
+                destination = .external
             } else {
                 selectedReadableType = .recommendable(viewModel)
             }
         }
-        // TODO: add analytics
+        #warning("Add shared with you analytics and use destination")
     }
 
     private func trackRecentSavesOpen(url: String, positionInList: Int?, source: ReadableSource) {
@@ -651,6 +652,13 @@ extension HomeViewModel {
         presentedAlert = nil
         tracker.track(event: Events.Home.RecentSavesCardDelete(url: item.url, positionInList: indexPath.item))
         source.delete(item: item)
+    }
+}
+
+// MARK: Shared With You model
+extension HomeViewModel {
+    var numberOfSharedWithYouItems: Int {
+        sharedWithYouController.fetchedObjects?.count ?? 0
     }
 }
 

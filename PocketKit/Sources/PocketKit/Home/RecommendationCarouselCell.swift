@@ -6,6 +6,7 @@ import Foundation
 import UIKit
 import Textile
 import Localization
+import SharedWithYou
 
 class RecommendationCarouselCell: HomeCarouselItemCell {
     struct Model: HomeCarouselItemCellModel {
@@ -52,6 +53,10 @@ class RecommendationCarouselCell: HomeCarouselItemCell {
 
         var attributedTimeToRead: NSAttributedString {
             return NSAttributedString(string: viewModel.timeToRead ?? "", style: .recommendation.timeToRead)
+        }
+
+        var sharedWithYouHighlight: SWHighlight? {
+            nil
         }
     }
 }

@@ -58,6 +58,9 @@ class HomeViewController: UIViewController {
         case .offline:
             let hasRecentSaves = self.dataSource.index(for: .recentSaves) != nil
             return self.sectionProvider.offlineSection(environment: env, withRecentSaves: hasRecentSaves)
+        case .sharedWithYou:
+            #warning("Add actual shared with you implementation here")
+            return nil
         }
     }
 
@@ -238,6 +241,9 @@ extension HomeViewController {
         case .offline:
             let cell: ItemsListOfflineCell = collectionView.dequeueCell(for: indexPath)
             return cell
+        case .sharedWithYou(let objectID):
+            #warning("Add actual shared with you implementation here")
+            return UICollectionViewCell()
         }
     }
 

@@ -5,6 +5,7 @@
 import UIKit
 import Kingfisher
 import Textile
+import SharedWithYou
 
 protocol HomeCarouselItemCellModel {
     var thumbnailURL: URL? { get }
@@ -16,6 +17,7 @@ protocol HomeCarouselItemCellModel {
     var attributedTitle: NSAttributedString { get }
     var attributedDomain: NSAttributedString { get }
     var attributedTimeToRead: NSAttributedString { get }
+    var sharedWithYouHighlight: SWHighlight? { get }
 }
 
 class HomeCarouselItemCell: UICollectionViewCell {
