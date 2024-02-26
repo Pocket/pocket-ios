@@ -75,8 +75,9 @@ extension InstantSync: InstantSyncProtocol {
         }
 
         Task {[weak self] in
+            guard let self else { return }
             do {
-                _ = try await self?.v3Client.deregisterPushToken(for: DeviceUtilities.deviceIdentifer(), pushType: pushType, session: session)
+                _ = try await v3Client.deregisterPushToken(for: DeviceUtilities.deviceIdentifer(), pushType: pushType, session: session)
             } catch {
                 Log.capture(error: error)
             }
@@ -94,8 +95,9 @@ extension InstantSync: InstantSyncProtocol {
         }
 
         Task {[weak self] in
+            guard let self else { return }
             do {
-                _ = try await self?.v3Client.registerPushToken(for: DeviceUtilities.deviceIdentifer(), pushType: pushType, token: deviceToken.base64EncodedString(), session: session)
+                _ = try await v3Client.registerPushToken(for: DeviceUtilities.deviceIdentifer(), pushType: pushType, token: deviceToken.base64EncodedString(), session: session)
             } catch {
                 Log.capture(error: error)
                 Log.breadcrumb(category: "sync", level: .error, message: "Registering Push notification failed with session: \(session)")
