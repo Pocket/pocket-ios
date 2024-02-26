@@ -84,6 +84,6 @@ public class PocketSnowplowTracker: SnowplowTracker {
     }
 
     public func track(event: SelfDescribing) {
-        tracker.track(event)
+        _ = tracker.track(event)
     }
 }
