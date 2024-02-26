@@ -597,7 +597,7 @@ extension HomeViewModel {
     func recentSavesViewModel(
         for objectID: NSManagedObjectID,
         at indexPath: IndexPath
-    ) -> RecentSavesItemCell.Model? {
+    ) -> RecentSavesCellConfiguration? {
         guard let savedItem = source.viewObject(id: objectID) as? SavedItem else {
             return nil
         }
@@ -613,7 +613,7 @@ extension HomeViewModel {
             }
         }
 
-        return RecentSavesItemCell.Model(
+        return RecentSavesCellConfiguration(
             item: savedItem,
             favoriteAction: favoriteAction,
             overflowActions: [
@@ -696,9 +696,9 @@ extension HomeViewModel {
     func recommendationCarouselViewModel(
         for objectID: NSManagedObjectID,
         at indexPath: IndexPath
-    ) -> RecommendationCarouselCell.Model? {
+    ) -> RecommendationCellConfiguration? {
         recommendationHeroViewModel(for: objectID, at: indexPath)
-            .flatMap(RecommendationCarouselCell.Model.init)
+            .flatMap(RecommendationCellConfiguration.init)
     }
 
     private func overflowActions(for recommendation: Recommendation, at indexPath: IndexPath?) -> [ItemAction] {

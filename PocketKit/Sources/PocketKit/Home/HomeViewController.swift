@@ -102,8 +102,7 @@ class HomeViewController: UIViewController {
         collectionView.backgroundColor = UIColor(.ui.white1)
         collectionView.register(cellClass: LoadingCell.self)
         collectionView.register(cellClass: RecommendationCell.self)
-        collectionView.register(cellClass: RecentSavesItemCell.self)
-        collectionView.register(cellClass: RecommendationCarouselCell.self)
+        collectionView.register(cellClass: HomeCarouselCell.self)
         collectionView.register(cellClass: ItemsListOfflineCell.self)
         collectionView.register(viewClass: SectionHeaderView.self, forSupplementaryViewOfKind: SectionHeaderView.kind)
         collectionView.delegate = self
@@ -215,7 +214,7 @@ extension HomeViewController {
             let cell: LoadingCell = collectionView.dequeueCell(for: indexPath)
             return cell
         case .recentSaves(let objectID):
-            let cell: RecentSavesItemCell = collectionView.dequeueCell(for: indexPath)
+            let cell: HomeCarouselCell = collectionView.dequeueCell(for: indexPath)
             guard let viewModel = model.recentSavesViewModel(for: objectID, at: indexPath) else {
                 return cell
             }
@@ -231,7 +230,7 @@ extension HomeViewController {
             cell.configure(model: viewModel)
             return cell
         case .recommendationCarousel(let objectID):
-            let cell: RecommendationCarouselCell = collectionView.dequeueCell(for: indexPath)
+            let cell: HomeCarouselCell = collectionView.dequeueCell(for: indexPath)
             guard let viewModel = model.recommendationCarouselViewModel(for: objectID, at: indexPath) else {
                 return cell
             }

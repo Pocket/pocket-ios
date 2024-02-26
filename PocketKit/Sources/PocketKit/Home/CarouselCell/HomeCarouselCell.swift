@@ -7,20 +7,7 @@ import Kingfisher
 import Textile
 import SharedWithYou
 
-protocol HomeCarouselItemCellModel {
-    var thumbnailURL: URL? { get }
-    var saveButtonMode: RecommendationSaveButton.Mode? { get }
-    var favoriteAction: ItemAction? { get }
-    var overflowActions: [ItemAction]? { get }
-    var saveAction: ItemAction? { get }
-    var attributedCollection: NSAttributedString? { get }
-    var attributedTitle: NSAttributedString { get }
-    var attributedDomain: NSAttributedString { get }
-    var attributedTimeToRead: NSAttributedString { get }
-    var sharedWithYouHighlight: SWHighlight? { get }
-}
-
-class HomeCarouselItemCell: UICollectionViewCell {
+class HomeCarouselCell: UICollectionViewCell {
     enum Constants {
         static let cornerRadius: CGFloat = 16
         static let maxTitleLines = 3
@@ -181,8 +168,8 @@ class HomeCarouselItemCell: UICollectionViewCell {
     }
 }
 
-extension HomeCarouselItemCell {
-    func configure(model: HomeCarouselItemCellModel) {
+extension HomeCarouselCell {
+    func configure(model: HomeCarouselCellConfiguration) {
         titleLabel.attributedText = model.attributedTitle
         domainLabel.attributedText = model.attributedDomain
         timeToReadLabel.attributedText = model.attributedTimeToRead
