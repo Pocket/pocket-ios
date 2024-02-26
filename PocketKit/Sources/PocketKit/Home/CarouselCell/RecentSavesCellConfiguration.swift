@@ -7,7 +7,6 @@ import UIKit
 import Textile
 import Localization
 import SharedPocketKit
-import SharedWithYou
 
 struct RecentSavesCellConfiguration: HomeCarouselCellConfiguration {
     let item: ItemsListItem
@@ -48,7 +47,7 @@ struct RecentSavesCellConfiguration: HomeCarouselCellConfiguration {
         return NSAttributedString(string: timeToRead ?? "", style: .recommendation.timeToRead)
     }
 
-    var sharedWithYouHighlight: SWHighlight? {
+    var sharedWithYouUrlString: String? {
         nil
     }
 

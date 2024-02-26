@@ -2,7 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import SharedWithYou
+import Foundation
 
 protocol HomeCarouselCellConfiguration {
     var thumbnailURL: URL? { get }
@@ -14,5 +14,5 @@ protocol HomeCarouselCellConfiguration {
     var attributedTitle: NSAttributedString { get }
     var attributedDomain: NSAttributedString { get }
     var attributedTimeToRead: NSAttributedString { get }
-    var sharedWithYouHighlight: SWHighlight? { get }
+    var sharedWithYouUrlString: String? { get }
 }
