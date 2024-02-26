@@ -61,7 +61,7 @@ class HomeViewControllerSectionProvider {
                 widthDimension: .fractionalWidth(itemWidthPercentage * Double(numberOfRecentSavesItems)),
                 heightDimension: .absolute(StyleConstants.groupHeight)
             ),
-            subitem: item,
+            repeatingSubitem: item,
             count: numberOfRecentSavesItems
         )
         group.interItemSpacing = .fixed(16)
@@ -172,7 +172,7 @@ class HomeViewControllerSectionProvider {
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.8*Double(numberOfCarouselItems)), heightDimension: .absolute(StyleConstants.groupHeight))
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: numberOfCarouselItems)
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, repeatingSubitem: item, count: numberOfCarouselItems)
         group.interItemSpacing = .fixed(16)
 
         let section = NSCollectionLayoutSection(group: group)
@@ -199,7 +199,7 @@ class HomeViewControllerSectionProvider {
                     widthDimension: .fractionalWidth(1),
                     heightDimension: .absolute(StyleConstants.groupHeight)
                 ),
-                subitem: .init(
+                repeatingSubitem: .init(
                     layoutSize: .init(
                         widthDimension: .fractionalWidth(0.5),
                         heightDimension: .fractionalHeight(1)
