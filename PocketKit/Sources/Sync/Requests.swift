@@ -290,7 +290,7 @@ public enum Requests {
     }
 
     public static func fetchSharedWithYouItems(limit: Int? = nil) -> RichFetchRequest<SharedWithYouItem> {
-        let request = RichFetchRequest<SharedWithYouItem>(entityName: "SharedWithYouHighlight")
+        let request = RichFetchRequest<SharedWithYouItem>(entityName: "SharedWithYouItem")
         request.sortDescriptors = [
             NSSortDescriptor(keyPath: \SharedWithYouItem.sortOrder, ascending: true),
             NSSortDescriptor(keyPath: \SharedWithYouItem.item.title, ascending: true)
