@@ -22,7 +22,7 @@ class GridSectionLayoutProvider {
     ///   - environment: environment to retrieve view details
     ///   - view: view that we want to provide a layout for
     /// - Returns: compact (1 column view) or wide grid layout ( 2 or 3 column view)
-    func gridSection(for viewModels: [RecommendationCellViewModel], with environment: NSCollectionLayoutEnvironment, and view: UIView) -> NSCollectionLayoutSection {
+    func gridSection(for viewModels: [ItemCellViewModel], with environment: NSCollectionLayoutEnvironment, and view: UIView) -> NSCollectionLayoutSection {
         let width = environment.container.effectiveContentSize.width
         let margin = environment.traitCollection.shouldUseWideLayout() ? Margins.iPadNormal.rawValue : Margins.normal.rawValue
 
@@ -39,7 +39,7 @@ class GridSectionLayoutProvider {
     ///   - width: width that the section occupies
     ///   - margin: padding adding to the side of the section
     /// - Returns: section layout for iPad view and regular horizontal size class
-    private func sectionForWideLayout(with viewModels: [RecommendationCellViewModel], width: CGFloat, margin: CGFloat, view: UIView) -> NSCollectionLayoutSection {
+    private func sectionForWideLayout(with viewModels: [ItemCellViewModel], width: CGFloat, margin: CGFloat, view: UIView) -> NSCollectionLayoutSection {
         let numberOfColumns = numberOfColumns(with: view)
         let recommendationsHeight = viewModels.compactMap {
             getRecommendationHeight(for: $0, width: width, margin: margin, numberOfColumns: numberOfColumns)
@@ -56,7 +56,7 @@ class GridSectionLayoutProvider {
     ///   - width: width that the section occupies
     ///   - margin: padding adding to the side of the section
     /// - Returns: section layout for compact (i.e. iPhone mode)
-    private func sectionForCompact(with viewModels: [RecommendationCellViewModel], width: CGFloat, margin: CGFloat) -> NSCollectionLayoutSection {
+    private func sectionForCompact(with viewModels: [ItemCellViewModel], width: CGFloat, margin: CGFloat) -> NSCollectionLayoutSection {
         let components = createComponentsForCompact(with: viewModels, width: width, margin: margin)
         return createSectionFromGroup(with: components, and: margin)
     }
@@ -75,7 +75,7 @@ class GridSectionLayoutProvider {
     ///   - width: width that the section occupies
     ///   - margin: margin for the section layout
     /// - Returns: tuple of total height and list of items used to determine section layout
-    private func createComponentsForWideLayout(with viewModels: [RecommendationCellViewModel], numberOfColumns: Int, rowHeights: [CGFloat]) -> (CGFloat, [NSCollectionLayoutGroup]) {
+    private func createComponentsForWideLayout(with viewModels: [ItemCellViewModel], numberOfColumns: Int, rowHeights: [CGFloat]) -> (CGFloat, [NSCollectionLayoutGroup]) {
         let numberOfRows = (CGFloat(viewModels.count) / CGFloat(numberOfColumns)).rounded(.up)
         let item = NSCollectionLayoutItem(
             layoutSize: NSCollectionLayoutSize(
@@ -110,7 +110,7 @@ class GridSectionLayoutProvider {
     ///   - width: width that the section occupies
     ///   - margin: margin for the section layout
     /// - Returns: tuple of total height and list of items used to determine section layout
-    private func createComponentsForCompact(with viewModels: [RecommendationCellViewModel], width: CGFloat, margin: CGFloat) -> (CGFloat, [NSCollectionLayoutItem]) {
+    private func createComponentsForCompact(with viewModels: [ItemCellViewModel], width: CGFloat, margin: CGFloat) -> (CGFloat, [NSCollectionLayoutItem]) {
         return viewModels.reduce((CGFloat(0), [NSCollectionLayoutItem]())) { result, viewModel in
             let currentHeight = result.0
             var items = result.1
@@ -134,7 +134,7 @@ class GridSectionLayoutProvider {
     ///   - margin: padding adding to the side of the section
     ///   - numberOfColumns: number of columns layout should have
     /// - Returns: return a list of heights for all the recommendations
-    private func getRecommendationHeight(for viewModel: RecommendationCellViewModel, width: CGFloat, margin: CGFloat, numberOfColumns: Int = 1) -> CGFloat {
+    private func getRecommendationHeight(for viewModel: ItemCellViewModel, width: CGFloat, margin: CGFloat, numberOfColumns: Int = 1) -> CGFloat {
         RecommendationCell.fullHeight(viewModel: viewModel, availableWidth: width / CGFloat(numberOfColumns) - (margin * 2)) + margin
     }
 

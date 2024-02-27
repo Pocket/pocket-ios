@@ -8,9 +8,9 @@ import Textile
 import Localization
 
 struct RecommendationCellConfiguration: HomeCarouselCellConfiguration {
-    private let viewModel: HomeRecommendationCellViewModel
+    private let viewModel: HomeItemCellViewModel
 
-    init(viewModel: HomeRecommendationCellViewModel) {
+    init(viewModel: HomeItemCellViewModel) {
         self.viewModel = viewModel
     }
 
@@ -23,7 +23,7 @@ struct RecommendationCellConfiguration: HomeCarouselCellConfiguration {
         viewModel.imageURL
     }
 
-    var saveButtonMode: RecommendationSaveButton.Mode? {
+    var saveButtonMode: ItemCellSaveButton.Mode? {
         viewModel.saveButtonMode
     }
 
@@ -36,7 +36,7 @@ struct RecommendationCellConfiguration: HomeCarouselCellConfiguration {
     }
 
     var attributedCollection: NSAttributedString? {
-        guard viewModel.recommendation.item.isCollection else { return nil }
+        guard viewModel.item.isCollection else { return nil }
         return NSAttributedString(string: Localization.Constants.collection, style: .recommendation.collection)
     }
 
@@ -46,7 +46,7 @@ struct RecommendationCellConfiguration: HomeCarouselCellConfiguration {
 
     var attributedDomain: NSAttributedString {
         let detailString = NSMutableAttributedString(string: viewModel.domain ?? "", style: .recommendation.domain)
-        return viewModel.recommendation.item.isSyndicated ? detailString.addSyndicatedIndicator(with: .recommendation.domain) : detailString
+        return viewModel.item.isSyndicated ? detailString.addSyndicatedIndicator(with: .recommendation.domain) : detailString
     }
 
     var attributedTimeToRead: NSAttributedString {

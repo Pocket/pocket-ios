@@ -163,17 +163,21 @@ extension SlateDetailViewModel {
     func recommendationViewModel(
         for objectID: NSManagedObjectID,
         at indexPath: IndexPath? = nil
-    ) -> HomeRecommendationCellViewModel? {
+    ) -> HomeItemCellViewModel? {
         guard let recommendation = source.viewObject(id: objectID) as? Recommendation else {
             return nil
         }
 
         guard let indexPath = indexPath else {
-            return HomeRecommendationCellViewModel(recommendation: recommendation)
+            return HomeItemCellViewModel(
+                item: recommendation.item,
+                imageURL: recommendation.bestImageURL,
+                title: recommendation.title
+            )
         }
 
-        return HomeRecommendationCellViewModel(
-            recommendation: recommendation,
+        return HomeItemCellViewModel(
+            item: recommendation.item,
             overflowActions: [
                 .share { [weak self] sender in
                     // This view model is used within the context of a view that is presented within Home
@@ -192,7 +196,9 @@ extension SlateDetailViewModel {
                 } else {
                     self?.save(recommendation, at: indexPath)
                 }
-            }
+            },
+            imageURL: recommendation.bestImageURL,
+            title: recommendation.title
         )
     }
 

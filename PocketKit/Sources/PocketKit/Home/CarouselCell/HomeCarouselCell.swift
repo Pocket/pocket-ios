@@ -64,8 +64,8 @@ class HomeCarouselCell: UICollectionViewCell {
         return button
     }()
 
-    let saveButton: RecommendationSaveButton = {
-        let button = RecommendationSaveButton()
+    let saveButton: ItemCellSaveButton = {
+        let button = ItemCellSaveButton()
         button.accessibilityIdentifier = "save-button"
         return button
     }()

@@ -681,15 +681,17 @@ extension HomeViewModel {
     func recommendationHeroViewModel(
         for objectID: NSManagedObjectID? = nil,
         at indexPath: IndexPath? = nil
-    ) -> HomeRecommendationCellViewModel? {
+    ) -> HomeItemCellViewModel? {
         guard let objectID = objectID, let recommendation = source.viewObject(id: objectID) as? Recommendation else {
             return nil
         }
 
-        return HomeRecommendationCellViewModel(
-            recommendation: recommendation,
+        return HomeItemCellViewModel(
+            item: recommendation.item,
             overflowActions: overflowActions(for: recommendation, at: indexPath),
-            primaryAction: primaryAction(for: recommendation, at: indexPath)
+            primaryAction: primaryAction(for: recommendation, at: indexPath),
+            imageURL: recommendation.bestImageURL,
+            title: recommendation.title
         )
     }
 

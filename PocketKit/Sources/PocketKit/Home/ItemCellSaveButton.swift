@@ -11,7 +11,8 @@ private extension Style {
     static let saveTitleHighlighted: Style = .header.sansSerif.p4.with(color: .ui.grey1).with(weight: .medium).with(maxScaleSize: 17)
 }
 
-class RecommendationSaveButton: UIButton {
+/// The `Save/Saved` button used in unified home cells
+class ItemCellSaveButton: UIButton {
     enum Mode {
         case save
         case saved

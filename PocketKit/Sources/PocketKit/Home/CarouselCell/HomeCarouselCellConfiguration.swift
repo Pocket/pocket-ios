@@ -6,7 +6,7 @@ import Foundation
 
 protocol HomeCarouselCellConfiguration {
     var thumbnailURL: URL? { get }
-    var saveButtonMode: RecommendationSaveButton.Mode? { get }
+    var saveButtonMode: ItemCellSaveButton.Mode? { get }
     var favoriteAction: ItemAction? { get }
     var overflowActions: [ItemAction]? { get }
     var saveAction: ItemAction? { get }

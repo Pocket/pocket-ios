@@ -6,14 +6,16 @@ import UIKit
 import Kingfisher
 import Textile
 
-protocol RecommendationCellViewModel {
+/// View models of cels used in Unified Home can conform to this protocol
+/// to use a set of standard elements
+protocol ItemCellViewModel {
     var attributedCollection: NSAttributedString? { get }
     var attributedTitle: NSAttributedString { get }
     var attributedExcerpt: NSAttributedString? { get }
     var attributedDomain: NSAttributedString { get }
     var attributedTimeToRead: NSAttributedString { get }
     var imageURL: URL? { get }
-    var saveButtonMode: RecommendationSaveButton.Mode { get }
+    var saveButtonMode: ItemCellSaveButton.Mode { get }
     var overflowActions: [ItemAction]? { get }
     var primaryAction: ItemAction? { get }
 }
@@ -59,8 +61,8 @@ class RecommendationCell: UICollectionViewCell {
         return label
     }()
 
-    let saveButton: RecommendationSaveButton = {
-        let button = RecommendationSaveButton()
+    let saveButton: ItemCellSaveButton = {
+        let button = ItemCellSaveButton()
         button.accessibilityIdentifier = "save-button"
         return button
     }()
@@ -154,7 +156,7 @@ class RecommendationCell: UICollectionViewCell {
         fatalError()
     }
 
-    func configure(model: RecommendationCellViewModel) {
+    func configure(model: ItemCellViewModel) {
         titleLabel.attributedText = model.attributedTitle
         domainLabel.attributedText = model.attributedDomain
         timeToReadLabel.attributedText = model.attributedTimeToRead
@@ -240,7 +242,7 @@ extension RecommendationCell {
 }
 
 extension RecommendationCell {
-    static func fullHeight(viewModel: RecommendationCellViewModel, availableWidth: CGFloat) -> CGFloat {
+    static func fullHeight(viewModel: ItemCellViewModel, availableWidth: CGFloat) -> CGFloat {
         let adjustedWidth = availableWidth - Constants.layoutMargins.left - Constants.layoutMargins.right
         let imageHeight = (availableWidth * Constants.imageAspectRatio).rounded(.up)
 

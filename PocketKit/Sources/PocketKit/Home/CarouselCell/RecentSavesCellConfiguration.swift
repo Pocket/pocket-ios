@@ -15,7 +15,7 @@ struct RecentSavesCellConfiguration: HomeCarouselCellConfiguration {
     let thumbnailURL: URL?
 
     // Unused properties for recent saves cells
-    let saveButtonMode: RecommendationSaveButton.Mode? = nil
+    let saveButtonMode: ItemCellSaveButton.Mode? = nil
     let saveAction: ItemAction? = nil
 
     init(

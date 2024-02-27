@@ -9,30 +9,37 @@ import Textile
 import CoreData
 import Localization
 
-class HomeRecommendationCellViewModel {
-    let recommendation: Recommendation
+/// View model for Item cells in unified Home
+class HomeItemCellViewModel {
+    let item: Item
     let overflowActions: [ItemAction]?
     let primaryAction: ItemAction?
+    var imageURL: URL?
+    var title: String?
 
     var isSaved: Bool {
-        recommendation.item.savedItem != nil &&
-        recommendation.item.savedItem?.isArchived == false
+        item.savedItem != nil &&
+        item.savedItem?.isArchived == false
     }
 
     init(
-        recommendation: Recommendation,
+        item: Item,
         overflowActions: [ItemAction]? = nil,
-        primaryAction: ItemAction? = nil
+        primaryAction: ItemAction? = nil,
+        imageURL: URL?,
+        title: String? = nil
     ) {
-        self.recommendation = recommendation
+        self.item = item
         self.overflowActions = overflowActions
         self.primaryAction = primaryAction
+        self.imageURL = imageURL
+        self.title = title ?? item.syndicatedArticle?.title ?? item.title
     }
 }
 
-extension HomeRecommendationCellViewModel: RecommendationCellViewModel {
+extension HomeItemCellViewModel: ItemCellViewModel {
     var attributedCollection: NSAttributedString? {
-        guard recommendation.item.isCollection else { return nil }
+        guard item.isCollection else { return nil }
         return NSAttributedString(string: Localization.Constants.collection, style: .recommendation.collection)
     }
 
@@ -46,31 +53,23 @@ extension HomeRecommendationCellViewModel: RecommendationCellViewModel {
 
     var attributedDomain: NSAttributedString {
         let detailString = NSMutableAttributedString(string: domain ?? "", style: .recommendation.domain)
-        return recommendation.item.isSyndicated ? detailString.addSyndicatedIndicator(with: .recommendation.domain) : detailString
+        return item.isSyndicated ? detailString.addSyndicatedIndicator(with: .recommendation.domain) : detailString
     }
 
     var attributedTimeToRead: NSAttributedString {
         NSAttributedString(string: timeToRead ?? "", style: .recommendation.timeToRead)
     }
 
-    var title: String? {
-        recommendation.bestTitle
-    }
-
-    var imageURL: URL? {
-        recommendation.bestImageURL
-    }
-
-    var saveButtonMode: RecommendationSaveButton.Mode {
+    var saveButtonMode: ItemCellSaveButton.Mode {
         isSaved ? .saved : .save
     }
 
     var domain: String? {
-        recommendation.bestDomain
+        item.bestDomain
     }
 
     var timeToRead: String? {
-        guard let timeToRead = recommendation.item.timeToRead,
+        guard let timeToRead = item.timeToRead,
               timeToRead.intValue > 0 else {
             return nil
         }

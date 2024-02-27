@@ -32,7 +32,7 @@ struct CollectionStoryViewModel: Hashable {
     }
 }
 
-extension CollectionStoryViewModel: RecommendationCellViewModel {
+extension CollectionStoryViewModel: ItemCellViewModel {
     var attributedCollection: NSAttributedString? {
         guard collectionStory.item?.isCollection == true else { return nil }
         return NSAttributedString(string: Localization.Constants.collection, style: .recommendation.collection)
@@ -75,7 +75,7 @@ extension CollectionStoryViewModel: RecommendationCellViewModel {
         return URL(string: imageURL)
     }
 
-    var saveButtonMode: RecommendationSaveButton.Mode {
+    var saveButtonMode: ItemCellSaveButton.Mode {
         collectionStory.isSaved ? .saved : .save
     }
 
