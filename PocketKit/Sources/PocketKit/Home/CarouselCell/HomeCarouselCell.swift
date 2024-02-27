@@ -169,19 +169,19 @@ class HomeCarouselCell: UICollectionViewCell {
 }
 
 extension HomeCarouselCell {
-    func configure(model: HomeCarouselCellConfiguration) {
-        titleLabel.attributedText = model.attributedTitle
-        domainLabel.attributedText = model.attributedDomain
-        timeToReadLabel.attributedText = model.attributedTimeToRead
+    func configure(with configuration: HomeCarouselCellConfiguration) {
+        titleLabel.attributedText = configuration.attributedTitle
+        domainLabel.attributedText = configuration.attributedDomain
+        timeToReadLabel.attributedText = configuration.attributedTimeToRead
 
-        if let attributedCollection = model.attributedCollection {
+        if let attributedCollection = configuration.attributedCollection {
             collectionLabel.isHidden = false
             collectionLabel.attributedText = attributedCollection
         } else {
             collectionLabel.isHidden = true
         }
 
-        if model.attributedTimeToRead.string.isEmpty {
+        if configuration.attributedTimeToRead.string.isEmpty {
             timeToReadLabel.isHidden = true
             subtitleStack.setCustomSpacing(0, after: timeToReadLabel)
             subtitleStack.setCustomSpacing(Constants.layoutMargins.bottom, after: domainLabel)
@@ -191,30 +191,30 @@ extension HomeCarouselCell {
             subtitleStack.setCustomSpacing(Constants.layoutMargins.bottom, after: timeToReadLabel)
         }
 
-        favoriteButton.accessibilityLabel = model.favoriteAction?.title
-        favoriteButton.accessibilityIdentifier = model.favoriteAction?.accessibilityIdentifier
-        favoriteButton.configuration?.image = model.favoriteAction?.image?.resized(to: Constants.actionButtonImageSize)
+        favoriteButton.accessibilityLabel = configuration.favoriteAction?.title
+        favoriteButton.accessibilityIdentifier = configuration.favoriteAction?.accessibilityIdentifier
+        favoriteButton.configuration?.image = configuration.favoriteAction?.image?.resized(to: Constants.actionButtonImageSize)
 
-        if let favoriteAction = UIAction(model.favoriteAction) {
+        if let favoriteAction = UIAction(configuration.favoriteAction) {
             favoriteButton.addAction(favoriteAction, for: .primaryActionTriggered)
         }
 
-        if let mode = model.saveButtonMode {
+        if let mode = configuration.saveButtonMode {
             saveButton.isHidden = false
             saveButton.mode = mode
         } else {
             saveButton.isHidden = true
         }
 
-        if let saveAction = UIAction(model.saveAction) {
+        if let saveAction = UIAction(configuration.saveAction) {
             saveButton.addAction(saveAction, for: .primaryActionTriggered)
         }
 
-        let menuActions = model.overflowActions?.compactMap(UIAction.init) ?? []
+        let menuActions = configuration.overflowActions?.compactMap(UIAction.init) ?? []
         overflowButton.menu = UIMenu(children: menuActions)
 
         thumbnailView.image = nil
-        guard let thumbnailURL = model.thumbnailURL else {
+        guard let thumbnailURL = configuration.thumbnailURL else {
             thumbnailWidthConstraint.constant = 0
             return
         }

@@ -594,7 +594,7 @@ extension HomeViewModel {
         return recentSavesCount
     }
 
-    func recentSavesViewModel(
+    func recentSavesCellConfiguration(
         for objectID: NSManagedObjectID,
         at indexPath: IndexPath
     ) -> RecentSavesCellConfiguration? {
@@ -695,7 +695,7 @@ extension HomeViewModel {
         )
     }
 
-    func recommendationCarouselViewModel(
+    func recommendationCellConfiguration(
         for objectID: NSManagedObjectID,
         at indexPath: IndexPath
     ) -> RecommendationCellConfiguration? {

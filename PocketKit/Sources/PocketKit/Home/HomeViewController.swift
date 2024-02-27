@@ -215,11 +215,11 @@ extension HomeViewController {
             return cell
         case .recentSaves(let objectID):
             let cell: HomeCarouselCell = collectionView.dequeueCell(for: indexPath)
-            guard let viewModel = model.recentSavesViewModel(for: objectID, at: indexPath) else {
+            guard let configuration = model.recentSavesCellConfiguration(for: objectID, at: indexPath) else {
                 return cell
             }
 
-            cell.configure(model: viewModel)
+            cell.configure(with: configuration)
             return cell
         case .recommendationHero(let objectID):
             let cell: RecommendationCell = collectionView.dequeueCell(for: indexPath)
@@ -231,11 +231,11 @@ extension HomeViewController {
             return cell
         case .recommendationCarousel(let objectID):
             let cell: HomeCarouselCell = collectionView.dequeueCell(for: indexPath)
-            guard let viewModel = model.recommendationCarouselViewModel(for: objectID, at: indexPath) else {
+            guard let configuration = model.recommendationCellConfiguration(for: objectID, at: indexPath) else {
                 return cell
             }
 
-            cell.configure(model: viewModel)
+            cell.configure(with: configuration)
             return cell
         case .offline:
             let cell: ItemsListOfflineCell = collectionView.dequeueCell(for: indexPath)
