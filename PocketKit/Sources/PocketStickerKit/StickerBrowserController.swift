@@ -30,6 +30,9 @@ class StickerBrowserController: MSStickerBrowserViewController {
         self.braze = braze
         self.tracker = tracker
         super.init(stickerSize: .regular)
+        // This wont respond to interface changes, but will at least make the stickers the right colors on launch
+        view.backgroundColor = .systemBackground
+        stickerBrowserView.backgroundColor = .systemBackground
     }
 
     required init?(coder: NSCoder) {
