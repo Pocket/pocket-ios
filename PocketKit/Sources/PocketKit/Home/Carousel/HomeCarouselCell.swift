@@ -77,8 +77,6 @@ class HomeCarouselCell: UICollectionViewCell {
         return button
     }()
 
-    private let mainContentView = UIView()
-
     private let textStack: UIStackView = {
         let stack = UIStackView()
         stack.spacing = Constants.stackSpacing
@@ -116,6 +114,21 @@ class HomeCarouselCell: UICollectionViewCell {
         stack.alignment = .bottom
         stack.spacing = 0
         return stack
+    }()
+
+    private lazy var attributionView: SWAttributionView = {
+        let attributionView = SWAttributionView()
+        attributionView.translatesAutoresizingMaskIntoConstraints = false
+        attributionView.displayContext = .detail
+        return attributionView
+    }()
+
+    private lazy var attributionStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [attributionView, UIView()])
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .horizontal
+        stackView.alignment = .leading
+        return stackView
     }()
 
     private var thumbnailWidthConstraint: NSLayoutConstraint!
