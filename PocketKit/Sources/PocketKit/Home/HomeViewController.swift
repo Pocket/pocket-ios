@@ -59,8 +59,7 @@ class HomeViewController: UIViewController {
             let hasRecentSaves = self.dataSource.index(for: .recentSaves) != nil
             return self.sectionProvider.offlineSection(environment: env, withRecentSaves: hasRecentSaves)
         case .sharedWithYou:
-            #warning("Add actual shared with you implementation here")
-            return nil
+            return self.sectionProvider.sharedWithYouSection(in: self.model, env: env)
         }
     }
 
@@ -103,6 +102,7 @@ class HomeViewController: UIViewController {
         collectionView.register(cellClass: LoadingCell.self)
         collectionView.register(cellClass: RecommendationCell.self)
         collectionView.register(cellClass: HomeCarouselCell.self)
+        collectionView.register(cellClass: SharedWithYouCarouselCell.self)
         collectionView.register(cellClass: ItemsListOfflineCell.self)
         collectionView.register(viewClass: SectionHeaderView.self, forSupplementaryViewOfKind: SectionHeaderView.kind)
         collectionView.delegate = self
@@ -241,8 +241,13 @@ extension HomeViewController {
             let cell: ItemsListOfflineCell = collectionView.dequeueCell(for: indexPath)
             return cell
         case .sharedWithYou(let objectID):
-            #warning("Add actual shared with you implementation here")
-            return UICollectionViewCell()
+            let cell: SharedWithYouCarouselCell = collectionView.dequeueCell(for: indexPath)
+            guard let configuration = model.sharedWithYouCellConfiguration(for: objectID, at: indexPath) else {
+                return cell
+            }
+
+            cell.configure(with: configuration)
+            return cell
         }
     }
 

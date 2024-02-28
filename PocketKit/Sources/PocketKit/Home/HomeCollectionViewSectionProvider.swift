@@ -186,6 +186,42 @@ class HomeViewControllerSectionProvider {
         return section
     }
 
+    func sharedWithYouSection(in viewModel: HomeViewModel, env: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? {
+        let numberOfSharedWithYouItems = viewModel.numberOfSharedWithYouItems
+        guard numberOfSharedWithYouItems > 0 else { return .empty() }
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.8*Double(numberOfSharedWithYouItems)), heightDimension: .absolute(StyleConstants.sharedWithYouGroupHeight))
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: numberOfSharedWithYouItems)
+        group.interItemSpacing = .fixed(16)
+
+        let sectionHeaderViewModel = viewModel.sectionHeaderViewModel(for: .sharedWithYou)
+        let headerItem = NSCollectionLayoutBoundarySupplementaryItem(
+            layoutSize: NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .absolute(
+                    sectionHeaderViewModel?.height(
+                        width: env.container.effectiveContentSize.width - Constants.sideMargin * 2
+                    ) ?? 1
+                )
+            ),
+            elementKind: SectionHeaderView.kind,
+            alignment: .top
+        )
+
+        let section = NSCollectionLayoutSection(group: group)
+        section.orthogonalScrollingBehavior = .continuous
+        section.boundarySupplementaryItems = [headerItem]
+        section.contentInsets = NSDirectionalEdgeInsets(
+            top: Constants.margin,
+            leading: Constants.sideMargin,
+            bottom: Constants.sectionSpacing,
+            trailing: Constants.sideMargin
+        )
+        return section
+    }
+
     private func recommendationCellGridSection(for slateID: NSManagedObjectID, in viewModel: HomeViewModel, env: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection {
         let numberOfCarouselItems = viewModel.numberOfCarouselItemsForSlate(with: slateID)
         guard numberOfCarouselItems > 0 else {

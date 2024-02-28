@@ -54,6 +54,7 @@ struct RecommendationCellConfiguration: HomeCarouselCellConfiguration {
     }
 
     var sharedWithYouUrlString: String? {
+        // attribution view not applicable
         nil
     }
 }

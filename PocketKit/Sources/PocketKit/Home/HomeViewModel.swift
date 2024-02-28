@@ -234,6 +234,11 @@ extension HomeViewModel {
             snapshot.appendItems([.offline], toSection: .offline)
             return snapshot
         }
+        // Add Shared With You section right below recent saves
+        if let sharedWithYouItems = sharedWithYouController.fetchedObjects as? [SharedWithYouItem], !sharedWithYouItems.isEmpty {
+            snapshot.appendSections([.sharedWithYou])
+            snapshot.appendItems(sharedWithYouItems.map { .sharedWithYou($0.objectID) }, toSection: .sharedWithYou)
+        }
 
         guard let slateSections = self.recomendationsController.sections, !slateSections.isEmpty else {
             snapshot.appendSections([.loading])
@@ -273,12 +278,6 @@ extension HomeViewModel {
                 toSection: .slateCarousel(slateId)
             )
         }
-
-        if let sharedWithYouItems = sharedWithYouController.fetchedObjects as? [SharedWithYouItem], !sharedWithYouItems.isEmpty {
-            snapshot.appendSections([.sharedWithYou])
-            snapshot.appendItems(sharedWithYouItems.map { .sharedWithYou($0.objectID) }, toSection: .sharedWithYou)
-        }
-
         return snapshot
     }
 }
@@ -703,6 +702,22 @@ extension HomeViewModel {
             .flatMap(RecommendationCellConfiguration.init)
     }
 
+    func sharedWithYouCellConfiguration(for objectID: NSManagedObjectID, at indexPath: IndexPath) -> SharedWithYouCellConfiguration? {
+        guard let sharedWithYouItem = source.viewObject(id: objectID) as? SharedWithYouItem else {
+            return nil
+        }
+        let viewModel = HomeItemCellViewModel(
+            item: sharedWithYouItem.item,
+            overflowActions: [ .share { [weak self] sender in
+                    self?.share(sharedWithYouItem, at: indexPath, with: sender)
+                }],
+            primaryAction: primaryAction(for: sharedWithYouItem, at: indexPath),
+            imageURL: sharedWithYouItem.item.topImageURL,
+            title: sharedWithYouItem.item.title
+        )
+        return SharedWithYouCellConfiguration(viewModel: viewModel, sharedWithYouUrlString: sharedWithYouItem.url)
+    }
+
     private func overflowActions(for recommendation: Recommendation, at indexPath: IndexPath?) -> [ItemAction] {
         guard let indexPath = indexPath else {
             return []
@@ -735,6 +750,18 @@ extension HomeViewModel {
         }
     }
 
+    private func primaryAction(for sharedWithYouItem: SharedWithYouItem, at indexPath: IndexPath) -> ItemAction? {
+        return .sharedWithYouPrimary { [weak self] _ in
+            if let savedItem = sharedWithYouItem.item.savedItem, !savedItem.isArchived {
+                self?.source.archive(item: savedItem)
+                #warning("Add Shared With You analytics")
+            } else {
+                self?.source.save(item: sharedWithYouItem.item)
+                #warning("Add Shared With You analytics")
+            }
+        }
+    }
+
     private func report(_ recommendation: Recommendation, at indexPath: IndexPath) {
         selectedRecommendationToReport = recommendation
     }
@@ -760,6 +787,11 @@ extension HomeViewModel {
         // within the context of "Recent Saves"
         self.sharedActivity = PocketItemActivity.fromSaves(url: savedItem.url, sender: sender)
         tracker.track(event: Events.Home.RecentSavesCardShare(url: savedItem.url, positionInList: indexPath.item))
+    }
+
+    private func share(_ sharedWithYouItem: SharedWithYouItem, at indexPath: IndexPath, with sender: Any?) {
+        self.sharedActivity = PocketItemActivity.fromHome(url: sharedWithYouItem.item.givenURL, sender: sender)
+        #warning("Add Shared With You analytics")
     }
 
     private func save(_ recommendation: Recommendation, at indexPath: IndexPath) {

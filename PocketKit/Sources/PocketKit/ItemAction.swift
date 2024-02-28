@@ -203,6 +203,19 @@ extension ItemAction {
         )
     }
 
+    static func sharedWithYouPrimary(_ handler: @escaping (Any?) -> Void) -> ItemAction {
+        return ItemAction(
+            title: "",
+            identifier: .sharedWithYouItemPrimary,
+            accessibilityIdentifier: "item-action-shared-with-you-primary",
+            image: nil,
+            handler: { sender in
+                Haptics.defaultTap()
+                handler(sender)
+            }
+        )
+    }
+
     static func copyLink(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
             title: Localization.ItemAction.copyLink,
@@ -245,6 +258,7 @@ extension UIAction.Identifier {
     static let copyLink = UIAction.Identifier(rawValue: "copy-link")
     static let open = UIAction.Identifier(rawValue: "open")
     static let showHighlightsItem = UIAction.Identifier(rawValue: "show-highlights-item")
+    static let sharedWithYouItemPrimary = UIAction.Identifier(rawValue: "shared-with-you-primary")
 }
 
 extension UIAction {

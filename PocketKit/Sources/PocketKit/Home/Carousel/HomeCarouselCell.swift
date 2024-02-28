@@ -5,7 +5,7 @@
 import UIKit
 import Kingfisher
 import Textile
-import SharedWithYou
+import SharedPocketKit
 
 class HomeCarouselCell: UICollectionViewCell {
     enum Constants {
@@ -116,18 +116,20 @@ class HomeCarouselCell: UICollectionViewCell {
         return stack
     }()
 
-    private lazy var attributionView: SWAttributionView = {
-        let attributionView = SWAttributionView()
-        attributionView.translatesAutoresizingMaskIntoConstraints = false
-        attributionView.displayContext = .detail
-        return attributionView
+    /// The top-most view containing the standard carousel cell, that is the content of the item but not the attribution view (if applicable)
+    private lazy var topView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
 
-    private lazy var attributionStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [attributionView, UIView()])
+    /// The top-most stack view, that allows to add accessory views.
+    /// If no accessory view is present, it only contains `topView`
+    lazy var topStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [topView])
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.axis = .horizontal
-        stackView.alignment = .leading
+        stackView.axis = .vertical
+        stackView.spacing = 8
         return stackView
     }()
 
@@ -137,14 +139,14 @@ class HomeCarouselCell: UICollectionViewCell {
         super.init(frame: frame)
         accessibilityIdentifier = "home-carousel-item"
 
-        contentView.addSubview(mainContentStack)
-        contentView.addSubview(bottomStack)
-        contentView.layoutMargins = Constants.layoutMargins
+        topView.addSubview(mainContentStack)
+        topView.addSubview(bottomStack)
+        contentView.addSubview(topStackView)
+        topView.layoutMargins = Constants.layoutMargins
 
         mainContentStack.translatesAutoresizingMaskIntoConstraints = false
         thumbnailView.translatesAutoresizingMaskIntoConstraints = false
         bottomStack.translatesAutoresizingMaskIntoConstraints = false
-        contentView.translatesAutoresizingMaskIntoConstraints = false
 
         thumbnailWidthConstraint = thumbnailView.widthAnchor.constraint(
             equalToConstant: StyleConstants.thumbnailSize.width
@@ -152,21 +154,21 @@ class HomeCarouselCell: UICollectionViewCell {
 
         contentView.layoutMargins = Constants.layoutMargins
         NSLayoutConstraint.activate([
-            mainContentStack.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor),
-            mainContentStack.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
-            mainContentStack.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
+            mainContentStack.topAnchor.constraint(equalTo: topView.layoutMarginsGuide.topAnchor),
+            mainContentStack.leadingAnchor.constraint(equalTo: topView.layoutMarginsGuide.leadingAnchor),
+            mainContentStack.trailingAnchor.constraint(equalTo: topView.layoutMarginsGuide.trailingAnchor),
 
             thumbnailView.heightAnchor.constraint(equalToConstant: StyleConstants.thumbnailSize.height).with(priority: .required),
             thumbnailWidthConstraint!,
 
             bottomStack.leadingAnchor.constraint(equalTo: mainContentStack.leadingAnchor),
             bottomStack.trailingAnchor.constraint(equalTo: mainContentStack.trailingAnchor),
-            bottomStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).with(priority: .required),
+            bottomStack.bottomAnchor.constraint(equalTo: topView.bottomAnchor).with(priority: .required),
 
-            contentView.topAnchor.constraint(equalTo: topAnchor),
-            contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            topStackView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            topStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            topStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            topStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
         ])
 
         [UIView(), domainLabel, timeToReadLabel, UIView()].forEach(subtitleStack.addArrangedSubview)
@@ -179,9 +181,7 @@ class HomeCarouselCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-}
 
-extension HomeCarouselCell {
     func configure(with configuration: HomeCarouselCellConfiguration) {
         titleLabel.attributedText = configuration.attributedTitle
         domainLabel.attributedText = configuration.attributedDomain
@@ -257,13 +257,16 @@ extension HomeCarouselCell {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        layer.masksToBounds = false
-        layer.cornerRadius = Constants.cornerRadius
-        layer.shadowColor = UIColor(.ui.border).cgColor
-        layer.shadowOffset = .zero
-        layer.shadowOpacity = 1.0
-        layer.shadowRadius = 6
-        layer.shadowPath = UIBezierPath(roundedRect: layer.bounds, cornerRadius: layer.cornerRadius).cgPath
-        layer.backgroundColor = UIColor(.ui.homeCellBackground).cgColor
+        configureLayout()
+    }
+
+    private func configureLayout() {
+        topView.layer.cornerRadius = Constants.cornerRadius
+        topView.layer.shadowColor = UIColor(.ui.border).cgColor
+        topView.layer.shadowOffset = .zero
+        topView.layer.shadowOpacity = 1.0
+        topView.layer.shadowRadius = 6
+        topView.layer.shadowPath = UIBezierPath(roundedRect: topView.layer.bounds, cornerRadius: topView.layer.cornerRadius).cgPath
+        topView.layer.backgroundColor = UIColor(.ui.homeCellBackground).cgColor
     }
 }
