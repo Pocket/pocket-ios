@@ -934,7 +934,7 @@ extension HomeViewModel: NSFetchedResultsControllerDelegate {
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
         var newSnapshot = buildSnapshot()
 
-        if controller == self.recentSavesController {
+        if controller == recentSavesController {
             let reloadedItemIdentifiers: [Cell] = snapshot.reloadedItemIdentifiers.compactMap({ .recentSaves($0 as! NSManagedObjectID) })
             let reconfiguredItemdIdentifiers: [Cell] = snapshot.reconfiguredItemIdentifiers.compactMap({ .recentSaves($0 as! NSManagedObjectID) })
             newSnapshot.reloadItems(reloadedItemIdentifiers)
@@ -949,7 +949,7 @@ extension HomeViewModel: NSFetchedResultsControllerDelegate {
             return
         }
 
-        if controller == self.recomendationsController {
+        if controller == recomendationsController {
             let existingItemIdentifiers = newSnapshot.itemIdentifiers
 
             // Gather all variations a recomendation could exist in for reloaded identifiers
@@ -968,6 +968,22 @@ extension HomeViewModel: NSFetchedResultsControllerDelegate {
             // Tell the new snapshot to reconfigure just the ones that exist
             newSnapshot.reconfigureItems(reconfiguredItemIdentifiers)
             updateRecommendationsWidget()
+        }
+
+        if controller == sharedWithYouController {
+            let existingItemIdentifiers = newSnapshot.itemIdentifiers
+            let reloadedItems: [Cell] =
+            snapshot
+                .reloadedItemIdentifiers
+                .compactMap { .sharedWithYou($0 as! NSManagedObjectID) }
+                .filter { existingItemIdentifiers.contains($0) }
+            let reconfiguredItems: [Cell] =
+            snapshot
+                .reconfiguredItemIdentifiers
+                .compactMap { .sharedWithYou($0 as! NSManagedObjectID) }
+                .filter { existingItemIdentifiers.contains($0) }
+            newSnapshot.reloadItems(reloadedItems)
+            newSnapshot.reconfigureItems(reconfiguredItems)
         }
 
         self.snapshot = newSnapshot
