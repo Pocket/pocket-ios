@@ -179,6 +179,48 @@ extension MockOperationFactory {
     }
 }
 
+// MARK: fetchSharedWithYouItems
+extension MockOperationFactory {
+    typealias FetchSharedWithYouImpl = (
+        ApolloClientProtocol,
+        Space
+    ) -> SyncOperation
+
+    struct FetchSharedWithYouCall {
+        let apollo: ApolloClientProtocol
+        let space: Space
+    }
+
+    func stubFetchSharedWithYou(impl: @escaping FetchArchiveImpl) {
+        implementations["fetchSharedWithYou"] = impl
+    }
+
+    func fetchSharedWithYouItems(apollo: Apollo.ApolloClientProtocol, space: Sync.Space, urls: [String]) -> Sync.SyncOperation {
+        guard let impl = implementations["fetchSharedWithYou"] as? FetchSharedWithYouImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        lock.sync {
+            calls["fetchSharedWithYou"] = (calls["fetchSharedWithYou"] ?? []) + [
+                FetchSharedWithYouCall(
+                    apollo: apollo,
+                    space: space
+                )
+            ]
+        }
+
+        return impl(apollo, space)
+    }
+
+    func fetchSharedWithYouCall(at index: Int) -> FetchSharedWithYouCall? {
+        guard let calls = calls["fetchSharedWithYou"], index < calls.count else {
+            return nil
+        }
+
+        return calls[index] as? FetchSharedWithYouCall
+    }
+}
+
 // MARK: - itemMutationOperation
 extension MockOperationFactory {
     typealias ItemMutationOperationImpl<Mutation: GraphQLMutation> = (

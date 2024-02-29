@@ -266,6 +266,32 @@ extension MockSource {
     }
 }
 
+// MARK: Shared With You Controller
+extension MockSource {
+    private static let makeSharedWithYouController = "makeSharedWithYouController"
+    typealias MakeSharedWithYouControllerImpl = () -> RichFetchedResultsController<SharedWithYouItem>
+
+    struct MakeSharedWithYouControllerCall {}
+
+    func stubMakeSharedWithYouController(impl: @escaping MakeSharedWithYouControllerImpl) {
+        implementations[Self.makeSharedWithYouController] = impl
+    }
+
+    func makeSharedWithYouController() -> RichFetchedResultsController<SharedWithYouItem> {
+        guard let impl = implementations[Self.makeSharedWithYouController] as? MakeSharedWithYouControllerImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.makeSharedWithYouController] = (calls[Self.makeSharedWithYouController] ?? []) + [MakeSharedWithYouControllerCall()]
+
+        return impl()
+    }
+
+    func updateSharedWithYouItems(with urls: [String]) {
+        // TODO: add implementation
+    }
+}
+
 // MARK: fetch collection authors
 extension MockSource {
     private static let fetchCollectionAuthors = "fetchCollectionAuthors"
