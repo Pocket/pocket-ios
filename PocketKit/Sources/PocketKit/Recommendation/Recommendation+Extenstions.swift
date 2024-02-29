@@ -15,6 +15,14 @@ extension Recommendation {
         return CDNURLBuilder().imageCacheURL(for: topImageURL)
     }
 
+    var bestDomain: String? {
+        item.bestDomain
+    }
+
+    var bestTitle: String? {
+        title ?? item.syndicatedArticle?.title ?? item.title
+    }
+
     var bestExcerpt: String? {
         excerpt ?? item.syndicatedArticle?.excerpt ?? item.excerpt
     }
