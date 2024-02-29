@@ -116,7 +116,8 @@ class HomeCarouselCell: UICollectionViewCell {
         return stack
     }()
 
-    /// The top-most view containing the standard carousel cell, that is the content of the item but not the attribution view (if applicable)
+    /// The top-most view containing the standard carousel cell,
+    /// that is the content of the item but not the accessory view (if applicable)
     private lazy var topView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -141,8 +142,8 @@ class HomeCarouselCell: UICollectionViewCell {
 
         topView.addSubview(mainContentStack)
         topView.addSubview(bottomStack)
-        contentView.addSubview(topStackView)
         topView.layoutMargins = Constants.layoutMargins
+        contentView.addSubview(topStackView)
 
         mainContentStack.translatesAutoresizingMaskIntoConstraints = false
         thumbnailView.translatesAutoresizingMaskIntoConstraints = false
