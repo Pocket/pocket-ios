@@ -5,21 +5,10 @@
 import UIKit
 import Kingfisher
 import Textile
+import SharedWithYou
+import SharedPocketKit
 
-/// View models of cels used in Unified Home can conform to this protocol
-/// to use a set of standard elements
-protocol ItemCellViewModel {
-    var attributedCollection: NSAttributedString? { get }
-    var attributedTitle: NSAttributedString { get }
-    var attributedExcerpt: NSAttributedString? { get }
-    var attributedDomain: NSAttributedString { get }
-    var attributedTimeToRead: NSAttributedString { get }
-    var imageURL: URL? { get }
-    var saveButtonMode: ItemCellSaveButton.Mode { get }
-    var overflowActions: [ItemAction]? { get }
-    var primaryAction: ItemAction? { get }
-}
-
+/// Cell for the primary/hero items in Home and Collections
 class HomeItemCell: UICollectionViewCell {
     private let thumbnailImageView: UIImageView = {
         let imageView = UIImageView()
@@ -102,14 +91,62 @@ class HomeItemCell: UICollectionViewCell {
         return textView
     }()
 
+    /// The top-most view containing the standard hero cell,
+    /// that is the content of the item but not the accessory view (if applicable)
+    private lazy var topView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
+    /// The top-most stack view, that allows to add accessory views.
+    /// If no accessory view is present, it only contains `topView`
+    lazy var topStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [topView])
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .vertical
+        stackView.spacing = 8
+        return stackView
+    }()
+
+    /// Add the attribution view if a valid shared with you url is found
+    /// - Parameter urlString: the string representation of the url
+    private func addAttributionView(_ urlString: String) async {
+        guard let url = URL(string: urlString) else {
+            return
+        }
+        // no need to re-add the same attribution view
+        if let highlight = attributionView.highlight, highlight.url.absoluteString == urlString, attributionView.isDescendant(of: topStackView) {
+            return
+        }
+        do {
+            let highlight = try await SWHighlightCenter().highlight(for: url)
+            attributionView.highlight = highlight
+            // in case of reusing a cell, we just need to change the highlight without readding the attribution view to the hierarchy
+            if !attributionView.isDescendant(of: topStackView) {
+                topStackView.addArrangedSubview(attributionView)
+            }
+        } catch {
+            Log.capture(message: "Unable to retrieve highlight for url: \(urlString) - Error: \(error)")
+        }
+    }
+
+    private lazy var attributionView: SWAttributionView = {
+        let attributionView = SWAttributionView()
+        attributionView.translatesAutoresizingMaskIntoConstraints = false
+        attributionView.displayContext = .summary
+        return attributionView
+    }()
+
     override init(frame: CGRect) {
         super.init(frame: frame)
-        contentView.addSubview(thumbnailImageView)
-        contentView.addSubview(collectionLabel)
-        contentView.addSubview(titleLabel)
-        contentView.addSubview(excerptTextView)
-        contentView.addSubview(bottomStack)
-        contentView.layoutMargins = Constants.layoutMargins
+        topView.addSubview(thumbnailImageView)
+        topView.addSubview(collectionLabel)
+        topView.addSubview(titleLabel)
+        topView.addSubview(excerptTextView)
+        topView.addSubview(bottomStack)
+        topView.layoutMargins = Constants.layoutMargins
+        contentView.addSubview(topStackView)
 
         thumbnailImageView.translatesAutoresizingMaskIntoConstraints = false
         collectionLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -117,34 +154,32 @@ class HomeItemCell: UICollectionViewCell {
         excerptTextView.translatesAutoresizingMaskIntoConstraints = false
         bottomStack.translatesAutoresizingMaskIntoConstraints = false
 
-        contentView.translatesAutoresizingMaskIntoConstraints = false
-
         NSLayoutConstraint.activate([
-            thumbnailImageView.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor),
-            thumbnailImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            thumbnailImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            thumbnailImageView.topAnchor.constraint(equalTo: topView.layoutMarginsGuide.topAnchor),
+            thumbnailImageView.leadingAnchor.constraint(equalTo: topView.leadingAnchor),
+            thumbnailImageView.trailingAnchor.constraint(equalTo: topView.trailingAnchor),
             thumbnailImageView.heightAnchor.constraint(equalTo: thumbnailImageView.widthAnchor, multiplier: Constants.imageAspectRatio),
 
             collectionLabel.topAnchor.constraint(equalTo: thumbnailImageView.bottomAnchor, constant: Constants.textStackTopMargin),
-            collectionLabel.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
-            collectionLabel.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
+            collectionLabel.leadingAnchor.constraint(equalTo: topView.layoutMarginsGuide.leadingAnchor),
+            collectionLabel.trailingAnchor.constraint(equalTo: topView.layoutMarginsGuide.trailingAnchor),
 
             titleLabel.topAnchor.constraint(equalTo: collectionLabel.bottomAnchor, constant: Constants.stackSpacing),
-            titleLabel.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
-            titleLabel.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
+            titleLabel.leadingAnchor.constraint(equalTo: topView.layoutMarginsGuide.leadingAnchor),
+            titleLabel.trailingAnchor.constraint(equalTo: topView.layoutMarginsGuide.trailingAnchor),
 
             excerptTextView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: Constants.textStackMiddleMargin),
-            excerptTextView.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
-            excerptTextView.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
+            excerptTextView.leadingAnchor.constraint(equalTo: topView.layoutMarginsGuide.leadingAnchor),
+            excerptTextView.trailingAnchor.constraint(equalTo: topView.layoutMarginsGuide.trailingAnchor),
 
-            bottomStack.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
-            bottomStack.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
-            bottomStack.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor).with(priority: .required),
+            bottomStack.leadingAnchor.constraint(equalTo: topView.layoutMarginsGuide.leadingAnchor),
+            bottomStack.trailingAnchor.constraint(equalTo: topView.layoutMarginsGuide.trailingAnchor),
+            bottomStack.bottomAnchor.constraint(equalTo: topView.layoutMarginsGuide.bottomAnchor).with(priority: .required),
 
-            contentView.topAnchor.constraint(equalTo: topAnchor),
-            contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            topStackView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            topStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            topStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            topStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
 
         [UIView(), domainLabel, timeToReadLabel, UIView()].forEach(subtitleStack.addArrangedSubview)
@@ -211,17 +246,30 @@ class HomeItemCell: UICollectionViewCell {
                 )
             ]
         )
+
+        if let url = model.sharedWithYouUrlString {
+            Task {
+                await addAttributionView(url)
+            }
+        } else {
+            attributionView.removeFromSuperview()
+        }
     }
 
     override func layoutSubviews() {
-        layer.masksToBounds = false
-        layer.cornerRadius = Constants.cornerRadius
-        layer.shadowColor = UIColor(.ui.border).cgColor
-        layer.shadowOffset = .zero
-        layer.shadowOpacity = 1.0
-        layer.shadowRadius = 6
-        layer.shadowPath = UIBezierPath(roundedRect: layer.bounds, cornerRadius: layer.cornerRadius).cgPath
-        layer.backgroundColor = UIColor(.ui.homeCellBackground).cgColor
+        super.layoutSubviews()
+        configureLayout()
+    }
+
+    private func configureLayout() {
+        topView.layoutIfNeeded()
+        topView.layer.cornerRadius = Constants.cornerRadius
+        topView.layer.shadowColor = UIColor(.ui.border).cgColor
+        topView.layer.shadowOffset = .zero
+        topView.layer.shadowOpacity = 1.0
+        topView.layer.shadowRadius = 6
+        topView.layer.shadowPath = UIBezierPath(roundedRect: topView.layer.bounds, cornerRadius: Constants.cornerRadius).cgPath
+        topView.layer.backgroundColor = UIColor(.ui.homeCellBackground).cgColor
     }
 }
 

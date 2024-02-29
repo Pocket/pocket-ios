@@ -45,11 +45,11 @@ enum ReadableSource {
 enum SeeAll {
     case saves
     case slate(SlateDetailViewModel)
-    #warning("Add Shared With You See all action")
+    case sharedWithYou(SharedWithYouListViewModel)
 
     func clearRecommendationToReport() {
         switch self {
-        case .saves:
+        case .saves, .sharedWithYou:
             break
         case .slate(let viewModel):
             viewModel.clearRecommendationToReport()
@@ -62,6 +62,8 @@ enum SeeAll {
             break
         case .slate(let viewModel):
             viewModel.clearPresentedWebReaderURL()
+        case .sharedWithYou(let viewModel):
+            viewModel.clearPresentedWebReaderURL()
         }
     }
 
@@ -70,6 +72,8 @@ enum SeeAll {
         case .saves:
             break
         case .slate(let viewModel):
+            viewModel.clearSharedActivity()
+        case .sharedWithYou(let viewModel):
             viewModel.clearSharedActivity()
         }
     }
@@ -80,6 +84,8 @@ enum SeeAll {
             break
         case .slate(let viewModel):
             viewModel.clearIsPresentingReaderSettings()
+        case .sharedWithYou(let viewModel):
+            viewModel.clearIsPresentingReaderSettings()
         }
     }
 
@@ -88,6 +94,8 @@ enum SeeAll {
         case .saves:
             break
         case .slate(let viewModel):
+            viewModel.clearSelectedItem()
+        case .sharedWithYou(let viewModel):
             viewModel.clearSelectedItem()
         }
     }
@@ -237,7 +245,7 @@ extension HomeViewModel {
         // Add Shared With You section right below recent saves
         if let sharedWithYouItems = sharedWithYouController.fetchedObjects as? [SharedWithYouItem], !sharedWithYouItems.isEmpty {
             snapshot.appendSections([.sharedWithYou])
-            snapshot.appendItems(sharedWithYouItems.map { .sharedWithYou($0.objectID) }, toSection: .sharedWithYou)
+            snapshot.appendItems(sharedWithYouItems.prefix(4).map { .sharedWithYou($0.objectID) }, toSection: .sharedWithYou)
         }
 
         guard let slateSections = self.recomendationsController.sections, !slateSections.isEmpty else {
@@ -313,6 +321,20 @@ extension HomeViewModel {
             slate: slate,
             source: source,
             tracker: tracker.childTracker(hosting: .slateDetail.screen),
+            user: user,
+            store: store,
+            userDefaults: userDefaults,
+            networkPathMonitor: networkPathMonitor,
+            featureFlags: featureFlags,
+            notificationCenter: notificationCenter
+        ))
+    }
+
+    private func select(sharedWithYouList: [SharedWithYouItem]) {
+        tappedSeeAll = .sharedWithYou(SharedWithYouListViewModel(
+            list: sharedWithYouList,
+            source: source,
+            tracker: tracker,
             user: user,
             store: store,
             userDefaults: userDefaults,
@@ -566,11 +588,16 @@ extension HomeViewModel {
                 self?.select(slate: slate)
             }
         case .sharedWithYou:
+            guard let list = sharedWithYouController.fetchedObjects as? [SharedWithYouItem] else {
+                return nil
+            }
             return .init(
                 name: SWHighlightCenter.highlightCollectionTitle,
                 buttonTitle: Localization.seeAll,
                 buttonImage: UIImage(asset: .chevronRight)
-            )
+            ) { [weak self] in
+                self?.select(sharedWithYouList: list)
+            }
         case .loading, .slateCarousel, .offline:
             return nil
         }

@@ -37,6 +37,7 @@ class HomeViewController: UIViewController {
     private var subscriptions: [AnyCancellable] = []
     private var slateDetailSubscriptions: [AnyCancellable] = []
     private var readerSubscriptions: [AnyCancellable] = []
+    private var sharedWithYouSubscriptions: [AnyCancellable] = []
 
     private var collectionSubscriptions = SubscriptionsStack()
 
@@ -406,6 +407,29 @@ extension HomeViewController {
             .store(in: &slateDetailSubscriptions)
     }
 
+    func show(_ viewModel: SharedWithYouListViewModel) {
+        navigationController?.pushViewController(SharedWithYouListViewController(viewModel: viewModel), animated: true)
+
+        viewModel.$selectedReadableViewModel.sink { [weak self] readable in
+            self?.show(readable)
+        }.store(in: &sharedWithYouSubscriptions)
+
+        viewModel.$presentedWebReaderURL.sink { [weak self] url in
+            self?.present(url: url?.absoluteString)
+        }.store(in: &sharedWithYouSubscriptions)
+
+        viewModel.$sharedActivity.sink { [weak self] activity in
+            self?.present(activity: activity)
+        }.store(in: &sharedWithYouSubscriptions)
+        viewModel.$selectedCollectionViewModel
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] viewModel in
+            guard let viewModel else { return }
+                self?.showCollection(viewModel)
+            }
+            .store(in: &sharedWithYouSubscriptions)
+    }
+
     func show(_ recommendable: RecommendableItemViewModel?) {
         readerSubscriptions.removeAll()
         guard let recommendable else {
@@ -626,9 +650,10 @@ extension HomeViewController {
             self.tabBarController?.selectedIndex = 1
         case .slate(let slateViewModel):
             show(slateViewModel)
-        default:
-            #warning("Add Shared With You implementation")
-            return
+        case .sharedWithYou(let sharedWithYouViewModel):
+            show(sharedWithYouViewModel)
+        case .none:
+            break
         }
     }
 

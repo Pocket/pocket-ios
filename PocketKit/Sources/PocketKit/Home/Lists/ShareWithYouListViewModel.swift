@@ -118,7 +118,7 @@ extension SharedWithYouListViewModel {
             )
             destination = .internal
         }
-        #warning("Add analytics")
+        #warning("Add analytics and use destination")
     }
 }
 
@@ -136,7 +136,8 @@ extension SharedWithYouListViewModel {
             return HomeItemCellViewModel(
                 item: sharedWithYouItem.item,
                 imageURL: sharedWithYouItem.item.topImageURL,
-                title: sharedWithYouItem.item.title
+                title: sharedWithYouItem.item.title,
+                sharedWithYouUrlString: sharedWithYouItem.url
             )
         }
 
@@ -156,7 +157,8 @@ extension SharedWithYouListViewModel {
                 }
             },
             imageURL: sharedWithYouItem.item.topImageURL,
-            title: sharedWithYouItem.item.title
+            title: sharedWithYouItem.item.title,
+            sharedWithYouUrlString: sharedWithYouItem.url
         )
     }
 

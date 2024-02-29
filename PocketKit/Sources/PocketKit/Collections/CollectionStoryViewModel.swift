@@ -107,6 +107,11 @@ extension CollectionStoryViewModel: ItemCellViewModel {
             }
         }
     }
+
+    var sharedWithYouUrlString: String? {
+        // not applicable for collection story
+        nil
+    }
 }
 
 // MARK: - Analytics

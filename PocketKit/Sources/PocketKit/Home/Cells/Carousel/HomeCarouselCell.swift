@@ -138,7 +138,7 @@ class HomeCarouselCell: UICollectionViewCell {
 
     private var thumbnailWidthConstraint: NSLayoutConstraint!
 
-    /// Add the attribution view if a valid url is found
+    /// Add the attribution view if a valid shared with you url is found
     /// - Parameter urlString: the string representation of the url
     private func addAttributionView(_ urlString: String) async {
         guard let url = URL(string: urlString) else {
@@ -288,6 +288,7 @@ class HomeCarouselCell: UICollectionViewCell {
         if let url = configuration.sharedWithYouUrlString {
             Task {
                 await addAttributionView(url)
+                configureLayout()
             }
         } else {
             attributionView.removeFromSuperview()
@@ -296,7 +297,6 @@ class HomeCarouselCell: UICollectionViewCell {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-
         configureLayout()
     }
 

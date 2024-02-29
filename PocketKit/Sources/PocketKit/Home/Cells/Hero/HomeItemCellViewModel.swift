@@ -16,6 +16,7 @@ class HomeItemCellViewModel {
     let primaryAction: ItemAction?
     var imageURL: URL?
     var title: String?
+    var sharedWithYouUrlString: String?
 
     var isSaved: Bool {
         item.savedItem != nil &&
@@ -27,13 +28,15 @@ class HomeItemCellViewModel {
         overflowActions: [ItemAction]? = nil,
         primaryAction: ItemAction? = nil,
         imageURL: URL?,
-        title: String? = nil
+        title: String? = nil,
+        sharedWithYouUrlString: String? = nil
     ) {
         self.item = item
         self.overflowActions = overflowActions
         self.primaryAction = primaryAction
         self.imageURL = imageURL
         self.title = title ?? item.syndicatedArticle?.title ?? item.title
+        self.sharedWithYouUrlString = sharedWithYouUrlString
     }
 }
 
