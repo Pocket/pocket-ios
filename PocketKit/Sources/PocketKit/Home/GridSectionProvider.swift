@@ -135,7 +135,7 @@ class GridSectionLayoutProvider {
     ///   - numberOfColumns: number of columns layout should have
     /// - Returns: return a list of heights for all the recommendations
     private func getRecommendationHeight(for viewModel: ItemCellViewModel, width: CGFloat, margin: CGFloat, numberOfColumns: Int = 1) -> CGFloat {
-        RecommendationCell.fullHeight(viewModel: viewModel, availableWidth: width / CGFloat(numberOfColumns) - (margin * 2)) + margin
+        HomeItemCell.fullHeight(viewModel: viewModel, availableWidth: width / CGFloat(numberOfColumns) - (margin * 2)) + margin
     }
 
     /// Creates section from group layout

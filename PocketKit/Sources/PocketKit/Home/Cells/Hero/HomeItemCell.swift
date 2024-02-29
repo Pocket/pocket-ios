@@ -20,7 +20,7 @@ protocol ItemCellViewModel {
     var primaryAction: ItemAction? { get }
 }
 
-class RecommendationCell: UICollectionViewCell {
+class HomeItemCell: UICollectionViewCell {
     private let thumbnailImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.layer.cornerRadius = Constants.cornerRadius
@@ -67,8 +67,8 @@ class RecommendationCell: UICollectionViewCell {
         return button
     }()
 
-    let overflowButton: RecommendationButton = {
-        let button = RecommendationButton(asset: .overflow)
+    let overflowButton: HomeCellActionButton = {
+        let button = HomeCellActionButton(asset: .overflow)
         button.accessibilityIdentifier = "overflow-button"
         button.showsMenuAsPrimaryAction = true
         return button
@@ -225,7 +225,7 @@ class RecommendationCell: UICollectionViewCell {
     }
 }
 
-extension RecommendationCell {
+extension HomeItemCell {
     enum Constants {
         static let cornerRadius: CGFloat = 16
         static let textStackTopMargin: CGFloat = 16
@@ -241,7 +241,7 @@ extension RecommendationCell {
     }
 }
 
-extension RecommendationCell {
+extension HomeItemCell {
     static func fullHeight(viewModel: ItemCellViewModel, availableWidth: CGFloat) -> CGFloat {
         let adjustedWidth = availableWidth - Constants.layoutMargins.left - Constants.layoutMargins.right
         let imageHeight = (availableWidth * Constants.imageAspectRatio).rounded(.up)

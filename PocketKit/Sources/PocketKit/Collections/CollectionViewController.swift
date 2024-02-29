@@ -90,7 +90,7 @@ class CollectionViewController: UIViewController {
         collectionView.register(cellClass: LoadingCell.self)
         collectionView.register(cellClass: EmptyCell.self)
         collectionView.register(cellClass: CollectionMetadataCell.self)
-        collectionView.register(cellClass: RecommendationCell.self)
+        collectionView.register(cellClass: HomeItemCell.self)
         collectionView.register(cellClass: EmptyStateCollectionViewCell.self)
 
         model.$snapshot
@@ -304,7 +304,7 @@ private extension CollectionViewController {
             ))
             return metaCell
         case .story(let story):
-            let cell: RecommendationCell = collectionView.dequeueCell(for: indexPath)
+            let cell: HomeItemCell = collectionView.dequeueCell(for: indexPath)
             cell.configure(model: story)
             return cell
         case .error:

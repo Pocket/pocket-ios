@@ -109,8 +109,8 @@ class HomeViewControllerSectionProvider {
 
         if env.traitCollection.shouldUseWideLayout() {
             sideMargin = Constants.iPadSideMargin
-            let firstCard = RecommendationCell.fullHeight(viewModel: hero, availableWidth: width / 2 - (sideMargin * 2))
-            let secondCard = RecommendationCell.fullHeight(viewModel: viewModel.recommendationHeroViewModel(for: recommendations[safe: 1]?.objectID) ?? hero, availableWidth: width / 2 - (sideMargin * 2))
+            let firstCard = HomeItemCell.fullHeight(viewModel: hero, availableWidth: width / 2 - (sideMargin * 2))
+            let secondCard = HomeItemCell.fullHeight(viewModel: viewModel.recommendationHeroViewModel(for: recommendations[safe: 1]?.objectID) ?? hero, availableWidth: width / 2 - (sideMargin * 2))
             heroHeight = max(firstCard, secondCard)
             heroGroup = NSCollectionLayoutGroup.horizontal(layoutSize: .init(
                 widthDimension: .fractionalWidth(1),
@@ -125,7 +125,7 @@ class HomeViewControllerSectionProvider {
             heroGroup.interItemSpacing = .fixed(Constants.spacing)
         } else {
             sideMargin = Constants.sideMargin
-            heroHeight = RecommendationCell.fullHeight(viewModel: hero, availableWidth: width - (Constants.sideMargin * 2))
+            heroHeight = HomeItemCell.fullHeight(viewModel: hero, availableWidth: width - (Constants.sideMargin * 2))
             let heroItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1))
             let heroItem = NSCollectionLayoutItem(layoutSize: heroItemSize)
             let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(heroHeight))

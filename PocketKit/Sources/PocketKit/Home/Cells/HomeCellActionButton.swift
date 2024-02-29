@@ -5,7 +5,7 @@
 import UIKit
 import Textile
 
-class RecommendationButton: UIButton {
+class HomeCellActionButton: UIButton {
     init(asset: ImageAsset) {
         super.init(frame: .zero)
 

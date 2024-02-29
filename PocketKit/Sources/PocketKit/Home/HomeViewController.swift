@@ -100,7 +100,7 @@ class HomeViewController: UIViewController {
 
         collectionView.backgroundColor = UIColor(.ui.white1)
         collectionView.register(cellClass: LoadingCell.self)
-        collectionView.register(cellClass: RecommendationCell.self)
+        collectionView.register(cellClass: HomeItemCell.self)
         collectionView.register(cellClass: HomeCarouselCell.self)
         collectionView.register(cellClass: SharedWithYouCarouselCell.self)
         collectionView.register(cellClass: ItemsListOfflineCell.self)
@@ -222,7 +222,7 @@ extension HomeViewController {
             cell.configure(with: configuration)
             return cell
         case .recommendationHero(let objectID):
-            let cell: RecommendationCell = collectionView.dequeueCell(for: indexPath)
+            let cell: HomeItemCell = collectionView.dequeueCell(for: indexPath)
             guard let viewModel = model.recommendationHeroViewModel(for: objectID, at: indexPath) else {
                 return cell
             }

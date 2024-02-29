@@ -59,7 +59,7 @@ class HomeCarouselCell: UICollectionViewCell {
     }()
 
     private let favoriteButton: UIButton = {
-        let button = RecommendationButton(asset: .favorite)
+        let button = HomeCellActionButton(asset: .favorite)
         button.accessibilityIdentifier = "favorite"
         return button
     }()
@@ -71,7 +71,7 @@ class HomeCarouselCell: UICollectionViewCell {
     }()
 
     private let overflowButton: UIButton = {
-        let button = RecommendationButton(asset: .overflow)
+        let button = HomeCellActionButton(asset: .overflow)
         button.accessibilityIdentifier = "overflow-button"
         button.showsMenuAsPrimaryAction = true
         return button

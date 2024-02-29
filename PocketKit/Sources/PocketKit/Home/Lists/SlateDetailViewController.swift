@@ -75,7 +75,7 @@ class SlateDetailViewController: UIViewController {
         collectionView.delegate = self
 
         collectionView.register(cellClass: LoadingCell.self)
-        collectionView.register(cellClass: RecommendationCell.self)
+        collectionView.register(cellClass: HomeItemCell.self)
         collectionView.register(viewClass: DividerView.self, forSupplementaryViewOfKind: "divider")
 
         collectionView.publisher(for: \.contentSize, options: [.new]).sink { [weak self] contentSize in
@@ -206,7 +206,7 @@ private extension SlateDetailViewController {
             let cell: LoadingCell = collectionView.dequeueCell(for: indexPath)
             return cell
         case .recommendation(let objectID):
-            let cell: RecommendationCell = collectionView.dequeueCell(for: indexPath)
+            let cell: HomeItemCell = collectionView.dequeueCell(for: indexPath)
 
             guard let viewModel = self.model.recommendationViewModel(for: objectID, at: indexPath) else {
                 return cell
