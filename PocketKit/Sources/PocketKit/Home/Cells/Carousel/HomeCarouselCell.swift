@@ -6,7 +6,9 @@ import UIKit
 import Kingfisher
 import Textile
 import SharedPocketKit
+import SharedWithYou
 
+/// Cell for the carousel items in the Home screen
 class HomeCarouselCell: UICollectionViewCell {
     enum Constants {
         static let cornerRadius: CGFloat = 16
@@ -136,6 +138,35 @@ class HomeCarouselCell: UICollectionViewCell {
 
     private var thumbnailWidthConstraint: NSLayoutConstraint!
 
+    /// Add the attribution view if a valid url is found
+    /// - Parameter urlString: the string representation of the url
+    private func addAttributionView(_ urlString: String) async {
+        guard let url = URL(string: urlString) else {
+            return
+        }
+        // no need to re-add the same attribution view
+        if let highlight = attributionView.highlight, highlight.url.absoluteString == urlString, attributionView.isDescendant(of: topStackView) {
+            return
+        }
+        do {
+            let highlight = try await SWHighlightCenter().highlight(for: url)
+            attributionView.highlight = highlight
+            // in case of reusing a cell, we just need to change the highlight without readding the attribution view to the hierarchy
+            if !attributionView.isDescendant(of: topStackView) {
+                topStackView.addArrangedSubview(attributionView)
+            }
+        } catch {
+            Log.capture(message: "Unable to retrieve highlight for url: \(urlString) - Error: \(error)")
+        }
+    }
+
+    private lazy var attributionView: SWAttributionView = {
+        let attributionView = SWAttributionView()
+        attributionView.translatesAutoresizingMaskIntoConstraints = false
+        attributionView.displayContext = .summary
+        return attributionView
+    }()
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         accessibilityIdentifier = "home-carousel-item"
@@ -253,6 +284,14 @@ class HomeCarouselCell: UICollectionViewCell {
                 )
             ]
         )
+
+        if let url = configuration.sharedWithYouUrlString {
+            Task {
+                await addAttributionView(url)
+            }
+        } else {
+            attributionView.removeFromSuperview()
+        }
     }
 
     override func layoutSubviews() {

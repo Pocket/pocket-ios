@@ -102,7 +102,6 @@ class HomeViewController: UIViewController {
         collectionView.register(cellClass: LoadingCell.self)
         collectionView.register(cellClass: HomeItemCell.self)
         collectionView.register(cellClass: HomeCarouselCell.self)
-        collectionView.register(cellClass: SharedWithYouCarouselCell.self)
         collectionView.register(cellClass: ItemsListOfflineCell.self)
         collectionView.register(viewClass: SectionHeaderView.self, forSupplementaryViewOfKind: SectionHeaderView.kind)
         collectionView.delegate = self
@@ -241,7 +240,7 @@ extension HomeViewController {
             let cell: ItemsListOfflineCell = collectionView.dequeueCell(for: indexPath)
             return cell
         case .sharedWithYou(let objectID):
-            let cell: SharedWithYouCarouselCell = collectionView.dequeueCell(for: indexPath)
+            let cell: HomeCarouselCell = collectionView.dequeueCell(for: indexPath)
             guard let configuration = model.sharedWithYouCellConfiguration(for: objectID, at: indexPath) else {
                 return cell
             }
