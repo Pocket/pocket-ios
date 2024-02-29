@@ -262,12 +262,13 @@ class HomeCarouselCell: UICollectionViewCell {
     }
 
     private func configureLayout() {
+        topView.layoutIfNeeded()
         topView.layer.cornerRadius = Constants.cornerRadius
         topView.layer.shadowColor = UIColor(.ui.border).cgColor
         topView.layer.shadowOffset = .zero
         topView.layer.shadowOpacity = 1.0
         topView.layer.shadowRadius = 6
-        topView.layer.shadowPath = UIBezierPath(roundedRect: topView.layer.bounds, cornerRadius: topView.layer.cornerRadius).cgPath
+        topView.layer.shadowPath = UIBezierPath(roundedRect: topView.layer.bounds, cornerRadius: Constants.cornerRadius).cgPath
         topView.layer.backgroundColor = UIColor(.ui.homeCellBackground).cgColor
     }
 }
