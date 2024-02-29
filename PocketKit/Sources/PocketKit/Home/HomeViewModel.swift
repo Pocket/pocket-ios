@@ -45,7 +45,7 @@ enum ReadableSource {
 enum SeeAll {
     case saves
     case slate(SlateDetailViewModel)
-    // TODO: Add shared with you
+    #warning("Add Shared With You See all action")
 
     func clearRecommendationToReport() {
         switch self {
