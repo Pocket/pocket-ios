@@ -288,7 +288,6 @@ class HomeCarouselCell: UICollectionViewCell {
         if let url = configuration.sharedWithYouUrlString {
             Task {
                 await addAttributionView(url)
-                configureLayout()
             }
         } else {
             attributionView.removeFromSuperview()
