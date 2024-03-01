@@ -76,7 +76,7 @@ class SharedWithYouListViewController: UIViewController {
         collectionView.delegate = self
 
         collectionView.register(cellClass: LoadingCell.self)
-        collectionView.register(cellClass: HomeItemCell.self)
+        collectionView.register(cellClass: SharedWithYouItemCell.self)
         collectionView.register(viewClass: DividerView.self, forSupplementaryViewOfKind: "divider")
 
         collectionView.publisher(for: \.contentSize, options: [.new]).sink { [weak self] contentSize in
@@ -206,7 +206,7 @@ private extension SharedWithYouListViewController {
             let cell: LoadingCell = collectionView.dequeueCell(for: indexPath)
             return cell
         case .item(let objectID):
-            let cell: HomeItemCell = collectionView.dequeueCell(for: indexPath)
+            let cell: SharedWithYouItemCell = collectionView.dequeueCell(for: indexPath)
 
             guard let viewModel = self.viewModel.cellViewModel(for: objectID, at: indexPath) else {
                 return cell
