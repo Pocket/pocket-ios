@@ -23,6 +23,7 @@ class HomeViewModelTests: XCTestCase {
     var subscriptions: Set<AnyCancellable> = []
     var homeController: RichFetchedResultsController<Recommendation>!
     var recentSavesController: NSFetchedResultsController<SavedItem>!
+    var sharedWithYouController: RichFetchedResultsController<SharedWithYouItem>!
     var user: User!
     var subscriptionStore: SubscriptionStore!
     var userDefaults: UserDefaults!
@@ -49,6 +50,7 @@ class HomeViewModelTests: XCTestCase {
         homeRefreshCoordinator = HomeRefreshCoordinator(notificationCenter: .default, taskScheduler: taskScheduler, appSession: appSession, source: source, lastRefresh: lastRefresh)
         homeController = space.makeRecomendationsSlateLineupController()
         recentSavesController = space.makeRecentSavesController(limit: 5)
+        sharedWithYouController = space.makeSharedWithYouController()
         subscriptionStore = MockSubscriptionStore()
         user = PocketUser(userDefaults: userDefaults)
 
@@ -60,6 +62,10 @@ class HomeViewModelTests: XCTestCase {
 
         source.stubMakeRecentSavesController {
             self.recentSavesController
+        }
+
+        source.stubMakeSharedWithYouController {
+            self.sharedWithYouController
         }
 
         source.stubViewObject { identifier in
@@ -122,6 +128,7 @@ class HomeViewModelTests: XCTestCase {
         let viewModel = subject()
 
         let receivedLoadingSnapshot = expectation(description: "receivedLoadingSnapshot")
+        receivedLoadingSnapshot.assertForOverFulfill = false
         viewModel.$snapshot.dropFirst(2).sink { snapshot in
             defer { receivedLoadingSnapshot.fulfill() }
             XCTAssertEqual(snapshot.sectionIdentifiers, [.loading])
@@ -488,6 +495,7 @@ class HomeViewModelTests: XCTestCase {
         networkPathMonitor.update(status: .unsatisfied)
 
         let snapshotExpectation = expectation(description: "expect a snapshot")
+        snapshotExpectation.assertForOverFulfill = false
         let viewModel = subject()
         viewModel.$snapshot.dropFirst(2).sink { snapshot in
             XCTAssertEqual(
@@ -504,7 +512,7 @@ class HomeViewModelTests: XCTestCase {
         }.store(in: &subscriptions)
 
         viewModel.fetch()
-        wait(for: [snapshotExpectation], timeout: 10)
+        wait(for: [snapshotExpectation], timeout: 2)
     }
 
     func test_refresh_whenNetworkIsUnavailable_updatesSnapshot() {
@@ -513,6 +521,7 @@ class HomeViewModelTests: XCTestCase {
         let viewModel = subject()
 
         let snapshotExpectation = expectation(description: "expected a snapshot update")
+        snapshotExpectation.assertForOverFulfill = false
         viewModel.$snapshot.dropFirst(2).sink { snapshot in
             XCTAssertNotNil(snapshot.indexOfSection(.offline))
             XCTAssertEqual(snapshot.itemIdentifiers(inSection: .offline), [.offline])
@@ -522,7 +531,7 @@ class HomeViewModelTests: XCTestCase {
         networkPathMonitor.update(status: .unsatisfied)
         viewModel.refresh { }
 
-        wait(for: [snapshotExpectation], timeout: 10)
+        wait(for: [snapshotExpectation], timeout: 2)
     }
 
     func test_refresh_delegatesToHomeRefreshCoordinator() {
