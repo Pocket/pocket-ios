@@ -110,7 +110,6 @@ class HomeCarouselView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        accessibilityIdentifier = "home-carousel-item"
         activateConstraints()
     }
 

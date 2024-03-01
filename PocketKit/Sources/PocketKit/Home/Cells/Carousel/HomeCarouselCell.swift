@@ -15,6 +15,7 @@ class HomeCarouselCell: UICollectionViewCell {
     override init(frame: CGRect) {
         topView = HomeCarouselView(frame: .zero)
         super.init(frame: frame)
+        accessibilityIdentifier = "home-carousel-item"
         topView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(topView)
         contentView.pinSubviewToAllEdges(topView)
