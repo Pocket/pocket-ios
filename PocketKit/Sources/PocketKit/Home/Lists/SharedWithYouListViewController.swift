@@ -57,8 +57,7 @@ class SharedWithYouListViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
 
         view.accessibilityIdentifier = "slate-detail"
-        #warning("Add a localized title")
-        navigationItem.title = "Shared With You"
+        navigationItem.title = Localization.SharedWithYou.title
         hidesBottomBarWhenPushed = true
 
         let largeTitleTwoLineMode = "_largeTitleTwoLineMode"
