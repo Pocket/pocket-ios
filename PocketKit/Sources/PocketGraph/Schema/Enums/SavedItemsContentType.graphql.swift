@@ -19,6 +19,8 @@ public enum SavedItemsContentType: String, EnumType {
   case isVideo = "IS_VIDEO"
   /// Item is a parsed article that contains videos
   case hasVideo = "HAS_VIDEO"
+  /// Item is a video or a parsed article that contains videos
+  case hasVideoInclusive = "HAS_VIDEO_INCLUSIVE"
   /// Item is a parsed page can be opened in reader view
   case isReadable = "IS_READABLE"
   /// Item is an un-parsable page and will be opened externally

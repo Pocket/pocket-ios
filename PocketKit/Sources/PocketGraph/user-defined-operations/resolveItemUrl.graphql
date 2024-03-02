@@ -1,0 +1,5 @@
+query ResolveItemUrl($url: String!) {
+  itemByUrl(url: $url) {
+    givenUrl
+  }
+}

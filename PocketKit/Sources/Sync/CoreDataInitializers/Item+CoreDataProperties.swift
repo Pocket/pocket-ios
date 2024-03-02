@@ -22,6 +22,7 @@ extension Item {
     @NSManaged public var language: String?
     @NSManaged public var remoteID: String
     @NSManaged public var resolvedURL: String?
+    @NSManaged public var shortURL: String?
     @NSManaged public var timeToRead: NSNumber?
     @NSManaged public var wordCount: NSNumber?
     @NSManaged public var title: String?

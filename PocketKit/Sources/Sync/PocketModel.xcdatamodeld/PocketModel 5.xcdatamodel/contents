@@ -79,6 +79,7 @@
         <attribute name="language" optional="YES" attributeType="String"/>
         <attribute name="remoteID" attributeType="String"/>
         <attribute name="resolvedURL" optional="YES" attributeType="String"/>
+        <attribute name="shortURL" optional="YES" attributeType="String"/>
         <attribute name="timeToRead" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="title" optional="YES" attributeType="String"/>
         <attribute name="topImageURL" optional="YES" attributeType="URI"/>

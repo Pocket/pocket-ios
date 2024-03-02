@@ -18,6 +18,7 @@ extension Item {
         topImageURL = remote.topImageUrl.flatMap(URL.init(string:))
         domain = remote.domain
         language = remote.language
+        shortURL = remote.shortUrl
 
         if let readTime = remote.timeToRead {
             timeToRead = NSNumber(value: readTime)
@@ -129,6 +130,7 @@ extension Item {
         domain = storyItem.domain
         excerpt = storyItem.excerpt
         language = storyItem.language
+        shortURL = storyItem.shortUrl
 
         if let readTime = storyItem.timeToRead {
             timeToRead = NSNumber(value: readTime)
@@ -203,6 +205,8 @@ extension Item {
         topImageURL = summary.topImageUrl.flatMap(URL.init(string:))
         domain = summary.domain
         language = summary.language
+        shortURL = summary.shortUrl
+
         if let readTime = summary.timeToRead {
             timeToRead = NSNumber(value: readTime)
         } else {

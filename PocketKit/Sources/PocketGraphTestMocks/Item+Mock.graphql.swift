@@ -25,6 +25,7 @@ public class Item: MockObject {
     @Field<[MarticleComponent]>("marticle") public var marticle
     @Field<String>("remoteID") public var remoteID
     @Field<PocketGraph.Url>("resolvedUrl") public var resolvedUrl
+    @Field<PocketGraph.Url>("shortUrl") public var shortUrl
     @Field<SyndicatedArticle>("syndicatedArticle") public var syndicatedArticle
     @Field<Int>("timeToRead") public var timeToRead
     @Field<String>("title") public var title
@@ -51,6 +52,7 @@ public extension Mock where O == Item {
     marticle: [AnyMock]? = nil,
     remoteID: String? = nil,
     resolvedUrl: PocketGraph.Url? = nil,
+    shortUrl: PocketGraph.Url? = nil,
     syndicatedArticle: Mock<SyndicatedArticle>? = nil,
     timeToRead: Int? = nil,
     title: String? = nil,
@@ -73,6 +75,7 @@ public extension Mock where O == Item {
     _setList(marticle, for: \.marticle)
     _setScalar(remoteID, for: \.remoteID)
     _setScalar(resolvedUrl, for: \.resolvedUrl)
+    _setScalar(shortUrl, for: \.shortUrl)
     _setEntity(syndicatedArticle, for: \.syndicatedArticle)
     _setScalar(timeToRead, for: \.timeToRead)
     _setScalar(title, for: \.title)
