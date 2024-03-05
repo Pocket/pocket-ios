@@ -201,17 +201,17 @@
 "reader.activity.moveToSaves" = "移至“保存内容”";
 
 // Reader Settings
-"reader.settings.title" = "Display settings";
-"reader.settings.fontLabel"  = "Font";
-"reader.settings.fontSizeLabel" = "Font size";
-"reader.settings.lineHeightLabel" = "Line height";
-"reader.settings.marginsLabel" = "Margins";
-"reader.settings.alignmentLabel" = "Alignment";
-"reader.settings.resetToDefaultsLabel" = "Reset to defaults";
-"reader.settings.premiumUpsellLabel" = "Unlock more options";
-"reader.settings.premiumUpsellSubtitle" = "Premium fonts, text formatting and more.";
-"reader.settings.alignmentNatural" = "Default";
-"reader.settings.alignmentJustified" = "Justified";
+"reader.settings.title" = "显示设置";
+"reader.settings.fontLabel"  = "字体";
+"reader.settings.fontSizeLabel" = "字体大小";
+"reader.settings.lineHeightLabel" = "行高";
+"reader.settings.marginsLabel" = "页边";
+"reader.settings.alignmentLabel" = "对齐方式";
+"reader.settings.resetToDefaultsLabel" = "重设为默认值";
+"reader.settings.premiumUpsellLabel" = "解锁更多选项";
+"reader.settings.premiumUpsellSubtitle" = "Premium 字体、文本格式等。";
+"reader.settings.alignmentNatural" = "默认值";
+"reader.settings.alignmentJustified" = "两端对齐";
 
 //Recommendation
 "recommendation.save" = "保存";
@@ -344,6 +344,9 @@
 
 // Collection
 "collection.stories.count" = "%1$@ 个项目";
+
+// Shared With You
+"sharedWithYou.title" = "已与您分享";
 
 // Logged out
 "loggedOut.continue" = "继续";
