@@ -1,5 +1,8 @@
 query ResolveItemUrl($url: String!) {
   itemByUrl(url: $url) {
     givenUrl
+    savedItem {
+        url
+    }
   }
 }

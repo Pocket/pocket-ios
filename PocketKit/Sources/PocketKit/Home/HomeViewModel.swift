@@ -862,6 +862,7 @@ extension HomeViewModel {
     func willDisplay(_ cell: HomeViewModel.Cell, at indexPath: IndexPath) {
         switch cell {
         case .loading, .offline, .sharedWithYou:
+            #warning("Add Shared With You analytics")
             return
         case .recentSaves(let objectID):
             guard let savedItem = source.viewObject(id: objectID) as? SavedItem else {

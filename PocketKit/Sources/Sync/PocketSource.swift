@@ -803,15 +803,19 @@ extension PocketSource {
     }
 
     public func fetchShortUrlViewItem(_ url: String) async throws -> Item? {
-        guard let itemUrl =
-                try await apollo
-            .fetch(query: ResolveItemUrlQuery(url: url))
-            .data?
-            .itemByUrl?
-            .givenUrl else {
+        guard let resolvedItemData = try await apollo
+            .fetch(query: ResolveItemUrlQuery(url: url)).data else {
             return nil
         }
-        return fetchItem(itemUrl)
+
+        if let savedItemUrl = resolvedItemData.itemByUrl?.savedItem?.url,
+           let savedItem = fetchViewContextSavedItem(savedItemUrl),
+           let item = savedItem.item {
+            return item
+        } else if let itemUrl = resolvedItemData.itemByUrl?.givenUrl {
+            return try await fetchViewItem(from: itemUrl)
+        }
+        return nil
     }
 
     public func fetchViewItem(from url: String) async throws -> Item? {
