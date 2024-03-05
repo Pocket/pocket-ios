@@ -8,6 +8,14 @@ import CoreData
 import Combine
 
 class MockSource: Source {
+    func fetchShortUrlViewItem(_ url: String) async throws -> Sync.Item? {
+        return nil
+    }
+
+    func fetchViewContextSavedItem(_ url: String) -> Sync.SavedItem? {
+        return nil
+    }
+
     func addHighlight(itemIID: NSManagedObjectID, patch: String, quote: String) {
     }
 
