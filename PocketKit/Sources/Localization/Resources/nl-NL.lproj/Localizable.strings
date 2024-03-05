@@ -201,17 +201,17 @@
 "reader.activity.moveToSaves" = "Verplaatsen naar Opgeslagen";
 
 // Reader Settings
-"reader.settings.title" = "Display settings";
-"reader.settings.fontLabel"  = "Font";
-"reader.settings.fontSizeLabel" = "Font size";
-"reader.settings.lineHeightLabel" = "Line height";
-"reader.settings.marginsLabel" = "Margins";
-"reader.settings.alignmentLabel" = "Alignment";
-"reader.settings.resetToDefaultsLabel" = "Reset to defaults";
-"reader.settings.premiumUpsellLabel" = "Unlock more options";
-"reader.settings.premiumUpsellSubtitle" = "Premium fonts, text formatting and more.";
-"reader.settings.alignmentNatural" = "Default";
-"reader.settings.alignmentJustified" = "Justified";
+"reader.settings.title" = "Instellingen weergeven";
+"reader.settings.fontLabel"  = "Lettertype";
+"reader.settings.fontSizeLabel" = "Lettergrootte";
+"reader.settings.lineHeightLabel" = "Regelafstand";
+"reader.settings.marginsLabel" = "Marges";
+"reader.settings.alignmentLabel" = "Uitlijning";
+"reader.settings.resetToDefaultsLabel" = "Terug naar standaardinstellingen";
+"reader.settings.premiumUpsellLabel" = "Meer opties benutten";
+"reader.settings.premiumUpsellSubtitle" = "Premium lettertypen, tekstopmaak en meer.";
+"reader.settings.alignmentNatural" = "Standaard";
+"reader.settings.alignmentJustified" = "Gerechtvaardigd";
 
 //Recommendation
 "recommendation.save" = "Opslaan";
@@ -344,6 +344,9 @@
 
 // Collection
 "collection.stories.count" = "%1$@ items";
+
+// Shared With You
+"sharedWithYou.title" = "gedeeld met jou";
 
 // Logged out
 "loggedOut.continue" = "Doorgaan";
