@@ -807,12 +807,21 @@ extension PocketSource {
             .fetch(query: ResolveItemUrlQuery(url: url)).data else {
             return nil
         }
-
+        // attempt to retrieve the saved item
         if let savedItemUrl = resolvedItemData.itemByUrl?.savedItem?.url,
            let savedItem = fetchViewContextSavedItem(savedItemUrl),
            let item = savedItem.item {
             return item
+        } else if let resolvedUrl = resolvedItemData.itemByUrl?.resolvedUrl,
+                  let savedItem = fetchViewContextSavedItem(resolvedUrl),
+                  let item = savedItem.item {
+            return item
+        } else if let normalUrl = resolvedItemData.itemByUrl?.normalUrl,
+                  let savedItem = fetchViewContextSavedItem(normalUrl),
+                  let item = savedItem.item {
+            return item
         } else if let itemUrl = resolvedItemData.itemByUrl?.givenUrl {
+            // otherwise, just try to fetch the item
             return try await fetchViewItem(from: itemUrl)
         }
         return nil

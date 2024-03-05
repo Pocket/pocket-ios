@@ -23,6 +23,7 @@ public class Item: MockObject {
     @Field<Bool>("isArticle") public var isArticle
     @Field<String>("language") public var language
     @Field<[MarticleComponent]>("marticle") public var marticle
+    @Field<String>("normalUrl") public var normalUrl
     @Field<String>("remoteID") public var remoteID
     @Field<PocketGraph.Url>("resolvedUrl") public var resolvedUrl
     @Field<SavedItem>("savedItem") public var savedItem
@@ -51,6 +52,7 @@ public extension Mock where O == Item {
     isArticle: Bool? = nil,
     language: String? = nil,
     marticle: [AnyMock]? = nil,
+    normalUrl: String? = nil,
     remoteID: String? = nil,
     resolvedUrl: PocketGraph.Url? = nil,
     savedItem: Mock<SavedItem>? = nil,
@@ -75,6 +77,7 @@ public extension Mock where O == Item {
     _setScalar(isArticle, for: \.isArticle)
     _setScalar(language, for: \.language)
     _setList(marticle, for: \.marticle)
+    _setScalar(normalUrl, for: \.normalUrl)
     _setScalar(remoteID, for: \.remoteID)
     _setScalar(resolvedUrl, for: \.resolvedUrl)
     _setEntity(savedItem, for: \.savedItem)
