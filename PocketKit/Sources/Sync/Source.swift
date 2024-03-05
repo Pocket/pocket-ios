@@ -108,11 +108,15 @@ public protocol Source {
 
     func fetchViewContextItem(_ url: String) -> Item?
 
+    func fetchShortUrlViewItem(_ url: String) async throws -> Item?
+
     func fetchViewItem(from url: String) async throws -> Item?
 
     func searchSaves(search: String) -> [SavedItem]?
 
     func fetchOrCreateSavedItem(with url: String, and remoteParts: SavedItem.RemoteSavedItem?) -> SavedItem?
+
+    func fetchViewContextSavedItem(_ url: String) -> SavedItem?
 
     /// Get the count of unread saves
     /// - Returns: Int of unread saves
@@ -136,10 +140,6 @@ public protocol Source {
     func fetchAllFeatureFlags() async throws
 
     func fetchFeatureFlag(by name: String) -> FeatureFlag?
-
-    // MARK: - Object Helpers
-
-    func fetchUnknownObject(uri: URL) -> NSManagedObject?
 
     // MARK: Shared With You
     func updateSharedWithYouItems(with urls: [String])

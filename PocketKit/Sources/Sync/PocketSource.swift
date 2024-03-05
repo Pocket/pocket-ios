@@ -802,6 +802,18 @@ extension PocketSource {
         }
     }
 
+    public func fetchShortUrlViewItem(_ url: String) async throws -> Item? {
+        guard let itemUrl =
+                try await apollo
+            .fetch(query: ResolveItemUrlQuery(url: url))
+            .data?
+            .itemByUrl?
+            .givenUrl else {
+            return nil
+        }
+        return fetchItem(itemUrl)
+    }
+
     public func fetchViewItem(from url: String) async throws -> Item? {
         if let item = fetchViewContextItem(url) {
             defer {
@@ -824,14 +836,14 @@ extension PocketSource {
             .data?.itemByUrl?.fragments.itemParts else {
             return nil
         }
-
-        let item = Item(context: viewContext, givenURL: url, remoteID: remoteItem.remoteID)
-
-        return try viewContext.performAndWait {
+        let context = space.viewContext
+        let updatedItem = try context.performAndWait {
+            let item = Item(context: context, givenURL: remoteItem.givenUrl, remoteID: remoteItem.remoteID)
             item.update(remote: remoteItem, with: space)
-            try space.save(context: viewContext)
+            try space.save(context: context)
             return item
         }
+        return updatedItem
     }
 }
 
@@ -1245,6 +1257,10 @@ extension PocketSource {
 
         return remoteSavedItem
     }
+
+    public func fetchViewContextSavedItem(_ url: String) -> SavedItem? {
+        try? space.fetchSavedItem(byURL: url, context: viewContext)
+    }
 }
 
 // MARK: UI Helpers
@@ -1254,24 +1270,5 @@ extension PocketSource {
     /// - Returns: Int of unread saves
     public func unreadSaves() throws -> Int {
         return try space.fetch(Requests.fetchSavedItems()).count
-    }
-}
-
-// MARK: - Object Helpers
-extension PocketSource {
-    public func fetchUnknownObject(uri: URL) -> NSManagedObject? {
-        guard let objectID = space.backgroundContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: uri) else {
-            Log.info("Could not create object id for uri \(uri)")
-            return nil
-        }
-
-        do {
-            return try space.backgroundContext.performAndWait {
-                return try space.backgroundContext.existingObject(with: objectID)
-            }
-        } catch {
-            Log.info("Could not find object id for uri \(uri)")
-            return nil
-        }
     }
 }

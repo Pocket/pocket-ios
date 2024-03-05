@@ -5,6 +5,7 @@
 import Foundation
 
 protocol Route {
+    var host: String? { get }
     var scheme: String { get }
     var path: String { get }
     var source: ReadableSource { get }
@@ -12,18 +13,8 @@ protocol Route {
     func matchedUrlString(from url: URL) -> String?
 }
 
-extension Route {
-    func matchedUrlString(from url: URL) -> String? {
-        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
-              components.scheme == scheme,
-              components.path.contains(path) else {
-            return nil
-        }
-        return components.url?.absoluteString
-    }
-}
-
 struct SpotlightRoute: Route {
+    let host: String? = nil
     let scheme = "spotlight"
     let path = "/itemURL"
     let source: ReadableSource = .spotlight
@@ -44,6 +35,7 @@ struct SpotlightRoute: Route {
 }
 
 struct WidgetRoute: Route {
+    let host: String? = nil
     let scheme = "pocketWidget"
     let path = "/itemURL"
     let source: ReadableSource = .widget
@@ -55,6 +47,7 @@ struct WidgetRoute: Route {
 
     func matchedUrlString(from url: URL) -> String? {
         guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
+              components.host == host,
               components.scheme == scheme,
               components.path == path else {
             return nil
@@ -64,6 +57,7 @@ struct WidgetRoute: Route {
 }
 
 struct CollectionRoute: Route {
+    let host: String? = "getpocket.com"
     let scheme = "https"
     let path =  "/collections/"
     let source: ReadableSource = .external
@@ -72,9 +66,23 @@ struct CollectionRoute: Route {
     init(action: @escaping (URL, ReadableSource) -> Void) {
         self.action = action
     }
+
+    func matchedUrlString(from url: URL) -> String? {
+        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
+              components.host == host,
+              components.scheme == scheme,
+              components.path.contains(path) else {
+            return nil
+        }
+        var normalizedComponents = components
+        // remove utm-source and other external query items to obtain the item url
+        normalizedComponents.queryItems = nil
+        return normalizedComponents.url?.absoluteString
+    }
 }
 
 struct SyndicationRoute: Route {
+    let host: String? = "getpocket.com"
     let scheme = "https"
     let path =  "/explore/item/"
     let source: ReadableSource = .external
@@ -86,6 +94,7 @@ struct SyndicationRoute: Route {
 
     func matchedUrlString(from url: URL) -> String? {
         guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
+              components.host == host,
               components.scheme == scheme,
               components.path.contains(path) else {
             return nil
@@ -94,5 +103,50 @@ struct SyndicationRoute: Route {
         // remove utm-source and other external query items to obtain the item url
         normalizedComponents.queryItems = nil
         return normalizedComponents.url?.absoluteString
+    }
+}
+
+struct GenericItemRoute: Route {
+    let host: String? = "getpocket.com"
+    let scheme = "https"
+    let path =  ""
+    let source: ReadableSource = .external
+    let action: (URL, ReadableSource) -> Void
+
+    init(action: @escaping (URL, ReadableSource) -> Void) {
+        self.action = action
+    }
+
+    func matchedUrlString(from url: URL) -> String? {
+        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
+              components.host == host,
+              components.scheme == scheme else {
+            return nil
+        }
+        var normalizedComponents = components
+        // remove utm-source and other external query items to obtain the item url
+        normalizedComponents.queryItems = nil
+        return normalizedComponents.url?.absoluteString
+    }
+}
+
+struct ShortUrlRoute: Route {
+    let host: String? = "pocket.co"
+    let scheme = "https"
+    let path = ""
+    let source: ReadableSource = .external
+    let action: (URL, ReadableSource) -> Void
+
+    init(action: @escaping (URL, ReadableSource) -> Void) {
+        self.action = action
+    }
+
+    func matchedUrlString(from url: URL) -> String? {
+        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
+              components.host == host,
+              components.scheme == scheme else {
+            return nil
+        }
+        return components.url?.absoluteString
     }
 }

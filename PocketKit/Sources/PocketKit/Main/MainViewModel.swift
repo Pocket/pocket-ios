@@ -226,21 +226,15 @@ extension MainViewModel {
 
     @MainActor
     func handleSpotlight(_ userActivity: NSUserActivity) {
-        guard let coreDataString = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String,
-              let coreDataURI = URL(string: coreDataString),
-              let unknownObject = source.fetchUnknownObject(uri: coreDataURI),
-              let object = source.viewObject(id: unknownObject.objectID) else {
+        guard let urlString = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String,
+              let savedItem = source.fetchViewContextSavedItem(urlString) else {
             return
         }
-
-        // Not pretty, but an easy way to re-use our deeplinking code, we buid a new deep link from our coredata SavedItem object and let the router do its thing.
-        if let savedItem: SavedItem = object as? SavedItem {
-            var components = URLComponents()
-            components.scheme = "spotlight"
-            components.path = "/itemURL"
-            components.queryItems = [URLQueryItem(name: "url", value: savedItem.url)]
-            linkRouter.matchRoute(from: components.url!)
-        }
+        var components = URLComponents()
+        components.scheme = "spotlight"
+        components.path = "/itemURL"
+        components.queryItems = [URLQueryItem(name: "url", value: savedItem.url)]
+        linkRouter.matchRoute(from: components.url!)
     }
 
     private func setupLinkRouter() {
@@ -273,10 +267,36 @@ extension MainViewModel {
             }
         }
 
+        let shortUrlRoutingAction: (URL, ReadableSource) -> Void = { [weak self] url, source in
+            // dismiss any existing modal
+            self?.account.dismissAll()
+            // go to home
+            self?.selectedSection = .home
+            Task {
+                do {
+                    if let item = try await self?.source.fetchShortUrlViewItem(url.absoluteString) {
+                        if let savedItem = item.savedItem {
+                            self?.home.select(savedItem: savedItem, readableSource: source)
+                        } else if let recommendation = item.recommendation {
+                            self?.home.select(recommendation: recommendation, readableSource: source)
+                        } else {
+                            self?.home.select(externalItem: item)
+                        }
+                    } else {
+                        fallbackAction(url)
+                    }
+                } catch {
+                    fallbackAction(url)
+                }
+            }
+        }
+
         let widgetRoute = WidgetRoute(action: routingAction)
         let collectionRoute = CollectionRoute(action: routingAction)
         let syndicatedRoute = SyndicationRoute(action: routingAction)
         let spotlightRoute = SpotlightRoute(action: routingAction)
-        linkRouter.addRoutes([widgetRoute, collectionRoute, syndicatedRoute, spotlightRoute])
+        let genericItemRoute = GenericItemRoute(action: routingAction)
+        let shortUrlRoute = ShortUrlRoute(action: shortUrlRoutingAction)
+        linkRouter.addRoutes([widgetRoute, collectionRoute, syndicatedRoute, genericItemRoute, shortUrlRoute, spotlightRoute])
     }
 }
