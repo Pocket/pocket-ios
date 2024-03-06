@@ -534,4 +534,4 @@ app:
 meta:
   bitrise.io:
     machine_type_id: g2-m1-max.10core
-    stack: osx-xcode-15.3.x-edge
+    stack: osx-xcode-15.3.x
