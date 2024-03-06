@@ -12,19 +12,19 @@ class LinkRouterTests: XCTestCase {
         let widgetRouteExpectation = expectation(description: "Widget route matched")
         let widgetItemUrlString = "pocketWidget:/itemURL?url=https://example.com/this_is_an_article/"
         var router = LinkRouter()
-        let widgetRoute = WidgetRoute { url, source in
+        let widgetRoute = await WidgetRoute { url, source in
             XCTAssertEqual(url.absoluteString, "https://example.com/this_is_an_article/")
             XCTAssertEqual(source, .widget)
             widgetRouteExpectation.fulfill()
         }
 
-        let collectionRoute = CollectionRoute { _, _ in
+        let collectionRoute = await CollectionRoute { _, _ in
             XCTFail("Collection route should not have been matched")
         }
-        let syndicatedRoute = SyndicationRoute { _, _ in
+        let syndicatedRoute = await SyndicationRoute { _, _ in
             XCTFail("Syndicated route should not have been matched")
         }
-        let spotlightRoute = SpotlightRoute { _, _ in
+        let spotlightRoute = await SpotlightRoute { _, _ in
             XCTFail("Spotlight route should not have been matched")
         }
         let fallbackAction: (URL) -> Void = { _ in
@@ -43,19 +43,19 @@ class LinkRouterTests: XCTestCase {
         let collectionRouteExpectation = expectation(description: "Collection route matched")
         let collectionItemUrlString = "https://getpocket.com/collections/example.com/this_is_a_collection/"
         var router = LinkRouter()
-        let collectionRoute = CollectionRoute { url, source in
+        let collectionRoute = await CollectionRoute { url, source in
             XCTAssertEqual(url.absoluteString, collectionItemUrlString)
             XCTAssertEqual(source, .external)
             collectionRouteExpectation.fulfill()
         }
 
-        let syndicatedRoute = SyndicationRoute { _, _ in
+        let syndicatedRoute = await SyndicationRoute { _, _ in
             XCTFail("Syndicated route should not have been matched")
         }
-        let widgetRoute = WidgetRoute { _, _ in
+        let widgetRoute = await WidgetRoute { _, _ in
             XCTFail("Widget route should not have been matched")
         }
-        let spotlightRoute = SpotlightRoute { _, _ in
+        let spotlightRoute = await SpotlightRoute { _, _ in
             XCTFail("Spotlight route should not have been matched")
         }
         let fallbackAction: (URL) -> Void = { _ in
@@ -74,19 +74,19 @@ class LinkRouterTests: XCTestCase {
         let syndicatedRouteExpectation = expectation(description: "Syndicated route matched")
         let syndicatedItemUrlString = "https://getpocket.com/explore/item/example.com/this_is_a_syndicated_article/"
         var router = LinkRouter()
-        let syndicatedRoute = SyndicationRoute { url, source in
+        let syndicatedRoute = await SyndicationRoute { url, source in
             XCTAssertEqual(url.absoluteString, syndicatedItemUrlString)
             XCTAssertEqual(source, .external)
             syndicatedRouteExpectation.fulfill()
         }
 
-        let collectionRoute = CollectionRoute { _, _ in
+        let collectionRoute = await CollectionRoute { _, _ in
             XCTFail("Collection route should not have been matched")
         }
-        let widgetRoute = WidgetRoute { _, _ in
+        let widgetRoute = await WidgetRoute { _, _ in
             XCTFail("Widget route should not have been matched")
         }
-        let spotlightRoute = SpotlightRoute { _, _ in
+        let spotlightRoute = await SpotlightRoute { _, _ in
             XCTFail("Spotlight route should not have been matched")
         }
         let fallbackAction: (URL) -> Void = { _ in
@@ -105,19 +105,19 @@ class LinkRouterTests: XCTestCase {
         let spotlightRouteExpectation = expectation(description: "Spotlight route matched")
         let spotlightItemUrlString = "spotlight:/itemURL?url=https://example.com/this_is_an_article/"
         var router = LinkRouter()
-        let spotlightRoute = SpotlightRoute { url, source in
+        let spotlightRoute = await SpotlightRoute { url, source in
             XCTAssertEqual(url.absoluteString, "https://example.com/this_is_an_article/")
             XCTAssertEqual(source, .spotlight)
             spotlightRouteExpectation.fulfill()
         }
 
-        let collectionRoute = CollectionRoute { _, _ in
+        let collectionRoute = await CollectionRoute { _, _ in
             XCTFail("Collection route should not have been matched")
         }
-        let syndicatedRoute = SyndicationRoute { _, _ in
+        let syndicatedRoute = await SyndicationRoute { _, _ in
             XCTFail("Syndicated route should not have been matched")
         }
-        let widgetRoute = WidgetRoute { _, _ in
+        let widgetRoute = await WidgetRoute { _, _ in
             XCTFail("Widget route should not have been matched")
         }
         let fallbackAction: (URL) -> Void = { _ in
@@ -135,13 +135,13 @@ class LinkRouterTests: XCTestCase {
         let fallbackExpectation = expectation(description: "Fallback action triggered")
         let nonMatchingUrl = "https://getpocket.com/hellothere/example.com/this_is_unsupported_for_now/"
         var router = LinkRouter()
-        let collectionRoute = CollectionRoute { _, _ in
+        let collectionRoute = await CollectionRoute { _, _ in
             XCTFail("Collection route should not have been matched")
         }
-        let widgetRoute = WidgetRoute { _, _ in
+        let widgetRoute = await WidgetRoute { _, _ in
             XCTFail("Widget route should not have been matched")
         }
-        let syndicatedRoute = SyndicationRoute { _, _ in
+        let syndicatedRoute = await SyndicationRoute { _, _ in
             XCTFail("Syndicated route should not have been matched")
         }
         let fallbackAction: (URL) -> Void = { url in
