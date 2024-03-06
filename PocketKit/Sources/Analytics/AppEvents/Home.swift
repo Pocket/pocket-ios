@@ -204,4 +204,76 @@ public extension Events.Home {
             )
         )
     }
+
+    // MARK: Shared With You
+    /// Shared With You card viewed
+    static func sharedWithYouCardImpression(url: String, positionInList: Int) -> Impression {
+        return Impression(
+            component: .card,
+            requirement: .viewable,
+            uiEntity: UiEntity(
+                .card,
+                identifier: "home.sharedWithYou.card.impression",
+                index: positionInList
+            ),
+            extraEntities: [
+                ContentEntity(url: url)
+            ]
+        )
+    }
+    /// Shared With You Item viewed
+    static func sharedWithYouContentOpen(url: String, positionInList: Int?, destination: ContentOpen.Destination) -> ContentOpen {
+        return ContentOpen(
+            destination: destination,
+            contentEntity:
+                ContentEntity(url: url),
+            uiEntity: UiEntity(
+                .card,
+                identifier: "home.sharedWithYou.item.open",
+                index: positionInList
+            )
+        )
+    }
+
+    /// Shared With You Item saved
+    static func sharedWithYouItemSave(url: String, positionInList: Int) -> Engagement {
+        return Engagement(
+            uiEntity: UiEntity(
+                .button,
+                identifier: "home.sharedWithYou.item.save",
+                index: positionInList
+            ),
+            extraEntities: [
+                ContentEntity(url: url)
+            ]
+        )
+    }
+
+    /// Shared With You item unsaved
+    static func sharedWithYouItemArchive(url: String, positionInList: Int) -> Engagement {
+        return Engagement(
+            uiEntity: UiEntity(
+                .button,
+                identifier: "home.sharedWithYou.item.archive",
+                index: positionInList
+            ),
+            extraEntities: [
+                ContentEntity(url: url)
+            ]
+        )
+    }
+
+    /// Shared With You item shared
+    static func sharedWithYouItemShare(url: String, positionInList: Int) -> Engagement {
+        return Engagement(
+            uiEntity: UiEntity(
+                .button,
+                identifier: "home.sharedWithYou.item.share",
+                index: positionInList
+            ),
+            extraEntities: [
+                ContentEntity(url: url)
+            ]
+        )
+    }
 }

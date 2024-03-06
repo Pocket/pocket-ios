@@ -515,6 +515,7 @@ extension HomeViewModel {
     }
 
     func select(sharedWithYouItem: SharedWithYouItem, at indexPath: IndexPath, readableSource: ReadableSource = .app) {
+        var destination: ContentOpen.Destination = .internal
         if let slug = sharedWithYouItem.item.collectionSlug, featureFlags.isAssigned(flag: .nativeCollections) {
             selectedReadableType = .collection(CollectionViewModel(
                 slug: slug,
@@ -538,7 +539,6 @@ extension HomeViewModel {
                 userDefaults: userDefaults,
                 readableSource: readableSource
             )
-            var destination: ContentOpen.Destination = .internal
             if sharedWithYouItem.item.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
                 selectedReadableType = .webViewRecommendable(viewModel)
                 destination = .external
@@ -546,7 +546,7 @@ extension HomeViewModel {
                 selectedReadableType = .recommendable(viewModel)
             }
         }
-        #warning("Add shared with you analytics and use destination")
+        tracker.track(event: Events.Home.sharedWithYouContentOpen(url: sharedWithYouItem.url, positionInList: indexPath.item, destination: destination))
     }
 
     private func trackRecentSavesOpen(url: String, positionInList: Int?, source: ReadableSource) {
@@ -781,10 +781,10 @@ extension HomeViewModel {
         return .sharedWithYouPrimary { [weak self] _ in
             if let savedItem = sharedWithYouItem.item.savedItem, !savedItem.isArchived {
                 self?.source.archive(item: savedItem)
-                #warning("Add Shared With You analytics")
+                self?.tracker.track(event: Events.Home.sharedWithYouItemArchive(url: sharedWithYouItem.url, positionInList: indexPath.item))
             } else {
                 self?.source.save(item: sharedWithYouItem.item)
-                #warning("Add Shared With You analytics")
+                self?.tracker.track(event: Events.Home.sharedWithYouItemSave(url: sharedWithYouItem.url, positionInList: indexPath.item))
             }
         }
     }
@@ -795,8 +795,8 @@ extension HomeViewModel {
 
     private func share(_ recommendation: Recommendation, at indexPath: IndexPath, with sender: Any?) {
         // This view model is used within the context of a view that is presented within Saves
-        self.sharedActivity = PocketItemActivity.fromHome(url: recommendation.item.bestURL, sender: sender)
-        let item = recommendation.item
+        let shareableUrl = recommendation.item.shortURL ?? recommendation.item.bestURL
+        self.sharedActivity = PocketItemActivity.fromHome(url: shareableUrl, sender: sender)
         guard
             let slate = recommendation.slate,
             let slateLineup = slate.slateLineup
@@ -805,20 +805,21 @@ extension HomeViewModel {
             return
         }
 
-        let givenURL = item.givenURL
-        tracker.track(event: Events.Home.SlateArticleShare(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
+        tracker.track(event: Events.Home.SlateArticleShare(url: shareableUrl, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
     }
 
     private func share(_ savedItem: SavedItem, at indexPath: IndexPath, with sender: Any?) {
         // This view model is used within the context of a view that is presented within Home, but
         // within the context of "Recent Saves"
-        self.sharedActivity = PocketItemActivity.fromSaves(url: savedItem.url, sender: sender)
-        tracker.track(event: Events.Home.RecentSavesCardShare(url: savedItem.url, positionInList: indexPath.item))
+        let shareableUrl = savedItem.item?.shortURL ?? savedItem.url
+        self.sharedActivity = PocketItemActivity.fromSaves(url: shareableUrl, sender: sender)
+        tracker.track(event: Events.Home.RecentSavesCardShare(url: shareableUrl, positionInList: indexPath.item))
     }
 
     private func share(_ sharedWithYouItem: SharedWithYouItem, at indexPath: IndexPath, with sender: Any?) {
-        self.sharedActivity = PocketItemActivity.fromHome(url: sharedWithYouItem.item.givenURL, sender: sender)
-        #warning("Add Shared With You analytics")
+        let shareableUrl = sharedWithYouItem.item.shortURL ?? sharedWithYouItem.url
+        self.sharedActivity = PocketItemActivity.fromHome(url: shareableUrl, sender: sender)
+        tracker.track(event: Events.Home.sharedWithYouItemShare(url: shareableUrl, positionInList: indexPath.item))
     }
 
     private func save(_ recommendation: Recommendation, at indexPath: IndexPath) {
@@ -861,9 +862,15 @@ extension HomeViewModel {
 extension HomeViewModel {
     func willDisplay(_ cell: HomeViewModel.Cell, at indexPath: IndexPath) {
         switch cell {
-        case .loading, .offline, .sharedWithYou:
-            #warning("Add Shared With You analytics")
+        case .loading, .offline:
             return
+        case .sharedWithYou(let objectID):
+            guard let sharedWithYouItem = source.viewObject(id: objectID) as? SharedWithYouItem else {
+                Log.breadcrumb(category: "home", level: .debug, message: "Could retrieve Shared With You Item from objectID: \(String(describing: objectID))")
+                Log.capture(message: "Shared With You Item is null on willDisplay Home Recent Saves")
+                return
+            }
+            tracker.track(event: Events.Home.sharedWithYouCardImpression(url: sharedWithYouItem.url, positionInList: indexPath.item))
         case .recentSaves(let objectID):
             guard let savedItem = source.viewObject(id: objectID) as? SavedItem else {
                 Log.breadcrumb(category: "home", level: .debug, message: "Could not turn recent save into Saved Item from objectID: \(String(describing: objectID))")

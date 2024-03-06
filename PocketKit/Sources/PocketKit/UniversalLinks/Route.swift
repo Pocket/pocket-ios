@@ -13,6 +13,7 @@ protocol Route {
     func matchedUrlString(from url: URL) -> String?
 }
 
+@MainActor
 struct SpotlightRoute: Route {
     let host: String? = nil
     let scheme = "spotlight"
@@ -24,7 +25,7 @@ struct SpotlightRoute: Route {
         self.action = action
     }
 
-    func matchedUrlString(from url: URL) -> String? {
+    nonisolated func matchedUrlString(from url: URL) -> String? {
         guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
               components.scheme == scheme,
               components.path == path else {
@@ -34,6 +35,7 @@ struct SpotlightRoute: Route {
     }
 }
 
+@MainActor
 struct WidgetRoute: Route {
     let host: String? = nil
     let scheme = "pocketWidget"
@@ -45,7 +47,7 @@ struct WidgetRoute: Route {
         self.action = action
     }
 
-    func matchedUrlString(from url: URL) -> String? {
+    nonisolated func matchedUrlString(from url: URL) -> String? {
         guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
               components.host == host,
               components.scheme == scheme,
@@ -56,6 +58,7 @@ struct WidgetRoute: Route {
     }
 }
 
+@MainActor
 struct CollectionRoute: Route {
     let host: String? = "getpocket.com"
     let scheme = "https"
@@ -67,7 +70,7 @@ struct CollectionRoute: Route {
         self.action = action
     }
 
-    func matchedUrlString(from url: URL) -> String? {
+    nonisolated func matchedUrlString(from url: URL) -> String? {
         guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
               components.host == host,
               components.scheme == scheme,
@@ -81,6 +84,7 @@ struct CollectionRoute: Route {
     }
 }
 
+@MainActor
 struct SyndicationRoute: Route {
     let host: String? = "getpocket.com"
     let scheme = "https"
@@ -92,7 +96,7 @@ struct SyndicationRoute: Route {
         self.action = action
     }
 
-    func matchedUrlString(from url: URL) -> String? {
+    nonisolated func matchedUrlString(from url: URL) -> String? {
         guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
               components.host == host,
               components.scheme == scheme,
@@ -106,6 +110,7 @@ struct SyndicationRoute: Route {
     }
 }
 
+@MainActor
 struct GenericItemRoute: Route {
     let host: String? = "getpocket.com"
     let scheme = "https"
@@ -117,7 +122,7 @@ struct GenericItemRoute: Route {
         self.action = action
     }
 
-    func matchedUrlString(from url: URL) -> String? {
+    nonisolated func matchedUrlString(from url: URL) -> String? {
         guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
               components.host == host,
               components.scheme == scheme else {
@@ -130,6 +135,7 @@ struct GenericItemRoute: Route {
     }
 }
 
+@MainActor
 struct ShortUrlRoute: Route {
     let host: String? = "pocket.co"
     let scheme = "https"
@@ -141,12 +147,15 @@ struct ShortUrlRoute: Route {
         self.action = action
     }
 
-    func matchedUrlString(from url: URL) -> String? {
+    nonisolated func matchedUrlString(from url: URL) -> String? {
         guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
               components.host == host,
               components.scheme == scheme else {
             return nil
         }
-        return components.url?.absoluteString
+        var normalizedComponents = components
+        // remove utm-source and other external query items to obtain the item url
+        normalizedComponents.queryItems = nil
+        return normalizedComponents.url?.absoluteString
     }
 }

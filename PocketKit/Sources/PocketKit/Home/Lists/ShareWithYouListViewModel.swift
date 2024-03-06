@@ -57,7 +57,7 @@ class SharedWithYouListViewModel {
     }
 
     func trackSlateDetailViewed() {
-        #warning("Add analytics")
+        tracker.track(event: Events.SharedWithYou.screenView())
     }
 
     func fetch() {
@@ -76,7 +76,7 @@ class SharedWithYouListViewModel {
             }
 
             let item = sharedWithYouItem.item
-            #warning("Add analytics")
+            tracker.track(event: Events.SharedWithYou.cardImpression(url: sharedWithYouItem.url, index: indexPath.item))
         }
     }
 }
@@ -118,7 +118,15 @@ extension SharedWithYouListViewModel {
             )
             destination = .internal
         }
-        #warning("Add analytics and use destination")
+        tracker.track(
+            event: Events
+                .SharedWithYou
+                .contentOpen(
+                    url: sharedWithYouItem.url,
+                    index: indexPath.item,
+                    destination: destination
+                )
+        )
     }
 }
 
@@ -164,12 +172,16 @@ extension SharedWithYouListViewModel {
 
     private func save(_ item: Item, at indexPath: IndexPath) {
         source.save(item: item)
-        #warning("Add analytics")
+        if let url = item.sharedWithYouItem?.url {
+            tracker.track(event: Events.SharedWithYou.itemSaved(url: url, index: indexPath.item))
+        }
     }
 
     private func archive(_ savedItem: SavedItem, at indexPath: IndexPath) {
         source.archive(item: savedItem)
-        #warning("Add analytics")
+        if let url = savedItem.item?.sharedWithYouItem?.url {
+            tracker.track(event: Events.SharedWithYou.itemArchived(url: url, index: indexPath.item))
+        }
     }
 }
 

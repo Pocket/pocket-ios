@@ -162,6 +162,10 @@ class SavedItemViewModel: ReadableViewModel, ObservableObject {
         item.bestURL
     }
 
+    var shortUrl: String? {
+        item.item?.shortURL
+    }
+
     var itemSaveStatus: ItemSaveStatus {
         if item.isArchived {
             return .archived

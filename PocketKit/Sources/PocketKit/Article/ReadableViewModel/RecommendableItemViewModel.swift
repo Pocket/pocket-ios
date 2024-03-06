@@ -96,6 +96,10 @@ class RecommendableItemViewModel: ReadableViewModel {
         item.bestURL
     }
 
+    var shortUrl: String? {
+        item.shortURL
+    }
+
     var itemSaveStatus: ItemSaveStatus {
         guard let savedItem = item.savedItem else {
             return .unsaved

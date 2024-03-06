@@ -74,14 +74,14 @@ class FetchSharedWithYouItems: SyncOperation {
             if URLComponents(string: itemUrl)?.isShortUrl == true {
                 let resolvedData = try await apollo.fetch(query: ResolveItemUrlQuery(url: itemUrl)).data
                 if let savedItemUrl = resolvedData?.itemByUrl?.savedItem?.url,
-                   let savedItem = try space.fetchSavedItem(byURL: savedItemUrl, context: space.backgroundContext) {
+                   try space.fetchSavedItem(byURL: savedItemUrl, context: space.backgroundContext) != nil {
                     itemUrl = savedItemUrl
                 } else if let resolvedUrl = resolvedData?.itemByUrl?.resolvedUrl,
-                            let savedItem = try space.fetchSavedItem(byURL: resolvedUrl, context: space.backgroundContext) {
+                            try space.fetchSavedItem(byURL: resolvedUrl, context: space.backgroundContext) != nil {
                     itemUrl = resolvedUrl
                 } else if let normalUrl = resolvedData?.itemByUrl?.normalUrl,
                           let savedItem = try space.fetchSavedItem(byURL: normalUrl, context: space.backgroundContext),
-                          let item = savedItem.item {
+                          savedItem.item != nil {
                     itemUrl = normalUrl
                 } else if let currentItemUrl = resolvedData?.itemByUrl?.givenUrl {
                     itemUrl = currentItemUrl
