@@ -32,6 +32,7 @@
                 "resolvedUrl": "https://example.com/items/archived-item-2",
                 "title": "Archived Item 2",
                 "topImageUrl": "https://example.com/items/archived-item-2/images/top-image.jpg",
+                "shortUrl": null,
                 "domain": "wired.com",
                 "language": "en",
                 "timeToRead": 6,

@@ -20,6 +20,7 @@
                         "title": "Slate 2, Recommendation 1",
                         "language": "en",
                         "topImageUrl": "http://example.com/slate-2-rec-1/top-image.png",
+                        "shortUrl": null,
                         "timeToRead": 1,
                         "wordCount": 200,
                         "authors": [

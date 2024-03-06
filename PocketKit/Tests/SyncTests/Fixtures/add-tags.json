@@ -28,6 +28,7 @@
                 "remoteID": "item-1",
                 "givenUrl": "https://given.example.com/item-1",
                 "resolvedUrl": "https://resolved.example.com/item-1",
+                "shortUrl": null,
                 "title": "Item 1",
                 "topImageUrl": "https://example.com/item-1/top-image.jpg",
                 "domain": null,

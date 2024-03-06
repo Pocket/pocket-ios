@@ -35,6 +35,7 @@
                         "givenUrl": "http://localhost:8080/hello",
                         "resolvedUrl": "http://localhost:8080/hello",
                         "topImageUrl": "https://example.com/item-1/top-image.jpg",
+                        "shortUrl": null,
                         "domain": null,
                         "language": "en",
                         "timeToRead": 6,

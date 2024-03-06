@@ -33,6 +33,7 @@
                 "givenUrl": "https://given.example.com/web-archived-item-1",
                 "resolvedUrl": "http://localhost:8080/web-archived-item-1",
                 "topImageUrl": "https://example.com/archived-item-1/top-image.jpg",
+                "shortUrl": null,
                 "domain": null,
                 "language": "en",
                 "timeToRead": 6,

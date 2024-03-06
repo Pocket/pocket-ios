@@ -17,6 +17,7 @@
         "resolvedUrl": "https://resolved.example.com/item-3",
         "title": "Item 3",
         "topImageUrl": "https://example.com/item-3/top-image.jpg",
+        "shortUrl": null,
         "domain": null,
         "language": "en",
         "timeToRead": 6,
