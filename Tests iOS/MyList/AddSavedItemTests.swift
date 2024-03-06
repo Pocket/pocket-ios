@@ -13,19 +13,16 @@ final class AddSavedItemTests: XCTestCase {
 
     // MARK: - Lifecycle Methods
 
+    @MainActor
     override func setUp() async throws {
         try await super.setUp()
         continueAfterFailure = false
-
+        await snowplowMicro.resetSnowplowEvents()
+        server = Application()
+        stubGraphQLEndpoint(isPremium: false)
+        try server.start()
         let uiApp = XCUIApplication()
         app = PocketAppElement(app: uiApp)
-        await snowplowMicro.resetSnowplowEvents()
-
-        server = Application()
-
-        stubGraphQLEndpoint(isPremium: false)
-
-        try server.start()
     }
 
     @MainActor

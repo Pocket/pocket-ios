@@ -6,20 +6,9 @@ import XCTest
 import Sails
 import NIO
 
-class ErrorTests: XCTestCase {
-    var server: Application!
-    var app: PocketAppElement!
-    var snowplowMicro = SnowplowMicro()
-
+class ErrorTests: PocketXCTestCase {
     override func setUp() async throws {
         try await super.setUp()
-        continueAfterFailure = false
-
-        let uiApp = XCUIApplication()
-        app = PocketAppElement(app: uiApp)
-        await snowplowMicro.resetSnowplowEvents()
-
-        server = Application()
 
         server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
@@ -29,8 +18,6 @@ class ErrorTests: XCTestCase {
             }
             return .fallbackResponses(apiRequest: apiRequest)
         }
-
-        try server.start()
     }
 
     @MainActor

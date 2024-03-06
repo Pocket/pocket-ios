@@ -10,32 +10,10 @@ import ApolloAPI
 import ApolloTestSupport
 import PocketGraphTestMocks
 
-class SearchTests: XCTestCase {
-    var server: Application!
-    var app: PocketAppElement!
-    var snowplowMicro = SnowplowMicro()
-
+class SearchTests: PocketXCTestCase {
     override func setUp() async throws {
         try await super.setUp()
-        continueAfterFailure = false
-
-        let uiApp = XCUIApplication()
-        app = PocketAppElement(app: uiApp)
-        await snowplowMicro.resetSnowplowEvents()
-
-        server = Application()
-
         stubGraphQLEndpoint(isPremium: false)
-
-        try server.start()
-    }
-
-    @MainActor
-    override func tearDown() async throws {
-        try server.stop()
-        app.terminate()
-        await snowplowMicro.assertBaselineSnowplowExpectation()
-        try await super.tearDown()
     }
 
     // MARK: - Saves: Search

@@ -7,20 +7,9 @@ import Sails
 import Combine
 import NIO
 
-class FavoriteAnItemTests: XCTestCase {
-    var server: Application!
-    var app: PocketAppElement!
-    var snowplowMicro = SnowplowMicro()
-
+class FavoriteAnItemTests: PocketXCTestCase {
     override func setUp() async throws {
         try await super.setUp()
-        continueAfterFailure = false
-
-        let uiApp = XCUIApplication()
-        app = PocketAppElement(app: uiApp)
-        await snowplowMicro.resetSnowplowEvents()
-
-        server = Application()
 
         server.routes.get("/hello") { _, _ in
             Response {
@@ -28,14 +17,6 @@ class FavoriteAnItemTests: XCTestCase {
                 Fixture.data(name: "hello", ext: "html")
             }
         }
-
-        try server.start()
-    }
-
-    override func tearDownWithError() throws {
-        try server.stop()
-        app.terminate()
-        try super.tearDownWithError()
     }
 
     func test_favoritingAndUnfavoritingAnItemFromList_showsFavoritedIcon_andSyncsWithServer() {

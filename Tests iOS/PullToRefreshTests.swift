@@ -5,27 +5,7 @@
 import XCTest
 import Sails
 
-class PullToRefreshTests: XCTestCase {
-    var server: Application!
-    var app: PocketAppElement!
-
-    override func setUpWithError() throws {
-        try super.setUpWithError()
-        continueAfterFailure = false
-
-        let uiApp = XCUIApplication()
-        app = PocketAppElement(app: uiApp)
-
-        server = Application()
-        try server.start()
-    }
-
-    override func tearDownWithError() throws {
-        try server.stop()
-        app.terminate()
-        try super.tearDownWithError()
-    }
-
+class PullToRefreshTests: PocketXCTestCase {
     func test_saves_pullToRefresh_fetchesNewContent() {
         var savesCall = 0
         server.routes.post("/graphql") { request, _ -> Response in

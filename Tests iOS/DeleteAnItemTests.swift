@@ -5,29 +5,7 @@
 import XCTest
 import Sails
 
-class DeleteAnItemTests: XCTestCase {
-    var server: Application!
-    var app: PocketAppElement!
-    var snowplowMicro = SnowplowMicro()
-
-    override func setUp() async throws {
-        try await super.setUp()
-        continueAfterFailure = false
-
-        let uiApp = XCUIApplication()
-        app = PocketAppElement(app: uiApp)
-        await snowplowMicro.resetSnowplowEvents()
-
-        server = Application()
-        try server.start()
-    }
-
-    override func tearDownWithError() throws {
-        try server.stop()
-        app.terminate()
-        try super.tearDownWithError()
-    }
-
+class DeleteAnItemTests: PocketXCTestCase {
     func test_deletingAnItemFromList_removesItFromList_andSyncsWithServer() {
         let deletionExpectation = expectation(description: "A delete request to the server")
         server.routes.post("/graphql") { request, _ -> Response in

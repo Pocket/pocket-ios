@@ -12,6 +12,7 @@ class SavesFiltersTests: XCTestCase {
     var app: PocketAppElement!
     var snowplowMicro = SnowplowMicro()
 
+    @MainActor
     override func setUp() async throws {
         try await super.setUp()
         continueAfterFailure = false

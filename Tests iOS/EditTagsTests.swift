@@ -5,35 +5,7 @@
 import XCTest
 import Sails
 
-class EditTagsTests: XCTestCase {
-    var app: PocketAppElement!
-    var server: Application!
-    var snowplowMicro = SnowplowMicro()
-
-    override func setUp() async throws {
-        try await super.setUp()
-        continueAfterFailure = false
-        let uiApp = XCUIApplication()
-        app = PocketAppElement(app: uiApp)
-        await snowplowMicro.resetSnowplowEvents()
-
-        server = Application()
-
-        server.routes.post("/graphql") { request, _ -> Response in
-            return .fallbackResponses(apiRequest: ClientAPIRequest(request))
-        }
-
-        try server.start()
-    }
-
-    @MainActor
-    override func tearDown() async throws {
-        try server.stop()
-        app.terminate()
-        await snowplowMicro.assertBaselineSnowplowExpectation()
-        try await super.tearDown()
-    }
-
+class EditTagsTests: PocketXCTestCase {
     @MainActor
     func test_editTagsView_renamesTag() async {
         app.launch()
