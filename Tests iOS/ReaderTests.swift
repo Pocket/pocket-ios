@@ -14,7 +14,7 @@ class ReaderTests: XCTestCase {
         try await super.setUp()
         continueAfterFailure = false
 
-        let uiApp = XCUIApplication()
+        let uiApp = await XCUIApplication()
         app = PocketAppElement(app: uiApp)
         await snowplowMicro.resetSnowplowEvents()
 

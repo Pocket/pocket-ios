@@ -6,30 +6,7 @@ import XCTest
 import Sails
 import NIO
 
-class SettingsTest: XCTestCase {
-    var server: Application!
-    var app: PocketAppElement!
-    var snowplowMicro = SnowplowMicro()
-
-    override func setUp() async throws {
-        try await super.setUp()
-        continueAfterFailure = false
-
-        app = PocketAppElement(app: XCUIApplication())
-        server = Application()
-
-        await snowplowMicro.resetSnowplowEvents()
-        try server.start()
-    }
-
-    @MainActor
-    override func tearDown() async throws {
-        try server.stop()
-        app.terminate()
-        await snowplowMicro.assertBaselineSnowplowExpectation()
-        try await super.tearDown()
-    }
-
+class SettingsTest: PocketXCTestCase {
     @MainActor
     func test_deleteAccount_free_succeeds() async {
         var deletePromise: EventLoopPromise<Response>?

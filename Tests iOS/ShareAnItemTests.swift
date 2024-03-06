@@ -5,34 +5,7 @@
 import XCTest
 import Sails
 
-class ShareAnItemTests: XCTestCase {
-    var server: Application!
-    var app: PocketAppElement!
-    var snowplowMicro = SnowplowMicro()
-
-    override func setUp() async throws {
-        try await super.setUp()
-        continueAfterFailure = false
-
-        let uiApp = XCUIApplication()
-        app = PocketAppElement(app: uiApp)
-        await snowplowMicro.resetSnowplowEvents()
-
-        server = Application()
-
-        server.routes.post("/graphql") { request, _ -> Response in
-            return .fallbackResponses(apiRequest: ClientAPIRequest(request))
-        }
-
-        try server.start()
-    }
-
-    override func tearDownWithError() throws {
-        try server.stop()
-        app.terminate()
-        try super.tearDownWithError()
-    }
-
+class ShareAnItemTests: PocketXCTestCase {
     func test_sharingAnItemFromList_presentsShareSheet() {
         app.launch()
         app.tabBar.savesButton.wait().tap()

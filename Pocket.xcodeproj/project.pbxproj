@@ -57,6 +57,7 @@
 		650FECD228BA85F300A3CB0C /* PushNotificationServiceExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 650FECCB28BA85F300A3CB0C /* PushNotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		65167B6F2909904200343FA8 /* BrazeNotificationService in Frameworks */ = {isa = PBXBuildFile; productRef = 65167B6E2909904200343FA8 /* BrazeNotificationService */; };
 		65167B712909904200343FA8 /* BrazePushStory in Frameworks */ = {isa = PBXBuildFile; productRef = 65167B702909904200343FA8 /* BrazePushStory */; };
+		651E365D2B98C5760037C1DB /* PocketXCTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 651E365C2B98C5760037C1DB /* PocketXCTestCase.swift */; };
 		6544202329B1B17C002B12F2 /* DeleteConfirmationViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6544202229B1B17C002B12F2 /* DeleteConfirmationViewElement.swift */; };
 		6547A0FF29F1812E00F6FC6B /* Sails in Frameworks */ = {isa = PBXBuildFile; productRef = 6547A0FE29F1812E00F6FC6B /* Sails */; };
 		656041EE29B18105007E7CD0 /* SettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656041ED29B18105007E7CD0 /* SettingsTests.swift */; };
@@ -240,6 +241,7 @@
 		650FECCD28BA85F300A3CB0C /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		650FECCF28BA85F300A3CB0C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		651D13652995967C0055F7EB /* swiftgen.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = swiftgen.yml; sourceTree = "<group>"; };
+		651E365C2B98C5760037C1DB /* PocketXCTestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PocketXCTestCase.swift; sourceTree = "<group>"; };
 		653DA73729C3BC0A00123847 /* Pocket_iOS_Debug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Pocket_iOS_Debug.entitlements; sourceTree = "<group>"; };
 		653DA73829C3BC1500123847 /* Pocket_iOS_Release.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Pocket_iOS_Release.entitlements; sourceTree = "<group>"; };
 		653DA73929C3BC6800123847 /* SaveToPocket.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SaveToPocket.entitlements; sourceTree = "<group>"; };
@@ -496,6 +498,7 @@
 				658140E929A5993C00346848 /* SnowplowMicro.swift */,
 				658140EB29A59A0C00346848 /* HTTPDataDownloader.swift */,
 				65BE918D29A5B9AF00B13BF1 /* AnyCodable.swift */,
+				651E365C2B98C5760037C1DB /* PocketXCTestCase.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -999,6 +1002,7 @@
 				F20BB0392744542F00AE5E70 /* AlertElement.swift in Sources */,
 				166BAD0D2656E76B00E401F0 /* PocketAppElement.swift in Sources */,
 				8A7765A2288EE80900127BB4 /* RecentSavesCellElement.swift in Sources */,
+				651E365D2B98C5760037C1DB /* PocketXCTestCase.swift in Sources */,
 				3E44BE77290BFD4600EC25AD /* ReaderActionsWebActivityElement.swift in Sources */,
 				164FB66E278F7ECC002959D6 /* SavesFiltersTests.swift in Sources */,
 				F2843C1E2714D18200E03ED5 /* ReportARecommendationTests.swift in Sources */,

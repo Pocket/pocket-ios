@@ -5,36 +5,7 @@
 import XCTest
 import Sails
 
-class AddTagsItemTests: XCTestCase {
-    var server: Sails.Application!
-    var app: PocketAppElement!
-    var snowplowMicro = SnowplowMicro()
-
-    override func setUp() async throws {
-        try await super.setUp()
-        continueAfterFailure = false
-
-        let uiApp = XCUIApplication()
-        app = PocketAppElement(app: uiApp)
-        await snowplowMicro.resetSnowplowEvents()
-
-        server = Application()
-
-        server.routes.post("/graphql") { request, _ -> Response in
-            return .fallbackResponses(apiRequest: ClientAPIRequest(request))
-        }
-
-        try server.start()
-    }
-
-    @MainActor
-    override func tearDown() async throws {
-        try server.stop()
-        app.terminate()
-        await snowplowMicro.assertNoBadEvents()
-        try await super.tearDown()
-    }
-
+class AddTagsItemTests: PocketXCTestCase {
     @MainActor
     func test_addTagsToItemFromSaves_withPremiumUser_savesNewTags() async {
         server.routes.post("/graphql") { request, _ -> Response in

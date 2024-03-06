@@ -28,10 +28,7 @@ class PremiumStatusViewModelTests: XCTestCase {
         // When
         await viewModel.getInfo()
         // Then
-        waitForExpectations(timeout: 2) {error in
-            guard let error else { return }
-            XCTFail("Expectations not fulfilled: \(String(describing: error))")
-        }
+        await fulfillment(of: [service.callGetInfoExpectation!], timeout: 2)
     }
 
     @MainActor
