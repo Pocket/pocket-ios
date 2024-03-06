@@ -192,7 +192,17 @@ class HomeViewControllerSectionProvider {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.8*Double(numberOfSharedWithYouItems)), heightDimension: .absolute(StyleConstants.sharedWithYouGroupHeight))
+        let itemWidthPercentage: CGFloat
+                let sideMargin: CGFloat
+                if env.traitCollection.shouldUseWideLayout() {
+                    sideMargin = Constants.iPadSideMargin
+                    itemWidthPercentage = 2/5
+                } else {
+                    sideMargin = Constants.sideMargin
+                    itemWidthPercentage = 0.8
+                }
+
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(itemWidthPercentage*Double(numberOfSharedWithYouItems)), heightDimension: .absolute(StyleConstants.sharedWithYouGroupHeight))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: numberOfSharedWithYouItems)
         group.interItemSpacing = .fixed(16)
 
@@ -215,9 +225,9 @@ class HomeViewControllerSectionProvider {
         section.boundarySupplementaryItems = [headerItem]
         section.contentInsets = NSDirectionalEdgeInsets(
             top: Constants.margin,
-            leading: Constants.sideMargin,
+            leading: sideMargin,
             bottom: Constants.sectionSpacing,
-            trailing: Constants.sideMargin
+            trailing: sideMargin
         )
         return section
     }
