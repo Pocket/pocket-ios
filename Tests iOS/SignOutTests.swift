@@ -5,33 +5,7 @@
 import XCTest
 import Sails
 
-class SignOutTests: XCTestCase {
-    var server: Application!
-    var app: PocketAppElement!
-    var snowplowMicro = SnowplowMicro()
-
-    override func setUp() async throws {
-        try await super.setUp()
-        continueAfterFailure = false
-
-        app = PocketAppElement(app: XCUIApplication())
-        server = Application()
-        server.routes.post("/graphql") { request, _ -> Response in
-            return .fallbackResponses(apiRequest: ClientAPIRequest(request))
-        }
-
-        await snowplowMicro.resetSnowplowEvents()
-        try server.start()
-    }
-
-    @MainActor
-    override func tearDown() async throws {
-        try server.stop()
-        app.terminate()
-        await snowplowMicro.assertBaselineSnowplowExpectation()
-        try await super.tearDown()
-    }
-
+class SignOutTests: PocketXCTestCase {
     @MainActor
     func test_tappingSignOutshowsLogin() async {
         app.launch()

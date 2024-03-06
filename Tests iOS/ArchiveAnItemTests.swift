@@ -5,27 +5,7 @@
 import XCTest
 import Sails
 
-class ArchiveAnItemTests: XCTestCase {
-    var server: Application!
-    var app: PocketAppElement!
-
-    override func setUpWithError() throws {
-        try super.setUpWithError()
-        continueAfterFailure = false
-
-        let uiApp = XCUIApplication()
-        app = PocketAppElement(app: uiApp)
-
-        server = Application()
-        try server.start()
-    }
-
-    override func tearDownWithError() throws {
-        try server.stop()
-        app.terminate()
-        try super.tearDownWithError()
-    }
-
+class ArchiveAnItemTests: PocketXCTestCase {
     func test_archivingAnItemFromList_removesItFromList_andSyncsWithServer() {
         let expectRequest = expectation(description: "A request to the server")
         server.routes.post("/graphql") { request, _ -> Response in

@@ -7,11 +7,8 @@ import Sails
 import StoreKitTest
 
 // swiftlint:disable force_try
-class PremiumTests: XCTestCase {
-    var server: Application!
-    var app: PocketAppElement!
+class PremiumTests: PocketXCTestCase {
     var storeSession: SKTestSession!
-    var snowplowMicro = SnowplowMicro()
 
     override func setUp() async throws {
         try await super.setUp()
@@ -20,20 +17,6 @@ class PremiumTests: XCTestCase {
         storeSession.resetToDefaultState()
         storeSession.clearTransactions()
         storeSession.disableDialogs = true
-        app = PocketAppElement(app: XCUIApplication())
-        server = Application()
-
-        await snowplowMicro.resetSnowplowEvents()
-        try server.start()
-    }
-
-    override func tearDownWithError() throws {
-        try server.stop()
-        storeSession.clearTransactions()
-        storeSession.resetToDefaultState()
-        storeSession = nil
-        app.terminate()
-        try super.tearDownWithError()
     }
 
     /// Test that tapping "Go Premium" in Settings presents the Premium Upgrade view
