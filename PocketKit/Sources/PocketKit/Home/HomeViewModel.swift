@@ -141,6 +141,7 @@ class HomeViewModel: NSObject {
     private let recentSavesController: NSFetchedResultsController<SavedItem>
     private let recomendationsController: RichFetchedResultsController<Recommendation>
     private let sharedWithYouController: RichFetchedResultsController<SharedWithYouItem>
+    private(set) var numberOfSharedWithYouItems = 0
 
     init(
         source: Source,
@@ -244,6 +245,7 @@ extension HomeViewModel {
         }
         // Add Shared With You section right below recent saves
         if let sharedWithYouItems = sharedWithYouController.fetchedObjects as? [SharedWithYouItem], !sharedWithYouItems.isEmpty {
+            numberOfSharedWithYouItems = sharedWithYouItems.count
             snapshot.appendSections([.sharedWithYou])
             snapshot.appendItems(sharedWithYouItems.prefix(4).map { .sharedWithYou($0.objectID) }, toSection: .sharedWithYou)
         }
@@ -588,14 +590,14 @@ extension HomeViewModel {
                 self?.select(slate: slate)
             }
         case .sharedWithYou:
-            guard let list = sharedWithYouController.fetchedObjects as? [SharedWithYouItem] else {
-                return nil
-            }
             return .init(
                 name: SWHighlightCenter.highlightCollectionTitle,
                 buttonTitle: Localization.seeAll,
                 buttonImage: UIImage(asset: .chevronRight)
             ) { [weak self] in
+                guard let list = self?.sharedWithYouController.fetchedObjects as? [SharedWithYouItem] else {
+                    return
+                }
                 self?.select(sharedWithYouList: list)
             }
         case .loading, .slateCarousel, .offline:
@@ -678,13 +680,6 @@ extension HomeViewModel {
         presentedAlert = nil
         tracker.track(event: Events.Home.RecentSavesCardDelete(url: item.url, positionInList: indexPath.item))
         source.delete(item: item)
-    }
-}
-
-// MARK: Shared With You model
-extension HomeViewModel {
-    var numberOfSharedWithYouItems: Int {
-        sharedWithYouController.fetchedObjects?.count ?? 0
     }
 }
 

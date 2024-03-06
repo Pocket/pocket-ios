@@ -14,7 +14,7 @@ class SharedWithYouCarouselCell: UICollectionViewCell {
     /// The top-most stack view, that allows to add accessory views.
     /// If no accessory view is present, it only contains `topView`
     private lazy var topStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [topView])
+        let stackView = UIStackView(arrangedSubviews: [topView, attributionView])
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
         stackView.spacing = 8
@@ -49,7 +49,7 @@ extension SharedWithYouCarouselCell {
 
         if let url = configuration.sharedWithYouUrlString {
             Task {
-                await addAttributionView(url)
+                await updateAttributionView(url)
             }
         }
     }
@@ -59,21 +59,13 @@ extension SharedWithYouCarouselCell {
 extension SharedWithYouCarouselCell {
     /// Add the attribution view if a valid shared with you url is found
     /// - Parameter urlString: the string representation of the url
-    private func addAttributionView(_ urlString: String) async {
+    private func updateAttributionView(_ urlString: String) async {
         guard let url = URL(string: urlString) else {
-            return
-        }
-        // no need to re-add the same attribution view
-        if let highlight = attributionView.highlight, highlight.url.absoluteString == urlString, attributionView.isDescendant(of: topStackView) {
             return
         }
         do {
             let highlight = try await SWHighlightCenter().highlight(for: url)
             attributionView.highlight = highlight
-            // in case of reusing a cell, we just need to change the highlight without readding the attribution view to the hierarchy
-            if !attributionView.isDescendant(of: topStackView) {
-                topStackView.addArrangedSubview(attributionView)
-            }
         } catch {
             Log.capture(message: "Unable to retrieve highlight for url: \(urlString) - Error: \(error)")
         }
