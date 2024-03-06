@@ -67,13 +67,33 @@ class FetchSharedWithYouItems: SyncOperation {
     private func fetchSharedWithYouItems(urls: [String]) async throws {
         for url in urls.enumerated() {
             Log.breadcrumb(category: "sync.sharedWithYou", level: .debug, message: "Grabbing sharedWithYouItem \(url.offset)")
+            let sharedWithYouUrl = url.element
+            // item url, that might require to be resolved from a short url
+            var itemUrl = url.element
+            // for short urls, attempt to find a related saved item mapped to any of the urls, otherwise just use the given url
+            if URLComponents(string: itemUrl)?.isShortUrl == true {
+                let resolvedData = try await apollo.fetch(query: ResolveItemUrlQuery(url: itemUrl)).data
+                if let savedItemUrl = resolvedData?.itemByUrl?.savedItem?.url,
+                   let savedItem = try space.fetchSavedItem(byURL: savedItemUrl, context: space.backgroundContext) {
+                    itemUrl = savedItemUrl
+                } else if let resolvedUrl = resolvedData?.itemByUrl?.resolvedUrl,
+                            let savedItem = try space.fetchSavedItem(byURL: resolvedUrl, context: space.backgroundContext) {
+                    itemUrl = resolvedUrl
+                } else if let normalUrl = resolvedData?.itemByUrl?.normalUrl,
+                          let savedItem = try space.fetchSavedItem(byURL: normalUrl, context: space.backgroundContext),
+                          let item = savedItem.item {
+                    itemUrl = normalUrl
+                } else if let currentItemUrl = resolvedData?.itemByUrl?.givenUrl {
+                    itemUrl = currentItemUrl
+                }
+            }
 
-            if let item = try self.space.fetchSharedWithYouItem(with: url.element, in: space.backgroundContext)?.item {
+            if let item = try self.space.fetchSharedWithYouItem(with: sharedWithYouUrl, in: space.backgroundContext)?.item {
                 Log.breadcrumb(category: "sync.sharedWithYou", level: .debug, message: "Skipping sharedWithYouItem \(url.offset) because we already have its data, itemId: \(item.remoteID)")
                 continue
             }
 
-            let result = try await fetchSharedWithYouSummary(url.element)
+            let result = try await fetchSharedWithYouSummary(itemUrl)
             try updateLocalStorage(url: url.element, sortOrder: url.offset, result: result)
 
             Log.breadcrumb(category: "sync.sharedWithYou", level: .debug, message: "Finsihed sharedWithYouItem \(url.offset), itemId: \(result.data?.itemByUrl?.fragments.itemSummary.remoteID ?? "not found")")
@@ -96,5 +116,11 @@ class FetchSharedWithYouItems: SyncOperation {
         }
 
         try self.safeSpace.updateSharedWithYouItem(url: url, sortOrder: sortOrder, remote: itemSummary)
+    }
+}
+
+private extension URLComponents {
+    var isShortUrl: Bool {
+        host == "pocket.co"
     }
 }
