@@ -27,6 +27,7 @@ final class SharedWithYouStore: NSObject {
         if appSession.currentSession != nil {
             start()
         }
+        listenForUserSession()
     }
 }
 
