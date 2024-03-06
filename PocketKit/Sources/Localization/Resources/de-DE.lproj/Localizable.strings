@@ -201,17 +201,17 @@
 "reader.activity.moveToSaves" = "Zu „Gespeichert“ verschieben";
 
 // Reader Settings
-"reader.settings.title" = "Display settings";
-"reader.settings.fontLabel"  = "Font";
-"reader.settings.fontSizeLabel" = "Font size";
-"reader.settings.lineHeightLabel" = "Line height";
-"reader.settings.marginsLabel" = "Margins";
-"reader.settings.alignmentLabel" = "Alignment";
-"reader.settings.resetToDefaultsLabel" = "Reset to defaults";
-"reader.settings.premiumUpsellLabel" = "Unlock more options";
-"reader.settings.premiumUpsellSubtitle" = "Premium fonts, text formatting and more.";
-"reader.settings.alignmentNatural" = "Default";
-"reader.settings.alignmentJustified" = "Justified";
+"reader.settings.title" = "Anzeigeeinstellungen";
+"reader.settings.fontLabel"  = "Schriftart";
+"reader.settings.fontSizeLabel" = "Schriftgröße";
+"reader.settings.lineHeightLabel" = "Zeilenhöhe";
+"reader.settings.marginsLabel" = "Ränder";
+"reader.settings.alignmentLabel" = "Ausrichtung";
+"reader.settings.resetToDefaultsLabel" = "Auf Standard zurücksetzen";
+"reader.settings.premiumUpsellLabel" = "Weitere Optionen freischalten";
+"reader.settings.premiumUpsellSubtitle" = "Premium-Schriftarten, -Textformatierung und mehr.";
+"reader.settings.alignmentNatural" = "Standard";
+"reader.settings.alignmentJustified" = "Blocksatz";
 
 //Recommendation
 "recommendation.save" = "Speichern";
@@ -344,6 +344,9 @@
 
 // Collection
 "collection.stories.count" = "%1$@ Elemente";
+
+// Shared With You
+"sharedWithYou.title" = "hat Folgendes mit dir geteilt:";
 
 // Logged out
 "loggedOut.continue" = "Weiter";

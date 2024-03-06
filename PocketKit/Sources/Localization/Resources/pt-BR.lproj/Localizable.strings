@@ -201,17 +201,17 @@
 "reader.activity.moveToSaves" = "Mover para Salvos";
 
 // Reader Settings
-"reader.settings.title" = "Display settings";
-"reader.settings.fontLabel"  = "Font";
-"reader.settings.fontSizeLabel" = "Font size";
-"reader.settings.lineHeightLabel" = "Line height";
-"reader.settings.marginsLabel" = "Margins";
-"reader.settings.alignmentLabel" = "Alignment";
-"reader.settings.resetToDefaultsLabel" = "Reset to defaults";
-"reader.settings.premiumUpsellLabel" = "Unlock more options";
-"reader.settings.premiumUpsellSubtitle" = "Premium fonts, text formatting and more.";
-"reader.settings.alignmentNatural" = "Default";
-"reader.settings.alignmentJustified" = "Justified";
+"reader.settings.title" = "Exibir Configurações";
+"reader.settings.fontLabel"  = "Fonte";
+"reader.settings.fontSizeLabel" = "Tamanho da fonte";
+"reader.settings.lineHeightLabel" = "Espaçamento";
+"reader.settings.marginsLabel" = "Margens";
+"reader.settings.alignmentLabel" = "Alinhamento";
+"reader.settings.resetToDefaultsLabel" = "Redefinir para os padrões";
+"reader.settings.premiumUpsellLabel" = "Desbloquear mais opções";
+"reader.settings.premiumUpsellSubtitle" = "Fontes premium, formatação de texto e muito mais.";
+"reader.settings.alignmentNatural" = "Padrão";
+"reader.settings.alignmentJustified" = "Justificado";
 
 //Recommendation
 "recommendation.save" = "Salvar";
@@ -344,6 +344,9 @@
 
 // Collection
 "collection.stories.count" = "%1$@ itens";
+
+// Shared With You
+"sharedWithYou.title" = "compartilhado com você";
 
 // Logged out
 "loggedOut.continue" = "Continuar";

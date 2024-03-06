@@ -201,17 +201,17 @@
 "reader.activity.moveToSaves" = "保存アイテムに移動";
 
 // Reader Settings
-"reader.settings.title" = "Display settings";
-"reader.settings.fontLabel"  = "Font";
-"reader.settings.fontSizeLabel" = "Font size";
-"reader.settings.lineHeightLabel" = "Line height";
-"reader.settings.marginsLabel" = "Margins";
-"reader.settings.alignmentLabel" = "Alignment";
-"reader.settings.resetToDefaultsLabel" = "Reset to defaults";
-"reader.settings.premiumUpsellLabel" = "Unlock more options";
-"reader.settings.premiumUpsellSubtitle" = "Premium fonts, text formatting and more.";
-"reader.settings.alignmentNatural" = "Default";
-"reader.settings.alignmentJustified" = "Justified";
+"reader.settings.title" = "表示設定";
+"reader.settings.fontLabel"  = "フォント";
+"reader.settings.fontSizeLabel" = "フォントサイズ";
+"reader.settings.lineHeightLabel" = "行の高さ";
+"reader.settings.marginsLabel" = "余白";
+"reader.settings.alignmentLabel" = "位置揃え";
+"reader.settings.resetToDefaultsLabel" = "デフォルトにリセット";
+"reader.settings.premiumUpsellLabel" = "その他のオプションを解除する";
+"reader.settings.premiumUpsellSubtitle" = "プレミアムフォント、テキストフォーマットなど。";
+"reader.settings.alignmentNatural" = "デフォルト";
+"reader.settings.alignmentJustified" = "両端揃え";
 
 //Recommendation
 "recommendation.save" = "保存";
@@ -344,6 +344,9 @@
 
 // Collection
 "collection.stories.count" = "%1$@ 件のアイテム";
+
+// Shared With You
+"sharedWithYou.title" = "があなたと共有しました";
 
 // Logged out
 "loggedOut.continue" = "続行";

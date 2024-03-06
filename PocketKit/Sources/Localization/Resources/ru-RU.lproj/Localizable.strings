@@ -201,17 +201,17 @@
 "reader.activity.moveToSaves" = "Перейти к Сохраненному";
 
 // Reader Settings
-"reader.settings.title" = "Display settings";
-"reader.settings.fontLabel"  = "Font";
-"reader.settings.fontSizeLabel" = "Font size";
-"reader.settings.lineHeightLabel" = "Line height";
-"reader.settings.marginsLabel" = "Margins";
-"reader.settings.alignmentLabel" = "Alignment";
-"reader.settings.resetToDefaultsLabel" = "Reset to defaults";
-"reader.settings.premiumUpsellLabel" = "Unlock more options";
-"reader.settings.premiumUpsellSubtitle" = "Premium fonts, text formatting and more.";
-"reader.settings.alignmentNatural" = "Default";
-"reader.settings.alignmentJustified" = "Justified";
+"reader.settings.title" = "Отобразить настройки";
+"reader.settings.fontLabel"  = "Шрифт";
+"reader.settings.fontSizeLabel" = "Размер шрифта";
+"reader.settings.lineHeightLabel" = "Высота строки";
+"reader.settings.marginsLabel" = "Поля";
+"reader.settings.alignmentLabel" = "Выравнивание";
+"reader.settings.resetToDefaultsLabel" = "Сбросить до стандартных";
+"reader.settings.premiumUpsellLabel" = "Разблокировать больше функций";
+"reader.settings.premiumUpsellSubtitle" = "Premium-шрифты, форматирование текста и многое другое.";
+"reader.settings.alignmentNatural" = "По умолчанию";
+"reader.settings.alignmentJustified" = "Выровненный по ширине";
 
 //Recommendation
 "recommendation.save" = "Сохранить";
@@ -344,6 +344,9 @@
 
 // Collection
 "collection.stories.count" = "%1$@ материалов";
+
+// Shared With You
+"sharedWithYou.title" = "отправлено вам";
 
 // Logged out
 "loggedOut.continue" = "Продолжить";

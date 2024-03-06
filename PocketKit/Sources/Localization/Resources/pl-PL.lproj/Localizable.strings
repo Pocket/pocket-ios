@@ -29,7 +29,7 @@
 "home.recommendation.readTime" = "%1$@ min";
 
 //Item
-"item.overflowMenu.moveToSaves" = "Przejdź do Zapisanych";
+"item.overflowMenu.moveToSaves" = "Przenieś do Zapisanych";
 
 //ItemAction
 "itemAction.addTags" = "Dodaj tagi";
@@ -40,15 +40,15 @@
 "itemAction.displaySettings" = "Ustawienia wyświetlania";
 "itemAction.favorite" = "Dodaj do Ulubionych";
 "itemAction.unfavorite" = "Usuń z Ulubionych";
-"itemAction.moveToSaves" = "Przejdź do Zapisanych";
+"itemAction.moveToSaves" = "Przenieś do Zapisanych";
 "itemAction.open" = "Otwórz";
 "itemAction.report" = "Zgłoś";
 "itemAction.save" = "Zapisz";
 "itemAction.share" = "Udostępnij";
-"itemAction.showHighlights" = "Highlights";
+"itemAction.showHighlights" = "Wyróżnienia";
 
 // Edit Actions
-"editAction.highlight" = "Polecane";
+"editAction.highlight" = "Wyróżnij";
 
 //ItemList
 "itemlist.filter.search" = "Wyszukaj";
@@ -56,7 +56,7 @@
 "itemlist.filter.tagged" = "Otagowane";
 "itemlist.filter.favorites" = "Ulubione";
 "itemlist.filter.sortFilter" = "Sortuj";
-"itemlist.filter.highlightsFilter" = "Highlights";
+"itemlist.filter.highlightsFilter" = "Wyróżnione";
 "itemList.edit.banner" = "Edytowanie własnej listy nie jest dostępne w tej wersji Pocket, ale wróci już wkrótce!";
 
 //List view
@@ -102,7 +102,7 @@
 "search.recent" = "Ostatnie wyszukiwania";
 "search.recent.empty" = "Ostatnie wyszukiwania pojawią się tutaj, aby można było łatwo do nich wrócić.";
 "search.swipe.archive" = "Archiwizuj";
-"search.swipe.moveToSaves" = "Przejdź do Zapisanych";
+"search.swipe.moveToSaves" = "Przenieś do Zapisanych";
 "search.edit.banner" = "Edytowanie wyników wyszukiwania nie jest dostępne w tej wersji Pocket, ale wróci już wkrótce!";
 "search.empty.header" = "Szukaj wg tytułu lub adresu URL";
 
@@ -180,7 +180,7 @@
 "tags.section.userTags" = "Moje tagi";
 
 "tags.empty.header" = "Brak zapisanych elementów z tym tagiem";
-"tags.empty.detail" = "Oznacz zapisane elementy według tematu, aby znaleźć je później.";
+"tags.empty.detail" = "Otaguj zapisane, aby znaleźć je później.";
 "tags.empty.button" = "Jak tagować";
 
 "tags.notTagged" = "Nieoznaczone tagiem";
@@ -201,17 +201,17 @@
 "reader.activity.moveToSaves" = "Przenieś do Zapisanych";
 
 // Reader Settings
-"reader.settings.title" = "Display settings";
-"reader.settings.fontLabel"  = "Font";
-"reader.settings.fontSizeLabel" = "Font size";
-"reader.settings.lineHeightLabel" = "Line height";
-"reader.settings.marginsLabel" = "Margins";
-"reader.settings.alignmentLabel" = "Alignment";
-"reader.settings.resetToDefaultsLabel" = "Reset to defaults";
-"reader.settings.premiumUpsellLabel" = "Unlock more options";
-"reader.settings.premiumUpsellSubtitle" = "Premium fonts, text formatting and more.";
-"reader.settings.alignmentNatural" = "Default";
-"reader.settings.alignmentJustified" = "Justified";
+"reader.settings.title" = "Ustawienia wyświetlania";
+"reader.settings.fontLabel"  = "Czcionka";
+"reader.settings.fontSizeLabel" = "Rozmiar czcionki";
+"reader.settings.lineHeightLabel" = "Wysokość odstępu";
+"reader.settings.marginsLabel" = "Marginesy";
+"reader.settings.alignmentLabel" = "Wyrównanie";
+"reader.settings.resetToDefaultsLabel" = "Zresetuj do ustawień domyślnych";
+"reader.settings.premiumUpsellLabel" = "Odblokuj więcej opcji";
+"reader.settings.premiumUpsellSubtitle" = "Czcionki premium, formatowanie tekstu i nie tylko.";
+"reader.settings.alignmentNatural" = "Domyślny";
+"reader.settings.alignmentJustified" = "Wyjustowany";
 
 //Recommendation
 "recommendation.save" = "Zapisz";
@@ -344,6 +344,9 @@
 
 // Collection
 "collection.stories.count" = "Liczba elementów: %1$@";
+
+// Shared With You
+"sharedWithYou.title" = "udostępnione Tobie";
 
 // Logged out
 "loggedOut.continue" = "Dalej";
