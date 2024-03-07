@@ -2126,7 +2126,7 @@
 			repositoryURL = "https://github.com/braze-inc/braze-swift-sdk.git";
 			requirement = {
 				kind = exactVersion;
-				version = 8.0.0;
+				version = 8.0.1;
 			};
 		};
 		6547A0FD29F17AAF00F6FC6B /* XCRemoteSwiftPackageReference "Sails" */ = {
