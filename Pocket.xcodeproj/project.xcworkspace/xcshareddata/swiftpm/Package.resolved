@@ -10,12 +10,12 @@
       }
     },
     {
-      "identity" : "braze-swift-sdk",
+      "identity" : "braze-swift-sdk-prebuilt-dynamic",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/braze-inc/braze-swift-sdk.git",
+      "location" : "https://github.com/braze-inc/braze-swift-sdk-prebuilt-dynamic",
       "state" : {
-        "revision" : "b68802890d14e7b6b3d38eb516229aa637fddeb3",
-        "version" : "8.0.1"
+        "revision" : "3f1c150f17606076831a9217458555f78b25e23b",
+        "version" : "8.1.0"
       }
     },
     {
@@ -79,15 +79,6 @@
       "state" : {
         "branch" : "master",
         "revision" : "730166aa43b900e71a128e74910b1d9a431b24cf"
-      }
-    },
-    {
-      "identity" : "sdwebimage",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/SDWebImage/SDWebImage.git",
-      "state" : {
-        "revision" : "59730af512c06fb569c119d737df4c1c499e001d",
-        "version" : "5.18.10"
       }
     },
     {

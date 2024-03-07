@@ -55,8 +55,6 @@
 		650EEABC29F35499004D66BD /* ApolloTestSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 650EEABB29F35499004D66BD /* ApolloTestSupport */; };
 		650FECCE28BA85F300A3CB0C /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 650FECCD28BA85F300A3CB0C /* NotificationService.swift */; };
 		650FECD228BA85F300A3CB0C /* PushNotificationServiceExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 650FECCB28BA85F300A3CB0C /* PushNotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		65167B6F2909904200343FA8 /* BrazeNotificationService in Frameworks */ = {isa = PBXBuildFile; productRef = 65167B6E2909904200343FA8 /* BrazeNotificationService */; };
-		65167B712909904200343FA8 /* BrazePushStory in Frameworks */ = {isa = PBXBuildFile; productRef = 65167B702909904200343FA8 /* BrazePushStory */; };
 		651E365D2B98C5760037C1DB /* PocketXCTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 651E365C2B98C5760037C1DB /* PocketXCTestCase.swift */; };
 		6544202329B1B17C002B12F2 /* DeleteConfirmationViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6544202229B1B17C002B12F2 /* DeleteConfirmationViewElement.swift */; };
 		6547A0FF29F1812E00F6FC6B /* Sails in Frameworks */ = {isa = PBXBuildFile; productRef = 6547A0FE29F1812E00F6FC6B /* Sails */; };
@@ -97,6 +95,8 @@
 		AA2E890C2A0D8849004A27BD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA2E890B2A0D8849004A27BD /* Assets.xcassets */; };
 		AA2E89102A0D8849004A27BD /* ItemWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = AA2E89012A0D8847004A27BD /* ItemWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		AA69A28429B7FC6E00BBA644 /* SearchGetPremiumEmptyViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA69A28329B7FC6E00BBA644 /* SearchGetPremiumEmptyViewElement.swift */; };
+		AA7A8ABF2B9A67AC0035E0F7 /* BrazePushStory in Frameworks */ = {isa = PBXBuildFile; productRef = AA7A8ABE2B9A67AC0035E0F7 /* BrazePushStory */; };
+		AA7A8AC12B9A67CA0035E0F7 /* BrazeNotificationService in Frameworks */ = {isa = PBXBuildFile; productRef = AA7A8AC02B9A67CA0035E0F7 /* BrazeNotificationService */; };
 		AA7D6A2B2995F0A20094FD18 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA7D6A2A2995F0A20094FD18 /* StoreKit.framework */; };
 		AA9DB97429B6E6480046AEF6 /* Test_Subscriptions.storekit in Resources */ = {isa = PBXBuildFile; fileRef = AA909ACC299F4D5400F90FA7 /* Test_Subscriptions.storekit */; };
 		AAA3EF842A3A3976000117BE /* ItemWidgetsKit in Frameworks */ = {isa = PBXBuildFile; productRef = AAA3EF832A3A3976000117BE /* ItemWidgetsKit */; };
@@ -349,7 +349,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				65167B6F2909904200343FA8 /* BrazeNotificationService in Frameworks */,
+				AA7A8AC12B9A67CA0035E0F7 /* BrazeNotificationService in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -367,7 +367,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				65EC272928BA8AD50075E1DF /* UserNotificationsUI.framework in Frameworks */,
-				65167B712909904200343FA8 /* BrazePushStory in Frameworks */,
+				AA7A8ABF2B9A67AC0035E0F7 /* BrazePushStory in Frameworks */,
 				65EC272728BA8AD50075E1DF /* UserNotifications.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -705,7 +705,7 @@
 			);
 			name = PushNotificationServiceExtension;
 			packageProductDependencies = (
-				65167B6E2909904200343FA8 /* BrazeNotificationService */,
+				AA7A8AC02B9A67CA0035E0F7 /* BrazeNotificationService */,
 			);
 			productName = PushNotificationServiceExtension;
 			productReference = 650FECCB28BA85F300A3CB0C /* PushNotificationServiceExtension.appex */;
@@ -745,7 +745,7 @@
 			);
 			name = PushNotificationStoryExtension;
 			packageProductDependencies = (
-				65167B702909904200343FA8 /* BrazePushStory */,
+				AA7A8ABE2B9A67AC0035E0F7 /* BrazePushStory */,
 			);
 			productName = PushNotificationStoryExtension;
 			productReference = 65EC272528BA8AD50075E1DF /* PushNotificationStoryExtension.appex */;
@@ -853,10 +853,10 @@
 			);
 			mainGroup = 166A81A32637406B0015AA1D;
 			packageReferences = (
-				65167B6D2909904200343FA8 /* XCRemoteSwiftPackageReference "braze-swift-sdk" */,
 				3859089D29D35B2F00C8C17F /* XCRemoteSwiftPackageReference "ios_sdk" */,
 				6547A0FD29F17AAF00F6FC6B /* XCRemoteSwiftPackageReference "Sails" */,
 				650EEABA29F35499004D66BD /* XCRemoteSwiftPackageReference "apollo-ios" */,
+				AA1A2E582B9A639C0091C849 /* XCRemoteSwiftPackageReference "braze-swift-sdk-prebuilt-dynamic" */,
 			);
 			productRefGroup = 166A81B12637406C0015AA1D /* Products */;
 			projectDirPath = "";
@@ -2121,20 +2121,20 @@
 				version = 1.9.0;
 			};
 		};
-		65167B6D2909904200343FA8 /* XCRemoteSwiftPackageReference "braze-swift-sdk" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/braze-inc/braze-swift-sdk.git";
-			requirement = {
-				kind = exactVersion;
-				version = 8.0.1;
-			};
-		};
 		6547A0FD29F17AAF00F6FC6B /* XCRemoteSwiftPackageReference "Sails" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Pocket/Sails.git";
 			requirement = {
 				branch = master;
 				kind = branch;
+			};
+		};
+		AA1A2E582B9A639C0091C849 /* XCRemoteSwiftPackageReference "braze-swift-sdk-prebuilt-dynamic" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/braze-inc/braze-swift-sdk-prebuilt-dynamic";
+			requirement = {
+				kind = exactVersion;
+				version = 8.1.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -2178,16 +2178,6 @@
 			package = 650EEABA29F35499004D66BD /* XCRemoteSwiftPackageReference "apollo-ios" */;
 			productName = ApolloTestSupport;
 		};
-		65167B6E2909904200343FA8 /* BrazeNotificationService */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 65167B6D2909904200343FA8 /* XCRemoteSwiftPackageReference "braze-swift-sdk" */;
-			productName = BrazeNotificationService;
-		};
-		65167B702909904200343FA8 /* BrazePushStory */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 65167B6D2909904200343FA8 /* XCRemoteSwiftPackageReference "braze-swift-sdk" */;
-			productName = BrazePushStory;
-		};
 		6547A0FE29F1812E00F6FC6B /* Sails */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 6547A0FD29F17AAF00F6FC6B /* XCRemoteSwiftPackageReference "Sails" */;
@@ -2200,6 +2190,16 @@
 		8A3B77BC29E0AEEB00AD71D0 /* PocketKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = PocketKit;
+		};
+		AA7A8ABE2B9A67AC0035E0F7 /* BrazePushStory */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA1A2E582B9A639C0091C849 /* XCRemoteSwiftPackageReference "braze-swift-sdk-prebuilt-dynamic" */;
+			productName = BrazePushStory;
+		};
+		AA7A8AC02B9A67CA0035E0F7 /* BrazeNotificationService */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA1A2E582B9A639C0091C849 /* XCRemoteSwiftPackageReference "braze-swift-sdk-prebuilt-dynamic" */;
+			productName = BrazeNotificationService;
 		};
 		AAA3EF832A3A3976000117BE /* ItemWidgetsKit */ = {
 			isa = XCSwiftPackageProductDependency;
