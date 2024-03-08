@@ -16,6 +16,6 @@ struct ReaderToolbarElement: PocketUIElement {
     }
 
     var moreButton: XCUIElement {
-        element.buttons["more"]
+        element.buttons["More"]
     }
 }
