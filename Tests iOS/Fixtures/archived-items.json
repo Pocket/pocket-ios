@@ -49,6 +49,7 @@
                 "givenUrl": "http://example.com/items/archived-item-1",
                 "resolvedUrl": "http://example.com/items/archived-item-1",
                 "topImageUrl": "https://example.com/archived-item-1/top-image.jpg",
+                "shortUrl": null,
                 "domain": null,
                 "language": "en",
                 "timeToRead": 6,

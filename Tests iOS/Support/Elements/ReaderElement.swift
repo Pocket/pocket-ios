@@ -29,7 +29,7 @@ struct ReaderElement: PocketUIElement {
     }
 
     var overflowButton: XCUIElement {
-        element.buttons["more"]
+        element.buttons["More"]
     }
 
     var displaySettingsButton: XCUIElement {
