@@ -437,8 +437,24 @@ extension SavedItemViewModel {
             Log.capture(message: "Unable to find a substring to highlight")
             return
         }
-
-        let proposedQuote = String(content[stringRange])
+        // make sure the range does not exceed the bounds of the content. This can happen because markdown can
+        // differ from the string extracted from the attributed text. In these cases, proposedQuote would be
+        // discarded in favor of using DiffMatchPatch to find the actual quote.
+        let safeRange = Range(
+            uncheckedBounds: (
+                max(
+                    content.startIndex,
+                    stringRange.lowerBound
+                ),
+                min(
+                    content.index(
+                        before: content.endIndex
+                    ),
+                    stringRange.upperBound
+                )
+            )
+        )
+        let proposedQuote = String(content[safeRange])
 
         // merge the new patch with the new patch
         guard let mergedContent = mergeHighlights(
