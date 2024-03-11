@@ -14,3 +14,9 @@ query ResolveItemUrl($url: String!) {
     }
   }
 }
+
+query GetItemShortUrl($url: String!) {
+  itemByUrl(url: $url) {
+     shortUrl
+  }
+}
