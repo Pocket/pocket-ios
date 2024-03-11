@@ -61,6 +61,14 @@ class RecommendableItemViewModel: ReadableViewModel {
         self.savedItemCancellable = item.publisher(for: \.savedItem).sink { [weak self] savedItem in
             self?.update(for: savedItem)
         }
+
+        if let url = item.shortURL {
+            self.shortUrl = url
+        } else {
+            Task {
+                self.shortUrl = try? await source.getItemShortUrl(item.givenURL)
+            }
+        }
     }
 
     var components: [ArticleComponent]? {
@@ -96,9 +104,7 @@ class RecommendableItemViewModel: ReadableViewModel {
         item.bestURL
     }
 
-    var shortUrl: String? {
-        item.shortURL
-    }
+    var shortUrl: String?
 
     var itemSaveStatus: ItemSaveStatus {
         guard let savedItem = item.savedItem else {

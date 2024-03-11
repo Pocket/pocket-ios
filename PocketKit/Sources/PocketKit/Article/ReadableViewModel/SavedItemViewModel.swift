@@ -124,6 +124,14 @@ class SavedItemViewModel: ReadableViewModel, ObservableObject {
         item.publisher(for: \.isArchived).sink { [weak self] _ in
             self?.buildActions()
         }.store(in: &subscriptions)
+
+        if let url = item.item?.shortURL {
+            self.shortUrl = url
+        } else if let item = item.item {
+            Task {
+                self.shortUrl = try? await source.getItemShortUrl(item.givenURL)
+            }
+        }
     }
 
     lazy var dismissReason: Binding<DismissReason> = {
@@ -162,9 +170,7 @@ class SavedItemViewModel: ReadableViewModel, ObservableObject {
         item.bestURL
     }
 
-    var shortUrl: String? {
-        item.item?.shortURL
-    }
+    var shortUrl: String?
 
     var itemSaveStatus: ItemSaveStatus {
         if item.isArchived {

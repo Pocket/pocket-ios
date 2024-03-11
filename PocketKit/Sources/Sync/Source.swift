@@ -144,4 +144,5 @@ public protocol Source {
     // MARK: Shared With You
     func updateSharedWithYouItems(with urls: [String])
     func makeSharedWithYouController() -> RichFetchedResultsController<SharedWithYouItem>
+    func getItemShortUrl(_ itemUrl: String) async throws -> String?
 }
