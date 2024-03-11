@@ -5,7 +5,7 @@
 
 public struct CorpusItemParts: PocketGraph.SelectionSet, Fragment {
   public static var fragmentDefinition: StaticString {
-    #"fragment CorpusItemParts on CorpusItem { __typename id url title excerpt imageUrl publisher target { __typename ... on SyndicatedArticle { __typename ...SyndicatedArticleParts } ... on Collection { __typename ...CollectionSummary } } }"#
+    #"fragment CorpusItemParts on CorpusItem { __typename id url title excerpt imageUrl shortUrl publisher target { __typename ... on SyndicatedArticle { __typename ...SyndicatedArticleParts } ... on Collection { __typename ...CollectionSummary } } }"#
   }
 
   public let __data: DataDict
@@ -19,6 +19,7 @@ public struct CorpusItemParts: PocketGraph.SelectionSet, Fragment {
     .field("title", String.self),
     .field("excerpt", String.self),
     .field("imageUrl", PocketGraph.Url.self),
+    .field("shortUrl", PocketGraph.Url?.self),
     .field("publisher", String.self),
     .field("target", Target?.self),
   ] }
@@ -33,6 +34,9 @@ public struct CorpusItemParts: PocketGraph.SelectionSet, Fragment {
   public var excerpt: String { __data["excerpt"] }
   /// The image URL for this item's accompanying picture.
   public var imageUrl: PocketGraph.Url { __data["imageUrl"] }
+  /// Provides short url for the given_url in the format: https://pocket.co/<identifier>.
+  /// marked as beta because it's not ready yet for large client request.
+  public var shortUrl: PocketGraph.Url? { __data["shortUrl"] }
   /// The name of the online publication that published this story.
   public var publisher: String { __data["publisher"] }
   /// If the Corpus Item is pocket owned with a specific type, this is the associated object (Collection or SyndicatedArticle).
@@ -44,6 +48,7 @@ public struct CorpusItemParts: PocketGraph.SelectionSet, Fragment {
     title: String,
     excerpt: String,
     imageUrl: PocketGraph.Url,
+    shortUrl: PocketGraph.Url? = nil,
     publisher: String,
     target: Target? = nil
   ) {
@@ -55,6 +60,7 @@ public struct CorpusItemParts: PocketGraph.SelectionSet, Fragment {
         "title": title,
         "excerpt": excerpt,
         "imageUrl": imageUrl,
+        "shortUrl": shortUrl,
         "publisher": publisher,
         "target": target._fieldData,
       ],

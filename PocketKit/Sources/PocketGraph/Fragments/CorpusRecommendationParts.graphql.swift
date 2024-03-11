@@ -62,6 +62,9 @@ public struct CorpusRecommendationParts: PocketGraph.SelectionSet, Fragment {
     public var excerpt: String { __data["excerpt"] }
     /// The image URL for this item's accompanying picture.
     public var imageUrl: PocketGraph.Url { __data["imageUrl"] }
+    /// Provides short url for the given_url in the format: https://pocket.co/<identifier>.
+    /// marked as beta because it's not ready yet for large client request.
+    public var shortUrl: PocketGraph.Url? { __data["shortUrl"] }
     /// The name of the online publication that published this story.
     public var publisher: String { __data["publisher"] }
     /// If the Corpus Item is pocket owned with a specific type, this is the associated object (Collection or SyndicatedArticle).
@@ -80,6 +83,7 @@ public struct CorpusRecommendationParts: PocketGraph.SelectionSet, Fragment {
       title: String,
       excerpt: String,
       imageUrl: PocketGraph.Url,
+      shortUrl: PocketGraph.Url? = nil,
       publisher: String,
       target: Target? = nil
     ) {
@@ -91,6 +95,7 @@ public struct CorpusRecommendationParts: PocketGraph.SelectionSet, Fragment {
           "title": title,
           "excerpt": excerpt,
           "imageUrl": imageUrl,
+          "shortUrl": shortUrl,
           "publisher": publisher,
           "target": target._fieldData,
         ],
