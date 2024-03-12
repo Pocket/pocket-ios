@@ -1,0 +1,8 @@
+{
+  "data": {
+    "itemByUrl": {
+        "__typename": "Item",
+      "shortUrl": "https://pocket.co/example"
+    }
+  }
+}

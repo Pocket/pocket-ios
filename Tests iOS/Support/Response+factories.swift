@@ -182,6 +182,10 @@ extension Response {
         fixture(named: "recommendation-detail-\(number)")
     }
 
+    static func shortUrl() -> Response {
+        fixture(named: "shortUrl")
+    }
+
     static func savedItemWithTag() -> Response {
         fixture(named: "list-with-tagged-item")
     }
@@ -378,6 +382,8 @@ extension Response {
             return .saveTags(apiRequest: apiRequest)
         } else if apiRequest.isForCollection {
             return .collection()
+        } else if apiRequest.isForShortUrl {
+            return .shortUrl()
         } else {
             fatalError("Unexpected request")
         }

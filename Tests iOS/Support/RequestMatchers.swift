@@ -101,6 +101,10 @@ struct ClientAPIRequest {
         self.operationName == "ItemByURL" && contains(rec)
     }
 
+    var isForShortUrl: Bool {
+        operationName == "GetItemShortUrl"
+    }
+
     var isForReplacingSavedItemTags: Bool {
         self.operationName == "ReplaceSavedItemTags"
     }
