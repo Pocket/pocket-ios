@@ -21,6 +21,7 @@
                                 "excerpt": "Cursus Aenean Elit",
                                 "imageUrl": "http://example.com/slate-1-rec-1/top-image.png",
                                 "publisher":"slate-1-rec-1.example.com",
+                                "shortUrl": null,
                                 "target": {
                                     "__typename": "Collection",
                                     "slug": "slate-1-rec-1",
@@ -44,6 +45,7 @@
                                 "excerpt": "Cursus Aenean Elit",
                                 "imageUrl": "http://example.com/slate-1-rec-2/top-image.png",
                                 "publisher":"slate-1-rec-2.example.com",
+                                "shortUrl": null,
                                 "target": {
                                     "__typename": "SyndicatedArticle",
                                     "itemId": "slate-1-rec-2-corpusItem-2-syndicated",
@@ -76,6 +78,7 @@
                                 "excerpt": "Cursus Aenean Elit",
                                 "imageUrl": "http://example.com/slate-2-rec-1/top-image.png",
                                 "publisher":"slate-2-rec-1.example.com",
+                                "shortUrl": null,
                                 "target": {
                                     "__typename": "SyndicatedArticle",
                                     "itemId": "slate-2-rec-1-corpusItem-3-syndicated",
@@ -100,6 +103,7 @@
                                 "excerpt": "Cursus Aenean Elit",
                                 "imageUrl": "http://example.com/slate-2-rec-2/top-image.png",
                                 "publisher":"slate-2-rec-2.example.com",
+                                "shortUrl": null,
                                 "target": null
                             }
                         },

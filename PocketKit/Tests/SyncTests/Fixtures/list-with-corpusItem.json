@@ -36,7 +36,8 @@
                                 }],
                             "corpusItem": {
                                 "__typename": "CorpusItem",
-                                "publisher":"CorpusItemPublisher-1"
+                                "publisher":"CorpusItemPublisher-1",
+                                "shortUrl": null
                             },
                             "annotations": null,
                             "item": {
