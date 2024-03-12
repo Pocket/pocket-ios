@@ -1331,6 +1331,29 @@ extension MockSource {
     }
 }
 
+// MARK: Fetch get short url
+extension MockSource {
+    private static let getItemShortUrl = "getItemShortUrl"
+    typealias GetItemShortUrlImpl = (String) -> String?
+
+    struct GetItemShortUrlCall {
+        let itemUrl: String
+    }
+
+    func stubGetItemShortUrl(impl: @escaping GetItemShortUrlImpl) {
+        implementations[Self.getItemShortUrl] = impl
+    }
+
+    func getItemShortUrl(_ itemUrl: String) async throws -> String? {
+        guard let impl = implementations[Self.getItemShortUrl] as? GetItemShortUrlImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.getItemShortUrl] = (calls[Self.getItemShortUrl] ?? []) + [GetItemShortUrlCall(itemUrl: itemUrl)]
+        return impl(itemUrl)
+    }
+}
+
 // MARK: - Fetch Items by Search
 extension MockSource {
     private static let searchTerm = "searchTerm"

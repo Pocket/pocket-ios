@@ -749,6 +749,19 @@ extension PocketSourceTests {
         XCTAssertEqual(savedItem?.item?.bestURL, "http://localhost:8080/hello")
     }
 
+    func testgetItemShortUrl() async throws {
+        // Given
+        let item = try space.createItem()
+        let source = subject()
+        XCTAssertNil(item.shortURL)
+        apollo.stubFetch(toReturnFixtureNamed: "shortUrl", asResultType: GetItemShortUrlQuery.self)
+        // When
+        let shortUrl = try await source.getItemShortUrl(item.givenURL)
+        // Then
+        XCTAssertEqual("https://pocket.co/example", shortUrl)
+        XCTAssertEqual(shortUrl, item.shortURL)
+    }
+
     private func setupLocalSavesSearch(with urlString: String? = nil) throws {
         var url: String?
         _ = (1...2).map {
