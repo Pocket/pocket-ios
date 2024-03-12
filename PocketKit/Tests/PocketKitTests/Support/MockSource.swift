@@ -1345,12 +1345,7 @@ extension MockSource {
     }
 
     func getItemShortUrl(_ itemUrl: String) async throws -> String? {
-        guard let impl = implementations[Self.getItemShortUrl] as? GetItemShortUrlImpl else {
-            fatalError("\(Self.self).\(#function) has not been stubbed")
-        }
-
-        calls[Self.getItemShortUrl] = (calls[Self.getItemShortUrl] ?? []) + [GetItemShortUrlCall(itemUrl: itemUrl)]
-        return impl(itemUrl)
+        return nil
     }
 }
 
