@@ -118,7 +118,7 @@ class PocketSourceTests: XCTestCase {
             }
         }
 
-        await fulfillment(of: [expectationToFetchSaves, expectationToFetchArchive], timeout: 10)
+        await fulfillment(of: [expectationToFetchSaves, expectationToFetchArchive], timeout: 2)
     }
 
     func test_refresh_addsFetchSavesOperationToQueue() {
@@ -150,7 +150,7 @@ class PocketSourceTests: XCTestCase {
             expectationToRunOperation.fulfill()
         }
 
-        wait(for: [expectationToRunOperation], timeout: 10)
+        wait(for: [expectationToRunOperation], timeout: 2)
     }
 
     func test_refresh_whenTokenIsNil_callsCompletion() {
@@ -166,7 +166,7 @@ class PocketSourceTests: XCTestCase {
             expectationToRunOperation.fulfill()
         }
 
-        wait(for: [expectationToRunOperation], timeout: 10)
+        wait(for: [expectationToRunOperation], timeout: 2)
     }
 
     func test_favorite_togglesIsFavorite_andExecutesFavoriteMutation() throws {
@@ -216,7 +216,7 @@ class PocketSourceTests: XCTestCase {
         let fetchedItem = try space.fetchSavedItem(byURL: "https://mozilla.com/delete")
         XCTAssertNil(fetchedItem)
         XCTAssertFalse(item.hasChanges)
-        wait(for: [expectationToRunOperation], timeout: 10)
+        wait(for: [expectationToRunOperation], timeout: 2)
     }
 
     func test_delete_ifSavedItemItemHasRecommendation_doesNotDeleteSavedItemItem() throws {
@@ -269,7 +269,7 @@ class PocketSourceTests: XCTestCase {
         XCTAssertTrue(item.isArchived)
         XCTAssertFalse(item.hasChanges)
         XCTAssertNotNil(item.archivedAt)
-        wait(for: [expectationToRunOperation], timeout: 10)
+        wait(for: [expectationToRunOperation], timeout: 2)
     }
 
     func test_unarchive_executesSaveItemMutation_andUpdatesCreatedAtField() throws {
@@ -288,7 +288,7 @@ class PocketSourceTests: XCTestCase {
 
         XCTAssertFalse(item.isArchived)
         XCTAssertNotNil(item.createdAt)
-        wait(for: [expectationToRunOperation], timeout: 10)
+        wait(for: [expectationToRunOperation], timeout: 2)
     }
 
     func test_fetchSlateLineup_forwardsToSlateService() async throws {
@@ -327,7 +327,7 @@ class PocketSourceTests: XCTestCase {
         try space.save()
         try savesResultsController.performFetch()
 
-        wait(for: [expectationForUpdatedItems], timeout: 10)
+        wait(for: [expectationForUpdatedItems], timeout: 2)
         XCTAssertEqual(savesResultsController.fetchedObjects?.compactMap({ $0.objectID }), [item1.objectID, item2.objectID])
     }
 
@@ -348,7 +348,7 @@ class PocketSourceTests: XCTestCase {
 
         source.resolveUnresolvedSavedItems(completion: nil)
 
-        wait(for: [operationStarted], timeout: 10)
+        wait(for: [operationStarted], timeout: 2)
         try XCTAssertEqual(space.fetchUnresolvedSavedItems(), [])
     }
 
@@ -366,7 +366,7 @@ class PocketSourceTests: XCTestCase {
 
         let source = subject()
         source.save(recommendation: recommendation)
-        wait(for: [expectationToRunOperation], timeout: 10)
+        wait(for: [expectationToRunOperation], timeout: 2)
 
         let savedItems = try space.fetchSavedItems()
         XCTAssertEqual(savedItems.count, 1)
@@ -392,7 +392,7 @@ class PocketSourceTests: XCTestCase {
 
         let source = subject()
         source.save(recommendation: recommendation)
-        wait(for: [expectationToRunOperation], timeout: 10)
+        wait(for: [expectationToRunOperation], timeout: 2)
 
         let savedItems = try space.fetchSavedItems()
         XCTAssertEqual(savedItems.count, 1)
@@ -417,7 +417,7 @@ class PocketSourceTests: XCTestCase {
 
         let source = subject()
         source.archive(recommendation: recommendation)
-        wait(for: [expectationToRunOperation], timeout: 10)
+        wait(for: [expectationToRunOperation], timeout: 2)
 
         let archivedItems = try space.fetchArchivedItems()
         XCTAssertEqual(archivedItems.count, 1)
@@ -488,7 +488,7 @@ class PocketSourceTests: XCTestCase {
 
         let source = subject()
         source.save(url: url)
-        wait(for: [expectationToRunOperation], timeout: 10)
+        wait(for: [expectationToRunOperation], timeout: 2)
 
         let savedItems = try space.fetchSavedItems()
         XCTAssertEqual(savedItems.first?.url, url)
@@ -510,7 +510,7 @@ class PocketSourceTests: XCTestCase {
 
         let source = subject()
         source.save(url: url)
-        wait(for: [expectationToRunOperation], timeout: 10)
+        wait(for: [expectationToRunOperation], timeout: 2)
 
         let savedItems = try space.fetchSavedItems()
         XCTAssertEqual(savedItems.count, 1)
@@ -532,7 +532,7 @@ class PocketSourceTests: XCTestCase {
 
         let source = subject()
         source.save(url: url)
-        wait(for: [expectationToRunOperation], timeout: 10)
+        wait(for: [expectationToRunOperation], timeout: 2)
 
         let savedItems = try space.fetchSavedItems()
         XCTAssertEqual(savedItems.count, 1)
@@ -611,7 +611,7 @@ extension PocketSourceTests {
         source.deleteTag(tag: tag)
 
         try XCTAssertEqual(space.fetchAllTags(), [])
-        wait(for: [expectationToRunOperation], timeout: 10)
+        wait(for: [expectationToRunOperation], timeout: 2)
     }
 
     func test_renameTag_executesUpdateTagMutation() throws {
@@ -631,7 +631,7 @@ extension PocketSourceTests {
         source.renameTag(from: tag1, to: "tag 3")
 
         try XCTAssertEqual(space.fetchAllTags().compactMap { $0.name }, ["tag 3"])
-        wait(for: [expectationToRunOperation], timeout: 10)
+        wait(for: [expectationToRunOperation], timeout: 2)
     }
 
     private func createItemsWithTags(_ number: Int, isArchived: Bool = false) -> [SavedItem] {

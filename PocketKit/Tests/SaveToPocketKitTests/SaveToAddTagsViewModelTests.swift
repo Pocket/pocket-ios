@@ -280,7 +280,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
                 XCTAssertEqual(viewModel.otherTags, [TagType.tag("tag 2"), TagType.tag("tag 3")])
             }
             .store(in: &subscriptions)
-        wait(for: [expectFilterTagsCall], timeout: 10)
+        wait(for: [expectFilterTagsCall], timeout: 2)
     }
 
     func test_newTagInput_withNoTags_showAllTags() throws {
@@ -311,6 +311,6 @@ class SaveToAddTagsViewModelTests: XCTestCase {
                 XCTAssertEqual(viewModel.otherTags, [TagType.tag("tag 2"), TagType.tag("tag 3")])
             }
             .store(in: &subscriptions)
-        wait(for: [expectFilterTagsCall], timeout: 10)
+        wait(for: [expectFilterTagsCall], timeout: 2)
     }
 }

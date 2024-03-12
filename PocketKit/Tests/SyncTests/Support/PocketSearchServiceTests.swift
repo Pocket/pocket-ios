@@ -43,7 +43,7 @@ class PocketSearchServiceTests: XCTestCase {
 
         try await service.search(for: "search-term", scope: .saves)
 
-        await fulfillment(of: [searchExpectation], timeout: 10)
+        await fulfillment(of: [searchExpectation], timeout: 2)
 
         let call: MockApolloClient.FetchCall<SearchSavedItemsQuery>? = self.apollo.fetchCall(at: 0)
         XCTAssertEqual(call?.query.term, "search-term")
@@ -61,7 +61,7 @@ class PocketSearchServiceTests: XCTestCase {
 
         try await service.search(for: "search-term", scope: .archive)
 
-        await fulfillment(of: [searchExpectation], timeout: 10)
+        await fulfillment(of: [searchExpectation], timeout: 2)
 
         let call: MockApolloClient.FetchCall<SearchSavedItemsQuery>? = self.apollo.fetchCall(at: 0)
         XCTAssertEqual(call?.query.term, "search-term")
@@ -79,7 +79,7 @@ class PocketSearchServiceTests: XCTestCase {
 
         try await service.search(for: "search-term", scope: .all)
 
-        await fulfillment(of: [searchExpectation], timeout: 10)
+        await fulfillment(of: [searchExpectation], timeout: 2)
 
         let call: MockApolloClient.FetchCall<SearchSavedItemsQuery>? = self.apollo.fetchCall(at: 0)
         XCTAssertEqual(call?.query.term, "search-term")
@@ -122,7 +122,7 @@ class PocketSearchServiceTests: XCTestCase {
         try await service.search(for: "search-term", scope: .all)
         XCTAssertEqual(self.apollo.fetchCalls(withQueryType: SearchSavedItemsQuery.self).count, 3)
 
-        await fulfillment(of: [firstPaginationExpectation, secondPaginationExpectation, thirdPaginationExpectation], timeout: 10)
+        await fulfillment(of: [firstPaginationExpectation, secondPaginationExpectation, thirdPaginationExpectation], timeout: 2)
     }
 
     // MARK: Error
@@ -151,7 +151,7 @@ extension PocketSearchServiceTests {
 
         try await service.search(for: "search-term", scope: .premiumSearchByTitle)
 
-        await fulfillment(of: [searchExpectation], timeout: 10)
+        await fulfillment(of: [searchExpectation], timeout: 2)
 
         let call: MockApolloClient.FetchCall<SearchSavedItemsQuery>? = self.apollo.fetchCall(at: 0)
         XCTAssertEqual(call?.query.term, "search-term")
@@ -169,7 +169,7 @@ extension PocketSearchServiceTests {
 
         try await service.search(for: "search term", scope: .premiumSearchByTag)
 
-        await fulfillment(of: [searchExpectation], timeout: 10)
+        await fulfillment(of: [searchExpectation], timeout: 2)
 
         let call: MockApolloClient.FetchCall<SearchSavedItemsQuery>? = self.apollo.fetchCall(at: 0)
         XCTAssertEqual(call?.query.term, "tag:\"search term\"")
@@ -187,7 +187,7 @@ extension PocketSearchServiceTests {
 
         try await service.search(for: "#search", scope: .premiumSearchByTag)
 
-        await fulfillment(of: [searchExpectation], timeout: 10)
+        await fulfillment(of: [searchExpectation], timeout: 2)
 
         let call: MockApolloClient.FetchCall<SearchSavedItemsQuery>? = self.apollo.fetchCall(at: 0)
         XCTAssertEqual(call?.query.term, "#search")
@@ -205,7 +205,7 @@ extension PocketSearchServiceTests {
 
         try await service.search(for: "search-term", scope: .premiumSearchByContent)
 
-        await fulfillment(of: [searchExpectation], timeout: 10)
+        await fulfillment(of: [searchExpectation], timeout: 2)
 
         let call: MockApolloClient.FetchCall<SearchSavedItemsQuery>? = self.apollo.fetchCall(at: 0)
         XCTAssertEqual(call?.query.term, "search-term")

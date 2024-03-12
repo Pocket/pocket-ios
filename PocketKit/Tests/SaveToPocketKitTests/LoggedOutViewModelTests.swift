@@ -25,6 +25,6 @@ extension LoggedOutViewModelTests {
 
         viewModel.viewWillAppear(context: context, origin: self)
 
-        await fulfillment(of: [completeRequestExpectation], timeout: 10)
+        await fulfillment(of: [completeRequestExpectation], timeout: 2)
     }
 }

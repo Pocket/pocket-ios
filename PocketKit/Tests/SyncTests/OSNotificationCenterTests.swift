@@ -24,7 +24,7 @@ class OSNotificationCenterTests: XCTestCase {
         }
 
         CFNotificationCenterPostNotification(cfCenter, .testNotification, nil, nil, true)
-        wait(for: [notificationWasHandled], timeout: 10)
+        wait(for: [notificationWasHandled], timeout: 2)
     }
 
     func test_register_whenAlreadyRegistered_addsBothObservers() {
@@ -41,7 +41,7 @@ class OSNotificationCenterTests: XCTestCase {
         }
 
         CFNotificationCenterPostNotification(cfCenter, .testNotification, nil, nil, true)
-        wait(for: [notificationWasHandled, notificationWasHandled2], timeout: 10)
+        wait(for: [notificationWasHandled, notificationWasHandled2], timeout: 2)
     }
 
     func test_remove_removesGivenObserverForGivenNotification() {
@@ -60,7 +60,7 @@ class OSNotificationCenterTests: XCTestCase {
         center.remove(observer: observers[0], name: .testNotification)
 
         CFNotificationCenterPostNotification(cfCenter, .testNotification, nil, nil, true)
-        wait(for: [observer2HandledNotification], timeout: 10)
+        wait(for: [observer2HandledNotification], timeout: 2)
     }
 
     func test_remove_whenObservingWithMultipleHandlers_removesAllHandlers() {
@@ -82,7 +82,7 @@ class OSNotificationCenterTests: XCTestCase {
         DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 1) {
             pause.fulfill()
         }
-        wait(for: [pause], timeout: 10)
+        wait(for: [pause], timeout: 2)
     }
 
     func test_remove_doesNotRemoveHandlerForOtherNotifications() {
@@ -102,7 +102,7 @@ class OSNotificationCenterTests: XCTestCase {
         CFNotificationCenterPostNotification(cfCenter, .testNotification, nil, nil, true)
         CFNotificationCenterPostNotification(cfCenter, .anotherTestNotification, nil, nil, true)
 
-        wait(for: [wasNotifiedOfAnotherTestNotification], timeout: 10)
+        wait(for: [wasNotifiedOfAnotherTestNotification], timeout: 2)
     }
 
     func test_remove_doesNotRetainObservers() {
@@ -140,7 +140,7 @@ class OSNotificationCenterTests: XCTestCase {
         }
 
         CFNotificationCenterPostNotification(cfCenter, .testNotification, nil, nil, true)
-        wait(for: [receivedNotification], timeout: 10)
+        wait(for: [receivedNotification], timeout: 2)
     }
 }
 

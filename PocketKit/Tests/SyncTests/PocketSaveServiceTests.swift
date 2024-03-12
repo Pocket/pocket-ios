@@ -64,7 +64,7 @@ class PocketSaveServiceTests: XCTestCase {
         }
         XCTAssertNotNil(backgroundActivityPerformer.performCall(at: 0))
 
-        wait(for: [performCalled], timeout: 10)
+        wait(for: [performCalled], timeout: 2)
         let performCall: MockApolloClient.PerformCall<SaveItemMutation>? = client.performCall(at: 0)
         XCTAssertEqual(performCall?.mutation.input.url, "https://getpocket.com")
     }
@@ -86,7 +86,7 @@ class PocketSaveServiceTests: XCTestCase {
             XCTFail("Expected existingItem, but was \(result)")
             return
         }
-        wait(for: [savedItemUpdated], timeout: 10)
+        wait(for: [savedItemUpdated], timeout: 2)
 
         let notifications = try? space.fetchSavedItemUpdatedNotifications()
         XCTAssertEqual(notifications?.isEmpty, false)
@@ -121,14 +121,14 @@ class PocketSaveServiceTests: XCTestCase {
         _ = service.save(url: url)
 
         do {
-            wait(for: [performMutationWasCalled], timeout: 10)
+            wait(for: [performMutationWasCalled], timeout: 2)
             let savedItem = try space.fetchSavedItem(byURL: url)
             XCTAssertNotNil(savedItem)
             XCTAssertFalse(savedItem!.hasChanges)
         }
 
         do {
-            wait(for: [performMutationCompleted], timeout: 10)
+            wait(for: [performMutationCompleted], timeout: 2)
             let savedItem = try space.fetchSavedItem(byURL: url)
             XCTAssertNotNil(savedItem?.item)
         }
@@ -157,7 +157,7 @@ class PocketSaveServiceTests: XCTestCase {
         DispatchQueue(label: "start task").async {
             expiringActivity?(false)
         }
-        wait(for: [performMutationCalled, notificationReceived], timeout: 10)
+        wait(for: [performMutationCalled, notificationReceived], timeout: 2)
 
         let unresolved = try space.fetchUnresolvedSavedItems()
         XCTAssertEqual(unresolved[0].savedItem?.url, url)
@@ -187,7 +187,7 @@ class PocketSaveServiceTests: XCTestCase {
             finishedActivity.fulfill()
         }
 
-        wait(for: [performMutationCalled], timeout: 10)
+        wait(for: [performMutationCalled], timeout: 2)
 
         let finishedCancellingActivity = expectation(description: "finished cancelling the activity")
         queue.async {
@@ -196,7 +196,7 @@ class PocketSaveServiceTests: XCTestCase {
             finishedCancellingActivity.fulfill()
         }
 
-        wait(for: [finishedActivity, finishedCancellingActivity], timeout: 10)
+        wait(for: [finishedActivity, finishedCancellingActivity], timeout: 2)
     }
 
     func test_cancellationOfExpiringActivity_setsSkeletonItemAsUnresolved_andPostsNotification() throws {
@@ -223,12 +223,12 @@ class PocketSaveServiceTests: XCTestCase {
         DispatchQueue(label: "start task").async {
             expiringActivity?(false)
         }
-        wait(for: [performMutationCalled], timeout: 10)
+        wait(for: [performMutationCalled], timeout: 2)
 
         DispatchQueue(label: "cancel task").async {
             expiringActivity?(true)
         }
-        wait(for: [notificationReceived], timeout: 10)
+        wait(for: [notificationReceived], timeout: 2)
 
         let unresolved = try space.fetchUnresolvedSavedItems()
         XCTAssertEqual(unresolved[0].savedItem?.url, url)
@@ -263,13 +263,13 @@ class PocketSaveServiceTests: XCTestCase {
 
         let service = subject()
         _ = service.save(url: "https://getpocket.com")
-        wait(for: [performCalled, savedItemCreated], timeout: 10)
+        wait(for: [performCalled, savedItemCreated], timeout: 2)
 
         DispatchQueue.main.async {
             mutationCompletion?(.success(Fixture.load(name: "save-item").asGraphQLResult(from: mutation!)))
         }
 
-        wait(for: [savedItemUpdated], timeout: 10)
+        wait(for: [savedItemUpdated], timeout: 2)
         let notifications = try? space.fetchSavedItemUpdatedNotifications()
         XCTAssertEqual(notifications?.isEmpty, false)
     }
@@ -299,7 +299,7 @@ extension PocketSaveServiceTests {
         }
         XCTAssertNotNil(backgroundActivityPerformer.performCall(at: 0))
 
-        wait(for: [performCalled], timeout: 10)
+        wait(for: [performCalled], timeout: 2)
         let performCall: MockApolloClient.PerformCall<SavedItemTagMutation>? = client.performCall(at: 0)
         XCTAssertEqual(performCall?.mutation.input.tagNames, ["tag 1", "tag 2"])
     }
@@ -326,7 +326,7 @@ extension PocketSaveServiceTests {
         DispatchQueue(label: "start task").async {
             expiringActivity?(false)
         }
-        wait(for: [performMutationCalled, notificationReceived], timeout: 10)
+        wait(for: [performMutationCalled, notificationReceived], timeout: 2)
 
         let unresolved = try space.fetchUnresolvedSavedItems()
         XCTAssertEqual(unresolved[0].savedItem?.tags?.compactMap { ($0 as? Tag)?.name }, ["tag 1", "tag 2"] )
@@ -355,7 +355,7 @@ extension PocketSaveServiceTests {
         }
         XCTAssertNotNil(backgroundActivityPerformer.performCall(at: 0))
 
-        wait(for: [performCalled], timeout: 10)
+        wait(for: [performCalled], timeout: 2)
         let performCall: MockApolloClient.PerformCall<UpdateSavedItemRemoveTagsMutation>? = client.performCall(at: 0)
         XCTAssertNotNil(performCall?.mutation.savedItemId)
     }
@@ -382,7 +382,7 @@ extension PocketSaveServiceTests {
         DispatchQueue(label: "start task").async {
             expiringActivity?(false)
         }
-        wait(for: [performMutationCalled, notificationReceived], timeout: 10)
+        wait(for: [performMutationCalled, notificationReceived], timeout: 2)
 
         let unresolved = try space.fetchUnresolvedSavedItems()
         XCTAssertEqual(unresolved[0].savedItem?.tags?.compactMap { ($0 as? Tag)?.name }, [] )

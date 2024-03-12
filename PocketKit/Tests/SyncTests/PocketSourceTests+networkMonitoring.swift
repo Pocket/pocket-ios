@@ -50,7 +50,7 @@ extension PocketSourceTests {
         source.refreshSaves()
 
         networkMonitor.update(status: .satisfied)
-        wait(for: [expectSaveItem, expectFetchList], timeout: 10)
+        wait(for: [expectSaveItem, expectFetchList], timeout: 2)
     }
 
     func test_whenNetworkBecomesSatisified_retriesOperationsThatAreWaitingForSignal() throws {
@@ -80,11 +80,11 @@ extension PocketSourceTests {
         let source = subject()
         try source.archive(item: space.createSavedItem())
         _ = XCTWaiter.wait(for: [expectation(description: "wait for last refresh to be avoid its 5.0 second wait")], timeout: 1.0)
-        wait(for: [firstAttempt], timeout: 10)
+        wait(for: [firstAttempt], timeout: 2)
 
         networkMonitor.update(status: .unsatisfied)
         networkMonitor.update(status: .satisfied)
-        wait(for: [retrySignalSent], timeout: 10)
+        wait(for: [retrySignalSent], timeout: 2)
     }
 
     func test_whenAnActionIsTaken_andNetworkPathIsSatisified_retriesOperationsThatAreWaitingForSignal() throws {
@@ -122,13 +122,13 @@ extension PocketSourceTests {
         let item = try space.createSavedItem()
         let source = subject()
         source.archive(item: item)
-        wait(for: [firstAttempt], timeout: 10)
+        wait(for: [firstAttempt], timeout: 2)
         // NOTE: We need to await after each attempt because it takes a few ms for the
         // retrySubscritpion to get setup after the attempt is fullfilled.
         // TODO: Refactor retrySignal to keep track of its number of subscribers and instead wait for that to become 1 instead of this random wait.
         _ = XCTWaiter.wait(for: [expectation(description: "wait for subscriber")], timeout: 1)
         source.favorite(item: item)
-        wait(for: [retrySignalSent, attemptFavorite], timeout: 10, enforceOrder: true)
+        wait(for: [retrySignalSent, attemptFavorite], timeout: 2, enforceOrder: true)
     }
 
     func test_whenAnActionIsTaken_andNetworkPathIsNotSatisified_doesNotRetryOperationsThatAreWaitingForSignal() throws {
@@ -157,7 +157,7 @@ extension PocketSourceTests {
         let item = try space.createSavedItem()
         let source = subject()
         source.archive(item: item)
-        wait(for: [firstAttempt], timeout: 10)
+        wait(for: [firstAttempt], timeout: 2)
 
         networkMonitor.update(status: .unsatisfied)
         source.favorite(item: item)
@@ -193,12 +193,12 @@ extension PocketSourceTests {
         let item = try space.createSavedItem()
         let source = subject()
         source.archive(item: item)
-        wait(for: [firstAttempt], timeout: 10)
+        wait(for: [firstAttempt], timeout: 2)
         // NOTE: We need to await after each attempt because it takes a few ms for the
         // retrySubscritpion to get setup after the attempt is fullfilled.
         // TODO: Refactor retrySignal to keep track of its number of subscribers and instead wait for that to become 1 instead of this random wait.
         _ = XCTWaiter.wait(for: [expectation(description: "wait for subscriber")], timeout: 1)
         source.retryImmediately()
-        wait(for: [retrySignalSent], timeout: 10)
+        wait(for: [retrySignalSent], timeout: 2)
     }
 }

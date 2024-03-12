@@ -266,7 +266,7 @@ extension SavedItemViewModelTests {
 
         await viewModel.save(from: context)
 
-        await fulfillment(of: [completeRequestExpectation], timeout: 10)
+        await fulfillment(of: [completeRequestExpectation], timeout: 2)
     }
 
     func test_save_whenResavingExistingItem_updatesInfoViewModel() async {
@@ -300,7 +300,7 @@ extension SavedItemViewModelTests {
         context.stubCompleteRequest { _, _ in }
 
         await viewModel.save(from: context)
-        await fulfillment(of: [infoViewModelChanged], timeout: 10)
+        await fulfillment(of: [infoViewModelChanged], timeout: 2)
         subscription.cancel()
     }
 
@@ -329,7 +329,7 @@ extension SavedItemViewModelTests {
         context.stubCompleteRequest { _, _ in }
 
         await viewModel.save(from: context)
-        await fulfillment(of: [infoViewModelChanged], timeout: 10)
+        await fulfillment(of: [infoViewModelChanged], timeout: 2)
         subscription.cancel()
     }
 }
@@ -375,7 +375,7 @@ extension SavedItemViewModelTests {
 
         viewModel.showAddTagsView(from: context)
 
-        wait(for: [expectAddTags], timeout: 10)
+        wait(for: [expectAddTags], timeout: 2)
         subscription.cancel()
     }
 
@@ -397,7 +397,7 @@ extension SavedItemViewModelTests {
             do { infoViewModelChanged.fulfill() }
         }
 
-        await fulfillment(of: [infoViewModelChanged], timeout: 10)
+        await fulfillment(of: [infoViewModelChanged], timeout: 2)
         subscription.cancel()
     }
 

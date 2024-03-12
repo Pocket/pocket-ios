@@ -73,7 +73,7 @@ class RetriableOperationTests: XCTestCase {
         let queue = OperationQueue()
         queue.addOperation(executor)
 
-        wait(for: [firstAttempt], timeout: 10)
+        wait(for: [firstAttempt], timeout: 2)
         // NOTE: We need to await after the firstAttempt because it takes a few ms for the
         // retrySubscritpion to get setup after firstAttempt is fullfilled.
         // TODO: Refactor retrySignal to keep track of its number of subscribers and instead wait for that to become 1 instead of this random wait.
@@ -112,7 +112,7 @@ class RetriableOperationTests: XCTestCase {
         queue.addOperation(executor)
 
         expectations.forEach {
-            wait(for: [$0], timeout: 10)
+            wait(for: [$0], timeout: 2)
             // NOTE: We need to await after each attempt because it takes a few ms for the
             // retrySubscritpion to get setup after the attempt is fullfilled.
             // TODO: Refactor retrySignal to keep track of its number of subscribers and instead wait for that to become 1 instead of this random wait.
@@ -120,7 +120,7 @@ class RetriableOperationTests: XCTestCase {
             retrySignal.send()
         }
 
-        wait(for: [completed], timeout: 10, enforceOrder: true)
+        wait(for: [completed], timeout: 2, enforceOrder: true)
         XCTAssertEqual(try space.fetchPersistentSyncTasks().count, 0)
     }
 }

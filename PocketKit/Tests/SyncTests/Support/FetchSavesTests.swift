@@ -437,7 +437,7 @@ class FetchSavesTests: XCTestCase {
         let service = subject()
         _ = await service.execute(syncTaskId: task.objectID)
 
-        await fulfillment(of: [receivedFirstPageEvent, receivedCompletedEvent], timeout: 10)
+        await fulfillment(of: [receivedFirstPageEvent, receivedCompletedEvent], timeout: 2)
     }
 
     func test_refresh_whenResultsAreEmpty_finishesOperationSuccessfully() async {
