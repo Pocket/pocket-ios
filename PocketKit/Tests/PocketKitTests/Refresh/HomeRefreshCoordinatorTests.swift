@@ -63,7 +63,7 @@ class HomeRefreshCoordinatorTests: XCTestCase {
         coordinator.refresh {
             expectRefresh.fulfill()
         }
-        wait(for: [expectRefresh], timeout: 10)
+        wait(for: [expectRefresh], timeout: 2)
         XCTAssertNotNil(lastRefresh.lastRefreshHome)
     }
 
@@ -94,7 +94,7 @@ class HomeRefreshCoordinatorTests: XCTestCase {
         coordinator.refresh {
             expectRefresh.fulfill()
         }
-        wait(for: [expectRefresh], timeout: 10)
+        wait(for: [expectRefresh], timeout: 2)
         XCTAssertNotEqual(lastRefresh.lastRefreshHome, date!.timeIntervalSince1970)
     }
 
@@ -110,7 +110,7 @@ class HomeRefreshCoordinatorTests: XCTestCase {
         coordinator.refresh(isForced: true) {
             expectRefresh.fulfill()
         }
-        wait(for: [expectRefresh], timeout: 10)
+        wait(for: [expectRefresh], timeout: 2)
     }
 
     func test_refresh_delegatesToSource() {
@@ -121,57 +121,7 @@ class HomeRefreshCoordinatorTests: XCTestCase {
 
         coordinator.refresh(isForced: true) { }
 
-        wait(for: [fetchExpectation], timeout: 10)
+        wait(for: [fetchExpectation], timeout: 2)
         XCTAssertNotNil(source.fetchSlateLineupCall(at: 0))
     }
-// TODO: Renable once we fix our singleton use in tests
-//    func test_coordinator_whenEnterForeground_whenDataIsNotStale_doesNotRefreshHome() {
-//        source.stubFetchSlateLineup { _ in
-//            XCTFail("Should not fetch slate lineup")
-//        }
-//        lastRefresh.refreshedHome()
-//
-//        var coordinator: RefreshCoordinator? = subject()
-//        coordinator!.initialize()
-//        notificationCenter.post(name: UIScene.willEnterForegroundNotification, object: nil)
-//        _ = XCTWaiter.wait(for: [expectation(description: "Ensure notification posts")], timeout: 5.0)
-//        coordinator = nil
-//    }
-//
-//    func test_coordinator_whenEnterForeground_whenDataIsStale_refreshesHome() {
-//        let fetchExpectationInit = expectation(description: "initid fetch slate lineup")
-//        fetchExpectationInit.assertForOverFulfill = true
-//        let fetchExpectation = expectation(description: "expected to fetch slate lineup")
-//
-//        source.stubFetchSlateLineup { _ in fetchExpectationInit.fulfill() }
-//        var coordinator: RefreshCoordinator? = subject()
-//        coordinator!.initialize()
-//        wait(for: [fetchExpectationInit], timeout: 10)
-//
-//        let date = Calendar.current.date(byAdding: .hour, value: -12, to: Date())
-//        userDefaults.setValue(date!.timeIntervalSince1970, forKey: UserDefaultsLastRefresh.lastRefreshedHomeAtKey)
-//        source.stubFetchSlateLineup { _ in fetchExpectation.fulfill() }
-//
-//        notificationCenter.post(name: UIScene.willEnterForegroundNotification, object: nil)
-//
-//        wait(for: [fetchExpectation], timeout: 10)
-//        XCTAssertEqual(source.fetchSlateLineupCall(at: 0)?.identifier, "e39bc22a-6b70-4ed2-8247-4b3f1a516bd1")
-//        coordinator = nil
-//    }
-//
-//    func test_coordinator_whenNoSession_doesNotRefreshHome() {
-//        source.stubFetchSlateLineup { _ in
-//            XCTFail("Should not fetch slate lineup")
-//        }
-//        lastRefresh.reset()
-//        XCTAssertNil(lastRefresh.lastRefreshHome)
-//
-//        var coordinator: RefreshCoordinator? = subject(appSession: AppSession(groupID: "group"))
-//        coordinator!.initialize()
-//        notificationCenter.post(name: UIScene.willEnterForegroundNotification, object: nil)
-//        _ = XCTWaiter.wait(for: [expectation(description: "Ensure notification posts")], timeout: 5.0)
-//
-//        XCTAssertNil(lastRefresh.lastRefreshHome)
-//        coordinator = nil
-//    }
 }

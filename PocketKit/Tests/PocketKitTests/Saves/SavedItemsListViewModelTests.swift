@@ -133,7 +133,7 @@ class SavedItemsListViewModelTests: XCTestCase {
 
         listOptions.selectedSortOption = .oldest
 
-        wait(for: [snapshotSent], timeout: 10)
+        wait(for: [snapshotSent], timeout: 2)
     }
 
     func test_shouldSelectCell_whenItemIsPending_returnsFalse() throws {
@@ -229,7 +229,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         }.store(in: &subscriptions)
 
         viewModel.selectedItem = nil
-        wait(for: [eventSent], timeout: 10)
+        wait(for: [eventSent], timeout: 2)
     }
 
     func test_selectedItem_whenReaderView_doesNotSendSelectionCleared() {
@@ -243,7 +243,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         }.store(in: &subscriptions)
 
         viewModel.selectedItem = .readable(nil)
-        wait(for: [eventSent], timeout: 10)
+        wait(for: [eventSent], timeout: 2)
     }
 
     func test_selectedItem_whenWebView_doesNotSendSelectionCleared() {
@@ -257,7 +257,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         }.store(in: &subscriptions)
 
         viewModel.selectedItem = .webView(nil)
-        wait(for: [eventSent], timeout: 10)
+        wait(for: [eventSent], timeout: 2)
     }
 
     func test_sourceEvents_whenEventIsSavedItemCreated_sendsSnapshotWithNewItem() {
@@ -275,7 +275,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         try? space.save()
         source._events.send(.savedItemCreated)
 
-        wait(for: [snapshotSent], timeout: 10)
+        wait(for: [snapshotSent], timeout: 2)
     }
 
     func test_sourceEvents_whenEventIsSavedItemUpdated_sendsSnapshotWithUpdatedItem() {
@@ -292,7 +292,7 @@ class SavedItemsListViewModelTests: XCTestCase {
 
         source._events.send(.savedItemsUpdated([savedItem]))
 
-        wait(for: [snapshotSent], timeout: 10)
+        wait(for: [snapshotSent], timeout: 2)
     }
 
     func test_receivedSnapshots_withNoItems_includesSavesEmptyState() {
@@ -310,7 +310,7 @@ class SavedItemsListViewModelTests: XCTestCase {
 
         try? itemsController.performFetch()
 
-        wait(for: [snapshotExpectation], timeout: 10)
+        wait(for: [snapshotExpectation], timeout: 2)
     }
 
     func test_receivedSnapshots_withNoItems_includesFavoritesEmptyState() {
@@ -329,7 +329,7 @@ class SavedItemsListViewModelTests: XCTestCase {
 
         try? itemsController.performFetch()
 
-        wait(for: [snapshotExpectation], timeout: 10)
+        wait(for: [snapshotExpectation], timeout: 2)
     }
 
     func test_receivedSnapshots_withNoItems_includesTagsEmptyState() {
@@ -351,7 +351,7 @@ class SavedItemsListViewModelTests: XCTestCase {
 
         try? itemsController.performFetch()
 
-        wait(for: [snapshotExpectation], timeout: 10)
+        wait(for: [snapshotExpectation], timeout: 2)
     }
 
     func test_receivedSnapshots_withItems_doesNotIncludeSavesEmptyState() {
@@ -370,7 +370,7 @@ class SavedItemsListViewModelTests: XCTestCase {
 
         try? itemsController.performFetch()
 
-        wait(for: [snapshotExpectation], timeout: 10)
+        wait(for: [snapshotExpectation], timeout: 2)
     }
 
     func test_receivedSnapshots_withItems_doesNotIncludeFavoritesEmptyState() {
@@ -391,7 +391,7 @@ class SavedItemsListViewModelTests: XCTestCase {
 
         try? itemsController.performFetch()
 
-        wait(for: [snapshotExpectation], timeout: 10)
+        wait(for: [snapshotExpectation], timeout: 2)
     }
 
     func test_refreshSaves_callsRetryImmediatelyOnSource() {
@@ -423,7 +423,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         source.initialSavesDownloadState.send(.paginating(totalCount: 2, currentPercentProgress: 0))
         try? itemsController.performFetch()
 
-        wait(for: [receivedSnapshot], timeout: 10)
+        wait(for: [receivedSnapshot], timeout: 2)
     }
 
     func test_receivedSnapshots_whenSavesInitialDownloadIsStarted_insertsPlaceholderCells() throws {
@@ -442,7 +442,7 @@ class SavedItemsListViewModelTests: XCTestCase {
 
         viewModel.fetch()
 
-        wait(for: [receivedSnapshot], timeout: 10)
+        wait(for: [receivedSnapshot], timeout: 2)
     }
 
     func test_receivedSnapshots_whenArchiveInitialDownloadIsStarted_insertsPlaceholderCells() throws {
@@ -461,7 +461,7 @@ class SavedItemsListViewModelTests: XCTestCase {
 
         viewModel.fetch()
 
-        wait(for: [receivedSnapshot], timeout: 10)
+        wait(for: [receivedSnapshot], timeout: 2)
     }
 }
 
@@ -525,7 +525,7 @@ extension SavedItemsListViewModelTests {
             .first { $0.title == "Edit tags" }?
             .handler?(nil)
 
-        wait(for: [expectAddTags], timeout: 10)
+        wait(for: [expectAddTags], timeout: 2)
     }
 
     func test_fetch_whenTaggedSelected_sendsTagsFilterViewModel() throws {
@@ -542,7 +542,7 @@ extension SavedItemsListViewModelTests {
 
         viewModel.selectCell(with: .filterButton(.tagged))
 
-        wait(for: [expectTagFiltersCall], timeout: 10)
+        wait(for: [expectTagFiltersCall], timeout: 2)
     }
 
     func test_tagModel_calculatesTagHeightAndWidth() {

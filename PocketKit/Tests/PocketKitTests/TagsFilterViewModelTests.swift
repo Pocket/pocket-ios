@@ -134,7 +134,7 @@ class TagsFilterViewModelTests: XCTestCase {
         viewModel.delete(tags: ["b", "e", "q"])
 
         XCTAssertEqual(deletedTags, ["b", "e"])
-        wait(for: [expectDelete], timeout: 10)
+        wait(for: [expectDelete], timeout: 2)
     }
 
     func test_renameTag_showsNewName() {
@@ -150,7 +150,7 @@ class TagsFilterViewModelTests: XCTestCase {
         let viewModel = subject(fetchedTags: savedTags) { }
         viewModel.rename(from: "tag 1", to: "tag 0")
 
-        wait(for: [expectRename], timeout: 10)
+        wait(for: [expectRename], timeout: 2)
     }
 
     func test_renameTag_withNoOldName_doesNotRenameTag() {

@@ -359,7 +359,7 @@ class CollectionViewModelTests: XCTestCase {
 
         viewModel.invokeAction(title: "Edit tags")
 
-        wait(for: [expectAddTags], timeout: 10)
+        wait(for: [expectAddTags], timeout: 2)
     }
 
     func test_delete_delegatesToSource_andSendsDeleteEvent() throws {

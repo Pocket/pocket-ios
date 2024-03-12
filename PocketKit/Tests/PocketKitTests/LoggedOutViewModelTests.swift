@@ -85,7 +85,7 @@ extension LoggedOutViewModelTests {
         let viewModel = subject()
         await viewModel.authenticate()
 
-        await fulfillment(of: [startExpectation], timeout: 10)
+        await fulfillment(of: [startExpectation], timeout: 2)
     }
 
     @MainActor
@@ -101,7 +101,7 @@ extension LoggedOutViewModelTests {
 
         viewModel.authenticate()
 
-        wait(for: [alertExpectation], timeout: 10)
+        wait(for: [alertExpectation], timeout: 2)
     }
 }
 
@@ -118,7 +118,7 @@ extension LoggedOutViewModelTests {
 
         await viewModel.authenticate()
 
-        await fulfillment(of: [offlineExpectation], timeout: 10)
+        await fulfillment(of: [offlineExpectation], timeout: 2)
     }
 
     func test_logIn_whenOffline_thenReconnects_setsPresentOfflineViewToFalse() async {
@@ -142,7 +142,7 @@ extension LoggedOutViewModelTests {
         await viewModel.authenticate()
         networkPathMonitor.update(status: .satisfied)
 
-        await fulfillment(of: [offlineExpectation, onlineExpectation], timeout: 10, enforceOrder: true)
+        await fulfillment(of: [offlineExpectation, onlineExpectation], timeout: 2, enforceOrder: true)
     }
 }
 

@@ -160,7 +160,7 @@ class RecommendableItemViewModelTests: XCTestCase {
 
         viewModel.invokeAction(title: "Favorite")
 
-        wait(for: [expectFavorite], timeout: 10)
+        wait(for: [expectFavorite], timeout: 2)
     }
 
     func test_unfavorite_delegatesToSource() {
@@ -178,7 +178,7 @@ class RecommendableItemViewModelTests: XCTestCase {
 
         viewModel.invokeAction(title: "Unfavorite")
 
-        wait(for: [expectUnfavorite], timeout: 10)
+        wait(for: [expectUnfavorite], timeout: 2)
     }
 
     func test_delete_delegatesToSource_andSendsDeleteEvent() {
@@ -206,7 +206,7 @@ class RecommendableItemViewModelTests: XCTestCase {
         viewModel.invokeAction(title: "Delete")
         viewModel.presentedAlert?.actions.first { $0.title == "Yes" }?.invoke()
 
-        wait(for: [expectDelete, expectDeleteEvent], timeout: 10)
+        wait(for: [expectDelete, expectDeleteEvent], timeout: 2)
     }
 
     func test_archive_sendsRequestToSource_andSendsArchiveEvent() {
@@ -232,7 +232,7 @@ class RecommendableItemViewModelTests: XCTestCase {
         }.store(in: &subscriptions)
 
         viewModel.archive()
-        wait(for: [expectArchive, expectArchiveEvent], timeout: 10)
+        wait(for: [expectArchive, expectArchiveEvent], timeout: 2)
     }
 
     func test_moveFromArchiveToSaves_sendsRequestToSource_AndRefreshes() {
@@ -249,7 +249,7 @@ class RecommendableItemViewModelTests: XCTestCase {
         let viewModel = subject(recommendation: recommendation)
         viewModel.moveFromArchiveToSaves { _ in }
 
-        wait(for: [expectMoveFromArchiveToSaves], timeout: 10)
+        wait(for: [expectMoveFromArchiveToSaves], timeout: 2)
     }
 
     func test_share_updatesSharedActivity() {
@@ -304,7 +304,7 @@ class RecommendableItemViewModelTests: XCTestCase {
         }.store(in: &subscriptions)
 
         viewModel.invokeAction(title: "Report")
-        wait(for: [reportExpectation], timeout: 10)
+        wait(for: [reportExpectation], timeout: 2)
     }
 
     func test_externalSave_forwardsToSource() throws {
@@ -363,7 +363,7 @@ class RecommendableItemViewModelTests: XCTestCase {
         }.store(in: &subscriptions)
 
         viewModel.fetchDetailsIfNeeded()
-        wait(for: [receivedEvent], timeout: 10)
+        wait(for: [receivedEvent], timeout: 2)
         XCTAssertNotNil(recommendation.item.article)
     }
 
@@ -384,7 +384,7 @@ class RecommendableItemViewModelTests: XCTestCase {
         }.store(in: &subscriptions)
 
         viewModel.fetchDetailsIfNeeded()
-        wait(for: [receivedEvent], timeout: 10)
+        wait(for: [receivedEvent], timeout: 2)
 
         XCTAssertFalse(recommendation.item.hasArticleComponents)
         XCTAssertNil(recommendation.item.article)
@@ -407,7 +407,7 @@ class RecommendableItemViewModelTests: XCTestCase {
         }.store(in: &subscriptions)
 
         viewModel.fetchDetailsIfNeeded()
-        wait(for: [receivedEvent], timeout: 10)
+        wait(for: [receivedEvent], timeout: 2)
     }
 
     func test_webActivitiesActions_whenRecommendation_notSaved() {
@@ -427,7 +427,7 @@ class RecommendableItemViewModelTests: XCTestCase {
         XCTAssertEqual(webViewActivityList[0].activityTitle, "Save")
         XCTAssertEqual(webViewActivityList[1].activityTitle, "Report")
 
-        wait(for: [webActivitiesExpectation], timeout: 10)
+        wait(for: [webActivitiesExpectation], timeout: 2)
     }
 
     func test_webActivitiesActions_whenRecommendation_isSaved() throws {
@@ -450,7 +450,7 @@ class RecommendableItemViewModelTests: XCTestCase {
         XCTAssertEqual(webViewActivityList[1].activityTitle, "Delete")
         XCTAssertEqual(webViewActivityList[2].activityTitle, "Favorite")
 
-        wait(for: [webActivitiesExpectation], timeout: 10)
+        wait(for: [webActivitiesExpectation], timeout: 2)
     }
 
     func test_readerProgress() throws {

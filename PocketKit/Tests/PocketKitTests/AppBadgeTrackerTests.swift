@@ -71,7 +71,7 @@ final class AppBadgeTrackerTests: XCTestCase {
 
         NotificationCenter.default.post(name: .listUpdated, object: nil)
 
-        wait(for: [badgeExpectation], timeout: 10)
+        wait(for: [badgeExpectation], timeout: 2)
         XCTAssertEqual(badgeProvider.applicationIconBadgeNumber, 1)
     }
 
@@ -91,7 +91,7 @@ final class AppBadgeTrackerTests: XCTestCase {
 
         NotificationCenter.default.post(name: .listUpdated, object: nil)
 
-        wait(for: [badgeExpectation], timeout: 10)
+        wait(for: [badgeExpectation], timeout: 2)
         XCTAssertEqual(badgeProvider.applicationIconBadgeNumber, 0)
     }
 }

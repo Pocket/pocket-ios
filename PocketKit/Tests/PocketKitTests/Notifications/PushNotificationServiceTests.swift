@@ -63,7 +63,7 @@ final class PushNotificationServiceTests: XCTestCase {
 
         NotificationCenter.default.post(name: .userLoggedIn, object: session)
 
-        wait(for: [sessionExpectation], timeout: 10)
+        wait(for: [sessionExpectation], timeout: 2)
 
         XCTAssertEqual(braze.loggedInCalls(), 2)
         XCTAssertEqual(instantSync.loggedInCalls(), 2)

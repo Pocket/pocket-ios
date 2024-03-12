@@ -85,7 +85,7 @@ extension AuthorizationClientTests {
         Task {
             do {
                 // wait for our first task to have started before we try the one that should fail.
-                await fulfillment(of: [expectFirstClientStarted], timeout: 10)
+                await fulfillment(of: [expectFirstClientStarted], timeout: 2)
                 _ = try await self.client.authenticate(from: self)
                 XCTFail("Expected to throw error, but didn't")
             } catch {
@@ -94,7 +94,7 @@ extension AuthorizationClientTests {
             }
         }
 
-        await fulfillment(of: [expectSessionStart], timeout: 10)
+        await fulfillment(of: [expectSessionStart], timeout: 2)
     }
 }
 
