@@ -368,11 +368,22 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
         return .share { [weak self] sender in self?._share(item: item, sender: sender) }
     }
-
     func _share(item: SavedItem, sender: Any?) {
-        track(item: item, identifier: .itemShare)
-        // This view model is used within the context of a view that is presented within Saves
-        sharedActivity = PocketItemActivity.fromSaves(url: item.url, sender: sender)
+        Task {
+            await share(item: item, sender: sender)
+        }
+    }
+    @MainActor
+    func share(item: SavedItem, sender: Any?) async {
+            var shortUrl: String?
+            if let existingShortUrl = item.item?.shortURL {
+                shortUrl = existingShortUrl
+            } else {
+                shortUrl = try? await source.getItemShortUrl(item.url)
+            }
+            let shareableUrl = shortUrl ?? item.url
+            sharedActivity = PocketItemActivity.fromSaves(url: shareableUrl, sender: sender)
+            track(item: item, identifier: .itemShare)
     }
 
     func overflowActions(for objectID: NSManagedObjectID) -> [ItemAction] {
