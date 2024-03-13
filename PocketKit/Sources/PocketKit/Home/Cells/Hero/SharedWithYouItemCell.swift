@@ -13,7 +13,7 @@ class SharedWithYouItemCell: UICollectionViewCell {
     /// The top-most stack view, that allows to add accessory views.
     /// If no accessory view is present, it only contains `topView`
     lazy var topStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [topView])
+        let stackView = UIStackView(arrangedSubviews: [topView, attributionView])
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
         stackView.spacing = 8
@@ -44,12 +44,16 @@ class SharedWithYouItemCell: UICollectionViewCell {
 // MARK: configuration
 extension SharedWithYouItemCell {
     func configure(model: ItemCellViewModel) {
+        Log.capture(message: "SWH: item cell configuration - configuring cell")
         topView.configure(model: model)
 
         if let url = model.sharedWithYouUrlString {
+            Log.capture(message: "SWH: item cell configuration - found valid url: \(url)")
             Task {
                 await addAttributionView(url)
             }
+        } else {
+            Log.capture(message: "SWH: item cell configuration - no url found in configuration")
         }
     }
 }
@@ -60,21 +64,15 @@ extension SharedWithYouItemCell {
     /// - Parameter urlString: the string representation of the url
     private func addAttributionView(_ urlString: String) async {
         guard let url = URL(string: urlString) else {
-            return
-        }
-        // no need to re-add the same attribution view
-        if let highlight = attributionView.highlight, highlight.url.absoluteString == urlString, attributionView.isDescendant(of: topStackView) {
+            Log.capture(message: "SWH: item cell configuration - unable to construct url from \(urlString)")
             return
         }
         do {
+            Log.capture(message: "SWH: item cell configuration - attempting to retrieve highlight for \(urlString)")
             let highlight = try await SWHighlightCenter().highlight(for: url)
             attributionView.highlight = highlight
-            // in case of reusing a cell, we just need to change the highlight without readding the attribution view to the hierarchy
-            if !attributionView.isDescendant(of: topStackView) {
-                topStackView.addArrangedSubview(attributionView)
-            }
         } catch {
-            Log.capture(message: "Unable to retrieve highlight for url: \(urlString) - Error: \(error)")
+            Log.capture(message: "SWH: item cell configuration - unable to retrieve highlight for url: \(urlString) - Error: \(error)")
         }
     }
 }

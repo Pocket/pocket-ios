@@ -45,16 +45,16 @@ class SharedWithYouCarouselCell: UICollectionViewCell {
 // MARK: configuration
 extension SharedWithYouCarouselCell {
     func configure(with configuration: HomeCarouselCellConfiguration) {
-        Log.capture(message: "Shared with you cell configuration: configuring cell")
+        Log.capture(message: "SWH: carousel cell configuration - configuring cell")
         topView.configure(with: configuration)
 
         if let url = configuration.sharedWithYouUrlString {
-            Log.capture(message: "Shared with you cell configuration: found valid url: \(url)")
+            Log.capture(message: "SWH: carousel cell configuration - found valid url: \(url)")
             Task {
                 await updateAttributionView(url)
             }
         } else {
-            Log.capture(message: "Shared with you cell configuration: no url found in configuration")
+            Log.capture(message: "SWH: carousel cell configuration - no url found in configuration")
         }
     }
 }
@@ -65,15 +65,15 @@ extension SharedWithYouCarouselCell {
     /// - Parameter urlString: the string representation of the url
     private func updateAttributionView(_ urlString: String) async {
         guard let url = URL(string: urlString) else {
-            Log.capture(message: "Shared with you cell configuration: unable to construct url from \(urlString)")
+            Log.capture(message: "SWH: carousel cell configuration - unable to construct url from \(urlString)")
             return
         }
         do {
-            Log.capture(message: "Shared with you cell configuration: attempting to retrieve highlight for \(urlString)")
+            Log.capture(message: "SWH: carousel cell configuration - attempting to retrieve highlight for \(urlString)")
             let highlight = try await SWHighlightCenter().highlight(for: url)
             attributionView.highlight = highlight
         } catch {
-            Log.capture(message: "Unable to retrieve highlight for url: \(urlString) - Error: \(error)")
+            Log.capture(message: "SWH: carousel cell configuration - Unable to retrieve highlight for url: \(urlString) - Error: \(error)")
         }
     }
 }
