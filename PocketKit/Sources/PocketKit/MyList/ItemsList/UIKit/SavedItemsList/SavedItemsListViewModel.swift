@@ -375,15 +375,15 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
     @MainActor
     func share(item: SavedItem, sender: Any?) async {
-            var shortUrl: String?
-            if let existingShortUrl = item.item?.shortURL {
-                shortUrl = existingShortUrl
-            } else {
-                shortUrl = try? await source.getItemShortUrl(item.url)
-            }
-            let shareableUrl = shortUrl ?? item.url
-            sharedActivity = PocketItemActivity.fromSaves(url: shareableUrl, sender: sender)
-            track(item: item, identifier: .itemShare)
+        var shortUrl: String?
+        if let existingShortUrl = item.item?.shortURL {
+            shortUrl = existingShortUrl
+        } else {
+            shortUrl = try? await source.getItemShortUrl(item.url)
+        }
+        let shareableUrl = shortUrl ?? item.url
+        sharedActivity = PocketItemActivity.fromSaves(url: shareableUrl, sender: sender)
+        track(item: item, identifier: .itemShare)
     }
 
     func overflowActions(for objectID: NSManagedObjectID) -> [ItemAction] {
