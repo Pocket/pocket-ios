@@ -16,11 +16,8 @@ final class SharedWithYouStore: NSObject {
 
     private var subscriptions = Set<AnyCancellable>()
 
-    private(set) var highlights: [SWHighlight]
-
     init(highlightCenter: SWHighlightCenter? = nil, source: Source, appSession: AppSession) {
         self.highlightCenter = highlightCenter ?? SWHighlightCenter()
-        self.highlights = self.highlightCenter.highlights
         self.source = source
         self.appSession = appSession
         super.init()
@@ -35,17 +32,9 @@ final class SharedWithYouStore: NSObject {
 extension SharedWithYouStore: SWHighlightCenterDelegate {
     /// Emits changes in the shared with you list associated with the app
     func highlightCenterHighlightsDidChange(_ highlightCenter: SWHighlightCenter) {
-        Log.capture(message: "SWH: highlight center delegate triggered - existing highlight n.: \(self.highlights.count), new highlights n.: \(highlightCenter.highlights.count)")
-        // if the list is different (either by elements or sort order) replace it
-        if highlightCenter.highlights != self.highlights {
-            Log.capture(message: "SWH: sdding new highlights")
-            self.highlights = highlightCenter.highlights
-            // Update local storage with the new highlights, which will trigger a UI update
-            // via the associated RichFetchedResultController
-            source.updateSharedWithYouItems(with: highlightCenter.highlights.map { $0.url.absoluteString })
-        } else {
-            Log.capture(message: "SWH: no new highlights added")
-        }
+        // Update local storage with the new highlights, which will trigger a UI update
+        // via the associated RichFetchedResultController
+        source.updateSharedWithYouItems(with: highlightCenter.highlights.map { $0.url.absoluteString })
     }
 }
 
