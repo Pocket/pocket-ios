@@ -437,8 +437,6 @@ class SearchTests: PocketXCTestCase {
 
         itemCell.overFlowMenu.wait().tap()
         app.addTagsButton.wait().tap()
-        app.addTagsView.wait()
-        app.addTagsView.allTagsView.wait()
 
         let searchEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search.addTags")
         searchEvent!.getUIContext()!.assertHas(type: "button")
