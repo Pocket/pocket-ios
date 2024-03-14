@@ -9,6 +9,7 @@ import Combine
 import Lottie
 import Textile
 import Localization
+import SharedWithYou
 
 class SharedWithYouListViewController: UIViewController {
     private lazy var layoutConfiguration = UICollectionViewCompositionalLayout { [weak self] index, env in
@@ -57,7 +58,7 @@ class SharedWithYouListViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
 
         view.accessibilityIdentifier = "slate-detail"
-        navigationItem.title = Localization.SharedWithYou.title
+        navigationItem.title = SWHighlightCenter.highlightCollectionTitle
         hidesBottomBarWhenPushed = true
 
         let largeTitleTwoLineMode = "_largeTitleTwoLineMode"
