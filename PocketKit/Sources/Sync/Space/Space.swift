@@ -370,6 +370,10 @@ extension Space {
         request.fetchLimit = 1
         return try fetch(request, context: context).first
     }
+
+    func deleteSharedWithYouItems(_ context: NSManagedObjectContext? = nil) throws {
+        try deleteEntities(request: Requests.fetchAllSharedWithYouItems(), context: context ?? backgroundContext)
+    }
 }
 
 // MARK: Slate/SlateLineUp

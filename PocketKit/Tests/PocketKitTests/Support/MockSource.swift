@@ -8,6 +8,9 @@ import CoreData
 import Combine
 
 class MockSource: Source {
+    func deleteAllSharedWithYouItems() throws {
+    }
+
     func fetchShortUrlViewItem(_ url: String) async throws -> Sync.Item? {
         return nil
     }

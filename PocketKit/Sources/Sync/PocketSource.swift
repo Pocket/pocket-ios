@@ -1262,6 +1262,10 @@ extension PocketSource {
         item.shortURL = shortUrl
         try? space.save()
     }
+
+    public func deleteAllSharedWithYouItems() throws {
+        try space.deleteSharedWithYouItems()
+    }
 }
 
 // MARK: - Search term
