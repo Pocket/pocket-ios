@@ -345,9 +345,6 @@
 // Collection
 "collection.stories.count" = "%1$@ 件のアイテム";
 
-// Shared With You
-"sharedWithYou.title" = "があなたと共有しました";
-
 // Logged out
 "loggedOut.continue" = "続行";
 

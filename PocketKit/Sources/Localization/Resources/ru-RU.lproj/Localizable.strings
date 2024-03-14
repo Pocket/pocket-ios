@@ -345,9 +345,6 @@
 // Collection
 "collection.stories.count" = "%1$@ материалов";
 
-// Shared With You
-"sharedWithYou.title" = "отправлено вам";
-
 // Logged out
 "loggedOut.continue" = "Продолжить";
 

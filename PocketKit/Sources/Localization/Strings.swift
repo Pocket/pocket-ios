@@ -631,10 +631,6 @@ public enum Localization {
       public static let credits = Localization.tr("Localizable", "settings.thankyou.credits", fallback: "Thank you for using Pocket")
     }
   }
-  public enum SharedWithYou {
-    /// Shared With You
-    public static let title = Localization.tr("Localizable", "sharedWithYou.title", fallback: "Shared With You")
-  }
   public enum SortingOption {
     /// Longest to read
     public static let longestToRead = Localization.tr("Localizable", "sortingOption.longestToRead", fallback: "Longest to read")

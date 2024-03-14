@@ -345,9 +345,6 @@
 // Collection
 "collection.stories.count" = "%1$@ itens";
 
-// Shared With You
-"sharedWithYou.title" = "compartilhado com você";
-
 // Logged out
 "loggedOut.continue" = "Continuar";
 

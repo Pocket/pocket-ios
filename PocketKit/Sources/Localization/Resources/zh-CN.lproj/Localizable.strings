@@ -345,9 +345,6 @@
 // Collection
 "collection.stories.count" = "%1$@ 个项目";
 
-// Shared With You
-"sharedWithYou.title" = "已与您分享";
-
 // Logged out
 "loggedOut.continue" = "继续";
 

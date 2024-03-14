@@ -345,9 +345,6 @@
 // Collection
 "collection.stories.count" = "%1$@개 항목";
 
-// Shared With You
-"sharedWithYou.title" = "이(가) 공유함";
-
 // Logged out
 "loggedOut.continue" = "계속";
 
