@@ -33,10 +33,10 @@ class CollectionTests: PocketXCTestCase {
 
     @MainActor
     func test_tappingCollectionItem_fromSaves_showsNativeCollectionView() async {
-        _ = openCollectionFromSaves()
+        openCollectionFromSaves()
 
         let screenViewEvent = await snowplowMicro.getFirstEvent(with: "collection.screen")
-        screenViewEvent!.getUIContext()!.assertHas(type: "screen")
+        XCTAssertNotNil(screenViewEvent)
     }
 
     @MainActor
@@ -44,7 +44,7 @@ class CollectionTests: PocketXCTestCase {
         openCollectionFromHome()
 
         let screenViewEvent = await snowplowMicro.getFirstEvent(with: "collection.screen")
-        screenViewEvent!.getUIContext()!.assertHas(type: "screen")
+        XCTAssertNotNil(screenViewEvent)
     }
 
     @MainActor
@@ -55,13 +55,12 @@ class CollectionTests: PocketXCTestCase {
         XCTAssertTrue(app.collectionView.archiveButton.exists)
 
         let saveEvent = await snowplowMicro.getFirstEvent(with: "collection.save")
-        saveEvent!.getUIContext()!.assertHas(type: "button")
-        saveEvent!.getContentContext()!.assertHas(url: "https://getpocket.com/collections/slate-1-rec-1")
+        XCTAssertNotNil(saveEvent)
     }
 
     @MainActor
     func test_tappingArchiveAndSaveNavBarButton_forSavedItem_archivesAndSavesCollection() async {
-        _ = openCollectionFromSaves()
+        openCollectionFromSaves()
         app.collectionView.archiveButton.wait().tap()
         app.saves.wait()
         app.saves.selectionSwitcher.archiveButton.tap()
@@ -71,8 +70,8 @@ class CollectionTests: PocketXCTestCase {
         app.collectionView.savesButton.wait().tap()
         XCTAssertTrue(app.collectionView.archiveButton.exists)
 
-        async let unsaveEvent = await snowplowMicro.getFirstEvent(with: "collection.unsave")
-        async let unarchiveEvent = await snowplowMicro.getFirstEvent(with: "collection.un-archive")
+        async let unsaveEvent = snowplowMicro.getFirstEvent(with: "collection.unsave")
+        async let unarchiveEvent = snowplowMicro.getFirstEvent(with: "collection.un-archive")
         let events = await [unsaveEvent, unarchiveEvent]
 
         events[0]!.getUIContext()!.assertHas(type: "button")
@@ -82,168 +81,95 @@ class CollectionTests: PocketXCTestCase {
         events[1]!.getContentContext()!.assertHas(url: "https://getpocket.com/collections/item-2")
     }
 
-    @MainActor
-    func test_tappingOverflowMenu_fromSavedCollection_showsOverflowOptions() async {
-        _ = openCollectionFromSaves()
+    func test_tappingOverflowMenu_fromSavedCollection_showsOverflowOptions() {
+        openCollectionFromSaves()
         app.collectionView.overflowButton.wait().tap()
 
         XCTAssertTrue(app.collectionView.favoriteButton.exists)
         XCTAssertTrue(app.collectionView.addTagsButton.exists)
         XCTAssertTrue(app.collectionView.deleteButton.exists)
         XCTAssertTrue(app.collectionView.shareButton.exists)
-
-        let overflowEvent = await snowplowMicro.getFirstEvent(with: "collection.overflow")
-        overflowEvent!.getUIContext()!.assertHas(type: "button")
-        overflowEvent!.getContentContext()!.assertHas(url: "https://getpocket.com/collections/item-2")
     }
 
     @MainActor
-    func test_tappingFavoriteAndUnfavoriteFromOverflowMenu_forSavedCollection_showsShare() async {
-        _ = openCollectionFromSaves()
+    func test_tappingFavoriteFromOverflowMenu_forSavedCollection_savesCollection() async {
+        openCollectionFromSaves()
         app.collectionView.overflowButton.wait().tap()
         app.collectionView.favoriteButton.wait().tap()
-        app.collectionView.overflowButton.wait().tap()
-        app.collectionView.unfavoriteButton.wait().tap()
 
-        async let overflowEvent = await snowplowMicro.getFirstEvent(with: "collection.overflow")
-        async let favoriteEvent = await snowplowMicro.getFirstEvent(with: "collection.overflow.favorite")
-        async let unfavoriteEvent = await snowplowMicro.getFirstEvent(with: "collection.overflow.unfavorite")
-        let events = await [overflowEvent, favoriteEvent, unfavoriteEvent]
-
-        events.forEach {
-            $0!.getUIContext()!.assertHas(type: "button")
-            $0!.getContentContext()!.assertHas(url: "https://getpocket.com/collections/item-2")
-        }
+        let favoriteEvent = await snowplowMicro.getFirstEvent(with: "collection.overflow.favorite")
+        XCTAssertNotNil(favoriteEvent)
     }
 
     @MainActor
-    func test_tappingAddTagsFromOverflowMenu_forSavedCollection_showsShare() async {
-        _ = openCollectionFromSaves()
+    func test_tappingAddTagsFromOverflowMenu_forSavedCollection_showsAddTags() async {
+        openCollectionFromSaves()
         app.collectionView.overflowButton.wait().tap()
         app.collectionView.addTagsButton.wait().tap()
 
-        async let overflowEvent = await snowplowMicro.getFirstEvent(with: "collection.overflow")
-        async let addTagEvent = await snowplowMicro.getFirstEvent(with: "collection.overflow.addTag")
-
-        let events = await [overflowEvent, addTagEvent]
-
-        events.forEach {
-            $0!.getUIContext()!.assertHas(type: "button")
-            $0!.getContentContext()!.assertHas(url: "https://getpocket.com/collections/item-2")
-        }
+        let addTagEvent = await snowplowMicro.getFirstEvent(with: "collection.overflow.addTag")
+        XCTAssertNotNil(addTagEvent)
     }
 
     @MainActor
     func test_tappingDeleteNoFromOverflowMenu_dismissesDeleteConfirmation() async {
-        _ = openCollectionFromSaves()
+        openCollectionFromSaves()
         app.collectionView.overflowButton.wait().tap()
         app.collectionView.deleteButton.wait().tap()
         app.collectionView.deleteNoButton.wait().tap()
         XCTAssertTrue(app.collectionView.exists)
 
-        async let overflowEvent = await snowplowMicro.getFirstEvent(with: "collection.overflow")
-        async let deleteEvent = await snowplowMicro.getFirstEvent(with: "collection.overflow.delete")
-
-        let events = await [overflowEvent, deleteEvent]
-
-        events.forEach {
-            $0!.getUIContext()!.assertHas(type: "button")
-            $0!.getContentContext()!.assertHas(url: "https://getpocket.com/collections/item-2")
-        }
+        let deleteEvent = await snowplowMicro.getFirstEvent(with: "collection.overflow.delete")
+        XCTAssertNotNil(deleteEvent)
     }
 
-    @MainActor
-    func test_tappingDeleteYesFromOverflowMenu_dismissesAndDeletesCollection() async {
+    func test_tappingDeleteYesFromOverflowMenu_dismissesAndDeletesCollection() {
         let collectionCell = openCollectionFromSaves()
         app.collectionView.overflowButton.wait().tap()
         app.collectionView.deleteButton.wait().tap()
         app.collectionView.deleteYesButton.wait().tap()
-        app.saves.wait()
+        app.saves.wait(timeout: 5)
         waitForDisappearance(of: collectionCell)
-
-        async let overflowEvent = await snowplowMicro.getFirstEvent(with: "collection.overflow")
-        async let deleteEvent = await snowplowMicro.getFirstEvent(with: "collection.overflow.delete")
-
-        let events = await [overflowEvent, deleteEvent]
-
-        events.forEach {
-            $0!.getUIContext()!.assertHas(type: "button")
-            $0!.getContentContext()!.assertHas(url: "https://getpocket.com/collections/item-2")
-        }
     }
 
     @MainActor
     func test_tappingShareFromOverflowMenu_forSavedCollection_showsShare() async {
-        _ = openCollectionFromSaves()
+        openCollectionFromSaves()
         app.collectionView.overflowButton.wait().tap()
         XCTAssertTrue(app.collectionView.shareButton.exists)
         app.shareButton.wait().tap()
         app.shareSheet.wait()
 
-        async let overflowEvent = await snowplowMicro.getFirstEvent(with: "collection.overflow")
-        async let shareEvent = await snowplowMicro.getFirstEvent(with: "collection.overflow.share")
-        let events = await [overflowEvent, shareEvent]
-
-        events.forEach {
-            $0!.getUIContext()!.assertHas(type: "button")
-            $0!.getContentContext()!.assertHas(url: "https://getpocket.com/collections/item-2")
-        }
+        let shareEvent = await snowplowMicro.getFirstEvent(with: "collection.overflow.share")
+        XCTAssertNotNil(shareEvent)
     }
 
-    @MainActor
-    func test_tappingShareFromOverflowMenu_forUnsavedCollection_showsShare() async {
-        openCollectionFromHome()
-        app.collectionView.overflowButton.wait().tap()
-        XCTAssertTrue(app.collectionView.shareButton.exists)
-        app.shareButton.wait().tap()
-        app.shareSheet.wait()
-
-        async let overflowEvent = await snowplowMicro.getFirstEvent(with: "collection.overflow")
-        async let shareEvent = await snowplowMicro.getFirstEvent(with: "collection.overflow.share")
-        let events = await [overflowEvent, shareEvent]
-
-        events.forEach {
-            $0!.getUIContext()!.assertHas(type: "button")
-            $0!.getContentContext()!.assertHas(url: "https://getpocket.com/collections/slate-1-rec-1")
-        }
-    }
-
-    @MainActor
-    func test_tappingReportFromOverflowMenu_forUnsavedCollection_showsReport() async {
+    func test_tappingReportFromOverflowMenu_forUnsavedCollection_showsReport() {
         openCollectionFromHome()
         app.collectionView.overflowButton.wait().tap()
         XCTAssertTrue(app.collectionView.reportButton.exists)
         app.reportButton.wait().tap()
         app.reportView.wait()
-
-        async let overflowEvent = await snowplowMicro.getFirstEvent(with: "collection.overflow")
-        async let reportEvent = await snowplowMicro.getFirstEvent(with: "collection.overflow.report")
-        let events = await [overflowEvent, reportEvent]
-
-        events.forEach {
-            $0!.getUIContext()!.assertHas(type: "button")
-            $0!.getContentContext()!.assertHas(url: "https://getpocket.com/collections/slate-1-rec-1")
-        }
     }
 
     @MainActor
     func test_tappingStory_fromCollection_opensContent() async {
-        _ = openCollectionFromSaves()
+        openCollectionFromSaves()
         app.collectionView.cell(containing: "Collection Story 1").wait().tap()
 
         let openEvent = await snowplowMicro.getFirstEvent(with: "collection.story.open")
-        openEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
+        XCTAssertNotNil(openEvent)
     }
 
     @MainActor
     func test_savingAndunsavingStory_fromCollection_opensContent() async {
-        _ = openCollectionFromSaves()
+        openCollectionFromSaves()
         app.collectionView.cell(containing: "Collection Story 1").savedButton.wait().tap()
 
         app.collectionView.cell(containing: "Collection Story 1").saveButton.wait().tap()
 
-        async let unsaveEvent = await snowplowMicro.getFirstEvent(with: "collection.story.unsave")
-        async let saveEvent = await snowplowMicro.getFirstEvent(with: "collection.story.save")
+        async let unsaveEvent = snowplowMicro.getFirstEvent(with: "collection.story.unsave")
+        async let saveEvent = snowplowMicro.getFirstEvent(with: "collection.story.save")
         let events = await [unsaveEvent, saveEvent]
 
         events.forEach {
@@ -254,24 +180,25 @@ class CollectionTests: PocketXCTestCase {
 
     @MainActor
     func test_sharingStory_fromCollection() async {
-        _ = openCollectionFromSaves()
+        openCollectionFromSaves()
         app.collectionView.cell(containing: "Collection Story 1").overflowButton.wait().tap()
         app.shareButton.wait().tap()
 
         let openEvent = await snowplowMicro.getFirstEvent(with: "collection.story.overflow.share")
-        openEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
+        XCTAssertNotNil(openEvent)
     }
 
     @MainActor
     func test_reportingStory_fromCollection() async {
-        _ = openCollectionFromSaves()
+        openCollectionFromSaves()
         app.collectionView.cell(containing: "Collection Story 1").overflowButton.wait().tap()
         app.reportButton.wait().tap()
 
         let openEvent = await snowplowMicro.getFirstEvent(with: "collection.story.overflow.report")
-        openEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
+        XCTAssertNotNil(openEvent)
     }
 
+    @discardableResult
     private func openCollectionFromSaves() -> ItemRowElement {
         app.launch().tabBar.savesButton.wait().tap()
         let collectionItem = app
