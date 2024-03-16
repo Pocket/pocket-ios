@@ -85,6 +85,7 @@
         "HomeTests\/test_tappingRecentSavesSavesButton_opensSavesView()",
         "ListenTests",
         "PocketXCTestCase",
+        "PremiumTests\/test_tapSearchPremiumUpsellShowsUpgradeView()",
         "PullToRefreshTests",
         "ReaderTests",
         "ReportARecommendationTests",
