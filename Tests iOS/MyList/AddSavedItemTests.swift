@@ -92,8 +92,8 @@ final class AddSavedItemTests: XCTestCase {
     func test_addInvalidItem() async {
         let addSavedItem = launchAndNavigateToAddSavedItem()
 
-        let urlTextfield = addSavedItem.urlEntryTextField
-        urlTextfield.tap()
+        let urlTextfield = addSavedItem.urlEntryTextField.wait()
+        addSavedItem.urlEntryTextField.wait().tap()
         urlTextfield.typeText("not a valid URL")
 
         addSavedItem.addItemButton.wait().tap()
@@ -107,7 +107,7 @@ final class AddSavedItemTests: XCTestCase {
     func test_addValidItem() async {
         let addSavedItem = launchAndNavigateToAddSavedItem()
 
-        let urlTextfield = addSavedItem.urlEntryTextField
+        let urlTextfield = addSavedItem.urlEntryTextField.wait()
         urlTextfield.tap()
         urlTextfield.typeText("https://www.mozilla.org/")
 
