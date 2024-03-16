@@ -8,7 +8,7 @@ Welcome to the Next iteration of the Pocket iOS client, currently in development
 
 pocket-ios requires a secrets.xcconfig file to run and secrets_test.xcconfig file to test, we have included some mock secrets in the repo but if you are a Mozillan or Pocketeer you can obtain the actual secret keys from the Pocket Team.
 
-External contributors may generate their own Pocket API keys at https://getpocket.com/developer/ though some features (payments, for example) will still not work.
+In the future, we plan to allow external contributors to generate their own secrets and be able to build Pocket on their own.
 
 Once obtained you can run the following command from the root directory:
 
@@ -117,6 +117,8 @@ SharedPocketKit is for code that is shared between PocketKit and SaveToPocketKit
 ## Developing in Pocket
 
 See our Contribution Guide for day-to-day Pocket development guides.
+> [!NOTE]
+> As of now, contribution to Pocket is limited to Mozillians but we are planning to add external contributions to our repo. Stay tuned!
 
 ## License Acknowledgements
 
