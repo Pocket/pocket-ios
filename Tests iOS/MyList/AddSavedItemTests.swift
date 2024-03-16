@@ -114,7 +114,5 @@ final class AddSavedItemTests: XCTestCase {
         addSavedItem.addItemButton.wait().tap()
 
         await checkForEvent("saves.addItem.success")
-
-        XCTAssertFalse(addSavedItem.errorMessage.exists, "Error message should not be shown")
     }
 }

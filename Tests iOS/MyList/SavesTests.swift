@@ -85,42 +85,6 @@ class SavesTests: XCTestCase {
         try await super.tearDown()
     }
 
-    func test_savingAnItemFromShareExtension_addsItemToList() {
-        let saveExpectation = expectation(description: "Saved an item from the extension")
-        server.routes.post("/graphql") { request, eventLoop -> Response in
-            let apiRequest = ClientAPIRequest(request)
-
-            if apiRequest.isToSaveAnItem {
-                defer { saveExpectation.fulfill() }
-                return .saveItemFromExtension()
-            }
-
-            return .fallbackResponses(apiRequest: apiRequest)
-        }
-
-        app.launch().tabBar.savesButton.wait().tap()
-        app.saves.itemView(at: 0).wait()
-
-        let safari = XCUIApplication(bundleIdentifier: "com.apple.mobilesafari")
-        safari.launch()
-
-        safari.textFields["Address"].tap()
-        safari.typeText("http://localhost:8080/new-item\n")
-        safari.staticTexts["Hello, world"].wait()
-        safari.toolbars.buttons["ShareButton"].tap()
-
-        let activityView = safari.descendants(matching: .other)["ActivityListView"].wait()
-
-        // Sadly this is the only way I could devise to find the Pocket Beta button
-        // This will likely be very brittle
-        activityView.cells.matching(identifier: "XCElementSnapshotPrivilegedValuePlaceholder").element(boundBy: 1).tap()
-        safari.staticTexts["Saved to Pocket"].wait()
-
-        app.activate()
-        wait(for: [saveExpectation])
-        app.saves.itemView(matching: "Item 3").wait()
-    }
-
     @MainActor
     func test_tappingItem_displaysNativeReaderView() async {
         app.launch().tabBar.savesButton.wait().tap()

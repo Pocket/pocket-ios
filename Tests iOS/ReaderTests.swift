@@ -50,7 +50,7 @@ class ReaderTests: XCTestCase {
     }
 
     func test_tappingSaves_dismissesReader_andShowsSaves() {
-        launchApp_andOpenItem()
+        launchAppAndOpenItem()
         app.readerView.backButton.tap()
         app.saves.wait()
     }
@@ -67,7 +67,7 @@ class ReaderTests: XCTestCase {
             return .fallbackResponses(apiRequest: apiRequest)
         }
 
-        launchApp_andOpenItem()
+        launchAppAndOpenItem()
         app.readerView.archiveButton.tap()
         wait(for: [archiveExpectation])
         app.saves.wait()
@@ -100,7 +100,7 @@ class ReaderTests: XCTestCase {
 
     @MainActor
     func test_tappingOverflowMenu_showsOverflowOptions() async {
-        launchApp_andOpenItem()
+        launchAppAndOpenItem()
         openReaderOverflowMenu()
         XCTAssertTrue(app.readerView.displaySettingsButton.exists)
         XCTAssertTrue(app.readerView.favoriteButton.exists)
@@ -115,7 +115,7 @@ class ReaderTests: XCTestCase {
 
     @MainActor
     func test_tappingDisplaySettings_showsDisplaySettings() async {
-        launchApp_andOpenItem()
+        launchAppAndOpenItem()
         openReaderOverflowMenu()
         openDisplaySettings()
         XCTAssertTrue(app.readerView.fontStepperIncreaseButton.exists)
@@ -151,7 +151,7 @@ class ReaderTests: XCTestCase {
 
     func test_tappingDisplaySettings_fontStepperIncreasesFont() {
         // Given
-        launchApp_andOpenItem()
+        launchAppAndOpenItem()
         openReaderOverflowMenu()
         openDisplaySettings()
 
@@ -179,7 +179,7 @@ class ReaderTests: XCTestCase {
     }
 
     func test_tappingDisplaySettings_fontStepperDecreasesFont() {
-        launchApp_andOpenItem()
+        launchAppAndOpenItem()
         openReaderOverflowMenu()
         openDisplaySettings()
 
@@ -203,7 +203,7 @@ class ReaderTests: XCTestCase {
 
     @MainActor
     func test_tappingWebViewButton_showsSafari() async {
-        launchApp_andOpenItem()
+        launchAppAndOpenItem()
         tapSafariButton()
         validateSafariOpens()
 
@@ -214,7 +214,7 @@ class ReaderTests: XCTestCase {
 
     @MainActor
     func test_tappingUnsupportedElementButton_showsSafari() async {
-        launchApp_andOpenItem()
+        launchAppAndOpenItem()
         app.readerView.unsupportedElementOpenButton.wait().tap()
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
@@ -231,7 +231,7 @@ class ReaderTests: XCTestCase {
 
     @MainActor
     func test_tappingDeleteNo_dismissesDeleteConfirmation() async {
-        launchApp_andOpenItem()
+        launchAppAndOpenItem()
         openReaderOverflowMenu()
         app.readerView.wait().deleteButton.wait().tap()
         app.readerView.wait().deleteNoButton.wait().tap()
@@ -290,7 +290,7 @@ class ReaderTests: XCTestCase {
         app.readerView.wait().safariButton.wait().tap()
     }
 
-    func launchApp_andOpenItem() {
+    func launchAppAndOpenItem() {
         app.launch().tabBar.savesButton.wait().tap()
         app
             .saves.wait()
