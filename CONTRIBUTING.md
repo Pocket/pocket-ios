@@ -58,7 +58,7 @@ swift run danger-swift pr [some-pr-url]
 
 ### UI Tests (Mozillans Only)
 
-UI Tests are split into 3 test plans. As you built UI tests you should ensure that your test is enabled in 1 of the UI test plans to be run on CI in such a way as to balance the 3 test plans. We use Snowplow-micro to test for expected analytics events. As a Mozillain you can get access to our Docker image.
+UI Tests are split into 4 test plans. As you built UI tests you should ensure that your test is enabled in 1 of the UI test plans to be run on CI in such a way as to balance the 3 test plans. We use Snowplow-micro to test for expected analytics events. As a Mozillain you can get access to our Docker image.
 
 
 ### Localization
