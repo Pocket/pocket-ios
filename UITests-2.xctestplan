@@ -68,6 +68,8 @@
   "testTargets" : [
     {
       "skippedTests" : [
+        "AddSavedItemTests",
+        "AddTagsItemTests",
         "AddTagsItemTests\/test_addTagsToItemFromSaves_savesNewTags()",
         "AddTagsItemTests\/test_addTags_withPremiumUser_showsRecentTagsView()",
         "ArchiveFiltersTests",
@@ -82,6 +84,7 @@
         "HomeTests\/test_tappingRecentSavesItem_showsWebViewWhenItemIsVideo()",
         "HomeTests\/test_tappingRecentSavesSavesButton_opensSavesView()",
         "ListenTests",
+        "PocketXCTestCase",
         "PullToRefreshTests",
         "ReaderTests",
         "ReportARecommendationTests",

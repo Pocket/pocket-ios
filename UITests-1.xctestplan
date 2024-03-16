@@ -84,6 +84,7 @@
         "ErrorTests",
         "HomeTests",
         "ListenTests",
+        "PocketXCTestCase",
         "PremiumTests",
         "PullToRefreshTests",
         "ReaderTests",

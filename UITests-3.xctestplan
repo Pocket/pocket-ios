@@ -82,6 +82,7 @@
         "FavoriteAnItemTests",
         "HomeTests",
         "ListenTests",
+        "PocketXCTestCase",
         "PremiumTests",
         "PullToRefreshTests\/test_saves_pullToRefresh_fetchesNewContent()",
         "ReaderTests\/test_longPressingHyperlink_showsPreview_andMenu()",
