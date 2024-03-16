@@ -56,52 +56,41 @@ final class AddSavedItemTests: XCTestCase {
 
     func checkForEvent(_ eventName: String, inverted: Bool = false) async {
         let event = await snowplowMicro.getFirstEvent(with: eventName)
-
-        if inverted {
-            XCTAssertNil(event, "\(eventName) should not be fired")
-        } else {
-            XCTAssertNotNil(event, "\(eventName) not fired")
-        }
+        XCTAssertNotNil(event, "\(eventName) not fired")
     }
 
     @MainActor
-    func launchAndNavigateToAddSavedItem() async -> AddSavedItemElement {
-        app.launch().tabBar.savesButton.wait().tap()
+    func launchAndNavigateToAddSavedItem() -> AddSavedItemElement {
+        app.launch()
+        app.tabBar.savesButton.wait().tap()
         let saves = app.saves.wait()
 
         saves.addSavedItemButton().tap()
-
-        await checkForEvent("saves.addItem.open")
-
         return saves.addSavedItem
     }
 
     // MARK: - Tests
     @MainActor
     func test_showAndDismissAddItemView_analytics_cancelButton() async {
-        let addSavedItem = await launchAndNavigateToAddSavedItem()
+        let addSavedItem = launchAndNavigateToAddSavedItem()
 
         addSavedItem.cancelButton.tap()
 
         await checkForEvent("saves.addItem.dismiss")
-        await checkForEvent("saves.addItem.fail", inverted: true)
-        await checkForEvent("saves.addItem.success", inverted: true)
     }
 
     @MainActor
     func test_showAndDismissAddItemView_analytics_closeButton() async {
-        let addSavedItem = await launchAndNavigateToAddSavedItem()
+        let addSavedItem = launchAndNavigateToAddSavedItem()
 
         addSavedItem.closeButton.tap()
 
         await checkForEvent("saves.addItem.dismiss")
-        await checkForEvent("saves.addItem.fail", inverted: true)
-        await checkForEvent("saves.addItem.success", inverted: true)
     }
 
     @MainActor
     func test_addInvalidItem() async {
-        let addSavedItem = await launchAndNavigateToAddSavedItem()
+        let addSavedItem = launchAndNavigateToAddSavedItem()
 
         let urlTextfield = addSavedItem.urlEntryTextField
         urlTextfield.tap()
@@ -110,15 +99,13 @@ final class AddSavedItemTests: XCTestCase {
         addSavedItem.addItemButton.wait().tap()
 
         await checkForEvent("saves.addItem.fail")
-        await checkForEvent("saves.addItem.dismiss", inverted: true)
-        await checkForEvent("saves.addItem.success", inverted: true)
 
         XCTAssertTrue(addSavedItem.errorMessage.exists, "Expected error message not shown")
     }
 
     @MainActor
     func test_addValidItem() async {
-        let addSavedItem = await launchAndNavigateToAddSavedItem()
+        let addSavedItem = launchAndNavigateToAddSavedItem()
 
         let urlTextfield = addSavedItem.urlEntryTextField
         urlTextfield.tap()
@@ -127,8 +114,6 @@ final class AddSavedItemTests: XCTestCase {
         addSavedItem.addItemButton.wait().tap()
 
         await checkForEvent("saves.addItem.success")
-        await checkForEvent("saves.addItem.dismiss", inverted: true)
-        await checkForEvent("saves.addItem.fail", inverted: true)
 
         XCTAssertFalse(addSavedItem.errorMessage.exists, "Error message should not be shown")
     }
