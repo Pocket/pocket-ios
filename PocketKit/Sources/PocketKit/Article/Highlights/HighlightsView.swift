@@ -54,6 +54,11 @@ struct HighlightsView: View {
             .padding(.trailing, 16)
         }
         .padding(.top)
+        .onChange(of: viewModel.highlightedQuotes.count) { value in
+            if value == 0 {
+                dismiss()
+            }
+        }
     }
 }
 
