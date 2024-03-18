@@ -80,4 +80,8 @@ class ArticleMetadataCell: UICollectionViewCell, ArticleComponentTextCell, Artic
             textStack.spacing = Constants.stackSpacing
         }
     }
+
+    func highlightAll() {
+        // no op
+    }
 }

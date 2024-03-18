@@ -410,7 +410,25 @@ extension ReadableViewController {
             )
             group.interItemSpacing = .fixed(0)
 
-            let section = NSCollectionLayoutSection(group: group)
+            var config = UICollectionLayoutListConfiguration(appearance: .plain)
+            config.trailingSwipeActionsConfigurationProvider = { [unowned self] indexPath in
+                guard let presenter = presenters?[safe: indexPath.item],
+                        let indexes = presenter.highlightIndexes, !indexes.isEmpty,
+                        let currentCell = self.collectionView.cellForItem(at: indexPath) as? ArticleComponentTextCell else {
+                    return nil
+                }
+
+                let actions: [UIContextualAction] = [
+                    UIContextualAction(style: .normal, title: "Highlight") {_, _, completion in
+                        currentCell.highlightAll()
+                        completion(true)
+                    }
+                ]
+
+                return UISwipeActionsConfiguration(actions: actions)
+            }
+
+            let section = NSCollectionLayoutSection.list(using: config, layoutEnvironment: environment)
             // Zero out the default leading/trailing contentInsets, but preserve the default top/bottom values.
             // This ensures each section will be inset horizontally exactly to the readable content width.
             var contentInsets = section.contentInsets

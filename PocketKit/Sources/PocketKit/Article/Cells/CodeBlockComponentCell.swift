@@ -62,4 +62,8 @@ class CodeBlockComponentCell: UICollectionViewCell, ArticleComponentTextCell, Ar
     required init?(coder: NSCoder) {
         fatalError("Unable to instantiate \(Self.self) from xib/storyboard")
     }
+
+    func highlightAll() {
+        textView.highilghtAll()
+    }
 }

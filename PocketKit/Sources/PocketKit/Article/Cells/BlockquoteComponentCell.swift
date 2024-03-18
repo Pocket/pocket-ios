@@ -69,4 +69,8 @@ class BlockquoteComponentCell: UICollectionViewCell, ArticleComponentTextCell, A
     required init?(coder: NSCoder) {
         fatalError("Unable to instantiate \(Self.self) from xib/storyboard")
     }
+
+    func highlightAll() {
+        textView.highilghtAll()
+    }
 }

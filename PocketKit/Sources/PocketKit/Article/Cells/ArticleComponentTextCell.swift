@@ -20,6 +20,7 @@ protocol ArticleComponentTextCell: ArticleComponentTextViewDelegate {
     var delegate: ArticleComponentTextCellDelegate? { get set }
     var componentIndex: Int { get set }
     var onHighlight: ((Int, NSRange, String, String) -> Void)? { get set }
+    func highlightAll()
 }
 
 // Apply default implementations of PocketTextViewDelegate callbacks
@@ -81,6 +82,16 @@ class ArticleComponentTextView: UITextView {
     @objc
     func _share(_ sender: Any?) {
         actionDelegate?.articleComponentTextViewDidSelectShareAction(self)
+    }
+
+    func highilghtAll() {
+        let fullRange = NSMutableAttributedString(
+            attributedString: self.attributedText
+        )
+            .mutableString.range(
+                of: self.attributedText.string
+            )
+        applyHighlight(fullRange)
     }
 
     private func applyHighlight(_ range: NSRange) {

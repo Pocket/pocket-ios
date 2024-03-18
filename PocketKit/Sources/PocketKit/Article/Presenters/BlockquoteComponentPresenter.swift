@@ -16,8 +16,6 @@ private extension Style {
 }
 
 class BlockquoteComponentPresenter: ArticleComponentPresenter {
-    var onHighlight: ((Int, NSRange) -> Void)?
-
     var componentIndex: Int
 
     var highlightIndexes: [Int]?
