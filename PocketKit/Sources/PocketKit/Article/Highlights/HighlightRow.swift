@@ -35,7 +35,6 @@ struct HighlightRow: View {
                 .buttonStyle(BorderlessButtonStyle())
 
                 Button {
-                    modalDismiss()
                     if let ID = highlightedQuote.remoteID {
                         viewModel.deleteHighlight(ID)
                     }

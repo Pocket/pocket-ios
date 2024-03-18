@@ -41,8 +41,6 @@ class ReadableViewController: UIViewController {
 
     private var userScrollProgress: IndexPath?
 
-    private var highlightedQuotes = [HighlightedQuote]()
-
     private lazy var collectionView: UICollectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: layout
@@ -100,7 +98,6 @@ class ReadableViewController: UIViewController {
                     }
                     let controller =
                     HighlightsViewController(
-                        highlights: highlightedQuotes.sorted { $0.index < $1.index },
                         viewModel: viewModel
                     )
                     present(controller, animated: true)
@@ -481,7 +478,7 @@ extension ReadableViewController {
 extension ReadableViewController {
     /// Builds the highlighted quotes list from the presenters
     private func fetchQuotes() {
-        highlightedQuotes.removeAll()
+        var quotes = [HighlightedQuote]()
         guard let viewModel = readableViewModel as? SavedItemViewModel else {
             return
         }
@@ -490,7 +487,7 @@ extension ReadableViewController {
                let highlights = viewModel.highlights {
                 indexes.forEach {
                     if let highlight = highlights[safe: $0] {
-                        highlightedQuotes.append(
+                        quotes.append(
                             HighlightedQuote(
                                 remoteID: highlight.remoteID,
                                 index: $0,
@@ -502,5 +499,6 @@ extension ReadableViewController {
                 }
             }
         }
+        viewModel.highlightedQuotes = quotes
     }
 }

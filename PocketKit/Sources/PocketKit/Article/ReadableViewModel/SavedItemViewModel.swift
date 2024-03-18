@@ -71,6 +71,8 @@ class SavedItemViewModel: ReadableViewModel, ObservableObject {
 
     @Published private(set) var isPresentingHooray = false
 
+    @Published var highlightedQuotes = [HighlightedQuote]()
+
     private var _dismissReason: DismissReason = .swipe {
         willSet {
             if newValue == .system {

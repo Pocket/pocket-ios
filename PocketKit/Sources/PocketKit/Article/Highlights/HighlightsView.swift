@@ -7,13 +7,12 @@ import SwiftUI
 import Textile
 
 class HighlightsViewController: UIHostingController<HighlightsView> {
-    convenience init(highlights: [HighlightedQuote], viewModel: SavedItemViewModel) {
-        self.init(rootView: HighlightsView(highlights: highlights, viewModel: viewModel))
+    convenience init(viewModel: SavedItemViewModel) {
+        self.init(rootView: HighlightsView(viewModel: viewModel))
     }
 }
 
 struct HighlightsView: View {
-    let highlights: [HighlightedQuote]
     @ObservedObject var viewModel: SavedItemViewModel
     @Environment(\.dismiss)
     private var dismiss
@@ -30,15 +29,19 @@ struct HighlightsView: View {
             }
             .frame(width: 36)
             VStack(alignment: .leading) {
-                Text(Localization.ItemAction.showHighlights)
-                    .font(.title3)
-                    .bold()
-                    .foregroundColor(Color(.ui.grey8))
-                    .padding(.leading)
+                HStack(alignment: .top) {
+                    Text(Localization.ItemAction.showHighlights)
+                        .font(.title3)
+                        .bold()
+                        .foregroundColor(Color(.ui.grey8))
+                        .padding(.leading)
+                    Spacer()
+                    dismissButton
+                }
                 Divider()
                     .padding(.leading)
                     .padding(.trailing)
-                List(highlights) { highlight in
+                List(viewModel.highlightedQuotes) { highlight in
                     HighlightRow(highlightedQuote: highlight, viewModel: viewModel, modalDismiss: dismiss)
                         .listRowSeparator(.hidden)
                         .onTapGesture {
@@ -51,5 +54,18 @@ struct HighlightsView: View {
             .padding(.trailing, 16)
         }
         .padding(.top)
+    }
+}
+
+extension HighlightsView {
+    private var dismissButton: some View {
+        HStack(spacing: 0) {
+            Spacer()
+            Button {
+                dismiss()
+            } label: {
+                Image(asset: .close).renderingMode(.template).foregroundColor(Color(.ui.grey5))
+            }
+        }
     }
 }
