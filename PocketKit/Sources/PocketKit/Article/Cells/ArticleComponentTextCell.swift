@@ -103,11 +103,12 @@ extension ArticleComponentTextView: UITextViewDelegate {
     }
 
     func textView(_ textView: UITextView, editMenuForTextIn range: NSRange, suggestedActions: [UIMenuElement]) -> UIMenu? {
+        guard !attributedText.isHighlighted(in: range), onHighlight != nil else {
+            return UIMenu(children: suggestedActions)
+        }
+
         let highlightAction = UIAction(title: Localization.EditAction.highlight) { [weak self] action in
             self?.applyHighlight(range)
-        }
-        guard !attributedText.isHighlighted(in: range) else {
-            return UIMenu(children: suggestedActions)
         }
 
         var newActions = suggestedActions
