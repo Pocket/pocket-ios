@@ -411,21 +411,21 @@ extension ReadableViewController {
             group.interItemSpacing = .fixed(0)
 
             var config = UICollectionLayoutListConfiguration(appearance: .plain)
+            config.backgroundColor = UIColor(.ui.white1)
+            config.showsSeparators = false
             config.trailingSwipeActionsConfigurationProvider = { [unowned self] indexPath in
                 guard let presenter = presenters?[safe: indexPath.item],
-                        let indexes = presenter.highlightIndexes, !indexes.isEmpty,
+                        presenter.highlightIndexes == nil,
                         let currentCell = self.collectionView.cellForItem(at: indexPath) as? ArticleComponentTextCell else {
                     return nil
                 }
 
-                let actions: [UIContextualAction] = [
-                    UIContextualAction(style: .normal, title: "Highlight") {_, _, completion in
-                        currentCell.highlightAll()
-                        completion(true)
-                    }
-                ]
-
-                return UISwipeActionsConfiguration(actions: actions)
+                let action = UIContextualAction(style: .normal, title: "Highlight") {_, _, completion in
+                    currentCell.highlightAll()
+                    completion(true)
+                }
+                action.backgroundColor = UIColor(.ui.highlight)
+                return UISwipeActionsConfiguration(actions: [action])
             }
 
             let section = NSCollectionLayoutSection.list(using: config, layoutEnvironment: environment)
