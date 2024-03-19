@@ -187,18 +187,21 @@ class ReaderTests: XCTestCase {
         // So we instead grab all text views within reader mode and expect them to decrease in height.
 
         let textViews = app.readerView.articleTextViews
-        let currentHeights: [Double] = textViews.map { textElement in
-            textElement.frame.height
-        }
+        let oldTextView = textViews.first!
+        let oldText = oldTextView.value as! String
+        let oldHeight = oldTextView.frame.height
+
         self.tapFontSizeDecreaseButton()
         self.tapFontSizeDecreaseButton()
         self.tapFontSizeDecreaseButton()
 
-        var i = 0
-        textViews.forEach({ text in
-            XCTAssertLessThan(text.frame.height, currentHeights[i], "Article text view did not shrink in height")
-            i+=1
-        })
+        let newTextView = textViews.first!
+        let newText = newTextView.value as! String
+        let newHeight = newTextView.frame.height
+        // ensure we are grabbing the same textview
+        XCTAssertEqual(oldText, newText)
+        // then ensure the textview has increased height
+        XCTAssertLessThan(newHeight, oldHeight)
     }
 
     @MainActor
