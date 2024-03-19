@@ -387,28 +387,13 @@ extension ReadableViewController {
             section.contentInsetsReference = .readableContent
             return section
         default:
-            let availableItemWidth = view.readableContentGuide.layoutFrame.width
-
-            var height: CGFloat = 0
-            let subitems = presenters?.compactMap { presenter -> NSCollectionLayoutItem? in
-                let size = presenter.size(for: availableItemWidth)
-                height += size.height
-                let layoutSize = NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1),
-                    heightDimension: .estimated(size.height)
-                )
-
-                return NSCollectionLayoutItem(layoutSize: layoutSize)
+            // for image presenters, calling size will set the image size used by Kingfisher
+            if let imagePresenters = presenters?.compactMap({ $0 as? ImageComponentPresenter }) {
+                let availableItemWidth = view.readableContentGuide.layoutFrame.width
+                imagePresenters.forEach {
+                    _ = $0.size(for: availableItemWidth)
+                }
             }
-
-            let group = NSCollectionLayoutGroup.vertical(
-                layoutSize: NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1),
-                    heightDimension: .estimated(height)
-                ),
-                subitems: subitems ?? []
-            )
-            group.interItemSpacing = .fixed(0)
 
             var config = UICollectionLayoutListConfiguration(appearance: .plain)
             config.backgroundColor = UIColor(.ui.white1)
