@@ -152,7 +152,7 @@ class ReadableViewController: UIViewController {
             return
         }
 
-        collectionView.selectItem(at: userProgress, animated: true, scrollPosition: .centeredVertically)
+        collectionView.selectItem(at: userProgress, animated: true, scrollPosition: .top)
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -387,30 +387,31 @@ extension ReadableViewController {
             section.contentInsetsReference = .readableContent
             return section
         default:
-            let availableItemWidth = view.readableContentGuide.layoutFrame.width
-
-            var height: CGFloat = 0
-            let subitems = presenters?.compactMap { presenter -> NSCollectionLayoutItem? in
-                let size = presenter.size(for: availableItemWidth)
-                height += size.height
-                let layoutSize = NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1),
-                    heightDimension: .estimated(size.height)
-                )
-
-                return NSCollectionLayoutItem(layoutSize: layoutSize)
+            // for image presenters, calling size will set the image size used by Kingfisher
+            if let imagePresenters = presenters?.compactMap({ $0 as? ImageComponentPresenter }) {
+                let availableItemWidth = view.readableContentGuide.layoutFrame.width
+                imagePresenters.forEach {
+                    _ = $0.size(for: availableItemWidth)
+                }
             }
+            var config = UICollectionLayoutListConfiguration(appearance: .plain)
+            config.backgroundColor = UIColor(.ui.white1)
+            config.showsSeparators = false
+            config.trailingSwipeActionsConfigurationProvider = { [unowned self] indexPath in
+                guard let presenter = presenters?[safe: indexPath.item],
+                      presenter.highlightIndexes == nil,
+                      let currentCell = self.collectionView.cellForItem(at: indexPath) as? ArticleComponentTextCell else {
+                    return nil
+                }
+                let action = UIContextualAction(style: .normal, title: "Highlight") {_, _, completion in
+                    currentCell.highlightAll()
+                    completion(true)
+                }
+                action.backgroundColor = UIColor(.ui.highlight)
+                return UISwipeActionsConfiguration(actions: [action])
+            }
+            let section = NSCollectionLayoutSection.list(using: config, layoutEnvironment: environment)
 
-            let group = NSCollectionLayoutGroup.vertical(
-                layoutSize: NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1),
-                    heightDimension: .estimated(height)
-                ),
-                subitems: subitems ?? []
-            )
-            group.interItemSpacing = .fixed(0)
-
-            let section = NSCollectionLayoutSection(group: group)
             // Zero out the default leading/trailing contentInsets, but preserve the default top/bottom values.
             // This ensures each section will be inset horizontally exactly to the readable content width.
             var contentInsets = section.contentInsets
@@ -434,7 +435,7 @@ extension ReadableViewController {
             return MarkdownComponentPresenter(component: component, readerSettings: readerSettings, componentType: .heading, componentIndex: index)
         case .image(let component):
             return ImageComponentPresenter(component: component, readerSettings: readerSettings, componentIndex: index) { [weak self] in
-                self?.layout.invalidateLayout()
+                self?.collectionView.layoutIfNeeded()
             }
         case .divider(let component):
             return DividerComponentPresenter(component: component, componentIndex: index)
