@@ -152,7 +152,8 @@ class ReadableViewController: UIViewController {
             return
         }
 
-        collectionView.selectItem(at: userProgress, animated: true, scrollPosition: .top)
+        collectionView.selectItem(at: userProgress, animated: true, scrollPosition: .centeredVertically)
+        collectionView.setNeedsLayout()
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -407,7 +408,7 @@ extension ReadableViewController {
                     currentCell.highlightAll()
                     completion(true)
                 }
-                action.backgroundColor = UIColor(.ui.highlight)
+                action.backgroundColor = UIColor(.ui.highlightAction)
                 return UISwipeActionsConfiguration(actions: [action])
             }
             let section = NSCollectionLayoutSection.list(using: config, layoutEnvironment: environment)
@@ -464,7 +465,7 @@ extension ReadableViewController {
                     component: component,
                     componentIndex: index
                 ) { [weak self] in
-                    self?.layout.invalidateLayout()
+                    self?.collectionView.layoutIfNeeded()
                 }
             default:
                 return UnsupportedComponentPresenter(readableViewModel: readableViewModel, componentIndex: index)

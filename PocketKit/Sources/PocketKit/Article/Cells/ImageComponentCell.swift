@@ -73,7 +73,7 @@ class ImageComponentCell: UICollectionViewCell {
 
     var imageHeight: CGFloat?
 
-    func size() -> CGSize {
+    private var preferredSize: CGSize {
         let availableWidth = readableContentGuide.layoutFrame.width
 
         var height = imageHeight ?? availableWidth * 9 / 16
@@ -91,7 +91,7 @@ class ImageComponentCell: UICollectionViewCell {
 
     override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
         let attributes = super.preferredLayoutAttributesFitting(layoutAttributes)
-        attributes.size.height = size().height
+        attributes.size.height = preferredSize.height
         return attributes
     }
 }
@@ -126,7 +126,7 @@ extension ImageComponentCell {
                 self?.imageView.backgroundColor = model.imageViewBackgroundColor(imageSize: result.image.size)
                 self?.imageHeight = result.image.size.height
                 imageLoaded?(result.image)
-//                self?.layoutIfNeeded()
+                self?.layoutIfNeeded()
             case .failure:
                 break
             }

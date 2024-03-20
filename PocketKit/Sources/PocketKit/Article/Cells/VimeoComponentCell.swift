@@ -25,6 +25,8 @@ class VimeoComponentCell: UICollectionViewCell {
         }
     }
 
+    var oembedSize: CGSize?
+
     weak var delegate: VimeoComponentCellDelegate?
 
     private let webView: WKWebView = {
@@ -47,6 +49,13 @@ class VimeoComponentCell: UICollectionViewCell {
         view.text = Localization.thisVideoCouldNotBeLoaded
         return view
     }()
+
+    private var preferredSize: CGSize {
+        CGSize(
+            width: oembedSize?.width ?? readableContentGuide.layoutFrame.width,
+            height: oembedSize?.height ?? readableContentGuide.layoutFrame.width * 9 / 16
+        )
+    }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -83,6 +92,12 @@ class VimeoComponentCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
+        let attributes = super.preferredLayoutAttributesFitting(layoutAttributes)
+        attributes.size.height = preferredSize.height
+        return attributes
+    }
+
     private func updateContent() {
         switch mode {
         case .loading(let content):
@@ -105,6 +120,7 @@ class VimeoComponentCell: UICollectionViewCell {
             loadingView.isHidden = true
             loadingView.stopAnimating()
         }
+        layoutIfNeeded()
     }
 
     private func invokeErrorViewAction() {

@@ -31,6 +31,10 @@ class YouTubeVideoComponentCell: UICollectionViewCell {
         return webView
     }()
 
+    private var preferredSize: CGSize {
+        CGSize(width: readableContentGuide.layoutFrame.width, height: readableContentGuide.layoutFrame.width * 9 / 16)
+    }
+
     var player: YouTubePlayer {
         hostingView.player
     }
@@ -80,6 +84,12 @@ class YouTubeVideoComponentCell: UICollectionViewCell {
         fatalError("Unable to instantiate \(Self.self) from xib/storyboard")
     }
 
+    override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
+        let attributes = super.preferredLayoutAttributesFitting(layoutAttributes)
+        attributes.size.height = preferredSize.height
+        return attributes
+    }
+
     func cue(vid: String) {
         player.cue(source: .video(id: vid))
     }
@@ -103,6 +113,7 @@ private extension YouTubeVideoComponentCell {
         case .error:
             setError()
         }
+        layoutIfNeeded()
     }
 
     func setLoading() {
