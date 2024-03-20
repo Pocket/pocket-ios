@@ -43,6 +43,7 @@ public struct UIPalette {
     public let skeletonCellImageBackground = ColorAsset.ui("skeletonCellImageBackground")
 
     public let highlight = ColorAsset.ui("Highlight")
+    public let highlightAction = ColorAsset.ui("HighlightAction")
 }
 
 public struct BrandingPalette {

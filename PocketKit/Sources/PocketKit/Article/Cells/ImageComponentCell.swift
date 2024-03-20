@@ -70,6 +70,30 @@ class ImageComponentCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("Unable to instantiate \(Self.self) from xib/storyboard")
     }
+
+    var imageHeight: CGFloat?
+
+    private var preferredSize: CGSize {
+        let availableWidth = readableContentGuide.layoutFrame.width
+
+        var height = imageHeight ?? availableWidth * 9 / 16
+
+        if let caption = captionTextView.attributedText, !caption.string.isEmpty {
+            height += ImageComponentCell.Constants.captionSpacing
+            height += caption.sizeFitting(availableWidth: availableWidth).height
+        }
+
+        height += ImageComponentCell.Constants.layoutMargins.top
+        height += ImageComponentCell.Constants.layoutMargins.bottom
+
+        return CGSize(width: availableWidth, height: height)
+    }
+
+    override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
+        let attributes = super.preferredLayoutAttributesFitting(layoutAttributes)
+        attributes.size.height = preferredSize.height
+        return attributes
+    }
 }
 
 extension ImageComponentCell {
@@ -100,7 +124,9 @@ extension ImageComponentCell {
             switch result {
             case .success(let result):
                 self?.imageView.backgroundColor = model.imageViewBackgroundColor(imageSize: result.image.size)
+                self?.imageHeight = result.image.size.height
                 imageLoaded?(result.image)
+                self?.layoutIfNeeded()
             case .failure:
                 break
             }

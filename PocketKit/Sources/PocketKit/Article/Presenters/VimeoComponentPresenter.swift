@@ -46,6 +46,9 @@ class VimeoComponentPresenter: ArticleComponentPresenter {
 
             do {
                 oEmbed = try await oEmbedService.fetch(request: request)
+                if let width = oEmbed?.width, let height = oEmbed?.height {
+                    vimeoCell.oembedSize = CGSize(width: width, height: height)
+                }
             } catch {
                 vimeoCell.mode = .error
                 return
