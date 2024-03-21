@@ -148,7 +148,8 @@ class ReadableViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        guard let userProgress = readableViewModel.readingProgress() else {
+        guard let userProgress = readableViewModel.readingProgress(),
+        userProgress.item < collectionView.numberOfItems(inSection: userProgress.section) else {
             return
         }
 
