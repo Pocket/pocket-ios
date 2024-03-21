@@ -643,7 +643,8 @@ private extension SavedItemViewModel {
                     )
                 )
         case .heading(let headingComponent):
-            return .heading(HeadingComponent(content: content, level: headingComponent.level))
+            let updatedContent = normalizeHeadingIfNeeded(content, level: Int(headingComponent.level))
+            return .heading(HeadingComponent(content: updatedContent, level: headingComponent.level))
         case .codeBlock(let codeBlockComponent):
             return .codeBlock(CodeBlockComponent(language: codeBlockComponent.language, text: content))
         case .bulletedList(let bulletedListComponent):
@@ -664,6 +665,20 @@ private extension SavedItemViewModel {
         case .unsupported, .video, .table, .divider:
             return component
         }
+    }
+
+    /// Some heading components could be patched in a way that the annotation tags contain the heading markdown
+    /// If this happens, `Down` would not interpret the markdown correctly, resulting in wrong headings in the article.
+    /// To fix this, we move the start annotation tag right after the markdown indicator
+    func normalizeHeadingIfNeeded(_ content: String, level: Int) -> String {
+        let tag = "<pkt_tag_annotation>"
+        guard content.contains(tag + "#") else {
+            return content
+        }
+        let partialContent = content.replacingOccurrences(of: tag, with: "")
+        let header = String(repeating: "#", count: level) + " "
+        let normalizedContent = partialContent.replacingOccurrences(of: header, with: header + tag)
+        return normalizedContent
     }
 }
 
