@@ -445,31 +445,12 @@ extension SavedItemViewModel {
             Log.capture(message: "Unable to find a substring to highlight")
             return
         }
-        // make sure the range does not exceed the bounds of the content. This can happen because markdown can
-        // differ from the string extracted from the attributed text. In these cases, proposedQuote would be
-        // discarded in favor of using DiffMatchPatch to find the actual quote.
-        let safeRange = Range(
-            uncheckedBounds: (
-                max(
-                    content.startIndex,
-                    stringRange.lowerBound
-                ),
-                min(
-                    content.index(
-                        before: content.endIndex
-                    ),
-                    stringRange.upperBound
-                )
-            )
-        )
-        let proposedQuote = String(content[safeRange])
 
         // merge the new patch with the new patch
         guard let mergedContent = mergeHighlights(
             previousContent,
             unpatchedContent: content,
             quote: quote,
-            proposedQuote: proposedQuote,
             range: stringRange,
             rawText: text
         ) else {
@@ -572,7 +553,6 @@ private extension SavedItemViewModel {
     ///   - unpatchedContent: same as above, but without any patch
     ///   - highlightString: the substring to be highlighted
     ///   - quote: the original quote to be highlighted, extracted from the text that users see in the article
-    ///   - proposedQuote: a proposed quote is the portion of text found in the unpatched parkdown, at the same location of the original quote
     ///   - range: the range of the original quote
     ///   - rawText: the original text  that users see in the article
     /// - Returns: the merged contents
@@ -580,38 +560,27 @@ private extension SavedItemViewModel {
         _ previousContent: String,
         unpatchedContent: String,
         quote: String,
-        proposedQuote: String,
         range: Range<String.Index>,
         rawText: String
     ) -> String? {
-        // First case: we found an exact match: just patch it
-        if quote == proposedQuote, unpatchedContent == rawText {
-            var newContent = previousContent
-            newContent.replaceSubrange(range, with: "<pkt_tag_annotation>" + quote + "</pkt_tag_annotation>")
-            return newContent
-            // Second case: quote and proposed quote don't match
-            // (e.g. because there's additional markdown in the range):
-            // we need to use the fuzzy logic to find it
-        } else {
-             // make sure we are using the right quote in the right text
-            guard rawText[range] == quote else {
-                Log.capture(message: "Unable to apply highlight: match not found in component markdown - step 1")
-                return nil
-            }
-            var patchedRawText = rawText
-            patchedRawText.replaceSubrange(range, with: "<pkt_tag_annotation>" + quote + "</pkt_tag_annotation>")
-            let diffMatchPatch = DiffMatchPatch()
-            guard let patch = diffMatchPatch.patch_make(fromOldString: rawText, andNewString: patchedRawText) as? [Patch] else {
-                Log.capture(message: "Unable to apply highlight: match not found in component markdown - step 2")
-                return nil
-            }
-            let patched = diffMatchPatch.patch_apply(patch, to: previousContent)
-            guard let patchedMarkdown = patched?.first as? String else {
-                Log.capture(message: "Unable to apply highlight: match not found in component markdown - step 3")
-                return nil
-            }
-            return patchedMarkdown
+        // make sure we are using the right quote in the right text
+        guard rawText[range] == quote else {
+            Log.capture(message: "Unable to apply highlight: match not found in component markdown - step 1")
+            return nil
         }
+        var patchedRawText = rawText
+        patchedRawText.replaceSubrange(range, with: "<pkt_tag_annotation>" + quote + "</pkt_tag_annotation>")
+        let diffMatchPatch = DiffMatchPatch()
+        guard let patch = diffMatchPatch.patch_make(fromOldString: rawText, andNewString: patchedRawText) as? [Patch] else {
+            Log.capture(message: "Unable to apply highlight: match not found in component markdown - step 2")
+            return nil
+        }
+        let patched = diffMatchPatch.patch_apply(patch, to: previousContent)
+        guard let patchedMarkdown = patched?.first as? String else {
+            Log.capture(message: "Unable to apply highlight: match not found in component markdown - step 3")
+            return nil
+        }
+        return patchedMarkdown
     }
 
     func replaceContent(_ content: String, in component: ArticleComponent) -> ArticleComponent {
