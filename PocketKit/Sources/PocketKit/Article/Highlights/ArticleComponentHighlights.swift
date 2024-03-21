@@ -186,10 +186,12 @@ extension Array where Element == ArticleComponent {
 
         let scanner = Scanner(string: parseableText)
         var componentCursor = 0
+        // a stack (fifo) where the annotation start tags (aka where an highlight starts) get pushed
+        // every time an end tag is found, a tag gets popped
         var tagStack = [String]()
 
         while !scanner.isAtEnd {
-            guard scanner.scanUpToString(HighlightConstants.commonTag) != nil else {
+            guard scanner.scanUpToString(HighlightConstants.commonTag) != nil, !scanner.isAtEnd else {
                 return patchedComponents
             }
             let beforeIndex = Swift.max(parseableText.index(before: scanner.currentIndex), parseableText.startIndex)

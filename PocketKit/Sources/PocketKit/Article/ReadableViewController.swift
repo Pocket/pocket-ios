@@ -7,6 +7,7 @@ import Sync
 import Textile
 import Combine
 import Analytics
+import Localization
 import Kingfisher
 import SafariServices
 
@@ -148,7 +149,8 @@ class ReadableViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        guard let userProgress = readableViewModel.readingProgress() else {
+        guard let userProgress = readableViewModel.readingProgress(),
+        userProgress.item < collectionView.numberOfItems(inSection: userProgress.section) else {
             return
         }
 
@@ -404,7 +406,7 @@ extension ReadableViewController {
                       let currentCell = self.collectionView.cellForItem(at: indexPath) as? ArticleComponentTextCell else {
                     return nil
                 }
-                let action = UIContextualAction(style: .normal, title: "Highlight") {_, _, completion in
+                let action = UIContextualAction(style: .normal, title: Localization.EditAction.highlight) {_, _, completion in
                     currentCell.highlightAll()
                     completion(true)
                 }
