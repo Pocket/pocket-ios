@@ -9,6 +9,10 @@ class MarkdownComponentCell: UICollectionViewCell, ArticleComponentTextCell, Art
 
     var onHighlight: ((Int, NSRange, String, String) -> Void)?
 
+    var isFullyHighlighted: Bool {
+        textView.isFullyHighlighted
+    }
+
     enum Constants {
         enum Heading {
             static let layoutMargins = UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0)

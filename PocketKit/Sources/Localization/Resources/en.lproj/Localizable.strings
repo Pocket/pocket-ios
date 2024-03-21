@@ -199,6 +199,8 @@
 "reader.activity.favorite" = "Favorite";
 "reader.activity.unfavorite" = "Unfavorite";
 "reader.activity.moveToSaves" = "Move to Saves";
+"reader.swipeAction.highlight" = "Highlight";
+"reader.swipeAction.deleteHighlights" = "Delete Highlights";
 
 // Reader Settings
 "reader.settings.title" = "Display settings";

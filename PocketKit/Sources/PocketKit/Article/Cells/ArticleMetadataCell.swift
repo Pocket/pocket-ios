@@ -84,4 +84,6 @@ class ArticleMetadataCell: UICollectionViewCell, ArticleComponentTextCell, Artic
     func highlightAll() {
         // no op
     }
+
+    let isFullyHighlighted = false
 }

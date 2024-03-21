@@ -21,6 +21,7 @@ protocol ArticleComponentTextCell: ArticleComponentTextViewDelegate {
     var componentIndex: Int { get set }
     var onHighlight: ((Int, NSRange, String, String) -> Void)? { get set }
     func highlightAll()
+    var isFullyHighlighted: Bool { get }
 }
 
 // Apply default implementations of PocketTextViewDelegate callbacks
@@ -57,6 +58,14 @@ class ArticleComponentTextView: UITextView {
 
     private var urlTextRange: UITextRange?
 
+    private var fullRange: NSRange {
+        NSMutableAttributedString(attributedString: attributedText).mutableString.range(of: attributedText.string)
+    }
+
+    var isFullyHighlighted: Bool {
+        attributedText.isFullyHighlighted(fullRange)
+    }
+
     override init(frame: CGRect, textContainer: NSTextContainer?) {
         super.init(frame: frame, textContainer: textContainer)
 
@@ -85,12 +94,6 @@ class ArticleComponentTextView: UITextView {
     }
 
     func highilghtAll() {
-        let fullRange = NSMutableAttributedString(
-            attributedString: self.attributedText
-        )
-            .mutableString.range(
-                of: self.attributedText.string
-            )
         applyHighlight(fullRange)
     }
 
@@ -185,5 +188,15 @@ private extension NSAttributedString {
             }
         }
         return isHighlighted
+    }
+
+    func isFullyHighlighted(_ fullRange: NSRange) -> Bool {
+        var isFullyHighlighted = false
+        enumerateAttribute(.backgroundColor, in: fullRange) { value, range, _ in
+            if let color = value as? UIColor, color == UIColor(.ui.highlight), fullRange == range {
+                isFullyHighlighted = true
+            }
+        }
+        return isFullyHighlighted
     }
 }
