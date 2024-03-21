@@ -667,9 +667,9 @@ private extension SavedItemViewModel {
         }
     }
 
-    /// Some heading components could be patched in a way that the annotation tags contain the heading markdown
-    /// If this happens, `Down` would not interpret the markdown correctly, resulting in wrong headings in the article.
-    /// To fix this, we move the start annotation tag right after the markdown indicator
+    /// Some heading components could be patched in a way that the start annotation tag is positioned right before the heading markdown tag.
+    /// If this happens, `Down` would not interpret the markdown correctly, resulting in wrong format displayed.
+    /// To fix this, we move the start annotation tag right after the markdown indicator.
     func normalizeHeadingIfNeeded(_ content: String, level: Int) -> String {
         let tag = "<pkt_tag_annotation>"
         guard content.contains(tag + "#") else {
