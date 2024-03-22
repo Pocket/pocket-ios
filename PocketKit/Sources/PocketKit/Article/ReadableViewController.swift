@@ -464,7 +464,6 @@ extension ReadableViewController {
             self?.removeHighlightsIfNeeded(presenter)
             completion(true)
         }
-        action.backgroundColor = UIColor(.ui.coral1)
         return action
     }
 
