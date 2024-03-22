@@ -428,19 +428,16 @@ extension ReadableViewController {
               let currentCell = self.collectionView.cellForItem(at: indexPath) as? ArticleComponentTextCell else {
             return nil
         }
-        let highlightComponentAction = highlightAllAction(presenter, currentCell)
-
-        let deleteHighlightsFromComponentAction = deleteAllHighlightsAction(presenter)
 
         var actions = [UIContextualAction]()
 
         if !currentCell.isFullyHighlighted {
-            actions.append(highlightComponentAction)
+            actions.append(highlightAllAction(presenter, currentCell))
         }
         if let highlightIndexes = presenter.highlightIndexes, !highlightIndexes.isEmpty {
-            actions.append(deleteHighlightsFromComponentAction)
+            actions.append(deleteAllHighlightsAction(highlightIndexes))
         }
-        return actions
+        return actions.isEmpty ? nil : actions
     }
 
     /// Builds the highlight action, which highlights an entire component (cell)
@@ -449,7 +446,9 @@ extension ReadableViewController {
     ///   - currentCell: the given cell
     private func highlightAllAction(_ presenter: ArticleComponentPresenter, _ currentCell: ArticleComponentTextCell) -> UIContextualAction {
         let action = UIContextualAction(style: .normal, title: Localization.Reader.SwipeAction.highlight) {[weak self] _, _, completion in
-            self?.removeHighlightsIfNeeded(presenter)
+            if let highlightIndexes = presenter.highlightIndexes {
+                self?.removeHighlightsIfNeeded(highlightIndexes)
+            }
             currentCell.highlightAll()
             completion(true)
         }
@@ -459,9 +458,10 @@ extension ReadableViewController {
 
     /// Builds the delete all highlights action, which deletes all highlights indexed in a presenter (and present in the corresponding cell)
     /// - Parameter presenter: the given presenter
-    private func deleteAllHighlightsAction(_ presenter: ArticleComponentPresenter) -> UIContextualAction {
-        let action = UIContextualAction(style: .normal, title: Localization.Reader.SwipeAction.deleteHighlights) {[weak self] _, _, completion in
-            self?.removeHighlightsIfNeeded(presenter)
+    private func deleteAllHighlightsAction(_ highlightIndexes: [Int]) -> UIContextualAction {
+        var title = highlightIndexes.count > 1 ? Localization.Reader.SwipeAction.deleteHighlights : Localization.Reader.SwipeAction.deleteHighlight
+        let action = UIContextualAction(style: .normal, title: title) {[weak self] _, _, completion in
+            self?.removeHighlightsIfNeeded(highlightIndexes)
             completion(true)
         }
         return action
@@ -469,8 +469,8 @@ extension ReadableViewController {
 
     /// Deletes highlights whose indexes are found in the given presenter
     /// - Parameter presenter: the `ArticleComponentPresenter` concrete instance that's handling the current cell
-    private func removeHighlightsIfNeeded(_ presenter: ArticleComponentPresenter) {
-        guard let highlightIndexes = presenter.highlightIndexes, let viewModel = readableViewModel as? SavedItemViewModel else {
+    private func removeHighlightsIfNeeded(_ highlightIndexes: [Int]) {
+        guard let viewModel = readableViewModel as? SavedItemViewModel else {
             return
         }
         highlightIndexes.forEach {

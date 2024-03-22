@@ -411,6 +411,8 @@ public enum Localization {
       public static let title = Localization.tr("Localizable", "reader.settings.title", fallback: "Display settings")
     }
     public enum SwipeAction {
+      /// Delete Highlight
+      public static let deleteHighlight = Localization.tr("Localizable", "reader.swipeAction.deleteHighlight", fallback: "Delete Highlight")
       /// Delete Highlights
       public static let deleteHighlights = Localization.tr("Localizable", "reader.swipeAction.deleteHighlights", fallback: "Delete Highlights")
       /// Highlight

@@ -201,6 +201,7 @@
 "reader.activity.moveToSaves" = "Move to Saves";
 "reader.swipeAction.highlight" = "Highlight";
 "reader.swipeAction.deleteHighlights" = "Delete Highlights";
+"reader.swipeAction.deleteHighlight" = "Delete Highlight";
 
 // Reader Settings
 "reader.settings.title" = "Display settings";
