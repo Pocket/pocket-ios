@@ -459,7 +459,7 @@ extension ReadableViewController {
     /// Builds the delete all highlights action, which deletes all highlights indexed in a presenter (and present in the corresponding cell)
     /// - Parameter presenter: the given presenter
     private func deleteAllHighlightsAction(_ highlightIndexes: [Int]) -> UIContextualAction {
-        var title = highlightIndexes.count > 1 ? Localization.Reader.SwipeAction.deleteHighlights : Localization.Reader.SwipeAction.deleteHighlight
+        let title = highlightIndexes.count > 1 ? Localization.Reader.SwipeAction.deleteHighlights : Localization.Reader.SwipeAction.deleteHighlight
         let action = UIContextualAction(style: .normal, title: title) {[weak self] _, _, completion in
             self?.removeHighlightsIfNeeded(highlightIndexes)
             completion(true)
