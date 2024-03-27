@@ -9,6 +9,10 @@ class CodeBlockComponentCell: UICollectionViewCell, ArticleComponentTextCell, Ar
 
     var onHighlight: ((Int, NSRange, String, String) -> Void)?
 
+    var isFullyHighlighted: Bool {
+        textView.isFullyHighlighted
+    }
+
     enum Constants {
         static let contentInset = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
     }

@@ -9,6 +9,10 @@ class BlockquoteComponentCell: UICollectionViewCell, ArticleComponentTextCell, A
 
     var onHighlight: ((Int, NSRange, String, String) -> Void)?
 
+    var isFullyHighlighted: Bool {
+        textView.isFullyHighlighted
+    }
+
     enum Constants {
         static let dividerWidth: CGFloat = 3
         static let stackSpacing: CGFloat = 12

@@ -401,17 +401,10 @@ extension ReadableViewController {
             config.backgroundColor = UIColor(.ui.white1)
             config.showsSeparators = false
             config.trailingSwipeActionsConfigurationProvider = { [unowned self] indexPath in
-                guard let presenter = presenters?[safe: indexPath.item],
-                      presenter.highlightIndexes == nil,
-                      let currentCell = self.collectionView.cellForItem(at: indexPath) as? ArticleComponentTextCell else {
+                guard let actions = buildSwipeActions(at: indexPath) else {
                     return nil
                 }
-                let action = UIContextualAction(style: .normal, title: Localization.EditAction.highlight) {_, _, completion in
-                    currentCell.highlightAll()
-                    completion(true)
-                }
-                action.backgroundColor = UIColor(.ui.highlightAction)
-                return UISwipeActionsConfiguration(actions: [action])
+                return UISwipeActionsConfiguration(actions: actions)
             }
             let section = NSCollectionLayoutSection.list(using: config, layoutEnvironment: environment)
 
@@ -425,6 +418,65 @@ extension ReadableViewController {
             section.contentInsets = contentInsets
             section.contentInsetsReference = .readableContent
             return section
+        }
+    }
+
+    /// Builds the swipe actions for the given indexPath
+    /// - Parameter indexPath: the given indexPath
+    private func buildSwipeActions(at indexPath: IndexPath) -> [UIContextualAction]? {
+        guard let presenter = presenters?[safe: indexPath.item],
+              let currentCell = self.collectionView.cellForItem(at: indexPath) as? ArticleComponentTextCell else {
+            return nil
+        }
+
+        var actions = [UIContextualAction]()
+
+        if !currentCell.isFullyHighlighted {
+            actions.append(highlightAllAction(presenter, currentCell))
+        }
+        if let highlightIndexes = presenter.highlightIndexes, !highlightIndexes.isEmpty {
+            actions.append(deleteAllHighlightsAction(highlightIndexes))
+        }
+        return actions.isEmpty ? nil : actions
+    }
+
+    /// Builds the highlight action, which highlights an entire component (cell)
+    /// - Parameters:
+    ///   - presenter: the given presenter
+    ///   - currentCell: the given cell
+    private func highlightAllAction(_ presenter: ArticleComponentPresenter, _ currentCell: ArticleComponentTextCell) -> UIContextualAction {
+        let action = UIContextualAction(style: .normal, title: Localization.Reader.SwipeAction.highlight) {[weak self] _, _, completion in
+            if let highlightIndexes = presenter.highlightIndexes {
+                self?.removeHighlightsIfNeeded(highlightIndexes)
+            }
+            currentCell.highlightAll()
+            completion(true)
+        }
+        action.backgroundColor = UIColor(.ui.highlightAction)
+        return action
+    }
+
+    /// Builds the delete all highlights action, which deletes all highlights indexed in a presenter (and present in the corresponding cell)
+    /// - Parameter presenter: the given presenter
+    private func deleteAllHighlightsAction(_ highlightIndexes: [Int]) -> UIContextualAction {
+        let title = highlightIndexes.count > 1 ? Localization.Reader.SwipeAction.deleteHighlights : Localization.Reader.SwipeAction.deleteHighlight
+        let action = UIContextualAction(style: .normal, title: title) {[weak self] _, _, completion in
+            self?.removeHighlightsIfNeeded(highlightIndexes)
+            completion(true)
+        }
+        return action
+    }
+
+    /// Deletes highlights whose indexes are found in the given presenter
+    /// - Parameter presenter: the `ArticleComponentPresenter` concrete instance that's handling the current cell
+    private func removeHighlightsIfNeeded(_ highlightIndexes: [Int]) {
+        guard let viewModel = readableViewModel as? SavedItemViewModel else {
+            return
+        }
+        highlightIndexes.forEach {
+            if let highlight = viewModel.highlights?[safe: $0], let ID = highlight.remoteID {
+                viewModel.deleteHighlight(ID)
+            }
         }
     }
 }
