@@ -125,8 +125,8 @@ extension ImageComponentCell {
             case .success(let result):
                 self?.imageView.backgroundColor = model.imageViewBackgroundColor(imageSize: result.image.size)
                 self?.imageHeight = result.image.size.height
+                self?.invalidateIntrinsicContentSize()
                 imageLoaded?(result.image)
-                self?.layoutIfNeeded()
             case .failure:
                 break
             }
