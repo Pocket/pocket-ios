@@ -199,6 +199,9 @@
 "reader.activity.favorite" = "Favori";
 "reader.activity.unfavorite" = "Supprimer des favoris";
 "reader.activity.moveToSaves" = "Déplacer vers Sauvegardes";
+"reader.swipeAction.highlight" = "Highlight";
+"reader.swipeAction.deleteHighlights" = "Supprimer les surbrillances";
+"reader.swipeAction.deleteHighlight" = "Supprimer la surbrillance";
 
 // Reader Settings
 "reader.settings.title" = "Paramètres d'affichage";
