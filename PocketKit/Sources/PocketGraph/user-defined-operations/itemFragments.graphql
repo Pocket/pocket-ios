@@ -2,7 +2,6 @@ fragment ItemParts on Item {
   remoteID: itemId
   givenUrl
   resolvedUrl
-  shortUrl
   title
   language
   topImageUrl
@@ -77,7 +76,6 @@ fragment ItemSummary on Item {
   remoteID: itemId
   givenUrl
   resolvedUrl
-  shortUrl
   title
   language
   topImageUrl

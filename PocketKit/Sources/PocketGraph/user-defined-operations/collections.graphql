@@ -18,7 +18,7 @@ query getCollectionBySlug ($slug: String!) {
             }
             publisher
             item {
-                ...ItemSummary
+                ...ItemParts
             }
             sortOrder
         }

@@ -120,9 +120,6 @@ public struct SlateParts: PocketGraph.SelectionSet, Fragment {
       public var givenUrl: PocketGraph.Url { __data["givenUrl"] }
       /// If the givenUrl redirects (once or many times), this is the final url. Otherwise, same as givenUrl
       public var resolvedUrl: PocketGraph.Url? { __data["resolvedUrl"] }
-      /// Provides short url for the given_url in the format: https://pocket.co/<identifier>.
-      /// marked as beta because it's not ready yet for large client request.
-      public var shortUrl: PocketGraph.Url? { __data["shortUrl"] }
       /// The title as determined by the parser.
       public var title: String? { __data["title"] }
       /// The detected language of the article
@@ -168,7 +165,6 @@ public struct SlateParts: PocketGraph.SelectionSet, Fragment {
         remoteID: String,
         givenUrl: PocketGraph.Url,
         resolvedUrl: PocketGraph.Url? = nil,
-        shortUrl: PocketGraph.Url? = nil,
         title: String? = nil,
         language: String? = nil,
         topImageUrl: PocketGraph.Url? = nil,
@@ -192,7 +188,6 @@ public struct SlateParts: PocketGraph.SelectionSet, Fragment {
             "remoteID": remoteID,
             "givenUrl": givenUrl,
             "resolvedUrl": resolvedUrl,
-            "shortUrl": shortUrl,
             "title": title,
             "language": language,
             "topImageUrl": topImageUrl,
