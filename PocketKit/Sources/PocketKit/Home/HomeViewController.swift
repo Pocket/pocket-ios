@@ -659,7 +659,9 @@ extension HomeViewController {
     }
 
     private func present(activity: PocketActivity?) {
-        guard true, let activity = activity else { return }
+        guard let activity else {
+            return
+        }
 
        let activityVC = ShareSheetController(activity: activity, completion: { [weak self] _, _, _, _ in
                              self?.model.clearSharedActivity()
@@ -678,7 +680,7 @@ extension HomeViewController {
     }
 
     private func presentReaderSettings(_ isPresenting: Bool?, on readable: ReadableViewModel?) {
-        guard true, isPresenting == true, let readable = readable else {
+        guard isPresenting == true, let readable else {
             return
         }
 
@@ -690,7 +692,9 @@ extension HomeViewController {
     }
 
     private func present(alert: PocketAlert?) {
-        guard true, let alert = alert else { return }
+        guard let alert else {
+            return
+        }
         guard let presentedVC = self.presentedViewController else {
             self.present(UIAlertController(alert), animated: true)
             return
@@ -699,7 +703,9 @@ extension HomeViewController {
     }
 
     func present(_ viewModel: PocketAddTagsViewModel?) {
-        guard true, let viewModel = viewModel else { return }
+        guard let viewModel else {
+            return
+        }
         let hostingController = UIHostingController(rootView: AddTagsView(viewModel: viewModel))
         hostingController.modalPresentationStyle = .formSheet
         self.present(hostingController, animated: true)
