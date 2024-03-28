@@ -162,10 +162,10 @@ extension Item {
             domainMetadata?.update(remote: metaParts)
         }
 
-        article = storyItem.marticle.flatMap { remoteComponents in
-            let components = remoteComponents.map(ArticleComponent.init)
-            return Article(components: components)
-        }
+//        article = storyItem.marticle.flatMap { remoteComponents in
+//            let components = remoteComponents.map(ArticleComponent.init)
+//            return Article(components: components)
+//        }
 
         if let authors = authors {
             removeFromAuthors(authors)

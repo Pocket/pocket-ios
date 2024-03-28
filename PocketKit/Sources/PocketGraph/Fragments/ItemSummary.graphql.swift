@@ -5,7 +5,7 @@
 
 public struct ItemSummary: PocketGraph.SelectionSet, Fragment {
   public static var fragmentDefinition: StaticString {
-    #"fragment ItemSummary on Item { __typename remoteID: itemId givenUrl resolvedUrl shortUrl title language topImageUrl timeToRead domain datePublished isArticle hasImage hasVideo wordCount authors { __typename id name url } excerpt domainMetadata { __typename ...DomainMetadataParts } images { __typename height width src imageId } syndicatedArticle { __typename ...SyndicatedArticleParts } }"#
+    #"fragment ItemSummary on Item { __typename remoteID: itemId givenUrl resolvedUrl shortUrl title language topImageUrl timeToRead domain datePublished isArticle hasImage hasVideo wordCount authors { __typename id name url } collection { __typename slug } excerpt domainMetadata { __typename ...DomainMetadataParts } images { __typename height width src imageId } syndicatedArticle { __typename ...SyndicatedArticleParts } }"#
   }
 
   public let __data: DataDict
@@ -29,6 +29,7 @@ public struct ItemSummary: PocketGraph.SelectionSet, Fragment {
     .field("hasVideo", GraphQLEnum<PocketGraph.Videoness>?.self),
     .field("wordCount", Int?.self),
     .field("authors", [Author?]?.self),
+    .field("collection", Collection?.self),
     .field("excerpt", String?.self),
     .field("domainMetadata", DomainMetadata?.self),
     .field("images", [Image?]?.self),
@@ -69,6 +70,8 @@ public struct ItemSummary: PocketGraph.SelectionSet, Fragment {
   public var wordCount: Int? { __data["wordCount"] }
   /// List of Authors involved with this article
   public var authors: [Author?]? { __data["authors"] }
+  /// If the item is a collection allow them to get the collection information
+  public var collection: Collection? { __data["collection"] }
   /// A snippet of text from the article
   public var excerpt: String? { __data["excerpt"] }
   /// Additional information about the item domain, when present, use this for displaying the domain name
@@ -94,6 +97,7 @@ public struct ItemSummary: PocketGraph.SelectionSet, Fragment {
     hasVideo: GraphQLEnum<PocketGraph.Videoness>? = nil,
     wordCount: Int? = nil,
     authors: [Author?]? = nil,
+    collection: Collection? = nil,
     excerpt: String? = nil,
     domainMetadata: DomainMetadata? = nil,
     images: [Image?]? = nil,
@@ -117,6 +121,7 @@ public struct ItemSummary: PocketGraph.SelectionSet, Fragment {
         "hasVideo": hasVideo,
         "wordCount": wordCount,
         "authors": authors._fieldData,
+        "collection": collection._fieldData,
         "excerpt": excerpt,
         "domainMetadata": domainMetadata._fieldData,
         "images": images._fieldData,
@@ -164,6 +169,36 @@ public struct ItemSummary: PocketGraph.SelectionSet, Fragment {
         ],
         fulfilledFragments: [
           ObjectIdentifier(ItemSummary.Author.self)
+        ]
+      ))
+    }
+  }
+
+  /// Collection
+  ///
+  /// Parent Type: `Collection`
+  public struct Collection: PocketGraph.SelectionSet {
+    public let __data: DataDict
+    public init(_dataDict: DataDict) { __data = _dataDict }
+
+    public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Collection }
+    public static var __selections: [ApolloAPI.Selection] { [
+      .field("__typename", String.self),
+      .field("slug", String.self),
+    ] }
+
+    public var slug: String { __data["slug"] }
+
+    public init(
+      slug: String
+    ) {
+      self.init(_dataDict: DataDict(
+        data: [
+          "__typename": PocketGraph.Objects.Collection.typename,
+          "slug": slug,
+        ],
+        fulfilledFragments: [
+          ObjectIdentifier(ItemSummary.Collection.self)
         ]
       ))
     }

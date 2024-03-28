@@ -93,6 +93,9 @@ fragment ItemSummary on Item {
     name
     url
   }
+  collection {
+    slug
+  }
   excerpt
   domainMetadata {
     ...DomainMetadataParts

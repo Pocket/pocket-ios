@@ -199,6 +199,8 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
       public var wordCount: Int? { __data["wordCount"] }
       /// List of Authors involved with this article
       public var authors: [Author?]? { __data["authors"] }
+      /// If the item is a collection allow them to get the collection information
+      public var collection: Collection? { __data["collection"] }
       /// A snippet of text from the article
       public var excerpt: String? { __data["excerpt"] }
       /// Additional information about the item domain, when present, use this for displaying the domain name
@@ -231,6 +233,7 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
         hasVideo: GraphQLEnum<PocketGraph.Videoness>? = nil,
         wordCount: Int? = nil,
         authors: [Author?]? = nil,
+        collection: Collection? = nil,
         excerpt: String? = nil,
         domainMetadata: DomainMetadata? = nil,
         images: [Image?]? = nil,
@@ -254,6 +257,7 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
             "hasVideo": hasVideo,
             "wordCount": wordCount,
             "authors": authors._fieldData,
+            "collection": collection._fieldData,
             "excerpt": excerpt,
             "domainMetadata": domainMetadata._fieldData,
             "images": images._fieldData,
@@ -268,6 +272,8 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
       }
 
       public typealias Author = ItemSummary.Author
+
+      public typealias Collection = ItemSummary.Collection
 
       /// Item.AsItem.DomainMetadata
       ///

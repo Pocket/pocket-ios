@@ -78,6 +78,8 @@ public class SharedWithYouSummaryQuery: GraphQLQuery {
       public var wordCount: Int? { __data["wordCount"] }
       /// List of Authors involved with this article
       public var authors: [Author?]? { __data["authors"] }
+      /// If the item is a collection allow them to get the collection information
+      public var collection: Collection? { __data["collection"] }
       /// A snippet of text from the article
       public var excerpt: String? { __data["excerpt"] }
       /// Additional information about the item domain, when present, use this for displaying the domain name
@@ -95,6 +97,8 @@ public class SharedWithYouSummaryQuery: GraphQLQuery {
       }
 
       public typealias Author = ItemSummary.Author
+
+      public typealias Collection = ItemSummary.Collection
 
       /// ItemByUrl.DomainMetadata
       ///

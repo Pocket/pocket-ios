@@ -32,12 +32,12 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "PendingItem": return PocketGraph.Objects.PendingItem
     case "Item": return PocketGraph.Objects.Item
     case "Author": return PocketGraph.Objects.Author
+    case "Collection": return PocketGraph.Objects.Collection
     case "DomainMetadata": return PocketGraph.Objects.DomainMetadata
     case "Image": return PocketGraph.Objects.Image
     case "SyndicatedArticle": return PocketGraph.Objects.SyndicatedArticle
     case "Publisher": return PocketGraph.Objects.Publisher
     case "CorpusItem": return PocketGraph.Objects.CorpusItem
-    case "Collection": return PocketGraph.Objects.Collection
     case "CollectionAuthor": return PocketGraph.Objects.CollectionAuthor
     case "MarticleText": return PocketGraph.Objects.MarticleText
     case "MarticleDivider": return PocketGraph.Objects.MarticleDivider
