@@ -199,6 +199,9 @@
 "reader.activity.favorite" = "즐겨찾기";
 "reader.activity.unfavorite" = "즐겨찾기 해제";
 "reader.activity.moveToSaves" = "저장소로 이동";
+"reader.swipeAction.highlight" = "하이라이트";
+"reader.swipeAction.deleteHighlights" = "하이라이트 삭제";
+"reader.swipeAction.deleteHighlight" = "하이라이트 삭제";
 
 // Reader Settings
 "reader.settings.title" = "디스플레이 설정";
