@@ -26,11 +26,13 @@ class APICollectionService: CollectionService {
 
     func fetchCollection(by slug: String) async throws {
         let query = GetCollectionBySlugQuery(slug: slug)
-
+        let start = CFAbsoluteTimeGetCurrent()
         guard let remote = try await apollo.fetch(query: query).data?.collection else {
             Log.capture(message: "CollectionService Error - the request returned a null collection")
             throw CollectionServiceError.nullCollection
         }
+        let diff = CFAbsoluteTimeGetCurrent() - start
+        print("➡️ Took \(diff) seconds")
         try space.updateCollection(from: remote)
     }
 }
