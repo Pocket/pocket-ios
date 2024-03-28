@@ -199,6 +199,9 @@
 "reader.activity.favorite" = "お気に入り";
 "reader.activity.unfavorite" = "お気に入り解除";
 "reader.activity.moveToSaves" = "保存アイテムに移動";
+"reader.swipeAction.highlight" = "Highlight";
+"reader.swipeAction.deleteHighlights" = "ハイライトを削除する";
+"reader.swipeAction.deleteHighlight" = "ハイライトを削除する";
 
 // Reader Settings
 "reader.settings.title" = "表示設定";
