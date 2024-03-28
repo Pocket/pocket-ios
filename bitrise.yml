@@ -224,8 +224,8 @@ workflows:
   #Builds a release build that could be uploaded to App Store Connect
   release-build:
     steps:
-      - restore-spm-cache@1: {}
-      - xcode-archive@4:
+      - restore-spm-cache@2: {}
+      - xcode-archive@5:
           title: Build an app store release build
           inputs:
             - project_path: '$BITRISE_PROJECT_PATH'
@@ -235,7 +235,6 @@ workflows:
             - xcconfig_content: CURRENT_PROJECT_VERSION = $BITRISE_BUILD_NUMBER
             - export_method: app-store
       - save-spm-cache@1: {}
-      - deploy-to-bitrise-io@2: {}
       - deploy-to-bitrise-io@2:
           inputs:
             - pipeline_intermediate_files: '$BITRISE_IPA_PATH:BITRISE_IPA_PATH'
