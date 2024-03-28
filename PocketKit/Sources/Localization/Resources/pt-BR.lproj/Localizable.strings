@@ -199,6 +199,9 @@
 "reader.activity.favorite" = "Curtir";
 "reader.activity.unfavorite" = "Descurtir";
 "reader.activity.moveToSaves" = "Mover para Salvos";
+"reader.swipeAction.highlight" = "Highlight";
+"reader.swipeAction.deleteHighlights" = "Excluir destaques";
+"reader.swipeAction.deleteHighlight" = "Excluir destaque";
 
 // Reader Settings
 "reader.settings.title" = "Exibir Configurações";
