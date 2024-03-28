@@ -199,6 +199,9 @@
 "reader.activity.favorite" = "Избранное";
 "reader.activity.unfavorite" = "Удалить из Избранного";
 "reader.activity.moveToSaves" = "Перейти к Сохраненному";
+"reader.swipeAction.highlight" = "Выделить";
+"reader.swipeAction.deleteHighlights" = "Удалить пометки";
+"reader.swipeAction.deleteHighlight" = "Удалить пометку";
 
 // Reader Settings
 "reader.settings.title" = "Отобразить настройки";
