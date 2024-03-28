@@ -124,6 +124,7 @@ extension MockApolloClient {
     func perform<Mutation: GraphQLMutation>(
         mutation: Mutation,
         publishResultToStore: Bool,
+        contextIdentifier: UUID?,
         context: RequestContext?,
         queue: DispatchQueue,
         resultHandler: GraphQLResultHandler<Mutation.Data>?
