@@ -276,7 +276,10 @@ extension SavesContainerViewController {
         }.store(in: &subscriptions)
 
         model.savedItemsList.$selectedItem.receive(on: DispatchQueue.main).sink { [weak self] selectedSavedItem in
-            guard let selectedSavedItem = selectedSavedItem else { return }
+            guard let selectedSavedItem else {
+                return
+            }
+
             self?.navigate(selectedItem: selectedSavedItem)
         }.store(in: &subscriptions)
 
@@ -430,7 +433,10 @@ extension SavesContainerViewController {
         }.store(in: &subscriptionSet)
 
         collection.$selectedCollectionItemToReport.receive(on: DispatchQueue.main).sink { [weak self] item in
-            self?.report(item?.givenURL)
+            guard let self, let item else {
+                return
+            }
+            report(item.givenURL)
         }.store(in: &subscriptionSet)
 
         collection.$events.receive(on: DispatchQueue.main).sink { [weak self] event in
@@ -476,7 +482,10 @@ extension SavesContainerViewController {
         }.store(in: &subscriptionSet)
 
         collection.$selectedStoryToReport.receive(on: DispatchQueue.main).sink { [weak self] item in
-            self?.report(item?.givenURL)
+            guard let self, let item else {
+                return
+            }
+            report(item.givenURL)
         }.store(in: &subscriptionSet)
 
         navigationController?.pushViewController(
@@ -486,12 +495,7 @@ extension SavesContainerViewController {
         collectionSubscriptions.push(subscriptionSet)
     }
 
-    private func report(_ givenURL: String?) {
-        guard let givenURL else {
-            Log.capture(message: "Unable to report item from Saves")
-            return
-        }
-
+    private func report(_ givenURL: String) {
         let host = ReportRecommendationHostingController(
             givenURL: givenURL,
             tracker: model.tracker,
@@ -516,21 +520,27 @@ extension SavesContainerViewController {
     }
 
     private func present(viewModel: PocketAddTagsViewModel?) {
-        guard true, let viewModel = viewModel else { return }
+        guard let viewModel else {
+            return
+        }
         let hostingController = UIHostingController(rootView: AddTagsView(viewModel: viewModel))
         hostingController.modalPresentationStyle = .formSheet
         self.present(hostingController, animated: true)
     }
 
     private func present(tagsFilterViewModel: TagsFilterViewModel?) {
-        guard true, let tagsFilterViewModel = tagsFilterViewModel else { return }
+        guard let tagsFilterViewModel else {
+            return
+        }
         let hostingController = UIHostingController(rootView: TagsFilterView(viewModel: tagsFilterViewModel).environment(\.managedObjectContext, Services.shared.source.viewContext))
         hostingController.configurePocketDefaultDetents()
         self.present(hostingController, animated: true)
     }
 
     private func present(activity: PocketActivity?) {
-        guard true, let activity = activity else { return }
+        guard let activity else {
+            return
+        }
 
         let activityVC = ShareSheetController(activity: activity, completion: { [weak self] _, _, _, _ in
                               self?.model.clearSharedActivity()
@@ -540,7 +550,9 @@ extension SavesContainerViewController {
     }
 
     private func present(url: URL?) {
-        guard true, let url = url else { return }
+        guard let url else {
+            return
+        }
 
         let safariVC = SFSafariViewController(url: url)
         safariVC.delegate = self
@@ -548,7 +560,7 @@ extension SavesContainerViewController {
     }
 
     private func presentReaderSettings(_ isPresenting: Bool?, on readable: ReadableViewModel?) {
-        guard true, isPresenting == true, let readable = readable else {
+        guard isPresenting == true, let readable = readable else {
             return
         }
 
