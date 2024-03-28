@@ -560,7 +560,7 @@ extension SavesContainerViewController {
     }
 
     private func presentReaderSettings(_ isPresenting: Bool?, on readable: ReadableViewModel?) {
-        guard isPresenting == true, let readable = readable else {
+        guard isPresenting == true, let readable else {
             return
         }
 
