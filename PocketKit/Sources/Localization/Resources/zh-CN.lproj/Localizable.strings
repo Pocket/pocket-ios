@@ -199,6 +199,9 @@
 "reader.activity.favorite" = "添加到收藏夹";
 "reader.activity.unfavorite" = "取消收藏";
 "reader.activity.moveToSaves" = "移至“保存内容”";
+"reader.swipeAction.highlight" = "标记";
+"reader.swipeAction.deleteHighlights" = "删除突出显示";
+"reader.swipeAction.deleteHighlight" = "删除突出显示";
 
 // Reader Settings
 "reader.settings.title" = "显示设置";
