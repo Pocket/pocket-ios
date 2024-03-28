@@ -199,6 +199,9 @@
 "reader.activity.favorite" = "Marcar como favorito";
 "reader.activity.unfavorite" = "Quitar de Favoritos";
 "reader.activity.moveToSaves" = "Mover a Guardados";
+"reader.swipeAction.highlight" = "Resaltado";
+"reader.swipeAction.deleteHighlights" = "Eliminar resaltados";
+"reader.swipeAction.deleteHighlight" = "Borrar resaltado";
 
 // Reader Settings
 "reader.settings.title" = "Opciones de aspecto";
