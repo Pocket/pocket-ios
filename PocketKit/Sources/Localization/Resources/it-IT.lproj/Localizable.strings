@@ -48,7 +48,7 @@
 "itemAction.showHighlights" = "Highlights";
 
 // Edit Actions
-"editAction.highlight" = "In evidenza";
+"editAction.highlight" = "Evidenzia";
 
 //ItemList
 "itemlist.filter.search" = "Cerca";
@@ -199,6 +199,9 @@
 "reader.activity.favorite" = "Aggiungi ai preferiti";
 "reader.activity.unfavorite" = "Rimuovi dai preferiti";
 "reader.activity.moveToSaves" = "Vai su Salvati";
+"reader.swipeAction.highlight" = "Evidenzia";
+"reader.swipeAction.deleteHighlights" = "Elimina le evidenziazioni";
+"reader.swipeAction.deleteHighlight" = "Elimina evidenziazione";
 
 // Reader Settings
 "reader.settings.title" = "Impostazioni di visualizzazione";

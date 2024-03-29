@@ -199,6 +199,9 @@
 "reader.activity.favorite" = "Dodah do Ulubionych";
 "reader.activity.unfavorite" = "Usuń z Ulubionych";
 "reader.activity.moveToSaves" = "Przenieś do Zapisanych";
+"reader.swipeAction.highlight" = "Wyróżnij";
+"reader.swipeAction.deleteHighlights" = "Usuń wyróżnienia";
+"reader.swipeAction.deleteHighlight" = "Usuń wyróżnienie";
 
 // Reader Settings
 "reader.settings.title" = "Ustawienia wyświetlania";

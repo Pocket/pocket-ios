@@ -199,6 +199,9 @@
 "reader.activity.favorite" = "新增至我的最愛";
 "reader.activity.unfavorite" = "移除最愛";
 "reader.activity.moveToSaves" = "移至「儲存項目」";
+"reader.swipeAction.highlight" = "Highlight";
+"reader.swipeAction.deleteHighlights" = "刪除標記";
+"reader.swipeAction.deleteHighlight" = "刪除標記";
 
 // Reader Settings
 "reader.settings.title" = "顯示設定";

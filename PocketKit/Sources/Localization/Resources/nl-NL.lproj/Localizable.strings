@@ -199,6 +199,9 @@
 "reader.activity.favorite" = "Favoriet";
 "reader.activity.unfavorite" = "Verwijderen uit Favorieten";
 "reader.activity.moveToSaves" = "Verplaatsen naar Opgeslagen";
+"reader.swipeAction.highlight" = "Highlight";
+"reader.swipeAction.deleteHighlights" = "Markeringen verwijderen";
+"reader.swipeAction.deleteHighlight" = "Markeringen verwijderen";
 
 // Reader Settings
 "reader.settings.title" = "Instellingen weergeven";
