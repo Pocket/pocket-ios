@@ -41,8 +41,8 @@ let package = Package(
     targets: [
         .binaryTarget(
             name: "PKTListen",
-            url: "https://github.com/Pocket/pocket-ios/releases/download/release%2Fv8.2.0-offline-tts/PKTListen.xcframework.zip",
-            checksum: "47a318af51ff3196d142ede33fe1da33f93b6d6c459b5834e0968bb4b02406e9"
+            url: "https://github.com/Pocket/pocket-ios/releases/download/release%2Fv8.6.0-beta.3/PKTListen.xcframework.zip",
+            checksum: "248b0212030e74b7399d8eb9c6e14322926d64451b324a9df39d334368dbc574"
         ),
         .binaryTarget(
             name: "DiffMatchPatch",
