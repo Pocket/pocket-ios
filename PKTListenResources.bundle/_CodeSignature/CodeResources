@@ -6,7 +6,11 @@
 	<dict>
 		<key>Assets.car</key>
 		<data>
-		EYtJk//0vk9knseJlZviz3aSlcc=
+		uNXCFFYoH80xoB99ls7Zoo93/EA=
+		</data>
+		<key>PrivacyInfo.xcprivacy</key>
+		<data>
+		ARuEvfN+nk9s5riryEtdJ7cuOBs=
 		</data>
 	</dict>
 	<key>files2</key>
@@ -15,11 +19,22 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			EYtJk//0vk9knseJlZviz3aSlcc=
+			uNXCFFYoH80xoB99ls7Zoo93/EA=
 			</data>
 			<key>hash2</key>
 			<data>
-			K2PxUFOafPKuaalc0GituuGomhYotatmYOWuxDAaTn4=
+			S1GRTL0PPhCespFApZ5jgRYfep/dyQfwLKHstutlt1w=
+			</data>
+		</dict>
+		<key>PrivacyInfo.xcprivacy</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			ARuEvfN+nk9s5riryEtdJ7cuOBs=
+			</data>
+			<key>hash2</key>
+			<data>
+			5A0xbYp4JX1Ek2xDwi+N2wxftOtjaCccwG0DBExIN38=
 			</data>
 		</dict>
 	</dict>
