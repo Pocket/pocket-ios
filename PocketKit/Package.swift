@@ -34,7 +34,7 @@ let package = Package(
         .package(url: "https://github.com/airbnb/lottie-ios.git", from: "4.4.0"),
         .package(url: "https://github.com/johnxnguyen/Down", from: "0.11.0"),
         .package(url: "https://github.com/SvenTiigi/YouTubePlayerKit.git", from: "1.7.0"),
-        .package(url: "https://github.com/braze-inc/braze-swift-sdk-prebuilt-dynamic", from: "8.1.0"),
+        .package(url: "https://github.com/braze-inc/braze-swift-sdk.git", from: "8.1.0"),
         .package(url: "https://github.com/adjust/ios_sdk", from: "4.37.0"),
         .package(url: "https://github.com/RNCryptor/RNCryptor.git", from: "5.1.0"),
     ],
@@ -66,7 +66,7 @@ let package = Package(
                 "Textile",
                 "Sync",
                 .product(name: "Adjust", package: "ios_sdk"),
-                .product(name: "BrazeKit", package: "braze-swift-sdk-prebuilt-dynamic")
+                .product(name: "BrazeKit", package: "braze-swift-sdk")
             ],
             resources: [
                 .copy("Stickers")
@@ -83,8 +83,8 @@ let package = Package(
                 "PKTListen",
                 "DiffMatchPatch",
                 .product(name: "YouTubePlayerKit", package: "YouTubePlayerKit"),
-                .product(name: "BrazeKit", package: "braze-swift-sdk-prebuilt-dynamic"),
-                .product(name: "BrazeUI", package: "braze-swift-sdk-prebuilt-dynamic"),
+                .product(name: "BrazeKit", package: "braze-swift-sdk"),
+                .product(name: "BrazeUI", package: "braze-swift-sdk"),
                 .product(name: "Adjust", package: "ios_sdk"),
                 // Used by listen, ideally we put this there, but there were some c99 compilker issues, this used to be included by snowplow but is not anymore
                 .product(name: "FMDB", package: "fmdb")
@@ -103,7 +103,7 @@ let package = Package(
                 "Sync",
                 "Analytics",
                 .product(name: "Adjust", package: "ios_sdk"),
-                .product(name: "BrazeKit", package: "braze-swift-sdk-prebuilt-dynamic")
+                .product(name: "BrazeKit", package: "braze-swift-sdk")
             ]
         ),
         .testTarget(
@@ -118,7 +118,7 @@ let package = Package(
                 "Textile",
                 "Localization",
                 "RNCryptor",
-                .product(name: "BrazeKit", package: "braze-swift-sdk-prebuilt-dynamic"),
+                .product(name: "BrazeKit", package: "braze-swift-sdk"),
                 .product(name: "Sentry", package: "sentry-cocoa")
             ]
         ),
