@@ -446,7 +446,7 @@ extension SavedItemViewModel {
             return
         }
 
-        // merge the new patch with the new patch
+        // merge the new patch with the component
         guard let mergedContent = mergeHighlights(
             previousContent,
             unpatchedContent: content,
@@ -568,9 +568,42 @@ private extension SavedItemViewModel {
             Log.capture(message: "Unable to apply highlight: match not found in component markdown - step 1")
             return nil
         }
+        // if we can't patch with the default DiffMatchPatch parameters, attempt to broaden the search
+        // if we do not find a valid patch with the broader search, we then give up.
+        return patchRawText(
+            rawText: rawText,
+            quote: quote,
+            previousContent: previousContent,
+            range: range
+        )
+
+        ??
+
+        patchRawText(
+            rawText: rawText,
+            quote: quote,
+            previousContent: previousContent,
+            range: range,
+            diffMatchPatchDistance: 3000,
+            diffMatchPatchThreshold: 0.8
+        )
+    }
+
+    func patchRawText(
+        rawText: String,
+        quote: String,
+        previousContent: String,
+        range: Range<String.Index>,
+        diffMatchPatchDistance: Int = 1000,
+        diffMatchPatchThreshold: Double = 0.5
+    ) -> String? {
         var patchedRawText = rawText
+        let initialStartTagsCount = countStartTags(in: previousContent)
+        let initialEndTagsCount = countEndTags(in: previousContent)
         patchedRawText.replaceSubrange(range, with: "<pkt_tag_annotation>" + quote + "</pkt_tag_annotation>")
         let diffMatchPatch = DiffMatchPatch()
+        diffMatchPatch.match_Distance = diffMatchPatchDistance
+        diffMatchPatch.match_Threshold = diffMatchPatchThreshold
         guard let patch = diffMatchPatch.patch_make(fromOldString: rawText, andNewString: patchedRawText) as? [Patch] else {
             Log.capture(message: "Unable to apply highlight: match not found in component markdown - step 2")
             return nil
@@ -580,7 +613,22 @@ private extension SavedItemViewModel {
             Log.capture(message: "Unable to apply highlight: match not found in component markdown - step 3")
             return nil
         }
+        let startTagsCount = countStartTags(in: patchedMarkdown)
+        let endTagsCount = countEndTags(in: patchedMarkdown)
+        // ensure that the tags were properly inserted and that the start and end tags match
+        guard startTagsCount == initialStartTagsCount + 1, endTagsCount == initialEndTagsCount + 1, startTagsCount == endTagsCount else {
+            Log.capture(message: "Unable to apply highlight: match not found in component markdown - step 4")
+            return nil
+        }
         return patchedMarkdown
+    }
+
+    func countStartTags(in markdown: String) -> Int {
+        markdown.components(separatedBy: "<pkt_tag_annotation").count - 1
+    }
+
+    func countEndTags(in markdown: String) -> Int {
+        markdown.components(separatedBy: "</pkt_tag_annotation>").count - 1
     }
 
     func replaceContent(_ content: String, in component: ArticleComponent) -> ArticleComponent {
