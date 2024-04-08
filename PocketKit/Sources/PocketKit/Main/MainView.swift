@@ -5,6 +5,8 @@
 import SwiftUI
 import Textile
 import Localization
+import TipKit
+import SharedPocketKit
 
 public struct MainView: View {
     @ObservedObject var model: MainViewModel
@@ -61,5 +63,17 @@ public struct MainView: View {
         }
         .zIndex(-1)
         .banner(data: bannerPresenter.bannerData, show: $bannerPresenter.shouldPresentBanner, bottomOffset: 49)
+        .task {
+            // Initialize tips at app start/user login
+            if #available(iOS 17.0, *) {
+                Tips.showAllTipsForTesting()
+                do {
+                    // try Tips.resetDatastore()
+                    try Tips.configure()
+                } catch {
+                    Log.capture(message: "Unable to initialize tips - \(error)")
+                }
+            }
+        }
     }
 }
