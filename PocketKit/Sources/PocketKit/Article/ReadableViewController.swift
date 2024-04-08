@@ -589,7 +589,6 @@ private extension ReadableViewController {
                     controller.popoverPresentationController?.permittedArrowDirections = arrowDirection
                     controller.view.backgroundColor = UIColor(.ui.grey6)
                     controller.view.tintColor = UIColor(.ui.black1)
-                    controller.imageSize = CGSize(width: 100, height: 100)
                     tipViewController = controller
                     present(controller, animated: true)
                 } else {
