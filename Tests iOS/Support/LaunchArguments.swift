@@ -12,6 +12,7 @@ struct LaunchArguments {
     let disableSentry: Bool
     let disableSnowplow: Bool
     let skipLegacyAccountMigration: Bool
+    let hideAllTipsForTesting: Bool
 
     func toArray() -> [String] {
         var args: [String] = []
@@ -36,45 +37,12 @@ struct LaunchArguments {
         if skipLegacyAccountMigration {
             args.append("skipLegacyAccountMigration")
         }
+        if hideAllTipsForTesting {
+            args.append("hideAllTipsForTesting")
+        }
 
         return args
     }
-
-    func with(clearKeychain: Bool) -> LaunchArguments {
-        LaunchArguments(clearKeychain: clearKeychain, clearUserDefaults: clearUserDefaults, clearCoreData: clearCoreData, clearImageCache: clearImageCache, disableSentry: disableSentry, disableSnowplow: disableSnowplow, skipLegacyAccountMigration: skipLegacyAccountMigration)
-    }
-
-    func with(clearUserDefaults: Bool) -> LaunchArguments {
-        LaunchArguments(clearKeychain: clearKeychain, clearUserDefaults: clearUserDefaults, clearCoreData: clearCoreData, clearImageCache: clearImageCache, disableSentry: disableSentry, disableSnowplow: disableSnowplow, skipLegacyAccountMigration: skipLegacyAccountMigration)
-    }
-
-    func with(clearCoreData: Bool) -> LaunchArguments {
-        LaunchArguments(clearKeychain: clearKeychain, clearUserDefaults: clearUserDefaults, clearCoreData: clearCoreData, clearImageCache: clearImageCache, disableSentry: disableSentry, disableSnowplow: disableSnowplow, skipLegacyAccountMigration: skipLegacyAccountMigration)
-    }
-
-    func with(clearImageCache: Bool) -> LaunchArguments {
-        LaunchArguments(clearKeychain: clearKeychain, clearUserDefaults: clearUserDefaults, clearCoreData: clearCoreData, clearImageCache: clearImageCache, disableSentry: disableSentry, disableSnowplow: disableSnowplow, skipLegacyAccountMigration: skipLegacyAccountMigration)
-    }
-
-    func with(disableSentry: Bool) -> LaunchArguments {
-        LaunchArguments(clearKeychain: clearKeychain, clearUserDefaults: clearUserDefaults, clearCoreData: clearCoreData, clearImageCache: clearImageCache, disableSentry: disableSentry, disableSnowplow: disableSnowplow, skipLegacyAccountMigration: skipLegacyAccountMigration)
-    }
-
-    func with(disableSnowplow: Bool) -> LaunchArguments {
-        LaunchArguments(clearKeychain: clearKeychain, clearUserDefaults: clearUserDefaults, clearCoreData: clearCoreData, clearImageCache: clearImageCache, disableSentry: disableSentry, disableSnowplow: disableSnowplow, skipLegacyAccountMigration: skipLegacyAccountMigration)
-    }
-}
-
-extension LaunchArguments {
-    static let preserve = LaunchArguments(
-        clearKeychain: false,
-        clearUserDefaults: false,
-        clearCoreData: false,
-        clearImageCache: false,
-        disableSentry: true,
-        disableSnowplow: false,
-        skipLegacyAccountMigration: false
-    )
 
     static let bypassSignIn = LaunchArguments(
         clearKeychain: true,
@@ -83,6 +51,7 @@ extension LaunchArguments {
         clearImageCache: true,
         disableSentry: true,
         disableSnowplow: false,
-        skipLegacyAccountMigration: true
+        skipLegacyAccountMigration: true,
+        hideAllTipsForTesting: true
     )
 }

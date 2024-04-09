@@ -66,9 +66,10 @@ public struct MainView: View {
         .task {
             // Initialize tips at app start/user login
             if #available(iOS 17.0, *) {
-                Tips.showAllTipsForTesting()
+                if CommandLine.arguments.contains("hideAllTipsForTesting") {
+                    Tips.hideAllTipsForTesting()
+                }
                 do {
-                    // try Tips.resetDatastore()
                     try Tips.configure()
                 } catch {
                     Log.capture(message: "Unable to initialize tips - \(error)")

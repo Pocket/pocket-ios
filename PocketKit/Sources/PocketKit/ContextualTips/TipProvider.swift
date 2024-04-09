@@ -30,6 +30,6 @@ struct PocketTip: Tip {
     let title: Text
     let message: Text?
     let image: Image?
-    // var options: [TipOption] = [Tips.MaxDisplayCount(100)]
+    let options: [TipOption] = [Tips.MaxDisplayCount(3)]
     // TODO: we can add parameters and rules if needed
 }

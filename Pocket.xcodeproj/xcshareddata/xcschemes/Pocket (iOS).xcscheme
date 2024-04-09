@@ -312,6 +312,10 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
+            argument = "hideAllTipsForTesting"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
             argument = "skipLegacyAccountMigration"
             isEnabled = "NO">
          </CommandLineArgument>
