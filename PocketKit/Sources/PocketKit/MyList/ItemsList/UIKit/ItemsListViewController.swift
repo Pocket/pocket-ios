@@ -19,8 +19,8 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
     private var dataSource: UICollectionViewDiffableDataSource<ItemsListSection, ItemsListCell<ViewModel.ItemIdentifier>>!
     private var itemSectionLayout: NSCollectionLayoutSection!
 
-    private var tipObservationTask: Task<Void, Error>?
-    private weak var tipViewController: UIViewController?
+    var tipObservationTask: Task<Void, Error>?
+    weak var tipViewController: UIViewController?
 
     init(model: ViewModel) {
         self.model = model
@@ -73,7 +73,9 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        displayTips()
+        if #available(iOS 17.0, *) {
+            displayTips(SwipeArchiveTip(), configuration: nil, sourceView: nil)
+        }
     }
 
     override func loadView() {
@@ -463,52 +465,5 @@ extension ItemsListViewController: SelectableViewController {
     }
 }
 
-// MARK: Tips
-private extension ItemsListViewController {
-    func displayTips() {
-        guard #available(iOS 17.0, *) else {
-            return
-        }
-        let tip = TipProvider.archiveTip
-        tipObservationTask = tipObservationTask ?? Task.delayed(byTimeInterval: 0.3) { @MainActor [weak self] in
-            guard let self else {
-                return
-            }
-            for await shouldDisplay in tip.shouldDisplayUpdates {
-                if shouldDisplay {
-                    // force unwrapping is ok because we check that the list is not empty
-                    guard let view = self.navigationController?.view else {
-                        return
-                    }
-                    let controller = TipUIPopoverViewController(tip, sourceItem: view)
-                    controller.popoverPresentationController?.sourceRect = CGRect(x: sourceRectX(view), y: sourceRectY(view), width: 0, height: 0)
-                    controller.popoverPresentationController?.permittedArrowDirections = arrowDirection
-                    controller.view.backgroundColor = UIColor(.ui.grey6)
-                    controller.view.tintColor = UIColor(.ui.black1)
-                    tipViewController = controller
-                    present(controller, animated: true)
-                } else {
-                    tipViewController?.dismiss(animated: true)
-                    tipViewController = nil
-                }
-            }
-        }
-    }
-
-    /// Determines the horizontal source rect coordinate of the tip depending on the language orientation
-    /// - Parameter view: the source view
-    /// - Returns: the x position of the source rect
-    func sourceRectX(_ view: UIView) -> CGFloat {
-        traitCollection.layoutDirection == .leftToRight ?
-        (view.bounds.width - view.readableContentGuide.layoutFrame.width) / 2 + view.readableContentGuide.layoutFrame.width :
-        (view.bounds.width - view.readableContentGuide.layoutFrame.width) / 2
-    }
-
-    func sourceRectY(_ view: UIView) -> CGFloat {
-        (view.bounds.height / 3) * 2
-    }
-
-    var arrowDirection: UIPopoverArrowDirection {
-        traitCollection.layoutDirection == .leftToRight ? .right : .left
-    }
-}
+// MARK: TippableViewController conformance
+extension ItemsListViewController: TippableViewController {}
