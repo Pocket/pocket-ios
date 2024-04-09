@@ -27,6 +27,7 @@ struct TipUIConfiguration {
     let tintColor: UIColor?
 }
 
+// MARK: default implementation
 extension TippableViewController {
     @available(iOS 17.0, *)
     func displayTip<T: Tip>(_ tip: T, configuration: TipUIConfiguration?, sourceView: UIView?) {
