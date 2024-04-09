@@ -69,7 +69,6 @@ public struct MainView: View {
                 if CommandLine.arguments.contains("hideAllTipsForTesting") {
                     Tips.hideAllTipsForTesting()
                 }
-                Tips.showAllTipsForTesting()
                 do {
                     try Tips.configure()
                 } catch {
