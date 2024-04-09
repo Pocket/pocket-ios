@@ -74,7 +74,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if #available(iOS 17.0, *) {
-            displayTips(SwipeArchiveTip(), configuration: nil, sourceView: nil)
+            displayTip(SwipeArchiveTip(), configuration: nil, sourceView: nil)
         }
     }
 

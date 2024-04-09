@@ -13,7 +13,7 @@ protocol TippableViewController: UIViewController {
     ///   - configuration: tip popover configuration; if nil, defaults are applied
     ///   - sourceView: tip popover source view; if nil, defaults to the main navigation controller's view
     @available(iOS 17.0, *)
-    func displayTips<T: Tip>(_ tip: T, configuration: TipUIConfiguration?, sourceView: UIView?)
+    func displayTip<T: Tip>(_ tip: T, configuration: TipUIConfiguration?, sourceView: UIView?)
     /// Reference to the observer task for the current tip, used to display async updates of the tip
     var tipObservationTask: Task<Void, Error>? { get set }
     /// Reference to the constructed tip popover view controller, used to handle prenting and dismissing it
@@ -29,7 +29,7 @@ struct TipUIConfiguration {
 
 extension TippableViewController {
     @available(iOS 17.0, *)
-    func displayTips<T: Tip>(_ tip: T, configuration: TipUIConfiguration?, sourceView: UIView?) {
+    func displayTip<T: Tip>(_ tip: T, configuration: TipUIConfiguration?, sourceView: UIView?) {
         tipObservationTask = tipObservationTask ?? Task.delayed(byTimeInterval: 0.3) { @MainActor [weak self] in
             guard let self else {
                 return

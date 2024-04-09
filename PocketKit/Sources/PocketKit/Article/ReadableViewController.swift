@@ -154,7 +154,7 @@ class ReadableViewController: UIViewController {
         super.viewDidAppear(animated)
         scrollToLastKnownPosition()
         if #available(iOS 17.0, *) {
-            displayTips(SwipeHighlightsTip(), configuration: nil, sourceView: nil)
+            displayTip(SwipeHighlightsTip(), configuration: nil, sourceView: nil)
         }
     }
 
