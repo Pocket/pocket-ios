@@ -55,19 +55,6 @@ extension TippableViewController {
         }
     }
 
-    /// Determines the horizontal source rect coordinate of the tip depending on the language orientation
-    /// - Parameter view: the source view
-    /// - Returns: the x position of the source rect
-    private func sourceRectX(_ view: UIView) -> CGFloat {
-        traitCollection.layoutDirection == .leftToRight ?
-        (view.bounds.width - view.readableContentGuide.layoutFrame.width) / 2 + view.readableContentGuide.layoutFrame.width :
-        (view.bounds.width - view.readableContentGuide.layoutFrame.width) / 2
-    }
-
-    private func sourceRectY(_ view: UIView) -> CGFloat {
-        (view.bounds.height / 3) * 2
-    }
-
     /// The default source rect for the tip popover, displays at 2/3 of the screen height
     /// - Parameter view: the source view of the popover
     /// - Returns: the source rect
