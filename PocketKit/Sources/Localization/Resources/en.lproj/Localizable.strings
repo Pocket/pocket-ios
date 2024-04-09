@@ -354,3 +354,9 @@
 // Errors
 "error.problemOccurred" = "A problem occurred";
 "error.redownloading" = "We are re-downloading your saved articles to improve your experience.";
+
+// Tips
+"tips.swipeToArchive.title" = "Swipe to Archive";
+"tips.swipeToArchive.message" = "Swipe left on an article to archive it quickly.";
+"tips.swipeHighlights.title" = "Swipe Highlights";
+"tips.swipeHighlights.message" = "Swipe left on a paragraph to highlight it. Alternatively, swipe and select 'Delete Highlights' to remove any existing highlighting.";

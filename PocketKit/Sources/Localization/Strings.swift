@@ -689,6 +689,20 @@ public enum Localization {
       public static let tagStoriesFasterThanEver = Localization.tr("Localizable", "tags.upsell.tagStoriesFasterThanEver", fallback: "Tag stories faster than ever—get your most recent tags with Pocket Premium.")
     }
   }
+  public enum Tips {
+    public enum SwipeHighlights {
+      /// Swipe left on a paragraph to highlight it. Alternatively, swipe and select 'Delete Highlights' to remove any existing highlighting.
+      public static let message = Localization.tr("Localizable", "tips.swipeHighlights.message", fallback: "Swipe left on a paragraph to highlight it. Alternatively, swipe and select 'Delete Highlights' to remove any existing highlighting.")
+      /// Swipe Highlights
+      public static let title = Localization.tr("Localizable", "tips.swipeHighlights.title", fallback: "Swipe Highlights")
+    }
+    public enum SwipeToArchive {
+      /// Swipe left on an article to archive it quickly.
+      public static let message = Localization.tr("Localizable", "tips.swipeToArchive.message", fallback: "Swipe left on an article to archive it quickly.")
+      /// Swipe to Archive
+      public static let title = Localization.tr("Localizable", "tips.swipeToArchive.title", fallback: "Swipe to Archive")
+    }
+  }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:enable nesting type_body_length type_name vertical_whitespace_opening_braces

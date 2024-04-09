@@ -3,22 +3,23 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import Foundation
+import Localization
 import TipKit
 
 @available(iOS 17.0, *)
 class TipProvider {
     static var highlightTip: PocketTip {
         PocketTip(
-            title: Text("Swipe to highlight or delete highlights"),
-            message: Text("Swipe left to highlight an entire paragraph, or delete highlights in a paragraph."),
+            title: Text(Localization.Tips.SwipeHighlights.title),
+            message: Text(Localization.Tips.SwipeHighlights.message),
             image: Image(uiImage: UIImage(asset: .highlights))
         )
     }
 
     static var archiveTip: PocketTip {
         PocketTip(
-            title: Text("Swipe to archive"),
-            message: Text("Swipe left to quickly archive an article."),
+            title: Text(Localization.Tips.SwipeToArchive.title),
+            message: Text(Localization.Tips.SwipeToArchive.message),
             image: Image(uiImage: UIImage(asset: .archive))
         )
     }
