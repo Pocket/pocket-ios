@@ -11,7 +11,6 @@ import UIKit
 import Textile
 import Localization
 import CoreSpotlight
-import CoreData
 
 @MainActor
 class MainViewModel: ObservableObject {
