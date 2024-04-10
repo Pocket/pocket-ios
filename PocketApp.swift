@@ -12,12 +12,7 @@ struct PocketApp: App {
     @Environment(\.scenePhase)
     var scenePhase
 
-    let rootViewModel: RootViewModel
-
-    init() {
-        self.rootViewModel = RootViewModel()
-        rootViewModel.start()
-    }
+    @StateObject private var rootViewModel = RootViewModel()
 
     var body: some Scene {
         WindowGroup {

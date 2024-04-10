@@ -66,9 +66,10 @@ public class RootViewModel: ObservableObject {
         self.widgetsSessionService = widgetsSessionService
         self.notificationCenter = notificationCenter
         self.refreshCoordinators = refreshCoordinators
+        start()
     }
 
-    public func start() {
+    private func start() {
         // Register for login notifications
         NotificationCenter.default.publisher(
             for: .userLoggedIn
