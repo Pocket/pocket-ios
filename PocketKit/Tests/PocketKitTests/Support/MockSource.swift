@@ -8,6 +8,10 @@ import CoreData
 import Combine
 
 class MockSource: Source {
+    func objectID(from uri: URL) -> NSManagedObjectID? {
+        return nil
+    }
+
     func deleteAllSharedWithYouItems() throws {
     }
 

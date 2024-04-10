@@ -226,8 +226,10 @@ extension MainViewModel {
 
     @MainActor
     func handleSpotlight(_ userActivity: NSUserActivity) {
-        guard let urlString = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String,
-              let savedItem = source.fetchViewContextSavedItem(urlString) else {
+        guard let uriRepresentation = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String,
+              let uri = URL(string: uriRepresentation),
+              let objectID = source.objectID(from: uri),
+              let savedItem = source.viewObject(id: objectID) as? SavedItem else {
             return
         }
         var components = URLComponents()
