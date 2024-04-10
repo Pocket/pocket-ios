@@ -30,6 +30,9 @@ public class RootViewModel: ObservableObject {
     private var subscriptions: Set<AnyCancellable> = []
 
     public convenience init() {
+        defer {
+            start()
+        }
         self.init(services: Services.shared)
     }
 
@@ -67,7 +70,6 @@ public class RootViewModel: ObservableObject {
         self.widgetsSessionService = widgetsSessionService
         self.notificationCenter = notificationCenter
         self.refreshCoordinators = refreshCoordinators
-        start()
     }
 
     private func startObservingLogin() {
