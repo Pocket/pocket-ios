@@ -1309,3 +1309,9 @@ extension PocketSource {
         return try space.fetch(Requests.fetchSavedItems()).count
     }
 }
+// MARK: ObjectID from URI Representation
+extension PocketSource {
+    public func objectID(from uri: URL) -> NSManagedObjectID? {
+        viewContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: uri)
+    }
+}
