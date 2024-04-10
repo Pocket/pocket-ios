@@ -67,6 +67,7 @@ public class RootViewModel: ObservableObject {
         self.widgetsSessionService = widgetsSessionService
         self.notificationCenter = notificationCenter
         self.refreshCoordinators = refreshCoordinators
+        start()
     }
 
     private func startObservingLogin() {
