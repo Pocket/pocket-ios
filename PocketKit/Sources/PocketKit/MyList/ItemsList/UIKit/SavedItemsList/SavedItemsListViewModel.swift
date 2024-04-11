@@ -334,7 +334,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             guard let name = button?.titleLabel?.text else { return }
             let predicate = NSPredicate(format: "%@ IN tags.name", name)
             self?.fetchItems(with: [predicate])
-            self?.handleFilterSelection(with: .tagged)
+            self?.filterByTag()
             self?.updateSnapshotForTagFilter(with: name)
         })
     }
@@ -728,9 +728,7 @@ extension SavedItemsListViewModel {
                     self?.selectCell(with: .filterButton(.all))
                 }
             )
-            filterTagAnalytics()
-            selectedFilters.removeAll()
-            selectedFilters.insert(filter)
+            filterByTag()
         default:
             if selectedFilters.contains(filter) {
                 selectedFilters.remove(filter)
@@ -742,7 +740,9 @@ extension SavedItemsListViewModel {
         }
     }
 
-    private func filterTagAnalytics() {
+    private func filterByTag() {
+        selectedFilters.removeAll()
+        selectedFilters.insert(.tagged)
         let event = SnowplowEngagement(type: .general, value: nil)
         let contexts: Context = UIContext.button(identifier: .taggedChip)
         tracker.track(event: event, [contexts])
