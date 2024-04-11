@@ -96,6 +96,11 @@
 		AA2E89102A0D8849004A27BD /* ItemWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = AA2E89012A0D8847004A27BD /* ItemWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		AA69A28429B7FC6E00BBA644 /* SearchGetPremiumEmptyViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA69A28329B7FC6E00BBA644 /* SearchGetPremiumEmptyViewElement.swift */; };
 		AA7D6A2B2995F0A20094FD18 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA7D6A2A2995F0A20094FD18 /* StoreKit.framework */; };
+		AA8BADE42BC88A5D004F1959 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = AA8BADE32BC88A5D004F1959 /* PrivacyInfo.xcprivacy */; };
+		AA8BADE62BC88C01004F1959 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = AA8BADE52BC88C01004F1959 /* PrivacyInfo.xcprivacy */; };
+		AA8BADE82BC88C33004F1959 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = AA8BADE72BC88C33004F1959 /* PrivacyInfo.xcprivacy */; };
+		AA8BADEA2BC88C4B004F1959 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = AA8BADE92BC88C4B004F1959 /* PrivacyInfo.xcprivacy */; };
+		AA8BADEC2BC88C64004F1959 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = AA8BADEB2BC88C64004F1959 /* PrivacyInfo.xcprivacy */; };
 		AA9DB97429B6E6480046AEF6 /* Test_Subscriptions.storekit in Resources */ = {isa = PBXBuildFile; fileRef = AA909ACC299F4D5400F90FA7 /* Test_Subscriptions.storekit */; };
 		AAA3EF842A3A3976000117BE /* ItemWidgetsKit in Frameworks */ = {isa = PBXBuildFile; productRef = AAA3EF832A3A3976000117BE /* ItemWidgetsKit */; };
 		AAB4F3A62BBCA6140047A003 /* BrazeNotificationService in Frameworks */ = {isa = PBXBuildFile; productRef = AAB4F3A52BBCA6140047A003 /* BrazeNotificationService */; };
@@ -296,6 +301,11 @@
 		AA2E89172A0D9391004A27BD /* libcmark-gfm.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libcmark-gfm.tbd"; path = "Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.4.sdk/usr/lib/libcmark-gfm.tbd"; sourceTree = DEVELOPER_DIR; };
 		AA69A28329B7FC6E00BBA644 /* SearchGetPremiumEmptyViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchGetPremiumEmptyViewElement.swift; sourceTree = "<group>"; };
 		AA7D6A2A2995F0A20094FD18 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.2.sdk/System/Library/Frameworks/StoreKit.framework; sourceTree = DEVELOPER_DIR; };
+		AA8BADE32BC88A5D004F1959 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		AA8BADE52BC88C01004F1959 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		AA8BADE72BC88C33004F1959 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		AA8BADE92BC88C4B004F1959 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		AA8BADEB2BC88C64004F1959 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		AA909AC8299EFD3A00F90FA7 /* secrets_test.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = secrets_test.xcconfig; sourceTree = "<group>"; };
 		AA909ACC299F4D5400F90FA7 /* Test_Subscriptions.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Test_Subscriptions.storekit; sourceTree = "<group>"; };
 		AAC9F5AA2B0BDBF800FD614A /* UITests-4.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = "UITests-4.xctestplan"; sourceTree = "<group>"; };
@@ -410,6 +420,7 @@
 		166A81A32637406B0015AA1D = {
 			isa = PBXGroup;
 			children = (
+				AA8BADE32BC88A5D004F1959 /* PrivacyInfo.xcprivacy */,
 				65D3105129CEACEE00952D64 /* PKTListenResources.bundle */,
 				653DA73829C3BC1500123847 /* Pocket_iOS_Release.entitlements */,
 				653DA73729C3BC0A00123847 /* Pocket_iOS_Debug.entitlements */,
@@ -570,6 +581,7 @@
 				65BE9F5C2B228AA90059C3C4 /* Assets.xcassets */,
 				65BE9F5E2B228AA90059C3C4 /* Info.plist */,
 				65CDBC862B2B80D400F334B7 /* MessagesViewController.swift */,
+				AA8BADEB2BC88C64004F1959 /* PrivacyInfo.xcprivacy */,
 			);
 			path = iMessageExtension;
 			sourceTree = "<group>";
@@ -580,6 +592,7 @@
 				65412E79299320DE007BDEBB /* PushNotificationStoryExtension.entitlements */,
 				65EC272B28BA8AD50075E1DF /* NotificationViewController.swift */,
 				65EC273028BA8AD50075E1DF /* Info.plist */,
+				AA8BADE72BC88C33004F1959 /* PrivacyInfo.xcprivacy */,
 			);
 			path = PushNotificationStoryExtension;
 			sourceTree = "<group>";
@@ -601,6 +614,7 @@
 				AAE6AC382A13504400790E33 /* RecentSavesWidgetPreviewer.swift */,
 				AA2E890B2A0D8849004A27BD /* Assets.xcassets */,
 				AA2E890D2A0D8849004A27BD /* Info.plist */,
+				AA8BADE52BC88C01004F1959 /* PrivacyInfo.xcprivacy */,
 			);
 			path = ItemWidgets;
 			sourceTree = "<group>";
@@ -611,6 +625,7 @@
 				653DA73929C3BC6800123847 /* SaveToPocket.entitlements */,
 				F24B1E1B27ECB55600C75487 /* SaveToPocket.swift */,
 				F204A76727E22EC50010E155 /* Info.plist */,
+				AA8BADE92BC88C4B004F1959 /* PrivacyInfo.xcprivacy */,
 			);
 			path = SaveToPocket;
 			sourceTree = "<group>";
@@ -881,6 +896,7 @@
 				65D3105229CEACF100952D64 /* PKTListenResources.bundle in Resources */,
 				16E32B0226851AEB000CC36D /* Assets.xcassets in Resources */,
 				938D45322A05B87D00E68B0B /* Launch Screen.storyboard in Resources */,
+				AA8BADE42BC88A5D004F1959 /* PrivacyInfo.xcprivacy in Resources */,
 				9367E9E82A05B6A10052DF47 /* Launch Screen.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -905,6 +921,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA8BADEC2BC88C64004F1959 /* PrivacyInfo.xcprivacy in Resources */,
 				656A99EB2B23828200FCFDC4 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -913,6 +930,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA8BADE82BC88C33004F1959 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -920,6 +938,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA8BADE62BC88C01004F1959 /* PrivacyInfo.xcprivacy in Resources */,
 				AA2E890C2A0D8849004A27BD /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -928,6 +947,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA8BADEA2BC88C4B004F1959 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
