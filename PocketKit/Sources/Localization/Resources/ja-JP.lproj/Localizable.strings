@@ -354,3 +354,9 @@
 // Errors
 "error.problemOccurred" = "問題が発生しました";
 "error.redownloading" = "エクスペリエンスを向上させるため、保存した記事を再ダウンロードしています。";
+
+// Tips
+"tips.swipeToArchive.title" = "スワイプしてアーカイブ";
+"tips.swipeToArchive.message" = "記事を左にスワイプすると、すばやくアーカイブできます。";
+"tips.swipeHighlights.title" = "スワイプしてハイライト";
+"tips.swipeHighlights.message" = "段落を左にスワイプすると、その段落がハイライトされます。 また、スワイプして「ハイライトを削除する」を選択すると、既存のハイライトを削除できます。";
