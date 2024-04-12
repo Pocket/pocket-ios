@@ -354,3 +354,9 @@
 // Errors
 "error.problemOccurred" = "문제가 발생했습니다.";
 "error.redownloading" = "경험이 개선될 수 있도록 저장된 아티클을 다시 다운로드하고 있습니다.";
+
+// Tips
+"tips.swipeToArchive.title" = "보관하려면 쓸어넘기십시오";
+"tips.swipeToArchive.message" = "아티클을 왼쪽으로 쓸어넘기면 빠르게 보관할 수 있습니다.";
+"tips.swipeHighlights.title" = "스와이프 하이라이트";
+"tips.swipeHighlights.message" = "단락을 왼쪽으로 쓸어넘기면 하이라이트를 추가할 수 있습니다. 쓸어넘기고 '하이라이트 삭제'를 선택하면 기존의 하이라이트를 제거할 수 있습니다.";
