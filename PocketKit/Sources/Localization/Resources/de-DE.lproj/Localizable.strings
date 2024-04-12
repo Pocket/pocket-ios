@@ -354,3 +354,9 @@
 // Errors
 "error.problemOccurred" = "Ein Problem ist aufgetreten";
 "error.redownloading" = "Wir laden deine gespeicherten Artikel erneut herunter, um dein Erlebnis zu verbessern.";
+
+// Tips
+"tips.swipeToArchive.title" = "Zum Archivieren streichen";
+"tips.swipeToArchive.message" = "Streiche nach links über einen Artikel, um ihn schnell zu archivieren.";
+"tips.swipeHighlights.title" = "Zum Markieren streichen";
+"tips.swipeHighlights.message" = "Streife nach links über einen Paragraph, um ihn zu markieren. Du kannst auch streichen und „Markierungen löschen“ auswählen, um alle vorhandenen Markierungen zu entfernen.";
