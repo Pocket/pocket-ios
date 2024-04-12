@@ -354,3 +354,9 @@
 // Errors
 "error.problemOccurred" = "出现问题";
 "error.redownloading" = "我们正在重新下载您已保存的文章，以改善您的体验。";
+
+// Tips
+"tips.swipeToArchive.title" = "滑动以存档";
+"tips.swipeToArchive.message" = "在文章上向左滑动即可快速存档。";
+"tips.swipeHighlights.title" = "滑动标记";
+"tips.swipeHighlights.message" = "在段落上向左滑动即可进行标记。或者，滑动并选择“删除标记”以删除任何现有的标记。";
