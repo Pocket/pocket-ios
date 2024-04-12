@@ -354,3 +354,9 @@
 // Errors
 "error.problemOccurred" = "Wystąpił problem";
 "error.redownloading" = "Ponownie pobieramy zapisane artykuły, aby poprawić Twoje wrażenia.";
+
+// Tips
+"tips.swipeToArchive.title" = "Przesuń, aby zarchiwizować";
+"tips.swipeToArchive.message" = "Przesuń w lewo artykuł, aby go szybko zarchiwizować.";
+"tips.swipeHighlights.title" = "Przesuń, aby wyróżnić lub usunąć wyróżnienia";
+"tips.swipeHighlights.message" = "Przesuń palcem w lewo na akapicie, aby go wyróżnić. Możesz też przesunąć palcem i wybrać opcję „Usuń wyróżnienia”, aby usunąć istniejące wyróżnienia.";
