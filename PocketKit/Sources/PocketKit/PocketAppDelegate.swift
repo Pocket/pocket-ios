@@ -55,6 +55,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         self.notificationCenter = services.notificationCenter
 
         super.init()
+        Services.initTestUtilsIfPresent(appSession: appSession, userDefaults: userDefaults, source: source)
     }
 
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {

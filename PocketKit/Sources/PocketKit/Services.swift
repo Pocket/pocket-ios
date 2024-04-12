@@ -283,7 +283,7 @@ struct Services {
             user: user,
             userDefaults: userDefaults
         ).signOutOnFirstLaunch()
-        Self.initTestUtilsIfPresent(appSession: appSession, userDefaults: userDefaults, source: source)
+        // Self.initTestUtilsIfPresent(appSession: appSession, userDefaults: userDefaults, source: source)
     }
 }
 

@@ -7,7 +7,7 @@ import SwiftUI
 
 @main
 struct PocketApp: App {
-    @UIApplicationDelegateAdaptor var delegate: PocketAppDelegate
+    @UIApplicationDelegateAdaptor private var delegate: PocketAppDelegate
 
     @Environment(\.scenePhase)
     var scenePhase
