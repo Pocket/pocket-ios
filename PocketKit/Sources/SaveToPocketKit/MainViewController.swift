@@ -53,7 +53,7 @@ class MainViewController: UIViewController {
             appSession: appSession,
             user: user,
             userDefaults: userDefaults
-        ).signOutOnFirstLaunch()
+        ).execute()
 
         let legacyUserMigration = LegacyUserMigration(
             userDefaults: userDefaults,
