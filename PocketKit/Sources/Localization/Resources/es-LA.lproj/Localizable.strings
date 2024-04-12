@@ -354,3 +354,9 @@
 // Errors
 "error.problemOccurred" = "Ocurrió un problema";
 "error.redownloading" = "Estamos volviendo a descargar tus artículos guardados para mejorar tu experiencia.";
+
+// Tips
+"tips.swipeToArchive.title" = "Desliza para archivar";
+"tips.swipeToArchive.message" = "Desliza el dedo hacia la izquierda en un artículo para archivarlo rápidamente.";
+"tips.swipeHighlights.title" = "Desliza para ver los aspectos más destacados";
+"tips.swipeHighlights.message" = "Desliza el dedo hacia la izquierda en un párrafo para resaltarlo. O bien, desliza y selecciona “Eliminar destacados” para borrar cualquier destacado existente.";
