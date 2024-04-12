@@ -48,7 +48,7 @@
 "itemAction.showHighlights" = "Highlights";
 
 // Edit Actions
-"editAction.highlight" = "Evidenzia";
+"editAction.highlight" = "In evidenza";
 
 //ItemList
 "itemlist.filter.search" = "Cerca";
@@ -199,7 +199,7 @@
 "reader.activity.favorite" = "Aggiungi ai preferiti";
 "reader.activity.unfavorite" = "Rimuovi dai preferiti";
 "reader.activity.moveToSaves" = "Vai su Salvati";
-"reader.swipeAction.highlight" = "Evidenzia";
+"reader.swipeAction.highlight" = "In evidenza";
 "reader.swipeAction.deleteHighlights" = "Elimina le evidenziazioni";
 "reader.swipeAction.deleteHighlight" = "Elimina evidenziazione";
 
@@ -354,3 +354,9 @@
 // Errors
 "error.problemOccurred" = "Si è verificato un problema";
 "error.redownloading" = "Stiamo scaricando nuovamente gli articoli salvati per offrirti un'esperienza migliore.";
+
+// Tips
+"tips.swipeToArchive.title" = "Scorri per archiviare";
+"tips.swipeToArchive.message" = "Scorri verso sinistra su un articolo per archiviarlo rapidamente.";
+"tips.swipeHighlights.title" = "Scorri i momenti salienti";
+"tips.swipeHighlights.message" = "Scorri verso sinistra su un paragrafo per evidenziarlo. In alternativa, scorri e seleziona \"Elimina evidenziazioni\" per rimuovere qualsiasi evidenziazione esistente.";
