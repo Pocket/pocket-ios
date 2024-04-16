@@ -359,4 +359,4 @@
 "tips.swipeToArchive.title" = "Scorri per archiviare";
 "tips.swipeToArchive.message" = "Scorri verso sinistra su un articolo per archiviarlo rapidamente.";
 "tips.swipeHighlights.title" = "Scorri per evidenziare";
-"tips.swipeHighlights.message" = "Scorri verso sinistra su un paragrafo per evidenziarlo. In alternativa, scorri e seleziona \"Elimina evidenziazioni\" per rimuovere qualsiasi evidenziazione esistente.";
+"tips.swipeHighlights.message" = "Scorri verso sinistra su un paragrafo per evidenziarlo. In alternativa, scorri e seleziona \"Elimina evidenziazioni\" per rimuovere le evidenziazioni in quel paragrafo.";
