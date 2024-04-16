@@ -48,7 +48,7 @@
 "itemAction.showHighlights" = "Highlights";
 
 // Edit Actions
-"editAction.highlight" = "In evidenza";
+"editAction.highlight" = "Evidenzia";
 
 //ItemList
 "itemlist.filter.search" = "Cerca";
