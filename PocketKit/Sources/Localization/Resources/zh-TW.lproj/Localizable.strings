@@ -354,3 +354,9 @@
 // Errors
 "error.problemOccurred" = "出現問題";
 "error.redownloading" = "我們正在重新下載您儲存的文章，以改善您的體驗。";
+
+// Tips
+"tips.swipeToArchive.title" = "滑動以封存";
+"tips.swipeToArchive.message" = "在文章上向左滑動即可快速加以封存。";
+"tips.swipeHighlights.title" = "滑動標記內容";
+"tips.swipeHighlights.message" = "在某個段落上向左滑動即可加以標記。 或者滑動並選取「刪除標記」，以刪除任何現有標記。";

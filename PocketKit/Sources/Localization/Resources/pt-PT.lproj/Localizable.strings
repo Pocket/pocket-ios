@@ -354,3 +354,9 @@
 // Errors
 "error.problemOccurred" = "Ocorreu um problema";
 "error.redownloading" = "Estamos a descarregar novamente os seus artigos salvos para melhorar a sua experiência.";
+
+// Tips
+"tips.swipeToArchive.title" = "Deslize para arquivar";
+"tips.swipeToArchive.message" = "Deslize para a esquerda num artigo para o arquivar rapidamente.";
+"tips.swipeHighlights.title" = "Deslize para destacar";
+"tips.swipeHighlights.message" = "Deslize para a esquerda num parágrafo para destacá-lo. Alternativamente, deslize e selecione 'Eliminar destaques' para remover qualquer destaque existente.";

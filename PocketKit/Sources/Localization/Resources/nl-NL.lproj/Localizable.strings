@@ -354,3 +354,9 @@
 // Errors
 "error.problemOccurred" = "Er is een probleem opgetreden";
 "error.redownloading" = "We downloaden je opgeslagen artikelen opnieuw om je ervaring te verbeteren.";
+
+// Tips
+"tips.swipeToArchive.title" = "Veeg om te archiveren";
+"tips.swipeToArchive.message" = "Veeg naar links over een artikel om het snel te archiveren.";
+"tips.swipeHighlights.title" = "Veeg om te markeren";
+"tips.swipeHighlights.message" = "Veeg naar links over een alinea om deze te markeren. Je kunt ook vegen en 'Markeringen verwijderen' selecteren om alle bestaande markeringen te verwijderen.";

@@ -354,3 +354,9 @@
 // Errors
 "error.problemOccurred" = "Un problème est survenu";
 "error.redownloading" = "Nous téléchargeons de nouveau vos articles enregistrés pour améliorer votre expérience.";
+
+// Tips
+"tips.swipeToArchive.title" = "Balayer pour archiver";
+"tips.swipeToArchive.message" = "Balayez vers la gauche sur un article pour l'archiver rapidement.";
+"tips.swipeHighlights.title" = "Balayer les passages surlignés";
+"tips.swipeHighlights.message" = "Balayez vers la gauche sur un paragraphe pour le mettre en surbrillance. Vous pouvez également balayer et sélectionner « Supprimer les surbrillances » pour supprimer tout texte mis en surbrillance.";
