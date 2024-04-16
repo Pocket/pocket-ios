@@ -288,6 +288,14 @@ public enum Localization {
       public static let emptyMessage = Localization.tr("Localizable", "itemWidgets.recommendations.emptyMessage", fallback: "You might be offline. Please check your network connection.")
       /// Recommendations
       public static let title = Localization.tr("Localizable", "itemWidgets.recommendations.title", fallback: "Recommendations")
+      public enum SelectableTopic {
+        /// Choose a topic for your recommendations.
+        public static let description = Localization.tr("Localizable", "itemWidgets.recommendations.selectableTopic.description", fallback: "Choose a topic for your recommendations.")
+        /// Topic
+        public static let parameterName = Localization.tr("Localizable", "itemWidgets.recommendations.selectableTopic.parameterName", fallback: "Topic")
+        /// Choose Topic
+        public static let title = Localization.tr("Localizable", "itemWidgets.recommendations.selectableTopic.title", fallback: "Choose Topic")
+      }
     }
   }
   public enum Itemlist {

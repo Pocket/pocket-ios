@@ -336,6 +336,7 @@
 
 "saveToPocket.tapToDismiss" = "Tap to dismiss";
 
+// Widgets
 "itemWidgets.loggedOutMessage" = "Log in to Pocket to see your content.";
 "itemWidgets.errorMessage" = "Something went wrong.";
 "itemWidgets.recentSaves.emptyMessage" = "Start building your Pocket list.";
@@ -344,6 +345,9 @@
 "itemWidgets.recommendations.emptyMessage" = "You might be offline. Please check your network connection.";
 "itemWidgets.recommendations.title" = "Recommendations";
 "itemWidgets.recommendations.description" = "Discover the most thought-provoking stories out there, curated by Pocket.";
+"itemWidgets.recommendations.selectableTopic.title" = "Choose Topic";
+"itemWidgets.recommendations.selectableTopic.description" = "Choose a topic for your recommendations.";
+"itemWidgets.recommendations.selectableTopic.parameterName" = "Topic";
 
 // Collection
 "collection.stories.count" = "%@ items";
