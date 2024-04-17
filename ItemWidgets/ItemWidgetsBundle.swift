@@ -8,8 +8,15 @@ import ItemWidgetsKit
 
 @main
 struct ItemWidgetsBundle: WidgetBundle {
-    var body: some Widget {
-        RecentSavesWidget()
-        RecommendationsWidget()
+    @WidgetBundleBuilder var body: some Widget {
+        makeWidgets()
+    }
+
+    func makeWidgets() -> some Widget {
+        if #available(iOS 17.0, *) {
+            return TopicRecommendationsWidget() // WidgetBundleBuilder.buildBlock(RecentSavesWidget(), TopicRecommendationsWidget())
+        } else {
+            return WidgetBundleBuilder.buildBlock(RecentSavesWidget(), RecommendationsWidget())
+        }
     }
 }

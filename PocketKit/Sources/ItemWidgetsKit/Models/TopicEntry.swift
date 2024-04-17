@@ -12,7 +12,7 @@ struct TopicEntry: TimelineEntry {
 }
 
 struct TopicContent: Identifiable, Equatable {
-    let id = UUID()
+    var id = UUID()
     let name: String
     let items: [ItemRowContent]
 }
@@ -29,7 +29,8 @@ extension TopicContent {
                         imageUrl: nil,
                         bestDomain: "https://getPocket.com",
                         timeToRead: 0
-                    )
+                    ),
+                    image: nil
                 )
             ]
         )

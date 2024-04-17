@@ -15,11 +15,11 @@ struct TopicTimelineProvider: AppIntentTimelineProvider {
     }
 
     func snapshot(for configuration: TopicIntent, in context: Context) async -> TopicEntry {
-        return TopicEntry(date: Date(), content: configuration.topicEntity.content)
+        return TopicEntry(date: Date(), content: configuration.topicEntity.topic)
     }
 
     func timeline(for configuration: TopicIntent, in context: Context) async -> Timeline<TopicEntry> {
-        let entry = TopicEntry(date: Date(), content: configuration.topicEntity.content)
+        let entry = TopicEntry(date: Date(), content: configuration.topicEntity.topic)
 
       return Timeline(entries: [entry], policy: .never)
     }
