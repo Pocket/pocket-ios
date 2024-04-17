@@ -58,6 +58,34 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
+        startLogging()
+        processCommandLineArguments()
+        setupSession()
+        setupAdjust()
+        setupTracker()
+        initializeCoordinators()
+        initializeTextile()
+        handleLegacyMigration()
+        startSubscriptionStore()
+        setupBadge(application: application)
+        return true
+    }
+
+    /// Sets orientations to use for the views
+    /// - Parameters:
+    ///   - application: singleton app object
+    ///   - window: window whose interface orientations you want to retrieve
+    /// - Returns: orientations to use for the view
+    public func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+        guard UIDevice.current.userInterfaceIdiom == .phone else { return .all }
+        return PocketAppDelegate.phoneOrientationLock
+    }
+}
+
+// MARK: didFinishLaunching steps
+extension PocketAppDelegate {
+    /// Starts the `Log` engine
+    private func startLogging() {
         Log.start(
             dsn: Keys.shared.sentryDSN,
             tracesSampler: { context in
@@ -81,14 +109,60 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
                 return sample
             }
         )
+    }
+
+    /// Process any command line arguments (e. g. to setup the testing environment)
+    private func processCommandLineArguments() {
+        if CommandLine.arguments.contains("clearKeychain") {
+            appSession.currentSession = nil
+        }
+
+        if CommandLine.arguments.contains("clearUserDefaults") {
+            userDefaults.resetKeys()
+        }
+
+        if CommandLine.arguments.contains("clearCoreData") {
+            source.clear()
+        }
 
         if CommandLine.arguments.contains("clearImageCache") {
             Textiles.clearImageCache()
         }
+    }
 
-        // Setup adjust early on because we attach the ad id to the UserEntity.
-        enableAdjust()
+    /// Clears the session if it's the first launch, otherwise sets it up with the available environment info.
+    private func setupSession() {
+        SignOutOnFirstLaunch(
+            appSession: appSession,
+            user: user,
+            userDefaults: userDefaults
+        ).execute()
 
+        if let guid = ProcessInfo.processInfo.environment["sessionGUID"],
+           let accessToken = ProcessInfo.processInfo.environment["accessToken"],
+           let userIdentifier = ProcessInfo.processInfo.environment["sessionUserID"] {
+            appSession.currentSession = Session(
+                guid: guid,
+                accessToken: accessToken,
+                userIdentifier: userIdentifier
+            )
+        }
+    }
+
+    /// Setup the adjust environment
+    /// Note: this needs to be called early on because we attach the ad id to the UserEntity.
+    private func setupAdjust() {
+        let adjustAppToken = Keys.shared.adjustAppToken
+        let environment = ADJEnvironmentProduction
+        let adjustConfig = ADJConfig(
+            appToken: adjustAppToken,
+            environment: environment
+        )
+        Adjust.appDidLaunch(adjustConfig)
+    }
+
+    /// Setup the tracker
+    private func setupTracker() {
         // Reset and attach at least an api user entity on app launch
         self.tracker.resetPersistentEntities([
             APIUserEntity(consumerKey: self.consumerKey)
@@ -98,49 +172,53 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
             // Attach a user entity at launch if it exists
             tracker.addPersistentEntity(UserEntity(guid: currentSession.guid, userID: currentSession.userIdentifier, adjustAdId: Adjust.adid()))
         }
+    }
 
-        self.refreshCoordinators.forEach({ $0.initialize() })
+    /// Initialize `Textile`
+    private func initializeTextile() {
+        Textiles.initialize()
+    }
+
+    /// Initialize any `RefreshCoordinator`
+    private func initializeCoordinators() {
+        refreshCoordinators.forEach({ $0.initialize() })
         DispatchQueue.global(qos: .background).async { [weak self] in
             self?.source.restore()
         }
-        Textiles.initialize()
+    }
 
+    /// Legacy migration helper
+    private func handleLegacyMigration() {
         if CommandLine.arguments.contains("skipLegacyAccountMigration") == false {
             migrateLegacyAccount()
         }
-
         // The session backup utility can be started after user migration since
         // the session can possibly already be backed up, i.e if used for user migration
         sessionBackupUtility.start()
+    }
 
+    /// Start pocket premium subscriptions store
+    private func startSubscriptionStore() {
         if appSession.currentSession != nil {
             // If the user is not logged in, we can start the subscription
             // in preparation for in-app purchases. Otherwise, the store
             // listens for log in / out events to appropriately start / stop.
             subscriptionStore.start()
         }
+    }
 
+    /// Setup the badge
+    /// - Parameter application: the current application
+    private func setupBadge(application: UIApplication) {
         appBadgeSetup = AppBadgeSetup(
             source: source,
             userDefaults: userDefaults,
             badgeProvider: application
         )
-
-        return true
-    }
-
-    /// Sets orientations to use for the views
-    /// - Parameters:
-    ///   - application: singleton app object
-    ///   - window: window whose interface orientations you want to retrieve
-    /// - Returns: orientations to use for the view
-    public func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
-        guard UIDevice.current.userInterfaceIdiom == .phone else { return .all }
-        return PocketAppDelegate.phoneOrientationLock
     }
 
     /// Attempt to migrate a legacy (v7) account to v8
-    func migrateLegacyAccount() {
+    private func migrateLegacyAccount() {
         let legacyUserMigration = LegacyUserMigration(
             userDefaults: userDefaults,
             encryptedStore: PocketEncryptedStore(),
@@ -194,15 +272,5 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
             legacyUserMigration.forceSkip()
             Log.capture(error: error)
         }
-    }
-
-    func enableAdjust() {
-        let adjustAppToken = Keys.shared.adjustAppToken
-        let environment = ADJEnvironmentProduction
-        let adjustConfig = ADJConfig(
-            appToken: adjustAppToken,
-            environment: environment
-        )
-        Adjust.appDidLaunch(adjustConfig)
     }
 }

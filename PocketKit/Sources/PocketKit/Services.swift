@@ -243,34 +243,6 @@ struct Services {
         lastLaunchedAppVersion.launched()
     }
 
-    /**
-     This used to live in AppDelegate but didFinishLaunching is not called
-     before the SwiftUI lifecycle in iOS 17 to setup everything.
-     */
-    static func initTestUtilsIfPresent(appSession: AppSession, userDefaults: UserDefaults, source: Sync.Source) {
-        if CommandLine.arguments.contains("clearKeychain") {
-            appSession.currentSession = nil
-        }
-
-        if CommandLine.arguments.contains("clearUserDefaults") {
-            userDefaults.resetKeys()
-        }
-
-        if CommandLine.arguments.contains("clearCoreData") {
-            source.clear()
-        }
-
-        if let guid = ProcessInfo.processInfo.environment["sessionGUID"],
-           let accessToken = ProcessInfo.processInfo.environment["accessToken"],
-           let userIdentifier = ProcessInfo.processInfo.environment["sessionUserID"] {
-            appSession.currentSession = Session(
-                guid: guid,
-                accessToken: accessToken,
-                userIdentifier: userIdentifier
-            )
-        }
-    }
-
     /// Starts up all services as required.
     /// - Parameter onReset: The function to call if a service has been reset.
     /// - Note: `onReset` can be called when a migration within the persistent container fails
@@ -278,12 +250,6 @@ struct Services {
         if persistentContainer.didReset {
             onReset()
         }
-        SignOutOnFirstLaunch(
-            appSession: appSession,
-            user: user,
-            userDefaults: userDefaults
-        ).signOutOnFirstLaunch()
-        Self.initTestUtilsIfPresent(appSession: appSession, userDefaults: userDefaults, source: source)
     }
 }
 

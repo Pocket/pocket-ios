@@ -7,17 +7,12 @@ import SwiftUI
 
 @main
 struct PocketApp: App {
-    @UIApplicationDelegateAdaptor var delegate: PocketAppDelegate
+    @UIApplicationDelegateAdaptor private var delegate: PocketAppDelegate
 
     @Environment(\.scenePhase)
     var scenePhase
 
-    let rootViewModel: RootViewModel
-
-    init() {
-        self.rootViewModel = RootViewModel()
-        rootViewModel.start()
-    }
+    @StateObject private var rootViewModel = RootViewModel()
 
     var body: some Scene {
         WindowGroup {

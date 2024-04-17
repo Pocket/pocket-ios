@@ -48,6 +48,7 @@ public class RootViewModel: ObservableObject {
             guard let self else { return }
             self.persistentContainerDidReset()
         }
+        startObservingLogin()
     }
 
     init(
@@ -68,7 +69,7 @@ public class RootViewModel: ObservableObject {
         self.refreshCoordinators = refreshCoordinators
     }
 
-    public func start() {
+    private func startObservingLogin() {
         // Register for login notifications
         NotificationCenter.default.publisher(
             for: .userLoggedIn

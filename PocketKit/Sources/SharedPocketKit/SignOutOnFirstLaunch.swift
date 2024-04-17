@@ -30,7 +30,7 @@ public class SignOutOnFirstLaunch {
         }
     }
 
-    public func signOutOnFirstLaunch() {
+    public func execute() {
         guard !hasAppBeenLaunchedPreviously else {
             return
         }
