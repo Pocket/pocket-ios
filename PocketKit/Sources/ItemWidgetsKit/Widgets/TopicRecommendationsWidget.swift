@@ -19,7 +19,7 @@ public struct TopicRecommendationsWidget: Widget {
 
     public var body: some WidgetConfiguration {
         AppIntentConfiguration(kind: kind, intent: TopicIntent.self, provider: TopicTimelineProvider()) { entry in
-            TopicidgetContainerView(entry: entry)
+            TopicWidgetContainerView(entry: entry)
         }
         .configurationDisplayName("New Recommendations")
         .description("Select a Topic")

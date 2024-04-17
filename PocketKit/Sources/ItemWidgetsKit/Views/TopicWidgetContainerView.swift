@@ -6,7 +6,7 @@ import SwiftUI
 
 /// Main view of an Item widget
 @available(iOS 17.0, *)
-struct TopicidgetContainerView: View {
+struct TopicWidgetContainerView: View {
     @Environment(\.widgetFamily)
     private var widgetFamily
 
