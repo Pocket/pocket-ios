@@ -12,20 +12,11 @@ import SwiftUI
 
 @available(iOS 17.0, *)
 struct TopicIntent: WidgetConfigurationIntent {
-    // TODO: verify the correct way to use LocalizedStringResource with SwiftGen
-    static var title = LocalizedStringResource(
-        stringLiteral: "Select Topic"
-    )
-//    static var description = LocalizedStringResource(
-//        stringLiteral: "Select a topic to see recommendations."
-//    )
-
+    // NOTE: strings are hardcoded because LocalizedStringResource does not support SwiftGen. The only untranslated
+    // string visible to the user in the widget it the "Topic" label when they choose a topic.
+    static var title: LocalizedStringResource = "Select Topic"
     static var description: IntentDescription? = IntentDescription(stringLiteral: "Select a topic to see recommendations.")
-    @Parameter(
-        title: LocalizedStringResource(
-            stringLiteral: "Topic"
-        )
-    )
+    @Parameter(title: "Topic")
     var topicEntity: TopicEntity
 
     init(topicEntity: TopicEntity) {

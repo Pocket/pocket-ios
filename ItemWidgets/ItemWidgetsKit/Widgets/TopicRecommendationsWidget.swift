@@ -21,8 +21,8 @@ public struct TopicRecommendationsWidget: Widget {
         AppIntentConfiguration(kind: kind, intent: TopicIntent.self, provider: TopicTimelineProvider()) { entry in
             TopicWidgetContainerView(entry: entry)
         }
-        .configurationDisplayName("New Recommendations")
-        .description("Select a Topic")
+        .configurationDisplayName(Localization.ItemWidgets.Recommendations.title)
+        .description(Localization.ItemWidgets.Recommendations.description)
         .supportedFamilies([.systemMedium, .systemLarge])
     }
 }

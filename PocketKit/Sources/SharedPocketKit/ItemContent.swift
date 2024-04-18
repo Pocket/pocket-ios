@@ -71,7 +71,7 @@ extension ItemContent: Equatable {
 extension ItemContent {
     /// Return a placeholder saved item
     public static var placeHolder: ItemContent {
-        ItemContent(url: "https://getpocket.com", title: "Pocket Widget", imageUrl: nil, bestDomain: "", timeToRead: nil)
+        ItemContent(url: "https://getpocket.com", title: "This is a sample row in a Pocket Widget. It should look really cool!", imageUrl: nil, bestDomain: "", timeToRead: nil)
     }
 
     /// Represents an empty item, used as placeHolder

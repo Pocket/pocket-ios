@@ -27,9 +27,9 @@ public struct RecentSavesWidget: Widget {
     }
 }
 
-public struct RecentSavesWidget_Previews: PreviewProvider {
-    public static var previews: some View {
-        ItemWidgetsContainerView(entry: ItemsListEntry(date: Date(), name: "Recent Saves", contentType: .items([ItemRowContent(content: .placeHolder, image: nil)])))
-            .previewContext(WidgetPreviewContext(family: .systemLarge))
-    }
+@available(iOS 17.0, *)
+#Preview(as: .systemLarge) {
+    RecentSavesWidget()
+} timeline: {
+    ItemsListEntry(date: Date(), name: "Recent Saves", contentType: .preview)
 }

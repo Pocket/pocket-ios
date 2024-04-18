@@ -89,6 +89,7 @@
 		8AE969122A8164D9006B3868 /* CollectionElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AE969112A8164D9006B3868 /* CollectionElement.swift */; };
 		9367E9E82A05B6A10052DF47 /* Launch Screen.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9367E9E72A05B6A10052DF47 /* Launch Screen.xcassets */; };
 		938D45322A05B87D00E68B0B /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 938D45312A05B87D00E68B0B /* Launch Screen.storyboard */; };
+		AA256B452BD19A2700939C6C /* PreviewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA256B442BD19A2700939C6C /* PreviewHelper.swift */; };
 		AA2E89032A0D8847004A27BD /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2E89022A0D8847004A27BD /* WidgetKit.framework */; };
 		AA2E89052A0D8847004A27BD /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2E89042A0D8847004A27BD /* SwiftUI.framework */; };
 		AA2E89082A0D8848004A27BD /* ItemWidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2E89072A0D8848004A27BD /* ItemWidgetsBundle.swift */; };
@@ -310,6 +311,7 @@
 		8AE969112A8164D9006B3868 /* CollectionElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionElement.swift; sourceTree = "<group>"; };
 		9367E9E72A05B6A10052DF47 /* Launch Screen.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Launch Screen.xcassets"; sourceTree = "<group>"; };
 		938D45312A05B87D00E68B0B /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		AA256B442BD19A2700939C6C /* PreviewHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewHelper.swift; sourceTree = "<group>"; };
 		AA2E89012A0D8847004A27BD /* ItemWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ItemWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA2E89022A0D8847004A27BD /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		AA2E89042A0D8847004A27BD /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
@@ -642,6 +644,14 @@
 			path = "Launch Screen";
 			sourceTree = "<group>";
 		};
+		AA256B432BD19A1200939C6C /* Previews */ = {
+			isa = PBXGroup;
+			children = (
+				AA256B442BD19A2700939C6C /* PreviewHelper.swift */,
+			);
+			path = Previews;
+			sourceTree = "<group>";
+		};
 		AA2E89062A0D8848004A27BD /* ItemWidgets */ = {
 			isa = PBXGroup;
 			children = (
@@ -718,6 +728,7 @@
 		AA41DD7B2BD04D09003CEDBF /* ItemWidgetsKit */ = {
 			isa = PBXGroup;
 			children = (
+				AA256B432BD19A1200939C6C /* Previews */,
 				AA41DD652BD04D09003CEDBF /* Configuration */,
 				AA41DD672BD04D09003CEDBF /* Intents */,
 				AA41DD6B2BD04D09003CEDBF /* Models */,
@@ -1215,6 +1226,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA256B452BD19A2700939C6C /* PreviewHelper.swift in Sources */,
 				AA41DD7D2BD04D90003CEDBF /* Style+ItemWidgets.swift in Sources */,
 				AA41DD892BD04DC7003CEDBF /* ItemWidgetsView.swift in Sources */,
 				AA41DD872BD04DBF003CEDBF /* ItemWidgetsListView.swift in Sources */,

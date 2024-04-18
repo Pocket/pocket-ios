@@ -26,3 +26,10 @@ public struct RecommendationsWidget: Widget {
         .supportedFamilies([.systemMedium, .systemLarge])
     }
 }
+
+@available(iOS 17.0, *)
+#Preview(as: .systemLarge) {
+    RecommendationsWidget()
+} timeline: {
+    ItemsListEntry(date: Date(), name: "Pocket-Worthy Reads", contentType: .preview)
+}
