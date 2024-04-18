@@ -21,7 +21,6 @@ let package = Package(
         .library(name: "Analytics", targets: ["Analytics"]),
         .library(name: "Localization", targets: ["Localization"]),
         .library(name: "PKTListen", targets: ["PKTListen"]),
-        .library(name: "ItemWidgetsKit", targets: ["ItemWidgetsKit"]),
         .library(name: "PocketStickerKit", targets: ["PocketStickerKit"]),
         .library(name: "DiffMatchPatch", targets: ["DiffMatchPatch"])
     ],
@@ -47,16 +46,6 @@ let package = Package(
         .binaryTarget(
             name: "DiffMatchPatch",
             path: "Frameworks/DiffMatchPatch.xcframework"
-        ),
-        .target(
-            name: "ItemWidgetsKit",
-            dependencies: [
-                "Analytics",
-                "Localization",
-                "SharedPocketKit",
-                "Sync",
-                "Textile"
-            ]
         ),
         .target(
             name: "PocketStickerKit",

@@ -14,27 +14,16 @@ import SwiftUI
 struct TopicIntent: WidgetConfigurationIntent {
     // TODO: verify the correct way to use LocalizedStringResource with SwiftGen
     static var title = LocalizedStringResource(
-        stringLiteral: Localization
-            .ItemWidgets
-            .Recommendations
-            .SelectableTopic
-            .title
+        stringLiteral: "Select Topic"
     )
-    static var description = LocalizedStringResource(
-        stringLiteral: Localization
-            .ItemWidgets
-            .Recommendations
-            .SelectableTopic
-            .description
-    )
+//    static var description = LocalizedStringResource(
+//        stringLiteral: "Select a topic to see recommendations."
+//    )
 
+    static var description: IntentDescription? = IntentDescription(stringLiteral: "Select a topic to see recommendations.")
     @Parameter(
         title: LocalizedStringResource(
-            stringLiteral: Localization
-                .ItemWidgets
-                .Recommendations
-                .SelectableTopic
-                .parameterName
+            stringLiteral: "Topic"
         )
     )
     var topicEntity: TopicEntity

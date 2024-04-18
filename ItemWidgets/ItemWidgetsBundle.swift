@@ -4,7 +4,6 @@
 
 import WidgetKit
 import SwiftUI
-import ItemWidgetsKit
 
 @main
 struct ItemWidgetsBundle: WidgetBundle {
@@ -14,7 +13,7 @@ struct ItemWidgetsBundle: WidgetBundle {
 
     func makeWidgets() -> some Widget {
         if #available(iOS 17.0, *) {
-            return TopicRecommendationsWidget() // WidgetBundleBuilder.buildBlock(RecentSavesWidget(), TopicRecommendationsWidget())
+            return WidgetBundleBuilder.buildBlock(RecentSavesWidget(), TopicRecommendationsWidget())
         } else {
             return WidgetBundleBuilder.buildBlock(RecentSavesWidget(), RecommendationsWidget())
         }
