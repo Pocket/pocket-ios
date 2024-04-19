@@ -30,9 +30,6 @@ public class RootViewModel: ObservableObject {
     private var subscriptions: Set<AnyCancellable> = []
 
     public convenience init() {
-        defer {
-            start()
-        }
         self.init(services: Services.shared)
     }
 
