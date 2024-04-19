@@ -14,6 +14,7 @@ struct TopicQuery: EntityQuery {
     }
 
     private func storedEntities() async -> [TopicEntity] {
+        // Error
         guard let service else {
             Log.capture(message: "Item widget: unable to initialize service")
             return [TopicEntity(topic: ItemsWidgetContent(name: "", contentType: .error))]
@@ -23,6 +24,11 @@ struct TopicQuery: EntityQuery {
             return [TopicEntity(topic: ItemsWidgetContent(name: "", contentType: .loggedOut))]
         }
         let topics = service.getTopics(limit: 4)
+
+        // Empty result
+        guard !topics.isEmpty else {
+            return [TopicEntity(topic: ItemsWidgetContent(name: "", contentType: .recommendationsEmpty))]
+        }
 
         return await getEntriesWithImages(topics)
     }
@@ -36,7 +42,7 @@ struct TopicQuery: EntityQuery {
     }
 
     func defaultResult() async -> TopicEntity? {
-        return try? await suggestedEntities().first
+        return try? await suggestedEntities().first ?? TopicEntity(topic: .sampleContent)
     }
 }
 
