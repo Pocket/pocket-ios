@@ -18,7 +18,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
     private var progressView: UIProgressView!
     private var dataSource: UICollectionViewDiffableDataSource<ItemsListSection, ItemsListCell<ViewModel.ItemIdentifier>>!
     private var itemSectionLayout: NSCollectionLayoutSection!
-
+    // Tippable view controller properties
     var tipObservationTask: Task<Void, Error>?
     weak var tipViewController: UIViewController?
 

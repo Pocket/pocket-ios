@@ -41,6 +41,10 @@ class HomeViewController: UIViewController {
 
     private var collectionSubscriptions = SubscriptionsStack()
 
+    // Tippable view controller properties
+    var tipObservationTask: Task<Void, Error>?
+    weak var tipViewController: UIViewController?
+
     private lazy var layout = UICollectionViewCompositionalLayout { [weak self] sectionIndex, env in
         guard let self = self,
               let section = self.dataSource.sectionIdentifier(for: sectionIndex) else {
@@ -163,6 +167,17 @@ class HomeViewController: UIViewController {
 
         model.fetch()
         handleRefresh()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if #available(iOS 17.0, *), let sourceView = navigationController?.view ?? view {
+            let x = view.bounds.width / 2
+            let y: CGFloat = 0
+            let sourceRect = CGRect(x: x, y: y, width: 0, height: 0)
+            let configuration = TipUIConfiguration(sourceRect: sourceRect, permittedArrowDirections: .init(rawValue: 0), backgroundColor: nil, tintColor: nil)
+            displayTip(NewRecommendationsWidgetTip(), configuration: configuration, sourceView: sourceView)
+        }
     }
 
     private func handleRefresh(isForced: Bool = false) {
@@ -743,6 +758,8 @@ extension HomeViewController: SFSafariViewControllerDelegate {
         model.clearPresentedWebReaderURL()
     }
 }
+
+extension HomeViewController: TippableViewController {}
 
 private extension Style {
     static let overscroll = Style.header.sansSerif.p3.with { $0.with(alignment: .center) }

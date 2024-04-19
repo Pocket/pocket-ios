@@ -28,3 +28,13 @@ struct SwipeArchiveTip: Tip {
     let image: Image? = Image(uiImage: UIImage(asset: .archive))
     let options = [Tips.MaxDisplayCount(3)]
 }
+
+/// New Recommendation Widget, Home
+@available(iOS 17.0, *)
+struct NewRecommendationsWidgetTip: Tip {
+    var id = UUID()
+    let title = Text(Localization.Tips.RecommendationsWidget.SelectTopic.title)
+    let message: Text? = Text(Localization.Tips.RecommendationsWidget.SelectTopic.message)
+    let image: Image? = nil
+    let options = [Tips.MaxDisplayCount(1)]
+}

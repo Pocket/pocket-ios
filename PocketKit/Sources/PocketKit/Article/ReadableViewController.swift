@@ -42,7 +42,7 @@ class ReadableViewController: UIViewController {
     private var isReloading = false
 
     private var userScrollProgress: IndexPath?
-
+    // Tippable view controller properties
     var tipObservationTask: Task<Void, Error>?
     weak var tipViewController: UIViewController?
 

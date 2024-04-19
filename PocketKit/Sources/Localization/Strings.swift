@@ -698,6 +698,15 @@ public enum Localization {
     }
   }
   public enum Tips {
+    public enum RecommendationsWidget {
+      public enum SelectTopic {
+        /// Long-press on the Recommendations Widget to choose a topic of interest.
+        /// Install multiple widgets to keep track of all your favorite topics.
+        public static let message = Localization.tr("Localizable", "tips.recommendationsWidget.selectTopic.message", fallback: "Long-press on the Recommendations Widget to choose a topic of interest.\nInstall multiple widgets to keep track of all your favorite topics.")
+        /// New Recommendations Widget!
+        public static let title = Localization.tr("Localizable", "tips.recommendationsWidget.selectTopic.title", fallback: "New Recommendations Widget!")
+      }
+    }
     public enum SwipeHighlights {
       /// Swipe left on a paragraph to highlight it. Alternatively, swipe and select 'Delete Highlights' to remove any existing highlighting.
       public static let message = Localization.tr("Localizable", "tips.swipeHighlights.message", fallback: "Swipe left on a paragraph to highlight it. Alternatively, swipe and select 'Delete Highlights' to remove any existing highlighting.")
