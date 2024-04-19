@@ -10,16 +10,19 @@ import WidgetKit
 
 @available(iOS 17.0, *)
 struct TopicTimelineProvider: AppIntentTimelineProvider {
-    func placeholder(in context: Context) -> TopicEntry {
-        return TopicEntry(date: Date(), content: TopicContent.sampleContent)
+    func placeholder(in context: Context) -> ItemsListEntry {
+        let content = ItemsWidgetContent.sampleContent
+        return ItemsListEntry(date: Date(), name: content.name, contentType: content.contentType)
     }
 
-    func snapshot(for configuration: TopicIntent, in context: Context) async -> TopicEntry {
-        return TopicEntry(date: Date(), content: configuration.topicEntity.topic)
+    func snapshot(for configuration: TopicIntent, in context: Context) async -> ItemsListEntry {
+        let content = configuration.topicEntity.topic
+        return ItemsListEntry(date: Date(), name: content.name, contentType: content.contentType)
     }
 
-    func timeline(for configuration: TopicIntent, in context: Context) async -> Timeline<TopicEntry> {
-        let entry = TopicEntry(date: Date(), content: configuration.topicEntity.topic)
+    func timeline(for configuration: TopicIntent, in context: Context) async -> Timeline<ItemsListEntry> {
+        let content = configuration.topicEntity.topic
+        let entry = ItemsListEntry(date: Date(), name: content.name, contentType: content.contentType)
 
       return Timeline(entries: [entry], policy: .never)
     }

@@ -53,5 +53,6 @@ public struct RecommendationsWidgetUpdateService {
     /// Reloads the widget
     private func reloadWidget() {
         WidgetCenter.shared.reloadTimelines(ofKind: WidgetKind.recommendations)
+        WidgetCenter.shared.invalidateConfigurationRecommendations()
     }
 }

@@ -2,7 +2,6 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import Sync
 import SwiftUI
 
 /// Main view of an Item widget
@@ -28,7 +27,7 @@ struct ItemWidgetsContainerView: View {
             return hasVeryLargeFonts ? 3 : 4
         default:
             // we will need to add more values if we support more widget families
-            return SyncConstants.Home.recentSaves
+            return 4
         }
     }
 
@@ -49,12 +48,12 @@ struct ItemWidgetsContainerView: View {
 
     @ViewBuilder
     private func makeContainerView() -> some View {
-        if case let .items(items) = entry.contentType {
-            ItemWidgetsView(items: items, title: entry.name)
+        if case let .items(items) = entry.content.contentType {
+            ItemWidgetsView(items: items, title: entry.content.name)
                 .hasVeryLargeFonts(hasVeryLargeFonts)
                 .maxNumberOfItems(maxNumberOfItems)
         } else {
-            ItemWidgetsEmptyContentView(contentType: entry.contentType)
+            ItemWidgetsEmptyContentView(contentType: entry.content.contentType)
         }
     }
 }

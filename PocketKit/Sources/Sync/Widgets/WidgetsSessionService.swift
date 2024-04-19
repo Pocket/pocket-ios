@@ -29,5 +29,6 @@ public struct UserDefaultsWidgetSessionService: WidgetsSessionService {
     public func setLoggedIn(_ isLoggedIn: Bool) {
         defaults.setValue(isLoggedIn, forKey: .widgetsLoggedIn)
         WidgetCenter.shared.reloadAllTimelines()
+        WidgetCenter.shared.invalidateConfigurationRecommendations()
     }
 }
