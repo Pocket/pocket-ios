@@ -12,8 +12,8 @@ public class UnleashAssignment: MockObject {
   public struct MockFields {
     @Field<Bool>("assigned") public var assigned
     @Field<String>("name") public var name
-    @Field<String?>("payload") public var payload
-    @Field<String?>("variant") public var variant
+    @Field<String>("payload") public var payload
+    @Field<String>("variant") public var variant
   }
 }
 
