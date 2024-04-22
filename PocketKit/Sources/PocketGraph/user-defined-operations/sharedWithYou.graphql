@@ -9,3 +9,37 @@ query SharedWithYouDetails($url: String!) {
     ...ItemParts
   }
 }
+
+mutation CreateShareLink($target: URL!) {
+  createShareLink(target: $target) {
+    shareUrl
+    slug
+    targetUrl
+    preview {
+      id
+      url
+    }
+  }
+}
+
+query ShareSlug($slug: ID!) {
+  shareSlug(slug: $slug) {
+    ... on PocketShare {
+      slug
+      targetUrl
+      shareUrl
+      preview {
+        id
+        url
+        item {
+          id
+          resolvedUrl
+          givenUrl
+        }
+      }
+    }
+    ... on ShareNotFound {
+      message
+    }
+  }
+}
