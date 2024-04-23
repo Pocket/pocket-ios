@@ -8,4 +8,5 @@ public extension MockObject {
   typealias ItemResult = Union
   typealias CorpusTarget = Union
   typealias MarticleComponent = Union
+  typealias ShareResult = Union
 }

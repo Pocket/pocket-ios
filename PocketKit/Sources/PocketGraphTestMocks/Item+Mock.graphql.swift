@@ -19,6 +19,7 @@ public class Item: MockObject {
     @Field<PocketGraph.Url>("givenUrl") public var givenUrl
     @Field<GraphQLEnum<PocketGraph.Imageness>>("hasImage") public var hasImage
     @Field<GraphQLEnum<PocketGraph.Videoness>>("hasVideo") public var hasVideo
+    @Field<PocketGraph.ID>("id") public var id
     @Field<[Image?]>("images") public var images
     @Field<Bool>("isArticle") public var isArticle
     @Field<String>("language") public var language
@@ -48,6 +49,7 @@ public extension Mock where O == Item {
     givenUrl: PocketGraph.Url? = nil,
     hasImage: GraphQLEnum<PocketGraph.Imageness>? = nil,
     hasVideo: GraphQLEnum<PocketGraph.Videoness>? = nil,
+    id: PocketGraph.ID? = nil,
     images: [Mock<Image>?]? = nil,
     isArticle: Bool? = nil,
     language: String? = nil,
@@ -73,6 +75,7 @@ public extension Mock where O == Item {
     _setScalar(givenUrl, for: \.givenUrl)
     _setScalar(hasImage, for: \.hasImage)
     _setScalar(hasVideo, for: \.hasVideo)
+    _setScalar(id, for: \.id)
     _setList(images, for: \.images)
     _setScalar(isArticle, for: \.isArticle)
     _setScalar(language, for: \.language)

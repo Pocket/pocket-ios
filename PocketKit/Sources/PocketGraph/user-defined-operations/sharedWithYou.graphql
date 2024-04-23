@@ -10,7 +10,7 @@ query SharedWithYouDetails($url: String!) {
   }
 }
 
-mutation CreateShareLink($target: URL!) {
+mutation CreateShareLink($target: ValidUrl!) {
   createShareLink(target: $target) {
     shareUrl
     slug
