@@ -96,7 +96,7 @@ class FetchSharedWithYouItems: SyncOperation {
             let result = try await fetchSharedWithYouSummary(itemUrl)
             try updateLocalStorage(url: url.element, sortOrder: url.offset, result: result)
 
-            Log.breadcrumb(category: "sync.sharedWithYou", level: .debug, message: "Finsihed sharedWithYouItem \(url.offset), itemId: \(result.data?.itemByUrl?.fragments.itemSummary.remoteID ?? "not found")")
+            Log.breadcrumb(category: "sync.sharedWithYou", level: .debug, message: "Finsihed sharedWithYouItem \(url.offset), itemId: \(result.data?.itemByUrl?.fragments.compactItem.remoteID ?? "not found")")
         }
 
         try self.safeSpace.cleanupSharedWithYouItems(validUrls: urls)
@@ -111,7 +111,7 @@ class FetchSharedWithYouItems: SyncOperation {
     }
 
     private func updateLocalStorage(url: String, sortOrder: Int, result: GraphQLResult<SharedWithYouSummaryQuery.Data>) throws {
-        guard let itemSummary = result.data?.itemByUrl?.fragments.itemSummary else {
+        guard let itemSummary = result.data?.itemByUrl?.fragments.compactItem else {
             return
         }
 

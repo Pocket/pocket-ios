@@ -5,7 +5,7 @@
 
 public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
   public static var fragmentDefinition: StaticString {
-    #"fragment SavedItemSummary on SavedItem { __typename url remoteID: id isArchived isFavorite _deletedAt _createdAt archivedAt tags { __typename ...TagParts } item { __typename ...ItemSummary ...PendingItemParts } corpusItem { __typename ...CorpusItemParts } }"#
+    #"fragment SavedItemSummary on SavedItem { __typename url remoteID: id isArchived isFavorite _deletedAt _createdAt archivedAt tags { __typename ...TagParts } item { __typename ...CompactItem ...PendingItemParts } corpusItem { __typename ...CorpusItemParts } }"#
   }
 
   public let __data: DataDict
@@ -162,7 +162,7 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
       public typealias RootEntityType = SavedItemSummary.Item
       public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Item }
       public static var __selections: [ApolloAPI.Selection] { [
-        .fragment(ItemSummary.self),
+        .fragment(CompactItem.self),
       ] }
 
       /// The Item entity is owned by the Parser service.
@@ -212,7 +212,7 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
         public let __data: DataDict
         public init(_dataDict: DataDict) { __data = _dataDict }
 
-        public var itemSummary: ItemSummary { _toFragment() }
+        public var compactItem: CompactItem { _toFragment() }
       }
 
       public init(
@@ -262,12 +262,12 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
           fulfilledFragments: [
             ObjectIdentifier(SavedItemSummary.Item.self),
             ObjectIdentifier(SavedItemSummary.Item.AsItem.self),
-            ObjectIdentifier(ItemSummary.self)
+            ObjectIdentifier(CompactItem.self)
           ]
         ))
       }
 
-      public typealias Author = ItemSummary.Author
+      public typealias Author = CompactItem.Author
 
       /// Item.AsItem.DomainMetadata
       ///
@@ -302,14 +302,14 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
             ],
             fulfilledFragments: [
               ObjectIdentifier(SavedItemSummary.Item.AsItem.DomainMetadata.self),
-              ObjectIdentifier(ItemSummary.DomainMetadata.self),
+              ObjectIdentifier(CompactItem.DomainMetadata.self),
               ObjectIdentifier(DomainMetadataParts.self)
             ]
           ))
         }
       }
 
-      public typealias Image = ItemSummary.Image
+      public typealias Image = CompactItem.Image
 
       /// Item.AsItem.SyndicatedArticle
       ///
@@ -356,7 +356,7 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
             ],
             fulfilledFragments: [
               ObjectIdentifier(SavedItemSummary.Item.AsItem.SyndicatedArticle.self),
-              ObjectIdentifier(ItemSummary.SyndicatedArticle.self),
+              ObjectIdentifier(CompactItem.SyndicatedArticle.self),
               ObjectIdentifier(SyndicatedArticleParts.self)
             ]
           ))

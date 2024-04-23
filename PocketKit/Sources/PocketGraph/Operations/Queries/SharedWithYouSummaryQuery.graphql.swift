@@ -7,8 +7,8 @@ public class SharedWithYouSummaryQuery: GraphQLQuery {
   public static let operationName: String = "SharedWithYouSummary"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query SharedWithYouSummary($url: String!) { itemByUrl(url: $url) { __typename ...ItemSummary } }"#,
-      fragments: [DomainMetadataParts.self, ItemSummary.self, SyndicatedArticleParts.self]
+      #"query SharedWithYouSummary($url: String!) { itemByUrl(url: $url) { __typename ...CompactItem } }"#,
+      fragments: [CompactItem.self, DomainMetadataParts.self, SyndicatedArticleParts.self]
     ))
 
   public var url: String
@@ -41,7 +41,7 @@ public class SharedWithYouSummaryQuery: GraphQLQuery {
       public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Item }
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
-        .fragment(ItemSummary.self),
+        .fragment(CompactItem.self),
       ] }
 
       /// The Item entity is owned by the Parser service.
@@ -91,10 +91,10 @@ public class SharedWithYouSummaryQuery: GraphQLQuery {
         public let __data: DataDict
         public init(_dataDict: DataDict) { __data = _dataDict }
 
-        public var itemSummary: ItemSummary { _toFragment() }
+        public var compactItem: CompactItem { _toFragment() }
       }
 
-      public typealias Author = ItemSummary.Author
+      public typealias Author = CompactItem.Author
 
       /// ItemByUrl.DomainMetadata
       ///
@@ -118,7 +118,7 @@ public class SharedWithYouSummaryQuery: GraphQLQuery {
         }
       }
 
-      public typealias Image = ItemSummary.Image
+      public typealias Image = CompactItem.Image
 
       /// ItemByUrl.SyndicatedArticle
       ///

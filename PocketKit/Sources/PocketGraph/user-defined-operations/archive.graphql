@@ -37,7 +37,7 @@ fragment SavedItemSummary on SavedItem {
     ...TagParts
   }
   item {
-    ...ItemSummary
+    ...CompactItem
     ...PendingItemParts
   }
   corpusItem {

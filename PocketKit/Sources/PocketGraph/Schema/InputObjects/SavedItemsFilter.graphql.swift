@@ -13,6 +13,7 @@ public struct SavedItemsFilter: InputObject {
 
   public init(
     updatedSince: GraphQLNullable<Int> = nil,
+    updatedBefore: GraphQLNullable<Int> = nil,
     isFavorite: GraphQLNullable<Bool> = nil,
     isArchived: GraphQLNullable<Bool> = nil,
     tagIds: GraphQLNullable<[ID]> = nil,
@@ -24,6 +25,7 @@ public struct SavedItemsFilter: InputObject {
   ) {
     __data = InputDict([
       "updatedSince": updatedSince,
+      "updatedBefore": updatedBefore,
       "isFavorite": isFavorite,
       "isArchived": isArchived,
       "tagIds": tagIds,
@@ -35,10 +37,18 @@ public struct SavedItemsFilter: InputObject {
     ])
   }
 
-  /// Optional, filter to get SavedItems updated since a unix timestamp
+  /// Optional, filter to get SavedItems updated since a unix timestamp.
+  /// Mutually exclusive with `updatedBefore` option.
   public var updatedSince: GraphQLNullable<Int> {
     get { __data["updatedSince"] }
     set { __data["updatedSince"] = newValue }
+  }
+
+  /// Optional, filter to get SavedItems updated before a unix timestamp.
+  /// Mutually exclusive with `updatedSince` option.
+  public var updatedBefore: GraphQLNullable<Int> {
+    get { __data["updatedBefore"] }
+    set { __data["updatedBefore"] = newValue }
   }
 
   /// Optional, filter to get SavedItems that have been favorited

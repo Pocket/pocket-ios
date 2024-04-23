@@ -73,7 +73,7 @@ fragment PendingItemParts on PendingItem {
   status
 }
 
-fragment ItemSummary on Item {
+fragment CompactItem on Item {
   remoteID: itemId
   givenUrl
   resolvedUrl

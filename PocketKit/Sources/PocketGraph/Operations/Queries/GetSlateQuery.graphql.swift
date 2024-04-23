@@ -8,7 +8,7 @@ public class GetSlateQuery: GraphQLQuery {
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
       #"query GetSlate($slateID: String!, $recommendationCount: Int!) { getSlate(slateId: $slateID, recommendationCount: $recommendationCount) { __typename ...SlateParts } }"#,
-      fragments: [CuratedInfoParts.self, DomainMetadataParts.self, ItemSummary.self, SlateParts.self, SyndicatedArticleParts.self]
+      fragments: [CompactItem.self, CuratedInfoParts.self, DomainMetadataParts.self, SlateParts.self, SyndicatedArticleParts.self]
     ))
 
   public var slateID: String

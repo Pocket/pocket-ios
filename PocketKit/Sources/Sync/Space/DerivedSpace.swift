@@ -26,7 +26,7 @@ protocol TagSpace: Paginated {
 
 protocol SharedWithYouSpace {
     func cleanupSharedWithYouItems(validUrls: [String]) throws
-    func updateSharedWithYouItem(url: String, sortOrder: Int, remote: ItemSummary) throws
+    func updateSharedWithYouItem(url: String, sortOrder: Int, remote: CompactItem) throws
 }
 
 /// A type that handles save operations on paginated data,
@@ -164,7 +164,7 @@ extension DerivedSpace: SharedWithYouSpace {
         try saveContexts()
     }
 
-    func updateSharedWithYouItem(url: String, sortOrder: Int, remote: ItemSummary) throws {
+    func updateSharedWithYouItem(url: String, sortOrder: Int, remote: CompactItem) throws {
         try context.performAndWait {
             let item = try space.fetchItem(byURL: remote.givenUrl, context: context) ??
             Item(context: context, givenURL: remote.givenUrl, remoteID: remote.remoteID)

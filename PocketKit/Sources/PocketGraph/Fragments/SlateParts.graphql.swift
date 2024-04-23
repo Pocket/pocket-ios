@@ -5,7 +5,7 @@
 
 public struct SlateParts: PocketGraph.SelectionSet, Fragment {
   public static var fragmentDefinition: StaticString {
-    #"fragment SlateParts on Slate { __typename id requestId experimentId displayName description recommendations { __typename id item { __typename ...ItemSummary } curatedInfo { __typename ...CuratedInfoParts } } }"#
+    #"fragment SlateParts on Slate { __typename id requestId experimentId displayName description recommendations { __typename id item { __typename ...CompactItem } curatedInfo { __typename ...CuratedInfoParts } } }"#
   }
 
   public let __data: DataDict
@@ -109,7 +109,7 @@ public struct SlateParts: PocketGraph.SelectionSet, Fragment {
       public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Item }
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
-        .fragment(ItemSummary.self),
+        .fragment(CompactItem.self),
       ] }
 
       /// The Item entity is owned by the Parser service.
@@ -159,7 +159,7 @@ public struct SlateParts: PocketGraph.SelectionSet, Fragment {
         public let __data: DataDict
         public init(_dataDict: DataDict) { __data = _dataDict }
 
-        public var itemSummary: ItemSummary { _toFragment() }
+        public var compactItem: CompactItem { _toFragment() }
       }
 
       public init(
@@ -208,12 +208,12 @@ public struct SlateParts: PocketGraph.SelectionSet, Fragment {
           ],
           fulfilledFragments: [
             ObjectIdentifier(SlateParts.Recommendation.Item.self),
-            ObjectIdentifier(ItemSummary.self)
+            ObjectIdentifier(CompactItem.self)
           ]
         ))
       }
 
-      public typealias Author = ItemSummary.Author
+      public typealias Author = CompactItem.Author
 
       /// Recommendation.Item.DomainMetadata
       ///
@@ -248,14 +248,14 @@ public struct SlateParts: PocketGraph.SelectionSet, Fragment {
             ],
             fulfilledFragments: [
               ObjectIdentifier(SlateParts.Recommendation.Item.DomainMetadata.self),
-              ObjectIdentifier(ItemSummary.DomainMetadata.self),
+              ObjectIdentifier(CompactItem.DomainMetadata.self),
               ObjectIdentifier(DomainMetadataParts.self)
             ]
           ))
         }
       }
 
-      public typealias Image = ItemSummary.Image
+      public typealias Image = CompactItem.Image
 
       /// Recommendation.Item.SyndicatedArticle
       ///
@@ -302,7 +302,7 @@ public struct SlateParts: PocketGraph.SelectionSet, Fragment {
             ],
             fulfilledFragments: [
               ObjectIdentifier(SlateParts.Recommendation.Item.SyndicatedArticle.self),
-              ObjectIdentifier(ItemSummary.SyndicatedArticle.self),
+              ObjectIdentifier(CompactItem.SyndicatedArticle.self),
               ObjectIdentifier(SyndicatedArticleParts.self)
             ]
           ))

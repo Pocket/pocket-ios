@@ -8,7 +8,7 @@ fragment SlateParts on Slate {
     id
     item {
       __typename
-      ...ItemSummary
+      ...CompactItem
     }
     curatedInfo {
       __typename

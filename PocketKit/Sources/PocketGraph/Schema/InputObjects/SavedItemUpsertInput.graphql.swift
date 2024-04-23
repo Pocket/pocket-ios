@@ -26,6 +26,7 @@ public struct SavedItemUpsertInput: InputObject {
   }
 
   /// The url to create/update the SavedItem with. (the url to save to the list)
+  /// Must be at least a 4 character string which is the shortest url
   public var url: String {
     get { __data["url"] }
     set { __data["url"] = newValue }

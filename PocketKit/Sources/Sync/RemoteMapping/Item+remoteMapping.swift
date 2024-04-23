@@ -196,7 +196,7 @@ extension Item {
         }
     }
 
-    func update(from summary: ItemSummary, with space: Space) {
+    func update(from summary: CompactItem, with space: Space) {
         remoteID = summary.remoteID
 
         givenURL = summary.givenUrl

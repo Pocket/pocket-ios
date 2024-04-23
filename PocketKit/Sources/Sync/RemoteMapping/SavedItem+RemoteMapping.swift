@@ -122,7 +122,7 @@ extension SavedItem {
             tag.update(remote: summaryTag.fragments.tagParts)
             return tag
         } ?? [])
-        if let itemSummary = summary.item.asItem?.fragments.itemSummary {
+        if let itemSummary = summary.item.asItem?.fragments.compactItem {
             Log.breadcrumb(category: "sync", level: .debug, message: "Updating item parts from summary for \(itemSummary.remoteID)")
 
             let givenURL = itemSummary.givenUrl

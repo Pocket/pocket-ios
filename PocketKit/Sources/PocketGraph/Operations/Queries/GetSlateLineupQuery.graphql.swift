@@ -8,7 +8,7 @@ public class GetSlateLineupQuery: GraphQLQuery {
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
       #"query GetSlateLineup($lineupID: String!, $maxRecommendations: Int!) { getSlateLineup( slateLineupId: $lineupID recommendationCount: $maxRecommendations ) { __typename id requestId experimentId slates { __typename ...SlateParts } } }"#,
-      fragments: [CuratedInfoParts.self, DomainMetadataParts.self, ItemSummary.self, SlateParts.self, SyndicatedArticleParts.self]
+      fragments: [CompactItem.self, CuratedInfoParts.self, DomainMetadataParts.self, SlateParts.self, SyndicatedArticleParts.self]
     ))
 
   public var lineupID: String

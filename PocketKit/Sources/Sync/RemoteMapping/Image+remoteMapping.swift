@@ -12,7 +12,7 @@ extension Image {
         source = URL(string: remote.src)
     }
 
-    convenience init(remote: ItemSummary.Image, context: NSManagedObjectContext) {
+    convenience init(remote: CompactItem.Image, context: NSManagedObjectContext) {
         self.init(context: context)
 
         source = URL(string: remote.src)

@@ -8,7 +8,7 @@ public class FetchArchiveQuery: GraphQLQuery {
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
       #"query FetchArchive($pagination: PaginationInput, $filter: SavedItemsFilter, $sort: SavedItemsSort) { user { __typename savedItems(pagination: $pagination, filter: $filter, sort: $sort) { __typename totalCount pageInfo { __typename hasNextPage endCursor } edges { __typename cursor node { __typename ...SavedItemSummary } } } } }"#,
-      fragments: [CollectionAuthorSummary.self, CollectionSummary.self, CorpusItemParts.self, DomainMetadataParts.self, ItemSummary.self, PendingItemParts.self, SavedItemSummary.self, SyndicatedArticleParts.self, TagParts.self]
+      fragments: [CollectionAuthorSummary.self, CollectionSummary.self, CompactItem.self, CorpusItemParts.self, DomainMetadataParts.self, PendingItemParts.self, SavedItemSummary.self, SyndicatedArticleParts.self, TagParts.self]
     ))
 
   public var pagination: GraphQLNullable<PaginationInput>
@@ -210,7 +210,7 @@ public class FetchArchiveQuery: GraphQLQuery {
                 public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Item }
                 public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
                   SavedItemSummary.Item.AsItem.self,
-                  ItemSummary.self
+                  CompactItem.self
                 ] }
 
                 /// The Item entity is owned by the Parser service.
@@ -260,10 +260,10 @@ public class FetchArchiveQuery: GraphQLQuery {
                   public let __data: DataDict
                   public init(_dataDict: DataDict) { __data = _dataDict }
 
-                  public var itemSummary: ItemSummary { _toFragment() }
+                  public var compactItem: CompactItem { _toFragment() }
                 }
 
-                public typealias Author = ItemSummary.Author
+                public typealias Author = CompactItem.Author
 
                 /// User.SavedItems.Edge.Node.Item.AsItem.DomainMetadata
                 ///
@@ -287,7 +287,7 @@ public class FetchArchiveQuery: GraphQLQuery {
                   }
                 }
 
-                public typealias Image = ItemSummary.Image
+                public typealias Image = CompactItem.Image
 
                 /// User.SavedItems.Edge.Node.Item.AsItem.SyndicatedArticle
                 ///

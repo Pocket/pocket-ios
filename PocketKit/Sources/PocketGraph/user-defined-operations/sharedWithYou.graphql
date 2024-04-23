@@ -1,6 +1,6 @@
 query SharedWithYouSummary($url: String!) {
   itemByUrl(url: $url) {
-    ...ItemSummary
+    ...CompactItem
   }
 }
 

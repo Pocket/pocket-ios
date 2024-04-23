@@ -14,7 +14,7 @@ extension Author {
         url = remote.url.flatMap(URL.init(string:))
     }
 
-    convenience init(remote: ItemSummary.Author, context: NSManagedObjectContext) {
+    convenience init(remote: CompactItem.Author, context: NSManagedObjectContext) {
         self.init(context: context)
 
         id = remote.id
