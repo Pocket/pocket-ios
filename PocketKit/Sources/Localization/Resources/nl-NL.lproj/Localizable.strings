@@ -336,6 +336,7 @@
 
 "saveToPocket.tapToDismiss" = "Tik om af te wijzen";
 
+// Widgets
 "itemWidgets.loggedOutMessage" = "Log in bij Pocket om je content te zien.";
 "itemWidgets.errorMessage" = "Er is iets misgegaan.";
 "itemWidgets.recentSaves.emptyMessage" = "Begin met het samenstellen van je Pocket-lijst.";
@@ -344,6 +345,9 @@
 "itemWidgets.recommendations.emptyMessage" = "Je bent wellicht offline. Controleer je netwerkverbinding.";
 "itemWidgets.recommendations.title" = "Aanbevelingen";
 "itemWidgets.recommendations.description" = "Ontdek de meest prikkelende verhalen, geselecteerd door Pocket.";
+"itemWidgets.recommendations.selectableTopic.title" = "Kies een onderwerp";
+"itemWidgets.recommendations.selectableTopic.description" = "Kies een onderwerp voor je aanbevelingen.";
+"itemWidgets.recommendations.selectableTopic.parameterName" = "Onderwerp";
 
 // Collection
 "collection.stories.count" = "%1$@ items";
@@ -360,3 +364,5 @@
 "tips.swipeToArchive.message" = "Veeg naar links over een artikel om het snel te archiveren.";
 "tips.swipeHighlights.title" = "Veeg om te markeren";
 "tips.swipeHighlights.message" = "Veeg naar links over een alinea om deze te markeren. Je kunt ook vegen en 'Markeringen verwijderen' selecteren om alle bestaande markeringen te verwijderen.";
+"tips.recommendationsWidget.selectTopic.title" = "Nieuwe widget met aanbevelingen!";
+"tips.recommendationsWidget.selectTopic.message" = "Houd de widget met aanbevelingen ingedrukt om een onderwerp te kiezen.\nInstalleer meerdere widgets om al je favoriete onderwerpen bij te houden.";
