@@ -336,6 +336,7 @@
 
 "saveToPocket.tapToDismiss" = "Appuyez pour ignorer";
 
+// Widgets
 "itemWidgets.loggedOutMessage" = "Connectez-vous à Pocket pour voir votre contenu.";
 "itemWidgets.errorMessage" = "Un problème est survenu.";
 "itemWidgets.recentSaves.emptyMessage" = "Commencez à créer votre liste Pocket.";
@@ -344,6 +345,9 @@
 "itemWidgets.recommendations.emptyMessage" = "Il est possible que vous soyez hors ligne. Veuillez vérifier votre connexion réseau.";
 "itemWidgets.recommendations.title" = "Recommandations";
 "itemWidgets.recommendations.description" = "Découvrez les histoires les plus stimulantes qui soient, sélectionnées avec soin par Pocket.";
+"itemWidgets.recommendations.selectableTopic.title" = "Choisir un thème";
+"itemWidgets.recommendations.selectableTopic.description" = "Choisissez un thème pour vos recommandations.";
+"itemWidgets.recommendations.selectableTopic.parameterName" = "Thème";
 
 // Collection
 "collection.stories.count" = "%1$@ éléments";
@@ -360,3 +364,5 @@
 "tips.swipeToArchive.message" = "Sur un article, faites glisser vers la gauche pour l'archiver rapidement.";
 "tips.swipeHighlights.title" = "Faire glisser pour mettre en surbrillance";
 "tips.swipeHighlights.message" = "Faites glisser vers la gauche sur un paragraphe pour le mettre en surbrillance. Vous pouvez également faire glisser et sélectionner « Supprimer la surbrillance » pour supprimer toute mise en surbrillance existante.";
+"tips.recommendationsWidget.selectTopic.title" = "Nouveau widget Recommandations !";
+"tips.recommendationsWidget.selectTopic.message" = "Appuyez longuement sur le widget Recommandations pour choisir un thème qui vous intéresse.\nInstallez plusieurs widgets pour suivre tous vos thèmes préférés.";
