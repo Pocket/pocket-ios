@@ -7,7 +7,8 @@ public class ShareSlugQuery: GraphQLQuery {
   public static let operationName: String = "ShareSlug"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query ShareSlug($slug: ID!) { shareSlug(slug: $slug) { __typename ... on PocketShare { slug targetUrl shareUrl preview { __typename id url item { __typename id resolvedUrl givenUrl } } } ... on ShareNotFound { message } } }"#
+      #"query ShareSlug($slug: ID!) { shareSlug(slug: $slug) { __typename ...PocketShareSummary ... on ShareNotFound { message } } }"#,
+      fragments: [PocketShareSummary.self]
     ))
 
   public var slug: ID
@@ -58,10 +59,7 @@ public class ShareSlugQuery: GraphQLQuery {
         public typealias RootEntityType = ShareSlugQuery.Data.ShareSlug
         public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.PocketShare }
         public static var __selections: [ApolloAPI.Selection] { [
-          .field("slug", PocketGraph.ID.self),
-          .field("targetUrl", PocketGraph.ValidUrl.self),
-          .field("shareUrl", PocketGraph.ValidUrl.self),
-          .field("preview", Preview?.self),
+          .fragment(PocketShareSummary.self),
         ] }
 
         public var slug: PocketGraph.ID { __data["slug"] }
@@ -69,48 +67,14 @@ public class ShareSlugQuery: GraphQLQuery {
         public var shareUrl: PocketGraph.ValidUrl { __data["shareUrl"] }
         public var preview: Preview? { __data["preview"] }
 
-        /// ShareSlug.AsPocketShare.Preview
-        ///
-        /// Parent Type: `ItemSummary`
-        public struct Preview: PocketGraph.SelectionSet {
+        public struct Fragments: FragmentContainer {
           public let __data: DataDict
           public init(_dataDict: DataDict) { __data = _dataDict }
 
-          public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.ItemSummary }
-          public static var __selections: [ApolloAPI.Selection] { [
-            .field("__typename", String.self),
-            .field("id", PocketGraph.ID.self),
-            .field("url", PocketGraph.Url.self),
-            .field("item", Item?.self),
-          ] }
-
-          public var id: PocketGraph.ID { __data["id"] }
-          public var url: PocketGraph.Url { __data["url"] }
-          public var item: Item? { __data["item"] }
-
-          /// ShareSlug.AsPocketShare.Preview.Item
-          ///
-          /// Parent Type: `Item`
-          public struct Item: PocketGraph.SelectionSet {
-            public let __data: DataDict
-            public init(_dataDict: DataDict) { __data = _dataDict }
-
-            public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Item }
-            public static var __selections: [ApolloAPI.Selection] { [
-              .field("__typename", String.self),
-              .field("id", PocketGraph.ID.self),
-              .field("resolvedUrl", PocketGraph.Url?.self),
-              .field("givenUrl", PocketGraph.Url.self),
-            ] }
-
-            /// A server generated unique id for this item based on itemId
-            public var id: PocketGraph.ID { __data["id"] }
-            /// If the givenUrl redirects (once or many times), this is the final url. Otherwise, same as givenUrl
-            public var resolvedUrl: PocketGraph.Url? { __data["resolvedUrl"] }
-            /// key field to identify the Item entity in the Parser service
-            public var givenUrl: PocketGraph.Url { __data["givenUrl"] }
-          }
+          public var pocketShareSummary: PocketShareSummary { _toFragment() }
         }
+
+        public typealias Preview = PocketShareSummary.Preview
       }
 
       /// ShareSlug.AsShareNotFound

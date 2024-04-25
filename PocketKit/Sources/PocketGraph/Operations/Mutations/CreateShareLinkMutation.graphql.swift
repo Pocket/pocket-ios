@@ -7,7 +7,8 @@ public class CreateShareLinkMutation: GraphQLMutation {
   public static let operationName: String = "CreateShareLink"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"mutation CreateShareLink($target: ValidUrl!) { createShareLink(target: $target) { __typename shareUrl slug targetUrl preview { __typename id url } } }"#
+      #"mutation CreateShareLink($target: ValidUrl!) { createShareLink(target: $target) { __typename ...PocketShareSummary } }"#,
+      fragments: [PocketShareSummary.self]
     ))
 
   public var target: ValidUrl
@@ -41,34 +42,22 @@ public class CreateShareLinkMutation: GraphQLMutation {
       public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.PocketShare }
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
-        .field("shareUrl", PocketGraph.ValidUrl.self),
-        .field("slug", PocketGraph.ID.self),
-        .field("targetUrl", PocketGraph.ValidUrl.self),
-        .field("preview", Preview?.self),
+        .fragment(PocketShareSummary.self),
       ] }
 
-      public var shareUrl: PocketGraph.ValidUrl { __data["shareUrl"] }
       public var slug: PocketGraph.ID { __data["slug"] }
       public var targetUrl: PocketGraph.ValidUrl { __data["targetUrl"] }
+      public var shareUrl: PocketGraph.ValidUrl { __data["shareUrl"] }
       public var preview: Preview? { __data["preview"] }
 
-      /// CreateShareLink.Preview
-      ///
-      /// Parent Type: `ItemSummary`
-      public struct Preview: PocketGraph.SelectionSet {
+      public struct Fragments: FragmentContainer {
         public let __data: DataDict
         public init(_dataDict: DataDict) { __data = _dataDict }
 
-        public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.ItemSummary }
-        public static var __selections: [ApolloAPI.Selection] { [
-          .field("__typename", String.self),
-          .field("id", PocketGraph.ID.self),
-          .field("url", PocketGraph.Url.self),
-        ] }
-
-        public var id: PocketGraph.ID { __data["id"] }
-        public var url: PocketGraph.Url { __data["url"] }
+        public var pocketShareSummary: PocketShareSummary { _toFragment() }
       }
+
+      public typealias Preview = PocketShareSummary.Preview
     }
   }
 }

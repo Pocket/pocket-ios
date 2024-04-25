@@ -12,23 +12,26 @@ query SharedWithYouDetails($url: String!) {
 
 mutation CreateShareLink($target: ValidUrl!) {
   createShareLink(target: $target) {
-    shareUrl
-    slug
-    targetUrl
-    preview {
-      id
-      url
-    }
+    __typename
+    ...PocketShareSummary
   }
 }
 
 query ShareSlug($slug: ID!) {
   shareSlug(slug: $slug) {
-    ... on PocketShare {
-      slug
-      targetUrl
-      shareUrl
-      preview {
+    __typename
+    ...PocketShareSummary
+    ... on ShareNotFound {
+      message
+    }
+  }
+}
+
+fragment PocketShareSummary on PocketShare {
+    slug
+    targetUrl
+    shareUrl
+    preview {
         id
         url
         item {
@@ -36,10 +39,5 @@ query ShareSlug($slug: ID!) {
           resolvedUrl
           givenUrl
         }
-      }
     }
-    ... on ShareNotFound {
-      message
-    }
-  }
 }
