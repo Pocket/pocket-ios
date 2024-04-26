@@ -336,6 +336,7 @@
 
 "saveToPocket.tapToDismiss" = "タップして閉じる";
 
+// Widgets
 "itemWidgets.loggedOutMessage" = "コンテンツを表示するには、Pocket にログインしてください。";
 "itemWidgets.errorMessage" = "エラーが発生したようです。";
 "itemWidgets.recentSaves.emptyMessage" = "Pocket リストを作成しましょう。";
@@ -344,6 +345,9 @@
 "itemWidgets.recommendations.emptyMessage" = "オフラインになっている可能性があります。ネットワーク接続を確認してください。";
 "itemWidgets.recommendations.title" = "おすすめ";
 "itemWidgets.recommendations.description" = "Pocket が厳選！色々と考えさせられる興味深いストーリーをお届けします。";
+"itemWidgets.recommendations.selectableTopic.title" = "トピックを選択";
+"itemWidgets.recommendations.selectableTopic.description" = "おすすめのトピックを選択します。";
+"itemWidgets.recommendations.selectableTopic.parameterName" = "トピック";
 
 // Collection
 "collection.stories.count" = "%1$@ 件のアイテム";
@@ -360,3 +364,5 @@
 "tips.swipeToArchive.message" = "記事を左にスワイプすると、すばやくアーカイブできます。";
 "tips.swipeHighlights.title" = "スワイプしてハイライト";
 "tips.swipeHighlights.message" = "段落を左にスワイプすると、その段落がハイライトされます。 また、スワイプして「ハイライトを削除する」を選択すると、既存のハイライトを削除できます。";
+"tips.recommendationsWidget.selectTopic.title" = "新しいおすすめウィジェットが登場！";
+"tips.recommendationsWidget.selectTopic.message" = "興味のあるトピックを選択するには、おすすめウィジェットを長押しします。\n複数のウィジェットをインストールして、お気に入りのトピックをすべて追跡しましょう。";

@@ -336,6 +336,7 @@
 
 "saveToPocket.tapToDismiss" = "Нажмите, чтобы закрыть";
 
+// Widgets
 "itemWidgets.loggedOutMessage" = "Войдите в Pocket, чтобы просмотреть свои материалы.";
 "itemWidgets.errorMessage" = "К сожалению, что-то пошло не так.";
 "itemWidgets.recentSaves.emptyMessage" = "Начните создавать свой список Pocket.";
@@ -344,6 +345,9 @@
 "itemWidgets.recommendations.emptyMessage" = "Возможно, вы офлайн. Проверьте подключение к интернету.";
 "itemWidgets.recommendations.title" = "Рекомендации";
 "itemWidgets.recommendations.description" = "Откройте для себя самые интересные и поучительные истории, рекомендованные Pocket.";
+"itemWidgets.recommendations.selectableTopic.title" = "Выберите тему";
+"itemWidgets.recommendations.selectableTopic.description" = "Выберите тему для своих рекомендаций.";
+"itemWidgets.recommendations.selectableTopic.parameterName" = "Тема";
 
 // Collection
 "collection.stories.count" = "%1$@ материалов";
@@ -360,3 +364,5 @@
 "tips.swipeToArchive.message" = "Проведите пальцем влево по статье, чтобы быстро заархивировать ее.";
 "tips.swipeHighlights.title" = "Проведение пальцем по пометкам";
 "tips.swipeHighlights.message" = "Проведите пальцем влево по абзацу, чтобы пометить его. Или проведите пальцем и выберите «Удалить пометки», чтобы удалить все существующие пометки.";
+"tips.recommendationsWidget.selectTopic.title" = "Новый виджет рекомендаций!";
+"tips.recommendationsWidget.selectTopic.message" = "Для выбора интересующей темы нажмите и удерживайте виджет рекомендаций.\nЧтобы не пропустить ни одной любимой темы, установите несколько виджетов.";

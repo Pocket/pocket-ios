@@ -336,6 +336,7 @@
 
 "saveToPocket.tapToDismiss" = "点击以取消";
 
+// Widgets
 "itemWidgets.loggedOutMessage" = "登录 Pocket 以查看您的内容。";
 "itemWidgets.errorMessage" = "出错了。";
 "itemWidgets.recentSaves.emptyMessage" = "开始建立您的 Pocket 列表。";
@@ -344,6 +345,9 @@
 "itemWidgets.recommendations.emptyMessage" = "您可能处于离线状态。请检查您的网络连接。";
 "itemWidgets.recommendations.title" = "推荐";
 "itemWidgets.recommendations.description" = "探索由 Pocket 策划的最发人深省的故事。";
+"itemWidgets.recommendations.selectableTopic.title" = "选择主题";
+"itemWidgets.recommendations.selectableTopic.description" = "为您的推荐选择一个主题。";
+"itemWidgets.recommendations.selectableTopic.parameterName" = "主题";
 
 // Collection
 "collection.stories.count" = "%1$@ 个项目";
@@ -360,3 +364,5 @@
 "tips.swipeToArchive.message" = "在文章上向左滑动即可快速存档。";
 "tips.swipeHighlights.title" = "滑动标记";
 "tips.swipeHighlights.message" = "在段落上向左滑动即可进行标记。或者，滑动并选择“删除标记”以删除任何现有的标记。";
+"tips.recommendationsWidget.selectTopic.title" = "全新推荐小部件！";
+"tips.recommendationsWidget.selectTopic.message" = "长按“推荐”小部件，选择感兴趣的主题。\n安装多个小部件，跟踪所有您喜欢的主题。";

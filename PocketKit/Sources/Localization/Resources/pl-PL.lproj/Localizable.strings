@@ -336,6 +336,7 @@
 
 "saveToPocket.tapToDismiss" = "Dotknij, aby odrzucić";
 
+// Widgets
 "itemWidgets.loggedOutMessage" = "Zaloguj się do Pocket, aby zobaczyć swoje treści.";
 "itemWidgets.errorMessage" = "Wystąpił problem.";
 "itemWidgets.recentSaves.emptyMessage" = "Zacznij tworzyć własną listę Pocket.";
@@ -344,6 +345,9 @@
 "itemWidgets.recommendations.emptyMessage" = "Możesz być offline. Sprawdź połączenie sieciowe.";
 "itemWidgets.recommendations.title" = "Rekomendacje";
 "itemWidgets.recommendations.description" = "Odkryj najbardziej inspirujące historie, wyselekcjonowane przez Pocket.";
+"itemWidgets.recommendations.selectableTopic.title" = "Wybierz temat";
+"itemWidgets.recommendations.selectableTopic.description" = "Wybierz temat swoich rekomendacji.";
+"itemWidgets.recommendations.selectableTopic.parameterName" = "Temat";
 
 // Collection
 "collection.stories.count" = "Liczba elementów: %1$@";
@@ -360,3 +364,5 @@
 "tips.swipeToArchive.message" = "Przesuń w lewo artykuł, aby go szybko zarchiwizować.";
 "tips.swipeHighlights.title" = "Przesuń, aby wyróżnić lub usunąć wyróżnienia";
 "tips.swipeHighlights.message" = "Przesuń palcem w lewo na akapicie, aby go wyróżnić. Możesz też przesunąć palcem i wybrać opcję „Usuń wyróżnienia”, aby usunąć istniejące wyróżnienia.";
+"tips.recommendationsWidget.selectTopic.title" = "Nowy widżet rekomendacji!";
+"tips.recommendationsWidget.selectTopic.message" = "Naciśnij i przytrzymaj widżet rekomendacji, aby wybrać interesujący Cię temat.\nZainstaluj wiele widżetów, aby śledzić wszystkie ulubione tematy.";

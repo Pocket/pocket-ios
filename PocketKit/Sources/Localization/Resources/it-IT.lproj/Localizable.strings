@@ -48,7 +48,7 @@
 "itemAction.showHighlights" = "Highlights";
 
 // Edit Actions
-"editAction.highlight" = "Evidenzia";
+"editAction.highlight" = "In evidenza";
 
 //ItemList
 "itemlist.filter.search" = "Cerca";
@@ -199,7 +199,7 @@
 "reader.activity.favorite" = "Aggiungi ai preferiti";
 "reader.activity.unfavorite" = "Rimuovi dai preferiti";
 "reader.activity.moveToSaves" = "Vai su Salvati";
-"reader.swipeAction.highlight" = "Evidenzia";
+"reader.swipeAction.highlight" = "In evidenza";
 "reader.swipeAction.deleteHighlights" = "Elimina le evidenziazioni";
 "reader.swipeAction.deleteHighlight" = "Elimina evidenziazione";
 
@@ -336,6 +336,7 @@
 
 "saveToPocket.tapToDismiss" = "Tocca per ignorare";
 
+// Widgets
 "itemWidgets.loggedOutMessage" = "Accedi a Pocket per visualizzare i tuoi contenuti.";
 "itemWidgets.errorMessage" = "Qualcosa non ha funzionato.";
 "itemWidgets.recentSaves.emptyMessage" = "Inizia a creare il tuo elenco Pocket.";
@@ -344,6 +345,9 @@
 "itemWidgets.recommendations.emptyMessage" = "Potresti essere offline. Controlla la connessione.";
 "itemWidgets.recommendations.title" = "Raccomandazioni";
 "itemWidgets.recommendations.description" = "Scopri le storie più stimolanti al momento, selezionate da Pocket.";
+"itemWidgets.recommendations.selectableTopic.title" = "Scegli argomento";
+"itemWidgets.recommendations.selectableTopic.description" = "Scegli un argomento per le tue raccomandazioni.";
+"itemWidgets.recommendations.selectableTopic.parameterName" = "Argomento";
 
 // Collection
 "collection.stories.count" = "%1$@ contenuti";
@@ -360,3 +364,5 @@
 "tips.swipeToArchive.message" = "Scorri verso sinistra su un articolo per archiviarlo rapidamente.";
 "tips.swipeHighlights.title" = "Scorri per evidenziare";
 "tips.swipeHighlights.message" = "Scorri verso sinistra su un paragrafo per evidenziarlo. In alternativa, scorri e seleziona \"Elimina evidenziazioni\" per rimuovere le evidenziazioni in quel paragrafo.";
+"tips.recommendationsWidget.selectTopic.title" = "Nuovo widget per le raccomandazioni!";
+"tips.recommendationsWidget.selectTopic.message" = "Premi a lungo sul widget per le raccomandazioni, per scegliere un argomento di interesse.\nInstalla più widget per tenere traccia di tutti i tuoi argomenti preferiti.";

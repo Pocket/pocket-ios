@@ -336,6 +336,7 @@
 
 "saveToPocket.tapToDismiss" = "點選以關閉";
 
+// Widgets
 "itemWidgets.loggedOutMessage" = "登入 Pocket 以查看您的內容。";
 "itemWidgets.errorMessage" = "出了點問題。";
 "itemWidgets.recentSaves.emptyMessage" = "開始建立您的 Pocket 清單。";
@@ -344,6 +345,9 @@
 "itemWidgets.recommendations.emptyMessage" = "您可能處於離線狀態。請檢查您的網路連線。";
 "itemWidgets.recommendations.title" = "建議";
 "itemWidgets.recommendations.description" = "發掘由 Pocket 精心策劃的最發人深省篇章。";
+"itemWidgets.recommendations.selectableTopic.title" = "選擇主題";
+"itemWidgets.recommendations.selectableTopic.description" = "為您的推薦選擇一個主題。";
+"itemWidgets.recommendations.selectableTopic.parameterName" = "主題";
 
 // Collection
 "collection.stories.count" = "%1$@ 個項目";
@@ -360,3 +364,5 @@
 "tips.swipeToArchive.message" = "在文章上向左滑動即可快速加以封存。";
 "tips.swipeHighlights.title" = "滑動標記內容";
 "tips.swipeHighlights.message" = "在某個段落上向左滑動即可加以標記。 或者滑動並選取「刪除標記」，以刪除任何現有標記。";
+"tips.recommendationsWidget.selectTopic.title" = "全新的推薦小工具！";
+"tips.recommendationsWidget.selectTopic.message" = "長按「推薦」小工具以選擇感興趣的主題。安裝多個小工具以追蹤所有最愛的主題。";

@@ -336,6 +336,7 @@
 
 "saveToPocket.tapToDismiss" = "Toque para cancelar";
 
+// Widgets
 "itemWidgets.loggedOutMessage" = "Faça login no Pocket para ver o seu conteúdo.";
 "itemWidgets.errorMessage" = "Ocorreu um erro.";
 "itemWidgets.recentSaves.emptyMessage" = "Comece a criar sua lista do Pocket.";
@@ -344,6 +345,9 @@
 "itemWidgets.recommendations.emptyMessage" = "Talvez você esteja offline. Verifique sua conexão de rede.";
 "itemWidgets.recommendations.title" = "Recomendações";
 "itemWidgets.recommendations.description" = "Leia matérias inspiradoras selecionadas pelo Pocket.";
+"itemWidgets.recommendations.selectableTopic.title" = "Escolha o tópico";
+"itemWidgets.recommendations.selectableTopic.description" = "Escolha um tópico para suas recomendações.";
+"itemWidgets.recommendations.selectableTopic.parameterName" = "Tópico";
 
 // Collection
 "collection.stories.count" = "%1$@ itens";
@@ -360,3 +364,5 @@
 "tips.swipeToArchive.message" = "Deslize o dedo para a esquerda sobre um artigo para arquivá-lo rapidamente.";
 "tips.swipeHighlights.title" = "Deslize o dedo sobre Destaques";
 "tips.swipeHighlights.message" = "Depois de selecionar um parágrafo, deslize para a esquerda para destacá-lo. Como alternativa, deslize e selecione \"Excluir destaques\" para remover qualquer destaque existente.";
+"tips.recommendationsWidget.selectTopic.title" = "Novo widget de recomendações!";
+"tips.recommendationsWidget.selectTopic.message" = "Mantenha pressionado o widget de Recomendações para escolher um tópico de interesse.\nInstale widgets para acompanhar todos os seus tópicos favoritos.";
