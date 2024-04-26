@@ -362,7 +362,7 @@
 // Tips
 "tips.swipeToArchive.title" = "Scorri per archiviare";
 "tips.swipeToArchive.message" = "Scorri verso sinistra su un articolo per archiviarlo rapidamente.";
-"tips.swipeHighlights.title" = "Scorri i momenti salienti";
-"tips.swipeHighlights.message" = "Scorri verso sinistra su un paragrafo per evidenziarlo. In alternativa, scorri e seleziona \"Elimina evidenziazioni\" per rimuovere qualsiasi evidenziazione esistente.";
+"tips.swipeHighlights.title" = "Scorri per evidenziare";
+"tips.swipeHighlights.message" = "Scorri verso sinistra su un paragrafo per evidenziarlo. In alternativa, scorri e seleziona \"Elimina evidenziazioni\" per rimuovere le evidenziazioni in quel paragrafo.";
 "tips.recommendationsWidget.selectTopic.title" = "Nuovo widget per le raccomandazioni!";
-"tips.recommendationsWidget.selectTopic.message" = "Premi a lungo sul widget per le raccomandazioni per scegliere un argomento di interesse.\nInstalla più widget per tenere traccia di tutti i tuoi argomenti preferiti.";
+"tips.recommendationsWidget.selectTopic.message" = "Premi a lungo sul widget per le raccomandazioni, per scegliere un argomento di interesse.\nInstalla più widget per tenere traccia di tutti i tuoi argomenti preferiti.";
