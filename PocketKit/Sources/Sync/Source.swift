@@ -145,6 +145,7 @@ public protocol Source {
     func updateSharedWithYouItems(with urls: [String])
     func makeSharedWithYouController() -> RichFetchedResultsController<SharedWithYouItem>
     func getItemShortUrl(_ itemUrl: String) async throws -> String?
+    func getShareUrl(_ itemUrl: String) async throws -> String?
     func deleteAllSharedWithYouItems() throws
 
     // MARK: ObjectID from URI Representation

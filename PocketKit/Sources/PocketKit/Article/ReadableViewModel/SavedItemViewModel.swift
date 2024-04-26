@@ -127,11 +127,12 @@ class SavedItemViewModel: ReadableViewModel, ObservableObject {
             self?.buildActions()
         }.store(in: &subscriptions)
 
-        if let url = item.item?.shortURL {
-            self.shortUrl = url
+        if let url = item.item?.sharetURL {
+            self.shareUrl = url
         } else if let item = item.item {
             Task {
-                self.shortUrl = try? await source.getItemShortUrl(item.givenURL)
+                // TODO: add shareUrl retrieval here
+                // self.shortUrl = try? await source.getItemShortUrl(item.givenURL)
             }
         }
     }
@@ -172,7 +173,7 @@ class SavedItemViewModel: ReadableViewModel, ObservableObject {
         item.bestURL
     }
 
-    var shortUrl: String?
+    var shareUrl: String?
 
     var itemSaveStatus: ItemSaveStatus {
         if item.isArchived {

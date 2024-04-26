@@ -51,7 +51,7 @@ protocol ReadableViewModel: ReadableViewControllerDelegate {
     var domain: String? { get }
     var publishDate: Date? { get }
     var url: String { get }
-    var shortUrl: String? { get }
+    var shareUrl: String? { get }
     var itemSaveStatus: ItemSaveStatus { get }
     var premiumURL: String? { get }
 
@@ -109,7 +109,7 @@ extension ReadableViewModel {
         trackShare()
         // Instances conforming to this view model are used within the context
         // of an item presented within the reader
-        sharedActivity = PocketItemActivity.fromReader(url: shortUrl ?? url, additionalText: additionalText)
+        sharedActivity = PocketItemActivity.fromReader(url: shareUrl ?? url, additionalText: additionalText)
     }
 
     func confirmDelete() {
@@ -225,7 +225,7 @@ extension ReadableViewModel {
 
     /// track share button tapped in reader toolbar overflow menu
     func trackShare() {
-        tracker.track(event: Events.ReaderToolbar.shareClicked(url: shortUrl ?? url))
+        tracker.track(event: Events.ReaderToolbar.shareClicked(url: shareUrl ?? url))
     }
 
     /// track save button tapped in reader toolbar overflow menu

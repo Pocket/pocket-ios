@@ -62,11 +62,12 @@ class RecommendableItemViewModel: ReadableViewModel {
             self?.update(for: savedItem)
         }
 
-        if let url = item.shortURL {
-            self.shortUrl = url
+        if let url = item.sharetURL {
+            self.shareUrl = url
         } else {
             Task {
-                self.shortUrl = try? await source.getItemShortUrl(item.givenURL)
+                // TODO: add shareUrl retrieval here
+                // self.shortUrl = try? await source.getItemShortUrl(item.givenURL)
             }
         }
     }
@@ -104,7 +105,7 @@ class RecommendableItemViewModel: ReadableViewModel {
         item.bestURL
     }
 
-    var shortUrl: String?
+    var shareUrl: String?
 
     var itemSaveStatus: ItemSaveStatus {
         guard let savedItem = item.savedItem else {
