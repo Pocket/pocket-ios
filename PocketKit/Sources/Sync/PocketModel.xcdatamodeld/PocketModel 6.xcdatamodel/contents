@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22757" systemVersion="23E224" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Author" representedClassName="Author" syncable="YES">
+        <attribute name="id" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="url" optional="YES" attributeType="URI"/>
+        <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="authors" inverseEntity="Item"/>
+    </entity>
+    <entity name="Collection" representedClassName="Collection" syncable="YES">
+        <attribute name="intro" optional="YES" attributeType="String"/>
+        <attribute name="publishedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="slug" attributeType="String"/>
+        <attribute name="title" attributeType="String"/>
+        <relationship name="authors" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="CollectionAuthor" inverseName="collection" inverseEntity="CollectionAuthor"/>
+        <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="collection" inverseEntity="Item"/>
+        <relationship name="stories" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="CollectionStory" inverseName="collection" inverseEntity="CollectionStory"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="slug"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="CollectionAuthor" representedClassName="CollectionAuthor" syncable="YES">
+        <attribute name="name" attributeType="String"/>
+        <relationship name="collection" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Collection" inverseName="authors" inverseEntity="Collection"/>
+        <relationship name="collectionStory" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CollectionStory" inverseName="authors" inverseEntity="CollectionStory"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="name"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="CollectionStory" representedClassName="CollectionStory" syncable="YES">
+        <attribute name="excerpt" attributeType="String"/>
+        <attribute name="imageUrl" optional="YES" attributeType="String"/>
+        <attribute name="publisher" optional="YES" attributeType="String"/>
+        <attribute name="sortOrder" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="title" attributeType="String"/>
+        <attribute name="url" attributeType="String"/>
+        <relationship name="authors" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="CollectionAuthor" inverseName="collectionStory" inverseEntity="CollectionAuthor"/>
+        <relationship name="collection" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Collection" inverseName="stories" inverseEntity="Collection"/>
+        <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="collectionStories" inverseEntity="Item"/>
+    </entity>
+    <entity name="DomainMetadata" representedClassName="DomainMetadata" syncable="YES">
+        <attribute name="logo" optional="YES" attributeType="URI"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="domainMetadata" inverseEntity="Item"/>
+    </entity>
+    <entity name="FeatureFlag" representedClassName="FeatureFlag" syncable="YES">
+        <attribute name="assigned" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="name" attributeType="String"/>
+        <attribute name="payloadValue" optional="YES" attributeType="String"/>
+        <attribute name="variant" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="Highlight" representedClassName="Highlight" syncable="YES">
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="patch" attributeType="String"/>
+        <attribute name="quote" attributeType="String"/>
+        <attribute name="remoteID" attributeType="String"/>
+        <attribute name="updatedAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="version" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="savedItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SavedItem" inverseName="highlights" inverseEntity="SavedItem"/>
+    </entity>
+    <entity name="Image" representedClassName="Image" syncable="YES">
+        <attribute name="isDownloaded" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="source" optional="YES" attributeType="URI"/>
+        <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="images" inverseEntity="Item"/>
+        <relationship name="recommendation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Recommendation" inverseName="image" inverseEntity="Recommendation"/>
+        <relationship name="syndicatedArticle" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SyndicatedArticle" inverseName="image" inverseEntity="SyndicatedArticle"/>
+    </entity>
+    <entity name="Item" representedClassName="Item" syncable="YES">
+        <attribute name="article" optional="YES" attributeType="Transformable" valueTransformerName="ArticleTransformer" customClassName=".Article"/>
+        <attribute name="datePublished" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="domain" optional="YES" attributeType="String"/>
+        <attribute name="excerpt" optional="YES" attributeType="String"/>
+        <attribute name="givenURL" attributeType="String"/>
+        <attribute name="imageness" optional="YES" attributeType="String"/>
+        <attribute name="isArticle" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="language" optional="YES" attributeType="String"/>
+        <attribute name="remoteID" attributeType="String"/>
+        <attribute name="resolvedURL" optional="YES" attributeType="String"/>
+        <attribute name="shareUrl" optional="YES" attributeType="String"/>
+        <attribute name="shortURL" optional="YES" attributeType="String"/>
+        <attribute name="timeToRead" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+        <attribute name="topImageURL" optional="YES" attributeType="URI"/>
+        <attribute name="videoness" optional="YES" attributeType="String"/>
+        <attribute name="wordCount" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="authors" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Author" inverseName="item" inverseEntity="Author"/>
+        <relationship name="collection" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Collection" inverseName="item" inverseEntity="Collection"/>
+        <relationship name="collectionStories" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CollectionStory" inverseName="item" inverseEntity="CollectionStory"/>
+        <relationship name="domainMetadata" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="DomainMetadata" inverseName="item" inverseEntity="DomainMetadata"/>
+        <relationship name="images" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Image" inverseName="item" inverseEntity="Image"/>
+        <relationship name="recommendation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Recommendation" inverseName="item" inverseEntity="Recommendation"/>
+        <relationship name="savedItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SavedItem" inverseName="item" inverseEntity="SavedItem"/>
+        <relationship name="sharedWithYouItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SharedWithYouItem" inverseName="item" inverseEntity="SharedWithYouItem"/>
+        <relationship name="syndicatedArticle" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SyndicatedArticle" inverseName="item" inverseEntity="SyndicatedArticle"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="givenURL"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="PersistentSyncTask" representedClassName="PersistentSyncTask" syncable="YES">
+        <attribute name="createdAt" optional="YES" attributeType="Date" defaultDateTimeInterval="666643260" usesScalarValueType="NO"/>
+        <attribute name="currentCursor" optional="YES" attributeType="String"/>
+        <attribute name="syncTaskContainer" attributeType="Transformable" valueTransformerName="SyncTaskTransformer" customClassName="SyncTaskContainer"/>
+    </entity>
+    <entity name="Recommendation" representedClassName="Recommendation" syncable="YES">
+        <attribute name="analyticsID" attributeType="String"/>
+        <attribute name="excerpt" optional="YES" attributeType="String"/>
+        <attribute name="imageURL" optional="YES" attributeType="URI"/>
+        <attribute name="remoteID" attributeType="String"/>
+        <attribute name="sortIndex" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+        <relationship name="image" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Image" inverseName="recommendation" inverseEntity="Image"/>
+        <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="recommendation" inverseEntity="Item"/>
+        <relationship name="slate" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Slate" inverseName="recommendations" inverseEntity="Slate"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="remoteID"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="SavedItem" representedClassName="SavedItem" syncable="YES">
+        <attribute name="archivedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="cursor" optional="YES" attributeType="String"/>
+        <attribute name="deletedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="isArchived" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" spotlightIndexingEnabled="YES"/>
+        <attribute name="isFavorite" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" spotlightIndexingEnabled="YES"/>
+        <attribute name="remoteID" optional="YES" attributeType="String" spotlightIndexingEnabled="YES"/>
+        <attribute name="url" attributeType="String"/>
+        <relationship name="highlights" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Highlight" inverseName="savedItem" inverseEntity="Highlight"/>
+        <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="savedItem" inverseEntity="Item" spotlightIndexingEnabled="YES"/>
+        <relationship name="savedItemUpdatedNotification" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SavedItemUpdatedNotification" inverseName="savedItem" inverseEntity="SavedItemUpdatedNotification"/>
+        <relationship name="tags" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Tag" inverseName="savedItems" inverseEntity="Tag"/>
+        <relationship name="unresolvedSavedItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UnresolvedSavedItem" inverseName="savedItem" inverseEntity="UnresolvedSavedItem"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="url"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="SavedItemUpdatedNotification" representedClassName="SavedItemUpdatedNotification" syncable="YES">
+        <relationship name="savedItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SavedItem" inverseName="savedItemUpdatedNotification" inverseEntity="SavedItem"/>
+    </entity>
+    <entity name="SharedWithYouItem" representedClassName="SharedWithYouItem" syncable="YES">
+        <attribute name="sortOrder" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="url" attributeType="String"/>
+        <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="sharedWithYouItem" inverseEntity="Item"/>
+    </entity>
+    <entity name="Slate" representedClassName="Slate" syncable="YES">
+        <attribute name="experimentID" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="remoteID" attributeType="String"/>
+        <attribute name="requestID" attributeType="String"/>
+        <attribute name="slateDescription" optional="YES" attributeType="String"/>
+        <attribute name="sortIndex" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="recommendations" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Recommendation" inverseName="slate" inverseEntity="Recommendation"/>
+        <relationship name="slateLineup" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SlateLineup" inverseName="slates" inverseEntity="SlateLineup"/>
+    </entity>
+    <entity name="SlateLineup" representedClassName="SlateLineup" syncable="YES">
+        <attribute name="experimentID" attributeType="String"/>
+        <attribute name="remoteID" attributeType="String"/>
+        <attribute name="requestID" attributeType="String"/>
+        <relationship name="slates" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Slate" inverseName="slateLineup" inverseEntity="Slate"/>
+    </entity>
+    <entity name="SyndicatedArticle" representedClassName="SyndicatedArticle" syncable="YES">
+        <attribute name="excerpt" optional="YES" attributeType="String"/>
+        <attribute name="imageURL" optional="YES" attributeType="URI"/>
+        <attribute name="itemID" attributeType="String"/>
+        <attribute name="publisherName" optional="YES" attributeType="String"/>
+        <attribute name="title" attributeType="String"/>
+        <relationship name="image" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Image" inverseName="syndicatedArticle" inverseEntity="Image"/>
+        <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="syndicatedArticle" inverseEntity="Item"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="itemID"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="Tag" representedClassName="Tag" syncable="YES">
+        <attribute name="name" attributeType="String"/>
+        <attribute name="remoteID" optional="YES" attributeType="String"/>
+        <relationship name="savedItems" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="SavedItem" inverseName="tags" inverseEntity="SavedItem"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="name"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="UnresolvedSavedItem" representedClassName="UnresolvedSavedItem" syncable="YES">
+        <relationship name="savedItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SavedItem" inverseName="unresolvedSavedItem" inverseEntity="SavedItem"/>
+    </entity>
+</model>
