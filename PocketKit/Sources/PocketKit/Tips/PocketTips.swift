@@ -12,7 +12,7 @@ import TipKit
 /// Swipe highlights, Reader
 @available(iOS 17.0, *)
 struct SwipeHighlightsTip: Tip {
-    var id = UUID()
+    var id = "pocketTips.reader.swipeHighlights"
     let title: Text = Text(Localization.Tips.SwipeHighlights.title)
     let message: Text? = Text(Localization.Tips.SwipeHighlights.message)
     let image: Image? =  Image(uiImage: UIImage(asset: .highlights))
@@ -22,7 +22,7 @@ struct SwipeHighlightsTip: Tip {
 /// Swipe to archive, Saves
 @available(iOS 17.0, *)
 struct SwipeArchiveTip: Tip {
-    var id = UUID()
+    var id = "pocketTips.saves.swipeArchive"
     let title = Text(Localization.Tips.SwipeToArchive.title)
     let message: Text? = Text(Localization.Tips.SwipeToArchive.message)
     let image: Image? = Image(uiImage: UIImage(asset: .archive))
@@ -32,7 +32,7 @@ struct SwipeArchiveTip: Tip {
 /// New Recommendation Widget, Home
 @available(iOS 17.0, *)
 struct NewRecommendationsWidgetTip: Tip {
-    var id = UUID()
+    var id = "pocketTips.home.newRecommendationsWidget"
     let title = Text(Localization.Tips.RecommendationsWidget.SelectTopic.title)
     let message: Text? = Text(Localization.Tips.RecommendationsWidget.SelectTopic.message)
     let image: Image? = nil
