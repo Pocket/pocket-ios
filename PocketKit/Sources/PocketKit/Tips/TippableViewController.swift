@@ -31,7 +31,7 @@ struct TipUIConfiguration {
 extension TippableViewController {
     @available(iOS 17.0, *)
     func displayTip<T: Tip>(_ tip: T, configuration: TipUIConfiguration?, sourceView: UIView?) {
-        tipObservationTask = tipObservationTask ?? Task.delayed(byTimeInterval: 0.3) { @MainActor [weak self] in
+        tipObservationTask = tipObservationTask ?? Task.delayed(byTimeInterval: 0.5) { @MainActor [weak self] in
             guard let self else {
                 return
             }

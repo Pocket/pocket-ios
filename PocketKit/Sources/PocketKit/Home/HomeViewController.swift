@@ -172,6 +172,7 @@ class HomeViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if #available(iOS 17.0, *), let sourceView = navigationController?.view ?? view {
+            PocketTipEvents.showNewRecommendationsWidgetTip.sendDonation()
             let x = view.bounds.width / 2
             let y: CGFloat = 0
             let sourceRect = CGRect(x: x, y: y, width: 0, height: 0)
