@@ -154,6 +154,7 @@ class ReadableViewController: UIViewController {
         super.viewDidAppear(animated)
         scrollToLastKnownPosition()
         if #available(iOS 17.0, *) {
+            PocketTipEvents.showSwipeHighlightsTip.sendDonation()
             displayTip(SwipeHighlightsTip(), configuration: nil, sourceView: nil)
         }
     }

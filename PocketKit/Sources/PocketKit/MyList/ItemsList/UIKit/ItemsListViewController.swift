@@ -74,6 +74,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if #available(iOS 17.0, *) {
+            PocketTipEvents.showSwipeArchiveTip.sendDonation()
             displayTip(SwipeArchiveTip(), configuration: nil, sourceView: nil)
         }
     }
