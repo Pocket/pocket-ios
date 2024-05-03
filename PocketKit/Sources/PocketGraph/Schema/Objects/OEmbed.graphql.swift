@@ -4,8 +4,8 @@
 import ApolloAPI
 
 public extension Objects {
-  static let ItemSummary = ApolloAPI.Object(
-    typename: "ItemSummary",
+  static let OEmbed = ApolloAPI.Object(
+    typename: "OEmbed",
     implementedInterfaces: [Interfaces.PocketMetadata.self]
   )
 }

@@ -7,4 +7,5 @@ import PocketGraph
 public extension MockObject {
   typealias RemoteEntity = Interface
   typealias ListElement = Interface
+  typealias PocketMetadata = Interface
 }

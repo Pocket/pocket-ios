@@ -47,12 +47,12 @@ public struct PocketShareSummary: PocketGraph.SelectionSet, Fragment {
 
   /// Preview
   ///
-  /// Parent Type: `ItemSummary`
+  /// Parent Type: `PocketMetadata`
   public struct Preview: PocketGraph.SelectionSet {
     public let __data: DataDict
     public init(_dataDict: DataDict) { __data = _dataDict }
 
-    public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.ItemSummary }
+    public static var __parentType: ApolloAPI.ParentType { PocketGraph.Interfaces.PocketMetadata }
     public static var __selections: [ApolloAPI.Selection] { [
       .field("__typename", String.self),
       .field("id", PocketGraph.ID.self),
@@ -65,13 +65,14 @@ public struct PocketShareSummary: PocketGraph.SelectionSet, Fragment {
     public var item: Item? { __data["item"] }
 
     public init(
+      __typename: String,
       id: PocketGraph.ID,
       url: PocketGraph.Url,
       item: Item? = nil
     ) {
       self.init(_dataDict: DataDict(
         data: [
-          "__typename": PocketGraph.Objects.ItemSummary.typename,
+          "__typename": __typename,
           "id": id,
           "url": url,
           "item": item._fieldData,

@@ -1266,6 +1266,11 @@ extension PocketSource {
     public func deleteAllSharedWithYouItems() throws {
         try space.deleteSharedWithYouItems()
     }
+
+    public func getShareUrl(_ itemUrl: String) async throws -> String? {
+        // TODO: add implementation
+        return nil
+    }
 }
 
 // MARK: - Search term

@@ -54,6 +54,7 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "Mutation": return PocketGraph.Objects.Mutation
     case "PocketShare": return PocketGraph.Objects.PocketShare
     case "ItemSummary": return PocketGraph.Objects.ItemSummary
+    case "OEmbed": return PocketGraph.Objects.OEmbed
     case "ShareNotFound": return PocketGraph.Objects.ShareNotFound
     case "CollectionStory": return PocketGraph.Objects.CollectionStory
     case "CollectionStoryAuthor": return PocketGraph.Objects.CollectionStoryAuthor

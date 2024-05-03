@@ -62,7 +62,7 @@ class RecommendableItemViewModel: ReadableViewModel {
             self?.update(for: savedItem)
         }
 
-        if let url = item.sharetURL {
+        if let url = item.shareURL {
             self.shareUrl = url
         } else {
             Task {

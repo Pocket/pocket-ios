@@ -127,7 +127,7 @@ class SavedItemViewModel: ReadableViewModel, ObservableObject {
             self?.buildActions()
         }.store(in: &subscriptions)
 
-        if let url = item.item?.sharetURL {
+        if let url = item.item?.shareURL {
             self.shareUrl = url
         } else if let item = item.item {
             Task {

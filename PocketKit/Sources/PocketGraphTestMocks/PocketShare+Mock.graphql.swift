@@ -10,7 +10,7 @@ public class PocketShare: MockObject {
   public typealias MockValueCollectionType = Array<Mock<PocketShare>>
 
   public struct MockFields {
-    @Field<ItemSummary>("preview") public var preview
+    @Field<PocketMetadata>("preview") public var preview
     @Field<PocketGraph.ValidUrl>("shareUrl") public var shareUrl
     @Field<PocketGraph.ID>("slug") public var slug
     @Field<PocketGraph.ValidUrl>("targetUrl") public var targetUrl
@@ -19,7 +19,7 @@ public class PocketShare: MockObject {
 
 public extension Mock where O == PocketShare {
   convenience init(
-    preview: Mock<ItemSummary>? = nil,
+    preview: AnyMock? = nil,
     shareUrl: PocketGraph.ValidUrl? = nil,
     slug: PocketGraph.ID? = nil,
     targetUrl: PocketGraph.ValidUrl? = nil
