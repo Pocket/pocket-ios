@@ -63,11 +63,10 @@ class RecommendableItemViewModel: ReadableViewModel {
         }
 
         if let url = item.shareURL {
-            self.shareUrl = url
+            shareUrl = url
         } else {
             Task {
-                // TODO: add shareUrl retrieval here
-                // self.shortUrl = try? await source.getItemShortUrl(item.givenURL)
+                try? await source.requestShareUrl(item.givenURL)
             }
         }
     }

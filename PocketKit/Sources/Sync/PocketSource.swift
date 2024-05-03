@@ -1260,16 +1260,36 @@ extension PocketSource {
             return
         }
         item.shortURL = shortUrl
-        try? space.save()
+        try space.save()
     }
 
     public func deleteAllSharedWithYouItems() throws {
         try space.deleteSharedWithYouItems()
     }
 
-    public func getShareUrl(_ itemUrl: String) async throws -> String? {
-        // TODO: add implementation
-        return nil
+    public func requestShareUrl(_ itemUrl: String) async throws -> String? {
+        guard let shareUrl = try await apollo.perform(
+            mutation: CreateShareLinkMutation(
+                target: itemUrl
+            )
+        )
+        .data?
+        .createShareLink?
+            .shareUrl else {
+            return nil
+        }
+        defer {
+            try? updateItemShareUrl(itemUrl, shareUrl: shareUrl)
+        }
+        return shareUrl
+    }
+
+    private func updateItemShareUrl(_ itemUrl: String, shareUrl: String) throws {
+        guard let item = try space.fetchItem(byURL: itemUrl) else {
+            return
+        }
+        item.shareURL = shareUrl
+        try space.save()
     }
 }
 

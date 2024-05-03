@@ -128,11 +128,10 @@ class SavedItemViewModel: ReadableViewModel, ObservableObject {
         }.store(in: &subscriptions)
 
         if let url = item.item?.shareURL {
-            self.shareUrl = url
+            shareUrl = url
         } else if let item = item.item {
             Task {
-                // TODO: add shareUrl retrieval here
-                // self.shortUrl = try? await source.getItemShortUrl(item.givenURL)
+                shareUrl = try? await source.requestShareUrl(item.givenURL)
             }
         }
     }
