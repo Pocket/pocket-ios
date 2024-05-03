@@ -796,13 +796,7 @@ extension HomeViewModel {
 
     private func share(_ recommendation: Recommendation, at indexPath: IndexPath, with sender: Any?) async {
         // This view model is used within the context of a view that is presented within Saves
-        var shortUrl: String?
-        if let existingShortUrl = recommendation.item.shortURL {
-            shortUrl = existingShortUrl
-        } else {
-            shortUrl = try? await source.getItemShortUrl(recommendation.item.givenURL)
-        }
-        let shareableUrl = shortUrl ?? recommendation.item.bestURL
+        let shareableUrl = await shareableUrl(recommendation.item) ?? recommendation.item.bestURL
         self.sharedActivity = PocketItemActivity.fromHome(url: shareableUrl, sender: sender)
         guard
             let slate = recommendation.slate,
@@ -818,27 +812,28 @@ extension HomeViewModel {
     private func share(_ savedItem: SavedItem, at indexPath: IndexPath, with sender: Any?) async {
         // This view model is used within the context of a view that is presented within Home, but
         // within the context of "Recent Saves"
-        var shortUrl: String?
-        if let existingShortUrl = savedItem.item?.shortURL {
-            shortUrl = existingShortUrl
-        } else {
-            shortUrl = try? await source.getItemShortUrl(savedItem.url)
-        }
-        let shareableUrl = shortUrl ?? savedItem.url
+        let shareableUrl = await shareableUrl(savedItem.item) ?? savedItem.url
         self.sharedActivity = PocketItemActivity.fromSaves(url: shareableUrl, sender: sender)
         tracker.track(event: Events.Home.RecentSavesCardShare(url: shareableUrl, positionInList: indexPath.item))
     }
 
     private func share(_ sharedWithYouItem: SharedWithYouItem, at indexPath: IndexPath, with sender: Any?) async {
-        var shortUrl: String?
-        if let existingShortUrl = sharedWithYouItem.item.shortURL {
-            shortUrl = existingShortUrl
-        } else {
-            shortUrl = try? await source.getItemShortUrl(sharedWithYouItem.url)
-        }
-        let shareableUrl = shortUrl ?? sharedWithYouItem.url
+        let shareableUrl = await shareableUrl(sharedWithYouItem.item) ?? sharedWithYouItem.url
         self.sharedActivity = PocketItemActivity.fromHome(url: shareableUrl, sender: sender)
         tracker.track(event: Events.Home.sharedWithYouItemShare(url: shareableUrl, positionInList: indexPath.item))
+    }
+
+    private func shareableUrl(_ item: Item?) async -> String? {
+        guard let item else {
+            return nil
+        }
+        var shareUrl: String?
+        if let existingSharetUrl = item.shareURL {
+            shareUrl = existingSharetUrl
+        } else {
+            shareUrl = try? await source.requestShareUrl(item.givenURL)
+        }
+        return shareUrl
     }
 
     private func save(_ recommendation: Recommendation, at indexPath: IndexPath) {

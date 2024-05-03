@@ -1243,26 +1243,6 @@ extension PocketSource {
         space.makeSharedWithYouController()
     }
 
-    public func getItemShortUrl(_ itemUrl: String) async throws -> String? {
-        guard let itemData = try await apollo
-            .fetch(query: GetItemShortUrlQuery(url: itemUrl)).data,
-                let shortUrl = itemData.itemByUrl?.shortUrl else {
-            return nil
-        }
-        defer {
-            try? updateItemShortUrl(itemUrl, shortUrl: shortUrl)
-        }
-        return shortUrl
-    }
-
-    private func updateItemShortUrl(_ itemUrl: String, shortUrl: String) throws {
-        guard let item = try space.fetchItem(byURL: itemUrl) else {
-            return
-        }
-        item.shortURL = shortUrl
-        try space.save()
-    }
-
     public func deleteAllSharedWithYouItems() throws {
         try space.deleteSharedWithYouItems()
     }

@@ -375,13 +375,13 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
     @MainActor
     func share(item: SavedItem, sender: Any?) async {
-        var shortUrl: String?
-        if let existingShortUrl = item.item?.shortURL {
-            shortUrl = existingShortUrl
+        var shareUrl: String?
+        if let existingSharetUrl = item.item?.shareURL {
+            shareUrl = existingSharetUrl
         } else {
-            shortUrl = try? await source.getItemShortUrl(item.url)
+            shareUrl = try? await source.requestShareUrl(item.url)
         }
-        let shareableUrl = shortUrl ?? item.url
+        let shareableUrl = shareUrl ?? item.url
         sharedActivity = PocketItemActivity.fromSaves(url: shareableUrl, sender: sender)
         track(item: item, identifier: .itemShare)
     }
