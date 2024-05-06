@@ -8,6 +8,10 @@ import CoreData
 import Combine
 
 class MockSource: Source {
+    func readerItem(by slug: String) async throws -> (Sync.SavedItem?, Sync.Item?) {
+        return (nil, nil)
+    }
+
     func item(by slug: String) async throws -> Sync.Item? {
         return nil
     }

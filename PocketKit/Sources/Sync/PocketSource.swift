@@ -1256,6 +1256,22 @@ extension PocketSource {
         return try await fetchViewItem(from: givenUrl)
     }
 
+    public func readerItem(by slug: String) async throws -> (SavedItem?, Item?) {
+        let data = try await apollo.fetch(query: ReaderSlugQuery(readerSlugSlug: slug))
+
+        if let savedItemUrl = data.data?.readerSlug.savedItem?.url, let savedItem = fetchViewContextSavedItem(savedItemUrl) {
+            return (savedItem, nil)
+        } else if let itemUrl = data.data?.readerSlug.fallbackPage?.asReaderInterstitial?.itemCard?.item?.givenUrl,
+                  let item = try await fetchViewItem(from: itemUrl) {
+            if let savedItem = item.savedItem {
+                return (savedItem, nil)
+            } else {
+                return (nil, item)
+            }
+        }
+        return (nil, nil)
+    }
+
     public func requestShareUrl(_ itemUrl: String) async throws -> String? {
         guard let shareUrl = try await apollo.perform(
             mutation: CreateShareLinkMutation(

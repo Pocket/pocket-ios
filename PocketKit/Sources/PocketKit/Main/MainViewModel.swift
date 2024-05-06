@@ -324,6 +324,37 @@ extension MainViewModel {
             }
         }
 
+        let pocketReadUrlRoutingAction: (URL, ReadableSource) -> Void = { [weak self] url, source in
+            // dismiss any existing modal
+            self?.account.dismissAll()
+            // go to home
+            self?.selectedSection = .home
+            // extract the slug
+            guard let slug = url.pathComponents[safe: 2] else {
+                Log.capture(message: "Unable to extract slug")
+                fallbackAction(url)
+                return
+            }
+            Task {
+                do {
+                    let itemData = try await self?.source.readerItem(by: slug)
+                    if let savedItem = itemData?.0 {
+                        self?.home.select(savedItem: savedItem, readableSource: source)
+                    } else if let item = itemData?.1 {
+                        if let recommendation = item.recommendation {
+                            self?.home.select(recommendation: recommendation, readableSource: source)
+                        } else {
+                            self?.home.select(externalItem: item)
+                        }
+                    } else {
+                        fallbackAction(url)
+                    }
+                } catch {
+                    fallbackAction(url)
+                }
+            }
+        }
+
         let widgetRoute = WidgetRoute(action: routingAction)
         let collectionRoute = CollectionRoute(action: routingAction)
         let syndicatedRoute = SyndicationRoute(action: routingAction)
@@ -331,7 +362,7 @@ extension MainViewModel {
         let genericItemRoute = GenericItemRoute(action: routingAction)
         let shortUrlRoute = ShortUrlRoute(action: shortUrlRoutingAction)
         let pocketShareRoute = PocketShareRoute(action: pocketShareUrlRoutingAction)
-        let pocketReadRoute = PocketReadRoute(action: pocketShareUrlRoutingAction)
+        let pocketReadRoute = PocketReadRoute(action: pocketReadUrlRoutingAction)
         // NOTE: order matters, because there might be overlapping patterns
         // we can probably optimize by having exclusive-patterns only routes, and handle additional logic within
         // the route itself

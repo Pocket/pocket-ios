@@ -9,4 +9,5 @@ public extension MockObject {
   typealias CorpusTarget = Union
   typealias MarticleComponent = Union
   typealias ShareResult = Union
+  typealias ReaderFallback = Union
 }

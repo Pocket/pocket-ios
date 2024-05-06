@@ -41,3 +41,21 @@ fragment PocketShareSummary on PocketShare {
         }
     }
 }
+
+query ReaderSlug($readerSlugSlug: ID!) {
+  readerSlug(slug: $readerSlugSlug) {
+    fallbackPage {
+      ... on ReaderInterstitial {
+        itemCard {
+          item {
+            givenUrl
+          }
+        }
+      }
+    }
+    savedItem {
+      id
+      url
+    }
+  }
+}
