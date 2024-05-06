@@ -1247,6 +1247,15 @@ extension PocketSource {
         try space.deleteSharedWithYouItems()
     }
 
+    public func item(by slug: String) async throws -> Item? {
+        let data = try await apollo.fetch(query: ShareSlugQuery(slug: slug))
+        guard let givenUrl = data.data?.shareSlug?.asPocketShare?.preview?.item?.givenUrl else {
+            // TODO: we might want to use the share not found message
+            return nil
+        }
+        return try await fetchViewItem(from: givenUrl)
+    }
+
     public func requestShareUrl(_ itemUrl: String) async throws -> String? {
         guard let shareUrl = try await apollo.perform(
             mutation: CreateShareLinkMutation(
