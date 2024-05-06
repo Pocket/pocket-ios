@@ -78,8 +78,11 @@ struct CollectionRoute: Route {
             return nil
         }
         var normalizedComponents = components
-        // remove utm-source and other external query items to obtain the item url
-        normalizedComponents.queryItems = nil
+        // remove utm_source and other external query items to obtain the item url
+        let updatedQueryItems = normalizedComponents.queryItems?.filter {
+            $0.name != "utm_source"
+        }
+        normalizedComponents.queryItems = updatedQueryItems
         return normalizedComponents.url?.absoluteString
     }
 }
@@ -104,8 +107,11 @@ struct SyndicationRoute: Route {
             return nil
         }
         var normalizedComponents = components
-        // remove utm-source and other external query items to obtain the item url
-        normalizedComponents.queryItems = nil
+        // remove utm_source and other external query items to obtain the item url
+        let updatedQueryItems = normalizedComponents.queryItems?.filter {
+            $0.name != "utm_source"
+        }
+        normalizedComponents.queryItems = updatedQueryItems
         return normalizedComponents.url?.absoluteString
     }
 }
@@ -129,8 +135,11 @@ struct GenericItemRoute: Route {
             return nil
         }
         var normalizedComponents = components
-        // remove utm-source and other external query items to obtain the item url
-        normalizedComponents.queryItems = nil
+        // remove utm_source and other external query items to obtain the item url
+        let updatedQueryItems = normalizedComponents.queryItems?.filter {
+            $0.name != "utm_source"
+        }
+        normalizedComponents.queryItems = updatedQueryItems
         return normalizedComponents.url?.absoluteString
     }
 }
@@ -154,8 +163,11 @@ struct ShortUrlRoute: Route {
             return nil
         }
         var normalizedComponents = components
-        // remove utm-source and other external query items to obtain the item url
-        normalizedComponents.queryItems = nil
+        // remove utm_source and other external query items to obtain the item url
+        let updatedQueryItems = normalizedComponents.queryItems?.filter {
+            $0.name != "utm_source"
+        }
+        normalizedComponents.queryItems = updatedQueryItems
         return normalizedComponents.url?.absoluteString
     }
 }
@@ -180,15 +192,18 @@ struct PocketShareRoute: Route {
             return nil
         }
         var normalizedComponents = components
-        // remove utm-source and other external query items to obtain the item url
-        normalizedComponents.queryItems = nil
+        // remove utm_source and other external query items to obtain the item url
+        let updatedQueryItems = normalizedComponents.queryItems?.filter {
+            $0.name != "utm_source"
+        }
+        normalizedComponents.queryItems = updatedQueryItems
         return normalizedComponents.url?.absoluteString
     }
 }
 
 @MainActor
 struct PocketReadRoute: Route {
-    let host: String? = "pocket.co"
+    let host: String? = "getpocket.com"
     let scheme = "https"
     let path = "/read/"
     let source: ReadableSource = .external
@@ -206,8 +221,11 @@ struct PocketReadRoute: Route {
             return nil
         }
         var normalizedComponents = components
-        // remove utm-source and other external query items to obtain the item url
-        normalizedComponents.queryItems = nil
+        // remove utm_source and other external query items to obtain the item url
+        let updatedQueryItems = normalizedComponents.queryItems?.filter {
+            $0.name != "utm_source"
+        }
+        normalizedComponents.queryItems = updatedQueryItems
         return normalizedComponents.url?.absoluteString
     }
 }
