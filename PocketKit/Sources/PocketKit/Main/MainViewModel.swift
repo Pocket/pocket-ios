@@ -300,7 +300,7 @@ extension MainViewModel {
             // go to home
             self?.selectedSection = .home
             // extract the slug
-            guard let slug = url.pathComponents[safe: 1] else {
+            guard let slug = url.pathComponents[safe: 2] else {
                 Log.capture(message: "Unable to extract slug")
                 fallbackAction(url)
                 return
@@ -315,7 +315,7 @@ extension MainViewModel {
                         } else {
                             self?.home.select(externalItem: item)
                         }
-                    }else {
+                    } else {
                         fallbackAction(url)
                     }
                 } catch {
@@ -332,6 +332,9 @@ extension MainViewModel {
         let shortUrlRoute = ShortUrlRoute(action: shortUrlRoutingAction)
         let pocketShareRoute = PocketShareRoute(action: pocketShareUrlRoutingAction)
         let pocketReadRoute = PocketReadRoute(action: pocketShareUrlRoutingAction)
-        linkRouter.addRoutes([widgetRoute, collectionRoute, syndicatedRoute, genericItemRoute, shortUrlRoute, spotlightRoute, pocketReadRoute, pocketReadRoute])
+        // NOTE: order matters, because there might be overlapping patterns
+        // we can probably optimize by having exclusive-patterns only routes, and handle additional logic within
+        // the route itself
+        linkRouter.addRoutes([widgetRoute, collectionRoute, syndicatedRoute, genericItemRoute, spotlightRoute, pocketShareRoute, pocketReadRoute, shortUrlRoute])
     }
 }

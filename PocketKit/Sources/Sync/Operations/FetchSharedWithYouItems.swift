@@ -88,7 +88,7 @@ class FetchSharedWithYouItems: SyncOperation {
                 }
             }
 
-            if let item = try self.space.fetchSharedWithYouItem(with: sharedWithYouUrl, in: space.backgroundContext)?.item {
+            if let item = try space.fetchSharedWithYouItem(with: sharedWithYouUrl, in: space.backgroundContext)?.item {
                 Log.breadcrumb(category: "sync.sharedWithYou", level: .debug, message: "Skipping sharedWithYouItem \(url.offset) because we already have its data, itemId: \(item.remoteID)")
                 continue
             }
