@@ -22,7 +22,6 @@
                     "givenUrl": "http://example.com/items/item-1",
                     "resolvedUrl": "http://example.com/items/item-1",
                     "topImageUrl": "https://example.com/item-1/top-image.jpg",
-                    "shortUrl": null,
                     "domain": null,
                     "language": "en",
                     "timeToRead": 6,

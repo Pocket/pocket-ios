@@ -36,8 +36,7 @@
                                 }],
                             "corpusItem": {
                                 "__typename": "CorpusItem",
-                                "publisher":"CorpusItemPublisher-1",
-                                "shortUrl": null
+                                "publisher":"CorpusItemPublisher-1"
                             },
                             "annotations": null,
                             "item": {
@@ -47,7 +46,6 @@
                                 "resolvedUrl": "https://resolved.example.com/item-1",
                                 "title": "Item 1",
                                 "topImageUrl": "https://example.com/item-1/top-image.jpg",
-                                "shortUrl": null,
                                 "domain": null,
                                 "language": "en",
                                 "timeToRead": 6,
@@ -117,7 +115,6 @@
                                 "resolvedUrl": "https://resolved.example.com/item-2",
                                 "title": "Item 2",
                                 "topImageUrl": "https://example.com/item-2/top-image.jpg",
-                                "shortUrl": null,
                                 "domain": "example.com",
                                 "language": "en",
                                 "timeToRead": 6,

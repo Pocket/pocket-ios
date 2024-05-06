@@ -34,7 +34,6 @@
                                 "givenUrl": "https://given.example.com/item-3",
                                 "resolvedUrl": "http://resolved.example.com/item-3",
                                 "topImageUrl": "https://example.com/item-3/top-image.jpg",
-                                "shortUrl": null,
                                 "domain": null,
                                 "language": "en",
                                 "timeToRead": 6,

@@ -33,7 +33,6 @@
                                 "resolvedUrl": "http://resolved.example.com/item-1",
                                 "title": "Updated Item 1",
                                 "topImageUrl": "https://example.com/item-1/top-image.jpg",
-                                "shortUrl": null,
                                 "domain": null,
                                 "language": "en",
                                 "timeToRead": 6,
