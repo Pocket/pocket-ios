@@ -150,6 +150,10 @@ struct ClientAPIRequest {
         self.operationName == "FeatureFlags"
     }
 
+    var isForCreateShareLink: Bool {
+        operationName == "CreateShareLink"
+    }
+
     func contains(_ string: String) -> Bool {
         requestBody?.contains(string) == true
     }

@@ -186,6 +186,10 @@ extension Response {
         fixture(named: "shortUrl")
     }
 
+    static func createShareLink() -> Response {
+        fixture(named: "createShareLink")
+    }
+
     static func savedItemWithTag() -> Response {
         fixture(named: "list-with-tagged-item")
     }
@@ -384,6 +388,8 @@ extension Response {
             return .collection()
         } else if apiRequest.isForShortUrl {
             return .shortUrl()
+        } else if apiRequest.isForCreateShareLink {
+            return .createShareLink()
         } else {
             fatalError("Unexpected request")
         }
