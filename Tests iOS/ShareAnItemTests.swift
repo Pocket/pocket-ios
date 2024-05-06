@@ -45,7 +45,7 @@ class ShareAnItemTests: PocketXCTestCase {
         await snowplowMicro.assertBaselineSnowplowExpectation()
         let overflowEvent = await snowplowMicro.getFirstEvent(with: "reader.toolbar.share")
         overflowEvent!.getUIContext()!.assertHas(type: "button")
-        overflowEvent!.getContentContext()!.assertHas(url: "https://pocket.co/example")
+        overflowEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
     }
 
     func test_shareFromHome_sharingARecommendation_sharingFromSlate() {
