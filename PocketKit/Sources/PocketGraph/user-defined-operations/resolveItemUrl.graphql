@@ -6,17 +6,6 @@ query ResolveItemUrl($url: String!) {
     savedItem {
       url
       id
-      item {
-        ... on Item {
-          shortUrl
-        }
-      }
     }
-  }
-}
-
-query GetItemShortUrl($url: String!) {
-  itemByUrl(url: $url) {
-     shortUrl
   }
 }

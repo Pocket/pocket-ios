@@ -4,7 +4,6 @@ fragment CorpusItemParts on CorpusItem {
     title
     excerpt
     imageUrl
-    shortUrl
     publisher
     target {
         ... on SyndicatedArticle {
