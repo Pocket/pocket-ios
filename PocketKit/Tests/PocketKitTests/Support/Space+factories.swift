@@ -115,8 +115,7 @@ extension Space {
         excerpt: String? = nil,
         isArticle: Bool = true,
         article: Article? = nil,
-        syndicatedArticle: SyndicatedArticle? = nil,
-        shortUrl: String? = nil
+        syndicatedArticle: SyndicatedArticle? = nil
     ) -> Item {
         return backgroundContext.performAndWait {
             let item: Item = Item(context: backgroundContext, givenURL: givenURL, remoteID: remoteID)
@@ -128,7 +127,6 @@ extension Space {
             item.topImageURL = topImageURL
             item.excerpt = excerpt
             item.syndicatedArticle = syndicatedArticle
-            item.shortURL = shortUrl
             return item
         }
     }

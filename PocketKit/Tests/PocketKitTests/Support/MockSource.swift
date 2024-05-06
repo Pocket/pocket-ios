@@ -8,6 +8,14 @@ import CoreData
 import Combine
 
 class MockSource: Source {
+    func item(by slug: String) async throws -> Sync.Item? {
+        return nil
+    }
+
+    func requestShareUrl(_ itemUrl: String) async throws -> String? {
+        return nil
+    }
+
     func objectID(from uri: URL) -> NSManagedObjectID? {
         return nil
     }
@@ -1335,24 +1343,6 @@ extension MockSource {
 
         calls[Self.fetchItem] = (calls[Self.fetchItem] ?? []) + [FetchItemCall(url: url)]
         return impl(url)
-    }
-}
-
-// MARK: Fetch get short url
-extension MockSource {
-    private static let getItemShortUrl = "getItemShortUrl"
-    typealias GetItemShortUrlImpl = (String) -> String?
-
-    struct GetItemShortUrlCall {
-        let itemUrl: String
-    }
-
-    func stubGetItemShortUrl(impl: @escaping GetItemShortUrlImpl) {
-        implementations[Self.getItemShortUrl] = impl
-    }
-
-    func getItemShortUrl(_ itemUrl: String) async throws -> String? {
-        return nil
     }
 }
 
