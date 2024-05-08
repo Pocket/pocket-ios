@@ -66,7 +66,7 @@ class RecommendableItemViewModel: ReadableViewModel {
             shareUrl = url
         } else {
             Task {
-                try? await source.requestShareUrl(item.givenURL)
+                shareUrl = try? await source.requestShareUrl(item.givenURL)
             }
         }
     }
