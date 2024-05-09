@@ -25,7 +25,7 @@ struct EditTagsBottomBar: ViewModifier {
                     }
                     .accessibilityIdentifier("rename-button")
                     .disabled(selectedItems.count != 1)
-                    .alert(Localization.Tags.deleteTag, isPresented: $showRenameAlert) {
+                    .alert(Localization.Tags.renameTag, isPresented: $showRenameAlert) {
                         TextField(Localization.Tags.RenameTag.prompt, text: $name)
                             .autocapitalization(.none)
                         Button(Localization.cancel, role: .cancel, action: {})
@@ -34,7 +34,7 @@ struct EditTagsBottomBar: ViewModifier {
                             name = ""
                         })
                     } message: {
-                        Text(Localization.Tags.DeleteTag.message)
+                        Text(Localization.Tags.RenameTag.message)
                     }
 
                     Spacer()
