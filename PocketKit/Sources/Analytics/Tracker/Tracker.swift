@@ -6,10 +6,8 @@ import SnowplowTracker
 
 public protocol Tracker {
     func addPersistentEntity(_ entity: Entity)
-    @available(*, deprecated, message: "Use track with an explict Event defintion")
     func track<T: OldEvent>(event: T, _ contexts: [Context]?)
     func track(event: Event, filename: String, line: Int, column: Int, funcName: String)
-    @available(*, deprecated, message: "No need to longer use a child tracker")
     func childTracker(with contexts: [Context]) -> Tracker
     func resetPersistentEntities(_ entities: [Entity])
 }

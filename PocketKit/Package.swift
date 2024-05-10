@@ -1,4 +1,4 @@
-// swift-tools-version:5.7
+// swift-tools-version:5.10
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 // This Source Code Form is subject to the terms of the Mozilla Public
@@ -78,6 +78,10 @@ let package = Package(
                 // Used by listen, ideally we put this there, but there were some c99 compilker issues, this used to be included by snowplow but is not anymore
                 .product(name: "FMDB", package: "fmdb")
             ],
+            swiftSettings: [
+                    // TODO: Remove `=targeted` to use the default `complete`.
+                    .enableExperimentalFeature("StrictConcurrency=targeted")
+                ],
             linkerSettings: [.unsafeFlags(["-ObjC"])] // Needed to load categories in PKTListen
         ),
         .testTarget(
