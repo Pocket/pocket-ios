@@ -5,7 +5,6 @@
 public typealias UIHierarchy = UInt
 public typealias UIIndex = UInt
 
-@available(*, deprecated, message: "Use Entities moving forward")
 public struct UIContext: Context {
     public static let schema = "iglu:com.pocket/ui/jsonschema/1-0-3"
 

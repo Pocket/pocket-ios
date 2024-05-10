@@ -2,7 +2,6 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-@available(*, deprecated, message: "Use Entities moving forward")
 public struct SlateContext: Context {
     public static let schema = "iglu:com.pocket/slate/jsonschema/1-0-0"
 
