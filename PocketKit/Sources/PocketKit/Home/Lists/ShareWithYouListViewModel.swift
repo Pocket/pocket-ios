@@ -75,7 +75,6 @@ class SharedWithYouListViewModel {
                 return
             }
 
-            let item = sharedWithYouItem.item
             tracker.track(event: Events.SharedWithYou.cardImpression(url: sharedWithYouItem.url, index: indexPath.item))
         }
     }
