@@ -6,6 +6,7 @@ import Combine
 import SwiftUI
 import Textile
 
+@MainActor
 public protocol AddTagsViewModel: ObservableObject {
     var placeholderText: String { get }
     var emptyStateText: String { get }

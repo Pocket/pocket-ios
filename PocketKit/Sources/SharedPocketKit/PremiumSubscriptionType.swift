@@ -3,7 +3,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 /// An enum that maps all available subscription IDs on the App Store
-public enum PremiumSubscriptionType: String {
+public enum PremiumSubscriptionType: String, Sendable {
     case monthly
     case annual
     case unknown

@@ -6,7 +6,7 @@ import StoreKit
 import Localization
 
 /// A type that maps to a subscription product on the App Store
-public struct PremiumSubscription {
+public struct PremiumSubscription: Sendable {
     let product: Product
 
     var name: String {

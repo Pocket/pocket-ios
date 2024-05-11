@@ -4,7 +4,7 @@
 
 import Combine
 import Network
-import Sync
+@preconcurrency import Sync
 import Foundation
 import BackgroundTasks
 import UIKit

@@ -25,6 +25,7 @@ protocol ReadableViewModelDelegate: AnyObject {
     func viewModel(_ readableViewModel: ReadableViewModel, didRequestListen configuration: ListenConfiguration)
 }
 
+@MainActor
 protocol ReadableViewModel: ReadableViewControllerDelegate {
     typealias EventPublisher = AnyPublisher<ReadableEvent, Never>
 

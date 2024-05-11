@@ -5,6 +5,7 @@
 import Sync
 import UIKit
 
+@MainActor
 class VimeoComponentPresenter: ArticleComponentPresenter {
     var componentIndex: Int
 

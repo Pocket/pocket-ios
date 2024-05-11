@@ -10,6 +10,7 @@ import Textile
 import Foundation
 import Analytics
 
+@MainActor
 class PocketAddTagsViewModel: AddTagsViewModel {
     private let item: SavedItem
     private let source: Source

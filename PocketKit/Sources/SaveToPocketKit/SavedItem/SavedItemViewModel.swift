@@ -131,6 +131,7 @@ class SavedItemViewModel {
         }
     }
 
+    @MainActor
     func showAddTagsView(from context: ExtensionContext?) {
         if let url = savedItem?.url {
             tracker.track(event: Events.SaveTo.addTagsEngagement(url: url))

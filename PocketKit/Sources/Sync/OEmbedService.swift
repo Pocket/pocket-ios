@@ -4,6 +4,7 @@
 
 import Foundation
 
+@MainActor
 public class OEmbedService {
     public enum Error: Swift.Error {
         case anError
@@ -51,12 +52,14 @@ public class OEmbedService {
     }
 }
 
+@MainActor
 public struct OEmbed: Decodable {
     public let html: String?
     public let width: Int?
     public let height: Int?
 }
 
+@MainActor
 public struct OEmbedRequest {
     public let id: String?
     public let width: Int?

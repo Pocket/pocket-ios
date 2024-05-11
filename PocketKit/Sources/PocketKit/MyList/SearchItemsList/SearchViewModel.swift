@@ -484,6 +484,7 @@ class DefaultSearchViewModel: ObservableObject {
 }
 
 extension DefaultSearchViewModel: SearchResultActionDelegate {
+    @MainActor
     func itemViewModel(_ searchItem: PocketItem, index: Int) -> PocketItemViewModel {
         return PocketItemViewModel(
             item: searchItem,
@@ -499,6 +500,7 @@ extension DefaultSearchViewModel: SearchResultActionDelegate {
         )
     }
 
+    @MainActor
     func select(_ searchItem: PocketItem, index: Int) {
         guard
             let savedItem = source.fetchOrCreateSavedItem(

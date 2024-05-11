@@ -44,6 +44,7 @@ private extension Style {
     }
 }
 
+@MainActor
 struct ArticleMetadataPresenter {
     private let readableViewModel: ReadableViewModel
     private let readerSettings: ReaderSettings

@@ -13,6 +13,7 @@ enum SelectedItem {
     case webView(SavedItemViewModel?)
     case collection(CollectionViewModel?)
 
+    @MainActor
     func clearPresentedWebReaderURL() {
         switch self {
         case .readable(let viewModel):
@@ -21,7 +22,7 @@ enum SelectedItem {
             break
         }
     }
-
+    @MainActor
     func clearSharedActivity() {
         switch self {
         case .readable(let viewModel):
@@ -30,7 +31,7 @@ enum SelectedItem {
             break
         }
     }
-
+    @MainActor
     func clearIsPresentingReaderSettings() {
         switch self {
         case .readable(let readable):
@@ -106,10 +107,12 @@ enum ItemsListEvent<ItemIdentifier: Hashable> {
     case networkStatusUpdated
 }
 
+@MainActor
 protocol ItemsListViewModelDelegate: AnyObject {
     func viewModel(_ itemsListViewModel: any ItemsListViewModel, didRequestListen: ListenConfiguration)
 }
 
+@MainActor
 protocol ItemsListViewModel: AnyObject {
     associatedtype ItemIdentifier: Hashable
     typealias Snapshot = NSDiffableDataSourceSnapshot<ItemsListSection, ItemsListCell<ItemIdentifier>>

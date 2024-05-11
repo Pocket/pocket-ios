@@ -10,6 +10,7 @@ import Combine
 import Analytics
 import SharedPocketKit
 
+@MainActor
 class SharedWithYouListViewModel {
     typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Cell>
 

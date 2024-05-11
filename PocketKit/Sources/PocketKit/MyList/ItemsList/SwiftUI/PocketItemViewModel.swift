@@ -8,6 +8,7 @@ import Sync
 import SharedPocketKit
 
 /// View model used for List Item to handle actions for a specific item
+@MainActor
 class PocketItemViewModel: ObservableObject {
     private let tracker: Tracker
     private let source: Source

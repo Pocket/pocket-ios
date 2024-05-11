@@ -8,6 +8,7 @@ import StoreKit
 import Sync
 
 /// A concrete implementation of SubscriptionStore that handles premium subscriptions purchases from the App Store
+@MainActor
 final class PocketSubscriptionStore: SubscriptionStore, ObservableObject {
     // Available subscriptions on the App Store
     @Published private(set) var subscriptions: [PremiumSubscription] = []
@@ -33,7 +34,9 @@ final class PocketSubscriptionStore: SubscriptionStore, ObservableObject {
     }
 
     deinit {
-        stop()
+        Task {
+            await stop()
+        }
     }
 
     /// Fetch available subscriptions from the App Store

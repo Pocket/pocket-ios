@@ -12,6 +12,7 @@ import Analytics
 import Network
 
 /// View model that holds logic for the native collection view
+@MainActor
 class CollectionViewModel: NSObject {
     typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Cell>
 

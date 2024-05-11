@@ -18,6 +18,7 @@ enum ReadableType {
     case webViewSavedItem(SavedItemViewModel)
     case collection(CollectionViewModel)
 
+    @MainActor
     func clearIsPresentingReaderSettings() {
         switch self {
         case .recommendable(let recommendationViewModel):
@@ -46,7 +47,7 @@ enum SeeAll {
     case saves
     case slate(SlateDetailViewModel)
     case sharedWithYou(SharedWithYouListViewModel)
-
+    @MainActor
     func clearRecommendationToReport() {
         switch self {
         case .saves, .sharedWithYou:
@@ -55,7 +56,7 @@ enum SeeAll {
             viewModel.clearRecommendationToReport()
         }
     }
-
+    @MainActor
     func clearPresentedWebReaderURL() {
         switch self {
         case .saves:
@@ -66,7 +67,7 @@ enum SeeAll {
             viewModel.clearPresentedWebReaderURL()
         }
     }
-
+    @MainActor
     func clearSharedActivity() {
         switch self {
         case .saves:
@@ -77,7 +78,7 @@ enum SeeAll {
             viewModel.clearSharedActivity()
         }
     }
-
+    @MainActor
     func clearIsPresentingReaderSettings() {
         switch self {
         case .saves:
@@ -88,7 +89,7 @@ enum SeeAll {
             viewModel.clearIsPresentingReaderSettings()
         }
     }
-
+    @MainActor
     func clearSelectedItem() {
         switch self {
         case .saves:

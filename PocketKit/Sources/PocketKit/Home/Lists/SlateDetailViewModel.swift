@@ -10,6 +10,7 @@ import Combine
 import Analytics
 import SharedPocketKit
 
+@MainActor
 class SlateDetailViewModel {
     typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Cell>
 

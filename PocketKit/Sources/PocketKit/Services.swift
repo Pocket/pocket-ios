@@ -11,6 +11,7 @@ import SharedPocketKit
 import Kingfisher
 import Network
 
+@MainActor
 struct Services {
     static let shared: Services = Services()
 

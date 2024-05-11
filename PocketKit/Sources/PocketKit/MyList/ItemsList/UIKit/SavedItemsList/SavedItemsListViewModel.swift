@@ -3,7 +3,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import CoreData
-import Sync
+@preconcurrency import Sync
 import Analytics
 import Combine
 import UIKit
@@ -235,6 +235,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         source.retryImmediately()
     }
 
+    @MainActor
     func preview(for cell: ItemsListCell<NSManagedObjectID>) -> (ReadableViewModel, Bool)? {
         guard case .item(let itemID) = cell else {
             return nil

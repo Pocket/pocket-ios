@@ -29,6 +29,7 @@ public enum PurchaseState {
 }
 
 /// Generic type representing a subscription store
+@MainActor
 public protocol SubscriptionStore {
     var subscriptions: [PremiumSubscription] { get }
     var subscriptionsPublisher: Published<[PremiumSubscription]>.Publisher { get }

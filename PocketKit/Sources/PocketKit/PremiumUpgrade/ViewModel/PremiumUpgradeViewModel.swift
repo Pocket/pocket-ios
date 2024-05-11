@@ -13,6 +13,7 @@ import Localization
 /// Factory to construct and inject `PremiumUpgradeViewModel` where needed
 typealias PremiumUpgradeViewModelFactory = (PremiumUpgradeSource) -> PremiumUpgradeViewModel
 
+@MainActor
 class PremiumUpgradeViewModel: ObservableObject {
     private let store: SubscriptionStore
     private let tracker: Tracker

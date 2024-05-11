@@ -8,6 +8,7 @@ import Combine
 import CoreGraphics
 import UIKit
 
+@MainActor
 class YouTubeVideoComponentPresenter: ArticleComponentPresenter {
     var componentIndex: Int
 
