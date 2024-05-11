@@ -208,7 +208,7 @@ class SaveOperation<Mutation: GraphQLMutation>: AsyncOperation {
     private let osNotifications: OSNotificationCenter
     private let space: Space
     private let savedItem: SavedItem
-    private let mutation: any GraphQLMutation
+    private let mutation: Mutation
     private let savedItemParts: (any RootSelectionSet) -> SavedItemParts?
 
     private var task: Cancellable?
@@ -242,7 +242,7 @@ class SaveOperation<Mutation: GraphQLMutation>: AsyncOperation {
         super.cancel()
     }
 
-    private func performMutation<Mutation: GraphQLMutation>(mutation: Mutation) {
+    private func performMutation(mutation: Mutation) {
         task = apollo.perform(mutation: mutation, publishResultToStore: false, context: nil, queue: .global(qos: .userInitiated)) { [weak self] result in
             guard case .success(let graphQLResult) = result,
                     let data = graphQLResult.data,
