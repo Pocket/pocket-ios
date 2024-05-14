@@ -354,6 +354,26 @@ extension MainViewModel {
                 }
             }
         }
+        
+        let pocketEditUrlRoutingAction: (URL, ReadableSource) -> Void = { [weak self] url, source in
+            // dismiss any existing modal
+            self?.account.dismissAll()
+            // go to home
+            self?.selectedSection = .home
+            // extract the url
+            guard let queryURL = url.query() else {
+                Log.capture(message: "Unable to extract query url")
+                fallbackAction(url)
+                return
+            }
+            Task {
+                do {
+                    // Save and get item
+                } catch {
+                    fallbackAction(url)
+                }
+            }
+        }
 
         let widgetRoute = WidgetRoute(action: routingAction)
         let collectionRoute = CollectionRoute(action: routingAction)
@@ -363,9 +383,11 @@ extension MainViewModel {
         let shortUrlRoute = ShortUrlRoute(action: shortUrlRoutingAction)
         let pocketShareRoute = PocketShareRoute(action: pocketShareUrlRoutingAction)
         let pocketReadRoute = PocketReadRoute(action: pocketReadUrlRoutingAction)
+        let pocketEditRoute = PocketEditRoute(action: pocketEditUrlRoutingAction)
+
         // NOTE: order matters, because there might be overlapping patterns
         // we can probably optimize by having exclusive-patterns only routes, and handle additional logic within
         // the route itself
-        linkRouter.addRoutes([widgetRoute, collectionRoute, syndicatedRoute, genericItemRoute, spotlightRoute, pocketShareRoute, pocketReadRoute, shortUrlRoute])
+        linkRouter.addRoutes([widgetRoute, collectionRoute, syndicatedRoute, genericItemRoute, spotlightRoute, pocketShareRoute, pocketReadRoute, shortUrlRoute, pocketEditRoute])
     }
 }

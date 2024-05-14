@@ -229,3 +229,33 @@ struct PocketReadRoute: Route {
         return normalizedComponents.url?.absoluteString
     }
 }
+
+
+@MainActor
+struct PocketEditRoute: Route {
+    let host: String? = "getpocket.com"
+    let scheme = "https"
+    let path = "/edit"
+    let source: ReadableSource = .external
+    let action: (URL, ReadableSource) -> Void
+
+    init(action: @escaping (URL, ReadableSource) -> Void) {
+        self.action = action
+    }
+
+    nonisolated func matchedUrlString(from url: URL) -> String? {
+        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
+              components.host == host,
+              components.scheme == scheme,
+              components.path.contains(path) else {
+            return nil
+        }
+        var normalizedComponents = components
+        // remove utm_source and other external query items to obtain the item url
+        let updatedQueryItems = normalizedComponents.queryItems?.filter {
+            $0.name != "utm_source"
+        }
+        normalizedComponents.queryItems = updatedQueryItems
+        return normalizedComponents.url?.absoluteString
+    }
+}
