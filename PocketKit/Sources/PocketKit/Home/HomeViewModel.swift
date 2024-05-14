@@ -124,6 +124,15 @@ class HomeViewModel: NSObject {
         }
     }
 
+    private var adSequences: [PocketAdsSequence] = [] {
+        didSet {
+            guard !oldValue.isEmpty else {
+                return
+            }
+            snapshot = buildSnapshot()
+        }
+    }
+
     private let source: Source
     let tracker: Tracker
     private let user: User
@@ -137,6 +146,7 @@ class HomeViewModel: NSObject {
     private let store: SubscriptionStore
     private let recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService
     private let recommendationsWidgetUpdateService: RecommendationsWidgetUpdateService
+    private let adStore = PocketAdsStore()
 
     private let recentSavesController: NSFetchedResultsController<SavedItem>
     private let recomendationsController: RichFetchedResultsController<Recommendation>
@@ -220,6 +230,9 @@ class HomeViewModel: NSObject {
         homeRefreshCoordinator.refresh(isForced: isForced) {
             completion()
         }
+        Task {
+            adSequences = await adStore.getAds()
+        }
     }
 }
 
@@ -283,8 +296,10 @@ extension HomeViewModel {
             }
 
             snapshot.appendSections([.slateCarousel(slateId)])
+            var items = recommendations.prefix(4).map { Cell.recommendationCarousel($0.objectID) }
+            // TODO: insert ads in the carousel here
             snapshot.appendItems(
-                recommendations.prefix(4).map { .recommendationCarousel($0.objectID) },
+                items,
                 toSection: .slateCarousel(slateId)
             )
         }
