@@ -60,6 +60,11 @@
 		6547A0FF29F1812E00F6FC6B /* Sails in Frameworks */ = {isa = PBXBuildFile; productRef = 6547A0FE29F1812E00F6FC6B /* Sails */; };
 		656041EE29B18105007E7CD0 /* SettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656041ED29B18105007E7CD0 /* SettingsTests.swift */; };
 		656041F029B182AF007E7CD0 /* AccountManagementViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656041EF29B182AF007E7CD0 /* AccountManagementViewElement.swift */; };
+		656792C32BF4F90900DD8A81 /* AppClipExtensionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656792C22BF4F90900DD8A81 /* AppClipExtensionApp.swift */; };
+		656792C52BF4F90900DD8A81 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656792C42BF4F90900DD8A81 /* ContentView.swift */; };
+		656792C72BF4F90A00DD8A81 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 656792C62BF4F90A00DD8A81 /* Assets.xcassets */; };
+		656792CA2BF4F90A00DD8A81 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 656792C92BF4F90A00DD8A81 /* Preview Assets.xcassets */; };
+		656792CF2BF4F90A00DD8A81 /* AppClipExtension.app in Embed App Clips */ = {isa = PBXBuildFile; fileRef = 656792C02BF4F90900DD8A81 /* AppClipExtension.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		656A99D62B237F6300FCFDC4 /* Messages.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65BE9F542B228AA80059C3C4 /* Messages.framework */; };
 		656A99E22B237F6300FCFDC4 /* iMessageExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 656A99D52B237F6300FCFDC4 /* iMessageExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		656A99E82B237FC500FCFDC4 /* PocketStickerKit in Frameworks */ = {isa = PBXBuildFile; productRef = 656A99E72B237FC500FCFDC4 /* PocketStickerKit */; };
@@ -162,6 +167,13 @@
 			remoteGlobalIDString = 650FECCA28BA85F300A3CB0C;
 			remoteInfo = PushNotificationServiceExtension;
 		};
+		656792CD2BF4F90A00DD8A81 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 166A81A42637406B0015AA1D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 656792BF2BF4F90900DD8A81;
+			remoteInfo = AppClipExtension;
+		};
 		656A99E02B237F6300FCFDC4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 166A81A42637406B0015AA1D /* Project object */;
@@ -199,6 +211,17 @@
 				656A99E22B237F6300FCFDC4 /* iMessageExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		656792D02BF4F90A00DD8A81 /* Embed App Clips */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/AppClips";
+			dstSubfolderSpec = 16;
+			files = (
+				656792CF2BF4F90A00DD8A81 /* AppClipExtension.app in Embed App Clips */,
+			);
+			name = "Embed App Clips";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		F220F2B0264DC0DE0064D272 /* Embed Frameworks */ = {
@@ -280,6 +303,13 @@
 		655C274E28B67ED20040AEAB /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		656041ED29B18105007E7CD0 /* SettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTests.swift; sourceTree = "<group>"; };
 		656041EF29B182AF007E7CD0 /* AccountManagementViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountManagementViewElement.swift; sourceTree = "<group>"; };
+		656792C02BF4F90900DD8A81 /* AppClipExtension.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppClipExtension.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		656792C22BF4F90900DD8A81 /* AppClipExtensionApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppClipExtensionApp.swift; sourceTree = "<group>"; };
+		656792C42BF4F90900DD8A81 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		656792C62BF4F90A00DD8A81 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		656792C92BF4F90A00DD8A81 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		656792CB2BF4F90A00DD8A81 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		656792CC2BF4F90A00DD8A81 /* AppClipExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AppClipExtension.entitlements; sourceTree = "<group>"; };
 		656A99D52B237F6300FCFDC4 /* iMessageExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = iMessageExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		656BF0722A09A5EC008BA8E3 /* ErrorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorTests.swift; sourceTree = "<group>"; };
 		658140E929A5993C00346848 /* SnowplowMicro.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnowplowMicro.swift; sourceTree = "<group>"; };
@@ -400,6 +430,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		656792BD2BF4F90900DD8A81 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		656A99D22B237F6300FCFDC4 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -487,6 +524,7 @@
 				65EC272A28BA8AD50075E1DF /* PushNotificationStoryExtension */,
 				AA2E89062A0D8848004A27BD /* ItemWidgets */,
 				65BE9F562B228AA80059C3C4 /* iMessageExtension */,
+				656792C12BF4F90900DD8A81 /* AppClipExtension */,
 				F220F2B8264DC2750064D272 /* Frameworks */,
 				166A81B12637406C0015AA1D /* Products */,
 			);
@@ -502,6 +540,7 @@
 				65EC272528BA8AD50075E1DF /* PushNotificationStoryExtension.appex */,
 				AA2E89012A0D8847004A27BD /* ItemWidgets.appex */,
 				656A99D52B237F6300FCFDC4 /* iMessageExtension.appex */,
+				656792C02BF4F90900DD8A81 /* AppClipExtension.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -610,6 +649,27 @@
 				650FECCF28BA85F300A3CB0C /* Info.plist */,
 			);
 			path = PushNotificationServiceExtension;
+			sourceTree = "<group>";
+		};
+		656792C12BF4F90900DD8A81 /* AppClipExtension */ = {
+			isa = PBXGroup;
+			children = (
+				656792C22BF4F90900DD8A81 /* AppClipExtensionApp.swift */,
+				656792C42BF4F90900DD8A81 /* ContentView.swift */,
+				656792C62BF4F90A00DD8A81 /* Assets.xcassets */,
+				656792CB2BF4F90A00DD8A81 /* Info.plist */,
+				656792CC2BF4F90A00DD8A81 /* AppClipExtension.entitlements */,
+				656792C82BF4F90A00DD8A81 /* Preview Content */,
+			);
+			path = AppClipExtension;
+			sourceTree = "<group>";
+		};
+		656792C82BF4F90A00DD8A81 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				656792C92BF4F90A00DD8A81 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
 			sourceTree = "<group>";
 		};
 		65BE9F562B228AA80059C3C4 /* iMessageExtension */ = {
@@ -787,6 +847,7 @@
 				166A81AE2637406C0015AA1D /* Resources */,
 				F220F2B0264DC0DE0064D272 /* Embed Frameworks */,
 				166DF27727E9160A00C03BF4 /* Embed Foundation Extensions */,
+				656792D02BF4F90A00DD8A81 /* Embed App Clips */,
 			);
 			buildRules = (
 			);
@@ -796,6 +857,7 @@
 				65EC273228BA8AD50075E1DF /* PBXTargetDependency */,
 				AA2E890F2A0D8849004A27BD /* PBXTargetDependency */,
 				656A99E12B237F6300FCFDC4 /* PBXTargetDependency */,
+				656792CE2BF4F90A00DD8A81 /* PBXTargetDependency */,
 			);
 			name = "Pocket (iOS)";
 			packageProductDependencies = (
@@ -853,6 +915,23 @@
 			productName = PushNotificationServiceExtension;
 			productReference = 650FECCB28BA85F300A3CB0C /* PushNotificationServiceExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
+		};
+		656792BF2BF4F90900DD8A81 /* AppClipExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 656792D42BF4F90A00DD8A81 /* Build configuration list for PBXNativeTarget "AppClipExtension" */;
+			buildPhases = (
+				656792BC2BF4F90900DD8A81 /* Sources */,
+				656792BD2BF4F90900DD8A81 /* Frameworks */,
+				656792BE2BF4F90900DD8A81 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AppClipExtension;
+			productName = AppClipExtension;
+			productReference = 656792C02BF4F90900DD8A81 /* AppClipExtension.app */;
+			productType = "com.apple.product-type.application.on-demand-install-capable";
 		};
 		656A99D42B237F6300FCFDC4 /* iMessageExtension */ = {
 			isa = PBXNativeTarget;
@@ -942,7 +1021,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastSwiftUpdateCheck = 1500;
+				LastSwiftUpdateCheck = 1530;
 				LastUpgradeCheck = 1530;
 				TargetAttributes = {
 					166A81AF2637406C0015AA1D = {
@@ -955,6 +1034,9 @@
 					};
 					650FECCA28BA85F300A3CB0C = {
 						CreatedOnToolsVersion = 13.4.1;
+					};
+					656792BF2BF4F90900DD8A81 = {
+						CreatedOnToolsVersion = 15.3;
 					};
 					656A99D42B237F6300FCFDC4 = {
 						CreatedOnToolsVersion = 15.0.1;
@@ -1013,6 +1095,7 @@
 				65EC272428BA8AD50075E1DF /* PushNotificationStoryExtension */,
 				AA2E89002A0D8847004A27BD /* ItemWidgets */,
 				656A99D42B237F6300FCFDC4 /* iMessageExtension */,
+				656792BF2BF4F90900DD8A81 /* AppClipExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -1043,6 +1126,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		656792BE2BF4F90900DD8A81 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				656792CA2BF4F90A00DD8A81 /* Preview Assets.xcassets in Resources */,
+				656792C72BF4F90A00DD8A81 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1214,6 +1306,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		656792BC2BF4F90900DD8A81 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				656792C52BF4F90900DD8A81 /* ContentView.swift in Sources */,
+				656792C32BF4F90900DD8A81 /* AppClipExtensionApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		656A99D12B237F6300FCFDC4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1282,6 +1383,11 @@
 			isa = PBXTargetDependency;
 			target = 650FECCA28BA85F300A3CB0C /* PushNotificationServiceExtension */;
 			targetProxy = 650FECD028BA85F300A3CB0C /* PBXContainerItemProxy */;
+		};
+		656792CE2BF4F90A00DD8A81 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 656792BF2BF4F90900DD8A81 /* AppClipExtension */;
+			targetProxy = 656792CD2BF4F90A00DD8A81 /* PBXContainerItemProxy */;
 		};
 		656A99E12B237F6300FCFDC4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1603,6 +1709,127 @@
 				PROVISIONING_PROFILE_SPECIFIER = "Bitrise com.ideashower.ReadItLaterPro.PushNotifica";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		656792D12BF4F90A00DD8A81 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = AppClipExtension/AppClipExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"AppClipExtension/Preview Content\"";
+				DEVELOPMENT_TEAM = 43AQ936H96;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AppClipExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Pocket;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.Clip;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited) APPCLIP";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		656792D22BF4F90A00DD8A81 /* Debug_Tests */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = AppClipExtension/AppClipExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"AppClipExtension/Preview Content\"";
+				DEVELOPMENT_TEAM = 43AQ936H96;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AppClipExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Pocket;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.Clip;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited) APPCLIP";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug_Tests;
+		};
+		656792D32BF4F90A00DD8A81 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = AppClipExtension/AppClipExtension.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"AppClipExtension/Preview Content\"";
+				DEVELOPMENT_TEAM = 43AQ936H96;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AppClipExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Pocket;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.Clip;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = APPCLIP;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -2228,6 +2455,16 @@
 				650FECD428BA85F300A3CB0C /* Debug */,
 				8A6EADE229F87C2900355D92 /* Debug_Tests */,
 				650FECD628BA85F300A3CB0C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		656792D42BF4F90A00DD8A81 /* Build configuration list for PBXNativeTarget "AppClipExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				656792D12BF4F90A00DD8A81 /* Debug */,
+				656792D22BF4F90A00DD8A81 /* Debug_Tests */,
+				656792D32BF4F90A00DD8A81 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
