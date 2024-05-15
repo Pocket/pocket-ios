@@ -174,6 +174,16 @@ public extension Events.Settings {
         )
     }
 
+    static func appIconButtonTapped() -> Engagement {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "global-nav.settings.appIcon.tap"
+            )
+        )
+    }
+
     /// Icon selector viewed
     static func iconSelectorImpression() -> Impression {
         return Impression(

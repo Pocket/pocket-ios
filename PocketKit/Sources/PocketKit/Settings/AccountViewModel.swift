@@ -244,6 +244,10 @@ extension AccountViewModel {
     func trackDeleteTapped() {
         tracker.track(event: Events.Settings.deleteRowTapped())
     }
+
+    func trackAppIconTapped() {
+        tracker.track(event: Events.Settings.appIconButtonTapped())
+    }
 }
 
 // MARK: reset modal presentation

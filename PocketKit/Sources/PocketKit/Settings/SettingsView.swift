@@ -58,9 +58,9 @@ struct SettingsForm: View {
                             .opacity(0.0)
                             .buttonStyle(PlainButtonStyle())
                             SettingsRowButton(title: Localization.Settings.AppIcon.title, trailingImageAsset: .chevronRight) {
-                                model.trackAccountManagementTapped()
+                                model.trackAppIconTapped()
                             }
-                            .accessibilityIdentifier("account-management-button")
+                            .accessibilityIdentifier("app-icon-button")
                         }
                     }
                 }
