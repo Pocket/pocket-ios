@@ -15,7 +15,7 @@ struct SelectIconView: View {
                 Section {
                     List(PocketAppIcon.allCases) { appIcon in
                         HStack(spacing: 16) {
-                            Image(uiImage: appIcon.preview)
+                            Image(appIcon.previewName)
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 60, height: 60)

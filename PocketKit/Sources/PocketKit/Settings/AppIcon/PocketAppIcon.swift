@@ -2,8 +2,6 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import UIKit
-
 enum PocketAppIcon: String, CaseIterable, Identifiable {
     case primary = "AppIcon"
     case pride = "AppIcon-Pride"
@@ -30,7 +28,7 @@ enum PocketAppIcon: String, CaseIterable, Identifiable {
         }
     }
 
-    var preview: UIImage {
-        UIImage(named: rawValue + "-Preview") ?? UIImage()
+    var previewName: String {
+        rawValue + "-Preview"
     }
 }
