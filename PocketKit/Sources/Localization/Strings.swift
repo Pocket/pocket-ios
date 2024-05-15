@@ -602,6 +602,10 @@ public enum Localization {
         }
       }
     }
+    public enum AppIcon {
+      /// App Icon
+      public static let title = Localization.tr("Localizable", "settings.appIcon.title", fallback: "App Icon")
+    }
     public enum Logout {
       /// Are you sure?
       public static let areyousure = Localization.tr("Localizable", "settings.logout.areyousure", fallback: "Are you sure?")

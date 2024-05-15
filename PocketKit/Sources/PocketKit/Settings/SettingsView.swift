@@ -50,6 +50,18 @@ struct SettingsForm: View {
                             .accessibilityIdentifier("app-badge-toggle")
                         Toggle(Localization.Settings.alwaysOpenOriginalView, isOn: model.$originalViewToggle)
                             .accessibilityIdentifier("original-view-toggle")
+                        // Custom implementation to hide the > arrow and let us use our own.
+                        ZStack {
+                            NavigationLink(destination: SelectIconContainerView()) {
+                                EmptyView()
+                            }
+                            .opacity(0.0)
+                            .buttonStyle(PlainButtonStyle())
+                            SettingsRowButton(title: Localization.Settings.AppIcon.title, trailingImageAsset: .chevronRight) {
+                                model.trackAccountManagementTapped()
+                            }
+                            .accessibilityIdentifier("account-management-button")
+                        }
                     }
                 }
                 .textCase(nil)
