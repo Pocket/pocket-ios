@@ -2,14 +2,17 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import UIKit
+import Analytics
 import SharedPocketKit
+import UIKit
 
 @MainActor
 final class SelectIconViewModel: ObservableObject {
+    private let tracker: Tracker
     @Published private(set) var selectedAppIcon: PocketAppIcon
 
-    init() {
+    init(tracker: Tracker) {
+        self.tracker = tracker
         if let iconName = UIApplication.shared.alternateIconName, let appIcon = PocketAppIcon(rawValue: iconName) {
             selectedAppIcon = appIcon
         } else {
@@ -32,5 +35,13 @@ final class SelectIconViewModel: ObservableObject {
             // in case of error, restore the existing
             selectedAppIcon = previousAppIcon
         }
+    }
+    // Analytics
+    func trackIconSelectorViewed() {
+        tracker.track(event: Events.Settings.iconSelectorImpression())
+    }
+
+    func trackIconSelected(_ iconName: String) {
+        tracker.track(event: Events.Settings.appBadgeToggled(iconName: iconName))
     }
 }

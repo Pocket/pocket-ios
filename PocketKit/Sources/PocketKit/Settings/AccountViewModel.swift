@@ -266,3 +266,11 @@ extension AccountViewModel {
         isPresentingDebugMenu = false
     }
 }
+
+// MARK: Select App Icon ViewModel factory
+extension AccountViewModel {
+    @MainActor
+    func makeSelectIconViewModel() -> SelectIconViewModel {
+        SelectIconViewModel(tracker: tracker)
+    }
+}

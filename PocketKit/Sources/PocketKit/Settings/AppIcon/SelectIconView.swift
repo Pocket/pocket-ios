@@ -7,7 +7,11 @@ import SwiftUI
 import Textile
 
 struct SelectIconView: View {
-    @StateObject var viewModel = SelectIconViewModel()
+    @StateObject var viewModel: SelectIconViewModel
+
+    init(viewModel: SelectIconViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
 
     var body: some View {
         Form {
@@ -28,6 +32,7 @@ struct SelectIconView: View {
                         .onTapGesture {
                             Task {
                                 await viewModel.updateAppIcon(to: appIcon)
+                                viewModel.trackIconSelected(appIcon.description)
                             }
                         }
                     }
@@ -35,15 +40,12 @@ struct SelectIconView: View {
                 .listRowBackground(Color(.ui.grey7))
             }
         }
-    }
-}
-
-struct SelectIconContainerView: View {
-    var body: some View {
-        SelectIconView()
-            .scrollContentBackground(.hidden)
-            .background(Color(.ui.white1).ignoresSafeArea())
-            .navigationBarTitle(Localization.Settings.AppIcon.title, displayMode: .large)
+        .onAppear {
+            viewModel.trackIconSelectorViewed()
+        }
+        .scrollContentBackground(.hidden)
+        .background(Color(.ui.white1).ignoresSafeArea())
+        .navigationBarTitle(Localization.Settings.AppIcon.title, displayMode: .large)
     }
 }
 
@@ -58,8 +60,4 @@ struct CheckboxView: View {
                 .frame(width: 24, height: 24)
         }
     }
-}
-
-#Preview {
-    SelectIconView()
 }

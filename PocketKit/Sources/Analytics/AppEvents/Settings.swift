@@ -173,4 +173,28 @@ public extension Events.Settings {
             )
         )
     }
+
+    /// Icon selector viewed
+    static func iconSelectorImpression() -> Impression {
+        return Impression(
+            component: .screen,
+            requirement: .viewable,
+            uiEntity: UiEntity(
+                .screen,
+                identifier: "global-nav.settings.iconSelector"
+            )
+        )
+    }
+
+    // App icon was changed
+    static func appBadgeToggled(iconName: String) -> Engagement {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "global-nav.settings.iconSelector.iconChanged",
+                componentDetail: iconName
+            )
+        )
+    }
 }

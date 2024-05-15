@@ -52,7 +52,7 @@ struct SettingsForm: View {
                             .accessibilityIdentifier("original-view-toggle")
                         // Custom implementation to hide the > arrow and let us use our own.
                         ZStack {
-                            NavigationLink(destination: SelectIconContainerView()) {
+                            NavigationLink(destination: SelectIconView(viewModel: model.makeSelectIconViewModel())) {
                                 EmptyView()
                             }
                             .opacity(0.0)
