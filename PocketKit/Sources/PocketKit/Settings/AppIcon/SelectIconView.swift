@@ -26,8 +26,8 @@ struct SelectIconView: View {
                         }
                         .contentShape(Rectangle())
                         .onTapGesture {
-                            withAnimation {
-                                viewModel.updateAppIcon(to: appIcon)
+                            Task {
+                                await viewModel.updateAppIcon(to: appIcon)
                             }
                         }
                     }

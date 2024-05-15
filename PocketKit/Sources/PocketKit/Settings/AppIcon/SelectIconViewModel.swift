@@ -5,6 +5,7 @@
 import UIKit
 import SharedPocketKit
 
+@MainActor
 final class SelectIconViewModel: ObservableObject {
     @Published private(set) var selectedAppIcon: PocketAppIcon
 
@@ -16,22 +17,20 @@ final class SelectIconViewModel: ObservableObject {
         }
     }
 
-    func updateAppIcon(to icon: PocketAppIcon) {
+    func updateAppIcon(to icon: PocketAppIcon) async {
         let previousAppIcon = selectedAppIcon
-            selectedAppIcon = icon
+        selectedAppIcon = icon
 
-            Task { @MainActor in
-                guard UIApplication.shared.alternateIconName != icon.iconName else {
-                    // No need to update since we're already using this icon.
-                    return
-                }
-                do {
-                    try await UIApplication.shared.setAlternateIconName(icon.iconName)
-                } catch {
-                    Log.capture(message: "Updating icon to \(String(describing: icon.iconName)) failed - \(error).")
-                    // in case of error, restore the existing
-                    selectedAppIcon = previousAppIcon
-                }
-            }
+        guard UIApplication.shared.alternateIconName != icon.iconName else {
+            // No need to update since we're already using this icon.
+            return
+        }
+        do {
+            try await UIApplication.shared.setAlternateIconName(icon.iconName)
+        } catch {
+            Log.capture(message: "Updating icon to \(String(describing: icon.iconName)) failed - \(error).")
+            // in case of error, restore the existing
+            selectedAppIcon = previousAppIcon
+        }
     }
 }
