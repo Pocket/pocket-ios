@@ -4,7 +4,9 @@
 
 enum PocketAppIcon: String, CaseIterable, Identifiable {
     case primary = "AppIcon"
-    case pride = "AppIcon-Pride"
+    // TODO: pride currently disable while we wait for the official icon
+    // case pride = "AppIcon-Pride"
+    case monochrome = "AppIcon-Monochrome"
 
     var id: String {
         rawValue
@@ -23,8 +25,8 @@ enum PocketAppIcon: String, CaseIterable, Identifiable {
         switch self {
         case .primary:
             return "Default"
-        case .pride:
-            return "Pride"
+        case .monochrome:
+            return "Monochrome"
         }
     }
 
