@@ -265,6 +265,9 @@ extension HomeViewController {
 
             cell.configure(with: configuration)
             return cell
+        case .ad(let ID):
+            // TODO: ADS - add logic for rendering an ad cell here
+            return UICollectionViewCell()
         }
     }
 

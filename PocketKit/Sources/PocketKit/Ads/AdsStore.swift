@@ -13,7 +13,7 @@ enum PocketAdZone: String, Sendable {
 }
 
 struct PocketAdsSequence: Identifiable {
-    var id = UUID()
+    let id: String
     let ads: [PocketAd]
 }
 
@@ -107,7 +107,14 @@ struct PocketAd: Decodable {
 // TODO: ADS - we might want to add a generic protocol here, but for now let's keep it simple
 struct PocketAdsStore: Sendable {
     func getAds() async -> [PocketAdsSequence] {
-        [PocketAdsSequence(ads: [Self.mockAd1])]
+        [
+            PocketAdsSequence(id: "ads_sequence_123", ads: [Self.mockAd1, Self.mockAd2, Self.mockAd3]),
+            PocketAdsSequence(id: "ads_sequence_132", ads: [Self.mockAd1, Self.mockAd3, Self.mockAd2]),
+            PocketAdsSequence(id: "ads_sequence_213", ads: [Self.mockAd2, Self.mockAd1, Self.mockAd3]),
+            PocketAdsSequence(id: "ads_sequence_231", ads: [Self.mockAd2, Self.mockAd3, Self.mockAd1]),
+            PocketAdsSequence(id: "ads_sequence_321", ads: [Self.mockAd3, Self.mockAd2, Self.mockAd1]),
+            PocketAdsSequence(id: "ads_sequence_312", ads: [Self.mockAd3, Self.mockAd1, Self.mockAd2])
+        ]
     }
 }
 
@@ -122,6 +129,30 @@ private extension PocketAdsStore {
         textColor: UIColor(.ui.white1),
         ctaTextColor: UIColor(.ui.white1),
         ctaBackgroundColor: UIColor(.ui.teal1),
+        backgroundColor: UIColor(.ui.black1)
+    )
+
+    static let mockAd2 = PocketAd(
+        title: "Get Pocket Extra",
+        description: "Subscribe to extra to get the fanciest Pocket features",
+        imageUrl: "https://assets-prod.sumo.prod.webservices.mozgcp.net/media/uploads/products/2023-08-22-06-28-55-65dfd5.png",
+        buttonTitle: "Get Premium",
+        targetUrl: "https://getpocket.com",
+        textColor: UIColor(.ui.white1),
+        ctaTextColor: UIColor(.ui.white1),
+        ctaBackgroundColor: UIColor(.ui.coral1),
+        backgroundColor: UIColor(.ui.black1)
+    )
+
+    static let mockAd3 = PocketAd(
+        title: "Get Pocket Ultra",
+        description: "Subscribe to ultra to get everything you can from Pocket",
+        imageUrl: "https://assets-prod.sumo.prod.webservices.mozgcp.net/media/uploads/products/2023-08-22-06-28-55-65dfd5.png",
+        buttonTitle: "Get Premium",
+        targetUrl: "https://getpocket.com",
+        textColor: UIColor(.ui.white1),
+        ctaTextColor: UIColor(.ui.white1),
+        ctaBackgroundColor: UIColor(.ui.apricot1),
         backgroundColor: UIColor(.ui.black1)
     )
 }

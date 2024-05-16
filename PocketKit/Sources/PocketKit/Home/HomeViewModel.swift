@@ -297,7 +297,7 @@ extension HomeViewModel {
 
             snapshot.appendSections([.slateCarousel(slateId)])
             var items = recommendations.prefix(4).map { Cell.recommendationCarousel($0.objectID) }
-            // TODO: insert ads in the carousel here
+            // TODO: ADS - insert ads in the carousel here
             snapshot.appendItems(
                 items,
                 toSection: .slateCarousel(slateId)
@@ -330,6 +330,9 @@ extension HomeViewModel {
                 return
             }
             select(sharedWithYouItem: sharedWithYouItem, at: indexPath)
+        case .ad(let ID):
+            // TODO: ADS - add logic for tapping on an ad here
+            return
         }
     }
 
@@ -925,6 +928,9 @@ extension HomeViewModel {
 
             let givenURL = item.givenURL
             tracker.track(event: Events.Home.SlateArticleImpression(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
+        case .ad(let ID):
+            // TODO: ADS - add logic for tracking add tapped here
+            return
         }
     }
 }
@@ -945,6 +951,7 @@ extension HomeViewModel {
         case recommendationHero(NSManagedObjectID)
         case recommendationCarousel(NSManagedObjectID)
         case sharedWithYou(NSManagedObjectID)
+        case ad(String)
         case offline
     }
 }
