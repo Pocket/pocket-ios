@@ -165,6 +165,8 @@
 "settings.premium.settings.pocketPremiumFAQ" = "Preguntas frecuentes sobre Pocket Premium";
 // this refers to an action to open an email
 "settings.premium.settings.contactPocketSupport" = "Ponte en contacto con el soporte de Pocket";
+// app icon
+"settings.appIcon.title" = "Ícono de la aplicación";
 
 //Sorting Options
 "sortingOption.sortBy" = "Ordenar por";
