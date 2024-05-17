@@ -48,7 +48,7 @@
 "itemAction.showHighlights" = "Highlights";
 
 // Edit Actions
-"editAction.highlight" = "In evidenza";
+"editAction.highlight" = "Evidenzia";
 
 //ItemList
 "itemlist.filter.search" = "Cerca";
@@ -165,6 +165,8 @@
 "settings.premium.settings.pocketPremiumFAQ" = "Domande frequenti su Pocket Premium";
 // this refers to an action to open an email
 "settings.premium.settings.contactPocketSupport" = "Contatta l'assistenza Pocket";
+// app icon
+"settings.appIcon.title" = "Icona dell'app";
 
 //Sorting Options
 "sortingOption.sortBy" = "Ordina per";
@@ -199,7 +201,7 @@
 "reader.activity.favorite" = "Aggiungi ai preferiti";
 "reader.activity.unfavorite" = "Rimuovi dai preferiti";
 "reader.activity.moveToSaves" = "Vai su Salvati";
-"reader.swipeAction.highlight" = "In evidenza";
+"reader.swipeAction.highlight" = "Evidenzia";
 "reader.swipeAction.deleteHighlights" = "Elimina le evidenziazioni";
 "reader.swipeAction.deleteHighlight" = "Elimina evidenziazione";
 
@@ -365,4 +367,4 @@
 "tips.swipeHighlights.title" = "Scorri per evidenziare";
 "tips.swipeHighlights.message" = "Scorri verso sinistra su un paragrafo per evidenziarlo. In alternativa, scorri e seleziona \"Elimina evidenziazioni\" per rimuovere le evidenziazioni in quel paragrafo.";
 "tips.recommendationsWidget.selectTopic.title" = "Nuovo widget per le raccomandazioni!";
-"tips.recommendationsWidget.selectTopic.message" = "Premi a lungo sul widget per le raccomandazioni, per scegliere un argomento di interesse.\nInstalla più widget per tenere traccia di tutti i tuoi argomenti preferiti.";
+"tips.recommendationsWidget.selectTopic.message" = "Premi a lungo sul widget per le raccomandazioni per scegliere un argomento di interesse.\nInstalla più widget per tenere traccia di tutti i tuoi argomenti preferiti.";
