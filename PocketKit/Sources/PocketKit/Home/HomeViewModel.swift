@@ -298,7 +298,7 @@ extension HomeViewModel {
             snapshot.appendSections([.slateCarousel(slateId)])
             var items = recommendations.prefix(4).map { Cell.recommendationCarousel($0.objectID) }
             // TODO: ADS - insert ads in the carousel here
-            if let ID = adSequences[safe: slateSection.offset]?.id {
+            if slateSection.offset != 0, let ID = adSequences[safe: slateSection.offset]?.id {
                 items.insert(.ad(ID), at: 0)
             }
 
