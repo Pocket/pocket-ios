@@ -269,8 +269,8 @@ extension HomeViewModel {
             return snapshot
         }
 
-        for slateSection in slateSections {
-            guard var recommendations = slateSection.objects as? [Recommendation],
+        for slateSection in slateSections.enumerated() {
+            guard var recommendations = slateSection.element.objects as? [Recommendation],
                   let slateId = recommendations.first?.slate?.objectID
             else {
                 continue
@@ -298,6 +298,10 @@ extension HomeViewModel {
             snapshot.appendSections([.slateCarousel(slateId)])
             var items = recommendations.prefix(4).map { Cell.recommendationCarousel($0.objectID) }
             // TODO: ADS - insert ads in the carousel here
+            if let ID = adSequences[safe: slateSection.offset]?.id {
+                items.insert(.ad(ID), at: 0)
+            }
+
             snapshot.appendItems(
                 items,
                 toSection: .slateCarousel(slateId)
