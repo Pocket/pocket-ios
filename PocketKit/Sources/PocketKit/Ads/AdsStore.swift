@@ -109,10 +109,10 @@ struct PocketAdsStore: Sendable {
     func getAds() async -> [PocketAdsSequence] {
         [
             PocketAdsSequence(id: "ads_sequence_123", ads: [Self.mockAd1, Self.mockAd2, Self.mockAd3]),
-            PocketAdsSequence(id: "ads_sequence_132", ads: [Self.mockAd1, Self.mockAd3, Self.mockAd2]),
             PocketAdsSequence(id: "ads_sequence_213", ads: [Self.mockAd2, Self.mockAd1, Self.mockAd3]),
-            PocketAdsSequence(id: "ads_sequence_231", ads: [Self.mockAd2, Self.mockAd3, Self.mockAd1]),
             PocketAdsSequence(id: "ads_sequence_321", ads: [Self.mockAd3, Self.mockAd2, Self.mockAd1]),
+            PocketAdsSequence(id: "ads_sequence_132", ads: [Self.mockAd1, Self.mockAd3, Self.mockAd2]),
+            PocketAdsSequence(id: "ads_sequence_231", ads: [Self.mockAd2, Self.mockAd3, Self.mockAd1]),
             PocketAdsSequence(id: "ads_sequence_312", ads: [Self.mockAd3, Self.mockAd1, Self.mockAd2])
         ]
     }
@@ -121,7 +121,7 @@ struct PocketAdsStore: Sendable {
 // TODO: - ADS - remove this mock when the implementation is complete
 private extension PocketAdsStore {
     static let mockAd1 = PocketAd(
-        title: "Get Pocket Premium",
+        title: "Get Pocket Premium!",
         description: "Subscribe to premium to get the most out of Pocket",
         imageUrl: "https://assets-prod.sumo.prod.webservices.mozgcp.net/media/uploads/products/2023-08-22-06-28-55-65dfd5.png",
         buttonTitle: "Get Premium",
@@ -133,7 +133,7 @@ private extension PocketAdsStore {
     )
 
     static let mockAd2 = PocketAd(
-        title: "Get Pocket Extra",
+        title: "Get Pocket Extra!",
         description: "Subscribe to extra to get the fanciest Pocket features",
         imageUrl: "https://assets-prod.sumo.prod.webservices.mozgcp.net/media/uploads/products/2023-08-22-06-28-55-65dfd5.png",
         buttonTitle: "Get Premium",
@@ -145,7 +145,7 @@ private extension PocketAdsStore {
     )
 
     static let mockAd3 = PocketAd(
-        title: "Get Pocket Ultra",
+        title: "Get Pocket Ultra!",
         description: "Subscribe to ultra to get everything you can from Pocket",
         imageUrl: "https://assets-prod.sumo.prod.webservices.mozgcp.net/media/uploads/products/2023-08-22-06-28-55-65dfd5.png",
         buttonTitle: "Get Premium",

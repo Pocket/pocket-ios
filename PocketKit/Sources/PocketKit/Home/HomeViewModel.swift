@@ -1065,6 +1065,15 @@ extension HomeViewModel: NSFetchedResultsControllerDelegate {
     }
 }
 
+// MARK: Ads
+extension HomeViewModel {
+    func getAdsSequence(_ ID: String) -> PocketAdsSequence? {
+        adSequences.first {
+            $0.id == ID
+        }
+    }
+}
+
 // MARK: recent saves widget
 private extension HomeViewModel {
     func updateRecentSavesWidget() {
