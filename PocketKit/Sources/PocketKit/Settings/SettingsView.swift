@@ -52,7 +52,8 @@ struct SettingsForm: View {
                             .accessibilityIdentifier("original-view-toggle")
                         // Custom implementation to hide the > arrow and let us use our own.
                         ZStack {
-                            NavigationLink(destination: SelectIconView(viewModel: model.makeSelectIconViewModel())) {
+                            // TODO: this method of programmatic navigation is deprecated. This entire view needs to be migrated to the SwiftUI navigation
+                            NavigationLink(destination: SelectIconView(viewModel: model.makeSelectIconViewModel()), isActive: $model.isPresentingIconSwitcher) {
                                 EmptyView()
                             }
                             .opacity(0.0)
