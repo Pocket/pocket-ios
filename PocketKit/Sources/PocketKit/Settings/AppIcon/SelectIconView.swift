@@ -16,8 +16,28 @@ struct SelectIconView: View {
     var body: some View {
         Form {
             Group {
-                Section {
-                    List(PocketAppIcon.allCases) { appIcon in
+                Section(header: Text(Localization.Settings.AppIcon.thematicIconSectionHeader).style(.settings.header)) {
+                    HStack(spacing: 16) {
+                        Image(PocketAppIcon.primary.previewName)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 60, height: 60)
+                            .cornerRadius(12)
+                        Text(PocketAppIcon.primary.description)
+                        Spacer()
+                        CheckboxView(isSelected: viewModel.selectedAppIcon == PocketAppIcon.primary)
+                    }
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        Task {
+                            await viewModel.updateAppIcon(to: PocketAppIcon.primary)
+                            viewModel.trackIconSelected(PocketAppIcon.primary.description)
+                        }
+                    }
+                }
+                .textCase(nil)
+                Section(header: Text(Localization.Settings.AppIcon.customIconSectionHeader).style(.settings.header)) {
+                    List(PocketAppIcon.selectableIcons) { appIcon in
                         HStack(spacing: 16) {
                             Image(appIcon.previewName)
                                 .resizable()
@@ -37,8 +57,9 @@ struct SelectIconView: View {
                         }
                     }
                 }
-                .listRowBackground(Color(.ui.grey7))
             }
+            .textCase(nil)
+            .listRowBackground(Color(.ui.grey7))
         }
         .onAppear {
             viewModel.trackIconSelectorViewed()
