@@ -45,7 +45,7 @@ struct AdCarouselCellConfiguration: HomeCarouselCellConfiguration {
     }
 
     var attributedTitle: NSAttributedString {
-        var content = NSMutableAttributedString()
+        let content = NSMutableAttributedString()
         content.append(NSAttributedString(string: currentAd.title, style: .recommendation.title))
         content.append(NSAttributedString(string: "\n" + currentAd.description, style: .recommendation.title))
         return content
