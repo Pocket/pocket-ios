@@ -229,3 +229,26 @@ struct PocketReadRoute: Route {
         return normalizedComponents.url?.absoluteString
     }
 }
+
+@MainActor
+struct BrazeIconSwitcherRoute: Route {
+    let host: String? = "pocket.co"
+    let scheme = "https"
+    let path = "/braze/iconSwitcher"
+    let source: ReadableSource = .external
+    let action: (URL, ReadableSource) -> Void
+
+    init(action: @escaping (URL, ReadableSource) -> Void) {
+        self.action = action
+    }
+
+    nonisolated func matchedUrlString(from url: URL) -> String? {
+        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
+              components.host == host,
+              components.scheme == scheme,
+              components.path.contains(path) else {
+            return nil
+        }
+        return url.absoluteString
+    }
+}
