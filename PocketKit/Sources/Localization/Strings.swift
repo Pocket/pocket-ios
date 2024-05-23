@@ -603,6 +603,10 @@ public enum Localization {
       }
     }
     public enum AppIcon {
+      /// Or select your favorite icon
+      public static let customIconSectionHeader = Localization.tr("Localizable", "settings.appIcon.customIconSectionHeader", fallback: "Or select your favorite icon")
+      /// Let Pocket choose your icon
+      public static let thematicIconSectionHeader = Localization.tr("Localizable", "settings.appIcon.thematicIconSectionHeader", fallback: "Let Pocket choose your icon")
       /// App Icon
       public static let title = Localization.tr("Localizable", "settings.appIcon.title", fallback: "App Icon")
     }
