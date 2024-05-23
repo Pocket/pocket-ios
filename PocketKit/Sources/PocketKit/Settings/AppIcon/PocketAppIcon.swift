@@ -7,6 +7,8 @@ enum PocketAppIcon: String, CaseIterable, Identifiable {
     // TODO: pride currently disable while we wait for the official icon
     // case pride = "AppIcon-Pride"
     case monochrome = "AppIcon-Monochrome"
+    case classic = "AppIcon-Classic"
+    case pride = "AppIcon-Pride"
 
     var id: String {
         rawValue
@@ -24,13 +26,23 @@ enum PocketAppIcon: String, CaseIterable, Identifiable {
     var description: String {
         switch self {
         case .primary:
-            return "Default"
+            return Self.currentDefaultName
         case .monochrome:
             return "Monochrome"
+        case .classic:
+            return "Classic"
+        case .pride:
+            return "Pride"
         }
     }
 
     var previewName: String {
         rawValue + "-Preview"
     }
+
+    static var selectableIcons: [PocketAppIcon] {
+        Self.allCases.filter { $0 != .primary }
+    }
+
+    static let currentDefaultName = "Classic"
 }

@@ -355,6 +355,12 @@ extension MainViewModel {
             }
         }
 
+        let brazeShowIconSwitcherAction: (URL, ReadableSource) -> Void = { [weak self] url, source in
+            self?.account.dismissAll()
+            self?.selectedSection = .account
+            self?.account.isPresentingIconSwitcher = true
+        }
+
         let widgetRoute = WidgetRoute(action: routingAction)
         let collectionRoute = CollectionRoute(action: routingAction)
         let syndicatedRoute = SyndicationRoute(action: routingAction)
@@ -363,9 +369,22 @@ extension MainViewModel {
         let shortUrlRoute = ShortUrlRoute(action: shortUrlRoutingAction)
         let pocketShareRoute = PocketShareRoute(action: pocketShareUrlRoutingAction)
         let pocketReadRoute = PocketReadRoute(action: pocketReadUrlRoutingAction)
+        let brazeIconSwitcherRoute = BrazeIconSwitcherRoute(action: brazeShowIconSwitcherAction)
         // NOTE: order matters, because there might be overlapping patterns
         // we can probably optimize by having exclusive-patterns only routes, and handle additional logic within
         // the route itself
-        linkRouter.addRoutes([widgetRoute, collectionRoute, syndicatedRoute, genericItemRoute, spotlightRoute, pocketShareRoute, pocketReadRoute, shortUrlRoute])
+        linkRouter.addRoutes(
+            [
+                widgetRoute,
+                collectionRoute,
+                syndicatedRoute,
+                genericItemRoute,
+                spotlightRoute,
+                pocketShareRoute,
+                pocketReadRoute,
+                brazeIconSwitcherRoute,
+                shortUrlRoute
+            ]
+        )
     }
 }

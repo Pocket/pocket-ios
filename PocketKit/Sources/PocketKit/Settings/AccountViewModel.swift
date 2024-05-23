@@ -44,6 +44,7 @@ class AccountViewModel: ObservableObject {
     @Published var isPresentingPremiumStatus = false
     @Published var isPresentingHooray = false
     @Published var isPresentingDebugMenu = false
+    @Published var isPresentingIconSwitcher = false
 
     @AppStorage public var appBadgeToggle: Bool
     @AppStorage public var originalViewToggle: Bool
