@@ -51,21 +51,23 @@ struct SettingsForm: View {
                         Toggle(Localization.Settings.alwaysOpenOriginalView, isOn: model.$originalViewToggle)
                             .accessibilityIdentifier("original-view-toggle")
                         // Custom implementation to hide the > arrow and let us use our own.
-                        ZStack {
-                            // TODO: this method of programmatic navigation is deprecated. This entire view needs to be migrated to the SwiftUI navigation
-                            NavigationLink(destination: SelectIconView(viewModel: model.makeSelectIconViewModel()), isActive: $model.isPresentingIconSwitcher) {
-                                EmptyView()
+                        if !ProcessInfo.processInfo.isiOSAppOnMac, !ProcessInfo.processInfo.isMacCatalystApp {
+                            ZStack {
+                                // TODO: this method of programmatic navigation is deprecated. This entire view needs to be migrated to the SwiftUI navigation
+                                NavigationLink(destination: SelectIconView(viewModel: model.makeSelectIconViewModel()), isActive: $model.isPresentingIconSwitcher) {
+                                    EmptyView()
+                                }
+                                .opacity(0.0)
+                                .buttonStyle(PlainButtonStyle())
+                                SettingsRowButton(title: Localization.Settings.AppIcon.title, trailingImageAsset: .chevronRight) {
+                                    model.trackAppIconTapped()
+                                }
+                                .accessibilityIdentifier("app-icon-button")
                             }
-                            .opacity(0.0)
-                            .buttonStyle(PlainButtonStyle())
-                            SettingsRowButton(title: Localization.Settings.AppIcon.title, trailingImageAsset: .chevronRight) {
-                                model.trackAppIconTapped()
-                            }
-                            .accessibilityIdentifier("app-icon-button")
                         }
                     }
+                    .textCase(nil)
                 }
-                .textCase(nil)
                 .sheet(isPresented: $model.isPresentingHooray) {
                     PremiumUpgradeSuccessView()
                 }
