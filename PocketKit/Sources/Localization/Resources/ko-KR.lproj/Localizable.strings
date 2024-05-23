@@ -165,6 +165,8 @@
 "settings.premium.settings.pocketPremiumFAQ" = "Pocket Premium FAQ";
 // this refers to an action to open an email
 "settings.premium.settings.contactPocketSupport" = "Pocket 지원팀 문의";
+// app icon
+"settings.appIcon.title" = "앱 아이콘";
 
 //Sorting Options
 "sortingOption.sortBy" = "정렬:";
