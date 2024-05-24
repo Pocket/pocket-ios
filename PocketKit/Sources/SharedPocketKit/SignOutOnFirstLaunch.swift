@@ -38,5 +38,6 @@ public class SignOutOnFirstLaunch {
         user.clear()
         appSession.currentSession = nil
         hasAppBeenLaunchedPreviously = true
+        NotificationCenter.default.post(name: .userLoggedOut, object: nil)
     }
 }
