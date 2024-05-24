@@ -167,6 +167,8 @@
 "settings.premium.settings.contactPocketSupport" = "Neem contact op met Pocket Support";
 // app icon
 "settings.appIcon.title" = "App-pictogram";
+"settings.appIcon.thematicIconSectionHeader" = "Laat Pocket je pictogram kiezen";
+"settings.appIcon.customIconSectionHeader" = "Of selecteer je favoriete pictogram";
 
 //Sorting Options
 "sortingOption.sortBy" = "Gesorteerd op";
