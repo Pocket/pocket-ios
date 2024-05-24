@@ -167,6 +167,8 @@
 "settings.premium.settings.contactPocketSupport" = "Pocket-Support kontaktieren";
 // app icon
 "settings.appIcon.title" = "App-Symbol";
+"settings.appIcon.thematicIconSectionHeader" = "Symbol von Pocket wählen lassen";
+"settings.appIcon.customIconSectionHeader" = "Oder dein Lieblingssymbol aussuchen";
 
 //Sorting Options
 "sortingOption.sortBy" = "Sortieren nach";
