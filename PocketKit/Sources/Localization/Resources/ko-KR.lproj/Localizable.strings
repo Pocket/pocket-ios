@@ -167,6 +167,8 @@
 "settings.premium.settings.contactPocketSupport" = "Pocket 지원팀 문의";
 // app icon
 "settings.appIcon.title" = "앱 아이콘";
+"settings.appIcon.thematicIconSectionHeader" = "Pocket이 아이콘을 대신 선택합니다";
+"settings.appIcon.customIconSectionHeader" = "좋아하는 아이콘을 직접 선택합니다";
 
 //Sorting Options
 "sortingOption.sortBy" = "정렬:";
