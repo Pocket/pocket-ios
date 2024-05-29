@@ -169,6 +169,10 @@
 "settings.appIcon.title" = "App-pictogram";
 "settings.appIcon.thematicIconSectionHeader" = "Laat Pocket je pictogram kiezen";
 "settings.appIcon.customIconSectionHeader" = "Of selecteer je favoriete pictogram";
+"settings.appIcon.iconName.default" = "Standaard";
+"settings.appIcon.iconName.classic" = "Klassiek";
+"settings.appIcon.iconName.monochrome" = "Monochroom";
+"settings.appIcon.iconName.pride" = "Pride";
 
 //Sorting Options
 "sortingOption.sortBy" = "Gesorteerd op";

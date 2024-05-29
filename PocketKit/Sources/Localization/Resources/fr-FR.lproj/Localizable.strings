@@ -169,6 +169,10 @@
 "settings.appIcon.title" = "Icône de l'application";
 "settings.appIcon.thematicIconSectionHeader" = "Laissez Pocket choisir votre icône";
 "settings.appIcon.customIconSectionHeader" = "Ou sélectionnez votre icône préférée";
+"settings.appIcon.iconName.default" = "Par défaut";
+"settings.appIcon.iconName.classic" = "Classique";
+"settings.appIcon.iconName.monochrome" = "Monochrome";
+"settings.appIcon.iconName.pride" = "Fierté";
 
 //Sorting Options
 "sortingOption.sortBy" = "Trier par";

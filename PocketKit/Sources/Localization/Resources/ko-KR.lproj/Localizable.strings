@@ -169,6 +169,10 @@
 "settings.appIcon.title" = "앱 아이콘";
 "settings.appIcon.thematicIconSectionHeader" = "Pocket이 아이콘을 대신 선택합니다";
 "settings.appIcon.customIconSectionHeader" = "좋아하는 아이콘을 직접 선택합니다";
+"settings.appIcon.iconName.default" = "기본값";
+"settings.appIcon.iconName.classic" = "클래식";
+"settings.appIcon.iconName.monochrome" = "단색화";
+"settings.appIcon.iconName.pride" = "프라이드";
 
 //Sorting Options
 "sortingOption.sortBy" = "정렬:";
