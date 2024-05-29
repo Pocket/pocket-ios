@@ -169,6 +169,10 @@
 "settings.appIcon.title" = "アプリのアイコン";
 "settings.appIcon.thematicIconSectionHeader" = "Pocket にアイコンを選んでもらう";
 "settings.appIcon.customIconSectionHeader" = "またはお気に入りのアイコンを選択します";
+"settings.appIcon.iconName.default" = "デフォルト";
+"settings.appIcon.iconName.classic" = "クラシック";
+"settings.appIcon.iconName.monochrome" = "モノクローム";
+"settings.appIcon.iconName.pride" = "プライド";
 
 //Sorting Options
 "sortingOption.sortBy" = "並び替え：";
