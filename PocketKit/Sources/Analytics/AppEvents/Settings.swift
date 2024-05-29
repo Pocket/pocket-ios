@@ -203,7 +203,7 @@ public extension Events.Settings {
             uiEntity: UiEntity(
                 .button,
                 identifier: "global-nav.settings.iconSelector.iconChanged",
-                componentDetail: iconName
+                componentDetail: iconName == "Default" ? "Automatic" : iconName
             )
         )
     }
