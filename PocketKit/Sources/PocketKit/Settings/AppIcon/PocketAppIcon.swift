@@ -26,7 +26,7 @@ enum PocketAppIcon: String, CaseIterable, Identifiable {
     var description: String {
         switch self {
         case .primary:
-            return Self.currentDefaultName
+            return "Default"
         case .monochrome:
             return "Monochrome"
         case .classic:
