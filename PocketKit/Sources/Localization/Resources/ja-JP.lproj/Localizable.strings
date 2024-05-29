@@ -167,6 +167,8 @@
 "settings.premium.settings.contactPocketSupport" = "Pocket サポートに問い合わせ";
 // app icon
 "settings.appIcon.title" = "アプリのアイコン";
+"settings.appIcon.thematicIconSectionHeader" = "Pocket にアイコンを選んでもらう";
+"settings.appIcon.customIconSectionHeader" = "またはお気に入りのアイコンを選択します";
 
 //Sorting Options
 "sortingOption.sortBy" = "並び替え：";

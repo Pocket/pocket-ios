@@ -167,6 +167,8 @@
 "settings.premium.settings.contactPocketSupport" = "聯絡 Pocket 支援";
 // app icon
 "settings.appIcon.title" = "應用程式圖示";
+"settings.appIcon.thematicIconSectionHeader" = "讓 Pocket 為您選擇圖示";
+"settings.appIcon.customIconSectionHeader" = "或者選取您喜愛的圖示";
 
 //Sorting Options
 "sortingOption.sortBy" = "排序依據";

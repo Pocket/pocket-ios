@@ -167,6 +167,8 @@
 "settings.premium.settings.contactPocketSupport" = "Contatta l'assistenza Pocket";
 // app icon
 "settings.appIcon.title" = "Icona dell'app";
+"settings.appIcon.thematicIconSectionHeader" = "Lascia che Pocket scelga la tua icona";
+"settings.appIcon.customIconSectionHeader" = "Oppure seleziona la tua icona preferita";
 
 //Sorting Options
 "sortingOption.sortBy" = "Ordina per";
@@ -363,8 +365,8 @@
 
 // Tips
 "tips.swipeToArchive.title" = "Scorri per archiviare";
-"tips.swipeToArchive.message" = "Scorri verso sinistra su un articolo per archiviarlo rapidamente.";
+"tips.swipeToArchive.message" = "Passa il dito a sinistra su un articolo per archiviarlo rapidamente.";
 "tips.swipeHighlights.title" = "Scorri per evidenziare";
-"tips.swipeHighlights.message" = "Scorri verso sinistra su un paragrafo per evidenziarlo. In alternativa, scorri e seleziona \"Elimina evidenziazioni\" per rimuovere le evidenziazioni in quel paragrafo.";
+"tips.swipeHighlights.message" = "Passa il dito a sinistra su un paragrafo per evidenziarlo. In alternativa, scorri e seleziona \"Elimina evidenziazioni\" per rimuovere le evidenziazioni in quel paragrafo.";
 "tips.recommendationsWidget.selectTopic.title" = "Nuovo widget per le raccomandazioni!";
-"tips.recommendationsWidget.selectTopic.message" = "Premi a lungo sul widget per le raccomandazioni per scegliere un argomento di interesse.\nInstalla più widget per tenere traccia di tutti i tuoi argomenti preferiti.";
+"tips.recommendationsWidget.selectTopic.message" = "Premi a lungo sul Widget delle Raccomandazioni per scegliere un argomento di interesse.\nInstalla più widget per tenere traccia di tutti i tuoi argomenti preferiti.";
