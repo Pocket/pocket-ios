@@ -169,6 +169,10 @@
 "settings.appIcon.title" = "Значок приложения";
 "settings.appIcon.thematicIconSectionHeader" = "Позвольте Pocket выбрать вам значок";
 "settings.appIcon.customIconSectionHeader" = "Или выберите понравившийся значок сами";
+"settings.appIcon.iconName.default" = "По умолчанию";
+"settings.appIcon.iconName.classic" = "Классика";
+"settings.appIcon.iconName.monochrome" = "Монохромная";
+"settings.appIcon.iconName.pride" = "Прайд";
 
 //Sorting Options
 "sortingOption.sortBy" = "Сортировать по";
