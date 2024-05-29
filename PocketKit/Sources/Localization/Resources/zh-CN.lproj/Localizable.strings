@@ -169,6 +169,10 @@
 "settings.appIcon.title" = "应用程序图标";
 "settings.appIcon.thematicIconSectionHeader" = "让 Pocket 选择您的图标";
 "settings.appIcon.customIconSectionHeader" = "或选择您喜欢的图标";
+"settings.appIcon.iconName.default" = "默认值";
+"settings.appIcon.iconName.classic" = "经典";
+"settings.appIcon.iconName.monochrome" = "单色";
+"settings.appIcon.iconName.pride" = "骄傲";
 
 //Sorting Options
 "sortingOption.sortBy" = "排序方式";
