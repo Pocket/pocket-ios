@@ -609,6 +609,16 @@ public enum Localization {
       public static let thematicIconSectionHeader = Localization.tr("Localizable", "settings.appIcon.thematicIconSectionHeader", fallback: "Let Pocket choose your icon")
       /// App Icon
       public static let title = Localization.tr("Localizable", "settings.appIcon.title", fallback: "App Icon")
+      public enum IconName {
+        /// Classic
+        public static let classic = Localization.tr("Localizable", "settings.appIcon.iconName.classic", fallback: "Classic")
+        /// Default
+        public static let `default` = Localization.tr("Localizable", "settings.appIcon.iconName.default", fallback: "Default")
+        /// Monochrome
+        public static let monochrome = Localization.tr("Localizable", "settings.appIcon.iconName.monochrome", fallback: "Monochrome")
+        /// Pride
+        public static let pride = Localization.tr("Localizable", "settings.appIcon.iconName.pride", fallback: "Pride")
+      }
     }
     public enum Logout {
       /// Are you sure?

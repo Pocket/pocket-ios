@@ -1,6 +1,7 @@
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
+import Localization
 
 enum PocketAppIcon: String, CaseIterable, Identifiable {
     case primary = "AppIcon"
@@ -26,13 +27,13 @@ enum PocketAppIcon: String, CaseIterable, Identifiable {
     var description: String {
         switch self {
         case .primary:
-            return "Default"
+            return Localization.Settings.AppIcon.IconName.default
         case .monochrome:
-            return "Monochrome"
+            return Localization.Settings.AppIcon.IconName.monochrome
         case .classic:
-            return "Classic"
+            return Localization.Settings.AppIcon.IconName.classic
         case .pride:
-            return "Pride"
+            return Localization.Settings.AppIcon.IconName.pride
         }
     }
 
