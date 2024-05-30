@@ -38,7 +38,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         try super.tearDownWithError()
     }
 
-    @MainActor 
+    @MainActor
     private func subject(
         item: SavedItem,
         tracker: Tracker? = nil,
@@ -59,7 +59,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         )
     }
 
-    @MainActor 
+    @MainActor
     func test_addTag_withValidName_updatesTags() {
         let item = space.buildSavedItem(tags: ["tag 1"])
         let viewModel = subject(item: item) { _ in }
@@ -70,7 +70,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.tags, ["tag 1", "tag 2"])
     }
 
-    @MainActor 
+    @MainActor
     func test_addTag_withAlreadyExistingName_doesNotUpdateTags() {
         let item = space.buildSavedItem(tags: ["tag 1"])
         let viewModel = subject(item: item) { _ in }
@@ -81,7 +81,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.tags, ["tag 1"])
     }
 
-    @MainActor 
+    @MainActor
     func test_addTag_withWhitespaceName_doesNotUpdateTags() {
         let item = space.buildSavedItem(tags: ["tag 1"])
         let viewModel = subject(item: item) { _ in }
@@ -92,7 +92,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.tags, ["tag 1"])
     }
 
-    @MainActor 
+    @MainActor
     func test_addTags_delegatesToSaveServiceAndCallsSaveAction() throws {
         let item = space.buildSavedItem(tags: ["tag 1"])
         try space.save()
@@ -112,7 +112,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         XCTAssertEqual(item.tags?.compactMap { ($0 as? Tag)?.name }, ["tag 1", "tag 2"])
     }
 
-    @MainActor 
+    @MainActor
     func test_recentTags_withThreeTags_andPremiumUser_returnsNoRecentTags() throws {
         let item = space.buildSavedItem(tags: [])
         try space.save()
@@ -134,7 +134,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.recentTags, [])
     }
 
-    @MainActor 
+    @MainActor
     func test_recentTags_withMoreThanThreeTags_andPremiumUser_returnsRecentTags() throws {
         let item = space.buildSavedItem(tags: [])
         try space.save()
@@ -156,7 +156,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.recentTags, [TagType.recent("tag 3"), TagType.recent("tag 2"), TagType.recent("tag 1")])
     }
 
-    @MainActor 
+    @MainActor
     func test_recentTags_withMoreThanThreeTags_andFreeUser_returnsNoRecentTags() throws {
         let item = space.buildSavedItem(tags: [])
         try space.save()

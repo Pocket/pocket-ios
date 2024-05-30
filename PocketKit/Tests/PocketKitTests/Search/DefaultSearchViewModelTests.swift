@@ -25,7 +25,7 @@ class DefaultSearchViewModelTests: XCTestCase {
     private var notificationCenter: NotificationCenter!
     private var featureFlags: MockFeatureFlagService!
 
-    @MainActor 
+    @MainActor
     override func setUpWithError() throws {
         try super.setUpWithError()
         networkPathMonitor = MockNetworkPathMonitor()

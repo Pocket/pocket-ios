@@ -23,7 +23,7 @@ class SavedItemViewModelTests: XCTestCase {
     private var featureFlagService: MockFeatureFlagService!
 
     private var subscriptions: Set<AnyCancellable> = []
-    
+
     @MainActor
     override func setUp() {
         super.setUp()

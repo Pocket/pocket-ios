@@ -21,7 +21,7 @@ class PocketAddTagsViewModelTests: XCTestCase {
     private var subscriptionStore: SubscriptionStore!
     private var networkPathMonitor: MockNetworkPathMonitor!
 
-    @MainActor 
+    @MainActor
     override func setUp() {
         super.setUp()
         source = MockSource()

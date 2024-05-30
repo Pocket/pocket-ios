@@ -24,7 +24,7 @@ class SlateDetailViewModelTests: XCTestCase {
     private var networkPathMonitor: MockNetworkPathMonitor!
     private var notificationCenter: NotificationCenter!
 
-    @MainActor 
+    @MainActor
     override func setUp() {
         super.setUp()
         source = MockSource()
