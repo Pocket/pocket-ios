@@ -37,6 +37,19 @@ enum PocketAppIcon: String, CaseIterable, Identifiable {
         }
     }
 
+    var analyticsName: String {
+        switch self {
+        case .primary:
+            return "Default"
+        case .monochrome:
+            return "Monochrome"
+        case .classic:
+            return "Classic"
+        case .pride:
+            return "Pride"
+        }
+    }
+
     var previewName: String {
         rawValue + "-Preview"
     }

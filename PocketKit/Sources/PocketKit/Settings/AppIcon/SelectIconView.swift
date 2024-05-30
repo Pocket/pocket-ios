@@ -31,7 +31,7 @@ struct SelectIconView: View {
                     .onTapGesture {
                         Task {
                             await viewModel.updateAppIcon(to: PocketAppIcon.primary)
-                            viewModel.trackIconSelected(PocketAppIcon.primary.description)
+                            viewModel.trackIconSelected(PocketAppIcon.primary.analyticsName)
                         }
                     }
                 }
@@ -52,7 +52,7 @@ struct SelectIconView: View {
                         .onTapGesture {
                             Task {
                                 await viewModel.updateAppIcon(to: appIcon)
-                                viewModel.trackIconSelected(appIcon.description)
+                                viewModel.trackIconSelected(appIcon.analyticsName)
                             }
                         }
                     }
