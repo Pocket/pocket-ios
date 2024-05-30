@@ -23,7 +23,8 @@ class SavedItemViewModelTests: XCTestCase {
     private var featureFlagService: MockFeatureFlagService!
 
     private var subscriptions: Set<AnyCancellable> = []
-
+    
+    @MainActor
     override func setUp() {
         super.setUp()
         source = MockSource()
@@ -46,6 +47,7 @@ class SavedItemViewModelTests: XCTestCase {
         try super.tearDownWithError()
     }
 
+    @MainActor
     func subject(
         item: SavedItem,
         source: Source? = nil,
@@ -70,6 +72,7 @@ class SavedItemViewModelTests: XCTestCase {
         )
     }
 
+    @MainActor
     func test_init_buildsCorrectActions() {
         // not-favorited, not-archived
         do {
@@ -90,6 +93,7 @@ class SavedItemViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_whenItemChanges_rebuildsActions() {
         let item = space.buildSavedItem(isFavorite: false, isArchived: true)
         let viewModel = subject(item: item)
@@ -107,6 +111,7 @@ class SavedItemViewModelTests: XCTestCase {
         )
     }
 
+    @MainActor
     func test_fetchDetailsIfNeeded_whenItemDetailsAreNotAvailable_fetchesItemDetails_andSendsEvent() throws {
         let savedItem = space.buildSavedItem()
         savedItem.item?.article = nil
@@ -137,6 +142,7 @@ class SavedItemViewModelTests: XCTestCase {
         XCTAssertEqual(call?.savedItem, savedItem)
     }
 
+    @MainActor
     func test_fetchDetailsIfNeeded_whenItemDetailsAreNotAvailable_afterFetching_doesNotSendEvent() throws {
         let savedItem = space.buildSavedItem()
         savedItem.item?.article = nil
@@ -165,6 +171,7 @@ class SavedItemViewModelTests: XCTestCase {
         XCTAssertEqual(savedItem.item?.article, nil)
     }
 
+    @MainActor
     func test_fetchDetailsIfNeeded_whenItemDetailsAreAlreadyAvailable_immediatelySendsContentUpdatedEvent() {
         source.stubFetchDetails { _ in
             XCTFail("Expected no calls to fetch details, but lo, it has been called.")
@@ -191,6 +198,7 @@ class SavedItemViewModelTests: XCTestCase {
         XCTAssertNil(source.fetchDetailsCall(at: 0))
     }
 
+    @MainActor
     func test_displaySettings_updatesIsPresentingReaderSettings() {
         let viewModel = subject(item: space.buildSavedItem())
         viewModel.invokeAction(title: "Display settings")
@@ -198,6 +206,7 @@ class SavedItemViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.isPresentingReaderSettings, true)
     }
 
+    @MainActor
     func test_favorite_delegatesToSource() {
         let item = space.buildSavedItem(isFavorite: false)
         let expectFavorite = expectation(description: "expect source.favorite(_:)")
@@ -213,6 +222,7 @@ class SavedItemViewModelTests: XCTestCase {
         wait(for: [expectFavorite], timeout: 2)
     }
 
+    @MainActor
     func test_unfavorite_delegatesToSource() {
         let item = space.buildSavedItem(isFavorite: true)
         let expectUnfavorite = expectation(description: "expect source.unfavorite(_:)")
@@ -228,6 +238,7 @@ class SavedItemViewModelTests: XCTestCase {
         wait(for: [expectUnfavorite], timeout: 2)
     }
 
+    @MainActor
     func test_tagsAction_withNoTags_isAddTags() throws {
         let savedItem = space.buildSavedItem(tags: [])
         try space.save()
@@ -237,6 +248,7 @@ class SavedItemViewModelTests: XCTestCase {
         XCTAssertTrue(hasCorrectTitle)
     }
 
+    @MainActor
     func test_tagsAction_withTags_isEditTags() throws {
         let savedItem = space.buildSavedItem(tags: ["tag 1"])
         try space.save()
@@ -246,6 +258,7 @@ class SavedItemViewModelTests: XCTestCase {
         XCTAssertTrue(hasCorrectTitle)
     }
 
+    @MainActor
     func test_addTagsAction_sendsAddTagsViewModel() {
         let viewModel = subject(item: space.buildSavedItem(tags: ["tag 1"]))
         source.stubRetrieveTags { _ in return nil }
@@ -261,6 +274,7 @@ class SavedItemViewModelTests: XCTestCase {
         wait(for: [expectAddTags], timeout: 2)
     }
 
+    @MainActor
     func test_delete_delegatesToSource_andSendsDeleteEvent() {
         let item = space.buildSavedItem(isFavorite: true)
         let viewModel = subject(item: item)
@@ -287,6 +301,7 @@ class SavedItemViewModelTests: XCTestCase {
         wait(for: [expectDelete, expectDeleteEvent], timeout: 2)
     }
 
+    @MainActor
     func test_archive_sendsRequestToSource_andSendsArchiveEvent() {
         let item = space.buildItem()
         let savedItem = space.buildSavedItem(item: item)
@@ -312,6 +327,7 @@ class SavedItemViewModelTests: XCTestCase {
         wait(for: [expectArchive, expectArchiveEvent], timeout: 2)
     }
 
+    @MainActor
     func test_moveFromArchiveToSaves_sendsRequestToSource_AndRefreshes() {
         let item = space.buildItem()
         let savedItem = space.buildSavedItem(item: item)
@@ -328,12 +344,14 @@ class SavedItemViewModelTests: XCTestCase {
         wait(for: [expectMoveFromArchiveToSaves], timeout: 2)
     }
 
+    @MainActor
     func test_share_updatesSharedActivity() {
         let viewModel = subject(item: space.buildSavedItem())
         viewModel.invokeAction(title: "Share")
         XCTAssertNotNil(viewModel.sharedActivity)
     }
 
+    @MainActor
     func test_showWebReader_updatesPresentedWebReaderURL() {
         let item = space.buildSavedItem()
         let viewModel = subject(item: item)
@@ -342,6 +360,7 @@ class SavedItemViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.presentedWebReaderURL?.absoluteString, item.bestURL)
     }
 
+    @MainActor
     func test_externalSave_forwardsToSource() {
         source.stubSaveURL { _ in }
 
@@ -352,6 +371,7 @@ class SavedItemViewModelTests: XCTestCase {
         XCTAssertEqual(source.saveURLCall(at: 0)?.url, url)
     }
 
+    @MainActor
     func test_externalCopy_copiesToClipboard() {
         let viewModel = subject(item: space.buildSavedItem())
         let url = URL(string: "https://getpocket.com")!
@@ -360,6 +380,7 @@ class SavedItemViewModelTests: XCTestCase {
         XCTAssertEqual(pasteboard.url, url)
     }
 
+    @MainActor
     func test_externalShare_updatesSharedActivity() {
         let viewModel = subject(item: space.buildSavedItem())
         let url = URL(string: "https://getpocket.com")!
@@ -368,6 +389,7 @@ class SavedItemViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.sharedActivity)
     }
 
+    @MainActor
     func test_externalOpen_updatesPresentedWebReaderURL() {
         let viewModel = subject(item: space.buildSavedItem())
         let url = URL(string: "https://getpocket.com")!
@@ -376,6 +398,7 @@ class SavedItemViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.presentedWebReaderURL, url)
     }
 
+    @MainActor
     func test_webActivitiesActions_whenItemIsSaved_canArchive() throws {
         let savedItem = space.buildSavedItem()
 
@@ -395,6 +418,7 @@ class SavedItemViewModelTests: XCTestCase {
         wait(for: [webActivitiesExpectation], timeout: 2)
     }
 
+    @MainActor
     func test_webActivitiesActions_whenItemIsArchive_canMoveToSaves() throws {
         let savedItem = space.buildSavedItem()
         savedItem.isArchived = true
@@ -415,6 +439,7 @@ class SavedItemViewModelTests: XCTestCase {
         wait(for: [webActivitiesExpectation], timeout: 2)
     }
 
+    @MainActor
     func test_readerProgress() throws {
         let savedItem = space.buildSavedItem()
         try space.save()

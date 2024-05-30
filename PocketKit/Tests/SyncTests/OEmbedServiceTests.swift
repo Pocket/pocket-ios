@@ -19,17 +19,19 @@ class OEmbedServiceTests: XCTestCase {
             return (data, response)
         }
 
-        let service = OEmbedService(session: session)
-        let oEmbedRequest = OEmbedRequest(
+        let service = await OEmbedService(session: session)
+        let oEmbedRequest = await OEmbedRequest(
             id: "286898202",
             width: 335
         )
 
         let oEmbed = try await service.fetch(request: oEmbedRequest)
-
-        XCTAssertEqual(oEmbed.html, #"<iframe src="https://player.vimeo.com/video/286898202"></iframe>"#)
-        XCTAssertEqual(oEmbed.width, 480)
-        XCTAssertEqual(oEmbed.height, 360)
+        let html = await oEmbed.html
+        let width = await oEmbed.width
+        let height = await oEmbed.height
+        XCTAssertEqual(html, #"<iframe src="https://player.vimeo.com/video/286898202"></iframe>"#)
+        XCTAssertEqual(width, 480)
+        XCTAssertEqual(height, 360)
 
         XCTAssertEqual(
             session.dataTaskCalls[0].request.url!.absoluteString,

@@ -19,6 +19,7 @@ class PocketItemViewModelTests: XCTestCase {
     private var subscriptionStore: SubscriptionStore!
     private var networkPathMonitor: MockNetworkPathMonitor!
 
+    @MainActor 
     override func setUp() {
         super.setUp()
         source = MockSource()
@@ -40,6 +41,7 @@ class PocketItemViewModelTests: XCTestCase {
         try super.tearDownWithError()
     }
 
+    @MainActor
     func subject(
         item: PocketItem,
         index: Int = 0,
@@ -62,6 +64,7 @@ class PocketItemViewModelTests: XCTestCase {
         )
     }
 
+    @MainActor
     func test_favoriteAction_delegatesToSource_updatesPublishedProperty() {
         let item = space.buildSavedItem()
 
@@ -86,6 +89,7 @@ class PocketItemViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isFavorite)
     }
 
+    @MainActor
     func test_unfavoriteAction_delegatesToSource_updatesPublishedProperty() {
         let item = space.buildSavedItem(isFavorite: true)
 
@@ -110,6 +114,7 @@ class PocketItemViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isFavorite)
     }
 
+    @MainActor
     func test_shareAction_presentsShareSheet() {
         let item = space.buildSavedItem()
 
@@ -120,6 +125,7 @@ class PocketItemViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.presentShareSheet)
     }
 
+    @MainActor
     func test_addTagsAction_sendsAddTagsViewModel() {
         let item = space.buildSavedItem(tags: ["tag-0"])
         source.stubRetrieveTags { _ in return nil }
@@ -139,6 +145,7 @@ class PocketItemViewModelTests: XCTestCase {
         XCTAssertEqual(tagsViewModel.tags, ["tag-0"])
     }
 
+    @MainActor
     func test_archiveAction_delegatesToSource() {
         let item = space.buildSavedItem()
         let expectArchive = expectation(description: "expect source.archive(_:)")
@@ -159,6 +166,7 @@ class PocketItemViewModelTests: XCTestCase {
         wait(for: [expectArchive, expectFetchSavedItemCall], timeout: 2)
     }
 
+    @MainActor
     func test_unarchiveAction_delegatesToSource() {
         let item = space.buildSavedItem()
         let expectUnarchive = expectation(description: "expect source.unarchive(_:)")
@@ -179,6 +187,7 @@ class PocketItemViewModelTests: XCTestCase {
         wait(for: [expectUnarchive, expectFetchSavedItemCall], timeout: 2)
     }
 
+    @MainActor
     func test_deleteAction_delegatesToSource() {
         let item = space.buildSavedItem()
         let expectDelete = expectation(description: "expect source.delete(_:)")
@@ -200,6 +209,7 @@ class PocketItemViewModelTests: XCTestCase {
         wait(for: [expectDelete, expectFetchSavedItemCall], timeout: 2)
     }
 
+    @MainActor
     func test_fetchSavedItem_withURLandRemoteParts_shouldMatch() {
         let item = space.buildSavedItem()
         let searchItem = setupSearchItem()

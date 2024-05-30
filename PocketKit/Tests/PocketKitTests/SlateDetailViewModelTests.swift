@@ -24,6 +24,7 @@ class SlateDetailViewModelTests: XCTestCase {
     private var networkPathMonitor: MockNetworkPathMonitor!
     private var notificationCenter: NotificationCenter!
 
+    @MainActor 
     override func setUp() {
         super.setUp()
         source = MockSource()
@@ -52,6 +53,7 @@ class SlateDetailViewModelTests: XCTestCase {
         try super.tearDownWithError()
     }
 
+    @MainActor
     func subject(
         slate: Slate,
         source: Source? = nil,
@@ -73,6 +75,7 @@ class SlateDetailViewModelTests: XCTestCase {
         )
     }
 
+    @MainActor
     func test_fetch_whenRecentSavesIsEmpty_andSlateLineupIsUnavailable_sendsLoadingSnapshot() throws {
         let slate: Slate = try space.createSlate(
             remoteID: "slate-1",
@@ -91,6 +94,7 @@ class SlateDetailViewModelTests: XCTestCase {
         wait(for: [receivedLoadingSnapshot], timeout: 2)
     }
 
+    @MainActor
     func test_fetch_sendsSnapshotWithItemForEachRecommendation() throws {
         let recommendations: [Recommendation] = [
             space.buildRecommendation(remoteID: "slate-1-recommendation-1", item: space.buildItem()),
@@ -122,6 +126,7 @@ class SlateDetailViewModelTests: XCTestCase {
         wait(for: [snapshotExpectation], timeout: 2)
     }
 
+    @MainActor
     func test_snapshot_whenRecommendationIsSaved_updatesSnapshot() throws {
         let item = space.buildItem()
         let recommendations = [
@@ -156,6 +161,7 @@ class SlateDetailViewModelTests: XCTestCase {
         wait(for: [snapshotExpectation], timeout: 2)
     }
 
+    @MainActor
     func test_selectCell_whenSelectingRecommendation_recommendationIsReadable_updatesSelectedReadable() throws {
         let savedItem = try space.createSavedItem(item: space.buildItem())
         let recommendation = space.buildRecommendation(item: savedItem.item!)
@@ -184,6 +190,7 @@ class SlateDetailViewModelTests: XCTestCase {
         wait(for: [readableExpectation], timeout: 2)
     }
 
+    @MainActor
     func test_selectCell_whenSelectingRecommendation_recommendationIsNotReadable_updatesPresentedWebReaderURL() throws {
         let item = space.buildItem()
         let recommendation = space.buildRecommendation(item: item)
@@ -232,6 +239,7 @@ class SlateDetailViewModelTests: XCTestCase {
         wait(for: [urlExpectation], timeout: 2)
     }
 
+    @MainActor
     func test_selectCell_whenSelectingRecommendation_withSettingsOriginalViewEnabled_setsWebViewURL() throws {
         let savedItem = try space.createSavedItem(item: space.buildItem())
         let recommendation = space.buildRecommendation(item: savedItem.item!)
@@ -261,6 +269,7 @@ class SlateDetailViewModelTests: XCTestCase {
         wait(for: [webViewExpectation], timeout: 2)
     }
 
+    @MainActor
     func test_reportAction_forRecommendation_updatesSelectedRecommendationToReport() throws {
         let item = space.buildItem()
         let recommendation = space.buildRecommendation(item: item)
@@ -284,6 +293,7 @@ class SlateDetailViewModelTests: XCTestCase {
         wait(for: [reportExpectation], timeout: 2)
     }
 
+    @MainActor
     func test_primaryAction_whenRecommendationIsNotSaved_savesWithSource() throws {
         source.stubSaveRecommendation { _ in }
 
@@ -303,6 +313,7 @@ class SlateDetailViewModelTests: XCTestCase {
         XCTAssertEqual(source.saveRecommendationCall(at: 0)?.recommendation.objectID, recommendation.objectID)
     }
 
+    @MainActor
     func test_primaryAction_whenRecommendationIsSaved_archivesWithSource() throws {
         source.stubArchiveRecommendation { _ in }
 

@@ -360,6 +360,7 @@ extension SavedItemViewModelTests {
         XCTAssertTrue(hasCorrectTitle)
     }
 
+    @MainActor 
     func test_addTagsAction_sendsAddTagsViewModel() {
         let viewModel = subject()
         saveService.stubRetrieveTags { _ in return nil }

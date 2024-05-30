@@ -21,6 +21,7 @@ class PocketAddTagsViewModelTests: XCTestCase {
     private var subscriptionStore: SubscriptionStore!
     private var networkPathMonitor: MockNetworkPathMonitor!
 
+    @MainActor 
     override func setUp() {
         super.setUp()
         source = MockSource()
@@ -42,6 +43,7 @@ class PocketAddTagsViewModelTests: XCTestCase {
         try await super.tearDown()
     }
 
+    @MainActor
     private func subject(
         item: SavedItem,
         source: Source? = nil,
@@ -63,6 +65,7 @@ class PocketAddTagsViewModelTests: XCTestCase {
         )
     }
 
+    @MainActor
     func test_addTag_withValidName_updatesTags() {
         let item = space.buildSavedItem(tags: ["tag 1"])
         source.stubRetrieveTags { _ in
@@ -76,6 +79,7 @@ class PocketAddTagsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.tags, ["tag 1", "tag 2"])
     }
 
+    @MainActor
     func test_addTag_withAlreadyExistingName_doesNotUpdateTags() {
         let item = space.buildSavedItem(tags: ["tag 1"])
         source.stubRetrieveTags { _ in
@@ -89,6 +93,7 @@ class PocketAddTagsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.tags, ["tag 1"])
     }
 
+    @MainActor
     func test_addTag_withWhitespaceName_doesNotUpdateTags() {
         let item = space.buildSavedItem(tags: ["tag 1"])
         source.stubRetrieveTags { _ in
@@ -102,6 +107,7 @@ class PocketAddTagsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.tags, ["tag 1"])
     }
 
+    @MainActor
     func test_addTags_delegatesToSourceAndCallsSaveAction() {
         let item = space.buildSavedItem(tags: ["tag 1"])
         source.stubRetrieveTags { _ in
@@ -126,6 +132,7 @@ class PocketAddTagsViewModelTests: XCTestCase {
         XCTAssertNotNil(source.addTagsToSavedItemCall(at: 0))
     }
 
+    @MainActor
     func test_recentTags_withThreeTags_andPremiumUser_returnsNoRecentTags() {
         let item = space.buildSavedItem(tags: [])
         let expectFetchAllTagsCall = expectation(description: "expect source.fetchAllTags()")
@@ -154,6 +161,7 @@ class PocketAddTagsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.recentTags, [])
     }
 
+    @MainActor
     func test_recentTags_withMoreThanThreeTags_andPremiumUser_returnsRecentTags() {
         let item = space.buildSavedItem(tags: [])
         let expectRetrieveTagsCall = expectation(description: "expect source.retrieveTags(excluding:)")
@@ -185,6 +193,7 @@ class PocketAddTagsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.recentTags, [TagType.recent("tag 3"), TagType.recent("tag 2"), TagType.recent("tag 1")])
     }
 
+    @MainActor
     func test_recentTags_withMoreThanThreeTags_andFreeUser_returnsNoRecentTags() {
         let item = space.buildSavedItem(tags: [])
         let expectRetrieveTagsCall = expectation(description: "expect source.retrieveTags(excluding:)")
@@ -216,6 +225,7 @@ class PocketAddTagsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.recentTags, [])
     }
 
+    @MainActor
     func test_allOtherTags_retrievesValidTagNames_inSortedOrder() {
         let item = space.buildSavedItem(tags: ["a"])
         let expectRetrieveTagsCall = expectation(description: "expect source.retrieveTags(excluding:)")
@@ -239,6 +249,7 @@ class PocketAddTagsViewModelTests: XCTestCase {
         XCTAssertNotNil(source.retrieveTagsCall(at: 0))
     }
 
+    @MainActor
     func test_removeTag_withValidName_updatesTags() {
         let item = space.buildSavedItem(tags: ["tag 1", "tag 2", "tag 3"])
         source.stubRetrieveTags { _ in
@@ -252,6 +263,7 @@ class PocketAddTagsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.tags, ["tag 1", "tag 3"])
     }
 
+    @MainActor
     func test_removeTag_withNotExistingName_updatesTags() {
         let item = space.buildSavedItem(tags: ["tag 1", "tag 2", "tag 3"])
         source.stubRetrieveTags { _ in
@@ -265,6 +277,7 @@ class PocketAddTagsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.tags, ["tag 1", "tag 2", "tag 3"])
     }
 
+    @MainActor
     func test_newTagInput_withTags_showFiltersTags() {
         let item = space.buildSavedItem(tags: ["tag 1"])
         source.stubRetrieveTags { _ in
@@ -297,6 +310,7 @@ class PocketAddTagsViewModelTests: XCTestCase {
         wait(for: [expectFilterTagsCall], timeout: 2)
     }
 
+    @MainActor
     func test_newTagInput_withNoTags_showAllTags() {
         let item = space.buildSavedItem(tags: ["tag 1"])
         source.stubRetrieveTags { _ in

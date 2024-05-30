@@ -38,6 +38,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         try super.tearDownWithError()
     }
 
+    @MainActor 
     private func subject(
         item: SavedItem,
         tracker: Tracker? = nil,
@@ -58,6 +59,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         )
     }
 
+    @MainActor 
     func test_addTag_withValidName_updatesTags() {
         let item = space.buildSavedItem(tags: ["tag 1"])
         let viewModel = subject(item: item) { _ in }
@@ -68,6 +70,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.tags, ["tag 1", "tag 2"])
     }
 
+    @MainActor 
     func test_addTag_withAlreadyExistingName_doesNotUpdateTags() {
         let item = space.buildSavedItem(tags: ["tag 1"])
         let viewModel = subject(item: item) { _ in }
@@ -78,6 +81,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.tags, ["tag 1"])
     }
 
+    @MainActor 
     func test_addTag_withWhitespaceName_doesNotUpdateTags() {
         let item = space.buildSavedItem(tags: ["tag 1"])
         let viewModel = subject(item: item) { _ in }
@@ -88,6 +92,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.tags, ["tag 1"])
     }
 
+    @MainActor 
     func test_addTags_delegatesToSaveServiceAndCallsSaveAction() throws {
         let item = space.buildSavedItem(tags: ["tag 1"])
         try space.save()
@@ -107,6 +112,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         XCTAssertEqual(item.tags?.compactMap { ($0 as? Tag)?.name }, ["tag 1", "tag 2"])
     }
 
+    @MainActor 
     func test_recentTags_withThreeTags_andPremiumUser_returnsNoRecentTags() throws {
         let item = space.buildSavedItem(tags: [])
         try space.save()
@@ -128,6 +134,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.recentTags, [])
     }
 
+    @MainActor 
     func test_recentTags_withMoreThanThreeTags_andPremiumUser_returnsRecentTags() throws {
         let item = space.buildSavedItem(tags: [])
         try space.save()
@@ -149,6 +156,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.recentTags, [TagType.recent("tag 3"), TagType.recent("tag 2"), TagType.recent("tag 1")])
     }
 
+    @MainActor 
     func test_recentTags_withMoreThanThreeTags_andFreeUser_returnsNoRecentTags() throws {
         let item = space.buildSavedItem(tags: [])
         try space.save()
@@ -170,6 +178,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.recentTags, [])
     }
 
+    @MainActor
     func test_recentTags_withTags_returnsRecentTags() throws {
         let item = space.buildSavedItem(tags: [])
         try space.save()
@@ -190,6 +199,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.recentTags, [])
     }
 
+    @MainActor
     func test_allOtherTags_retrievesValidTagNames_inSortedOrder() throws {
         let item = space.buildSavedItem(tags: ["a"])
         try space.save()
@@ -211,6 +221,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.otherTags, [TagType.tag("b"), TagType.tag("c")])
     }
 
+    @MainActor
     func test_recentTags_inMostRecentOrder() throws {
         let item = space.buildSavedItem(tags: ["a"])
         try space.save()
@@ -232,6 +243,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.otherTags, [TagType.tag("b"), TagType.tag("c")])
     }
 
+    @MainActor
     func test_removeTag_withValidName_updatesTags() throws {
         let item = space.buildSavedItem(tags: ["tag 1"])
         try space.save()
@@ -242,6 +254,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.tags, ["tag 1", "tag 3"])
     }
 
+    @MainActor
     func test_removeTag_withNotExistingName_updatesTags() throws {
         let item = space.buildSavedItem(tags: ["tag 1"])
         try space.save()
@@ -252,6 +265,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.tags, ["tag 1", "tag 2", "tag 3"])
     }
 
+    @MainActor
     func test_newTagInput_withTags_showFiltersTags() throws {
         let item = space.buildSavedItem(tags: ["tag 1"])
         try space.save()
@@ -283,6 +297,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         wait(for: [expectFilterTagsCall], timeout: 2)
     }
 
+    @MainActor
     func test_newTagInput_withNoTags_showAllTags() throws {
         let item = space.buildSavedItem(tags: ["tag 1"])
         try space.save()

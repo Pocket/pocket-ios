@@ -28,8 +28,9 @@ class SavedItemsListViewModelTests: XCTestCase {
     var userDefaults: UserDefaults!
     var featureFlags: MockFeatureFlagService!
 
+    @MainActor
     override func setUp() {
-        try super.setUp()
+        super.setUp()
         source = MockSource()
         tracker = MockTracker()
         featureFlags = MockFeatureFlagService()
@@ -85,6 +86,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         try super.tearDownWithError()
     }
 
+    @MainActor
     func subject(
         source: Source? = nil,
         tracker: Tracker? = nil,
@@ -110,6 +112,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         )
     }
 
+    @MainActor
     func test_applySortingOnSavesSavedItems() throws {
         _ = (1...2).map {
             space.buildSavedItem(
@@ -136,6 +139,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         wait(for: [snapshotSent], timeout: 2)
     }
 
+    @MainActor
     func test_shouldSelectCell_whenItemIsPending_returnsFalse() throws {
         let viewModel = subject()
         let item = space.buildPendingSavedItem()
@@ -144,6 +148,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldSelectCell(with: .item(item.objectID)))
     }
 
+    @MainActor
     func test_shouldSelectCell_whenItemIsNotPending_returnsFalse() throws {
         let viewModel = subject()
 
@@ -153,6 +158,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.shouldSelectCell(with: .item(item.objectID)))
     }
 
+    @MainActor
     func test_selectCell_whenItemIsArticle_setsSelectedItemToReaderView() throws {
         let viewModel = subject()
         let savedItem = space.buildPendingSavedItem()
@@ -173,6 +179,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         XCTAssertNotNil(item)
     }
 
+    @MainActor
     func test_selectCell_whenItemIsNotAnArticle_setsSelectedItemToWebView() throws {
         let viewModel = subject()
         let item = space.buildItem(isArticle: false)
@@ -194,6 +201,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         XCTAssertNotNil(url)
     }
 
+    @MainActor
     func test_selectCell_whenItemIsArticle_withSettingsOriginalViewEnabled_setsSelectedItemToWebView() throws {
         let viewModel = subject()
         let savedItem = space.buildPendingSavedItem()
@@ -216,6 +224,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         XCTAssertNotNil(url)
     }
 
+    @MainActor
     func test_selectedItem_whenNil_sendsSelectionCleared() {
         let viewModel = subject()
 
@@ -232,6 +241,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         wait(for: [eventSent], timeout: 2)
     }
 
+    @MainActor
     func test_selectedItem_whenReaderView_doesNotSendSelectionCleared() {
         let viewModel = subject()
 
@@ -246,6 +256,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         wait(for: [eventSent], timeout: 2)
     }
 
+    @MainActor
     func test_selectedItem_whenWebView_doesNotSendSelectionCleared() {
         let viewModel = subject()
 
@@ -260,6 +271,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         wait(for: [eventSent], timeout: 2)
     }
 
+    @MainActor
     func test_sourceEvents_whenEventIsSavedItemCreated_sendsSnapshotWithNewItem() {
         let savedItem = space.buildSavedItem()
 
@@ -278,6 +290,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         wait(for: [snapshotSent], timeout: 2)
     }
 
+    @MainActor
     func test_sourceEvents_whenEventIsSavedItemUpdated_sendsSnapshotWithUpdatedItem() {
         let savedItem = space.buildSavedItem()
         try? space.save()
@@ -295,6 +308,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         wait(for: [snapshotSent], timeout: 2)
     }
 
+    @MainActor
     func test_receivedSnapshots_withNoItems_includesSavesEmptyState() {
         let viewModel = subject()
 
@@ -313,6 +327,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         wait(for: [snapshotExpectation], timeout: 2)
     }
 
+    @MainActor
     func test_receivedSnapshots_withNoItems_includesFavoritesEmptyState() {
         let viewModel = subject()
         viewModel.selectCell(with: .filterButton(.favorites), sender: UIView())
@@ -332,6 +347,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         wait(for: [snapshotExpectation], timeout: 2)
     }
 
+    @MainActor
     func test_receivedSnapshots_withNoItems_includesTagsEmptyState() {
         source.stubFetchAllTags {
             []
@@ -354,6 +370,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         wait(for: [snapshotExpectation], timeout: 2)
     }
 
+    @MainActor
     func test_receivedSnapshots_withItems_doesNotIncludeSavesEmptyState() {
         _ = space.buildSavedItem()
         try? space.save()
@@ -373,6 +390,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         wait(for: [snapshotExpectation], timeout: 2)
     }
 
+    @MainActor
     func test_receivedSnapshots_withItems_doesNotIncludeFavoritesEmptyState() {
         _ = space.buildSavedItem(isFavorite: true)
         try? space.save()
@@ -394,6 +412,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         wait(for: [snapshotExpectation], timeout: 2)
     }
 
+    @MainActor
     func test_refreshSaves_callsRetryImmediatelyOnSource() {
         source.stubRefreshSaves { _ in }
         source.stubRetryImmediately { }
@@ -404,6 +423,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         XCTAssertNotNil(source.retryImmediatelyCall(at: 0))
     }
 
+    @MainActor
     func test_receivedSnapshots_whenInitialDownloadIsInProgress_insertsPlaceholderCells() throws {
         let savedItem = space.buildSavedItem()
         try? space.save()
@@ -426,6 +446,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         wait(for: [receivedSnapshot], timeout: 2)
     }
 
+    @MainActor
     func test_receivedSnapshots_whenSavesInitialDownloadIsStarted_insertsPlaceholderCells() throws {
         source.initialSavesDownloadState.send(.started)
 
@@ -445,6 +466,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         wait(for: [receivedSnapshot], timeout: 2)
     }
 
+    @MainActor
     func test_receivedSnapshots_whenArchiveInitialDownloadIsStarted_insertsPlaceholderCells() throws {
         source.initialArchiveDownloadState.send(.started)
 
@@ -467,6 +489,7 @@ class SavedItemsListViewModelTests: XCTestCase {
 
 // MARK: - Tags
 extension SavedItemsListViewModelTests {
+    @MainActor
     func test_tagsAction_whenUnarchived_withNoTags_isAddTags() throws {
         let item = space.buildSavedItem(tags: [])
         try space.save()
@@ -477,6 +500,7 @@ extension SavedItemsListViewModelTests {
         XCTAssertTrue(hasCorrectTitle)
     }
 
+    @MainActor
     func test_tagsAction_whenArchived_withNoTags_isAddTags() throws {
         let item = space.buildSavedItem(isArchived: true, tags: [])
         try space.save()
@@ -487,6 +511,7 @@ extension SavedItemsListViewModelTests {
         XCTAssertTrue(hasCorrectTitle)
     }
 
+    @MainActor
     func test_tagsAction_whenUnarchived_withTags_isEditTags() throws {
         let item = space.buildSavedItem(tags: ["tag 1"])
         try space.save()
@@ -497,6 +522,7 @@ extension SavedItemsListViewModelTests {
         XCTAssertTrue(hasCorrectTitle)
     }
 
+    @MainActor
     func test_tagsAction_whenArchived_withTags_isEditTags() throws {
         let item = space.buildSavedItem(isArchived: true, tags: ["tag 1"])
         try space.save()
@@ -507,6 +533,7 @@ extension SavedItemsListViewModelTests {
         XCTAssertTrue(hasCorrectTitle)
     }
 
+    @MainActor
     func test_addTagsAction_sendsAddTagsViewModel() throws {
         let item = space.buildSavedItem(tags: ["tag 1"])
         try space.save()
@@ -528,6 +555,7 @@ extension SavedItemsListViewModelTests {
         wait(for: [expectAddTags], timeout: 2)
     }
 
+    @MainActor
     func test_fetch_whenTaggedSelected_sendsTagsFilterViewModel() throws {
         source.stubFetchAllTags {
             []
@@ -545,6 +573,7 @@ extension SavedItemsListViewModelTests {
         wait(for: [expectTagFiltersCall], timeout: 2)
     }
 
+    @MainActor
     func test_tagModel_calculatesTagHeightAndWidth() {
         let viewModel = subject()
         let model = viewModel.tagModel(with: "tag 0")

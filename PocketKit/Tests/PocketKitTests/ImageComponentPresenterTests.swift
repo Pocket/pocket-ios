@@ -11,6 +11,7 @@ class ImageComponentPresenterTests: XCTestCase { }
 
 // MARK: - ImageComponentCell Model
 extension ImageComponentPresenterTests {
+    @MainActor
     func test_model_withCaption_shouldShow() {
         let component = ImageComponent(
             caption: "a caption",
@@ -25,6 +26,7 @@ extension ImageComponentPresenterTests {
         XCTAssertEqual(presenter.shouldHideCaption, false)
     }
 
+    @MainActor
     func test_model_withNoCaption_shouldHide() {
         let component = ImageComponent(
             caption: " ",
@@ -39,6 +41,7 @@ extension ImageComponentPresenterTests {
         XCTAssertEqual(presenter.shouldHideCaption, true)
     }
 
+    @MainActor
     func test_model_imageViewBackgroundColor_withImageSizeAndCaption_returnsClearBackground() {
         let component = ImageComponent(
             caption: "a caption",
@@ -54,6 +57,7 @@ extension ImageComponentPresenterTests {
         XCTAssertEqual(presenter.imageViewBackgroundColor(imageSize: imageSize), UIColor(.clear))
     }
 
+    @MainActor
     func test_model_imageViewBackgroundColor_withImageSizeAndNoCaption_returnsClearBackground() {
         let component = ImageComponent(
             caption: " ",
@@ -69,6 +73,7 @@ extension ImageComponentPresenterTests {
         XCTAssertEqual(presenter.imageViewBackgroundColor(imageSize: imageSize), UIColor(.clear))
     }
 
+    @MainActor
     func test_model_imageViewBackgroundColor_withSmallImageSizeAndCaption_returnsGreyBackground() {
         let component = ImageComponent(
             caption: "a caption",
@@ -84,6 +89,7 @@ extension ImageComponentPresenterTests {
         XCTAssertEqual(presenter.imageViewBackgroundColor(imageSize: imageSize), UIColor(.ui.grey7))
     }
 
+    @MainActor
     func test_model_imageViewBackgroundColor_withSmallImageSizeAndNoCaption_returnsClearBackground() {
         let component = ImageComponent(
             caption: " ",
@@ -99,6 +105,7 @@ extension ImageComponentPresenterTests {
         XCTAssertEqual(presenter.imageViewBackgroundColor(imageSize: imageSize), UIColor(.clear))
     }
 
+    @MainActor
     func test_model_imageViewBackgroundColor_withNoImageAndCaption_returnsClearBackground() {
         let component = ImageComponent(
             caption: "a caption",
@@ -114,6 +121,7 @@ extension ImageComponentPresenterTests {
         XCTAssertEqual(presenter.imageViewBackgroundColor(imageSize: imageSize), UIColor(.clear))
     }
 
+    @MainActor
     func test_model_imageViewBackgroundColor_withNoImageAndNoCaption_returnsClearBackground() {
         let component = ImageComponent(
             caption: nil,

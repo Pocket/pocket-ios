@@ -38,6 +38,7 @@ class RecommendableItemViewModelTests: XCTestCase {
         try super.tearDownWithError()
     }
 
+    @MainActor
     func subject(
         recommendation: Recommendation,
         source: Source? = nil,
@@ -56,6 +57,7 @@ class RecommendableItemViewModelTests: XCTestCase {
         )
     }
 
+    @MainActor
     func test_init_buildsCorrectActions() throws {
         // not saved
         do {
@@ -96,6 +98,7 @@ class RecommendableItemViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_whenItemChanges_rebuildsActions() throws {
         let item = space.buildItem()
         let recommendation = try space.createRecommendation(item: item)
@@ -133,6 +136,7 @@ class RecommendableItemViewModelTests: XCTestCase {
         )
     }
 
+    @MainActor
     func test_displaySettings_updatesIsPresentingReaderSettings() {
         let item = space.buildItem()
         let savedItem = space.buildSavedItem(item: item)
@@ -145,6 +149,7 @@ class RecommendableItemViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.isPresentingReaderSettings, true)
     }
 
+    @MainActor
     func test_favorite_delegatesToSource() {
         let item = space.buildItem()
         let savedItem = space.buildSavedItem(isFavorite: false, item: item)
@@ -163,6 +168,7 @@ class RecommendableItemViewModelTests: XCTestCase {
         wait(for: [expectFavorite], timeout: 2)
     }
 
+    @MainActor
     func test_unfavorite_delegatesToSource() {
         let item = space.buildItem()
         let savedItem = space.buildSavedItem(isFavorite: true, item: item)
@@ -181,6 +187,7 @@ class RecommendableItemViewModelTests: XCTestCase {
         wait(for: [expectUnfavorite], timeout: 2)
     }
 
+    @MainActor
     func test_delete_delegatesToSource_andSendsDeleteEvent() {
         let item = space.buildItem()
         let savedItem = space.buildSavedItem(item: item)
@@ -209,6 +216,7 @@ class RecommendableItemViewModelTests: XCTestCase {
         wait(for: [expectDelete, expectDeleteEvent], timeout: 2)
     }
 
+    @MainActor
     func test_archive_sendsRequestToSource_andSendsArchiveEvent() {
         let item = space.buildItem()
         let savedItem = space.buildSavedItem(item: item)
@@ -235,6 +243,7 @@ class RecommendableItemViewModelTests: XCTestCase {
         wait(for: [expectArchive, expectArchiveEvent], timeout: 2)
     }
 
+    @MainActor
     func test_moveFromArchiveToSaves_sendsRequestToSource_AndRefreshes() {
         let item = space.buildItem()
         let savedItem = space.buildSavedItem(isArchived: true, item: item)
@@ -252,6 +261,7 @@ class RecommendableItemViewModelTests: XCTestCase {
         wait(for: [expectMoveFromArchiveToSaves], timeout: 2)
     }
 
+    @MainActor
     func test_share_updatesSharedActivity() {
         let item = space.buildItem()
         let savedItem = space.buildSavedItem(item: item)
@@ -264,6 +274,7 @@ class RecommendableItemViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.sharedActivity)
     }
 
+    @MainActor
     func test_showWebReader_updatesPresentedWebReaderURL() {
         let item = space.buildItem()
         let savedItem = space.buildSavedItem(item: item)
@@ -276,6 +287,7 @@ class RecommendableItemViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.presentedWebReaderURL, URL(string: item.bestURL)!)
     }
 
+    @MainActor
     func test_save_delegatesToSource() {
         let recommendation = space.buildRecommendation(item: space.buildItem())
 
@@ -292,6 +304,7 @@ class RecommendableItemViewModelTests: XCTestCase {
         wait(for: [expectSave], timeout: 2)
     }
 
+    @MainActor
     func test_report_updatesSelectedRecommendationToReport() {
         let recommendation = space.buildRecommendation(item: space.buildItem())
 
@@ -307,6 +320,7 @@ class RecommendableItemViewModelTests: XCTestCase {
         wait(for: [reportExpectation], timeout: 2)
     }
 
+    @MainActor
     func test_externalSave_forwardsToSource() throws {
         source.stubSaveURL { _ in }
 
@@ -317,6 +331,7 @@ class RecommendableItemViewModelTests: XCTestCase {
         XCTAssertEqual(source.saveURLCall(at: 0)?.url, url)
     }
 
+    @MainActor
     func test_externalCopy_copiesToClipboard() throws {
         let viewModel = try subject(recommendation: space.createRecommendation(item: space.buildItem()))
         let url = URL(string: "https://getpocket.com")!
@@ -327,6 +342,7 @@ class RecommendableItemViewModelTests: XCTestCase {
         XCTAssertEqual(pasteboard.url, url)
     }
 
+    @MainActor
     func test_externalShare_updatesSharedActivity() throws {
         let viewModel = try subject(recommendation: space.createRecommendation(item: space.buildItem()))
         let url = URL(string: "https://getpocket.com")!
@@ -335,6 +351,7 @@ class RecommendableItemViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.sharedActivity)
     }
 
+    @MainActor
     func test_externalOpen_updatesPresentedWebReaderURL() throws {
         let viewModel = try subject(recommendation: space.createRecommendation(item: space.buildItem()))
         let url = URL(string: "https://example.com")!
@@ -343,6 +360,7 @@ class RecommendableItemViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.presentedWebReaderURL, url)
     }
 
+    @MainActor
     func test_fetchDetailsIfNeeded_whenMarticleIsNil_fetchesDetailsForRecommendation() {
         let recommendation = space.buildRecommendation(
             item: space.buildItem()
@@ -367,6 +385,7 @@ class RecommendableItemViewModelTests: XCTestCase {
         XCTAssertNotNil(recommendation.item.article)
     }
 
+    @MainActor
     func test_fetchDetailsIfNeeded_whenMarticleIsNilAfterFetching_returnsWebView() {
         let recommendation = space.buildRecommendation(
             item: space.buildItem()
@@ -390,6 +409,7 @@ class RecommendableItemViewModelTests: XCTestCase {
         XCTAssertNil(recommendation.item.article)
     }
 
+    @MainActor
     func test_fetchDetailsIfNeeded_whenMarticleIsPresent_immediatelySendsContentUpdatedEvent() {
         let recommendation = space.buildRecommendation(
             item: space.buildItem(article: .init(components: []))
@@ -410,6 +430,7 @@ class RecommendableItemViewModelTests: XCTestCase {
         wait(for: [receivedEvent], timeout: 2)
     }
 
+    @MainActor
     func test_webActivitiesActions_whenRecommendation_notSaved() {
         let recommendation = space.buildRecommendation(
             item: space.buildItem()
@@ -430,6 +451,7 @@ class RecommendableItemViewModelTests: XCTestCase {
         wait(for: [webActivitiesExpectation], timeout: 2)
     }
 
+    @MainActor
     func test_webActivitiesActions_whenRecommendation_isSaved() throws {
         let item = space.buildItem()
         let recommendation = space.buildRecommendation(
@@ -453,6 +475,7 @@ class RecommendableItemViewModelTests: XCTestCase {
         wait(for: [webActivitiesExpectation], timeout: 2)
     }
 
+    @MainActor
     func test_readerProgress() throws {
         let item = space.buildItem()
         let recommendation = space.buildRecommendation(

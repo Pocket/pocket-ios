@@ -25,6 +25,7 @@ class DefaultSearchViewModelTests: XCTestCase {
     private var notificationCenter: NotificationCenter!
     private var featureFlags: MockFeatureFlagService!
 
+    @MainActor 
     override func setUpWithError() throws {
         try super.setUpWithError()
         networkPathMonitor = MockNetworkPathMonitor()
@@ -59,6 +60,7 @@ class DefaultSearchViewModelTests: XCTestCase {
         try super.tearDownWithError()
     }
 
+    @MainActor
     func subject(
         networkPathMonitor: NetworkPathMonitor? = nil,
         user: User,
@@ -90,6 +92,7 @@ class DefaultSearchViewModelTests: XCTestCase {
     }
 
     // MARK: - Update Scope
+    @MainActor
     func test_updateScope_forFreeUser_withOnlineSaves_showsSearchEmptyState() async {
         source.stubSearchItems { _ in return [] }
         let user = MockUser()
@@ -102,6 +105,7 @@ class DefaultSearchViewModelTests: XCTestCase {
         XCTAssertTrue(emptyStateViewModel is SearchEmptyState)
     }
 
+    @MainActor
     func test_updateScope_forFreeUser_withOnlineArchive_showsSearchEmptyState() async {
         source.stubSearchItems { _ in return [] }
 
@@ -115,6 +119,7 @@ class DefaultSearchViewModelTests: XCTestCase {
         XCTAssertTrue(emptyStateViewModel is SearchEmptyState)
     }
 
+    @MainActor
     func test_updateScope_forFreeUser_withAll_showsGetPremiumEmptyState() async {
         source.stubSearchItems { _ in return [] }
 
@@ -128,6 +133,7 @@ class DefaultSearchViewModelTests: XCTestCase {
         XCTAssertTrue(emptyStateViewModel is GetPremiumEmptyState)
     }
 
+    @MainActor
     func test_updateScope_forPremiumUser_withSaves_showsRecentSearchEmptyState() async {
         source.stubSearchItems { _ in return [] }
 
@@ -140,6 +146,7 @@ class DefaultSearchViewModelTests: XCTestCase {
         XCTAssertTrue(emptyStateViewModel is RecentSearchEmptyState)
     }
 
+    @MainActor
     func test_updateScope_forPremiumUser_withArchive_showsRecentSearchEmptyState() async {
         source.stubSearchItems { _ in return [] }
 
@@ -152,6 +159,7 @@ class DefaultSearchViewModelTests: XCTestCase {
         XCTAssertTrue(emptyStateViewModel is RecentSearchEmptyState)
     }
 
+    @MainActor
     func test_updateScope_forPremiumUser_withAll_showsRecentSearchEmptyState() async {
         source.stubSearchItems { _ in return [] }
 
@@ -165,6 +173,7 @@ class DefaultSearchViewModelTests: XCTestCase {
     }
 
     // MARK: Select Search Scope
+    @MainActor
     func test_updateScope_forFreeUser_withSavesAndTerm_showsResults() async throws {
         try setupLocalSavesSearch()
         let user = MockUser()
@@ -179,6 +188,7 @@ class DefaultSearchViewModelTests: XCTestCase {
         XCTAssertEqual(results.compactMap { $0.title.string }, ["saved-item-1", "saved-item-2"])
     }
 
+    @MainActor
     func test_updateScope_forFreeUser_withArchiveAndTerm_showsResults() async {
         let term = "search-term"
         await setupOnlineSearch(with: term)
@@ -203,6 +213,7 @@ class DefaultSearchViewModelTests: XCTestCase {
         await fulfillment(of: [searchExpectation], timeout: 2)
     }
 
+    @MainActor
     func test_updateScope_forFreeUser_withAllAndTerm_showsGetPremiumEmptyState() async {
         let term = "search-term"
         await setupOnlineSearch(with: term)
@@ -218,6 +229,7 @@ class DefaultSearchViewModelTests: XCTestCase {
         XCTAssertTrue(emptyStateViewModel is GetPremiumEmptyState)
     }
 
+    @MainActor
     func test_updateScope_forPremiumUser_withSavesAndTerm_showsResults() async {
         let term = "search-term"
         await setupOnlineSearch(with: term)
@@ -243,6 +255,7 @@ class DefaultSearchViewModelTests: XCTestCase {
         await fulfillment(of: [searchExpectation], timeout: 2)
     }
 
+    @MainActor
     func test_updateScope_forPremiumUser_withArchiveAndTerm_showsResults() async {
         let term = "search-term"
         await setupOnlineSearch(with: term)
@@ -267,6 +280,7 @@ class DefaultSearchViewModelTests: XCTestCase {
         await fulfillment(of: [searchExpectation], timeout: 2)
     }
 
+    @MainActor
     func test_updateScope_forPremiumUser_withAllAndTerm_showsResults() async {
         let term = "search-term"
         await setupOnlineSearch(with: term)
@@ -292,6 +306,7 @@ class DefaultSearchViewModelTests: XCTestCase {
     }
 
     // MARK: - Update Search Results
+    @MainActor
     func test_updateSearchResults_forFreeUser_withNoItems_showsNoResultsEmptyState() async {
         source.stubSearchItems { _ in return [] }
         let term = "search-term"
@@ -306,6 +321,7 @@ class DefaultSearchViewModelTests: XCTestCase {
         XCTAssertTrue(emptyStateViewModel is NoResultsEmptyState)
     }
 
+    @MainActor
     func test_updateSearchResults_forFreeUser_withItems_showsResults() async throws {
         let term = "search-term"
         try setupLocalSavesSearch()
@@ -323,6 +339,7 @@ class DefaultSearchViewModelTests: XCTestCase {
         XCTAssertEqual(results.compactMap { $0.title.string }, ["saved-item-1", "saved-item-2"])
     }
 
+    @MainActor
     func test_updateSearchResults_forFreeUser_withAll_showsGetPremiumForAllItems() async {
         let user = MockUser()
         let viewModel = await subject(user: user)
@@ -336,6 +353,7 @@ class DefaultSearchViewModelTests: XCTestCase {
         XCTAssertTrue(emptyStateViewModel is GetPremiumEmptyState)
     }
 
+    @MainActor
     func test_updateSearchResults_forPremiumUser_withNoItems_showsNoResultsEmptyState() async {
         let term = "search-term"
         await setupOnlineSearch(with: term)
@@ -361,6 +379,7 @@ class DefaultSearchViewModelTests: XCTestCase {
         await fulfillment(of: [searchExpectation], timeout: 2)
     }
 
+    @MainActor
     func test_updateSearchResults_forPremiumUser_withItems_showsResults() async {
         let term = "search-term"
         await setupOnlineSearch(with: term)
@@ -387,6 +406,7 @@ class DefaultSearchViewModelTests: XCTestCase {
     }
 
     // MARK: - Offline States
+    @MainActor
     func test_updateSearchResults_forFreeUser_withOfflineArchive_showsOfflineEmptyState() async {
         networkPathMonitor.update(status: .unsatisfied)
         let user = MockUser()
@@ -400,6 +420,7 @@ class DefaultSearchViewModelTests: XCTestCase {
         XCTAssertTrue(emptyStateViewModel is OfflineEmptyState)
     }
 
+    @MainActor
     func test_updateSearchResults_forPremiumUser_withOfflineArchive_showsOfflineEmptyState() async {
         let term = "search-term"
         await setupOnlineSearch(with: term)
@@ -425,6 +446,7 @@ class DefaultSearchViewModelTests: XCTestCase {
         XCTAssertTrue(emptyStateViewModel is OfflineEmptyState)
     }
 
+    @MainActor
     func test_updateSearchResults_forPremiumUser_withOfflineAll_showsOfflineEmptyState() async {
         let term = "search-term"
         await setupOnlineSearch(with: term)
@@ -440,6 +462,7 @@ class DefaultSearchViewModelTests: XCTestCase {
         XCTAssertTrue(emptyStateViewModel is OfflineEmptyState)
     }
 
+    @MainActor
     func test_selectingScope_whenOffline_showsOfflineEmptyState() async {
         await setupOnlineSearch(with: "search-term")
 
@@ -462,6 +485,7 @@ class DefaultSearchViewModelTests: XCTestCase {
     }
 
     // MARK: - Recent Searches
+    @MainActor
     func test_recentSearches_withFreeUser_hasNoRecentSearches() async {
         source.stubSearchItems { _ in [] }
 
@@ -478,6 +502,7 @@ class DefaultSearchViewModelTests: XCTestCase {
         XCTFail("Should have failed")
     }
 
+    @MainActor
     func test_recentSearches_withNewTerm_showsRecentSearches() async {
         searchService.stubSearch { _, _ in }
 
@@ -493,6 +518,7 @@ class DefaultSearchViewModelTests: XCTestCase {
         XCTAssertEqual(searches, ["search-term"])
     }
 
+    @MainActor
     func test_recentSearches_withDuplicateTerm_showsRecentSearches() async {
         searchService.stubSearch { _, _ in }
 
@@ -509,6 +535,7 @@ class DefaultSearchViewModelTests: XCTestCase {
         XCTAssertEqual(searches, ["search-term"])
     }
 
+    @MainActor
     func test_recentSearches_withEmptyTerm_showsRecentSearchEmptyState() async {
         searchService.stubSearch { _, _ in }
 
@@ -524,6 +551,7 @@ class DefaultSearchViewModelTests: XCTestCase {
         XCTAssertTrue(emptyStateViewModel is RecentSearchEmptyState)
     }
 
+    @MainActor
     func test_recentSearches_withNewTerms_showsMaxSearches() async {
         searchService.stubSearch { _, _ in }
 
@@ -544,6 +572,7 @@ class DefaultSearchViewModelTests: XCTestCase {
         XCTAssertEqual(searches, ["search-term-2", "search-term-3", "search-term-4", "search-term-5", "search-term-6"])
     }
 
+    @MainActor
     func test_recentSearches_withPreviousSearch_updatesSearches() async {
         searchService.stubSearch { _, _ in }
 
@@ -565,6 +594,7 @@ class DefaultSearchViewModelTests: XCTestCase {
     }
 
     // MARK: - Clear
+    @MainActor
     func test_clear_resetsSearchResults() async {
         let term = "search-term"
         await setupOnlineSearch(with: term)
@@ -607,6 +637,7 @@ class DefaultSearchViewModelTests: XCTestCase {
         await fulfillment(of: [recentSearchesExpectation], timeout: 2.0, enforceOrder: false)
     }
 
+    @MainActor
     func test_search_whenDeviceRegainsInternetConnection_submitsSearch() async {
         await setupOnlineSearch(with: "search-term")
 
@@ -648,6 +679,7 @@ class DefaultSearchViewModelTests: XCTestCase {
     }
 
     // MARK: - Error Handling
+    @MainActor
     func test_updateSearchResults_forPremiumUser_withOnlineSavesError_showsLocalSaves() async throws {
         let errorExpectation = expectation(description: "should throw an error")
         searchService.stubSearch { _, _ in
@@ -676,6 +708,7 @@ class DefaultSearchViewModelTests: XCTestCase {
         await fulfillment(of: [errorExpectation, localSavesExpectation], timeout: 2)
     }
 
+    @MainActor
     func test_updateSearchResults_withInternetConnectionError_showsOfflineView() async throws {
         let searchErrorExpectation = expectation(description: "should throw an error")
         searchService.stubSearch { _, _ in
@@ -701,6 +734,7 @@ class DefaultSearchViewModelTests: XCTestCase {
     }
 
     // MARK: Load More Search Results (Pagination)
+    @MainActor
     func test_loadMoreSearchResults_forItem_showsNextPaginationResults() async {
         searchService.stubSearch { _, _ in }
 
@@ -763,6 +797,7 @@ class DefaultSearchViewModelTests: XCTestCase {
 
 // MARK: - Premium search experiment
 extension DefaultSearchViewModelTests {
+    @MainActor
     func test_updateSearchResults_forPremiumUser_inExperiment_searchingByTitle_withOnlineSavesError_showsOfflineView() async throws {
         featureFlags.stubIsAssigned { _, _ in
             return true
@@ -793,6 +828,7 @@ extension DefaultSearchViewModelTests {
         await fulfillment(of: [errorExpectation], timeout: 2)
     }
 
+    @MainActor
     func test_updateSearchResults_forPremiumUser_inExperiment_searchingByTag_withOnlineSavesError_showsOfflineView() async throws {
         featureFlags.stubIsAssigned { _, _ in
             return true
@@ -823,6 +859,7 @@ extension DefaultSearchViewModelTests {
         await fulfillment(of: [errorExpectation], timeout: 2)
     }
 
+    @MainActor
     func test_updateSearchResults_forPremiumUser_inExperiment_searchingByContent_withOnlineSavesError_showsOfflineView() async throws {
         let errorExpectation = expectation(description: "should throw an error")
         searchService.stubSearch { _, _ in
@@ -849,6 +886,7 @@ extension DefaultSearchViewModelTests {
         await fulfillment(of: [errorExpectation], timeout: 2)
     }
 
+    @MainActor
     func test_search_inExperiment_whenDeviceRegainsInternetConnection_submitsSearch() async {
         featureFlags.stubIsAssigned { _, _ in
             return true
@@ -895,6 +933,7 @@ extension DefaultSearchViewModelTests {
         await fulfillment(of: [offlineExpectation, onlineExpectation], timeout: 30, enforceOrder: true)
     }
 
+    @MainActor
     func test_selectingScope_inExperiment_whenOffline_showsOfflineEmptyState() async {
         featureFlags.stubIsAssigned { _, _ in
             return true
@@ -922,6 +961,7 @@ extension DefaultSearchViewModelTests {
 
     // Since the logic is the same for title, tag, and content (aside from which query filter is used),
     // we will assume that this single scope test will act the same for the others.
+    @MainActor
     func test_updateScope_forPremiumUser_inExperiment_withTitleAndTerm_showsResults() async {
         featureFlags.stubIsAssigned { _, _ in
             return true

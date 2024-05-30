@@ -24,6 +24,7 @@ class CollectionViewModelTests: XCTestCase {
 
     private var subscriptions: Set<AnyCancellable> = []
 
+    @MainActor
     override func setUp() {
         super.setUp()
         source = MockSource()
@@ -53,6 +54,7 @@ class CollectionViewModelTests: XCTestCase {
         try super.tearDownWithError()
     }
 
+    @MainActor
     func subject(
         slug: String,
         source: Source? = nil,
@@ -78,6 +80,7 @@ class CollectionViewModelTests: XCTestCase {
     }
 
     // MARK: - Collection Actions
+    @MainActor
     func test_archive_sendsRequestToSource_andSendsArchiveEvent() throws {
         let item = space.buildSavedItem().item
         let story = space.buildCollectionStory()
@@ -117,6 +120,7 @@ class CollectionViewModelTests: XCTestCase {
         wait(for: [expectArchive, expectArchiveEvent], timeout: 1)
     }
 
+    @MainActor
     func test_moveToSaves_withSavedItem_sendsRequestToSource_AndRefreshes() throws {
         let item = space.buildSavedItem().item
         let story = space.buildCollectionStory()
@@ -150,6 +154,7 @@ class CollectionViewModelTests: XCTestCase {
         wait(for: [expectMoveToSaves], timeout: 1)
     }
 
+    @MainActor
     func test_moveToSaves_withoutSavedItem_sendsRequestToSource_AndRefreshes() {
         let collection = setupCollection(with: nil)
 
@@ -170,6 +175,7 @@ class CollectionViewModelTests: XCTestCase {
         wait(for: [expectMoveToSaves], timeout: 1)
     }
 
+    @MainActor
     func test_savedCollection_buildsCorrectActions() throws {
         // not-favorited, not-archived
         let savedItem = space.buildSavedItem(isFavorite: false, isArchived: false)
@@ -214,6 +220,7 @@ class CollectionViewModelTests: XCTestCase {
         )
     }
 
+    @MainActor
     func test_favorite_delegatesToSource() throws {
         let item = space.buildSavedItem(isFavorite: false).item
         let story = space.buildCollectionStory()
@@ -250,6 +257,7 @@ class CollectionViewModelTests: XCTestCase {
         wait(for: [expectFavorite], timeout: 1)
     }
 
+    @MainActor
     func test_unfavorite_delegatesToSource() throws {
         let item = space.buildSavedItem(isFavorite: true).item
         let story = space.buildCollectionStory()
@@ -286,6 +294,7 @@ class CollectionViewModelTests: XCTestCase {
         wait(for: [expectUnfavorite], timeout: 1)
     }
 
+    @MainActor
     func test_tagsAction_withNoTags_isAddTags() throws {
         let item = space.buildSavedItem(tags: []).item
         let story = space.buildCollectionStory()
@@ -308,6 +317,7 @@ class CollectionViewModelTests: XCTestCase {
         XCTAssertTrue(hasCorrectTitle)
     }
 
+    @MainActor
     func test_tagsAction_withTags_isEditTags() throws {
         let item = space.buildSavedItem(tags: ["tag 1"]).item
         let story = space.buildCollectionStory()
@@ -330,6 +340,7 @@ class CollectionViewModelTests: XCTestCase {
         XCTAssertTrue(hasCorrectTitle)
     }
 
+    @MainActor
     func test_addTagsAction_sendsAddTagsViewModel() throws {
         let item = space.buildSavedItem(tags: ["tag 1"]).item
         let story = space.buildCollectionStory()
@@ -362,6 +373,7 @@ class CollectionViewModelTests: XCTestCase {
         wait(for: [expectAddTags], timeout: 2)
     }
 
+    @MainActor
     func test_delete_delegatesToSource_andSendsDeleteEvent() throws {
         let item = space.buildSavedItem(isFavorite: true).item
         let story = space.buildCollectionStory()
@@ -403,6 +415,7 @@ class CollectionViewModelTests: XCTestCase {
         wait(for: [expectDelete, expectDeleteEvent], timeout: 1)
     }
 
+    @MainActor
     func test_report_updatesSelectedRecommendationToReport() throws {
         let item = space.buildItem()
         let story = space.buildCollectionStory()
@@ -432,6 +445,7 @@ class CollectionViewModelTests: XCTestCase {
         wait(for: [reportExpectation], timeout: 1)
     }
 
+    @MainActor
     func test_share_updatesSharedActivity() throws {
         let item = space.buildItem()
         let story = space.buildCollectionStory()
@@ -463,6 +477,7 @@ class CollectionViewModelTests: XCTestCase {
     }
 
     // MARK: - Cell Selection
+    @MainActor
     func test_select_withSavedItem_andIsArticle_setsReadableViewModel() {
         let item = space.buildItem()
         let savedItem = space.buildSavedItem().item
@@ -491,6 +506,7 @@ class CollectionViewModelTests: XCTestCase {
         wait(for: [readableExpectation], timeout: 1)
     }
 
+    @MainActor
     func test_select_withSavedItem_andIsNotArticle_setsWebView() {
         let item = space.buildItem()
         let savedItem = space.buildSavedItem().item
@@ -517,6 +533,7 @@ class CollectionViewModelTests: XCTestCase {
         wait(for: [webExpectation], timeout: 1)
     }
 
+    @MainActor
     func test_select_withRecommendation_andIsSyndicated_setsReadableViewModel() {
         let collectionItem = space.buildItem()
         let storyItem = space.buildItem(syndicatedArticle: space.buildSyndicatedArticle())
@@ -545,6 +562,7 @@ class CollectionViewModelTests: XCTestCase {
         wait(for: [readableExpectation], timeout: 1)
     }
 
+    @MainActor
     func test_select_withRecommendation_andIsNotSyndicated_setsWebView() {
         let collectionItem = space.buildItem()
         let storyItem = space.buildItem()
@@ -571,6 +589,7 @@ class CollectionViewModelTests: XCTestCase {
         wait(for: [webExpectation], timeout: 1)
     }
 
+    @MainActor
     func test_select_withNotSyndicated_andIsNotSaved_setsWebView() {
         let collectionItem = space.buildItem()
         let storyItem = space.buildItem()
@@ -595,6 +614,7 @@ class CollectionViewModelTests: XCTestCase {
         wait(for: [webExpectation], timeout: 1)
     }
 
+    @MainActor
     func test_select_withCollection_showsNativeCollectionView() throws {
         let item = space.buildItem(givenURL: "https://getpocket.com/collections/slug-1")
         let story = space.buildCollectionStory(item: item)
@@ -629,6 +649,7 @@ class CollectionViewModelTests: XCTestCase {
     }
 
     // MARK: - Story Actions
+    @MainActor
     func test_reportAction_forStories_updatesSelectedStoryToReport() throws {
         let item = space.buildItem()
         let story = space.buildCollectionStory(item: item)
@@ -660,6 +681,7 @@ class CollectionViewModelTests: XCTestCase {
         wait(for: [reportExpectation], timeout: 1)
     }
 
+    @MainActor
     func test_shareAction_forStories_updatesSelectedStoryToShare() throws {
         let item = space.buildItem()
         let story = space.buildCollectionStory(item: item)
@@ -699,6 +721,7 @@ class CollectionViewModelTests: XCTestCase {
         return collection
     }
 
+    @MainActor
     func test_snapshot_whenNetworkIsInitiallyAvailable_hasCorrectSnapshot() {
         let item = space.buildItem()
         let collection = setupCollection(with: item)
@@ -711,6 +734,7 @@ class CollectionViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.snapshot.indexOfSection(.error))
     }
 
+    @MainActor
     func test_snapshot_whenNetworkIsUnavailable_andNoLocalData_hasCorrectSnapshot() throws {
         networkPathMonitor.update(status: .unsatisfied)
 
@@ -736,6 +760,7 @@ class CollectionViewModelTests: XCTestCase {
         wait(for: [snapshotExpectation], timeout: 1)
     }
 
+    @MainActor
     func test_snapshot_whenOffline_thenReconnects_hasCorrectSnapshot() async {
         networkPathMonitor.update(status: .unsatisfied)
 
@@ -772,6 +797,7 @@ class CollectionViewModelTests: XCTestCase {
     }
 
     // MARK: - Error Handling
+    @MainActor
     func test_snapshot_withFetchingCollectionError_hasCorrectSnapshot() async throws {
         let item = space.buildItem()
         let collection = setupCollection(with: item)
