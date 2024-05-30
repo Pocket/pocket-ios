@@ -14,8 +14,8 @@ let package = Package(
         .library(name: "DangerDeps", type: .dynamic, targets: ["DangerDependencies"]), // dev
     ],
     dependencies: [
-        .package(url: "https://github.com/danger/swift.git", exact: "3.18.0"), // dev
-        .package(url: "https://github.com/f-meloni/danger-swift-coverage", exact: "1.2.1") // dev
+        .package(url: "https://github.com/danger/swift.git", from: "3.18.1"), // dev
+        .package(url: "https://github.com/f-meloni/danger-swift-coverage", from: "1.2.1") // dev
     ],
     targets: [
         .target(

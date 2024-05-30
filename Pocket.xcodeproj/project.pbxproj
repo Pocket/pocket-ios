@@ -2283,7 +2283,7 @@
 			repositoryURL = "https://github.com/adjust/ios_sdk";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 4.37.0;
+				minimumVersion = 4.38.3;
 			};
 		};
 		650EEABA29F35499004D66BD /* XCRemoteSwiftPackageReference "apollo-ios" */ = {
@@ -2291,7 +2291,7 @@
 			repositoryURL = "https://github.com/apollographql/apollo-ios.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.9.0;
+				minimumVersion = 1.12.2;
 			};
 		};
 		6547A0FD29F17AAF00F6FC6B /* XCRemoteSwiftPackageReference "Sails" */ = {
@@ -2307,7 +2307,7 @@
 			repositoryURL = "https://github.com/braze-inc/braze-swift-sdk.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 8.2.1;
+				minimumVersion = 9.3.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

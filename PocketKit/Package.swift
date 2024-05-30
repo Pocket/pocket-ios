@@ -25,16 +25,16 @@ let package = Package(
         .library(name: "DiffMatchPatch", targets: ["DiffMatchPatch"])
     ],
     dependencies: [
-        .package(url: "https://github.com/apollographql/apollo-ios.git", from: "1.9.0"),
+        .package(url: "https://github.com/apollographql/apollo-ios.git", from: "1.12.2"),
         .package(url: "https://github.com/onevcat/Kingfisher.git", from: "7.11.0"),
         .package(url: "https://github.com/getsentry/sentry-cocoa.git", from: "8.22.4"),
-        .package(url: "https://github.com/snowplow/snowplow-objc-tracker", from: "6.0.1"),
-        .package(url: "https://github.com/ccgus/fmdb", from: "2.7.6"),
-        .package(url: "https://github.com/airbnb/lottie-ios.git", from: "4.4.0"),
+        .package(url: "https://github.com/snowplow/snowplow-objc-tracker", from: "6.0.3"),
+        .package(url: "https://github.com/ccgus/fmdb", from: "2.7.11"),
+        .package(url: "https://github.com/airbnb/lottie-ios.git", from: "4.4.3"),
         .package(url: "https://github.com/johnxnguyen/Down", from: "0.11.0"),
-        .package(url: "https://github.com/SvenTiigi/YouTubePlayerKit.git", from: "1.7.0"),
-        .package(url: "https://github.com/braze-inc/braze-swift-sdk.git", from: "8.1.0"),
-        .package(url: "https://github.com/adjust/ios_sdk", from: "4.37.0"),
+        .package(url: "https://github.com/SvenTiigi/YouTubePlayerKit.git", from: "1.8.0"),
+        .package(url: "https://github.com/braze-inc/braze-swift-sdk.git", from: "9.3.0"),
+        .package(url: "https://github.com/adjust/ios_sdk", from: "4.38.3"),
         .package(url: "https://github.com/RNCryptor/RNCryptor.git", from: "5.1.0"),
     ],
     targets: [
