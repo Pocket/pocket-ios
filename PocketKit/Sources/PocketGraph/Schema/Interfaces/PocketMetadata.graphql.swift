@@ -4,5 +4,5 @@
 import ApolloAPI
 
 public extension Interfaces {
-  static let PocketMetadata = Interface(name: "PocketMetadata")
+  static let PocketMetadata = ApolloAPI.Interface(name: "PocketMetadata")
 }

@@ -5,5 +5,5 @@ import ApolloAPI
 
 public extension Interfaces {
   /// Interface that all state based entities must implement
-  static let RemoteEntity = Interface(name: "RemoteEntity")
+  static let RemoteEntity = ApolloAPI.Interface(name: "RemoteEntity")
 }

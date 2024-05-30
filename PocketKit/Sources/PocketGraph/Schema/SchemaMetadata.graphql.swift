@@ -3,8 +3,6 @@
 
 import ApolloAPI
 
-public typealias ID = String
-
 public protocol SelectionSet: ApolloAPI.SelectionSet & ApolloAPI.RootSelectionSet
 where Schema == PocketGraph.SchemaMetadata {}
 

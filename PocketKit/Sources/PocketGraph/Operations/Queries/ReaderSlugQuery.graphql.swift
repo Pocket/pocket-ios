@@ -30,8 +30,8 @@ public class ReaderSlugQuery: GraphQLQuery {
     /// Resolve Reader View links which might point to SavedItems that do not
     /// exist, aren't in the Pocket User's list, or are requested by a logged-out
     /// user (or user without a Pocket Account).
-    /// Fetches data to create an interstitial page/modal so the visitor can click
-    /// through to the shared site.
+    /// Fetches data which clients can use to generate an appropriate fallback view
+    /// that allows users to preview the content and access the original source site.
     public var readerSlug: ReaderSlug { __data["readerSlug"] }
 
     /// ReaderSlug
