@@ -32,7 +32,7 @@ public struct TagsCell: View {
 
 struct TagsCell_PreviewProvider: PreviewProvider {
     static var previews: some View {
-        let tagAction = { (tag: TagType) -> Void in
+        let tagAction = { (tag: TagType) in
             print("\(tag.name) action")
         }
 

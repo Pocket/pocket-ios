@@ -5,6 +5,7 @@ disabled_rules: # rule identifiers to exclude from running
   - trailing_comma
 
   # Disabled all default rules
+  - non_optional_string_data_conversion
   - block_based_kvo
   - closure_parameter_position
   - custom_rules

@@ -39,7 +39,7 @@ public struct TagsSectionView: View {
 
 struct TagsSectionView_Previews: PreviewProvider {
     static var previews: some View {
-        let tagAction = { (tag: TagType) -> Void in
+        let tagAction = { (tag: TagType) in
             print("\(tag.name) action")
         }
 
