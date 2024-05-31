@@ -80,7 +80,7 @@ let package = Package(
             ],
             swiftSettings: [
                     // TODO: remove targeted to enable complete (default)
-                    .enableExperimentalFeature("StrictConcurrency=targeted")
+                    .enableExperimentalFeature("StrictConcurrency=complete")
                 ],
             linkerSettings: [.unsafeFlags(["-ObjC"])] // Needed to load categories in PKTListen
         ),
