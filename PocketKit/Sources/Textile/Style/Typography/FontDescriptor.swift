@@ -2,7 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-public struct FontDescriptor {
+public struct FontDescriptor: Sendable {
     let family: Family
     let familyName: String
     let fontName: String?
@@ -10,19 +10,19 @@ public struct FontDescriptor {
     let weight: Weight
     let slant: Slant
 
-    public enum Weight {
+    public enum Weight: Sendable {
         case regular
         case medium
         case semibold
         case bold
     }
 
-    public enum Slant {
+    public enum Slant: Sendable {
         case none
         case italic
     }
 
-    public enum Family: String, Hashable {
+    public enum Family: String, Hashable, Sendable {
         case graphik = "Graphik"
         case blanco = "Blanco"
         case doyle = "Doyle"
@@ -103,7 +103,7 @@ public struct FontDescriptor {
         }
     }
 
-    public struct Size {
+    public struct Size: Sendable {
         let size: Int
     }
 

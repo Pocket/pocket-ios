@@ -4,7 +4,7 @@
 
 import Foundation
 
-public enum TextAlignment {
+public enum TextAlignment: Sendable {
     case left
     case right
     case center
@@ -24,7 +24,7 @@ public enum TextAlignment {
     }
 }
 
-public enum VerticalTextAlignment {
+public enum VerticalTextAlignment: Sendable {
     case `default`
     case center
 }

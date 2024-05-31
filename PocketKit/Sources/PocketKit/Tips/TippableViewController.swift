@@ -6,6 +6,7 @@ import UIKit
 import TipKit
 
 /// Conform any UIViewController subclass to this protocol to add a poppver tip
+@MainActor
 protocol TippableViewController: UIViewController {
     /// Displays the given tip as a popover from the given soruce view with the given configuration.
     /// - Parameters:

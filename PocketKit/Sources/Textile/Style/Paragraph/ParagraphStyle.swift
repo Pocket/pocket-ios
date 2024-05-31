@@ -4,17 +4,17 @@
 
 import CoreGraphics
 
-public enum LineBreakMode {
+public enum LineBreakMode: Sendable {
     case byTruncatingTail
     case none
 }
 
-public enum LineHeight {
+public enum LineHeight: Sendable {
     case explicit(CGFloat)
     case multiplier(CGFloat)
 }
 
-public struct ParagraphStyle {
+public struct ParagraphStyle: Sendable {
     public let alignment: TextAlignment
     public let lineBreakMode: LineBreakMode
     public let lineSpacing: CGFloat?

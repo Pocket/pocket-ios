@@ -5,7 +5,7 @@
 import Foundation
 import SwiftUI
 
-public struct Style {
+public struct Style: Sendable {
     let fontDescriptor: FontDescriptor
     let maxScaleSize: CGFloat?
     let colorAsset: ColorAsset
