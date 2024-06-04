@@ -90,7 +90,7 @@ public extension Style {
         public let medium = Medium()
         public let regular = Regular()
 
-        public struct Medium {
+        public struct Medium: Sendable {
             public let h1 = Style(family: .doyle, size: .h1, weight: .medium)
             public let h2 = Style(family: .doyle, size: .h2, weight: .medium)
             public let h3 = Style(family: .doyle, size: .h3, weight: .medium)
@@ -101,7 +101,7 @@ public extension Style {
             public let h8 = Style(family: .doyle, size: .h8, weight: .medium)
         }
 
-        public struct Regular {
+        public struct Regular: Sendable {
             public let h1 = Style(family: .doyle, size: .h1, weight: .regular)
             public let h2 = Style(family: .doyle, size: .h2, weight: .regular)
             public let h3 = Style(family: .doyle, size: .h3, weight: .regular)
