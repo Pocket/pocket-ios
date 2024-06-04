@@ -12,6 +12,7 @@ import Kingfisher
 import SafariServices
 import TipKit
 
+@MainActor
 protocol ReadableViewControllerDelegate: AnyObject {
     func readableViewController(_ controller: ReadableViewController, openURL url: URL)
     func readableViewController(_ controller: ReadableViewController, shareWithAdditionalText text: String?)
