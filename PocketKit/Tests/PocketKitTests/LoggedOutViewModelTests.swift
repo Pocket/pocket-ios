@@ -49,6 +49,7 @@ class LoggedOutViewModelTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func subject(
         authorizationClient: AuthorizationClient? = nil,
         appSession: AppSession? = nil,
@@ -68,6 +69,7 @@ class LoggedOutViewModelTests: XCTestCase {
 }
 
 extension LoggedOutViewModelTests {
+    @MainActor
     func test_logIn_withExistingSession_doesNotAttemptAuthentication() async {
         appSession.currentSession = Session(
             guid: "mock-guid",
@@ -83,7 +85,7 @@ extension LoggedOutViewModelTests {
         }
 
         let viewModel = subject()
-        await viewModel.authenticate()
+        viewModel.authenticate()
 
         await fulfillment(of: [startExpectation], timeout: 2)
     }
@@ -106,6 +108,7 @@ extension LoggedOutViewModelTests {
 }
 
 extension LoggedOutViewModelTests {
+    @MainActor
     func test_logIn_whenOffline_setsPresentOfflineViewToTrue() async {
         let viewModel = subject()
         networkPathMonitor.update(status: .unsatisfied)
@@ -116,11 +119,12 @@ extension LoggedOutViewModelTests {
             offlineExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        await viewModel.authenticate()
+        viewModel.authenticate()
 
         await fulfillment(of: [offlineExpectation], timeout: 2)
     }
 
+    @MainActor
     func test_logIn_whenOffline_thenReconnects_setsPresentOfflineViewToFalse() async {
         let viewModel = subject()
         networkPathMonitor.update(status: .unsatisfied)
@@ -139,7 +143,7 @@ extension LoggedOutViewModelTests {
             }
         }.store(in: &subscriptions)
 
-        await viewModel.authenticate()
+        viewModel.authenticate()
         networkPathMonitor.update(status: .satisfied)
 
         await fulfillment(of: [offlineExpectation, onlineExpectation], timeout: 2, enforceOrder: true)

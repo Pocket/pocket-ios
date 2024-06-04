@@ -12,6 +12,7 @@ class SceneTrackerTests: XCTestCase {
     var tracker: MockTracker!
     var sceneTracker: SceneTracker!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         userDefaults = UserDefaults()
@@ -24,6 +25,7 @@ class SceneTrackerTests: XCTestCase {
         )
     }
 
+    @MainActor
     override func tearDown() {
         userDefaults.removeObject(forKey: SceneTracker.dateLastOpenedKey)
         userDefaults.removeObject(forKey: SceneTracker.dateLastBackgroundedKey)

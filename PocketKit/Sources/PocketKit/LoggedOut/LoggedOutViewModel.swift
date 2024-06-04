@@ -15,6 +15,7 @@ enum LoggedOutAction {
     case authenticate
 }
 
+@MainActor
 class LoggedOutViewModel: ObservableObject {
     var contextProvider: ASWebAuthenticationPresentationContextProviding?
 
@@ -102,7 +103,6 @@ class LoggedOutViewModel: ObservableObject {
         currentNetworkStatus = status
     }
 
-    @MainActor
     func exitSurveyButtonClicked() {
         self.isPresentingExitSurvey.toggle()
         tracker.track(event: Events.Login.deleteAccountExitSurveyBannerTap())
@@ -116,7 +116,6 @@ class LoggedOutViewModel: ObservableObject {
         tracker.track(event: Events.Login.deleteAccountExitSurveyBannerImpression())
     }
 
-    @MainActor
     func authenticate() {
         guard appSession.currentSession == nil else {
             return
@@ -141,11 +140,10 @@ class LoggedOutViewModel: ObservableObject {
 
     func offlineViewDidDisappear() {
         if automaticallyDismissed, case .authenticate = lastAction {
-            Task { await authenticate() }
+            authenticate()
         }
     }
 
-    @MainActor
     private func handle(_ response: AuthorizationClient.Response) {
         appSession.currentSession = Session(
             guid: response.guid,
@@ -157,7 +155,6 @@ class LoggedOutViewModel: ObservableObject {
         NotificationCenter.default.post(name: .userLoggedIn, object: appSession.currentSession)
     }
 
-    @MainActor
     private func present(_ error: Error) {
         presentedAlert = PocketAlert(error) { [weak self] in
             self?.presentedAlert = nil
@@ -166,8 +163,9 @@ class LoggedOutViewModel: ObservableObject {
 
     private func authenticate(_ authentication: (ASWebAuthenticationPresentationContextProviding?) async throws -> AuthorizationClient.Response) async {
         do {
+            // TODO: CONCURRENCY - Need to figure out how to handle ASWebAuthenticationPresentationContextProviding and other native non-sendable types
             let response = try await authentication(contextProvider)
-            await handle(response)
+            handle(response)
         } catch {
             // AuthorizationClient should only ever throw an AuthorizationClient.error
             guard let error = error as? AuthorizationClient.Error else {
@@ -179,7 +177,7 @@ class LoggedOutViewModel: ObservableObject {
             case .invalidRedirect, .invalidComponents:
                 // If component generation failed, we should alert the user (to hopefully reach out),
                 // as well as capture the error
-                await present(error)
+                present(error)
                 Log.capture(error: error)
             case .alreadyAuthenticating:
                 Log.capture(error: error)
