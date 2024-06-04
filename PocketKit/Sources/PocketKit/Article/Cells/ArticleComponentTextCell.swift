@@ -8,6 +8,7 @@ import UIKit
 
 // An object that conforms to this protocol is commonly capable of responding to
 // (overridden) events that occur within a PocketTextView nested within a PocketTextCell.
+@MainActor
 protocol ArticleComponentTextCellDelegate: AnyObject {
     func articleComponentTextCell(_ cell: ArticleComponentTextCell, didShareText: String?)
     func articleComponentTextCell(_ cell: ArticleComponentTextCell, shouldOpenURL url: URL) -> Bool
@@ -44,6 +45,7 @@ extension ArticleComponentTextCell {
 
 // An object that conforms to this protocol is able to respond to (overridden)
 // events that occur within a PocketTextView.
+@MainActor
 protocol ArticleComponentTextViewDelegate: AnyObject {
     func articleComponentTextViewDidSelectShareAction(_ textView: ArticleComponentTextView)
     func articleComponentTextView(_ textView: ArticleComponentTextView, shouldOpenURL url: URL) -> Bool
