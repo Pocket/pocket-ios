@@ -5,7 +5,7 @@
 public typealias UIHierarchy = UInt
 public typealias UIIndex = UInt
 
-public struct UIContext: Context {
+public struct UIContext: Context, Sendable {
     public static let schema = "iglu:com.pocket/ui/jsonschema/1-0-3"
 
     let type: UIType
@@ -55,7 +55,7 @@ private extension UIContext {
 }
 
 extension UIContext {
-    public enum UIType: String, Encodable {
+    public enum UIType: String, Encodable, Sendable {
         case card
         case list
         case screen
@@ -67,7 +67,7 @@ extension UIContext {
 }
 
 extension UIContext {
-    public enum Identifier: String, Encodable {
+    public enum Identifier: String, Encodable, Sendable {
         case home
         case saves = "saves"
         case archive
@@ -113,7 +113,7 @@ extension UIContext {
 }
 
 extension UIContext {
-    public enum ComponentDetail: String, Encodable {
+    public enum ComponentDetail: String, Encodable, Sendable {
         case itemRow = "item_row"
         case homeCard = "discover_tile"
         case overlay = "overlay"
@@ -123,7 +123,7 @@ extension UIContext {
 }
 
 extension UIContext {
-    public enum Label: String, Encodable {
+    public enum Label: String, Encodable, Sendable {
         case saveToPocket = "Save to Pocket"
         case tagsAdded = "Tags Added"
     }
@@ -134,7 +134,7 @@ extension UIContext {
         public let screen = UIContext(type: .screen, identifier: .loggedOut)
     }
 
-    public struct Home {
+    public struct Home: Sendable {
         public let screen = UIContext(type: .screen, identifier: .home)
 
         public func item(index: UIIndex) -> UIContext {
@@ -158,7 +158,7 @@ extension UIContext {
         }
     }
 
-    public struct Saves {
+    public struct Saves: Sendable {
         public let screen = UIContext(type: .screen, hierarchy: 0, identifier: .saves)
         public let saves = UIContext(type: .list, hierarchy: 0, identifier: .saves)
         public let archive = UIContext(type: .list, hierarchy: 0, identifier: .archive)
@@ -171,17 +171,17 @@ extension UIContext {
         }
     }
 
-    public struct Account {
+    public struct Account: Sendable {
         public let screen = UIContext(type: .screen, hierarchy: 0, identifier: .account)
     }
 
-    public struct ArticleView {
+    public struct ArticleView: Sendable {
         public let screen = UIContext(type: .screen, hierarchy: 0, identifier: .reader)
         public let link = UIContext(type: .link, hierarchy: 0, identifier: .articleLink)
         public let switchToWebView = UIContext(type: .button, hierarchy: 0, identifier: .switchToWebView)
     }
 
-    public struct SlateDetail {
+    public struct SlateDetail: Sendable {
         public let screen = UIContext(type: .screen, identifier: .slateDetail)
 
         public func recommendation(index: UIIndex) -> UIContext {
@@ -189,7 +189,7 @@ extension UIContext {
         }
     }
 
-    public struct SaveExtension {
+    public struct SaveExtension: Sendable {
         public let screen = UIContext(type: .screen, hierarchy: 0, identifier: .externalApp)
         public let saveDialog = UIContext(type: .dialog, hierarchy: 0, identifier: .saveExtension, componentDetail: .overlay, label: .saveToPocket)
         public let addTagsButton = UIContext(type: .button, hierarchy: 0, identifier: .saveExtension, componentDetail: .addTags)
