@@ -5,7 +5,7 @@
 import PKTListen
 import Textile
 
-class ListenTheme: NSObject, PKTUITheme {
+final class ListenTheme: NSObject, PKTUITheme, Sendable {
     func white() -> UIColor! {
         if UITraitCollection.current.userInterfaceStyle == .dark {
             return UIColor(.listen.gray1)
