@@ -6,7 +6,7 @@ import Foundation
 import SwiftUI
 
 public extension UserDefaults {
-    enum Key: String, CaseIterable {
+    enum Key: String, CaseIterable, Sendable {
         case hasAppBeenLaunchedPreviously = "hasAppBeenLaunchedPreviously"
         case recentSearches = "Search.recentSearches"
         case recentTags = "Search.recentTags"

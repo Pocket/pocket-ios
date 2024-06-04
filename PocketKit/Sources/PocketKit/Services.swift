@@ -21,7 +21,6 @@ struct Services {
     let urlSession: URLSessionProtocol
     let source: Sync.Source
     let tracker: Tracker
-    let sceneTracker: SceneTracker
     let savesRefreshCoordinator: SavesRefreshCoordinator
     let archiveRefreshCoordinator: ArchiveRefreshCoordinator
     let tagsRefreshCoordinator: TagsRefreshCoordinator
@@ -51,6 +50,7 @@ struct Services {
     let sharedWithYouStore: SharedWithYouStore
 
     private let persistentContainer: PersistentContainer
+    private let sceneTracker: SceneTracker
 
     private init() {
         guard let sharedUserDefaults = UserDefaults(suiteName: Keys.shared.groupID) else {

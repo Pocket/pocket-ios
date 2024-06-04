@@ -7,7 +7,8 @@ import Analytics
 import SwiftUI
 import Combine
 
-class SceneTracker {
+@MainActor
+final class SceneTracker {
     static let dateLastOpenedKey = UserDefaults.Key.dateLastOpened
     static let dateLastBackgroundedKey = UserDefaults.Key.dateLastBackgrounded
 
