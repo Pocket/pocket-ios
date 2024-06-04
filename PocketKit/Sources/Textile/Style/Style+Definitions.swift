@@ -26,7 +26,7 @@ public extension Style {
     static let header = Header()
     static let body = Body()
 
-    struct Header {
+    struct Header: Sendable {
         public let sansSerif = Graphik()
         public let serif = GenericTextStyles(with: .blanco)
         public let display = Display()
@@ -35,7 +35,7 @@ public extension Style {
             GenericTextStyles(with: family)
         }
 
-        public struct Graphik {
+        public struct Graphik: Sendable {
             public let title = Style(family: .graphik, size: .title, weight: .medium)
             public let h1 = Style(family: .graphik, size: .h1, weight: .medium)
             public let h2 = Style(family: .graphik, size: .h2, weight: .medium)
@@ -55,7 +55,7 @@ public extension Style {
             public let w8 = Style(family: .graphik, size: .p4, weight: .medium)
         }
 
-        public struct GenericTextStyles {
+        public struct GenericTextStyles: Sendable {
             public let title: Style
             public let h1: Style
             public let h2: Style
@@ -86,7 +86,7 @@ public extension Style {
         }
     }
 
-    struct Display {
+    struct Display: Sendable {
         public let medium = Medium()
         public let regular = Regular()
 
