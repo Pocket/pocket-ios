@@ -8,8 +8,9 @@ import Sync
 import UIKit
 
 /// Configures the section layout for items in slate detail view and native collections
-class GridSectionLayoutProvider {
-    enum Constants {
+@MainActor
+final class GridSectionLayoutProvider {
+    private enum Constants {
         static let itemPadding = NSDirectionalEdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0)
         static let interItemSpacing: CGFloat = 16
         /// Minimum width length to qualify for a full (3 column) grid layout on iPad
