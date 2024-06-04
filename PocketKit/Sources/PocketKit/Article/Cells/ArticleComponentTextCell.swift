@@ -16,6 +16,7 @@ protocol ArticleComponentTextCellDelegate: AnyObject {
 
 // An object that conforms to this protocol is capable of delegating actions
 // commonly performed within the cell, typically interactions with a PocketTextView.
+@MainActor
 protocol ArticleComponentTextCell: ArticleComponentTextViewDelegate {
     var delegate: ArticleComponentTextCellDelegate? { get set }
     var componentIndex: Int { get set }
