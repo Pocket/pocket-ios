@@ -2,7 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-public struct ImageAsset {
+public struct ImageAsset: Sendable {
     let name: String
 
     init(_ name: String) {
@@ -74,7 +74,7 @@ extension ImageAsset {
     public static let highlights = ImageAsset("magicMarker")
 }
 
-public struct ReaderSkeleton {
+public struct ReaderSkeleton: Sendable {
     public let byline = ImageAsset("reader-skeleton.byline")
     public let head = ImageAsset("reader-skeleton.head")
     public let thumbnail = ImageAsset("reader-skeleton.thumbnail")
