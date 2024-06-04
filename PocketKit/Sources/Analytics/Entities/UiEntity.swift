@@ -83,7 +83,7 @@ public struct UiEntity: Entity {
 }
 
 extension UiEntity {
-    public enum UiType: String, Encodable {
+    public enum UiType: String, Encodable, Sendable {
         case button
         case dialog
         case menu

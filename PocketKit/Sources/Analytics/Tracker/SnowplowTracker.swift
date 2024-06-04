@@ -4,7 +4,7 @@
 
 import class SnowplowTracker.SelfDescribing
 
-public protocol SnowplowTracker {
+public protocol SnowplowTracker: Sendable {
     func track(event: SelfDescribing)
     func addPersistentEntity(_ entity: Entity)
     func resetPersistentEntities(_ entities: [Entity])

@@ -6,6 +6,6 @@ import class SnowplowTracker.SelfDescribingJson
 /**
  * A snowplow entity or context
  */
-public protocol Entity {
+public protocol Entity: Sendable {
     func toSelfDescribingJson() -> SelfDescribingJson
 }

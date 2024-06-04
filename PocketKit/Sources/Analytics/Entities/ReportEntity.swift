@@ -39,7 +39,7 @@ public struct ReportEntity: Entity {
 }
 
 extension ReportEntity {
-    public enum Reason: String, CaseIterable, Encodable {
+    public enum Reason: String, CaseIterable, Encodable, Sendable {
         case brokenMeta = "broken_meta"
         case wrongCategory = "wrong_category"
         case sexuallyExplicit = "sexually_explicit"

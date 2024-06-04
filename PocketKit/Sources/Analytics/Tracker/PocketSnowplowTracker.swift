@@ -2,13 +2,13 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import SnowplowTracker
+@preconcurrency import SnowplowTracker
 import SharedPocketKit
 import Foundation
 
-public class PocketSnowplowTracker: SnowplowTracker {
+public final class PocketSnowplowTracker: SnowplowTracker {
     private let tracker: TrackerController
-
+    // TODO: CONCURRENCY - This needs refactoring to be immutable
     private var persistentEntities: [Entity] = []
 
     public init() {

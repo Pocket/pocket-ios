@@ -4,7 +4,7 @@
 
 import Foundation
 
-public protocol Context: Encodable {
+public protocol Context: Encodable, Sendable {
     static var schema: String { get }
 }
 

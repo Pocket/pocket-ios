@@ -4,7 +4,7 @@
 
 import SnowplowTracker
 
-public protocol Tracker {
+public protocol Tracker: Sendable {
     func addPersistentEntity(_ entity: Entity)
     func track<T: OldEvent>(event: T, _ contexts: [Context]?)
     func track(event: Event, filename: String, line: Int, column: Int, funcName: String)

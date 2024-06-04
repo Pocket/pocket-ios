@@ -7,7 +7,7 @@ import Sync
 import Foundation
 import SharedPocketKit
 
-public class PocketTracker: Tracker {
+public final class PocketTracker: Tracker {
     private let snowplow: SnowplowTracker
 
     public init(snowplow: SnowplowTracker) {
