@@ -22,10 +22,12 @@ open class SwiftUICollectionViewCell<T>: UICollectionViewCell where T: View {
     }
 
     deinit {
-        hosting?.willMove(toParent: nil)
-        hosting?.view.removeFromSuperview()
-        hosting?.removeFromParent()
-        hosting = nil
+        Task { @MainActor in
+            hosting?.willMove(toParent: nil)
+            hosting?.view.removeFromSuperview()
+            hosting?.removeFromParent()
+            hosting = nil
+        }
     }
 }
 
