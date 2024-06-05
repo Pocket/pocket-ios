@@ -79,7 +79,6 @@ let package = Package(
                 .product(name: "FMDB", package: "fmdb")
             ],
             swiftSettings: [
-                    // TODO: remove targeted to enable complete (default)
                     .enableExperimentalFeature("StrictConcurrency=complete")
                 ],
             linkerSettings: [.unsafeFlags(["-ObjC"])] // Needed to load categories in PKTListen
