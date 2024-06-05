@@ -19,7 +19,7 @@ struct CollectionStoryViewModel: Hashable {
         return lhs.collectionStory == rhs.collectionStory
     }
 
-    private(set) var collectionStory: CollectionStory
+    let collectionStory: CollectionStory
     private let source: Source?
     private let tracker: Tracker
     let overflowActions: [ItemAction]?

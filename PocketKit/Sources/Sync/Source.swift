@@ -148,6 +148,7 @@ public protocol Source {
     func makeSharedWithYouController() -> RichFetchedResultsController<SharedWithYouItem>
     func item(by slug: String) async throws -> Item?
     func readerItem(by slug: String) async throws -> (SavedItem?, Item?)
+    @MainActor
     func requestShareUrl(_ itemUrl: String) async throws -> String?
     func deleteAllSharedWithYouItems() throws
 

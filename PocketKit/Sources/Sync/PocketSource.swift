@@ -1353,6 +1353,7 @@ extension PocketSource {
         return (nil, nil)
     }
 
+    @MainActor
     public func requestShareUrl(_ itemUrl: String) async throws -> String? {
         guard let shareUrl = try await apollo.perform(
             mutation: CreateShareLinkMutation(

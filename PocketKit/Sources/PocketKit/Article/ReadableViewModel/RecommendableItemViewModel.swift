@@ -10,6 +10,7 @@ import UIKit
 import Analytics
 import SharedPocketKit
 
+@MainActor
 class RecommendableItemViewModel: ReadableViewModel {
     weak var delegate: ReadableViewModelDelegate?
 
