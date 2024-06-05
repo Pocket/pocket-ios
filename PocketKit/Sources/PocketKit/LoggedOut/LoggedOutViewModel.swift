@@ -59,12 +59,10 @@ class LoggedOutViewModel: ObservableObject {
         self.tracker = tracker
         self.userManagementService = userManagementService
 
-        networkPathMonitor.start(queue: DispatchQueue.global())
+        networkPathMonitor.start(queue: DispatchQueue.main)
         currentNetworkStatus = networkPathMonitor.currentNetworkPath.status
         networkPathMonitor.updateHandler = { [weak self] path in
-            DispatchQueue.main.async {
-                self?.updateStatus(path.status)
-            }
+            self?.updateStatus(path.status)
         }
 
         // Register for the user management service to show the deletion banner if the user logs out.
