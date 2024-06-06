@@ -129,21 +129,39 @@ class VimeoComponentCell: UICollectionViewCell {
 }
 
 extension VimeoComponentCell: WKNavigationDelegate {
-    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        mode = .finishedLoading
+    nonisolated func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        Task {
+            await setModeLoadFinished()
+        }
     }
 
-    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-        mode = .error
+    nonisolated func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        Task {
+            await setModeError()
+        }
     }
 
-    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction) async -> WKNavigationActionPolicy {
+    nonisolated func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction) async -> WKNavigationActionPolicy {
         guard case .linkActivated = navigationAction.navigationType,
               let url = navigationAction.request.url else {
             return .allow
         }
 
-        delegate?.vimeoComponentCell(self, didNavigateToURL: url)
+        await didNavigate(to: url)
         return .cancel
+    }
+    /// `MainActor` isolated methods
+    /// The purpose is to mantain isolated properties within the scope
+    /// And make it possible to call them from within the above`nonIsolated` methods
+    private func setModeLoadFinished() {
+        mode = .finishedLoading
+    }
+
+    private func setModeError() {
+        mode = .error
+    }
+
+    private func didNavigate(to url: URL) {
+        delegate?.vimeoComponentCell(self, didNavigateToURL: url)
     }
 }
