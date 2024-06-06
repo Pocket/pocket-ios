@@ -8,4 +8,8 @@ extension CollectionStory {
     var isSaved: Bool {
         item?.savedItem != nil && item?.savedItem?.isArchived == false
     }
+
+    var isCollection: Bool {
+        item?.isCollection ?? CollectionUrlFormatter.isCollectionUrl(url)
+    }
 }
