@@ -581,7 +581,10 @@ private extension Space {
 
     func deleteOrphanedItems(context: NSManagedObjectContext) throws {
         let fetchRequest: NSFetchRequest<Item> = Item.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "recommendation = NULL && savedItem = NULL && sharedWithYouItem = NULL")
+        fetchRequest.predicate =
+        NSPredicate(
+            format: "recommendation = NULL && savedItem = NULL && sharedWithYouItem = NULL && collection == NULL && syndicatedArticle == NULL"
+        )
         try deleteEntities(request: fetchRequest, context: context)
     }
 
