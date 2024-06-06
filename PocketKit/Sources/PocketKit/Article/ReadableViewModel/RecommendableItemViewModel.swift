@@ -144,20 +144,26 @@ class RecommendableItemViewModel: ReadableViewModel {
         _events.send(.delete)
     }
 
-    func fetchDetailsIfNeeded() {
+    nonisolated func fetchDetailsIfNeeded() {
         guard item.article == nil else {
-            _events.send(.contentUpdated)
+            Task {
+                await sendContentUpdatedEvent()
+            }
             return
         }
 
         Task {
             do {
                 let remoteHasArticle = try await source.fetchDetails(for: item)
-                displayArticle(with: remoteHasArticle)
+                await displayArticle(with: remoteHasArticle)
             } catch {
                 Log.capture(message: "Failed to fetch details for RecommendationViewModel: \(error)")
             }
         }
+    }
+
+    private func sendContentUpdatedEvent() {
+        _events.send(.contentUpdated)
     }
 
     // MARK: Reader Progress
