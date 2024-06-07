@@ -56,8 +56,8 @@ struct PremiumUpgradeView: View {
     }
 
     struct OffsetConstant {
-        static var offsetX: CGFloat = 10
-        static var offsetY: CGFloat = -30
+        static let offsetX: CGFloat = 10
+        static let offsetY: CGFloat = -30
     }
 
     private var upgradeView: some View {
@@ -304,7 +304,7 @@ private struct PremiumBackgroundView: View {
         }
     }
 
-    private var sidebars: some View {
+    @MainActor private var sidebars: some View {
         HStack(spacing: 0) {
             Image(asset: .premiumBorderLeft).resizable().frame(maxWidth: borderWidth)
             Spacer()
@@ -312,7 +312,7 @@ private struct PremiumBackgroundView: View {
         }
     }
 
-    private var borderWidth: CGFloat {
+    @MainActor private var borderWidth: CGFloat {
         CGFloat(UIDevice.current.userInterfaceIdiom == .pad ? 18.0 : 13.0)
     }
 }
