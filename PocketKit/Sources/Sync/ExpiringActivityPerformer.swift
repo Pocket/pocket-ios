@@ -5,7 +5,7 @@
 import Foundation
 
 public protocol ExpiringActivityPerformer {
-    func performExpiringActivity(withReason reason: String, using block: @escaping (Bool) -> Void)
+    func performExpiringActivity(withReason reason: String, using block: @escaping @Sendable (Bool) -> Void)
 }
 
 extension ProcessInfo: ExpiringActivityPerformer { }
