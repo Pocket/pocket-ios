@@ -4,7 +4,8 @@
 
 import Foundation
 
-public protocol URLSessionProtocol {
+/// Protocol to map url session, conforms to `Sendable` since so does `URLSession`
+public protocol URLSessionProtocol: Sendable {
     func data(
         for request: URLRequest,
         delegate: URLSessionTaskDelegate?

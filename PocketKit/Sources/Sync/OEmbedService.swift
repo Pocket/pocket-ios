@@ -4,8 +4,7 @@
 
 import Foundation
 
-@MainActor
-public class OEmbedService {
+public final class OEmbedService: Sendable {
     public enum Error: Swift.Error {
         case anError
     }
@@ -52,15 +51,13 @@ public class OEmbedService {
     }
 }
 
-@MainActor
-public struct OEmbed: Decodable {
+public struct OEmbed: Decodable, Sendable {
     public let html: String?
     public let width: Int?
     public let height: Int?
 }
 
-@MainActor
-public struct OEmbedRequest {
+public struct OEmbedRequest: Sendable {
     public let id: String?
     public let width: Int?
 

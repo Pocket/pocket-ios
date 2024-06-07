@@ -5,7 +5,6 @@
 import Sync
 import UIKit
 
-@MainActor
 class VimeoComponentPresenter: ArticleComponentPresenter {
     var componentIndex: Int
 
@@ -33,7 +32,6 @@ class VimeoComponentPresenter: ArticleComponentPresenter {
         self.onContentLoaded = onContentLoaded
     }
 
-    @MainActor
     func cell(for indexPath: IndexPath, in collectionView: UICollectionView, onHighlight: ((Int, NSRange, String, String) -> Void)?) -> UICollectionViewCell {
         let vimeoCell: VimeoComponentCell = collectionView.dequeueCell(for: indexPath)
         vimeoCell.delegate = self

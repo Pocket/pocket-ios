@@ -7,6 +7,7 @@ import WebKit
 import Combine
 import Localization
 
+@MainActor
 protocol VimeoComponentCellDelegate: AnyObject {
     func vimeoComponentCell(_ cell: VimeoComponentCell, didNavigateToURL: URL)
     func vimeoComponentCellDidTapOpenInWebView(_ cell: VimeoComponentCell)

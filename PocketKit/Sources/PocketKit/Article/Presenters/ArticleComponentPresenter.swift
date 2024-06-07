@@ -6,7 +6,6 @@ import UIKit
 
 @MainActor
 protocol ArticleComponentPresenter {
-    @MainActor
     func cell(for indexPath: IndexPath, in collectionView: UICollectionView, onHighlight: ((Int, NSRange, String, String) -> Void)?) -> UICollectionViewCell
     func size(for availableWidth: CGFloat) -> CGSize
     func clearCache()
