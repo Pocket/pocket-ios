@@ -70,7 +70,7 @@ public final class PocketSnowplowTracker: SnowplowTracker {
             return self.persistentEntities.map({ $0.toSelfDescribingJson() })
         }))
 
-        if CommandLine.arguments.contains("disableSnowplow") {
+        if ProcessInfo.processInfo.arguments.contains("disableSnowplow") {
             tracker.pause()
         }
     }
