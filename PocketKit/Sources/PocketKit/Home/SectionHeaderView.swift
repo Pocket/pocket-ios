@@ -77,6 +77,7 @@ extension SectionHeaderView {
             NSAttributedString(string: name, style: .sectionHeader)
         }
 
+        @MainActor
         func height(width: CGFloat) -> CGFloat {
             let buttonWidth = NSAttributedString(string: buttonTitle, style: .buttonText).sizeFitting().width + buttonImageSize.width
             return attributedHeaderText.sizeFitting(availableWidth: width - stackSpacing - buttonWidth).height + 16
