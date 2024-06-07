@@ -110,19 +110,19 @@ extension PocketAppDelegate {
 
     /// Process any command line arguments (e. g. to setup the testing environment)
     private func processCommandLineArguments() {
-        if CommandLine.arguments.contains("clearKeychain") {
+        if ProcessInfo.processInfo.arguments.contains("clearKeychain") {
             appSession.currentSession = nil
         }
 
-        if CommandLine.arguments.contains("clearUserDefaults") {
+        if ProcessInfo.processInfo.arguments.contains("clearUserDefaults") {
             userDefaults.resetKeys()
         }
 
-        if CommandLine.arguments.contains("clearCoreData") {
+        if ProcessInfo.processInfo.arguments.contains("clearCoreData") {
             source.clear()
         }
 
-        if CommandLine.arguments.contains("clearImageCache") {
+        if ProcessInfo.processInfo.arguments.contains("clearImageCache") {
             Textiles.clearImageCache()
         }
     }
