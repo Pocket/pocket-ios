@@ -66,7 +66,7 @@ public struct MainView: View {
         .task {
             // Initialize tips at app start/user login
             if #available(iOS 17.0, *) {
-                if CommandLine.arguments.contains("hideAllTipsForTesting") {
+                if ProcessInfo.processInfo.arguments.contains("hideAllTipsForTesting") {
                     Tips.hideAllTipsForTesting()
                 }
                 do {
