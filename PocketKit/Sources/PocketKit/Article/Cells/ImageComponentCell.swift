@@ -5,6 +5,7 @@
 import UIKit
 import Kingfisher
 
+@MainActor
 protocol ImageComponentCellModel {
     var caption: NSAttributedString? { get }
     var image: ImageComponentCell.ImageSpec? { get }
