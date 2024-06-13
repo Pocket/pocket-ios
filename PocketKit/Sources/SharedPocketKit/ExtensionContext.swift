@@ -7,7 +7,7 @@ import Foundation
 public protocol ExtensionContext {
     var extensionItems: [ExtensionItem] { get }
 
-    func completeRequest(returningItems items: [Any]?, completionHandler: ((Bool) -> Void)?)
+    func completeRequest(returningItems items: [Any]?, completionHandler: (@Sendable (Bool) -> Void)?)
 }
 
 extension NSExtensionContext: ExtensionContext {
