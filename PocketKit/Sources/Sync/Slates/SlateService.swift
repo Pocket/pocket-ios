@@ -2,18 +2,18 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import Apollo
+@preconcurrency import Apollo
 import Foundation
 import PocketGraph
 import SharedPocketKit
 
-protocol SlateService {
+protocol SlateService: Sendable {
     func fetchHomeSlateLineup() async throws
 }
 
-class APISlateService: SlateService {
+struct APISlateService: SlateService {
     private let apollo: ApolloClientProtocol
-    private let space: Space
+    nonisolated(unsafe) private let space: Space
 
     init(
         apollo: ApolloClientProtocol,

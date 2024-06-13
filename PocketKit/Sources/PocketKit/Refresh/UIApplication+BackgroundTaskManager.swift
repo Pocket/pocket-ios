@@ -5,7 +5,7 @@
 import UIKit
 import Sync
 
-extension UIApplication: BackgroundTaskManager {
+extension UIApplication: @retroactive BackgroundTaskManager {
     public func beginTask(withName name: String?, expirationHandler: (() -> Void)?) -> Int {
         beginBackgroundTask(withName: name, expirationHandler: expirationHandler).rawValue
     }

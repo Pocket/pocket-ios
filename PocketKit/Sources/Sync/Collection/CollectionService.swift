@@ -2,12 +2,12 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import Apollo
+@preconcurrency import Apollo
 import Foundation
 import PocketGraph
 import SharedPocketKit
 
-protocol CollectionService {
+protocol CollectionService: Sendable {
     func fetchCollection(by identifier: String) async throws
 }
 
@@ -15,9 +15,9 @@ enum CollectionServiceError: Error {
     case nullCollection
 }
 
-class APICollectionService: CollectionService {
+struct APICollectionService: CollectionService {
     private let apollo: ApolloClientProtocol
-    private let space: Space
+    nonisolated(unsafe) private let space: Space
 
     init(apollo: ApolloClientProtocol, space: Space) {
         self.apollo = apollo

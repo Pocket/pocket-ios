@@ -64,7 +64,7 @@ class RetriableOperation: AsyncOperation {
                 return
             }
 
-            let taskID = backgroundTaskManager.beginTask(withName: String(describing: type(of: operation))) { [weak self] in
+            let taskID = await backgroundTaskManager.beginTask(withName: String(describing: type(of: operation))) { [weak self] in
                 guard let self else {
                     Log.captureNilWeakSelf()
                     return
@@ -84,7 +84,7 @@ class RetriableOperation: AsyncOperation {
                 Log.info("Successfully finished persistent task with objectID \(String(describing: syncTaskId))")
                 doneWithTask()
             }
-            backgroundTaskManager.endTask(taskID)
+            await backgroundTaskManager.endTask(taskID)
         }
     }
 

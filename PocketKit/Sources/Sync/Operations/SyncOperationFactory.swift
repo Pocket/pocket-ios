@@ -9,7 +9,7 @@ import CoreData
 import PocketGraph
 import SharedPocketKit
 
-protocol SyncOperationFactory {
+protocol SyncOperationFactory: Sendable {
     func fetchSaves(
         apollo: ApolloClientProtocol,
         space: Space,
@@ -60,7 +60,7 @@ protocol SyncOperationFactory {
     ) -> SyncOperation
 }
 
-class OperationFactory: SyncOperationFactory {
+struct OperationFactory: SyncOperationFactory {
     func fetchSaves(
         apollo: ApolloClientProtocol,
         space: Space,

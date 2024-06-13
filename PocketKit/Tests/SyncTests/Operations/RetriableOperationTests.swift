@@ -14,6 +14,7 @@ class RetriableOperationTests: XCTestCase {
     var space: Space!
     var task: PersistentSyncTask!
 
+    @MainActor
     override func setUpWithError() throws {
         try super.setUpWithError()
         retrySignal = .init()

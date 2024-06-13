@@ -15,7 +15,7 @@ public enum InitialDownloadState {
     case completed
 }
 
-public protocol Source {
+public protocol Source: Sendable {
     var viewContext: NSManagedObjectContext { get }
 
     var events: AnyPublisher<SyncEvent, Never> { get }

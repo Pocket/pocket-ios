@@ -28,6 +28,7 @@ class PocketSourceTests: XCTestCase {
     var userService: MockUserService!
     var featureFlagService: MockFeatureFlagService!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         space = .testSpace()

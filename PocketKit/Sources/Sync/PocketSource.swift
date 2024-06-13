@@ -3,27 +3,27 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import CoreData
-import Apollo
-import Combine
+@preconcurrency import Apollo
+@preconcurrency import Combine
 import Network
 import PocketGraph
-import SharedPocketKit
+@preconcurrency import SharedPocketKit
 import SharedWithYou
 
 public typealias SyncEvents = PassthroughSubject<SyncEvent, Never>
 
 /// Handles the network and database operations of the Pocket App
 /// All core data requests should occur through this class.
-public class PocketSource: Source {
+public final class PocketSource: Source {
     private let _events: SyncEvents = PassthroughSubject()
     public var events: AnyPublisher<SyncEvent, Never> {
         _events.eraseToAnyPublisher()
     }
 
-    public var initialSavesDownloadState: CurrentValueSubject<InitialDownloadState, Never>
-    public var initialArchiveDownloadState: CurrentValueSubject<InitialDownloadState, Never>
+    public let initialSavesDownloadState: CurrentValueSubject<InitialDownloadState, Never>
+    public let initialArchiveDownloadState: CurrentValueSubject<InitialDownloadState, Never>
 
-    private let space: Space
+    nonisolated(unsafe) private let space: Space
     private let user: User
     private let apollo: ApolloClientProtocol
     private let lastRefresh: LastRefresh
@@ -33,7 +33,7 @@ public class PocketSource: Source {
     private let networkMonitor: NetworkPathMonitor
     private let retrySignal: PassthroughSubject<Void, Never>
     private let sessionProvider: SessionProvider
-    private let backgroundTaskManager: BackgroundTaskManager
+    nonisolated(unsafe) private let backgroundTaskManager: BackgroundTaskManager
     private let osNotificationCenter: OSNotificationCenter
     private let notificationObserver = UUID()
     private let userService: UserService

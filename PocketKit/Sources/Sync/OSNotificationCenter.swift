@@ -5,9 +5,9 @@
 import Foundation
 import CoreFoundation
 
-public class OSNotificationCenter {
+public final class OSNotificationCenter: Sendable {
     public typealias Observer = AnyHashable
-    private let center: CFNotificationCenter
+    nonisolated(unsafe) private let center: CFNotificationCenter
     private let storage: Storage
 
     public init(notifications: CFNotificationCenter) {
@@ -55,7 +55,7 @@ public class OSNotificationCenter {
         storage.clear()
     }
 
-    private class Storage {
+    private final class Storage: Sendable {
         private struct Key: Hashable {
             let observer: Observer
             let notificationName: CFNotificationName
@@ -66,7 +66,7 @@ public class OSNotificationCenter {
             }
         }
 
-        private var _handlers: [Key: [NotificationHandler]] = [:]
+        nonisolated(unsafe) private var _handlers: [Key: [NotificationHandler]] = [:]
 
         func add(observer: Observer, name: CFNotificationName, handler: NotificationHandler) {
             let key = Key(observer, name)

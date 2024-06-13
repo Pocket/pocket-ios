@@ -40,7 +40,7 @@ public protocol Session {
     var accessToken: String { get }
 }
 
-public protocol SessionProvider {
+public protocol SessionProvider: Sendable {
     var session: Session? { get }
 }
 

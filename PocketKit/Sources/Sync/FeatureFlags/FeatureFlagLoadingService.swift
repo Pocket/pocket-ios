@@ -2,13 +2,13 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import Apollo
+@preconcurrency import Apollo
 import Foundation
 import CoreData
 import PocketGraph
-import SharedPocketKit
+@preconcurrency import SharedPocketKit
 
-protocol FeatureFlagLoadingService {
+protocol FeatureFlagLoadingService: Sendable {
     func fetchFeatureFlags() async throws
 }
 
@@ -16,9 +16,9 @@ public typealias RemoteFeatureFlagAssignment = FeatureFlagsQuery.Data.Assignment
 
 /// Service to grab the latest feature flags from the server
 /// Main app usage should be via FeatureFlag service which loads the flags from the local database
-class APIFeatureFlagService: FeatureFlagLoadingService {
+struct APIFeatureFlagService: FeatureFlagLoadingService {
     private let apollo: ApolloClientProtocol
-    private let space: Space
+    nonisolated(unsafe) private let space: Space
     private let appSession: AppSession
 
     init(

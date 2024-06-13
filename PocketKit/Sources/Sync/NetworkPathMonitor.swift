@@ -8,7 +8,7 @@ public protocol NetworkPath {
     var status: NWPath.Status { get }
 }
 
-public protocol NetworkPathMonitor: AnyObject {
+public protocol NetworkPathMonitor: AnyObject, Sendable {
     typealias UpdateHandler = (NetworkPath) -> Void
 
     var currentNetworkPath: NetworkPath { get }

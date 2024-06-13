@@ -2,17 +2,17 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import Apollo
-import SharedPocketKit
+@preconcurrency import Apollo
+@preconcurrency import SharedPocketKit
 import Foundation
 import CoreData
 import PocketGraph
 
-protocol UserService {
+protocol UserService: Sendable {
     func fetchUser() async throws
 }
 
-class APIUserService: UserService {
+struct APIUserService: UserService {
     private let apollo: ApolloClientProtocol
     private let user: User
 
