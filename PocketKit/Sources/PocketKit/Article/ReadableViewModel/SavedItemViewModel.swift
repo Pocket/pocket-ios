@@ -226,7 +226,12 @@ class SavedItemViewModel: ReadableViewModel, ObservableObject {
 
         Task {
             do {
-                let remoteHasArticle = try await self.source.fetchDetails(for: self.item)
+                guard let remoteID = item.remoteID else {
+                    displayArticle(with: false)
+                    return
+                }
+                let objectID = item.objectID
+                let remoteHasArticle = try await self.source.fetchSavedItemDetails(remoteID: remoteID, objectID: objectID)
                 displayArticle(with: remoteHasArticle)
             } catch {
                 Log.capture(message: "Failed to fetch details for SavedItemViewModel: \(error)")
