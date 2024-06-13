@@ -98,6 +98,8 @@ public protocol Source {
 
     func fetchDetails(for savedItem: SavedItem) async throws -> Bool
 
+    func fetchSavedItemDetails(remoteID: String, objectID: NSManagedObjectID) async throws -> Bool
+
     func fetchDetails(for item: Item) async throws -> Bool
 
     func save(url: String)

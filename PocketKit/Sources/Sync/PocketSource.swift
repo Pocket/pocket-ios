@@ -731,6 +731,27 @@ extension PocketSource {
         }
     }
 
+    public func fetchSavedItemDetails(remoteID: String, objectID: NSManagedObjectID) async throws -> Bool {
+        Log.breadcrumb(category: "sync", level: .debug, message: "Fetching details for item with id \(String(describing: remoteID))")
+
+        guard let remoteSavedItem = try await apollo
+            .fetch(query: SavedItemByIDQuery(id: remoteID))
+            .data?.user?.savedItemById else {
+            return false
+        }
+
+        return try space.performAndWait {
+            guard let savedItem = space.backgroundObject(with: objectID) as? SavedItem else {
+                Log.capture(message: "Could not retreive item from background context for mutation")
+                return false
+            }
+            savedItem.update(from: remoteSavedItem.fragments.savedItemParts, with: space)
+            try space.save()
+
+            return remoteSavedItem.item.asItem?.marticle?.isEmpty == false
+        }
+    }
+
     private func addTagsMutation(for savedItem: SavedItem, tags: [String]) -> AnyMutation? {
         if tags.isEmpty {
             guard let remoteID = savedItem.remoteID else {

@@ -8,6 +8,10 @@ import CoreData
 import Combine
 
 class MockSource: Source {
+    func fetchSavedItemDetails(remoteID: String, objectID: NSManagedObjectID) async throws -> Bool {
+        return false
+    }
+
     func readerItem(by slug: String) async throws -> (Sync.SavedItem?, Sync.Item?) {
         return (nil, nil)
     }
