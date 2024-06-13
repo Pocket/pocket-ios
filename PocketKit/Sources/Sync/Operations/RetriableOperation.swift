@@ -28,7 +28,7 @@ protocol SyncOperation {
 /// Once the operation finishes it will remove the PersistentSyncTask from CoreData so that it is not restored.
 /// Because we hold the retries in memory and do not persist to disk there are scenarios where if a operation is marked to Retry, and the user backgrounds the app when they open the app the retry counter will be reset.
 ///    For now this is ok, because it is a way to manually tell the app to retry operations. In the future we may want to do more with Circuit Breakers and Exponential Backoffs
-class RetriableOperation: AsyncOperation {
+class RetriableOperation: AsyncOperation, @unchecked Sendable {
     typealias RetrySignal = AnyPublisher<Void, Never>
 
     private let operation: SyncOperation
