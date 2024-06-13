@@ -10,7 +10,7 @@ import PackageDescription
 let package = Package(
     name: "PocketKit",
     defaultLocalization: "en",
-    platforms: [.iOS("16"), .macOS("13")],
+    platforms: [.iOS("17"), .macOS("13")],
     products: [
         .library(name: "PocketKit", targets: ["PocketKit"]),
         .library(name: "PocketGraphTestMocks", targets: ["PocketGraphTestMocks"]),
