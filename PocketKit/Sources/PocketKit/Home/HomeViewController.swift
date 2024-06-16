@@ -265,6 +265,14 @@ extension HomeViewController {
 
             cell.configure(with: configuration)
             return cell
+        case .ad(let ID):
+            let cell: HomeCarouselCell = collectionView.dequeueCell(for: indexPath)
+            guard let sequence = model.getAdsSequence(ID) else {
+                return cell
+            }
+            let config = AdCarouselCellConfiguration(sequence: sequence)
+            cell.configure(with: config)
+            return cell
         }
     }
 

@@ -125,6 +125,15 @@ class HomeViewModel: NSObject {
         }
     }
 
+    private var adSequences: [PocketAdsSequence] = [] {
+        didSet {
+            guard !oldValue.isEmpty else {
+                return
+            }
+            snapshot = buildSnapshot()
+        }
+    }
+
     private let source: Source
     let tracker: Tracker
     private let user: User
@@ -138,6 +147,7 @@ class HomeViewModel: NSObject {
     private let store: SubscriptionStore
     private let recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService
     private let recommendationsWidgetUpdateService: RecommendationsWidgetUpdateService
+    private let adStore = PocketAdsStore()
 
     private let recentSavesController: NSFetchedResultsController<SavedItem>
     private let recomendationsController: RichFetchedResultsController<Recommendation>
@@ -221,6 +231,9 @@ class HomeViewModel: NSObject {
         homeRefreshCoordinator.refresh(isForced: isForced) {
             completion()
         }
+        Task {
+            adSequences = await adStore.getAds()
+        }
     }
 }
 
@@ -257,8 +270,8 @@ extension HomeViewModel {
             return snapshot
         }
 
-        for slateSection in slateSections {
-            guard var recommendations = slateSection.objects as? [Recommendation],
+        for slateSection in slateSections.enumerated() {
+            guard var recommendations = slateSection.element.objects as? [Recommendation],
                   let slateId = recommendations.first?.slate?.objectID
             else {
                 continue
@@ -284,8 +297,14 @@ extension HomeViewModel {
             }
 
             snapshot.appendSections([.slateCarousel(slateId)])
+            var items = recommendations.prefix(4).map { Cell.recommendationCarousel($0.objectID) }
+            // TODO: ADS - insert ads in the carousel here
+            if slateSection.offset != 0, let ID = adSequences[safe: slateSection.offset]?.id {
+                items.insert(.ad(ID), at: 0)
+            }
+
             snapshot.appendItems(
-                recommendations.prefix(4).map { .recommendationCarousel($0.objectID) },
+                items,
                 toSection: .slateCarousel(slateId)
             )
         }
@@ -316,6 +335,9 @@ extension HomeViewModel {
                 return
             }
             select(sharedWithYouItem: sharedWithYouItem, at: indexPath)
+        case .ad(let ID):
+            // TODO: ADS - add logic for tapping on an ad here
+            return
         }
     }
 
@@ -911,6 +933,9 @@ extension HomeViewModel {
 
             let givenURL = item.givenURL
             tracker.track(event: Events.Home.SlateArticleImpression(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
+        case .ad(let ID):
+            // TODO: ADS - add logic for tracking add tapped here
+            return
         }
     }
 }
@@ -931,6 +956,7 @@ extension HomeViewModel {
         case recommendationHero(NSManagedObjectID)
         case recommendationCarousel(NSManagedObjectID)
         case sharedWithYou(NSManagedObjectID)
+        case ad(String)
         case offline
     }
 }
@@ -1037,6 +1063,15 @@ extension HomeViewModel: NSFetchedResultsControllerDelegate {
         }
 
         self.snapshot = newSnapshot
+    }
+}
+
+// MARK: Ads
+extension HomeViewModel {
+    func getAdsSequence(_ ID: String) -> PocketAdsSequence? {
+        adSequences.first {
+            $0.id == ID
+        }
     }
 }
 
