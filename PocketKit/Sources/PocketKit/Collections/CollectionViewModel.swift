@@ -24,15 +24,15 @@ class CollectionViewModel: NSObject {
     @Published private(set) var presentedAddTags: PocketAddTagsViewModel?
     @Published private(set) var sharedActivity: PocketActivity?
 
-    @Published private(set) var selectedCollectionItemToReport: Item?
+    @Published private(set) var reportedCollectionUrl: String = ""
     @Published private(set) var selectedItem: ReadableType?
     @Published private(set) var presentedStoryWebReaderURL: URL?
 
     @Published private(set) var sharedStoryActivity: PocketActivity?
-    @Published private(set) var selectedStoryToReport: Item?
+    @Published private(set) var reportedStoryUrl: String = ""
     @Published private(set) var events: ReadableEvent?
 
-    @Published private(set) var actions: [ItemAction] = []
+    @Published private(set) var actions: [SendableItemAction] = []
     @Published private(set) var isBeingDeallocated = false
 
     let readableSource: ReadableSource
@@ -158,33 +158,90 @@ class CollectionViewModel: NSObject {
     private func buildActions() {
         guard let savedItem = item?.savedItem else {
             actions = [
-                .share { [weak self] _ in self?.share() },
-                .report { [weak self] _ in self?.report() }
+                .share { [weak self] _ in
+                    guard let self else {
+                        return
+                    }
+                    Task {
+                        await self.share()
+                    }
+                },
+                .report { [weak self] _ in
+                    guard let self else {
+                        return
+                    }
+                    Task {
+                        await self.report()
+                    }
+                }
             ]
             return
         }
 
-        let favoriteAction: ItemAction
+        let favoriteAction: SendableItemAction
         if savedItem.isFavorite {
-            favoriteAction = .unfavorite { [weak self] _ in self?.unfavorite(savedItem) }
+            favoriteAction = .unfavorite {
+                [weak self] _ in
+                guard let self else {
+                    return
+                }
+                Task {
+                    await self.unfavorite(savedItem)
+                }
+            }
         } else {
-            favoriteAction = .favorite { [weak self] _ in self?.favorite(savedItem) }
+            favoriteAction = .favorite { [weak self] _ in
+                guard let self else {
+                    return
+                }
+                Task {
+                    await self.favorite(savedItem)
+                }
+            }
         }
 
         actions = [
             favoriteAction,
             tagsAction(for: savedItem),
-            .delete { [weak self] _ in self?.confirmDelete(for: savedItem) },
-            .share { [weak self] _ in self?.share() }
+            .delete { [weak self] _ in
+                guard let self else {
+                    return
+                }
+                Task {
+                    await self.confirmDelete(for: savedItem)
+                }
+            },
+            .share { [weak self] _ in
+                guard let self else {
+                    return
+                }
+                Task {
+                    await self.share()
+                }
+            }
         ]
     }
 
-    private func tagsAction(for item: SavedItem) -> ItemAction {
+    private func tagsAction(for item: SavedItem) -> SendableItemAction {
         let hasTags = (item.tags?.count ?? 0) > 0
         if hasTags {
-            return .editTags { [weak self] _ in self?.showAddTagsView(for: item) }
+            return .editTags { [weak self] _ in
+                guard let self else {
+                    return
+                }
+                Task {
+                    await self.showAddTagsView(for: item)
+                }
+            }
         } else {
-            return .addTags { [weak self] _ in self?.showAddTagsView(for: item) }
+            return .addTags { [weak self] _ in
+                guard let self else {
+                    return
+                }
+                Task {
+                    await self.showAddTagsView(for: item)
+                }
+            }
         }
     }
 
@@ -203,13 +260,13 @@ class CollectionViewModel: NSObject {
     }
 
     private func favorite(_ savedItem: SavedItem) {
-        trackFavorite()
         source.favorite(item: savedItem)
+        trackFavorite()
     }
 
     private func unfavorite(_ savedItem: SavedItem) {
-        trackUnfavorite()
         source.unfavorite(item: savedItem)
+        trackUnfavorite()
     }
 
     private func confirmDelete(for savedItem: SavedItem) {
@@ -235,13 +292,13 @@ class CollectionViewModel: NSObject {
     }
 
     private func share(additionalText: String? = nil) {
-        trackShare()
         sharedActivity = PocketItemActivity.fromCollection(url: url, additionalText: additionalText)
+        trackShare()
     }
 
     private func report() {
+        reportedCollectionUrl = item!.givenURL
         trackReport()
-        selectedCollectionItemToReport = item
     }
 }
 
@@ -281,21 +338,41 @@ extension CollectionViewModel {
 // MARK: - Cell Selection
 extension CollectionViewModel {
     func storyViewModel(for story: CollectionStory) -> CollectionStoryViewModel {
+        let url = story.url
+        let item = story.item
         return CollectionStoryViewModel(
             collectionStory: story,
             source: source,
             tracker: tracker,
             overflowActions: [
-                .share { [weak self] sender in
-                    self?.trackStoryShare(storyURL: story.url)
-                    self?.sharedStoryActivity = PocketItemActivity.fromCollection(url: story.url, sender: sender)
+                .share { [weak self] _ in
+                    guard let self else {
+                        return
+                    }
+                    Task {
+                        await self.shareStory(urlString: url)
+                    }
                 },
                 .report { [weak self] _ in
-                    self?.trackStoryReport(storyURL: story.url)
-                    self?.selectedStoryToReport = story.item
+                    guard let self, let item else {
+                        return
+                    }
+                    Task {
+                        await self.reportStory(urlString: url, item: item)
+                    }
                 }
             ]
         )
+    }
+
+    private func shareStory(urlString: String) {
+        sharedStoryActivity = PocketItemActivity.fromCollection(url: urlString)
+        trackStoryShare(storyURL: urlString)
+    }
+
+    private func reportStory(urlString: String, item: Item) {
+        reportedStoryUrl = item.givenURL
+        trackStoryReport(storyURL: url)
     }
 
     func select(cell: CollectionViewModel.Cell) {
@@ -460,7 +537,7 @@ extension CollectionViewModel {
         case error
     }
 
-    enum Cell: Hashable {
+    enum Cell: Hashable, Sendable {
         case empty
         case loading
         case collectionHeader

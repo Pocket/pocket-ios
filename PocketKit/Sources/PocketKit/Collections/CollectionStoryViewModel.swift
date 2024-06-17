@@ -10,7 +10,7 @@ import Sync
 import Analytics
 
 // Contains logic to present story data in RecommendationCell
-struct CollectionStoryViewModel: Hashable {
+struct CollectionStoryViewModel: Hashable, Sendable {
     public func hash(into hasher: inout Hasher) {
         return hasher.combine(collectionStory)
     }

@@ -569,8 +569,11 @@ extension HomeViewController {
             self?.present(activity: activity)
         }.store(in: &subscriptionSet)
 
-        viewModel.$selectedCollectionItemToReport.receive(on: DispatchQueue.main).sink { [weak self] item in
-            self?.report(item?.givenURL, recommendationId: item?.recommendation?.analyticsID)
+        viewModel.$reportedCollectionUrl.receive(on: DispatchQueue.main).sink { [weak self] url in
+            guard !url.isEmpty else {
+                return
+            }
+            self?.report(url)
         }.store(in: &subscriptionSet)
 
         viewModel.$events.receive(on: DispatchQueue.main).sink { [weak self] event in
@@ -614,8 +617,11 @@ extension HomeViewController {
             self?.present(activity: activity)
         }.store(in: &subscriptionSet)
 
-        viewModel.$selectedStoryToReport.receive(on: DispatchQueue.main).sink { [weak self] item in
-            self?.report(item?.givenURL, recommendationId: item?.recommendation?.analyticsID)
+        viewModel.$reportedStoryUrl.receive(on: DispatchQueue.main).sink { [weak self] url in
+            guard !url.isEmpty else {
+                return
+            }
+            self?.report(url)
         }.store(in: &subscriptionSet)
 
         collectionSubscriptions.push(subscriptionSet)
@@ -656,8 +662,8 @@ extension HomeViewController {
             }
         }.store(in: &readerSubscriptions)
     }
-
-    func report(_ givenURL: String?, recommendationId: String?) {
+    // TODO: CONCURRENCY - check how we can send the analyticsID before this call
+    func report(_ givenURL: String?, recommendationId: String? = nil) {
         guard let givenURL, let recommendationId else {
             return
         }

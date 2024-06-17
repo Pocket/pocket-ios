@@ -135,7 +135,7 @@ class CollectionViewController: UIViewController {
         navigationItem.rightBarButtonItems = [moreButtonItem, button]
     }
 
-    func buildOverflowMenu(from actions: [ItemAction]) {
+    func buildOverflowMenu(from actions: [SendableItemAction]) {
         moreButtonItem.menu = UIMenu(
             image: nil,
             identifier: nil,

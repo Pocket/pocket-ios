@@ -430,11 +430,11 @@ extension SavesContainerViewController {
             self?.present(activity: activity)
         }.store(in: &subscriptionSet)
 
-        collection.$selectedCollectionItemToReport.receive(on: DispatchQueue.main).sink { [weak self] item in
-            guard let self, let item, let recommendation = item.recommendation else {
+        collection.$reportedCollectionUrl.receive(on: DispatchQueue.main).sink { [weak self] url in
+            guard let self, !url.isEmpty else {
                 return
             }
-            report(item.givenURL, reccomendationId: recommendation.analyticsID)
+            report(url)
         }.store(in: &subscriptionSet)
 
         collection.$events.receive(on: DispatchQueue.main).sink { [weak self] event in
@@ -479,11 +479,11 @@ extension SavesContainerViewController {
             self?.present(activity: activity)
         }.store(in: &subscriptionSet)
 
-        collection.$selectedStoryToReport.receive(on: DispatchQueue.main).sink { [weak self] item in
-            guard let self, let item, let recommendation = item.recommendation else {
+        collection.$reportedStoryUrl.receive(on: DispatchQueue.main).sink { [weak self] url in
+            guard let self, !url.isEmpty else {
                 return
             }
-            report(item.givenURL, reccomendationId: recommendation.analyticsID)
+            report(url)
         }.store(in: &subscriptionSet)
 
         navigationController?.pushViewController(
@@ -493,10 +493,13 @@ extension SavesContainerViewController {
         collectionSubscriptions.push(subscriptionSet)
     }
 
-    private func report(_ givenURL: String, reccomendationId: String) {
+    private func report(_ givenURL: String?, recomendationId: String? = nil) {
+        guard let givenURL, let recomendationId else {
+            return
+        }
         let host = ReportRecommendationHostingController(
             givenURL: givenURL,
-            recommendationId: reccomendationId,
+            recommendationId: recomendationId,
             tracker: model.tracker,
             onDismiss: { }
         )
