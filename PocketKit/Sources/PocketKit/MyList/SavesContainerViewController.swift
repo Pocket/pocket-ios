@@ -433,10 +433,10 @@ extension SavesContainerViewController {
         }.store(in: &subscriptionSet)
 
         collection.$selectedCollectionItemToReport.receive(on: DispatchQueue.main).sink { [weak self] item in
-            guard let self, let item else {
+            guard let self, let item, let recommendation = item.recommendation else {
                 return
             }
-            report(item.givenURL)
+            report(item.givenURL, reccomendationId: recommendation.analyticsID)
         }.store(in: &subscriptionSet)
 
         collection.$events.receive(on: DispatchQueue.main).sink { [weak self] event in
@@ -482,10 +482,10 @@ extension SavesContainerViewController {
         }.store(in: &subscriptionSet)
 
         collection.$selectedStoryToReport.receive(on: DispatchQueue.main).sink { [weak self] item in
-            guard let self, let item else {
+            guard let self, let item, let recommendation = item.recommendation else {
                 return
             }
-            report(item.givenURL)
+            report(item.givenURL, reccomendationId: recommendation.analyticsID)
         }.store(in: &subscriptionSet)
 
         navigationController?.pushViewController(
@@ -495,9 +495,10 @@ extension SavesContainerViewController {
         collectionSubscriptions.push(subscriptionSet)
     }
 
-    private func report(_ givenURL: String) {
+    private func report(_ givenURL: String, reccomendationId: String) {
         let host = ReportRecommendationHostingController(
             givenURL: givenURL,
+            recommendationId: reccomendationId,
             tracker: model.tracker,
             onDismiss: { }
         )

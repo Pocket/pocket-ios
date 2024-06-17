@@ -103,7 +103,7 @@ class SlateDetailViewModel {
             }
 
             let givenURL = item.givenURL
-            tracker.track(event: Events.ExpandedSlate.SlateArticleImpression(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
+            tracker.track(event: Events.ExpandedSlate.SlateArticleImpression(url: givenURL, positionInList: indexPath.item, recommendationId: recommendation.analyticsID))
         }
     }
 }
@@ -155,7 +155,7 @@ extension SlateDetailViewModel {
         }
 
         let givenURL = item.givenURL
-        tracker.track(event: Events.ExpandedSlate.SlateArticleContentOpen(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID, destination: destination))
+        tracker.track(event: Events.ExpandedSlate.SlateArticleContentOpen(url: givenURL, positionInList: indexPath.item, recommendationId: recommendation.analyticsID, destination: destination))
     }
 }
 
@@ -205,32 +205,14 @@ extension SlateDetailViewModel {
 
     private func save(_ recommendation: Recommendation, at indexPath: IndexPath) {
         source.save(recommendation: recommendation)
-        let item = recommendation.item
-        guard
-            let slate = recommendation.slate,
-            let slateLineup = slate.slateLineup
-        else {
-            Log.capture(message: "Saved recommendation slate and slatelineup, not logging analytics")
-            return
-        }
-
-        let givenURL = item.givenURL
-        tracker.track(event: Events.ExpandedSlate.SlateArticleSave(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
+        let givenURL =  recommendation.item.givenURL
+        tracker.track(event: Events.ExpandedSlate.SlateArticleSave(url: givenURL, positionInList: indexPath.item, recommendationId: recommendation.analyticsID))
     }
 
     private func archive(_ recommendation: Recommendation, at indexPath: IndexPath) {
         source.archive(recommendation: recommendation)
-        let item = recommendation.item
-        guard
-            let slate = recommendation.slate,
-            let slateLineup = slate.slateLineup
-        else {
-            Log.capture(message: "Archived recommendation without slate and slatelineup, not logging analytics")
-            return
-        }
-
-        let givenURL = item.givenURL
-        tracker.track(event: Events.ExpandedSlate.SlateArticleArchive(url: givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.analyticsID))
+        let givenURL = recommendation.item.givenURL
+        tracker.track(event: Events.ExpandedSlate.SlateArticleArchive(url: givenURL, positionInList: indexPath.item, recommendationId: recommendation.analyticsID))
     }
 
     private func report(_ recommendation: Recommendation, at indexPath: IndexPath) {

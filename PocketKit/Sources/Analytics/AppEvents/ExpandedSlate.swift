@@ -30,7 +30,7 @@ public extension Events.ExpandedSlate {
     /**
      Fired when a user clicks a card on Home using the /discover API
      */
-    static func SlateArticleContentOpen(url: String, positionInList: Int, slateId: String, slateRequestId: String, slateExperimentId: String, slateIndex: Int, slateLineupId: String, slateLineupRequestId: String, slateLineupExperimentId: String, recommendationId: String, destination: ContentOpen.Destination) -> ContentOpen {
+    static func SlateArticleContentOpen(url: String, positionInList: Int, recommendationId: String, destination: ContentOpen.Destination) -> ContentOpen {
         return ContentOpen(
             destination: destination,
             contentEntity:
@@ -41,9 +41,8 @@ public extension Events.ExpandedSlate {
                 index: positionInList
             ),
             extraEntities: [
-                SlateEntity(id: slateId, requestID: slateRequestId, experiment: slateExperimentId, index: slateIndex),
-                SlateLineupEntity(id: slateLineupId, requestID: slateLineupRequestId, experiment: slateExperimentId),
-                RecommendationEntity(id: recommendationId, index: UInt(positionInList))
+                ContentEntity(url: url),
+                CorpusRecommendationEntity(id: recommendationId)
             ]
         )
     }
@@ -51,7 +50,7 @@ public extension Events.ExpandedSlate {
     /**
      Fired when a user sees a card on Home using the /discover API
      */
-    static func SlateArticleImpression(url: String, positionInList: Int, slateId: String, slateRequestId: String, slateExperimentId: String, slateIndex: Int, slateLineupId: String, slateLineupRequestId: String, slateLineupExperimentId: String, recommendationId: String) -> Impression {
+    static func SlateArticleImpression(url: String, positionInList: Int, recommendationId: String) -> Impression {
         return Impression(
             component: .card,
             requirement: .viewable,
@@ -62,9 +61,7 @@ public extension Events.ExpandedSlate {
             ),
             extraEntities: [
                 ContentEntity(url: url),
-                SlateEntity(id: slateId, requestID: slateRequestId, experiment: slateExperimentId, index: slateIndex),
-                SlateLineupEntity(id: slateLineupId, requestID: slateLineupRequestId, experiment: slateExperimentId),
-                RecommendationEntity(id: recommendationId, index: UInt(positionInList))
+                CorpusRecommendationEntity(id: recommendationId)
             ]
         )
     }
@@ -72,7 +69,7 @@ public extension Events.ExpandedSlate {
     /**
      Fired when a user saves a card on Home using the /discover API
      */
-    static func SlateArticleSave(url: String, positionInList: Int, slateId: String, slateRequestId: String, slateExperimentId: String, slateIndex: Int, slateLineupId: String, slateLineupRequestId: String, slateLineupExperimentId: String, recommendationId: String) -> Engagement {
+    static func SlateArticleSave(url: String, positionInList: Int, recommendationId: String) -> Engagement {
         return Engagement(
             .save(
                 contentEntity: ContentEntity(url: url)
@@ -83,9 +80,8 @@ public extension Events.ExpandedSlate {
                 index: positionInList
             ),
             extraEntities: [
-                SlateEntity(id: slateId, requestID: slateRequestId, experiment: slateExperimentId, index: slateIndex),
-                SlateLineupEntity(id: slateLineupId, requestID: slateLineupRequestId, experiment: slateExperimentId),
-                RecommendationEntity(id: recommendationId, index: UInt(positionInList))
+                ContentEntity(url: url),
+                CorpusRecommendationEntity(id: recommendationId)
             ]
         )
     }
@@ -93,7 +89,7 @@ public extension Events.ExpandedSlate {
     /**
      Fired when a user archives a card on Home using the /discover API
      */
-    static func SlateArticleArchive(url: String, positionInList: Int, slateId: String, slateRequestId: String, slateExperimentId: String, slateIndex: Int, slateLineupId: String, slateLineupRequestId: String, slateLineupExperimentId: String, recommendationId: String) -> Engagement {
+    static func SlateArticleArchive(url: String, positionInList: Int, recommendationId: String) -> Engagement {
         return Engagement(
             .general,
             uiEntity: UiEntity(
@@ -103,9 +99,7 @@ public extension Events.ExpandedSlate {
             ),
             extraEntities: [
                 ContentEntity(url: url),
-                SlateEntity(id: slateId, requestID: slateRequestId, experiment: slateExperimentId, index: slateIndex),
-                SlateLineupEntity(id: slateLineupId, requestID: slateLineupRequestId, experiment: slateExperimentId),
-                RecommendationEntity(id: recommendationId, index: UInt(positionInList))
+                CorpusRecommendationEntity(id: recommendationId)
             ]
         )
     }
@@ -113,7 +107,7 @@ public extension Events.ExpandedSlate {
     /**
      Fired when a user shares a card on Home using the /discover API
      */
-    static func SlateArticleShare(url: String, positionInList: Int, slateId: String, slateRequestId: String, slateExperimentId: String, slateIndex: Int, slateLineupId: String, slateLineupRequestId: String, slateLineupExperimentId: String, recommendationId: String) -> Engagement {
+    static func SlateArticleShare(url: String, positionInList: Int, recommendationId: String) -> Engagement {
         return Engagement(
             .general,
             uiEntity: UiEntity(
@@ -123,9 +117,7 @@ public extension Events.ExpandedSlate {
             ),
             extraEntities: [
                 ContentEntity(url: url),
-                SlateEntity(id: slateId, requestID: slateRequestId, experiment: slateExperimentId, index: slateIndex),
-                SlateLineupEntity(id: slateLineupId, requestID: slateLineupRequestId, experiment: slateExperimentId),
-                RecommendationEntity(id: recommendationId, index: UInt(positionInList))
+                CorpusRecommendationEntity(id: recommendationId)
             ]
         )
     }

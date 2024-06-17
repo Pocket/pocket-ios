@@ -9,11 +9,13 @@ import Sync
 class ReportRecommendationHostingController: OnDismissHostingController<ReportRecommendationView> {
     init(
         givenURL: String,
+        recommendationId: String,
         tracker: Tracker,
         onDismiss: @escaping () -> Void
     ) {
         let view = ReportRecommendationView(
             givenURL: givenURL,
+            recommendationId: recommendationId,
             tracker: tracker
         )
         super.init(rootView: view, onDismiss: onDismiss)

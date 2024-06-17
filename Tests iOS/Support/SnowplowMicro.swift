@@ -155,6 +155,10 @@ struct SnowplowMicroContext: Codable {
         return XCTAssertEqual((self.dataDict()["url"] as? String), url)
     }
 
+    func assertHas(corpusRecomendationID: String) {
+        return XCTAssertEqual((self.dataDict()["corpus_recommendation_id"] as? String), corpusRecomendationID)
+    }
+
     func has(recomendationId: String) -> Bool {
         return (self.dataDict()["recommendation_id"] as? String) == recomendationId
     }
@@ -445,8 +449,7 @@ extension SnowplowMicro {
      */
     func assertRecommendationImpressionHasNecessaryContexts(event: SnowplowMicroEvent, url: String) {
         assertContentImpressionHasUrl(event: event, url: url)
-        XCTAssertNotNil(event.getSlateContext(), "Recommemdation missing slate context")
-        XCTAssertNotNil(event.getSlateLineupContext(), "Recommemdation missing slate lineup context")
+        XCTAssertNotNil(event.getCorpusRecommendationContext(), "Recommemdation missing corpus context")
     }
 }
 // swiftlint:enable force_try
