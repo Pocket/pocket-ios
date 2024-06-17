@@ -429,8 +429,8 @@ class CollectionViewModelTests: XCTestCase {
         viewModel.fetch()
 
         let reportExpectation = expectation(description: "expected item to be reported")
-        viewModel.$selectedCollectionItemToReport.dropFirst().sink { recommendation in
-            XCTAssertNotNil(recommendation)
+        viewModel.$reportedCollectionUrl.dropFirst().sink { url in
+            XCTAssertNotEqual("", url)
             reportExpectation.fulfill()
         }.store(in: &subscriptions)
 
@@ -661,8 +661,8 @@ class CollectionViewModelTests: XCTestCase {
         let viewModel = subject(slug: collection.slug)
 
         let reportExpectation = expectation(description: "expected to update selected story to report")
-        viewModel.$selectedStoryToReport.dropFirst().sink { story in
-            XCTAssertNotNil(story)
+        viewModel.$reportedStoryUrl.dropFirst().sink { url in
+            XCTAssertNotEqual("", url)
             reportExpectation.fulfill()
         }.store(in: &subscriptions)
 
@@ -838,7 +838,7 @@ private extension CollectionViewModel {
         invokeAction(from: actions, title: title)
     }
 
-    func invokeAction(from actions: [ItemAction], title: String) {
+    func invokeAction(from actions: [SendableItemAction], title: String) {
         actions.first(where: { $0.title == title })?.handler?(nil)
     }
 }
