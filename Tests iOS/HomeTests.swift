@@ -314,11 +314,11 @@ class HomeTests: PocketXCTestCase {
         rec2Cell.savedButton.wait()
         rec1Cell.savedButton.wait()
 
-        async let slate1Rec1 = snowplowMicro.getFirstEvent(with: "home.expandedSlate.article.impression", recommendationId: "7eb25abf-39f6-4d04-91e9-7485bbf7333b")
-        async let slate1Rec2 = snowplowMicro.getFirstEvent(with: "home.expandedSlate.article.impression", recommendationId: "d88c1280-0128-4767-84e2-a6fa0d2832fa")
-        async let slate1Rec1Save = snowplowMicro.getFirstEvent(with: "home.expandedSlate.article.save", recommendationId: "7eb25abf-39f6-4d04-91e9-7485bbf7333b")
-        async let slate1Rec2Save = snowplowMicro.getFirstEvent(with: "home.expandedSlate.article.save", recommendationId: "d88c1280-0128-4767-84e2-a6fa0d2832fa")
-        async let slate1Rec2Unsave = snowplowMicro.getFirstEvent(with: "home.expandedSlate.article.archive", recommendationId: "d88c1280-0128-4767-84e2-a6fa0d2832fa")
+        async let slate1Rec1 = snowplowMicro.getFirstEvent(with: "home.expandedSlate.article.impression", corpusRecommendationID: "7eb25abf-39f6-4d04-91e9-7485bbf7333b")
+        async let slate1Rec2 = snowplowMicro.getFirstEvent(with: "home.expandedSlate.article.impression", corpusRecommendationID: "d88c1280-0128-4767-84e2-a6fa0d2832fa")
+        async let slate1Rec1Save = snowplowMicro.getFirstEvent(with: "home.expandedSlate.article.save", corpusRecommendationID: "7eb25abf-39f6-4d04-91e9-7485bbf7333b")
+        async let slate1Rec2Save = snowplowMicro.getFirstEvent(with: "home.expandedSlate.article.save", corpusRecommendationID: "d88c1280-0128-4767-84e2-a6fa0d2832fa")
+        async let slate1Rec2Unsave = snowplowMicro.getFirstEvent(with: "home.expandedSlate.article.archive", corpusRecommendationID: "d88c1280-0128-4767-84e2-a6fa0d2832fa")
         async let slateDetail = snowplowMicro.getFirstEvent(with: "home.expandedSlate.impression", slateId: "slate-1")
 
         let recs = await [slate1Rec1, slate1Rec2, slate1Rec1Save, slate1Rec2Save, slate1Rec2Unsave, slateDetail]

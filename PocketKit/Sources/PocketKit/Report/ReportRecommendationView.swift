@@ -20,6 +20,7 @@ struct ReportRecommendationView: View {
     }
 
     private let givenURL: String
+    private let recommendationId: String
     private let tracker: Tracker
 
     private var submitAccessibilityIdentifier: String {
@@ -37,9 +38,10 @@ struct ReportRecommendationView: View {
 
     @FocusState private var isCommentFocused: Bool
 
-    init(givenURL: String, tracker: Tracker) {
+    init(givenURL: String, recommendationId: String, tracker: Tracker) {
         self.givenURL = givenURL
         self.tracker = tracker
+        self.recommendationId = recommendationId
     }
 
     var body: some View {
@@ -97,7 +99,7 @@ struct ReportRecommendationView: View {
         }
 
         // NOTE: As of 2/17/2023 The report view can only be called from the Home screen, so we assume that the SlateArticleReport event is the correct one.
-        tracker.track(event: Events.Home.SlateArticleReport(url: givenURL, reason: reason, comment: comment))
+        tracker.track(event: Events.Home.SlateArticleReport(url: givenURL, reason: reason, recommendationId: recommendationId, comment: comment))
     }
 
     private func selectionColor(for reason: ReportEntity.Reason) -> Color {

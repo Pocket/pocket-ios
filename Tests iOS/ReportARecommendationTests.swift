@@ -29,6 +29,7 @@ class ReportARecommendationTests: PocketXCTestCase {
         let event = await snowplowMicro.getFirstEvent(with: "home.slate.article.report")
         event!.getReportContext()!.assertHas(reason: "other")
         event!.getContentContext()!.assertHas(url: "https://getpocket.com/collections/slate-1-rec-1")
+        event!.getCorpusRecommendationContext()!.assertHas(corpusRecomendationID: "7eb25abf-39f6-4d04-91e9-7485bbf7333b")
     }
 
     @MainActor
@@ -67,6 +68,7 @@ class ReportARecommendationTests: PocketXCTestCase {
         let event = await snowplowMicro.getFirstEvent(with: "home.slate.article.report")
         event!.getReportContext()!.assertHas(reason: "other")
         event!.getContentContext()!.assertHas(url: "https://given.example.com/slate-1-rec-2")
+        event!.getCorpusRecommendationContext()!.assertHas(corpusRecomendationID: "d88c1280-0128-4767-84e2-a6fa0d2832fa")
     }
 
     @MainActor
@@ -87,5 +89,6 @@ class ReportARecommendationTests: PocketXCTestCase {
         let reportEvent = await snowplowMicro.getFirstEvent(with: "reader.toolbar.report")
         reportEvent!.getUIContext()!.assertHas(type: "button")
         reportEvent!.getContentContext()!.assertHas(url: "https://getpocket.com/explore/item/article-2")
+        XCTAssertNil(reportEvent!.getCorpusRecommendationContext())
     }
 }

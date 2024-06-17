@@ -343,6 +343,10 @@ extension CollectionViewModel {
                 )
             )
         // Else open item in webview
+        } else if let slug = CollectionUrlFormatter.slug(from: story.url) {
+            selectedItem = .collection(
+                CollectionViewModel(slug: slug, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults, featureFlags: featureFlags, notificationCenter: notificationCenter)
+            )
         } else {
             guard let bestURL = URL(percentEncoding: story.url) else { return }
             let url = pocketPremiumURL(bestURL, user: user)

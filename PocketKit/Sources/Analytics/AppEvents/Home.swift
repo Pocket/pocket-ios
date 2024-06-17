@@ -90,9 +90,9 @@ public extension Events.Home {
     }
 
     /**
-     Fired when a user clicks a card on Home using the /discover API
+     Fired when a user clicks a card on Home using the homeSlateLineup API
      */
-    static func SlateArticleContentOpen(url: String, positionInList: Int?, slateId: String, slateRequestId: String, slateExperimentId: String, slateIndex: Int?, slateLineupId: String, slateLineupRequestId: String, slateLineupExperimentId: String, recommendationId: String, destination: ContentOpen.Destination) -> ContentOpen {
+    static func SlateArticleContentOpen(url: String, positionInList: Int?, recommendationId: String, destination: ContentOpen.Destination) -> ContentOpen {
         return ContentOpen(
             destination: destination,
             contentEntity:
@@ -110,9 +110,9 @@ public extension Events.Home {
     }
 
     /**
-     Fired when a user sees a card on Home using the /discover API
+     Fired when a user sees a card on Home using the homeSlateLineup API
      */
-    static func SlateArticleImpression(url: String, positionInList: Int, slateId: String, slateRequestId: String, slateExperimentId: String, slateIndex: Int, slateLineupId: String, slateLineupRequestId: String, slateLineupExperimentId: String, recommendationId: String) -> Impression {
+    static func SlateArticleImpression(url: String, positionInList: Int, recommendationId: String) -> Impression {
         return Impression(
             component: .card,
             requirement: .viewable,
@@ -129,9 +129,9 @@ public extension Events.Home {
     }
 
     /**
-     Fired when a user saves a card on Home using the /discover API
+     Fired when a user saves a card on Home using the homeSlateLineup API
      */
-    static func SlateArticleSave(url: String, positionInList: Int, slateId: String, slateRequestId: String, slateExperimentId: String, slateIndex: Int, slateLineupId: String, slateLineupRequestId: String, slateLineupExperimentId: String, recommendationId: String) -> Engagement {
+    static func SlateArticleSave(url: String, positionInList: Int, recommendationId: String) -> Engagement {
         return Engagement(
             .save(
                 contentEntity: ContentEntity(url: url)
@@ -142,9 +142,7 @@ public extension Events.Home {
                 index: positionInList
             ),
             extraEntities: [
-                SlateEntity(id: slateId, requestID: slateRequestId, experiment: slateExperimentId, index: slateIndex),
-                SlateLineupEntity(id: slateLineupId, requestID: slateLineupRequestId, experiment: slateExperimentId),
-                RecommendationEntity(id: recommendationId, index: UInt(positionInList))
+                CorpusRecommendationEntity(id: recommendationId)
             ]
         )
     }
@@ -152,7 +150,7 @@ public extension Events.Home {
     /**
      Fired when a user archives a card on Home using the /discover API
      */
-    static func SlateArticleArchive(url: String, positionInList: Int, slateId: String, slateRequestId: String, slateExperimentId: String, slateIndex: Int, slateLineupId: String, slateLineupRequestId: String, slateLineupExperimentId: String, recommendationId: String) -> Engagement {
+    static func SlateArticleArchive(url: String, positionInList: Int, recommendationId: String) -> Engagement {
         return Engagement(
             .general,
             uiEntity: UiEntity(
@@ -162,9 +160,7 @@ public extension Events.Home {
             ),
             extraEntities: [
                 ContentEntity(url: url),
-                SlateEntity(id: slateId, requestID: slateRequestId, experiment: slateExperimentId, index: slateIndex),
-                SlateLineupEntity(id: slateLineupId, requestID: slateLineupRequestId, experiment: slateExperimentId),
-                RecommendationEntity(id: recommendationId, index: UInt(positionInList))
+                CorpusRecommendationEntity(id: recommendationId)
             ]
         )
     }
@@ -172,7 +168,7 @@ public extension Events.Home {
     /**
      Fired when a user shares a card on Home using the /discover API
      */
-    static func SlateArticleShare(url: String, positionInList: Int, slateId: String, slateRequestId: String, slateExperimentId: String, slateIndex: Int, slateLineupId: String, slateLineupRequestId: String, slateLineupExperimentId: String, recommendationId: String) -> Engagement {
+    static func SlateArticleShare(url: String, positionInList: Int, recommendationId: String) -> Engagement {
         return Engagement(
             .general,
             uiEntity: UiEntity(
@@ -182,9 +178,7 @@ public extension Events.Home {
             ),
             extraEntities: [
                 ContentEntity(url: url),
-                SlateEntity(id: slateId, requestID: slateRequestId, experiment: slateExperimentId, index: slateIndex),
-                SlateLineupEntity(id: slateLineupId, requestID: slateLineupRequestId, experiment: slateExperimentId),
-                RecommendationEntity(id: recommendationId, index: UInt(positionInList))
+                CorpusRecommendationEntity(id: recommendationId)
             ]
         )
     }
@@ -192,7 +186,7 @@ public extension Events.Home {
     /**
      Fired when a user selects the report action on Home using the /discover API
      */
-    static func SlateArticleReport(url: String, reason: ReportEntity.Reason, comment: String?) -> Engagement {
+    static func SlateArticleReport(url: String, reason: ReportEntity.Reason, recommendationId: String, comment: String?) -> Engagement {
         return Engagement(
             .report(
                 reportEntity: ReportEntity(reason: reason, comment: comment),
@@ -201,7 +195,10 @@ public extension Events.Home {
             uiEntity: UiEntity(
                 .dialog,
                 identifier: "home.slate.article.report"
-            )
+            ),
+            extraEntities: [
+                CorpusRecommendationEntity(id: recommendationId)
+            ]
         )
     }
 
