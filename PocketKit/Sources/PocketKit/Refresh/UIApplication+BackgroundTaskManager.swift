@@ -5,6 +5,7 @@
 import UIKit
 import Sync
 
+// TODO: CONCURRENCY - Reinstate @retroactive directive once we migrate to Xcode 16
 extension UIApplication: BackgroundTaskManager {
     public func beginTask(withName name: String?, expirationHandler: (() -> Void)?) -> Int {
         beginBackgroundTask(withName: name, expirationHandler: expirationHandler).rawValue
