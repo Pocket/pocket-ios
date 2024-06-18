@@ -430,11 +430,11 @@ extension SavesContainerViewController {
             self?.present(activity: activity)
         }.store(in: &subscriptionSet)
 
-        collection.$reportedCollectionUrl.receive(on: DispatchQueue.main).sink { [weak self] url in
-            guard let self, !url.isEmpty else {
+        collection.$reportedCollection.receive(on: DispatchQueue.main).sink { [weak self] reportData in
+            guard let self, let reportData else {
                 return
             }
-            report(url)
+            report(reportData)
         }.store(in: &subscriptionSet)
 
         collection.$events.receive(on: DispatchQueue.main).sink { [weak self] event in
@@ -479,13 +479,6 @@ extension SavesContainerViewController {
             self?.present(activity: activity)
         }.store(in: &subscriptionSet)
 
-        collection.$reportedStoryUrl.receive(on: DispatchQueue.main).sink { [weak self] url in
-            guard let self, !url.isEmpty else {
-                return
-            }
-            report(url)
-        }.store(in: &subscriptionSet)
-
         navigationController?.pushViewController(
             CollectionViewController(model: collection),
             animated: true
@@ -493,13 +486,10 @@ extension SavesContainerViewController {
         collectionSubscriptions.push(subscriptionSet)
     }
 
-    private func report(_ givenURL: String?, recomendationId: String? = nil) {
-        guard let givenURL, let recomendationId else {
-            return
-        }
+    private func report(_ data: ReportData) {
         let host = ReportRecommendationHostingController(
-            givenURL: givenURL,
-            recommendationId: recomendationId,
+            givenURL: data.urlString,
+            recommendationId: data.recommendationID,
             tracker: model.tracker,
             onDismiss: { }
         )

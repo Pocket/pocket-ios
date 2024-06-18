@@ -24,12 +24,11 @@ class CollectionViewModel: NSObject {
     @Published private(set) var presentedAddTags: PocketAddTagsViewModel?
     @Published private(set) var sharedActivity: PocketActivity?
 
-    @Published private(set) var reportedCollectionUrl: String = ""
+    @Published private(set) var reportedCollection: ReportData?
     @Published private(set) var selectedItem: ReadableType?
     @Published private(set) var presentedStoryWebReaderURL: URL?
 
     @Published private(set) var sharedStoryActivity: PocketActivity?
-    @Published private(set) var reportedStoryUrl: String = ""
     @Published private(set) var events: ReadableEvent?
 
     @Published private(set) var actions: [SendableItemAction] = []
@@ -297,7 +296,10 @@ class CollectionViewModel: NSObject {
     }
 
     private func report() {
-        reportedCollectionUrl = item!.givenURL
+        guard let urlString = item?.givenURL, let recommendationID = item?.recommendation?.analyticsID else {
+            return
+        }
+        reportedCollection = ReportData(urlString: urlString, recommendationID: recommendationID)
         trackReport()
     }
 }
@@ -339,7 +341,6 @@ extension CollectionViewModel {
 extension CollectionViewModel {
     func storyViewModel(for story: CollectionStory) -> CollectionStoryViewModel {
         let url = story.url
-        let item = story.item
         return CollectionStoryViewModel(
             collectionStory: story,
             source: source,
@@ -349,17 +350,7 @@ extension CollectionViewModel {
                     guard let self else {
                         return
                     }
-                    Task {
-                        await self.shareStory(urlString: url)
-                    }
-                },
-                .report { [weak self] _ in
-                    guard let self, let item else {
-                        return
-                    }
-                    Task {
-                        await self.reportStory(urlString: url, item: item)
-                    }
+                    shareStory(urlString: url)
                 }
             ]
         )
@@ -368,11 +359,6 @@ extension CollectionViewModel {
     private func shareStory(urlString: String) {
         sharedStoryActivity = PocketItemActivity.fromCollection(url: urlString)
         trackStoryShare(storyURL: urlString)
-    }
-
-    private func reportStory(urlString: String, item: Item) {
-        reportedStoryUrl = item.givenURL
-        trackStoryReport(storyURL: url)
     }
 
     func select(cell: CollectionViewModel.Cell) {

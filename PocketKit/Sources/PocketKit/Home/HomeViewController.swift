@@ -569,11 +569,11 @@ extension HomeViewController {
             self?.present(activity: activity)
         }.store(in: &subscriptionSet)
 
-        viewModel.$reportedCollectionUrl.receive(on: DispatchQueue.main).sink { [weak self] url in
-            guard !url.isEmpty else {
+        viewModel.$reportedCollection.receive(on: DispatchQueue.main).sink { [weak self] reportData in
+            guard let reportData else {
                 return
             }
-            self?.report(url)
+            self?.report(reportData)
         }.store(in: &subscriptionSet)
 
         viewModel.$events.receive(on: DispatchQueue.main).sink { [weak self] event in
@@ -617,13 +617,6 @@ extension HomeViewController {
             self?.present(activity: activity)
         }.store(in: &subscriptionSet)
 
-        viewModel.$reportedStoryUrl.receive(on: DispatchQueue.main).sink { [weak self] url in
-            guard !url.isEmpty else {
-                return
-            }
-            self?.report(url)
-        }.store(in: &subscriptionSet)
-
         collectionSubscriptions.push(subscriptionSet)
     }
 
@@ -662,15 +655,11 @@ extension HomeViewController {
             }
         }.store(in: &readerSubscriptions)
     }
-    // TODO: CONCURRENCY - check how we can send the analyticsID before this call
-    func report(_ givenURL: String?, recommendationId: String? = nil) {
-        guard let givenURL, let recommendationId else {
-            return
-        }
 
+    func report(_ data: ReportData) {
         let host = ReportRecommendationHostingController(
-            givenURL: givenURL,
-            recommendationId: recommendationId,
+            givenURL: data.urlString,
+            recommendationId: data.recommendationID,
             tracker: model.tracker.childTracker(hosting: .reportDialog),
             onDismiss: { [weak self] in self?.model.clearRecommendationToReport() }
         )
@@ -681,6 +670,13 @@ extension HomeViewController {
             return
         }
         presentedVC.present(host, animated: true)
+    }
+    // TODO: CONCURRENCY - This will no longer be needed once we ditch all the Core Data objects publishing
+    func report(_ givenURL: String?, recommendationId: String?) {
+        guard let givenURL, let recommendationId else {
+            return
+        }
+        report(ReportData(urlString: givenURL, recommendationID: recommendationId))
     }
 
     func show(_ seeAll: SeeAll?) {
