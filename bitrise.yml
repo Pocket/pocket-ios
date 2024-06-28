@@ -25,16 +25,6 @@ pipelines:
       # Run multiple tests on simulators in parallel
       - run-test-groups-nightly: {}
       - deploy-test-results-nightly: {}
-    
-  test-flakey-nightly-pipeline:
-    stages:
-      # Build a test build
-      - test-build: {}
-      # Run flakey tests
-      - run-test-groups-flakey: {}
-      # Deploy flakey test results
-      - deploy-test-results-flakey: {}
-  
   
   # Will create an app store capabale build, but release it to Internal Testing users in Testflight.
   # Intended to run nightly.
@@ -66,15 +56,6 @@ stages:
       - run-tests-ui-2: {}
       - run-tests-ui-3: {}
       - run-tests-ui-4: {}
-
-  run-test-groups-flakey:
-    workflows:
-      - run-tests-flakey: {}
-
-  deploy-test-results-flakey:
-    should_always_run: true
-    workflows:
-      - deploy-test-results-flakey: {}
 
   run-test-groups-nightly:
     workflows:
@@ -428,21 +409,6 @@ workflows:
           inputs:
             - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UITESTS_4_LEGACY_XCRESULT_PATH'
 
-  run-tests-flakey:
-    before_run:
-      - _pull_test_bundle
-      - _start_snowplow
-    steps:
-      - xcode-test-without-building:
-          timeout: 600 #10 minutes
-          title: Unit Tests
-          inputs:
-            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITestsFlaky_iphonesimulator17.4-arm64-x86_64.xctestrun'
-            - destination: platform=iOS Simulator,name=iPhone 15,OS=17.4
-      - deploy-to-bitrise-io@2.1.1:
-          inputs:
-            - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UITESTSFLAKEY_XCRESULT_PATH'
-
   deploy-test-results:
     steps:
       - pull-intermediate-files@1:
@@ -491,27 +457,6 @@ workflows:
             - base_path: $BITRISE_XCRESULT_PATH
             - test_name: Pocket Tests
       - deploy-to-bitrise-io@2:
-          inputs:
-            - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_XCRESULT_PATH'
-
-  deploy-test-results-flakey:
-    steps:
-      - pull-intermediate-files@1:
-          inputs:
-            - artifact_sources: run-test-groups-nightly-flakey\..*
-      - script@1:
-          inputs:
-            - content: |
-                #!/usr/bin/env bash
-                set -eo pipefail
-
-                envman add --key BITRISE_XCRESULT_PATH --value "${BITRISE_UITESTSFLAKEY_XCRESULT_PATH}"
-      - custom-test-results-export@0:
-          inputs:
-            - search_pattern: '*'
-            - base_path: $BITRISE_XCRESULT_PATH
-            - test_name: Pocket Tests
-      - deploy-to-bitrise-io@2.1.1:
           inputs:
             - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_XCRESULT_PATH'
 
