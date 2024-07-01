@@ -150,6 +150,7 @@ workflows:
                     #!/usr/bin/env bash
                     # fail if any commands fails
                     set -e
+                    # testing coverage
                     xcrun xcresulttool version
                     xcrun xcresulttool metadata get --path merged.xcresult
                     xcrun xcresulttool graph --path merged.xcresult
