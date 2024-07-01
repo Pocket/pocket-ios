@@ -429,8 +429,8 @@ class CollectionViewModelTests: XCTestCase {
         viewModel.fetch()
 
         let reportExpectation = expectation(description: "expected item to be reported")
-        viewModel.$reportedCollectionUrl.dropFirst().sink { url in
-            XCTAssertNotEqual("", url)
+        viewModel.$reportedCollection.dropFirst().sink { reportData in
+            XCTAssertNotEqual("", reportData?.urlString)
             reportExpectation.fulfill()
         }.store(in: &subscriptions)
 
@@ -639,39 +639,6 @@ class CollectionViewModelTests: XCTestCase {
         viewModel.select(cell: .story(viewModel.storyViewModel(for: story)))
 
         wait(for: [readableExpectation], timeout: 1)
-    }
-
-    // MARK: - Story Actions
-    @MainActor
-    func test_reportAction_forStories_updatesSelectedStoryToReport() throws {
-        let item = space.buildItem()
-        let story = space.buildCollectionStory(item: item)
-
-        source.stubFetchItem { url in
-            return item
-        }
-        let collection = space.buildCollection(stories: [story], item: item)
-
-        source.stubMakeCollectionStoriesController {
-            self.collectionController
-        }
-
-        source.stubFetchCollection { _ in }
-
-        let viewModel = subject(slug: collection.slug)
-
-        let reportExpectation = expectation(description: "expected to update selected story to report")
-        viewModel.$reportedStoryUrl.dropFirst().sink { url in
-            XCTAssertNotEqual("", url)
-            reportExpectation.fulfill()
-        }.store(in: &subscriptions)
-
-        let storyViewModel = viewModel.storyViewModel(for: story)
-        let action = storyViewModel.overflowActions?.first { $0.identifier == .report }
-        XCTAssertNotNil(action)
-        action?.handler?(nil)
-
-        wait(for: [reportExpectation], timeout: 1)
     }
 
     @MainActor
