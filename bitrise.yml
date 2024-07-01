@@ -144,6 +144,7 @@ workflows:
 
   _danger:
     steps:
+        - activate-ssh-key@4: {}
         - script@1:
             inputs:
                 - script_file_path: null
@@ -166,7 +167,6 @@ workflows:
                     # bash ./path/to/script.sh
                     # not just bash, e.g.:
                     # ruby ./path/to/script.rb
-      - activate-ssh-key@4: {}
       - git-clone@8: {}
       - script@1:
           inputs:
