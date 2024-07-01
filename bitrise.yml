@@ -144,6 +144,16 @@ workflows:
 
   _danger:
     steps:
+        - script@1:
+            inputs:
+                - content: |-
+                    #!/usr/bin/env bash
+                    # fail if any commands fails
+                    set -e
+                    xcrun xcresulttool version
+                    xcrun xcresulttool metadata get --path merged.xcresult
+                    xcrun xcresulttool graph --path merged.xcresult
+                    xcrun xccov view --report --json /Users/vagrant/git/merged.xcresult > afile
       - activate-ssh-key@4: {}
       - git-clone@8: {}
       - script@1:
@@ -153,10 +163,6 @@ workflows:
 
                 # fail if any commands fails
                 set -e
-                xcrun xcresulttool version
-                xcrun xcresulttool metadata get --path merged.xcresult
-                xcrun xcresulttool graph --path merged.xcresult
-                xcrun xccov view --report --json /Users/vagrant/git/merged.xcresult > afile
                 echo "Run danger"
                 swift run danger-swift ci
 
