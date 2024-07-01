@@ -153,7 +153,10 @@ workflows:
 
                 # fail if any commands fails
                 set -e
-
+                xcrun xcresulttool version
+                xcrun xcresulttool metadata get --path merged.xcresult
+                xcrun xcresulttool graph --path merged.xcresult
+                xcrun xccov view --report --json /Users/vagrant/git/merged.xcresult > afile
                 echo "Run danger"
                 swift run danger-swift ci
 
