@@ -726,10 +726,10 @@ public enum Localization {
       }
     }
     public enum SharedWithYouActions {
-      /// Tap the attribution view to reply, long press it to remove an item or reply.
-      public static let message = Localization.tr("Localizable", "tips.sharedWithYouActions.message", fallback: "Tap the attribution view to reply, long press it to remove an item or reply.")
       /// Tap here to reply to this message or long press to remove this item.
-      public static let title = Localization.tr("Localizable", "tips.sharedWithYouActions.title", fallback: "Tap here to reply to this message or long press to remove this item.")
+      public static let message = Localization.tr("Localizable", "tips.sharedWithYouActions.message", fallback: "Tap here to reply to this message or long press to remove this item.")
+      /// Shared With You actions
+      public static let title = Localization.tr("Localizable", "tips.sharedWithYouActions.title", fallback: "Shared With You actions")
     }
     public enum SwipeHighlights {
       /// Swipe left on a paragraph to highlight it. Alternatively, swipe and select 'Delete Highlights' to remove any existing highlighting.
