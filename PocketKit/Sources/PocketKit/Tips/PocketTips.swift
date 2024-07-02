@@ -59,7 +59,7 @@ struct NewRecommendationsWidgetTip: Tip {
 struct SharedWithYouTip: Tip {
     let id = "pocketTips.home.sharedWithYouActions"
     let title = Text(Localization.Tips.SharedWithYouActions.title)
-    let message: Text? = Text(Localization.Tips.SharedWithYouActions.message)
+    let message: Text? = nil
     let image: Image? = nil
     let options = [Tips.MaxDisplayCount(1)]
     var rules: [Rule] {
