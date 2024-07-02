@@ -54,9 +54,25 @@ struct NewRecommendationsWidgetTip: Tip {
     }
 }
 
+/// Shared With You, Home
+@available(iOS 17.0, *)
+struct SharedWithYouTip: Tip {
+    let id = "pocketTips.home.sharedWithYouActions"
+    let title = Text(Localization.Tips.SharedWithYouActions.title)
+    let message: Text? = Text(Localization.Tips.SharedWithYouActions.message)
+    let image: Image? = nil
+    let options = [Tips.MaxDisplayCount(1)]
+    var rules: [Rule] {
+        #Rule(PocketTipEvents.showSharedWithYouTip) {
+            $0.donations.count == 1
+        }
+    }
+}
+
 @available(iOS 17.0, *)
 enum PocketTipEvents {
     static let showNewRecommendationsWidgetTip = Tips.Event(id: "pocketTips.events.showNewRecommendationsWidgetTip")
     static let showSwipeHighlightsTip = Tips.Event(id: "pocketTips.events.showSwipeHighlightsTip")
     static let showSwipeArchiveTip = Tips.Event(id: "pocketTips.events.showSwipeArchiveTip")
+    static let showSharedWithYouTip = Tips.Event(id: "pocketTips.events.showSharedWithYouTip")
 }

@@ -169,18 +169,6 @@ class HomeViewController: UIViewController {
         handleRefresh()
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        if #available(iOS 17.0, *), let sourceView = navigationController?.view ?? view {
-            PocketTipEvents.showNewRecommendationsWidgetTip.sendDonation()
-            let x = view.bounds.width / 2
-            let y: CGFloat = 0
-            let sourceRect = CGRect(x: x, y: y, width: 0, height: 0)
-            let configuration = TipUIConfiguration(sourceRect: sourceRect, permittedArrowDirections: .init(rawValue: 0), backgroundColor: nil, tintColor: nil)
-            displayTip(NewRecommendationsWidgetTip(), configuration: configuration, sourceView: sourceView)
-        }
-    }
-
     private func handleRefresh(isForced: Bool = false) {
         model.refresh(isForced: isForced) { [weak self] in
             DispatchQueue.main.async {
@@ -264,6 +252,16 @@ extension HomeViewController {
             }
 
             cell.configure(with: configuration)
+            // Show Shared With You Tip on the first attribution view
+            if indexPath.item == 0, #available(iOS 17.0, *) {
+                let sourceView = cell.attributionView
+                PocketTipEvents.showSharedWithYouTip.sendDonation()
+                let x: CGFloat = 80
+                let y: CGFloat = 20
+                let sourceRect = CGRect(x: x, y: y, width: 0, height: 0)
+                let configuration = TipUIConfiguration(sourceRect: sourceRect, permittedArrowDirections: .up, backgroundColor: nil, tintColor: nil)
+                displayTip(SharedWithYouTip(), configuration: configuration, sourceView: sourceView)
+            }
             return cell
         }
     }

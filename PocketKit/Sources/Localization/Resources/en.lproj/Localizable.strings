@@ -374,3 +374,6 @@
 "tips.swipeHighlights.message" = "Swipe left on a paragraph to highlight it. Alternatively, swipe and select 'Delete Highlights' to remove any existing highlighting.";
 "tips.recommendationsWidget.selectTopic.title" = "New Recommendations Widget!";
 "tips.recommendationsWidget.selectTopic.message" = "Long-press on the Recommendations Widget to choose a topic of interest.\nInstall multiple widgets to keep track of all your favorite topics.";
+"tips.sharedWithYouActions.title" = "Shared With You actions";
+"tips.sharedWithYouActions.message" = "Tap here to reply to this message or long press to remove this item.";
+

@@ -21,7 +21,7 @@ class SharedWithYouCarouselCell: UICollectionViewCell {
         return stackView
     }()
 
-    private lazy var attributionView: SWAttributionView = {
+    private(set) lazy var attributionView: SWAttributionView = {
         let attributionView = SWAttributionView()
         attributionView.translatesAutoresizingMaskIntoConstraints = false
         attributionView.displayContext = .summary
