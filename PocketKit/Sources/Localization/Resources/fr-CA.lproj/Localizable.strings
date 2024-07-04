@@ -374,3 +374,6 @@
 "tips.swipeHighlights.message" = "Balayez vers la gauche sur un paragraphe pour le mettre en surbrillance. Vous pouvez également balayer et sélectionner « Supprimer les surbrillances » pour supprimer tout texte mis en surbrillance.";
 "tips.recommendationsWidget.selectTopic.title" = "Nouveau widget de recommandations!";
 "tips.recommendationsWidget.selectTopic.message" = "Appuyez longuement sur le widget de Recommandations pour choisir un sujet qui vous intéresse.\nInstallez plusieurs widgets pour suivre tous vos sujets favoris.";
+"tips.sharedWithYouActions.title" = "Actions partagées avec vous";
+"tips.sharedWithYouActions.message" = "Appuyez ici pour répondre à ce message ou appuyez longuement pour supprimer cet élément.";
+
