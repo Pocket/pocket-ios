@@ -374,3 +374,6 @@
 "tips.swipeHighlights.message" = "Deslize para a esquerda num parágrafo para destacá-lo. Alternativamente, deslize e selecione 'Eliminar destaques' para remover qualquer destaque existente.";
 "tips.recommendationsWidget.selectTopic.title" = "Novo Widget de recomendações!";
 "tips.recommendationsWidget.selectTopic.message" = "Prima continuamente o Widget de recomendações para escolher um tópico de interesse.\nInstale vários widgets para acompanhar todos os seus tópicos favoritos.";
+"tips.sharedWithYouActions.title" = "Ações partilhadas consigo";
+"tips.sharedWithYouActions.message" = "Toque aqui para responder a esta mensagem ou prima continuamente para remover este item.";
+
