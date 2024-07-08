@@ -374,3 +374,6 @@
 "tips.swipeHighlights.message" = "在段落上向左滑动即可进行标记。或者，滑动并选择“删除标记”以删除任何现有的标记。";
 "tips.recommendationsWidget.selectTopic.title" = "全新推荐小部件！";
 "tips.recommendationsWidget.selectTopic.message" = "长按“推荐”小部件，选择感兴趣的主题。\n安装多个小部件，跟踪所有您喜欢的主题。";
+"tips.sharedWithYouActions.title" = "已与您分享的操作";
+"tips.sharedWithYouActions.message" = "点击此处回复此信息，或长按删除此项目。";
+

@@ -374,3 +374,6 @@
 "tips.swipeHighlights.message" = "Veeg naar links over een alinea om deze te markeren. Je kunt ook vegen en 'Markeringen verwijderen' selecteren om alle bestaande markeringen te verwijderen.";
 "tips.recommendationsWidget.selectTopic.title" = "Nieuwe widget met aanbevelingen!";
 "tips.recommendationsWidget.selectTopic.message" = "Houd de widget met aanbevelingen ingedrukt om een onderwerp te kiezen.\nInstalleer meerdere widgets om al je favoriete onderwerpen bij te houden.";
+"tips.sharedWithYouActions.title" = "Met jou gedeelde acties";
+"tips.sharedWithYouActions.message" = "Tik hier om dit bericht te beantwoorden of druk lang om dit item te verwijderen.";
+

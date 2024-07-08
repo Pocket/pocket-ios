@@ -169,7 +169,7 @@
 "settings.appIcon.title" = "Icona dell'app";
 "settings.appIcon.thematicIconSectionHeader" = "Lascia che Pocket scelga la tua icona";
 "settings.appIcon.customIconSectionHeader" = "Oppure seleziona la tua icona preferita";
-"settings.appIcon.iconName.default" = "Predefinita";
+"settings.appIcon.iconName.default" = "Predefinito";
 "settings.appIcon.iconName.classic" = "Classica";
 "settings.appIcon.iconName.monochrome" = "Monocromatica";
 "settings.appIcon.iconName.pride" = "Pride";
@@ -374,3 +374,6 @@
 "tips.swipeHighlights.message" = "Passa il dito a sinistra su un paragrafo per evidenziarlo. In alternativa, scorri e seleziona \"Elimina evidenziazioni\" per rimuovere le evidenziazioni in quel paragrafo.";
 "tips.recommendationsWidget.selectTopic.title" = "Nuovo widget per le raccomandazioni!";
 "tips.recommendationsWidget.selectTopic.message" = "Premi a lungo sul Widget delle Raccomandazioni per scegliere un argomento di interesse.\nInstalla più widget per tenere traccia di tutti i tuoi argomenti preferiti.";
+"tips.sharedWithYouActions.title" = "Azioni Condivisi con te";
+"tips.sharedWithYouActions.message" = "Tocca qui per rispondere a questo messaggio o premi a lungo per rimuovere questo contenuto.";
+
