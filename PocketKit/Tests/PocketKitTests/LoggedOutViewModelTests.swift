@@ -17,6 +17,7 @@ class LoggedOutViewModelTests: XCTestCase {
     private var tracker: MockTracker!
     private var mockAuthenticationSession: MockAuthenticationSession!
     private var userManagementService: MockUserManagementService!
+    private var featureFlags: MockFeatureFlagService!
 
     private var subscriptions: Set<AnyCancellable>!
 
@@ -54,14 +55,16 @@ class LoggedOutViewModelTests: XCTestCase {
         authorizationClient: AuthorizationClient? = nil,
         appSession: AppSession? = nil,
         networkPathMonitor: NetworkPathMonitor? = nil,
-        tracker: Tracker? = nil
+        tracker: Tracker? = nil,
+        featureFlags: FeatureFlagServiceProtocol? = nil
     ) -> LoggedOutViewModel {
         let viewModel = LoggedOutViewModel(
             authorizationClient: authorizationClient ?? self.authorizationClient,
             appSession: appSession ?? self.appSession,
             networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor,
             tracker: tracker ?? self.tracker,
-            userManagementService: userManagementService ?? self.userManagementService
+            userManagementService: userManagementService ?? self.userManagementService,
+            featureFlags: featureFlags ?? self.featureFlags
         )
         viewModel.contextProvider = self
         return viewModel
