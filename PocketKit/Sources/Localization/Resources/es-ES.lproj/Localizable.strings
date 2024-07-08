@@ -374,6 +374,6 @@
 "tips.swipeHighlights.message" = "Desliza hacia la izquierda en un párrafo para resaltarlo. También puedes deslizar y seleccionar «Eliminar resaltados» para eliminar cualquier resaltado existente.";
 "tips.recommendationsWidget.selectTopic.title" = "¡Nuevo widget de recomendaciones!";
 "tips.recommendationsWidget.selectTopic.message" = "Mantén pulsado el widget de recomendaciones para elegir un tema de interés.\nInstala varios widgets para llevar un seguimiento de todos tus temas favoritos.";
-"tips.sharedWithYouActions.title" = "Acciones compartidas contigo";
+"tips.sharedWithYouActions.title" = "Más acciones";
 "tips.sharedWithYouActions.message" = "Pulsa aquí para responder a este mensaje o mantén pulsado para eliminar este artículo.";
 
