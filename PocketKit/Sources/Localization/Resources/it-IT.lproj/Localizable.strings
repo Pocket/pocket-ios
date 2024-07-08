@@ -169,7 +169,7 @@
 "settings.appIcon.title" = "Icona dell'app";
 "settings.appIcon.thematicIconSectionHeader" = "Lascia che Pocket scelga la tua icona";
 "settings.appIcon.customIconSectionHeader" = "Oppure seleziona la tua icona preferita";
-"settings.appIcon.iconName.default" = "Predefinito";
+"settings.appIcon.iconName.default" = "Predefinita";
 "settings.appIcon.iconName.classic" = "Classica";
 "settings.appIcon.iconName.monochrome" = "Monocromatica";
 "settings.appIcon.iconName.pride" = "Pride";
