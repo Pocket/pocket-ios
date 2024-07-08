@@ -6,7 +6,6 @@ import UIKit
 import Textile
 import SwiftUI
 import Localization
-import SharedPocketKit
 
 struct LoggedOutViewControllerSwiftUI: UIViewControllerRepresentable {
     var model: LoggedOutViewModel
