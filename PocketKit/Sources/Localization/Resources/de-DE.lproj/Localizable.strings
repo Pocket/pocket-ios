@@ -374,6 +374,6 @@
 "tips.swipeHighlights.message" = "Streife nach links über einen Paragraph, um ihn zu markieren. Du kannst auch streichen und „Markierungen löschen“ auswählen, um alle vorhandenen Markierungen zu entfernen.";
 "tips.recommendationsWidget.selectTopic.title" = "Neues Empfehlungs-Widget!";
 "tips.recommendationsWidget.selectTopic.message" = "Drücke lange auf das Empfehlungs-Widget, um ein Thema auszuwählen, das dich interessiert.\nInstalliere mehrere Widgets, um den Überblick über alle deine Lieblingsthemen zu behalten.";
-"tips.sharedWithYouActions.title" = "Mit dir geteilte Aktionen";
+"tips.sharedWithYouActions.title" = "Mehr Aktionen";
 "tips.sharedWithYouActions.message" = "Tippe hier, um auf diese Nachricht zu antworten, oder drücke lange, um dieses Element zu entfernen.";
 

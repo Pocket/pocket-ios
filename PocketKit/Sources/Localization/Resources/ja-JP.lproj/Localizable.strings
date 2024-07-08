@@ -374,6 +374,6 @@
 "tips.swipeHighlights.message" = "段落を左にスワイプすると、その段落がハイライトされます。 また、スワイプして「ハイライトを削除する」を選択すると、既存のハイライトを削除できます。";
 "tips.recommendationsWidget.selectTopic.title" = "新しいおすすめウィジェットが登場！";
 "tips.recommendationsWidget.selectTopic.message" = "興味のあるトピックを選択するには、おすすめウィジェットを長押しします。\n複数のウィジェットをインストールして、お気に入りのトピックをすべて追跡しましょう。";
-"tips.sharedWithYouActions.title" = "「あなたと共有済み」アクション";
+"tips.sharedWithYouActions.title" = "その他のアクション";
 "tips.sharedWithYouActions.message" = "このメッセージに返信するにはここをタップし、このアイテムを削除するには長押しします。";
 

@@ -374,6 +374,6 @@
 "tips.swipeHighlights.message" = "在某個段落上向左滑動即可加以標記。 或者滑動並選取「刪除標記」，以刪除任何現有標記。";
 "tips.recommendationsWidget.selectTopic.title" = "全新的推薦小工具！";
 "tips.recommendationsWidget.selectTopic.message" = "長按「推薦」小工具以選擇感興趣的主題。安裝多個小工具以追蹤所有最愛的主題。";
-"tips.sharedWithYouActions.title" = "與您共享的動作";
+"tips.sharedWithYouActions.title" = "更多動作";
 "tips.sharedWithYouActions.message" = "點選此處回覆此訊息，或長按移除此項目。";
 

@@ -374,6 +374,6 @@
 "tips.swipeHighlights.message" = "단락을 왼쪽으로 쓸어넘기면 하이라이트를 추가할 수 있습니다. 쓸어넘기고 '하이라이트 삭제'를 선택하면 기존의 하이라이트를 제거할 수 있습니다.";
 "tips.recommendationsWidget.selectTopic.title" = "새로운 추천 위젯!";
 "tips.recommendationsWidget.selectTopic.message" = "추천 위젯을 길게 눌러 관심 있는 주제를 선택해 보세요.\n여러 위젯을 설치하면 좋아하는 주제를 모두 확인할 수 있습니다.";
-"tips.sharedWithYouActions.title" = "나와 공유된 작업";
+"tips.sharedWithYouActions.title" = "추가 작업";
 "tips.sharedWithYouActions.message" = "이 메시지에 답하려면 여기를 탭하고, 이 항목을 제거하려면 길게 누르세요.";
 
