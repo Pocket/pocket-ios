@@ -27,8 +27,11 @@ class LoggedOutViewModel: ObservableObject {
 
     @Published var isPresentingExitSurvey: Bool = false
 
+    @Published var showNewOnboarding: Bool = false
+
     private(set) var automaticallyDismissed = false
     private(set) var lastAction: LoggedOutAction?
+    private let featureFlags: FeatureFlagServiceProtocol
 
     private(set) var currentNetworkStatus: NWPath.Status
     private var isOffline: Bool {
@@ -43,7 +46,7 @@ class LoggedOutViewModel: ObservableObject {
     private var cancellables: Set<AnyCancellable> = []
 
     convenience init() {
-        self.init(authorizationClient: Services.shared.authClient, appSession: Services.shared.appSession, networkPathMonitor: NWPathMonitor(), tracker: Services.shared.tracker, userManagementService: Services.shared.userManagementService)
+        self.init(authorizationClient: Services.shared.authClient, appSession: Services.shared.appSession, networkPathMonitor: NWPathMonitor(), tracker: Services.shared.tracker, userManagementService: Services.shared.userManagementService, featureFlags: Services.shared.featureFlagService)
     }
 
     init(
@@ -51,13 +54,15 @@ class LoggedOutViewModel: ObservableObject {
         appSession: AppSession,
         networkPathMonitor: NetworkPathMonitor,
         tracker: Tracker,
-        userManagementService: UserManagementServiceProtocol
+        userManagementService: UserManagementServiceProtocol,
+        featureFlags: FeatureFlagServiceProtocol
     ) {
         self.authorizationClient = authorizationClient
         self.appSession = appSession
         self.networkPathMonitor = networkPathMonitor
         self.tracker = tracker
         self.userManagementService = userManagementService
+        self.featureFlags = featureFlags
 
         networkPathMonitor.start(queue: DispatchQueue.main)
         currentNetworkStatus = networkPathMonitor.currentNetworkPath.status
@@ -87,6 +92,10 @@ class LoggedOutViewModel: ObservableObject {
                 }
             }
             .store(in: &cancellables)
+
+        Services.shared.featureFlagsRefreshCoordinator.refresh { [unowned self] in
+            showNewOnboarding = featureFlags.isAssigned(flag: .newOnboarding)
+        }
     }
 
     private func updateStatus(_ status: NWPath.Status) {

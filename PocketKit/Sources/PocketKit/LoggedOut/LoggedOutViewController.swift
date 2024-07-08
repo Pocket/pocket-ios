@@ -6,6 +6,7 @@ import UIKit
 import Textile
 import SwiftUI
 import Localization
+import SharedPocketKit
 
 struct LoggedOutViewControllerSwiftUI: UIViewControllerRepresentable {
     var model: LoggedOutViewModel
@@ -138,22 +139,44 @@ private struct LoggedOutCarouselPageView: View {
 }
 
 private struct LoggedOutActionsView: View {
-    private let viewModel: LoggedOutViewModel
+    @ObservedObject private var viewModel: LoggedOutViewModel
 
     init(viewModel: LoggedOutViewModel) {
         self.viewModel = viewModel
     }
 
     var body: some View {
-        VStack {
+        VStack(spacing: 16) {
             Button {
                 viewModel.authenticate()
             } label: {
-                Text(Localization.LoggedOut.continue).style(.header.sansSerif.h8.with(color: .ui.white))
+                Text(signInText).style(.header.sansSerif.h8.with(color: .ui.white))
                     .padding(EdgeInsets(top: 12, leading: 0, bottom: 12, trailing: 0))
                     .frame(maxWidth: 320)
             }
             .buttonStyle(ActionsPrimaryButtonStyle())
+            if viewModel.showNewOnboarding {
+                Button {
+                    // TODO: Add signed out home navigation
+                } label: {
+                    Text(Localization.LoggedOut.Continue.signedOut).style(.header.sansSerif.h8.with(underlineStyle: .single).with(color: .ui.black1))
+                        .padding(EdgeInsets(top: 12, leading: 0, bottom: 12, trailing: 0))
+                        .frame(maxWidth: 320)
+                }
+                if let footerMarkdown {
+                    Text(footerMarkdown)
+                        .tint(Color(ColorAsset.ui.grey5))
+                }
+            }
         }
+    }
+}
+
+private extension LoggedOutActionsView {
+    @MainActor var signInText: String {
+        viewModel.showNewOnboarding ? Localization.LoggedOut.Continue.authenticate : Localization.LoggedOut.continue
+    }
+    var footerMarkdown: AttributedString? {
+        try? AttributedString(markdown: Localization.LoggedOut.footer, options: .init(allowsExtendedAttributes: true))
     }
 }
