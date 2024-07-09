@@ -18,6 +18,7 @@ class LoggedOutViewModelTests: XCTestCase {
     private var mockAuthenticationSession: MockAuthenticationSession!
     private var userManagementService: MockUserManagementService!
     private var featureFlags: MockFeatureFlagService!
+    private var refreshCoordinator: RefreshCoordinator!
 
     private var subscriptions: Set<AnyCancellable>!
 
@@ -34,6 +35,16 @@ class LoggedOutViewModelTests: XCTestCase {
         mockAuthenticationSession = MockAuthenticationSession()
         userManagementService = MockUserManagementService()
         featureFlags = MockFeatureFlagService()
+        featureFlags.stubIsAssigned { _, _ in
+            return true
+        }
+        let notificationCenter = NotificationCenter()
+        let userDefaults = UserDefaults(suiteName: "HomeViewModelTests")
+        let lastRefresh = UserDefaultsLastRefresh(defaults: userDefaults!)
+        lastRefresh.reset()
+        let mockSource = MockSource()
+        mockSource.stubAllFeatureFlags {}
+        refreshCoordinator = FeatureFlagsRefreshCoordinator(notificationCenter: notificationCenter, taskScheduler: MockBGTaskScheduler(), appSession: appSession, source: mockSource, lastRefresh: lastRefresh)
 
         subscriptions = []
 
@@ -57,7 +68,8 @@ class LoggedOutViewModelTests: XCTestCase {
         appSession: AppSession? = nil,
         networkPathMonitor: NetworkPathMonitor? = nil,
         tracker: Tracker? = nil,
-        featureFlags: FeatureFlagServiceProtocol? = nil
+        featureFlags: FeatureFlagServiceProtocol? = nil,
+        refreshCoordinator: RefreshCoordinator? = nil
     ) -> LoggedOutViewModel {
         let viewModel = LoggedOutViewModel(
             authorizationClient: authorizationClient ?? self.authorizationClient,
@@ -65,7 +77,8 @@ class LoggedOutViewModelTests: XCTestCase {
             networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor,
             tracker: tracker ?? self.tracker,
             userManagementService: userManagementService ?? self.userManagementService,
-            featureFlags: featureFlags ?? self.featureFlags
+            featureFlags: featureFlags ?? self.featureFlags,
+            refreshCoordinator: refreshCoordinator ?? self.refreshCoordinator
         )
         viewModel.contextProvider = self
         return viewModel
