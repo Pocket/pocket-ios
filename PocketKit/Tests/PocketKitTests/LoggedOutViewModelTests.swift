@@ -33,6 +33,7 @@ class LoggedOutViewModelTests: XCTestCase {
         tracker = MockTracker()
         mockAuthenticationSession = MockAuthenticationSession()
         userManagementService = MockUserManagementService()
+        featureFlags = MockFeatureFlagService()
 
         subscriptions = []
 
