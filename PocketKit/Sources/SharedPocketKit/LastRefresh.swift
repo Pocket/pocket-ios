@@ -26,11 +26,11 @@ public struct UserDefaultsLastRefresh: LastRefresh {
     }
 
     public func reset() {
-        defaults.set(nil, forKey: Self.lastRefreshedSavesAtKey)
-        defaults.set(nil, forKey: Self.lastRefreshedArchiveAtKey)
-        defaults.set(nil, forKey: Self.lastRefreshedTagsAtKey)
-        defaults.set(nil, forKey: Self.lastRefreshedHomeAtKey)
-        defaults.set(nil, forKey: Self.lastRefreshedFeatureFlagsAtKey)
+        defaults.removeObject(forKey: Self.lastRefreshedSavesAtKey)
+        defaults.removeObject(forKey: Self.lastRefreshedArchiveAtKey)
+        defaults.removeObject(forKey: Self.lastRefreshedTagsAtKey)
+        defaults.removeObject(forKey: Self.lastRefreshedHomeAtKey)
+        defaults.removeObject(forKey: Self.lastRefreshedFeatureFlagsAtKey)
     }
 }
 

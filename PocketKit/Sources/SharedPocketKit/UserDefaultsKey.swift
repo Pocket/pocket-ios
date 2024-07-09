@@ -47,8 +47,6 @@ public extension UserDefaults {
                 return false // This must remain in-tact for the "SignOutOnFirstLaunch" to be run exactly one time per app install
             case .legacyUserMigration:
                 return false // We want to maintain the state of whether the migration has already been run
-            case .lastRefreshedHomeAt, .lastRefreshedFeatureFlagsAt:
-                return true // Signed out home: we want to keep these since those refresh can happen when signed out
             case .dateLastOpened, .dateLastBackgrounded:
                 return true // Signed out home: we want to keep these if the user logs out and still track open and background events
             default: return true
