@@ -164,7 +164,9 @@ private struct LoggedOutActionsView: View {
                 }
                 if let footerMarkdown {
                     Text(footerMarkdown)
-                        .tint(Color(ColorAsset.ui.grey5))
+                        .style(.header.sansSerif.p3.with(color: .ui.grey5).with(alignment: .center))
+                        .tint(Color(ColorAsset.ui.black1))
+                        .padding([.leading, .trailing], 32)
                 }
             }
         }
