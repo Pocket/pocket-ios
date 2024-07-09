@@ -66,6 +66,7 @@ public extension Text {
             .multilineTextAlignment(SwiftUI.TextAlignment(style.paragraph.alignment))
             .lineSpacing(style.paragraph.lineSpacing ?? 0)
             .italic(style.fontDescriptor.slant == .italic)
+            .underline(style.underlineStyle == .single)
     }
 }
 

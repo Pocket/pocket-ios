@@ -321,6 +321,14 @@ public enum Localization {
   public enum LoggedOut {
     /// Continue
     public static let `continue` = Localization.tr("Localizable", "loggedOut.continue", fallback: "Continue")
+    /// By proceeding, you agree to the Pocket [Terms of Service](https://getpocket.com/tos) and [Privacy Notice](https://getpocket.com/privacy)
+    public static let footer = Localization.tr("Localizable", "loggedOut.footer", fallback: "By proceeding, you agree to the Pocket [Terms of Service](https://getpocket.com/tos) and [Privacy Notice](https://getpocket.com/privacy)")
+    public enum Continue {
+      /// Sign up or sign in
+      public static let authenticate = Localization.tr("Localizable", "loggedOut.continue.authenticate", fallback: "Sign up or sign in")
+      /// Continue signed out
+      public static let signedOut = Localization.tr("Localizable", "loggedOut.continue.signedOut", fallback: "Continue signed out")
+    }
     public enum Offline {
       /// Looks like you're offline. Try checking your mobile data or wifi.
       public static let detail = Localization.tr("Localizable", "loggedOut.offline.detail", fallback: "Looks like you're offline. Try checking your mobile data or wifi.")

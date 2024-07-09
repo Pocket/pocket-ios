@@ -27,8 +27,12 @@ class LoggedOutViewModel: ObservableObject {
 
     @Published var isPresentingExitSurvey: Bool = false
 
+    @Published var showNewOnboarding: Bool = false
+
     private(set) var automaticallyDismissed = false
     private(set) var lastAction: LoggedOutAction?
+    private let featureFlags: FeatureFlagServiceProtocol
+    private let refreshCoordinator: RefreshCoordinator
 
     private(set) var currentNetworkStatus: NWPath.Status
     private var isOffline: Bool {
@@ -43,7 +47,7 @@ class LoggedOutViewModel: ObservableObject {
     private var cancellables: Set<AnyCancellable> = []
 
     convenience init() {
-        self.init(authorizationClient: Services.shared.authClient, appSession: Services.shared.appSession, networkPathMonitor: NWPathMonitor(), tracker: Services.shared.tracker, userManagementService: Services.shared.userManagementService)
+        self.init(authorizationClient: Services.shared.authClient, appSession: Services.shared.appSession, networkPathMonitor: NWPathMonitor(), tracker: Services.shared.tracker, userManagementService: Services.shared.userManagementService, featureFlags: Services.shared.featureFlagService, refreshCoordinator: Services.shared.featureFlagsRefreshCoordinator)
     }
 
     init(
@@ -51,13 +55,17 @@ class LoggedOutViewModel: ObservableObject {
         appSession: AppSession,
         networkPathMonitor: NetworkPathMonitor,
         tracker: Tracker,
-        userManagementService: UserManagementServiceProtocol
+        userManagementService: UserManagementServiceProtocol,
+        featureFlags: FeatureFlagServiceProtocol,
+        refreshCoordinator: RefreshCoordinator
     ) {
         self.authorizationClient = authorizationClient
         self.appSession = appSession
         self.networkPathMonitor = networkPathMonitor
         self.tracker = tracker
         self.userManagementService = userManagementService
+        self.featureFlags = featureFlags
+        self.refreshCoordinator = refreshCoordinator
 
         networkPathMonitor.start(queue: DispatchQueue.main)
         currentNetworkStatus = networkPathMonitor.currentNetworkPath.status
@@ -87,6 +95,13 @@ class LoggedOutViewModel: ObservableObject {
                 }
             }
             .store(in: &cancellables)
+        // TODO: SIGNED OUT EXP - Once we release, the feature flag service and fetch shall be removed from here
+        refreshCoordinator.refresh(isForced: false) { [weak self] in
+            guard let self else {
+                return
+            }
+            showNewOnboarding = featureFlags.isAssigned(flag: .newOnboarding)
+        }
     }
 
     private func updateStatus(_ status: NWPath.Status) {
