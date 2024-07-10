@@ -127,7 +127,7 @@ extension SlateDetailViewModel {
         let item = recommendation.item
         var destination: ContentOpen.Destination = .internal
 
-        if let slug = recommendation.collection?.slug ?? recommendation.item.collectionSlug, featureFlags.isAssigned(flag: .nativeCollections) {
+        if let slug = recommendation.collection?.slug ?? recommendation.item.collectionSlug {
             selectedCollectionViewModel = CollectionViewModel(slug: slug, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults, featureFlags: featureFlags, notificationCenter: notificationCenter)
         } else if item.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
             guard let bestURL = URL(percentEncoding: item.bestURL) else { return }
@@ -146,10 +146,7 @@ extension SlateDetailViewModel {
             destination = .internal
         }
 
-        guard
-            let slate = recommendation.slate,
-            let slateLineup = slate.slateLineup
-        else {
+        guard let slate = recommendation.slate else {
             Log.capture(message: "Selected recommendation without an associated slate and slatelineup, not logging analytics")
             return
         }

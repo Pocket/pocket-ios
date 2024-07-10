@@ -37,13 +37,6 @@ class CollectionViewModelTests: XCTestCase {
         notificationCenter = .default
 
         userDefaults = UserDefaults(suiteName: "CollectionViewModelTests")
-        featureFlags.stubIsAssigned { flag, variant in
-            if flag == .nativeCollections {
-                return true
-            }
-            XCTFail("Unknown feature flag")
-            return false
-        }
         self.collectionController = space.makeCollectionStoriesController(slug: "slug-1")
     }
 

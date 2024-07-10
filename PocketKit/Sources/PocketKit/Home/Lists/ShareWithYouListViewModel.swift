@@ -100,7 +100,7 @@ extension SharedWithYouListViewModel {
         let item = sharedWithYouItem.item
         var destination: ContentOpen.Destination = .internal
 
-        if let slug = item.collectionSlug, featureFlags.isAssigned(flag: .nativeCollections) {
+        if let slug = item.collectionSlug {
             selectedCollectionViewModel = CollectionViewModel(slug: slug, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults, featureFlags: featureFlags, notificationCenter: notificationCenter)
         } else if item.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
             guard let bestURL = URL(percentEncoding: item.bestURL) else { return }

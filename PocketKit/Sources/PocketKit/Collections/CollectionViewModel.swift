@@ -310,7 +310,7 @@ extension CollectionViewModel {
 
     private func selectItem(with story: CollectionStory) {
         // Check if item is a collection
-        if let slug = story.item?.collectionSlug, featureFlags.isAssigned(flag: .nativeCollections) {
+        if let slug = story.item?.collectionSlug {
             selectedItem = .collection(
                 CollectionViewModel(slug: slug, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults, featureFlags: featureFlags, notificationCenter: notificationCenter)
             )
