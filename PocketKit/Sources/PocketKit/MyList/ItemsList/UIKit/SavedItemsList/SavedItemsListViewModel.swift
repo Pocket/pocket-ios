@@ -636,7 +636,7 @@ extension SavedItemsListViewModel {
             featureFlagService: featureFlags
         )
 
-        if let slug = readable.collection?.slug ?? readable.slug, featureFlags.isAssigned(flag: .nativeCollections) {
+        if let slug = readable.collection?.slug ?? readable.slug {
             let collectionViewModel = CollectionViewModel(slug: slug, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults, featureFlags: featureFlags, notificationCenter: notificationCenter)
             selectedItem = .collection(collectionViewModel)
         } else if savedItem.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {

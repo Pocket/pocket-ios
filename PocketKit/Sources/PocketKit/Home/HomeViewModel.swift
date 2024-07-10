@@ -387,7 +387,7 @@ extension HomeViewModel {
         var destination: ContentOpen.Destination = .internal
         let item = recommendation.item
 
-        if let slug = recommendation.collection?.slug ?? recommendation.item.collectionSlug, featureFlags.isAssigned(flag: .nativeCollections) {
+        if let slug = recommendation.collection?.slug ?? recommendation.item.collectionSlug {
             selectedReadableType = .collection(CollectionViewModel(
                 slug: slug,
                 source: source,
@@ -467,7 +467,7 @@ extension HomeViewModel {
     }
 
     func select(savedItem: SavedItem, at indexPath: IndexPath? = nil, readableSource: ReadableSource = .app) {
-        if let slug = savedItem.item?.collection?.slug ?? savedItem.item?.collectionSlug, featureFlags.isAssigned(flag: .nativeCollections) {
+        if let slug = savedItem.item?.collection?.slug ?? savedItem.item?.collectionSlug {
             selectedReadableType = .collection(CollectionViewModel(
                 slug: slug,
                 source: source,
@@ -506,7 +506,7 @@ extension HomeViewModel {
 
     func select(sharedWithYouItem: SharedWithYouItem, at indexPath: IndexPath, readableSource: ReadableSource = .app) {
         var destination: ContentOpen.Destination = .internal
-        if let slug = sharedWithYouItem.item.collectionSlug, featureFlags.isAssigned(flag: .nativeCollections) {
+        if let slug = sharedWithYouItem.item.collectionSlug {
             selectedReadableType = .collection(CollectionViewModel(
                 slug: slug,
                 source: source,
