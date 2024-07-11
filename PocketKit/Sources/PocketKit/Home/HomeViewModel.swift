@@ -303,14 +303,16 @@ extension HomeViewModel {
             guard let savedItem = source.viewObject(id: objectID) as? SavedItem else {
                 return
             }
-
             select(savedItem: savedItem, at: indexPath)
         case .recommendationHero(let objectID), .recommendationCarousel(let objectID):
             guard let recommendation = source.viewObject(id: objectID) as? Recommendation else {
                 return
             }
-
-            select(recommendation: recommendation, at: indexPath)
+            if let savedItem = recommendation.item.savedItem {
+                select(savedItem: savedItem, at: indexPath)
+            } else {
+                select(recommendation: recommendation, at: indexPath)
+            }
         case .sharedWithYou(let objectID):
             guard let sharedWithYouItem = source.viewObject(id: objectID) as? SharedWithYouItem else {
                 return
