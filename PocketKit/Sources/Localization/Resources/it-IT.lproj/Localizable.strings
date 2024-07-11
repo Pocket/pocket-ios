@@ -169,7 +169,7 @@
 "settings.appIcon.title" = "Icona dell'app";
 "settings.appIcon.thematicIconSectionHeader" = "Lascia che Pocket scelga la tua icona";
 "settings.appIcon.customIconSectionHeader" = "Oppure seleziona la tua icona preferita";
-"settings.appIcon.iconName.default" = "Predefinita";
+"settings.appIcon.iconName.default" = "Predefinito";
 "settings.appIcon.iconName.classic" = "Classica";
 "settings.appIcon.iconName.monochrome" = "Monocromatica";
 "settings.appIcon.iconName.pride" = "Pride";
@@ -362,6 +362,9 @@
 
 // Logged out
 "loggedOut.continue" = "Continua";
+"loggedOut.continue.authenticate" = "Registrati o accedi";
+"loggedOut.continue.signedOut" = "Continua a disconnetterti";
+"loggedOut.footer" = "Procedendo, accetti i [Termini di servizio] (https://getpocket.com/tos) e l'[Informativa sulla privacy] (https://getpocket.com/privacy) di Pocket";
 
 // Errors
 "error.problemOccurred" = "Si è verificato un problema";
@@ -375,5 +378,5 @@
 "tips.recommendationsWidget.selectTopic.title" = "Nuovo widget per le raccomandazioni!";
 "tips.recommendationsWidget.selectTopic.message" = "Premi a lungo sul Widget delle Raccomandazioni per scegliere un argomento di interesse.\nInstalla più widget per tenere traccia di tutti i tuoi argomenti preferiti.";
 "tips.sharedWithYouActions.title" = "Altre azioni";
-"tips.sharedWithYouActions.message" = "Tocca qui per rispondere a questo messaggio o tieni premuto per rimuovere questo articolo.";
+"tips.sharedWithYouActions.message" = "Tocca qui per rispondere a questo messaggio o premi a lungo per rimuovere questo contenuto.";
 
