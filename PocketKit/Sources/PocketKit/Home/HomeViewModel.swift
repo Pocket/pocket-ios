@@ -1058,7 +1058,6 @@ extension HomeViewModel: NSFetchedResultsControllerDelegate {
             newSnapshot.reconfigureItems(reconfiguredItems)
             Log.breadcrumb(category: "home", level: .debug, message: "➡️ Building shared with you section in didChangeContentWith. #reloaded items: \(reloadedItems.count), #reconfigured items: \(reconfiguredItems.count)")
         }
-
         self.snapshot = newSnapshot
     }
 }
