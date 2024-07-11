@@ -414,11 +414,13 @@ extension ReadableViewController {
             var config = UICollectionLayoutListConfiguration(appearance: .plain)
             config.backgroundColor = UIColor(.ui.white1)
             config.showsSeparators = false
-            config.trailingSwipeActionsConfigurationProvider = { [unowned self] indexPath in
-                guard let actions = buildSwipeActions(at: indexPath) else {
-                    return nil
+            if readableViewModel.shouldAllowHighlights {
+                config.trailingSwipeActionsConfigurationProvider = { [unowned self] indexPath in
+                    guard let actions = buildSwipeActions(at: indexPath) else {
+                        return nil
+                    }
+                    return UISwipeActionsConfiguration(actions: actions)
                 }
-                return UISwipeActionsConfiguration(actions: actions)
             }
             let section = NSCollectionLayoutSection.list(using: config, layoutEnvironment: environment)
 
