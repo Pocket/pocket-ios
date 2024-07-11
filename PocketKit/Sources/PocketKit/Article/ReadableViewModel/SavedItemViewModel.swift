@@ -49,6 +49,8 @@ class SavedItemViewModel: ReadableViewModel, ObservableObject {
 
     let tracker: Tracker
 
+    let shouldAllowHighlights = true
+
     @Published private(set) var _actions: [ItemAction] = []
     var actions: Published<[ItemAction]>.Publisher { $_actions }
 

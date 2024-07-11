@@ -15,7 +15,18 @@ protocol ImageComponentCellModel {
 class ImageComponentCell: UICollectionViewCell {
     var componentIndex: Int = 0
 
-    var onHighlight: ((Int, NSRange, String, String) -> Void)?
+    var onHighlight: ((Int, NSRange, String, String) -> Void)? {
+        didSet {
+            if let onHighlight {
+                captionTextView.onHighlight = { [weak self] range, quote, text in
+                    guard let self else {
+                        return
+                    }
+                    onHighlight(componentIndex, range, quote, text)
+                }
+            }
+        }
+    }
 
     enum Constants {
         static let captionSpacing: CGFloat = 4
@@ -58,13 +69,6 @@ class ImageComponentCell: UICollectionViewCell {
             stack.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor),
             stack.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor),
         ])
-
-        captionTextView.onHighlight = { [weak self] range, quote, text in
-            guard let self else {
-                return
-            }
-            onHighlight?(componentIndex, range, quote, text)
-        }
     }
 
     required init?(coder: NSCoder) {

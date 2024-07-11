@@ -37,6 +37,7 @@ class RecommendableItemViewModel: ReadableViewModel {
     private let user: User
     private let userDefaults: UserDefaults
     let tracker: Tracker
+    let shouldAllowHighlights = false
 
     private var savedItemCancellable: AnyCancellable?
     private var savedItemSubscriptions: Set<AnyCancellable> = []
