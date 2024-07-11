@@ -80,7 +80,9 @@ extension PocketBraze: BrazeProtocol {
             guard let self else { return }
             // Braze SDK docs say this needs to be called from the main thread.
             // https://www.braze.com/docs/developer_guide/platform_integration_guides/ios/analytics/setting_user_ids/#assigning-a-user-id
-            braze.changeUser(userId: session.userIdentifier)
+            if !session.isAnonymous {
+                braze.changeUser(userId: session.userIdentifier)
+            }
             // Was this build deployed through the App Store or through TestFlight?
             var isTestFlight = false
             if let receiptURL = Bundle.main.appStoreReceiptURL {

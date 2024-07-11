@@ -13,6 +13,7 @@ import SharedPocketKit
 
 enum LoggedOutAction {
     case authenticate
+    case continueSignedOut
 }
 
 @MainActor
@@ -152,9 +153,21 @@ class LoggedOutViewModel: ObservableObject {
     }
 
     func offlineViewDidDisappear() {
-        if automaticallyDismissed, case .authenticate = lastAction {
-            authenticate()
+        if automaticallyDismissed {
+            switch lastAction {
+            case .authenticate:
+                authenticate()
+            case .continueSignedOut:
+                continueSignedOut()
+            case nil:
+                break
+            }
         }
+    }
+
+    func continueSignedOut() {
+        appSession.currentSession = Session.anonymous()
+        NotificationCenter.default.post(name: .anonymousLogin, object: appSession.currentSession)
     }
 
     private func handle(_ response: AuthorizationClient.Response) {

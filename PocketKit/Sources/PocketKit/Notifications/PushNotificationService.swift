@@ -82,26 +82,37 @@ class PushNotificationService: NSObject {
         super.init()
 
         // Register for login notifications
-        NotificationCenter.default.publisher(
-            for: .userLoggedIn
-        ).sink { [weak self] notification in
-            guard let session = notification.object as? SharedPocketKit.Session  else {
-                Log.capture(message: "Logged in publisher in PocketNotificationService could not convert to session")
-                return
+        NotificationCenter.default.publisher(for: .userLoggedIn)
+            .sink { [weak self] notification in
+                guard let session = notification.object as? SharedPocketKit.Session  else {
+                    Log.capture(message: "Logged in publisher in PocketNotificationService could not convert to session")
+                    return
+                }
+                self?.loggedIn(session: session)
             }
-            self?.loggedIn(session: session)
-        }.store(in: &subscriptions)
+            .store(in: &subscriptions)
+
+        // Register for anonymous login notifications
+        NotificationCenter.default.publisher(for: .anonymousLogin)
+            .sink { [weak self] notification in
+                guard let session = notification.object as? SharedPocketKit.Session  else {
+                    Log.capture(message: "Logged in publisher in PocketNotificationService could not convert to session")
+                    return
+                }
+                self?.loggedIn(session: session)
+            }
+            .store(in: &subscriptions)
 
         // Register for logout notifications
-        NotificationCenter.default.publisher(
-            for: .userLoggedOut
-        ).sink { [weak self] notification in
-            guard let session = notification.object as? SharedPocketKit.Session  else {
-                Log.capture(message: "Logged out publisher in PocketNotificationService could not convert to session")
-                return
+        NotificationCenter.default.publisher(for: .userLoggedOut)
+            .sink { [weak self] notification in
+                guard let session = notification.object as? SharedPocketKit.Session  else {
+                    Log.capture(message: "Logged out publisher in PocketNotificationService could not convert to session")
+                    return
+                }
+                self?.loggedOut(session: session)
             }
-            self?.loggedOut(session: session)
-        }.store(in: &subscriptions)
+            .store(in: &subscriptions)
 
         handleSessionInitilization(session: appSession.currentSession)
     }
