@@ -362,6 +362,9 @@
 
 // Logged out
 "loggedOut.continue" = "계속";
+"loggedOut.continue.authenticate" = "등록 또는 로그인";
+"loggedOut.continue.signedOut" = "로그아웃 상태로 진행";
+"loggedOut.footer" = "계속 진행하면 Pocket [서비스 약관](https://getpocket.com/tos) 및 [개인정보 보호정책](https://getpocket.com/privacy)에 동의하는 것으로 간주됩니다";
 
 // Errors
 "error.problemOccurred" = "문제가 발생했습니다.";
