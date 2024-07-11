@@ -362,6 +362,9 @@
 
 // Logged out
 "loggedOut.continue" = "続行";
+"loggedOut.continue.authenticate" = "登録またはログイン";
+"loggedOut.continue.signedOut" = "ログアウトを続行";
+"loggedOut.footer" = "続行すると、Pocket の[利用規約](https://getpocket.com/tos)および[プライバシーに関する通知](https://getpocket.com/privacy)に同意したことになります。";
 
 // Errors
 "error.problemOccurred" = "問題が発生しました";
