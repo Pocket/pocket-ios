@@ -7,7 +7,18 @@ import UIKit
 class MarkdownComponentCell: UICollectionViewCell, ArticleComponentTextCell, ArticleComponentTextViewDelegate {
     var componentIndex: Int = 0
 
-    var onHighlight: ((Int, NSRange, String, String) -> Void)?
+    var onHighlight: ((Int, NSRange, String, String) -> Void)? {
+        didSet {
+            if let onHighlight {
+                textView.onHighlight = { [weak self] range, quote, text in
+                    guard let self else {
+                        return
+                    }
+                    onHighlight(componentIndex, range, quote, text)
+                }
+            }
+        }
+    }
 
     var isFullyHighlighted: Bool {
         textView.isFullyHighlighted
@@ -53,13 +64,6 @@ class MarkdownComponentCell: UICollectionViewCell, ArticleComponentTextCell, Art
             // set lower priority to avoid conflict if content turns out to be blank
                 .with(priority: .defaultLow)
         ])
-
-        textView.onHighlight = { [weak self] range, quote, text in
-            guard let self else {
-                return
-            }
-            onHighlight?(componentIndex, range, quote, text)
-        }
     }
 
     var attributedContent: NSAttributedString? {

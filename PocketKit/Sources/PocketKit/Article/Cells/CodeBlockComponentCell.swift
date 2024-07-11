@@ -7,7 +7,18 @@ import UIKit
 class CodeBlockComponentCell: UICollectionViewCell, ArticleComponentTextCell, ArticleComponentTextViewDelegate {
     var componentIndex: Int = 0
 
-    var onHighlight: ((Int, NSRange, String, String) -> Void)?
+    var onHighlight: ((Int, NSRange, String, String) -> Void)? {
+        didSet {
+            if let onHighlight {
+                textView.onHighlight = { [weak self] range, quote, text in
+                    guard let self else {
+                        return
+                    }
+                    onHighlight(componentIndex, range, quote, text)
+                }
+            }
+        }
+    }
 
     var isFullyHighlighted: Bool {
         textView.isFullyHighlighted
@@ -54,13 +65,6 @@ class CodeBlockComponentCell: UICollectionViewCell, ArticleComponentTextCell, Ar
             textView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             textView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor)
         ])
-
-        textView.onHighlight = { [weak self] range, quote, text in
-            guard let self else {
-                return
-            }
-            onHighlight?(componentIndex, range, quote, text)
-        }
     }
 
     required init?(coder: NSCoder) {

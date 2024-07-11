@@ -283,12 +283,14 @@ extension ReadableViewController: UICollectionViewDataSource {
 
             return metaCell
         default:
-            let cell = presenters[indexPath.item].cell(for: indexPath, in: collectionView) { [weak self] index, range, quote, text in
+            let onHighlight = readableViewModel.shouldAllowHighlights ? { [weak self] index, range, quote, text in
                 guard let self, let viewModel = readableViewModel as? SavedItemViewModel else {
                     return
                 }
                 viewModel.saveHighlight(componentIndex: index, range: range, quote: quote, text: text)
-            }
+            } : nil
+            let cell = presenters[indexPath.item].cell(for: indexPath, in: collectionView, onHighlight: onHighlight)
+
             if let cell = cell as? ArticleComponentTextCell {
                 cell.delegate = self
             }
@@ -412,11 +414,13 @@ extension ReadableViewController {
             var config = UICollectionLayoutListConfiguration(appearance: .plain)
             config.backgroundColor = UIColor(.ui.white1)
             config.showsSeparators = false
-            config.trailingSwipeActionsConfigurationProvider = { [unowned self] indexPath in
-                guard let actions = buildSwipeActions(at: indexPath) else {
-                    return nil
+            if readableViewModel.shouldAllowHighlights {
+                config.trailingSwipeActionsConfigurationProvider = { [unowned self] indexPath in
+                    guard let actions = buildSwipeActions(at: indexPath) else {
+                        return nil
+                    }
+                    return UISwipeActionsConfiguration(actions: actions)
                 }
-                return UISwipeActionsConfiguration(actions: actions)
             }
             let section = NSCollectionLayoutSection.list(using: config, layoutEnvironment: environment)
 

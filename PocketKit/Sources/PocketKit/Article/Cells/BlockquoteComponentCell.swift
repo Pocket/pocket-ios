@@ -7,7 +7,18 @@ import UIKit
 class BlockquoteComponentCell: UICollectionViewCell, ArticleComponentTextCell, ArticleComponentTextViewDelegate {
     var componentIndex: Int = 0
 
-    var onHighlight: ((Int, NSRange, String, String) -> Void)?
+    var onHighlight: ((Int, NSRange, String, String) -> Void)? {
+        didSet {
+            if let onHighlight {
+                textView.onHighlight = { [weak self] range, quote, text in
+                    guard let self else {
+                        return
+                    }
+                    onHighlight(componentIndex, range, quote, text)
+                }
+            }
+        }
+    }
 
     var isFullyHighlighted: Bool {
         textView.isFullyHighlighted
@@ -62,12 +73,6 @@ class BlockquoteComponentCell: UICollectionViewCell, ArticleComponentTextCell, A
             textView.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor),
             textView.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor),
         ])
-        textView.onHighlight = { [weak self] range, quote, text in
-            guard let self else {
-                return
-            }
-            onHighlight?(componentIndex, range, quote, text)
-        }
     }
 
     required init?(coder: NSCoder) {
