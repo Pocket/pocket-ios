@@ -197,12 +197,17 @@ class HomeViewModel: NSObject {
 
     /// Fetch the latest data from core data and get the NSFetechedResults Controllers subscribing to updates
     func fetch() {
-        do {
-            try recentSavesController.performFetch()
-            try recomendationsController.performFetch()
-            try sharedWithYouController.performFetch()
-        } catch {
-            Log.capture(error: error)
+        // NOTE: despite HomeViewModel runs on MainActor, this call ends up on a different thread
+        // when the app is backgrounded, thus we force it back to the main queue to avoid crashes
+        // since these fetched result controller are created on viewContext
+        DispatchQueue.main.async { [unowned self] in
+            do {
+                try recentSavesController.performFetch()
+                try recomendationsController.performFetch()
+                try sharedWithYouController.performFetch()
+            } catch {
+                Log.capture(error: error)
+            }
         }
     }
 
