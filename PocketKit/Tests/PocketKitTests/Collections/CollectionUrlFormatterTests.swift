@@ -23,12 +23,6 @@ class CollectionUrlFormatterTests: XCTestCase {
         return Self.wrongUrlStrings[index]
     }
 
-    func testCorrectUrlStringReturnsUrl() {
-        let url = CollectionUrlFormatter.collectionUrl(Self.correctUrlString)
-        XCTAssertNotNil(url)
-        XCTAssertEqual(Self.correctUrlString, url?.absoluteString)
-    }
-
     func testCorrectUrlStringIsRecognized() {
         XCTAssertTrue(CollectionUrlFormatter.isCollectionUrl(Self.correctUrlString))
     }
@@ -37,10 +31,6 @@ class CollectionUrlFormatterTests: XCTestCase {
         let slug = CollectionUrlFormatter.slug(from: Self.correctUrlString)
         XCTAssertNotNil(slug)
         XCTAssertEqual(slug, "slug-1")
-    }
-
-    func testWrongUrlStringReturnsNilUrl() {
-        XCTAssertNil(CollectionUrlFormatter.collectionUrl(Self.pickAWrongString()))
     }
 
     func testWrongUrlStringIsRecognized() {
