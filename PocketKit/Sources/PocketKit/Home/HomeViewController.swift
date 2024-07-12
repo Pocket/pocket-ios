@@ -113,7 +113,13 @@ class HomeViewController: UIViewController {
         collectionView.delegate = self
 
         let action = UIAction { [weak self] _ in
-            self?.handleRefresh(isForced: true)
+            self?.handleRefresh(isForced: true) { [weak self] in
+                DispatchQueue.main.async {
+                    if self?.collectionView.refreshControl?.isRefreshing == true {
+                        self?.collectionView.refreshControl?.endRefreshing()
+                    }
+                }
+            }
         }
 
         collectionView.refreshControl = UIRefreshControl(frame: .zero, primaryAction: action)
@@ -165,18 +171,17 @@ class HomeViewController: UIViewController {
             overscrollView.heightAnchor.constraint(equalToConstant: 96)
         ])
 
-        model.fetch()
-        handleRefresh()
-    }
-
-    private func handleRefresh(isForced: Bool = false) {
-        model.refresh(isForced: isForced) { [weak self] in
+        handleRefresh { [weak self] in
             DispatchQueue.main.async {
                 if self?.collectionView.refreshControl?.isRefreshing == true {
                     self?.collectionView.refreshControl?.endRefreshing()
                 }
             }
         }
+    }
+
+    private func handleRefresh(isForced: Bool = false, completion: @escaping () -> Void) {
+        model.refresh(isForced: isForced, completion)
     }
 
     func handleBackgroundRefresh(task: BGTask) {
@@ -187,7 +192,7 @@ class HomeViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        model.refresh { }
+        handleRefresh {}
     }
 
     required init?(coder: NSCoder) {
