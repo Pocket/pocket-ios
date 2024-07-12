@@ -58,7 +58,7 @@ class FeatureFlagsRefreshCoordinator: RefreshCoordinator {
             Log.debug("Already refreshing feature flags, not going to add to the queue")
             completion()
         } else {
-            Log.debug("Not refreshing  feature flags, to early to ask for new data")
+            Log.debug("Not refreshing  feature flags, too early to ask for new data")
             completion()
         }
     }
