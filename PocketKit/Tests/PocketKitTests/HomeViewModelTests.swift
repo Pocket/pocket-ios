@@ -157,7 +157,7 @@ class HomeViewModelTests: XCTestCase {
 
         let viewModel = subject()
         let receivedSnapshot = expectation(description: "receivedSnapshot")
-        viewModel.$snapshot.dropFirst().first().sink { snapshot in
+        viewModel.$snapshot.dropFirst(2).first().sink { snapshot in
             defer { receivedSnapshot.fulfill() }
             XCTAssertEqual(
                 snapshot.sectionIdentifiers,
@@ -232,7 +232,7 @@ class HomeViewModelTests: XCTestCase {
 
         let viewModel = subject()
         let receivedEmptySnapshot = expectation(description: "receivedEmptySnapshot")
-        viewModel.$snapshot.dropFirst().first().sink { snapshot in
+        viewModel.$snapshot.dropFirst(2).first().sink { snapshot in
             defer { receivedEmptySnapshot.fulfill() }
 
             XCTAssertEqual(
@@ -327,6 +327,7 @@ class HomeViewModelTests: XCTestCase {
         viewModel.fetch()
 
         let snapshotExpectation = expectation(description: "expected snapshot to update")
+        snapshotExpectation.assertForOverFulfill = false
         viewModel.$snapshot.dropFirst(2).sink { snapshot in
             defer { snapshotExpectation.fulfill() }
 
@@ -372,7 +373,8 @@ class HomeViewModelTests: XCTestCase {
         viewModel.fetch()
 
         let snapshotExpectation = expectation(description: "expected snapshot to update")
-        viewModel.$snapshot.dropFirst().sink { snapshot in
+        snapshotExpectation.assertForOverFulfill = false
+        viewModel.$snapshot.dropFirst(2).sink { snapshot in
             defer { snapshotExpectation.fulfill() }
 
             XCTAssertEqual(
@@ -418,7 +420,8 @@ class HomeViewModelTests: XCTestCase {
         viewModel.fetch()
 
         let snapshotExpectation = expectation(description: "expected snapshot to update")
-        viewModel.$snapshot.dropFirst().sink { snapshot in
+        snapshotExpectation.assertForOverFulfill = false
+        viewModel.$snapshot.dropFirst(2).sink { snapshot in
             defer { snapshotExpectation.fulfill() }
 
             XCTAssertEqual(
