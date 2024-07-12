@@ -139,9 +139,9 @@ class SavedItemViewModel: ReadableViewModel, ObservableObject {
     }
 
     lazy var dismissReason: Binding<DismissReason> = {
-        .init(get: {
+        .init(get: { @MainActor in
             self._dismissReason
-        }, set: { reason in
+        }, set: { @MainActor reason in
             self._dismissReason = reason
         })
     }()
