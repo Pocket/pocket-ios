@@ -128,8 +128,7 @@ class HomeViewModelTests: XCTestCase {
         let viewModel = subject()
 
         let receivedLoadingSnapshot = expectation(description: "receivedLoadingSnapshot")
-        receivedLoadingSnapshot.assertForOverFulfill = false
-        viewModel.$snapshot.dropFirst(2).sink { snapshot in
+        viewModel.$snapshot.dropFirst(2).first().sink { snapshot in
             defer { receivedLoadingSnapshot.fulfill() }
             XCTAssertEqual(snapshot.sectionIdentifiers, [.loading])
         }.store(in: &subscriptions)
@@ -327,7 +326,6 @@ class HomeViewModelTests: XCTestCase {
         viewModel.fetch()
 
         let snapshotExpectation = expectation(description: "expected snapshot to update")
-        snapshotExpectation.assertForOverFulfill = false
         viewModel.$snapshot.dropFirst(2).first().sink { snapshot in
             defer { snapshotExpectation.fulfill() }
 
@@ -373,8 +371,7 @@ class HomeViewModelTests: XCTestCase {
         viewModel.fetch()
 
         let snapshotExpectation = expectation(description: "expected snapshot to update")
-        snapshotExpectation.assertForOverFulfill = false
-        viewModel.$snapshot.dropFirst(2).sink { snapshot in
+        viewModel.$snapshot.dropFirst(2).first().sink { snapshot in
             defer { snapshotExpectation.fulfill() }
 
             XCTAssertEqual(
@@ -420,8 +417,7 @@ class HomeViewModelTests: XCTestCase {
         viewModel.fetch()
 
         let snapshotExpectation = expectation(description: "expected snapshot to update")
-        snapshotExpectation.assertForOverFulfill = false
-        viewModel.$snapshot.dropFirst(2).sink { snapshot in
+        viewModel.$snapshot.dropFirst(2).first().sink { snapshot in
             defer { snapshotExpectation.fulfill() }
 
             XCTAssertEqual(
@@ -499,10 +495,9 @@ class HomeViewModelTests: XCTestCase {
         networkPathMonitor.update(status: .unsatisfied)
 
         let snapshotExpectation = expectation(description: "expect a snapshot")
-        snapshotExpectation.assertForOverFulfill = false
         let viewModel = subject()
 
-        viewModel.$snapshot.dropFirst(2).sink { snapshot in
+        viewModel.$snapshot.dropFirst(2).first().sink { snapshot in
             XCTAssertEqual(
                 snapshot.itemIdentifiers(inSection: .recentSaves),
                 [
@@ -526,8 +521,7 @@ class HomeViewModelTests: XCTestCase {
         let viewModel = subject()
 
         let snapshotExpectation = expectation(description: "expected a snapshot update")
-        snapshotExpectation.assertForOverFulfill = false
-        viewModel.$snapshot.dropFirst(2).sink { snapshot in
+        viewModel.$snapshot.dropFirst(2).first().sink { snapshot in
             XCTAssertNotNil(snapshot.indexOfSection(.offline))
             XCTAssertEqual(snapshot.itemIdentifiers(inSection: .offline), [.offline])
             snapshotExpectation.fulfill()
