@@ -43,6 +43,11 @@ enum ReadableSource {
     case external
 }
 
+enum RefreshState {
+    case loading
+    case ready
+}
+
 enum SeeAll {
     case saves
     case slate(SlateDetailViewModel)
@@ -144,6 +149,8 @@ class HomeViewModel: NSObject {
     private let sharedWithYouController: RichFetchedResultsController<SharedWithYouItem>
     private(set) var numberOfSharedWithYouItems = 0
 
+    private var refreshState: RefreshState = .ready
+
     init(
         source: Source,
         tracker: Tracker,
@@ -188,7 +195,6 @@ class HomeViewModel: NSObject {
                 self?.refresh(isForced: false) { }
             }
         }
-        fetch()
     }
 
     var isOffline: Bool {
@@ -200,7 +206,10 @@ class HomeViewModel: NSObject {
         // NOTE: despite HomeViewModel runs on MainActor, this call ends up on a different thread
         // when the app is backgrounded, thus we force it back to the main queue to avoid crashes
         // since these fetched result controller are created on viewContext
-        DispatchQueue.main.async { [unowned self] in
+        DispatchQueue.main.async { [weak self] in
+            guard let self else {
+                return
+            }
             do {
                 try recentSavesController.performFetch()
                 try recomendationsController.performFetch()
@@ -216,15 +225,21 @@ class HomeViewModel: NSObject {
     ///   - isForced: Whether or not the user forced the refresh
     ///   - completion: Completion block to call
     func refresh(isForced: Bool = false, _ completion: @escaping () -> Void) {
+        guard case .ready = refreshState else {
+            return
+        }
+        refreshState = .loading
         fetch()
 
         guard !isOffline else {
             completion()
+            refreshState = .ready
             return
         }
 
-        homeRefreshCoordinator.refresh(isForced: isForced) {
+        homeRefreshCoordinator.refresh(isForced: isForced) { [weak self] in
             completion()
+            self?.refreshState = .ready
         }
     }
 }

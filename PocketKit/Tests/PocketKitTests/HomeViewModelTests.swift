@@ -128,8 +128,7 @@ class HomeViewModelTests: XCTestCase {
         let viewModel = subject()
 
         let receivedLoadingSnapshot = expectation(description: "receivedLoadingSnapshot")
-        receivedLoadingSnapshot.assertForOverFulfill = false
-        viewModel.$snapshot.dropFirst(2).sink { snapshot in
+        viewModel.$snapshot.dropFirst(2).first().sink { snapshot in
             defer { receivedLoadingSnapshot.fulfill() }
             XCTAssertEqual(snapshot.sectionIdentifiers, [.loading])
         }.store(in: &subscriptions)
@@ -157,7 +156,7 @@ class HomeViewModelTests: XCTestCase {
 
         let viewModel = subject()
         let receivedSnapshot = expectation(description: "receivedSnapshot")
-        viewModel.$snapshot.dropFirst().first().sink { snapshot in
+        viewModel.$snapshot.dropFirst(2).first().sink { snapshot in
             defer { receivedSnapshot.fulfill() }
             XCTAssertEqual(
                 snapshot.sectionIdentifiers,
@@ -232,7 +231,7 @@ class HomeViewModelTests: XCTestCase {
 
         let viewModel = subject()
         let receivedEmptySnapshot = expectation(description: "receivedEmptySnapshot")
-        viewModel.$snapshot.dropFirst().first().sink { snapshot in
+        viewModel.$snapshot.dropFirst(2).first().sink { snapshot in
             defer { receivedEmptySnapshot.fulfill() }
 
             XCTAssertEqual(
@@ -327,7 +326,7 @@ class HomeViewModelTests: XCTestCase {
         viewModel.fetch()
 
         let snapshotExpectation = expectation(description: "expected snapshot to update")
-        viewModel.$snapshot.dropFirst(2).sink { snapshot in
+        viewModel.$snapshot.dropFirst(2).first().sink { snapshot in
             defer { snapshotExpectation.fulfill() }
 
             XCTAssertEqual(
@@ -372,7 +371,7 @@ class HomeViewModelTests: XCTestCase {
         viewModel.fetch()
 
         let snapshotExpectation = expectation(description: "expected snapshot to update")
-        viewModel.$snapshot.dropFirst().sink { snapshot in
+        viewModel.$snapshot.dropFirst(2).first().sink { snapshot in
             defer { snapshotExpectation.fulfill() }
 
             XCTAssertEqual(
@@ -418,7 +417,7 @@ class HomeViewModelTests: XCTestCase {
         viewModel.fetch()
 
         let snapshotExpectation = expectation(description: "expected snapshot to update")
-        viewModel.$snapshot.dropFirst().sink { snapshot in
+        viewModel.$snapshot.dropFirst(2).first().sink { snapshot in
             defer { snapshotExpectation.fulfill() }
 
             XCTAssertEqual(
@@ -452,9 +451,10 @@ class HomeViewModelTests: XCTestCase {
         )
 
         let viewModel = subject()
+        viewModel.fetch()
 
         let snapshotExpectation = expectation(description: "expected snapshot to update")
-        viewModel.$snapshot.dropFirst().sink { snapshot in
+        viewModel.$snapshot.dropFirst(4).first().sink { snapshot in
             defer { snapshotExpectation.fulfill() }
 
             XCTAssertEqual(
@@ -495,9 +495,9 @@ class HomeViewModelTests: XCTestCase {
         networkPathMonitor.update(status: .unsatisfied)
 
         let snapshotExpectation = expectation(description: "expect a snapshot")
-        snapshotExpectation.assertForOverFulfill = false
         let viewModel = subject()
-        viewModel.$snapshot.dropFirst(2).sink { snapshot in
+
+        viewModel.$snapshot.dropFirst(2).first().sink { snapshot in
             XCTAssertEqual(
                 snapshot.itemIdentifiers(inSection: .recentSaves),
                 [
@@ -521,8 +521,7 @@ class HomeViewModelTests: XCTestCase {
         let viewModel = subject()
 
         let snapshotExpectation = expectation(description: "expected a snapshot update")
-        snapshotExpectation.assertForOverFulfill = false
-        viewModel.$snapshot.dropFirst(2).sink { snapshot in
+        viewModel.$snapshot.dropFirst(2).first().sink { snapshot in
             XCTAssertNotNil(snapshot.indexOfSection(.offline))
             XCTAssertEqual(snapshot.itemIdentifiers(inSection: .offline), [.offline])
             snapshotExpectation.fulfill()

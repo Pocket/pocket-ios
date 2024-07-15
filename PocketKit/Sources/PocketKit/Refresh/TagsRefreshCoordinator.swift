@@ -58,7 +58,7 @@ class TagsRefreshCoordinator: RefreshCoordinator {
             Log.debug("Already refreshing Tags")
             completion()
         } else {
-            Log.debug("Not refreshing Tags, to early to ask for new data")
+            Log.debug("Not refreshing Tags, too early to ask for new data")
             completion()
         }
     }

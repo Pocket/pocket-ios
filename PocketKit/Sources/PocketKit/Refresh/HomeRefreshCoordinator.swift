@@ -65,7 +65,7 @@ class HomeRefreshCoordinator: RefreshCoordinator {
             Log.debug("Already refreshing Home, not going to add to the queue")
             completion()
         } else {
-            Log.debug("Not refreshing Home, to early to ask for new data")
+            Log.debug("Not refreshing Home, too early to ask for new data")
             completion()
         }
     }
