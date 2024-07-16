@@ -14,8 +14,6 @@ extension Item {
 
         givenURL = remote.givenUrl
         resolvedURL = remote.resolvedUrl
-        title = remote.title
-        topImageURL = remote.topImageUrl.flatMap(URL.init(string:))
         domain = remote.domain
         language = remote.language
 
@@ -29,6 +27,20 @@ extension Item {
             wordCount = NSNumber(value: words)
         } else {
             wordCount = 0
+        }
+        // if the item is a collection, let's grab that title
+        if let collectionTitle = remote.collection?.title, !collectionTitle.isEmpty {
+            title = collectionTitle
+        } else if let itemTitle = remote.title, !itemTitle.isEmpty {
+            title = itemTitle
+        } else if let syndicatedTitle = remote.syndicatedArticle?.title, !syndicatedTitle.isEmpty {
+            title = syndicatedTitle
+        }
+
+        if let itemImageUrl = remote.topImageUrl, let url = URL(string: itemImageUrl) {
+            topImageURL = url
+        } else if let collectionImageUrl = remote.collection?.imageUrl, let url = URL(string: collectionImageUrl) {
+            topImageURL = url
         }
 
         excerpt = remote.excerpt

@@ -72,6 +72,9 @@ extension SavedItem {
             if let corpusItem = remote.corpusItem {
                 itemToUpdate.domain = corpusItem.publisher
             }
+            if itemToUpdate.title == nil, let corpusTitle = remote.corpusItem?.title {
+                itemToUpdate.title = corpusTitle
+            }
             item = itemToUpdate
         } else if let pendingParts = remote.item.asPendingItem?.fragments.pendingItemParts {
             Log.breadcrumb(category: "sync", level: .debug, message: "Updating pending parts for \(pendingParts.remoteID)")
