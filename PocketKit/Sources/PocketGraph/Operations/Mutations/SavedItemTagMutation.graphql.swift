@@ -583,6 +583,8 @@ public class SavedItemTagMutation: GraphQLMutation {
 
         /// The name of the online publication that published this story.
         public var publisher: String { __data["publisher"] }
+        /// The title of the Approved Item.
+        public var title: String { __data["title"] }
 
         public struct Fragments: FragmentContainer {
           public let __data: DataDict

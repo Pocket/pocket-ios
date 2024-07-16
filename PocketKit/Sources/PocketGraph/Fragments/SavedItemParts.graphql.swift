@@ -958,6 +958,8 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
 
     /// The name of the online publication that published this story.
     public var publisher: String { __data["publisher"] }
+    /// The title of the Approved Item.
+    public var title: String { __data["title"] }
 
     public struct Fragments: FragmentContainer {
       public let __data: DataDict
@@ -967,12 +969,14 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
     }
 
     public init(
-      publisher: String
+      publisher: String,
+      title: String
     ) {
       self.init(_dataDict: DataDict(
         data: [
           "__typename": PocketGraph.Objects.CorpusItem.typename,
           "publisher": publisher,
+          "title": title,
         ],
         fulfilledFragments: [
           ObjectIdentifier(SavedItemParts.CorpusItem.self),

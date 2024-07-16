@@ -1,5 +1,6 @@
 fragment CorpusItemSummary on CorpusItem {
     publisher
+    title
 }
 
 fragment SavedItemParts on SavedItem {

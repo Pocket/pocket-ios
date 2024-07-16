@@ -5,7 +5,7 @@
 
 public struct CorpusItemSummary: PocketGraph.SelectionSet, Fragment {
   public static var fragmentDefinition: StaticString {
-    #"fragment CorpusItemSummary on CorpusItem { __typename publisher }"#
+    #"fragment CorpusItemSummary on CorpusItem { __typename publisher title }"#
   }
 
   public let __data: DataDict
@@ -15,18 +15,23 @@ public struct CorpusItemSummary: PocketGraph.SelectionSet, Fragment {
   public static var __selections: [ApolloAPI.Selection] { [
     .field("__typename", String.self),
     .field("publisher", String.self),
+    .field("title", String.self),
   ] }
 
   /// The name of the online publication that published this story.
   public var publisher: String { __data["publisher"] }
+  /// The title of the Approved Item.
+  public var title: String { __data["title"] }
 
   public init(
-    publisher: String
+    publisher: String,
+    title: String
   ) {
     self.init(_dataDict: DataDict(
       data: [
         "__typename": PocketGraph.Objects.CorpusItem.typename,
         "publisher": publisher,
+        "title": title,
       ],
       fulfilledFragments: [
         ObjectIdentifier(CorpusItemSummary.self)
