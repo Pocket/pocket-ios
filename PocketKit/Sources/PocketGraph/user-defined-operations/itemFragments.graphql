@@ -20,6 +20,7 @@ fragment ItemParts on Item {
   collection {
     slug
     title
+    imageUrl
   }
   marticle {
     __typename

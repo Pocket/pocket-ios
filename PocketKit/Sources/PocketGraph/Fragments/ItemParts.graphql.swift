@@ -5,7 +5,7 @@
 
 public struct ItemParts: PocketGraph.SelectionSet, Fragment {
   public static var fragmentDefinition: StaticString {
-    #"fragment ItemParts on Item { __typename remoteID: itemId givenUrl resolvedUrl title language topImageUrl timeToRead domain datePublished isArticle hasImage hasVideo wordCount authors { __typename id name url } collection { __typename slug title } marticle { __typename ...MarticleTextParts ...ImageParts ...MarticleDividerParts ...MarticleTableParts ...MarticleHeadingParts ...MarticleCodeBlockParts ...VideoParts ...MarticleBulletedListParts ...MarticleNumberedListParts ...MarticleBlockquoteParts } excerpt domainMetadata { __typename ...DomainMetadataParts } images { __typename height width src imageId } syndicatedArticle { __typename ...SyndicatedArticleParts } }"#
+    #"fragment ItemParts on Item { __typename remoteID: itemId givenUrl resolvedUrl title language topImageUrl timeToRead domain datePublished isArticle hasImage hasVideo wordCount authors { __typename id name url } collection { __typename slug title imageUrl } marticle { __typename ...MarticleTextParts ...ImageParts ...MarticleDividerParts ...MarticleTableParts ...MarticleHeadingParts ...MarticleCodeBlockParts ...VideoParts ...MarticleBulletedListParts ...MarticleNumberedListParts ...MarticleBlockquoteParts } excerpt domainMetadata { __typename ...DomainMetadataParts } images { __typename height width src imageId } syndicatedArticle { __typename ...SyndicatedArticleParts } }"#
   }
 
   public let __data: DataDict
@@ -185,20 +185,24 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
       .field("__typename", String.self),
       .field("slug", String.self),
       .field("title", String.self),
+      .field("imageUrl", PocketGraph.Url?.self),
     ] }
 
     public var slug: String { __data["slug"] }
     public var title: String { __data["title"] }
+    public var imageUrl: PocketGraph.Url? { __data["imageUrl"] }
 
     public init(
       slug: String,
-      title: String
+      title: String,
+      imageUrl: PocketGraph.Url? = nil
     ) {
       self.init(_dataDict: DataDict(
         data: [
           "__typename": PocketGraph.Objects.Collection.typename,
           "slug": slug,
           "title": title,
+          "imageUrl": imageUrl,
         ],
         fulfilledFragments: [
           ObjectIdentifier(ItemParts.Collection.self)

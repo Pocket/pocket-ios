@@ -166,7 +166,6 @@ public struct CorpusItemParts: PocketGraph.SelectionSet, Fragment {
       ] }
 
       public var slug: String { __data["slug"] }
-      public var title: String { __data["title"] }
       public var authors: [Author] { __data["authors"] }
 
       public struct Fragments: FragmentContainer {
@@ -178,14 +177,12 @@ public struct CorpusItemParts: PocketGraph.SelectionSet, Fragment {
 
       public init(
         slug: String,
-        title: String,
         authors: [Author]
       ) {
         self.init(_dataDict: DataDict(
           data: [
             "__typename": PocketGraph.Objects.Collection.typename,
             "slug": slug,
-            "title": title,
             "authors": authors._fieldData,
           ],
           fulfilledFragments: [
