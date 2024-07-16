@@ -25,7 +25,7 @@ pipelines:
       # Run multiple tests on simulators in parallel
       - run-test-groups-nightly: {}
       - deploy-test-results-nightly: {}
-  
+
   # Will create an app store capabale build, but release it to Internal Testing users in Testflight.
   # Intended to run nightly.
   nightly-internal-pipeline:
@@ -175,10 +175,10 @@ workflows:
 
                 # fail if any commands fails
                 set -e
-                
+
                 brew tap robotsandpencils/made
                 brew install robotsandpencils/made/xcodes
-                
+
                 echo "Install iOS 16 sim"
                 sudo xcodes runtimes install "iOS 16.4"
 
@@ -194,7 +194,7 @@ workflows:
 
                 # fail if any commands fails
                 set -e
-                
+
                 ## Usually Pocket runs snowplow via our docker image, but Bitrise does not support docker in Mac environments so we use their built jar.
                 ## It uses the values in MICRO_IGLU_REGISTRY_URL and MICRO_IGLU_API_KEY
                 echo "Run snowplow"
@@ -420,8 +420,9 @@ workflows:
                 #!/usr/bin/env bash
                 set -eo pipefail
 
-                xcrun xcresulttool merge "${BITRISE_UITESTS_1_XCRESULT_PATH}" "${BITRISE_UITESTS_2_XCRESULT_PATH}" "${BITRISE_UITESTS_3_XCRESULT_PATH}" "${BITRISE_UITESTS_4_XCRESULT_PATH}" "${BITRISE_UNIT_XCRESULT_PATH}"  --output-path "merged.xcresult"
-                envman add --key BITRISE_XCRESULT_PATH --value "$(pwd)/merged.xcresult"
+                xcrun xcresulttool merge "${BITRISE_UITESTS_1_XCRESULT_PATH}" "${BITRISE_UITESTS_2_XCRESULT_PATH}" "${BITRISE_UITESTS_3_XCRESULT_PATH}" "${BITRISE_UITESTS_4_XCRESULT_PATH}" "${BITRISE_UNIT_XCRESULT_PATH}"  --output-path "$(pwd)/../merged.xcresult"
+
+                envman add --key BITRISE_XCRESULT_PATH --value "$(pwd)/../merged.xcresult"
 
       - custom-test-results-export@1:
           inputs:
@@ -446,11 +447,13 @@ workflows:
                 set -eo pipefail
 
                 # Switch to this when legacy is turned back on
-                # xcrun xcresulttool merge "${BITRISE_UITESTS_1_XCRESULT_PATH}" "${BITRISE_UITESTS_2_XCRESULT_PATH}" "${BITRISE_UITESTS_3_XCRESULT_PATH}" "${BITRISE_UITESTS_4_XCRESULT_PATH}" "${BITRISE_UITESTS_1_LEGACY_XCRESULT_PATH}" "${BITRISE_UITESTS_2_LEGACY_XCRESULT_PATH}" "${BITRISE_UITESTS_3_LEGACY_XCRESULT_PATH}" "${BITRISE_UITESTS_4_LEGACY_XCRESULT_PATH}" "${BITRISE_UNIT_XCRESULT_PATH}"  --output-path "merged.xcresult"
+                # xcrun xcresulttool merge "${BITRISE_UITESTS_1_XCRESULT_PATH}" "${BITRISE_UITESTS_2_XCRESULT_PATH}" "${BITRISE_UITESTS_3_XCRESULT_PATH}" "${BITRISE_UITESTS_4_XCRESULT_PATH}" "${BITRISE_UITESTS_1_LEGACY_XCRESULT_PATH}" "${BITRISE_UITESTS_2_LEGACY_XCRESULT_PATH}" "${BITRISE_UITESTS_3_LEGACY_XCRESULT_PATH}" "${BITRISE_UITESTS_4_LEGACY_XCRESULT_PATH}" "${BITRISE_UNIT_XCRESULT_PATH}"  --output-path "$(pwd)/../merged.xcresult"
 
-                xcrun xcresulttool merge "${BITRISE_UITESTS_1_XCRESULT_PATH}" "${BITRISE_UITESTS_2_XCRESULT_PATH}" "${BITRISE_UITESTS_3_XCRESULT_PATH}" "${BITRISE_UITESTS_4_XCRESULT_PATH}" "${BITRISE_UNIT_XCRESULT_PATH}"  --output-path "merged.xcresult"
+                xcrun xcresulttool merge "${BITRISE_UITESTS_1_XCRESULT_PATH}" "${BITRISE_UITESTS_2_XCRESULT_PATH}" "${BITRISE_UITESTS_3_XCRESULT_PATH}" "${BITRISE_UITESTS_4_XCRESULT_PATH}" "${BITRISE_UNIT_XCRESULT_PATH}"  --output-path "$(pwd)/../merged.xcresult"
 
-                envman add --key BITRISE_XCRESULT_PATH --value "$(pwd)/merged.xcresult"
+
+
+                envman add --key BITRISE_XCRESULT_PATH --value "$(pwd)/../merged.xcresult"
       - custom-test-results-export@1:
           inputs:
             - search_pattern: '*'
