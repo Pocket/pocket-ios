@@ -19,6 +19,7 @@ fragment ItemParts on Item {
   }
   collection {
     slug
+    title
   }
   marticle {
     __typename
