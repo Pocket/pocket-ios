@@ -70,6 +70,7 @@
       "skippedTests" : [
         "AddSavedItemTests",
         "AddTagsItemTests",
+        "ArchiveAnItemTests",
         "ArchiveAnItemTests\/test_archivingAnItemFromHomeRecentSaves_archivesItem_andPopsBackToList()",
         "ArchiveAnItemTests\/test_archivingAnItemFromList_bySwipe_removesItFromList_andSyncWithServer()",
         "ArchiveAnItemTests\/test_archivingAnItemFromList_removesItFromList_andSyncsWithServer()",
