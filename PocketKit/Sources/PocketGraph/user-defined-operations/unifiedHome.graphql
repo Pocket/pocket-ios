@@ -47,6 +47,7 @@ query HomeSlateLineup($locale: String!) {
 
 fragment CollectionSummary on Collection {
     slug
+    title
     authors {
         __typename
         ...CollectionAuthorSummary

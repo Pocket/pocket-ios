@@ -193,6 +193,7 @@ public class HomeSlateLineupQuery: GraphQLQuery {
                 ] }
 
                 public var slug: String { __data["slug"] }
+                public var title: String { __data["title"] }
                 public var authors: [Author] { __data["authors"] }
 
                 public struct Fragments: FragmentContainer {

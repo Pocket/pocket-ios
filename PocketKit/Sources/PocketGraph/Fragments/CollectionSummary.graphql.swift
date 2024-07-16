@@ -5,7 +5,7 @@
 
 public struct CollectionSummary: PocketGraph.SelectionSet, Fragment {
   public static var fragmentDefinition: StaticString {
-    #"fragment CollectionSummary on Collection { __typename slug authors { __typename ...CollectionAuthorSummary } }"#
+    #"fragment CollectionSummary on Collection { __typename slug title authors { __typename ...CollectionAuthorSummary } }"#
   }
 
   public let __data: DataDict
@@ -15,20 +15,24 @@ public struct CollectionSummary: PocketGraph.SelectionSet, Fragment {
   public static var __selections: [ApolloAPI.Selection] { [
     .field("__typename", String.self),
     .field("slug", String.self),
+    .field("title", String.self),
     .field("authors", [Author].self),
   ] }
 
   public var slug: String { __data["slug"] }
+  public var title: String { __data["title"] }
   public var authors: [Author] { __data["authors"] }
 
   public init(
     slug: String,
+    title: String,
     authors: [Author]
   ) {
     self.init(_dataDict: DataDict(
       data: [
         "__typename": PocketGraph.Objects.Collection.typename,
         "slug": slug,
+        "title": title,
         "authors": authors._fieldData,
       ],
       fulfilledFragments: [
