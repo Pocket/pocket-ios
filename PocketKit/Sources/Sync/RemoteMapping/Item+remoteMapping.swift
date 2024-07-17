@@ -31,12 +31,13 @@ extension Item {
         // if the item is a collection, let's grab that title
         if let collectionTitle = remote.collection?.title, !collectionTitle.isEmpty {
             title = collectionTitle
-        } else if let itemTitle = remote.title, !itemTitle.isEmpty {
-            title = itemTitle
+        // if there is a syndicated article, use that title
         } else if let syndicatedTitle = remote.syndicatedArticle?.title, !syndicatedTitle.isEmpty {
             title = syndicatedTitle
+        // otherwise, let's just use the item title
+        } else if let itemTitle = remote.title, !itemTitle.isEmpty {
+            title = itemTitle
         }
-
         if let itemImageUrl = remote.topImageUrl, let url = URL(string: itemImageUrl) {
             topImageURL = url
         } else if let collectionImageUrl = remote.collection?.imageUrl, let url = URL(string: collectionImageUrl) {
