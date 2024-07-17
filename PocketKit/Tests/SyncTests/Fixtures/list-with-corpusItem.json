@@ -36,7 +36,9 @@
                                 }],
                             "corpusItem": {
                                 "__typename": "CorpusItem",
-                                "publisher":"CorpusItemPublisher-1"
+                                "publisher":"CorpusItemPublisher-1",
+                                "title": "Item 1",
+                                "imageUrl": "https://example.com/item-1/top-image.jpg",
                             },
                             "annotations": null,
                             "item": {
