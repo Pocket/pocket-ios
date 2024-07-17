@@ -140,12 +140,7 @@
                                 "authors": [],
                                 "datePublished": "2021-01-01 12:01:01",
                                 "excerpt": "Cursus Aenean Elit",
-                                "collection": {
-                                    "__typename": "Collection",
-                                    "slug": "item-2-collection-slug",
-                                    "title": "Item 2",
-                                    "imageUrl": "https://example.com/item-2/top-image.jpg"
-                                },
+                                "collection": null,
                                 "images": [
                                     {
                                         "__typename": "[type-name-here]",
