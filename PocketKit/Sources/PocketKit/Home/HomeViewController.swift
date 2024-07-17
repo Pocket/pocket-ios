@@ -48,17 +48,17 @@ class HomeViewController: UIViewController {
     private lazy var layout = UICollectionViewCompositionalLayout { [weak self] sectionIndex, env in
         guard let self else {
             // setting error level to fatal as a nil section would cause a crash
-            Log.breadcrumb(category: "home", level: .fatal, message: "Returning a nil section. Reason: HomeViewController is nil.")
+            Log.breadcrumb(category: "home", level: .debug, message: "Returning a nil section. Reason: HomeViewController is nil.")
             return nil
         }
         guard let dataSource = self.dataSource else {
             // setting error level to fatal as a nil section would cause a crash
-            Log.breadcrumb(category: "home", level: .fatal, message: "Returning a nil section. Reason: datasource is nil.")
+            Log.breadcrumb(category: "home", level: .debug, message: "Returning a nil section. Reason: datasource is nil.")
             return nil
         }
         guard let section = dataSource.sectionIdentifier(for: sectionIndex) else {
             // setting error level to fatal as a nil section would cause a crash
-            Log.breadcrumb(category: "home", level: .fatal, message: "Returning a nil section. Reason: sectionIdentifier for \(sectionIndex) is nil.")
+            Log.breadcrumb(category: "home", level: .debug, message: "Returning a nil section. Reason: sectionIdentifier for \(sectionIndex) is nil.")
             return nil
         }
 
