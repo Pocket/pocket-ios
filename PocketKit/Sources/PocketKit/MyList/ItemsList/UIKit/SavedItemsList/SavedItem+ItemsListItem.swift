@@ -25,7 +25,7 @@ extension SavedItem: ItemsListItem {
 
     var displayTitle: String {
         let itemTitle = item?.title?.isEmpty == false ? item?.title : nil
-        return itemTitle ?? item?.collection?.title ?? item?.bestURL ?? url
+        return itemTitle ?? item?.bestURL ?? url
     }
 
     var displayDomain: String? {
