@@ -46,10 +46,21 @@ class HomeViewController: UIViewController {
     weak var tipViewController: UIViewController?
 
     private lazy var layout = UICollectionViewCompositionalLayout { [weak self] sectionIndex, env in
-        guard let self = self,
-              let section = self.dataSource.sectionIdentifier(for: sectionIndex) else {
-                  return nil
-              }
+        guard let self else {
+            // setting error level to fatal as a nil section would cause a crash
+            Log.breadcrumb(category: "home", level: .fatal, message: "Returning a nil section. Reason: HomeViewController is nil.")
+            return nil
+        }
+        guard let dataSource = self.dataSource else {
+            // setting error level to fatal as a nil section would cause a crash
+            Log.breadcrumb(category: "home", level: .fatal, message: "Returning a nil section. Reason: datasource is nil.")
+            return nil
+        }
+        guard let section = dataSource.sectionIdentifier(for: sectionIndex) else {
+            // setting error level to fatal as a nil section would cause a crash
+            Log.breadcrumb(category: "home", level: .fatal, message: "Returning a nil section. Reason: sectionIdentifier for \(sectionIndex) is nil.")
+            return nil
+        }
 
         switch section {
         case .loading:
@@ -61,7 +72,7 @@ class HomeViewController: UIViewController {
         case .slateCarousel(let slateID):
             return self.sectionProvider.additionalRecommendationsSection(for: slateID, in: self.model, env: env)
         case .offline:
-            let hasRecentSaves = self.dataSource.index(for: .recentSaves) != nil
+            let hasRecentSaves = dataSource.index(for: .recentSaves) != nil
             return self.sectionProvider.offlineSection(environment: env, withRecentSaves: hasRecentSaves)
         case .sharedWithYou:
             return self.sectionProvider.sharedWithYouSection(in: self.model, env: env)
@@ -142,7 +153,10 @@ class HomeViewController: UIViewController {
         model.$snapshot
             .receive(on: DispatchQueue.main)
             .sink { [weak self] snapshot in
-                self?.dataSource.apply(snapshot)
+                guard let self, let dataSource = self.dataSource else {
+                    return
+                }
+                dataSource.apply(snapshot)
             }.store(in: &subscriptions)
     }
 
