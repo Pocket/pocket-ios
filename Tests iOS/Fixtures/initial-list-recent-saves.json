@@ -108,7 +108,9 @@
                                 "authors": [],
                                 "collection": {
                                     "__typename": "Collection",
-                                    "slug": "item-2-collection-slug"
+                                    "slug": "item-2-collection-slug",
+                                    "title": "Item 2",
+                                    "imageUrl": "https://example.com/item-2/top-image.jpg"
                                 },
                                 "datePublished": "2021-01-01 12:01:01",
                                 "excerpt": "Cursus Aenean Elit",

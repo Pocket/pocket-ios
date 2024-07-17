@@ -142,7 +142,9 @@
                                 "excerpt": "Cursus Aenean Elit",
                                 "collection": {
                                     "__typename": "Collection",
-                                    "slug": "item-2-collection-slug"
+                                    "slug": "item-2-collection-slug",
+                                    "title": "Item 2",
+                                    "imageUrl": "https://example.com/item-2/top-image.jpg"
                                 },
                                 "images": [
                                     {
