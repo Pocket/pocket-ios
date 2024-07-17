@@ -229,7 +229,7 @@ workflows:
     steps:
       - activate-ssh-key@4: {}
       #clone the repo so we can get our fastlane files.
-      - git-clone@6: {}
+      - git-clone@8: {}
       - pull-intermediate-files@1:
           inputs:
             - artifact_sources: release-build.release-build
