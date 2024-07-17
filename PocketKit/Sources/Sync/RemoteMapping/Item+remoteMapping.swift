@@ -78,6 +78,13 @@ extension Item {
             self.syndicatedArticle?.itemID = itemId
             self.syndicatedArticle?.title = syndicatedArticle.title
         }
+
+        if let collection = remote.collection {
+            self.collection = (try? space.fetchCollection(by: collection.slug, context: context)) ??
+            // it's preferable not fetch authors and stories at this time, they'll be fetched once the collection
+            // is accessed from the native view
+            Collection(context: context, slug: collection.slug, title: collection.title, authors: [], stories: [])
+        }
     }
 
     func update(remote: PendingItemParts, with space: Space) {
