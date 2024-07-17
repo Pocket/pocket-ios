@@ -15,7 +15,7 @@ extension Item {
         givenURL = remote.givenUrl
         resolvedURL = remote.resolvedUrl
         title = remote.title
-        topImageURL = remote.topImageUrl.flatMap(URL.init(string:))
+        topImageURL = (remote.topImageUrl ?? remote.collection?.imageUrl).flatMap(URL.init(string:))
         domain = remote.domain
         language = remote.language
 
