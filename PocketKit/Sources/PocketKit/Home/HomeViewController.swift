@@ -48,15 +48,15 @@ class HomeViewController: UIViewController {
     private lazy var layout = UICollectionViewCompositionalLayout { [weak self] sectionIndex, env in
         guard let self else {
             Log.breadcrumb(category: "home", level: .debug, message: "Returning a nil section. Reason: HomeViewController is nil.")
-            return nil
+            return .empty()
         }
         guard let dataSource = self.dataSource else {
             Log.breadcrumb(category: "home", level: .debug, message: "Returning a nil section. Reason: datasource is nil.")
-            return nil
+            return .empty()
         }
         guard let section = dataSource.sectionIdentifier(for: sectionIndex) else {
             Log.breadcrumb(category: "home", level: .debug, message: "Returning a nil section. Reason: sectionIdentifier for \(sectionIndex) is nil.")
-            return nil
+            return .empty()
         }
 
         switch section {
