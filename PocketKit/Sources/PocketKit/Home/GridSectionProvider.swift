@@ -145,6 +145,9 @@ final class GridSectionLayoutProvider {
     ///   - margin: margin for the section layout
     /// - Returns: section layout
     private func createSectionFromGroup(with components: (CGFloat, [NSCollectionLayoutItem]), and margin: CGFloat) -> NSCollectionLayoutSection {
+        guard !components.1.isEmpty else {
+            return .empty()
+        }
         let group = NSCollectionLayoutGroup.vertical(
             layoutSize: .init(
                 widthDimension: .fractionalWidth(1),
