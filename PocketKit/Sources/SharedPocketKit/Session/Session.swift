@@ -8,29 +8,22 @@ public struct Session: Codable, Equatable, Sendable {
     public let guid: String
     public let accessToken: String
     public let userIdentifier: String
-    public let sessionType: SessionType
 
-    public init(guid: String, accessToken: String, userIdentifier: String, sessionType: SessionType = .authenticated) {
+    public init(guid: String, accessToken: String, userIdentifier: String) {
         self.guid = guid
         self.accessToken = accessToken
         self.userIdentifier = userIdentifier
-        self.sessionType = sessionType
     }
 }
 
 extension Session {
-    public enum SessionType: String, Codable, Sendable {
-        case authenticated
-        case anonymous
-    }
-
     /// True if the session is anonymous
     public var isAnonymous: Bool {
-        sessionType == .anonymous
+        guid.isEmpty && accessToken.isEmpty && userIdentifier.isEmpty
     }
     /// Instantiates an anonymous session, used for the signed out experience
     /// - Returns: a session with anonymous identifiers & tokens
     public static func anonymous() -> Session {
-        Session(guid: "", accessToken: "", userIdentifier: "", sessionType: .anonymous)
+        Session(guid: "", accessToken: "", userIdentifier: "")
     }
 }
