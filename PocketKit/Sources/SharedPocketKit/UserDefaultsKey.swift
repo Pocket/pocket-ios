@@ -48,7 +48,7 @@ public extension UserDefaults {
             case .legacyUserMigration:
                 return false // We want to maintain the state of whether the migration has already been run
             case .dateLastOpened, .dateLastBackgrounded:
-                return true // Signed out home: we want to keep these if the user logs out and still track open and background events
+                return true // TODO: SIGNEDOUT - decide if for signed out home we want to keep these if the user logs out and still track open and background events
             default: return true
             }
         }

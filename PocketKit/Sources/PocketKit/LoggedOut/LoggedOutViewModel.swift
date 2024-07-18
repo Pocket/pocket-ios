@@ -96,7 +96,7 @@ class LoggedOutViewModel: ObservableObject {
                 }
             }
             .store(in: &cancellables)
-        // TODO: SIGNED OUT EXP - Once we release, the feature flag service and fetch shall be removed from here
+        // TODO: SIGNEDOUT - Once we release, the feature flag service and fetch shall be removed from here
         refreshCoordinator.refresh(isForced: false) { [weak self] in
             guard let self else {
                 return

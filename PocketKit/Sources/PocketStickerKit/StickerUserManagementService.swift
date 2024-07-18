@@ -46,5 +46,6 @@ final class StickerUserManagementService: ObservableObject, StickerUserManagemen
         notificationCenter.post(name: .userLoggedOut, object: appSession.currentSession)
         user.clear()
         appSession.currentSession = nil
+        // TODO: SIGNEDOUT - handle anonymous session
     }
 }

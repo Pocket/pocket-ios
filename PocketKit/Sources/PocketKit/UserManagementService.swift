@@ -71,5 +71,6 @@ final class UserManagementService: ObservableObject, UserManagementServiceProtoc
         notificationCenter.post(name: .userLoggedOut, object: appSession.currentSession)
         user.clear()
         appSession.currentSession = nil
+        // TODO: SIGNEDOUT - handle anonymous session
     }
 }

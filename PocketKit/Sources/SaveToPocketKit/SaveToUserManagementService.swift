@@ -46,5 +46,6 @@ final class SaveToUserManagementService: ObservableObject, SaveToUserManagementS
         notificationCenter.post(name: .userLoggedOut, object: appSession.currentSession)
         user.clear()
         appSession.currentSession = nil
+        // TODO: SIGNEDOUT - handle anonymous session
     }
 }

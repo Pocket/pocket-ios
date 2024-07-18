@@ -5,8 +5,6 @@ import Localization
 
 enum PocketAppIcon: String, CaseIterable, Identifiable {
     case primary = "AppIcon"
-    // TODO: pride currently disable while we wait for the official icon
-    // case pride = "AppIcon-Pride"
     case monochrome = "AppIcon-Monochrome"
     case classic = "AppIcon-Classic"
     case pride = "AppIcon-Pride"

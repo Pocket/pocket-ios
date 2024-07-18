@@ -85,6 +85,7 @@ public class RootViewModel: ObservableObject {
         }.store(in: &subscriptions)
         // Because session could already be available at init, lets try and use it.
         handleSession(session: appSession.currentSession)
+        // TODO: SIGNEDOUT - handle anonymous login
     }
 
     /**

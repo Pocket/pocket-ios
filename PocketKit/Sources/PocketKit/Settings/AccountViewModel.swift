@@ -27,7 +27,6 @@ class AccountViewModel: ObservableObject {
     private let premiumUpgradeViewModelFactory: PremiumUpgradeViewModelFactory
     private let premiumStatusViewModelFactory: PremiumStatusViewModelFactory
     // Presented sheets
-    // TODO: we might want to add a coordinator of some sort here
 
     @Published var isPresentingHelp = false
     @Published var isPresentingTerms = false
