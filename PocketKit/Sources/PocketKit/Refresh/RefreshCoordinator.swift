@@ -48,18 +48,25 @@ extension RefreshCoordinator {
         }
 
         // Register for login notifications
-        NotificationCenter.default.publisher(
-            for: .userLoggedIn
-        ).sink { [weak self] notification in
-            self?.handleSession(session: notification.object as? SharedPocketKit.Session)
-        }.store(in: &sessionSubscriptions)
+        NotificationCenter.default.publisher(for: .userLoggedIn)
+            .sink { [weak self] notification in
+                self?.handleSession(session: notification.object as? SharedPocketKit.Session)
+            }
+            .store(in: &sessionSubscriptions)
+
+        // Register for login notifications
+        NotificationCenter.default.publisher(for: .anonymousLogin)
+            .sink { [weak self] notification in
+                self?.handleSession(session: notification.object as? SharedPocketKit.Session)
+            }
+            .store(in: &sessionSubscriptions)
 
         // Register for logout notifications
-        NotificationCenter.default.publisher(
-            for: .userLoggedOut
-        ).sink { [weak self] notification in
-            self?.handleSession(session: nil)
-        }.store(in: &sessionSubscriptions)
+        NotificationCenter.default.publisher(for: .userLoggedOut)
+            .sink { [weak self] notification in
+                self?.handleSession(session: nil)
+            }
+            .store(in: &sessionSubscriptions)
 
         // Because session could already be available at init, lets try and use it.
         handleSession(session: appSession.currentSession)
@@ -81,6 +88,15 @@ extension RefreshCoordinator {
     /// Sets up the class with the logged in session
     /// - Parameter session: The session we are setting up
     private func setUpSession(_ session: SharedPocketKit.Session) {
+        if session.isAnonymous {
+            setupAnonymousSession()
+        } else {
+            setupAuthenticatedSession()
+        }
+    }
+    
+    /// Setup refresh coordinators after a user logs in
+    private func setupAuthenticatedSession() {
         notificationCenter.publisher(for: UIScene.didEnterBackgroundNotification, object: nil).sink { [weak self] _ in
             guard let self else {
                 Log.captureNilWeakSelf()
@@ -102,6 +118,11 @@ extension RefreshCoordinator {
 
         // The user just logged in, lets setup background refreshing
         self.submitRequest()
+    }
+    
+    /// Setup refresh coordinators after a user accesses the app anonymously
+    private func setupAnonymousSession() {
+        // TODO: SIGNEDOUT - handle anonymous login
     }
 
     /// Unsubscribes all listeners and cancels any pending background tasks
