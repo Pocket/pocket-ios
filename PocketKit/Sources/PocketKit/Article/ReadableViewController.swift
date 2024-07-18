@@ -185,7 +185,8 @@ class ReadableViewController: UIViewController {
 
     private func scrollToLastKnownPosition() {
         guard let userProgress = readableViewModel.readingProgress(),
-        userProgress.item < collectionView.numberOfItems(inSection: userProgress.section) else {
+              userProgress.section < collectionView.numberOfSections,
+              userProgress.item < collectionView.numberOfItems(inSection: userProgress.section) else {
             return
         }
 
