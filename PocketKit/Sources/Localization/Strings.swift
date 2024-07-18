@@ -326,8 +326,8 @@ public enum Localization {
     public enum Continue {
       /// Sign up or sign in
       public static let authenticate = Localization.tr("Localizable", "loggedOut.continue.authenticate", fallback: "Sign up or sign in")
-      /// Continue signed out
-      public static let signedOut = Localization.tr("Localizable", "loggedOut.continue.signedOut", fallback: "Continue signed out")
+      /// Skip sign in
+      public static let signedOut = Localization.tr("Localizable", "loggedOut.continue.signedOut", fallback: "Skip sign in")
     }
     public enum Offline {
       /// Looks like you're offline. Try checking your mobile data or wifi.
