@@ -9,14 +9,14 @@ extension NSCollectionLayoutSection {
         return NSCollectionLayoutSection(
             group: NSCollectionLayoutGroup.vertical(
                 layoutSize: NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1),
-                    heightDimension: .fractionalHeight(1)
+                    widthDimension: .fractionalWidth(0),
+                    heightDimension: .fractionalHeight(0)
                 ),
                 subitems: [
                     NSCollectionLayoutItem(
                         layoutSize: NSCollectionLayoutSize(
-                            widthDimension: .fractionalWidth(1),
-                            heightDimension: .fractionalHeight(1)
+                            widthDimension: .fractionalWidth(0),
+                            heightDimension: .fractionalHeight(0)
                         )
                     )
                 ]
