@@ -363,7 +363,7 @@
 // Logged out
 "loggedOut.continue" = "Continue";
 "loggedOut.continue.authenticate" = "Sign up or sign in";
-"loggedOut.continue.signedOut" = "Continue signed out";
+"loggedOut.continue.signedOut" = "Skip sign in";
 "loggedOut.footer" = "By proceeding, you agree to the Pocket [Terms of Service](https://getpocket.com/tos) and [Privacy Notice](https://getpocket.com/privacy)";
 
 // Errors
