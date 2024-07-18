@@ -5,6 +5,8 @@
 import UIKit
 
 extension NSCollectionLayoutSection {
+    /// Provides an empty section fof collection view compositional layout
+    /// - Returns: the empty section
     static func empty() -> NSCollectionLayoutSection {
         return NSCollectionLayoutSection(
             group: NSCollectionLayoutGroup.vertical(
