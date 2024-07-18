@@ -99,7 +99,7 @@ class PushNotificationService: NSObject {
                     Log.capture(message: "Logged in publisher in PocketNotificationService could not convert to session")
                     return
                 }
-                self?.loggedIn(session: session)
+                self?.anonymousLogin(session: session)
             }
             .store(in: &subscriptions)
 
@@ -139,11 +139,16 @@ class PushNotificationService: NSObject {
         instantSync.loggedIn(session: session)
     }
 
+    private func anonymousLogin(session: SharedPocketKit.Session) {
+        // TODO: SIGNEDOUT - handle anonymous login
+    }
+
     /**
      Perform the following notification actions on Logout:
      - Remove instant sync
      */
     private func loggedOut(session: SharedPocketKit.Session?) {
+        // TODO: SIGNEDOUT - we might need to change this once signed out home is in place
         unregisterForRemoteNotificationsWithApple()
         instantSync.loggedOut(session: session)
         braze.loggedOut(session: session)
