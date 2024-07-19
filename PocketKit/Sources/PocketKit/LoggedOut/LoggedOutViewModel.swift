@@ -47,6 +47,8 @@ class LoggedOutViewModel: ObservableObject {
     private let userManagementService: UserManagementServiceProtocol
     private var cancellables: Set<AnyCancellable> = []
 
+    private let authenticator: Authenticator
+
     convenience init() {
         self.init(authorizationClient: Services.shared.authClient, appSession: Services.shared.appSession, networkPathMonitor: NWPathMonitor(), tracker: Services.shared.tracker, userManagementService: Services.shared.userManagementService, featureFlags: Services.shared.featureFlagService, refreshCoordinator: Services.shared.featureFlagsRefreshCoordinator)
     }
@@ -67,6 +69,8 @@ class LoggedOutViewModel: ObservableObject {
         self.userManagementService = userManagementService
         self.featureFlags = featureFlags
         self.refreshCoordinator = refreshCoordinator
+        // TODO: - SIGNEDOUT - authenticator could be directly provided by Services
+        self.authenticator = Authenticator(authorizationClient: authorizationClient, appSession: appSession)
 
         networkPathMonitor.start(queue: DispatchQueue.main)
         currentNetworkStatus = networkPathMonitor.currentNetworkPath.status
@@ -101,8 +105,22 @@ class LoggedOutViewModel: ObservableObject {
             guard let self else {
                 return
             }
-            showNewOnboarding = featureFlags.isAssigned(flag: .newOnboarding)
+            showNewOnboarding = true // featureFlags.isAssigned(flag: .newOnboarding)
         }
+
+        authenticator
+            .$authenticationState
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] state in
+                guard let self else { return }
+                switch state {
+                case .ready:
+                    lastAction = nil
+                case .error(let error):
+                    present(error)
+                }
+            }
+            .store(in: &cancellables)
     }
 
     private func updateStatus(_ status: NWPath.Status) {
@@ -117,7 +135,7 @@ class LoggedOutViewModel: ObservableObject {
         currentNetworkStatus = status
     }
 
-    func exitSurveyButtonClicked() {
+    func presentExitSurvey() {
         self.isPresentingExitSurvey.toggle()
         tracker.track(event: Events.Login.deleteAccountExitSurveyBannerTap())
     }
@@ -130,7 +148,8 @@ class LoggedOutViewModel: ObservableObject {
         tracker.track(event: Events.Login.deleteAccountExitSurveyBannerImpression())
     }
 
-    func authenticate() {
+    /// Called from the `Sign up or sign in` button
+    func signUpOrSignIn() {
         guard appSession.currentSession == nil else {
             return
         }
@@ -143,91 +162,37 @@ class LoggedOutViewModel: ObservableObject {
             isPresentingOfflineView = true
             return
         }
+        authenticator.authenticate()
+    }
 
-        Task { [weak self] in
-            guard let self else {
-                return
-            }
-            await self.authenticate(self.authorizationClient.authenticate)
+    /// Called from the `Skip sign in` button
+    func skipSignIn() {
+        lastAction = .continueSignedOut
+        guard !isOffline else {
+            automaticallyDismissed = false
+            isPresentingOfflineView = true
+            return
         }
+
+        authenticator.anonymousAccess()
     }
 
     func offlineViewDidDisappear() {
         if automaticallyDismissed {
             switch lastAction {
             case .authenticate:
-                authenticate()
+                signUpOrSignIn()
             case .continueSignedOut:
-                continueSignedOut()
+                skipSignIn()
             case nil:
                 break
             }
         }
     }
 
-    func continueSignedOut() {
-        appSession.currentSession = Session.anonymous()
-        NotificationCenter.default.post(name: .anonymousLogin, object: appSession.currentSession)
-    }
-
-    private func handle(_ response: AuthorizationClient.Response) {
-        appSession.currentSession = Session(
-            guid: response.guid,
-            accessToken: response.accessToken,
-            userIdentifier: response.userIdentifier
-        )
-        // Post that we logged in to the rest of the app
-        // Note when we pass appSession.currentSession it seems to pass a nil object to NotificatioNcenter, but when we save the value and we pass the basic struct it works perfectly
-        NotificationCenter.default.post(name: .userLoggedIn, object: appSession.currentSession)
-    }
-
     private func present(_ error: Error) {
         presentedAlert = PocketAlert(error) { [weak self] in
             self?.presentedAlert = nil
         }
-    }
-
-    private func authenticate(_ authentication: (ASWebAuthenticationPresentationContextProviding?) async throws -> AuthorizationClient.Response) async {
-        do {
-            // TODO: CONCURRENCY - Need to figure out how to handle ASWebAuthenticationPresentationContextProviding and other native non-sendable types
-            let response = try await authentication(contextProvider)
-            handle(response)
-        } catch {
-            // AuthorizationClient should only ever throw an AuthorizationClient.error
-            guard let error = error as? AuthorizationClient.Error else {
-                Log.capture(error: error)
-                return
-            }
-
-            switch error {
-            case .invalidRedirect, .invalidComponents:
-                // If component generation failed, we should alert the user (to hopefully reach out),
-                // as well as capture the error
-                present(error)
-                Log.capture(error: error)
-            case .alreadyAuthenticating:
-                Log.capture(error: error)
-            case .other(let nested):
-                // All other errors will be throws by the AuthenticationSession,
-                // which in production will be ASWebAuthenticationSessionError.
-                // However, capture any other errors (if one exists)
-                if let nested = nested as? ASWebAuthenticationSessionError {
-                    // We can ignore the "error" if a user has cancelled authentication,
-                    // but the other errors should never occur, so they should be captured.
-                    switch nested.code {
-                    case .presentationContextInvalid, .presentationContextNotProvided:
-                        Log.breadcrumb(category: "auth", level: .error, message: "ASWebAuthenticationSessionError: \(nested.localizedDescription)")
-                        Log.capture(error: nested)
-                    default:
-                        return
-                    }
-                } else {
-                    Log.breadcrumb(category: "auth", level: .error, message: "Error: \(nested.localizedDescription)")
-                    Log.capture(error: error)
-                }
-            }
-        }
-
-        lastAction = nil
     }
 }
