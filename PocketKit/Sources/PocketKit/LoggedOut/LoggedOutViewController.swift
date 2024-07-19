@@ -156,7 +156,7 @@ private struct LoggedOutActionsView: View {
             .buttonStyle(ActionsPrimaryButtonStyle())
             if viewModel.showNewOnboarding {
                 Button {
-                    // TODO: SIGNEDOUT - Add signed out home navigation
+                    viewModel.continueSignedOut()
                 } label: {
                     Text(Localization.LoggedOut.Continue.signedOut).style(.header.sansSerif.h8.with(underlineStyle: .single).with(color: .ui.black1))
                         .padding(EdgeInsets(top: 12, leading: 0, bottom: 12, trailing: 0))

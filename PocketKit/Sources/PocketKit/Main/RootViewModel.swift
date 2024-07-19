@@ -77,6 +77,13 @@ public class RootViewModel: ObservableObject {
             self?.handleSession(session: notification.object as? SharedPocketKit.Session)
         }.store(in: &subscriptions)
 
+        // Register for anonymous login notifications
+        NotificationCenter.default.publisher(
+            for: .anonymousLogin
+        ).sink { [weak self] notification in
+            self?.handleSession(session: notification.object as? SharedPocketKit.Session)
+        }.store(in: &subscriptions)
+
         // Register for logout notifications
         NotificationCenter.default.publisher(
             for: .userLoggedOut
@@ -111,8 +118,10 @@ public class RootViewModel: ObservableObject {
             APIUserEntity(consumerKey: Keys.shared.pocketApiConsumerKey),
             UserEntity(guid: session.guid, userID: session.userIdentifier, adjustAdId: Adjust.adid())
         ])
-        widgetsSessionService.setLoggedIn(true)
-        Log.setUserID(session.userIdentifier)
+        if !session.isAnonymous {
+            widgetsSessionService.setLoggedIn(true)
+            Log.setUserID(session.userIdentifier)
+        }
     }
 
     private func tearDownSession() {

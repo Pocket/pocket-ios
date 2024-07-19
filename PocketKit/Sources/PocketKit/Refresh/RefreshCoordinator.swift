@@ -122,6 +122,10 @@ extension RefreshCoordinator {
 
     /// Setup refresh coordinators after a user accesses the app anonymously
     private func setupAnonymousSession() {
+        guard self is FeatureFlagsRefreshCoordinator || self is HomeRefreshCoordinator else {
+            return
+        }
+        setupAuthenticatedSession()
         // TODO: SIGNEDOUT - handle anonymous login
     }
 
