@@ -102,7 +102,7 @@ extension LoggedOutViewModelTests {
         }
 
         let viewModel = subject()
-        viewModel.authenticate()
+        viewModel.signUpOrSignIn()
 
         await fulfillment(of: [startExpectation], timeout: 2)
     }
@@ -118,7 +118,7 @@ extension LoggedOutViewModelTests {
             alertExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        viewModel.authenticate()
+        viewModel.signUpOrSignIn()
 
         wait(for: [alertExpectation], timeout: 2)
     }
@@ -136,7 +136,7 @@ extension LoggedOutViewModelTests {
             offlineExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        viewModel.authenticate()
+        viewModel.signUpOrSignIn()
 
         await fulfillment(of: [offlineExpectation], timeout: 2)
     }
@@ -160,7 +160,7 @@ extension LoggedOutViewModelTests {
             }
         }.store(in: &subscriptions)
 
-        viewModel.authenticate()
+        viewModel.signUpOrSignIn()
         networkPathMonitor.update(status: .satisfied)
 
         await fulfillment(of: [offlineExpectation, onlineExpectation], timeout: 2, enforceOrder: true)

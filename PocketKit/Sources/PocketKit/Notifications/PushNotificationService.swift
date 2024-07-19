@@ -93,7 +93,7 @@ class PushNotificationService: NSObject {
             .store(in: &subscriptions)
 
         // Register for anonymous login notifications
-        NotificationCenter.default.publisher(for: .anonymousLogin)
+        NotificationCenter.default.publisher(for: .anonymousAccess)
             .sink { [weak self] notification in
                 guard let session = notification.object as? SharedPocketKit.Session  else {
                     Log.capture(message: "Logged in publisher in PocketNotificationService could not convert to session")

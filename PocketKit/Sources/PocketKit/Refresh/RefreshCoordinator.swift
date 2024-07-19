@@ -55,7 +55,7 @@ extension RefreshCoordinator {
             .store(in: &sessionSubscriptions)
 
         // Register for login notifications
-        NotificationCenter.default.publisher(for: .anonymousLogin)
+        NotificationCenter.default.publisher(for: .anonymousAccess)
             .sink { [weak self] notification in
                 self?.handleSession(session: notification.object as? SharedPocketKit.Session)
             }

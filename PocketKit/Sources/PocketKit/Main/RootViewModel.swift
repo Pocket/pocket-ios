@@ -79,7 +79,7 @@ public class RootViewModel: ObservableObject {
 
         // Register for anonymous login notifications
         NotificationCenter.default.publisher(
-            for: .anonymousLogin
+            for: .anonymousAccess
         ).sink { [weak self] notification in
             self?.handleSession(session: notification.object as? SharedPocketKit.Session)
         }.store(in: &subscriptions)
