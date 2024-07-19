@@ -94,7 +94,7 @@ extension RefreshCoordinator {
             setupAuthenticatedSession()
         }
     }
-    
+
     /// Setup refresh coordinators after a user logs in
     private func setupAuthenticatedSession() {
         notificationCenter.publisher(for: UIScene.didEnterBackgroundNotification, object: nil).sink { [weak self] _ in
@@ -119,7 +119,7 @@ extension RefreshCoordinator {
         // The user just logged in, lets setup background refreshing
         self.submitRequest()
     }
-    
+
     /// Setup refresh coordinators after a user accesses the app anonymously
     private func setupAnonymousSession() {
         // TODO: SIGNEDOUT - handle anonymous login
