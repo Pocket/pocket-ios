@@ -92,7 +92,6 @@ public class RootViewModel: ObservableObject {
         }.store(in: &subscriptions)
         // Because session could already be available at init, lets try and use it.
         handleSession(session: appSession.currentSession)
-        // TODO: SIGNEDOUT - handle anonymous login
     }
 
     /**
@@ -109,6 +108,8 @@ public class RootViewModel: ObservableObject {
 
         // We have a session! Ensure the user is logged in.
         self.setUpSession(session)
+        // TODO: SIGNEDOUT - If session is handled as a state change between loggedIn and anonymousLogin,
+        // we might need to deallocate or reuse the existing MainViewModel instance.
         self.mainViewModel = MainViewModel()
         self.loggedOutViewModel = nil
     }
