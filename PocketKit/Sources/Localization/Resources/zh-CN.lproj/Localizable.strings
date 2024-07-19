@@ -362,6 +362,9 @@
 
 // Logged out
 "loggedOut.continue" = "继续";
+"loggedOut.continue.authenticate" = "注册或登录";
+"loggedOut.continue.signedOut" = "跳过登录";
+"loggedOut.footer" = "继续使用即表示您同意 Pocket [服务条款](https://getpocket.com/tos) 和[隐私声明](https://getpocket.com/privacy)";
 
 // Errors
 "error.problemOccurred" = "出现问题";
