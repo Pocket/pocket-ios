@@ -6,14 +6,13 @@ import UIKit
 import Textile
 import SwiftUI
 import Localization
+import Combine
 
 struct LoggedOutViewControllerSwiftUI: UIViewControllerRepresentable {
     var model: LoggedOutViewModel
 
     func makeUIViewController(context: UIViewControllerRepresentableContext<Self>) -> LoggedOutViewController {
-        let v = LoggedOutCoordinator(viewModel: model)
-
-        return v.viewController
+        LoggedOutViewController(viewModel: model)
     }
 
     func updateUIViewController(_ uiViewController: LoggedOutViewController, context: UIViewControllerRepresentableContext<Self>) {
@@ -21,8 +20,17 @@ struct LoggedOutViewControllerSwiftUI: UIViewControllerRepresentable {
 }
 
 class LoggedOutViewController: UIHostingController<LoggedOutView> {
+    private var subscriptions: Set<AnyCancellable> = []
+
     convenience init(viewModel: LoggedOutViewModel) {
         self.init(rootView: LoggedOutView(viewModel: viewModel))
+        viewModel.$presentedAlert.sink { [weak self] alert in
+            guard let alert = alert else {
+                return
+            }
+            self?.present(UIAlertController(alert), animated: true)
+        }
+        .store(in: &subscriptions)
     }
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
@@ -66,7 +74,7 @@ struct LoggedOutView: View {
                     text: Localization.Login.DeletedAccount.Banner.action,
                     style: PocketButtonStyle(.primary)
                 ) {
-                    viewModel.exitSurveyButtonClicked()
+                    viewModel.presentExitSurvey()
                 }
             ),
             show: $viewModel.isPresentingExitSurveyBanner,
@@ -147,7 +155,7 @@ private struct LoggedOutActionsView: View {
     var body: some View {
         VStack(spacing: 16) {
             Button {
-                viewModel.authenticate()
+                viewModel.signUpOrSignIn()
             } label: {
                 Text(signInText).style(.header.sansSerif.h8.with(color: .ui.white))
                     .padding(EdgeInsets(top: 12, leading: 0, bottom: 12, trailing: 0))
@@ -156,7 +164,7 @@ private struct LoggedOutActionsView: View {
             .buttonStyle(ActionsPrimaryButtonStyle())
             if viewModel.showNewOnboarding {
                 Button {
-                    viewModel.continueSignedOut()
+                    viewModel.skipSignIn()
                 } label: {
                     Text(Localization.LoggedOut.Continue.signedOut).style(.header.sansSerif.h8.with(underlineStyle: .single).with(color: .ui.black1))
                         .padding(EdgeInsets(top: 12, leading: 0, bottom: 12, trailing: 0))
