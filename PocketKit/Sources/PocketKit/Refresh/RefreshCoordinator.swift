@@ -88,15 +88,9 @@ extension RefreshCoordinator {
     /// Sets up the class with the logged in session
     /// - Parameter session: The session we are setting up
     private func setUpSession(_ session: SharedPocketKit.Session) {
-        if session.isAnonymous {
-            setupAnonymousSession()
-        } else {
-            setupAuthenticatedSession()
+        guard !session.isAnonymous || self is FeatureFlagsRefreshCoordinator || self is HomeRefreshCoordinator else {
+            return
         }
-    }
-
-    /// Setup refresh coordinators after a user logs in
-    private func setupAuthenticatedSession() {
         notificationCenter.publisher(for: UIScene.didEnterBackgroundNotification, object: nil).sink { [weak self] _ in
             guard let self else {
                 Log.captureNilWeakSelf()
@@ -118,15 +112,6 @@ extension RefreshCoordinator {
 
         // The user just logged in, lets setup background refreshing
         self.submitRequest()
-    }
-
-    /// Setup refresh coordinators after a user accesses the app anonymously
-    private func setupAnonymousSession() {
-        guard self is FeatureFlagsRefreshCoordinator || self is HomeRefreshCoordinator else {
-            return
-        }
-        setupAuthenticatedSession()
-        // TODO: SIGNEDOUT - handle anonymous login
     }
 
     /// Unsubscribes all listeners and cancels any pending background tasks
