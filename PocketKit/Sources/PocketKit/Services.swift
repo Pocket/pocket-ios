@@ -43,7 +43,6 @@ struct Services {
     let listen: Listen
     let bannerPresenter: BannerPresenter
     let notificationCenter: NotificationCenter
-    let sessionBackupUtility: SessionBackupUtility
     let widgetsSessionService: WidgetsSessionService
     let recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService
     let recommendationsWidgetUpdateService: RecommendationsWidgetUpdateService
@@ -205,12 +204,6 @@ struct Services {
 
         bannerPresenter = BannerPresenter(notificationCenter: notificationCenter)
         bannerPresenter.listen()
-
-        sessionBackupUtility = SessionBackupUtility(
-            userDefaults: userDefaults,
-            store: PocketEncryptedStore(),
-            notificationCenter: notificationCenter
-        )
 
         recentSavesWidgetUpdateService = RecentSavesWidgetUpdateService(store: UserDefaultsItemWidgetsStore(userDefaults: userDefaults, key: .recentSavesWidget))
         recommendationsWidgetUpdateService = RecommendationsWidgetUpdateService(store: UserDefaultsItemWidgetsStore(userDefaults: userDefaults, key: .recommendationsWidget))

@@ -23,7 +23,6 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     private let user: User
     private let brazeService: BrazeProtocol
     private let tracker: Tracker
-    private let sessionBackupUtility: SessionBackupUtility
     private let consumerKey: String
     private let subscriptionStore: SubscriptionStore
     private let notificationRelay: NotificationRelay
@@ -46,7 +45,6 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         self.user = services.user
         self.brazeService = services.braze
         self.tracker = services.tracker
-        self.sessionBackupUtility = services.sessionBackupUtility
         self.subscriptionStore = services.subscriptionStore
         self.notificationRelay = NotificationRelay(services.notificationCenter)
         self.featureFlags = services.featureFlagService
@@ -65,7 +63,6 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         setupTracker()
         initializeCoordinators()
         initializeTextile()
-        handleLegacyMigration()
         startSubscriptionStore()
         setupBadge(application: application)
         return true
@@ -187,16 +184,6 @@ extension PocketAppDelegate {
         }
     }
 
-    /// Legacy migration helper
-    private func handleLegacyMigration() {
-        if CommandLine.arguments.contains("skipLegacyAccountMigration") == false {
-            migrateLegacyAccount()
-        }
-        // The session backup utility can be started after user migration since
-        // the session can possibly already be backed up, i.e if used for user migration
-        sessionBackupUtility.start()
-    }
-
     /// Start pocket premium subscriptions store
     private func startSubscriptionStore() {
         if appSession.currentSession != nil {
@@ -215,62 +202,5 @@ extension PocketAppDelegate {
             userDefaults: userDefaults,
             badgeProvider: application
         )
-    }
-
-    /// Attempt to migrate a legacy (v7) account to v8
-    private func migrateLegacyAccount() {
-        let legacyUserMigration = LegacyUserMigration(
-            userDefaults: userDefaults,
-            encryptedStore: PocketEncryptedStore(),
-            appSession: appSession,
-            groupID: Keys.shared.groupID
-        )
-
-        do {
-            let attempted = try legacyUserMigration.attemptMigration(migrationWillBegin: { [weak self] in
-                self?.tracker.track(event: Events.Migration.MigrationTo_v8DidBegin(source: .pocketKit))
-                self?.brazeService.signedInUserDidBeginMigration()
-            })
-
-            if attempted {
-                // Migration ran successfully, so lets reset the entities to capture it.
-                // We do a reset in case the RootViewModel recieves a login notice first and to ensure no duplicates.
-                if let currentSession = appSession.currentSession {
-                    tracker.resetPersistentEntities([
-                        APIUserEntity(consumerKey: Keys.shared.pocketApiConsumerKey),
-                        UserEntity(guid: currentSession.guid, userID: currentSession.userIdentifier, adjustAdId: Adjust.adid())
-                    ])
-                }
-                tracker.track(event: Events.Migration.MigrationTo_v8DidSucceed(source: .pocketKit))
-                Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration required; running.")
-                // Legacy cleanup
-                LegacyCleanupService().cleanUp()
-            } else {
-                Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration not required; skipped.")
-            }
-        } catch LegacyUserMigrationError.emptyData {
-            Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration has no data to decrypt, likely due to a fresh install of Pocket 8; skipping.")
-            // Since there's no initial data, we don't have anything to migrate, and we can skip
-            // any further attempts at running this migration. This is not a true "error" in the sense that
-            // it breaks migration; it's a special case to be handled if data was created (on fresh install).
-            legacyUserMigration.forceSkip()
-        } catch LegacyUserMigrationError.noSession {
-            // If a user was logged out in Pocket 7, and then launches Pocket 8, there is no session to migrate.
-            // Previously, this would trigger a `failedDeserialization`, which is correct, but not within the context
-            // of a valid user case. If there was nothing to migrate, we can skip any further attempts.
-            Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration has no session to migration; skipping.")
-            legacyUserMigration.forceSkip()
-        } catch LegacyUserMigrationError.missingStore {
-            tracker.track(event: Events.Migration.MigrationTo_v8DidFail(with: LegacyUserMigrationError.missingStore, source: .pocketKit))
-            Log.breadcrumb(category: "launch", level: .info, message: "No previous store for user migration; skipped.")
-            // Since we don't have a store, we can skip any further attempts at running this migration.
-            legacyUserMigration.forceSkip()
-        } catch {
-            // All errors are something we can't resolve client-side, so we don't want to re-attempt
-            // on further launches.
-            tracker.track(event: Events.Migration.MigrationTo_v8DidFail(with: error, source: .pocketKit))
-            legacyUserMigration.forceSkip()
-            Log.capture(error: error)
-        }
     }
 }
