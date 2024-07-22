@@ -47,7 +47,7 @@ class LoggedOutViewModel: ObservableObject {
     private let userManagementService: UserManagementServiceProtocol
     private var cancellables: Set<AnyCancellable> = []
 
-    private let authenticator: Authenticator
+    private let accessService: PocketAccessService
 
     convenience init() {
         self.init(authorizationClient: Services.shared.authClient, appSession: Services.shared.appSession, networkPathMonitor: NWPathMonitor(), tracker: Services.shared.tracker, userManagementService: Services.shared.userManagementService, featureFlags: Services.shared.featureFlagService, refreshCoordinator: Services.shared.featureFlagsRefreshCoordinator)
@@ -70,7 +70,7 @@ class LoggedOutViewModel: ObservableObject {
         self.featureFlags = featureFlags
         self.refreshCoordinator = refreshCoordinator
         // TODO: - SIGNEDOUT - authenticator could be directly provided by Services
-        self.authenticator = Authenticator(authorizationClient: authorizationClient, appSession: appSession)
+        self.accessService = PocketAccessService(authorizationClient: authorizationClient, appSession: appSession)
 
         networkPathMonitor.start(queue: DispatchQueue.main)
         currentNetworkStatus = networkPathMonitor.currentNetworkPath.status
@@ -105,20 +105,34 @@ class LoggedOutViewModel: ObservableObject {
             guard let self else {
                 return
             }
-            showNewOnboarding = true // featureFlags.isAssigned(flag: .newOnboarding)
+            showNewOnboarding = featureFlags.isAssigned(flag: .newOnboarding)
         }
 
-        authenticator
-            .$authenticationState
+        accessService
+            .$accessLevel
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] state in
+            .sink { [weak self] level in
                 guard let self else { return }
-                switch state {
-                case .ready:
+                switch level {
+                case .anonymous, .authenticated:
+                    // reset lastAction upon completing of access request, either anonymous or authenticated
                     lastAction = nil
-                case .error(let error):
-                    present(error)
+                default:
+                    // TODO: SIGNEDOUT - no need to do anything in onboarding?
+                    break
                 }
+            }
+            .store(in: &cancellables)
+        accessService
+            .$authenticationError
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] error in
+                if let authError = error as? AuthorizationClient.Error, authError == .invalidRedirect || authError == .invalidComponents {
+                    // If component generation failed, we should alert the user (to hopefully reach out)
+                    self?.present(authError)
+                }
+                // in case of error, regardless the type, we can reset lastAction since the auth process completed anyway.
+                self?.lastAction = nil
             }
             .store(in: &cancellables)
     }
@@ -162,7 +176,7 @@ class LoggedOutViewModel: ObservableObject {
             isPresentingOfflineView = true
             return
         }
-        authenticator.authenticate()
+        accessService.requestAuthentication()
     }
 
     /// Called from the `Skip sign in` button
@@ -174,7 +188,7 @@ class LoggedOutViewModel: ObservableObject {
             return
         }
 
-        authenticator.anonymousAccess()
+        accessService.requestAnonymousAccess()
     }
 
     func offlineViewDidDisappear() {
