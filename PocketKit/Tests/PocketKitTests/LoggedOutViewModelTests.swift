@@ -80,7 +80,6 @@ class LoggedOutViewModelTests: XCTestCase {
             featureFlags: featureFlags ?? self.featureFlags,
             refreshCoordinator: refreshCoordinator ?? self.refreshCoordinator
         )
-        viewModel.contextProvider = self
         return viewModel
     }
 }
@@ -164,11 +163,5 @@ extension LoggedOutViewModelTests {
         networkPathMonitor.update(status: .satisfied)
 
         await fulfillment(of: [offlineExpectation, onlineExpectation], timeout: 2, enforceOrder: true)
-    }
-}
-
-extension LoggedOutViewModelTests: ASWebAuthenticationPresentationContextProviding {
-    func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
-        UIWindow()
     }
 }
