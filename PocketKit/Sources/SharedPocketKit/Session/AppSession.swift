@@ -4,10 +4,26 @@
 
 import Foundation
 
-public class AppSession {
-    @KeychainStorage public var currentSession: Session?
+public class AppSession: ObservableObject {
+    // TODO: SIGNEDOUT - we should find a better way to store and publish a value that does not involve two property wrappers
+    @KeychainStorage private var storedSession: Session?
+    @Published public private(set) var currentSession: Session?
 
     public init(keychain: Keychain = SecItemKeychain(), groupID: String) {
-        _currentSession = KeychainStorage(keychain: keychain, account: "session", groupID: groupID)
+        _storedSession = KeychainStorage(keychain: keychain, account: "session", groupID: groupID)
+        currentSession = storedSession
+    }
+
+    /// Clear the current session from memory and keychain
+    public func clearCurrentSession() {
+        currentSession = nil
+        storedSession = nil
+    }
+
+    /// Set the current session to the passed session, both in memory and in the keychain
+    /// - Parameter session: the passed session object
+    public func setCurrentSession(_ session: Session) {
+        currentSession = session
+        storedSession = session
     }
 }

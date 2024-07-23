@@ -26,7 +26,7 @@ class HomeRefreshCoordinatorTests: XCTestCase {
         lastRefresh.reset()
         source = MockSource()
         appSession = AppSession(keychain: MockKeychain(), groupID: "groupId")
-        appSession.currentSession = SharedPocketKit.Session(guid: "test-guid", accessToken: "test-access-token", userIdentifier: "test-id")
+        appSession.setCurrentSession(SharedPocketKit.Session(guid: "test-guid", accessToken: "test-access-token", userIdentifier: "test-id"))
         taskScheduler = MockBGTaskScheduler()
         taskScheduler.stubRegisterHandler { _, _, _ in
             return true

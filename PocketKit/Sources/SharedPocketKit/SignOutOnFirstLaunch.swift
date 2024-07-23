@@ -36,7 +36,7 @@ public class SignOutOnFirstLaunch {
         }
 
         user.clear()
-        appSession.currentSession = nil
+        appSession.clearCurrentSession()
         hasAppBeenLaunchedPreviously = true
     }
 }

@@ -111,7 +111,7 @@ extension PocketAppDelegate {
     /// Process any command line arguments (e. g. to setup the testing environment)
     private func processCommandLineArguments() {
         if CommandLine.arguments.contains("clearKeychain") {
-            appSession.currentSession = nil
+            appSession.clearCurrentSession()
         }
 
         if CommandLine.arguments.contains("clearUserDefaults") {
@@ -138,11 +138,12 @@ extension PocketAppDelegate {
         if let guid = ProcessInfo.processInfo.environment["sessionGUID"],
            let accessToken = ProcessInfo.processInfo.environment["accessToken"],
            let userIdentifier = ProcessInfo.processInfo.environment["sessionUserID"] {
-            appSession.currentSession = Session(
+            let session = Session(
                 guid: guid,
                 accessToken: accessToken,
                 userIdentifier: userIdentifier
             )
+            appSession.setCurrentSession(session)
         }
     }
 

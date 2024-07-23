@@ -36,7 +36,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         featureFlags = MockFeatureFlagService()
         space = .testSpace()
         appSession = AppSession(keychain: MockKeychain(), groupID: "groupId")
-        appSession.currentSession = SharedPocketKit.Session(guid: "test-guid", accessToken: "test-access-token", userIdentifier: "test-id")
+        appSession.setCurrentSession(SharedPocketKit.Session(guid: "test-guid", accessToken: "test-access-token", userIdentifier: "test-id"))
         refreshCoordinator = SavesRefreshCoordinator(notificationCenter: .default, taskScheduler: MockBGTaskScheduler(), appSession: appSession, source: source)
         subscriptions = []
         viewType = .saves

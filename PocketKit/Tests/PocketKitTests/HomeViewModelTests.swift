@@ -46,7 +46,7 @@ class HomeViewModelTests: XCTestCase {
         lastRefresh.reset()
 
         appSession = AppSession(keychain: MockKeychain(), groupID: "groupId")
-        appSession.currentSession = SharedPocketKit.Session(guid: "test-guid", accessToken: "test-access-token", userIdentifier: "test-id")
+        appSession.setCurrentSession(SharedPocketKit.Session(guid: "test-guid", accessToken: "test-access-token", userIdentifier: "test-id"))
         homeRefreshCoordinator = HomeRefreshCoordinator(notificationCenter: .default, taskScheduler: taskScheduler, appSession: appSession, source: source, lastRefresh: lastRefresh)
         homeController = space.makeRecomendationsSlateLineupController()
         recentSavesController = space.makeRecentSavesController(limit: 5)

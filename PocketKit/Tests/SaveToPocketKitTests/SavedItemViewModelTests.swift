@@ -82,10 +82,12 @@ class SavedItemViewModelTests: XCTestCase {
 extension SavedItemViewModelTests {
     func test_save_ifValidSessionAndNoURL_doesNotCallSave() async {
         let appSession = AppSession(keychain: MockKeychain(), groupID: "group.com.ideashower.ReadItLaterPro")
-        appSession.currentSession = Session(
-            guid: "mock-guid",
-            accessToken: "mock-access-token",
-            userIdentifier: "mock-user-identifier"
+        appSession.setCurrentSession(
+            Session(
+                guid: "mock-guid",
+                accessToken: "mock-access-token",
+                userIdentifier: "mock-user-identifier"
+            )
         )
         let viewModel = subject(appSession: appSession)
 
@@ -100,10 +102,12 @@ extension SavedItemViewModelTests {
 
     func test_save_ifValidSessionAndNoURL_doesNotAutomaticallyCompleteRequest() async {
         let appSession = AppSession(keychain: MockKeychain(), groupID: "group.com.ideashower.ReadItLaterPro")
-        appSession.currentSession = Session(
-            guid: "mock-guid",
-            accessToken: "mock-access-token",
-            userIdentifier: "mock-user-identifier"
+        appSession.setCurrentSession(
+            Session(
+                guid: "mock-guid",
+                accessToken: "mock-access-token",
+                userIdentifier: "mock-user-identifier"
+            )
         )
         let viewModel = subject(appSession: appSession)
 
@@ -125,10 +129,12 @@ extension SavedItemViewModelTests {
 extension SavedItemViewModelTests {
     func test_save_ifValidSessionAndURL_sendsCorrectURLToService() async {
         let appSession = AppSession(keychain: MockKeychain(), groupID: "group.com.ideashower.ReadItLaterPro")
-        appSession.currentSession = Session(
-            guid: "mock-guid",
-            accessToken: "mock-access-token",
-            userIdentifier: "mock-user-identifier"
+        appSession.setCurrentSession(
+            Session(
+                guid: "mock-guid",
+                accessToken: "mock-access-token",
+                userIdentifier: "mock-user-identifier"
+            )
         )
 
         let viewModel = subject(appSession: appSession)
@@ -152,10 +158,12 @@ extension SavedItemViewModelTests {
 
     func test_save_ifValidSessionAndURLString_sendsCorrectURLToService() async {
         let appSession = AppSession(keychain: MockKeychain(), groupID: "group.com.ideashower.ReadItLaterPro")
-        appSession.currentSession = Session(
-            guid: "mock-guid",
-            accessToken: "mock-access-token",
-            userIdentifier: "mock-user-identifier"
+        appSession.setCurrentSession(
+            Session(
+                guid: "mock-guid",
+                accessToken: "mock-access-token",
+                userIdentifier: "mock-user-identifier"
+            )
         )
         let viewModel = subject(appSession: appSession)
 
@@ -179,10 +187,12 @@ extension SavedItemViewModelTests {
     /// This test imitates how a specific PDF URL (https://arxiv.org/pdf/2306.00739.pdf) was ingested by the app from the Share extension
     func test_save_ifValidSessionAndPDF() async {
         let appSession = AppSession(keychain: MockKeychain(), groupID: "group.com.ideashower.ReadItLaterPro")
-        appSession.currentSession = Session(
-            guid: "mock-guid",
-            accessToken: "mock-access-token",
-            userIdentifier: "mock-user-identifier"
+        appSession.setCurrentSession(
+            Session(
+                guid: "mock-guid",
+                accessToken: "mock-access-token",
+                userIdentifier: "mock-user-identifier"
+            )
         )
         let viewModel = subject(appSession: appSession)
 
@@ -214,10 +224,12 @@ extension SavedItemViewModelTests {
 
     func test_save_withStringContainingURL_sendsCorrectURLToService() async {
         let appSession = AppSession(keychain: MockKeychain(), groupID: "group.com.ideashower.ReadItLaterPro")
-        appSession.currentSession = Session(
-            guid: "mock-guid",
-            accessToken: "mock-access-token",
-            userIdentifier: "mock-user-identifier"
+        appSession.setCurrentSession(
+            Session(
+                guid: "mock-guid",
+                accessToken: "mock-access-token",
+                userIdentifier: "mock-user-identifier"
+            )
         )
         let viewModel = subject(appSession: appSession)
 
@@ -240,12 +252,13 @@ extension SavedItemViewModelTests {
 
     func test_save_ifValidSessionAndURL_automaticallyCompletesRequest() async {
         let appSession = AppSession(keychain: MockKeychain(), groupID: "group.com.ideashower.ReadItLaterPro")
-        appSession.currentSession = Session(
-            guid: "mock-guid",
-            accessToken: "mock-access-token",
-            userIdentifier: "mock-user-identifier"
+        appSession.setCurrentSession(
+            Session(
+                guid: "mock-guid",
+                accessToken: "mock-access-token",
+                userIdentifier: "mock-user-identifier"
+            )
         )
-
         let viewModel = subject(appSession: appSession)
 
         let provider = MockItemProvider()
@@ -270,10 +283,12 @@ extension SavedItemViewModelTests {
     }
 
     func test_save_whenResavingExistingItem_updatesInfoViewModel() async {
-        appSession.currentSession = Session(
-            guid: "mock-guid",
-            accessToken: "mock-access-token",
-            userIdentifier: "mock-user-identifier"
+        appSession.setCurrentSession(
+            Session(
+                guid: "mock-guid",
+                accessToken: "mock-access-token",
+                userIdentifier: "mock-user-identifier"
+            )
         )
         let savedItem = SavedItem(context: self.space.backgroundContext, url: "http://mozilla.com")
         saveService.stubSave { _ in .existingItem(savedItem) }
@@ -305,10 +320,12 @@ extension SavedItemViewModelTests {
     }
 
     func test_save_onError_updatesInfoViewModel() async {
-        appSession.currentSession = Session(
-            guid: "mock-guid",
-            accessToken: "mock-access-token",
-            userIdentifier: "mock-user-identifier"
+        appSession.setCurrentSession(
+            Session(
+                guid: "mock-guid",
+                accessToken: "mock-access-token",
+                userIdentifier: "mock-user-identifier"
+            )
         )
 
         let provider = MockItemProvider()

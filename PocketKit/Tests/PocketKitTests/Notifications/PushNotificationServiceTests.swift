@@ -25,7 +25,7 @@ final class PushNotificationServiceTests: XCTestCase {
         source = MockSource()
         appSession = AppSession(keychain: MockKeychain(), groupID: "group.com.ideashower.ReadItLaterPro")
         session = SharedPocketKit.Session(guid: "test-guid", accessToken: "test-access-token", userIdentifier: "test-id")
-        appSession.currentSession = session
+        appSession.setCurrentSession(session)
 
         tracker = MockTracker()
         braze = MockPocketBraze()

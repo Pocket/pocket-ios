@@ -23,7 +23,7 @@ final class InstantSyncTests: XCTestCase {
         source = MockSource()
         appSession = AppSession(keychain: MockKeychain(), groupID: "test")
         session = SharedPocketKit.Session(guid: "test-guid", accessToken: "test-access-token", userIdentifier: "test-id")
-        appSession.currentSession = session
+        appSession.setCurrentSession(session)
         v3Client = MockV3Client()
 
         subject = InstantSync(appSession: appSession, source: source, v3Client: v3Client)

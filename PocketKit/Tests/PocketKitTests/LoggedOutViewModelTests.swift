@@ -87,10 +87,12 @@ class LoggedOutViewModelTests: XCTestCase {
 extension LoggedOutViewModelTests {
     @MainActor
     func test_logIn_withExistingSession_doesNotAttemptAuthentication() async {
-        appSession.currentSession = Session(
-            guid: "mock-guid",
-            accessToken: "mock-access-token",
-            userIdentifier: "mock-user-identifier"
+        appSession.setCurrentSession(
+            Session(
+                guid: "mock-guid",
+                accessToken: "mock-access-token",
+                userIdentifier: "mock-user-identifier"
+            )
         )
 
         let startExpectation = expectation(description: "expected start to not be called")
