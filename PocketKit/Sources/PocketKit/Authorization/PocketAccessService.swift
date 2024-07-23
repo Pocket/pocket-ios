@@ -3,6 +3,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import AuthenticationServices
+import Combine
 import SharedPocketKit
 
 /// Core service that determines the access level to the app. Full access is granted upon authentication. Anonymous access provides limited access.
@@ -16,9 +17,13 @@ final class PocketAccessService: NSObject, ObservableObject {
         case authenticated // full access
     }
 
-    var contextProvider: ASWebAuthenticationPresentationContextProviding?
     private let authorizationClient: AuthorizationClient
     private let appSession: AppSession
+
+    private var subscriptions = Set<AnyCancellable>()
+
+    /// (re)publish current session changes in the form of `AccessLevel`.
+    /// Used to track access level state changes.
     @Published private(set) var accessLevel: AccessLevel
     /// Publish any authentication related error, for the client to manage.
     @Published private(set) var authenticationError: Error?
@@ -32,7 +37,17 @@ final class PocketAccessService: NSObject, ObservableObject {
             self.accessLevel = .onboarding
         }
         super.init()
-        self.contextProvider = self
+        appSession
+            .$currentSession
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] session in
+                if let session {
+                    self?.accessLevel = session.isAnonymous ? .anonymous : .authenticated
+                } else {
+                    self?.accessLevel = .onboarding
+                }
+            }
+            .store(in: &subscriptions)
     }
 
     /// Request authenticated access for the current user
@@ -47,7 +62,7 @@ final class PocketAccessService: NSObject, ObservableObject {
 
     /// Request anonymous access for the current user
     func requestAnonymousAccess() {
-        appSession.currentSession = Session.anonymous()
+        appSession.setCurrentSession(Session.anonymous())
         NotificationCenter.default.post(name: .anonymousAccess, object: appSession.currentSession)
         // update access level upon successul request
         accessLevel = .anonymous
@@ -57,8 +72,7 @@ final class PocketAccessService: NSObject, ObservableObject {
     /// - Parameter authentication: the authentication closure
     private func parseResponse(authenticator: (ASWebAuthenticationPresentationContextProviding?) async throws -> AuthorizationClient.Response) async {
         do {
-            // TODO: CONCURRENCY - Need to figure out how to handle ASWebAuthenticationPresentationContextProviding and other native non-sendable types
-            let response = try await authenticator(contextProvider)
+            let response = try await authenticator(self)
             handle(response)
         } catch {
             if let authError = error as? AuthorizationClient.Error,
@@ -83,18 +97,20 @@ final class PocketAccessService: NSObject, ObservableObject {
     }
 
     private func handle(_ response: AuthorizationClient.Response) {
-        appSession.currentSession = Session(
+        let session = Session(
             guid: response.guid,
             accessToken: response.accessToken,
             userIdentifier: response.userIdentifier
         )
+        appSession.setCurrentSession(session)
         // Post that we logged in to the rest of the app
-        // Note when we pass appSession.currentSession it seems to pass a nil object to NotificatioNcenter, but when we save the value and we pass the basic struct it works perfectly
-        NotificationCenter.default.post(name: .userLoggedIn, object: appSession.currentSession)
+        NotificationCenter.default.post(name: .userLoggedIn, object: session)
     }
 }
 
 extension PocketAccessService: ASWebAuthenticationPresentationContextProviding {
+    // TODO: SIGNEDOUT - verify that using a generic presentation anchor instead of the current window
+    // does not introduce any issues
     func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
         ASPresentationAnchor()
     }
