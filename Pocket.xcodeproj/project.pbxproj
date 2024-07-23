@@ -1,4 +1,4 @@
-We fixed a bug that displayed the wrong title for saved collections on both the Home and Saved lists. Additionally, we improved the handling of background refreshes to resolve crashes that could occur under certain conditions.// !$*UTF8*$!
+// !$*UTF8*$!
 {
 	archiveVersion = 1;
 	classes = {
