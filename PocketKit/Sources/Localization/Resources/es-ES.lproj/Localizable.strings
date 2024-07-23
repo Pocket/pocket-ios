@@ -362,6 +362,9 @@
 
 // Logged out
 "loggedOut.continue" = "Continuar";
+"loggedOut.continue.authenticate" = "Registrarse o iniciar sesión";
+"loggedOut.continue.signedOut" = "Omitir inicio de sesión";
+"loggedOut.footer" = "Al continuar, aceptas las [Condiciones del servicio](https://getpocket.com/tos) y el [Aviso de privacidad](https://getpocket.com/privacy) de Pocket.";
 
 // Errors
 "error.problemOccurred" = "Ha habido un problema";
