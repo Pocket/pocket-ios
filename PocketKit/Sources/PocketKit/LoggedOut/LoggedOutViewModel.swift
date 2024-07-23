@@ -18,8 +18,6 @@ enum LoggedOutAction {
 
 @MainActor
 class LoggedOutViewModel: ObservableObject {
-    var contextProvider: ASWebAuthenticationPresentationContextProviding?
-
     @Published var presentedAlert: PocketAlert?
 
     @Published var isPresentingOfflineView: Bool = false
