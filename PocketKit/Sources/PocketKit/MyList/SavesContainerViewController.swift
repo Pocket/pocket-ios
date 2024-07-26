@@ -353,8 +353,6 @@ extension SavesContainerViewController {
             return
         }
 
-        readable.delegate = self
-
         readable.$presentedAlert.sink { [weak self] alert in
             self?.present(alert: alert)
         }.store(in: &readableSubscriptions)
@@ -634,22 +632,15 @@ extension SavesContainerViewController: SFSafariViewControllerDelegate {
     }
 }
 
-extension SavesContainerViewController {
+// MARK: Listen filter list
+extension SavesContainerViewController: ItemsListViewModelDelegate {
+    func viewModel(_ itemsListViewModel: any ItemsListViewModel, didRequestListen configuration: ListenConfiguration) {
+        showListen(configuration)
+    }
+
     private func showListen(_ configuration: ListenConfiguration) {
         let listen =  PKTListenContainerViewController(configuration: configuration.toAppConfiguration())
         listen.title = configuration.title
         self.present(listen, animated: true)
-    }
-}
-
-extension SavesContainerViewController: ReadableViewModelDelegate {
-    func viewModel(_ readableViewModel: ReadableViewModel, didRequestListen configuration: ListenConfiguration) {
-        showListen(configuration)
-    }
-}
-
-extension SavesContainerViewController: ItemsListViewModelDelegate {
-    func viewModel(_ itemsListViewModel: any ItemsListViewModel, didRequestListen configuration: ListenConfiguration) {
-        showListen(configuration)
     }
 }
