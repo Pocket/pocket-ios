@@ -7,11 +7,12 @@ import Combine
 import Analytics
 import Sync
 import Textile
+import PKTListen
 
 class ReadableHostViewController: UIViewController {
     private let moreButtonItem: UIBarButtonItem
     private var subscriptions: [AnyCancellable] = []
-    private var readableViewModel: ReadableViewModel
+    private let readableViewModel: ReadableViewModel
 
     private lazy var archiveButton: UIBarButtonItem = {
         let archiveNavButton = UIBarButtonItem(
@@ -57,6 +58,10 @@ class ReadableHostViewController: UIViewController {
         )
 
         super.init(nibName: nil, bundle: nil)
+
+        if let savedItemViewModel = readableViewModel as? SavedItemViewModel {
+            savedItemViewModel.delegate = self
+        }
 
         title = nil
         navigationItem.largeTitleDisplayMode = .never
@@ -201,5 +206,18 @@ class ReadableHostViewController: UIViewController {
 
     var popoverAnchor: UIBarButtonItem? {
         navigationItem.rightBarButtonItems?[0]
+    }
+}
+
+// MARK: Listen article
+extension ReadableHostViewController: ReadableViewModelDelegate {
+    func viewModel(_ readableViewModel: ReadableViewModel, didRequestListen configuration: ListenConfiguration) {
+        showListen(configuration)
+    }
+
+    private func showListen(_ configuration: ListenConfiguration) {
+        let listen =  PKTListenContainerViewController(configuration: configuration.toAppConfiguration())
+        listen.title = configuration.title
+        self.present(listen, animated: true)
     }
 }
