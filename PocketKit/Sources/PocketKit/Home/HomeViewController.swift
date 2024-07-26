@@ -47,18 +47,18 @@ class HomeViewController: UIViewController {
 
     private lazy var layout = UICollectionViewCompositionalLayout { [weak self] sectionIndex, env in
         guard let self else {
-            Log.breadcrumb(category: "home", level: .debug, message: "Returning a nil section. Reason: HomeViewController is nil.")
+            Log.breadcrumb(category: "home", level: .debug, message: "➡️ Returning a nil section. Reason: HomeViewController is nil.")
             return .empty()
         }
         guard let dataSource = self.dataSource else {
-            Log.breadcrumb(category: "home", level: .debug, message: "Returning a nil section. Reason: datasource is nil.")
+            Log.breadcrumb(category: "home", level: .debug, message: "➡️ Returning a nil section. Reason: datasource is nil.")
             return .empty()
         }
         guard let section = dataSource.sectionIdentifier(for: sectionIndex) else {
-            Log.breadcrumb(category: "home", level: .debug, message: "Returning a nil section. Reason: sectionIdentifier for \(sectionIndex) is nil.")
+            Log.breadcrumb(category: "home", level: .debug, message: "➡️ Returning a nil section. Reason: sectionIdentifier for \(sectionIndex) is nil.")
             return .empty()
         }
-
+        Log.breadcrumb(category: "home", level: .debug, message: "➡️ Proceeding with section calculation - section index is \(sectionIndex), section is \(section.description)")
         switch section {
         case .loading:
             return self.sectionProvider.loadingSection()

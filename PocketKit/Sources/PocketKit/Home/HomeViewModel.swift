@@ -884,10 +884,7 @@ extension HomeViewModel {
                 return
             }
             let item = recommendation.item
-            guard
-                let slate = recommendation.slate,
-                let slateLineup = slate.slateLineup
-            else {
+            guard recommendation.slate?.slateLineup != nil else {
                 Log.breadcrumb(category: "home", level: .debug, message: "Tried to display recommendation without slate and slatelineup, not logging analytics")
                 return
             }
@@ -899,13 +896,30 @@ extension HomeViewModel {
 }
 
 extension HomeViewModel {
-    enum Section: Hashable {
+    enum Section: Hashable, CustomStringConvertible {
         case loading
         case recentSaves
         case slateHero(NSManagedObjectID)
         case slateCarousel(NSManagedObjectID)
         case sharedWithYou
         case offline
+
+        var description: String {
+            switch self {
+            case .loading:
+                return "Loading"
+            case .recentSaves:
+                return "Recent Saves"
+            case .slateHero(let nSManagedObjectID):
+                return "Slate Hero"
+            case .slateCarousel(let nSManagedObjectID):
+                return "Slate Carousel"
+            case .sharedWithYou:
+                return "Shared With You"
+            case .offline:
+                return "Offline"
+            }
+        }
     }
 
     enum Cell: Hashable {
@@ -968,17 +982,19 @@ extension HomeViewModel: NSFetchedResultsControllerDelegate {
         var newSnapshot = buildSnapshot()
 
         if controller == recentSavesController {
-            let reloadedItemIdentifiers: [Cell] = snapshot.reloadedItemIdentifiers.compactMap({ .recentSaves($0 as! NSManagedObjectID) })
-            let reconfiguredItemdIdentifiers: [Cell] = snapshot.reconfiguredItemIdentifiers.compactMap({ .recentSaves($0 as! NSManagedObjectID) })
-            newSnapshot.reloadItems(reloadedItemIdentifiers)
-            newSnapshot.reconfigureItems(reconfiguredItemdIdentifiers)
+            let reloadedItems: [Cell] = snapshot.reloadedItemIdentifiers.compactMap({ .recentSaves($0 as! NSManagedObjectID) })
+            let reconfiguredItems: [Cell] = snapshot.reconfiguredItemIdentifiers.compactMap({ .recentSaves($0 as! NSManagedObjectID) })
+            newSnapshot.reloadItems(reloadedItems)
+            newSnapshot.reconfigureItems(reconfiguredItems)
             updateRecentSavesWidget()
+            Log.breadcrumb(category: "home", level: .debug, message: "➡️ Building recent saves section in didChangeContentWith. #reloaded items: \(reloadedItems.count), #reconfigured items: \(reconfiguredItems.count)")
         }
 
         if isOffline {
             // If we are offline don't try and do anything with Slates, and let the snapshot show the offline
             setRecommendationsWidgetOffline()
             self.snapshot = newSnapshot
+            Log.breadcrumb(category: "home", level: .debug, message: "➡️ Providing offline snapshot.")
             return
         }
 
@@ -986,21 +1002,22 @@ extension HomeViewModel: NSFetchedResultsControllerDelegate {
             let existingItemIdentifiers = newSnapshot.itemIdentifiers
 
             // Gather all variations a recomendation could exist in for reloaded identifiers
-            var reloadedItemIdentifiers: [Cell] = snapshot.reloadedItemIdentifiers.compactMap({ .recommendationHero($0 as! NSManagedObjectID) })
-            reloadedItemIdentifiers.append(contentsOf: snapshot.reloadedItemIdentifiers.compactMap({ .recommendationCarousel($0 as! NSManagedObjectID) }))
+            var reloadedItems: [Cell] = snapshot.reloadedItemIdentifiers.compactMap({ .recommendationHero($0 as! NSManagedObjectID) })
+            reloadedItems.append(contentsOf: snapshot.reloadedItemIdentifiers.compactMap({ .recommendationCarousel($0 as! NSManagedObjectID) }))
             // Filter to just the ones that exist in our snapshot
-            reloadedItemIdentifiers = reloadedItemIdentifiers.filter({ existingItemIdentifiers.contains($0) })
+            reloadedItems = reloadedItems.filter({ existingItemIdentifiers.contains($0) })
             // Tell the new snapshot to reload just the ones that exist
-            newSnapshot.reloadItems(reloadedItemIdentifiers)
+            newSnapshot.reloadItems(reloadedItems)
 
             // Gather all variations a recomendation could exist in for reconfigured identifiers
-            var reconfiguredItemIdentifiers: [Cell] = snapshot.reconfiguredItemIdentifiers.compactMap({ .recommendationHero($0 as! NSManagedObjectID) })
-            reconfiguredItemIdentifiers.append(contentsOf: snapshot.reconfiguredItemIdentifiers.compactMap({ .recommendationCarousel($0 as! NSManagedObjectID) }))
+            var reconfiguredItems: [Cell] = snapshot.reconfiguredItemIdentifiers.compactMap({ .recommendationHero($0 as! NSManagedObjectID) })
+            reconfiguredItems.append(contentsOf: snapshot.reconfiguredItemIdentifiers.compactMap({ .recommendationCarousel($0 as! NSManagedObjectID) }))
             // Filter to just the ones that exist in our snapshot
-            reconfiguredItemIdentifiers = reconfiguredItemIdentifiers.filter({ existingItemIdentifiers.contains($0) })
+            reconfiguredItems = reconfiguredItems.filter({ existingItemIdentifiers.contains($0) })
             // Tell the new snapshot to reconfigure just the ones that exist
-            newSnapshot.reconfigureItems(reconfiguredItemIdentifiers)
+            newSnapshot.reconfigureItems(reconfiguredItems)
             updateRecommendationsWidget()
+            Log.breadcrumb(category: "home", level: .debug, message: "➡️ Building recommendations section in didChangeContentWith. #reloaded items: \(reloadedItems.count), #reconfigured items: \(reconfiguredItems.count)")
         }
 
         if controller == sharedWithYouController {
@@ -1017,6 +1034,7 @@ extension HomeViewModel: NSFetchedResultsControllerDelegate {
                 .filter { existingItemIdentifiers.contains($0) }
             newSnapshot.reloadItems(reloadedItems)
             newSnapshot.reconfigureItems(reconfiguredItems)
+            Log.breadcrumb(category: "home", level: .debug, message: "➡️ Building shared with you section in didChangeContentWith. #reloaded items: \(reloadedItems.count), #reconfigured items: \(reconfiguredItems.count)")
         }
 
         self.snapshot = newSnapshot
