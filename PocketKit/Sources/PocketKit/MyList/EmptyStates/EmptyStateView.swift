@@ -6,37 +6,24 @@ import SwiftUI
 import Textile
 
 open class SwiftUICollectionViewCell<T>: UICollectionViewCell where T: View {
-    private(set) var hosting: UIHostingController<T>?
-
-    func embed(in parent: UIViewController, withView content: T) {
-        if let hosting = self.hosting {
-            hosting.rootView = content
-            hosting.view.layoutIfNeeded()
-        } else {
-            let hosting = UIHostingController(rootView: content)
-            parent.addChild(hosting)
-            hosting.didMove(toParent: parent)
-            self.contentView.addSubview(hosting.view)
-            self.hosting = hosting
-        }
-    }
-
-    deinit {
-        Task { @MainActor in
-            hosting?.willMove(toParent: nil)
-            hosting?.view.removeFromSuperview()
-            hosting?.removeFromParent()
-            hosting = nil
-        }
+    /// Embeds a `SwiftUI View` in a `UIKit UIView`
+    /// - Parameters:
+    ///   - content: the `SwiftUI View`
+    /// - Returns: the `UIKit View`
+    func embed(content: T) -> UIView {
+        let controller = UIHostingController(rootView: content)
+        controller.view.translatesAutoresizingMaskIntoConstraints = false
+        controller.view.backgroundColor = .clear
+        return controller.view
     }
 }
 
 class EmptyStateCollectionViewCell: SwiftUICollectionViewCell<EmptyStateView<EmptyView>> {
-    func configure(parent: UIViewController, _ viewModel: EmptyStateViewModel) {
-        embed(in: parent, withView: EmptyStateView(viewModel: viewModel))
-        hosting?.view.frame = self.contentView.bounds
-        hosting?.view.backgroundColor = .clear
-        hosting?.view.accessibilityIdentifier = viewModel.accessibilityIdentifier
+    func configure(viewModel: EmptyStateViewModel) {
+        let view = embed(content: EmptyStateView(viewModel: viewModel))
+        contentView.addSubview(view)
+        contentView.pinSubviewToAllEdges(view)
+        view.accessibilityIdentifier = viewModel.accessibilityIdentifier
     }
 }
 

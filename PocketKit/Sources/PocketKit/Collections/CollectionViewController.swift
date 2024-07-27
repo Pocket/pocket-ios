@@ -309,7 +309,7 @@ private extension CollectionViewController {
             return cell
         case .error:
             let cell: EmptyStateCollectionViewCell = collectionView.dequeueCell(for: indexPath)
-            cell.configure(parent: self, model.errorEmptyState)
+            cell.configure(viewModel: model.errorEmptyState)
             return cell
         }
     }
