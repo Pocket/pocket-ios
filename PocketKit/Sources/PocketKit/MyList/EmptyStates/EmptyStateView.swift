@@ -6,11 +6,11 @@ import SwiftUI
 import Textile
 
 open class SwiftUICollectionViewCell<T>: UICollectionViewCell where T: View {
-    /// Embeds a `SwiftUI View` in a `UIKit UIView`
+    /// Conveets  a `SwiftUI View` in a `UIKit UIView`
     /// - Parameters:
     ///   - content: the `SwiftUI View`
-    /// - Returns: the `UIKit View`
-    func embed(content: T) -> UIView {
+    /// - Returns: the `UIKit View` that embeds the original `SwiftUI View`
+    func uiView(from content: T) -> UIView {
         let controller = UIHostingController(rootView: content)
         controller.view.translatesAutoresizingMaskIntoConstraints = false
         controller.view.backgroundColor = .clear
@@ -20,14 +20,19 @@ open class SwiftUICollectionViewCell<T>: UICollectionViewCell where T: View {
 
 class EmptyStateCollectionViewCell: SwiftUICollectionViewCell<EmptyStateView<EmptyView>> {
     func configure(viewModel: EmptyStateViewModel) {
+        let view = uiView(from: EmptyStateView(viewModel: viewModel))
+        contentView.addSubview(view)
+        contentView.pinSubviewToAllEdges(view)
+        view.accessibilityIdentifier = viewModel.accessibilityIdentifier
+    }
+
+    override func prepareForReuse() {
+        // default implementation does nothing, adding it here just in case it changes in the future
+        super.prepareForReuse()
         // clear up any existing content from the view before adding one
         contentView.subviews.forEach {
             $0.removeFromSuperview()
         }
-        let view = embed(content: EmptyStateView(viewModel: viewModel))
-        contentView.addSubview(view)
-        contentView.pinSubviewToAllEdges(view)
-        view.accessibilityIdentifier = viewModel.accessibilityIdentifier
     }
 }
 
