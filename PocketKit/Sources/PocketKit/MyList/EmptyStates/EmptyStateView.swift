@@ -20,6 +20,10 @@ open class SwiftUICollectionViewCell<T>: UICollectionViewCell where T: View {
 
 class EmptyStateCollectionViewCell: SwiftUICollectionViewCell<EmptyStateView<EmptyView>> {
     func configure(viewModel: EmptyStateViewModel) {
+        // clear up any existing content from the view before adding one
+        contentView.subviews.forEach {
+            $0.removeFromSuperview()
+        }
         let view = embed(content: EmptyStateView(viewModel: viewModel))
         contentView.addSubview(view)
         contentView.pinSubviewToAllEdges(view)
