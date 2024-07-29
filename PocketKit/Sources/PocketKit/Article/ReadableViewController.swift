@@ -154,7 +154,8 @@ class ReadableViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         scrollToLastKnownPosition()
-        if #available(iOS 17.0, *) {
+        // do not vend the tip on syndicated articles
+        if #available(iOS 17.0, *), readableViewModel is SavedItemViewModel {
             PocketTipEvents.showSwipeHighlightsTip.sendDonation()
             displayTip(SwipeHighlightsTip(), configuration: nil, sourceView: nil)
         }
