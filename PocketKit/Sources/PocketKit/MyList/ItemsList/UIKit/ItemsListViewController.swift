@@ -379,7 +379,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
         guard let viewModel = model.emptyState else {
             return
         }
-        cell.configure(parent: self, viewModel)
+        cell.configure(viewModel: viewModel)
     }
 
     private func handle(savesEvent event: ItemsListEvent<ViewModel.ItemIdentifier>) {

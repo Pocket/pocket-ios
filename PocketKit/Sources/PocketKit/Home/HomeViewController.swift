@@ -19,7 +19,7 @@ struct HomeViewControllerSwiftUI: UIViewControllerRepresentable {
 
     func makeUIViewController(context: UIViewControllerRepresentableContext<Self>) -> UINavigationController {
         let homeViewController = HomeViewController(model: model)
-        homeViewController.updateHeroCardCount()
+        homeViewController.updateLayout()
         let navigationController = UINavigationController(rootViewController: homeViewController)
         navigationController.navigationBar.prefersLargeTitles = true
         navigationController.navigationBar.barTintColor = UIColor(.ui.white1)
@@ -154,6 +154,7 @@ class HomeViewController: UIViewController {
                     return
                 }
                 dataSource.apply(snapshot)
+                Log.breadcrumb(category: "home", level: .debug, message: "➡️ Applying snapshot - #sections: \(snapshot.numberOfSections), #items: \(snapshot.numberOfItems)")
             }.store(in: &subscriptions)
     }
 
@@ -216,14 +217,14 @@ class HomeViewController: UIViewController {
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        updateHeroCardCount()
+        updateLayout()
     }
 
-    func updateHeroCardCount() {
+    fileprivate func updateLayout() {
         if traitCollection.shouldUseWideLayout() {
-            self.model.numberOfHeroItems = 2
+            model.useWideLayout()
         } else {
-            self.model.numberOfHeroItems = 1
+            model.useCompactLayout()
         }
     }
 }
