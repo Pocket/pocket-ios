@@ -100,7 +100,7 @@ class LoggedOutViewModel: ObservableObject {
             guard let self else {
                 return
             }
-            showNewOnboarding = true // featureFlags.isAssigned(flag: .newOnboarding)
+            showNewOnboarding = featureFlags.isAssigned(flag: .newOnboarding)
         }
     }
 

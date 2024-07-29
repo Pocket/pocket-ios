@@ -310,7 +310,7 @@ extension HomeViewModel {
 
     /// Updates the collection view layout for compact or wide layout, if this changed.
     /// Wide layout has two columns and two hero items per recommendation section.
-    /// - Parameter heroItems: the number of hero items to use
+    /// - Parameter heroItems: the number of hero items to use.
     private func updateLayout(_ heroItems: Int) {
         guard heroItems != numberOfHeroItems else {
             return
@@ -319,12 +319,12 @@ extension HomeViewModel {
         snapshot = buildSnapshot()
     }
 
-    /// Updates the layout to wide, if the previous layout was compact
+    /// Updates the layout to wide, if the previous layout was compact.
     func useWideLayout() {
         updateLayout(2)
     }
-    
-    /// Updates the layout to compact, if the previpus layout was wide
+
+    /// Updates the layout to compact, if the previpus layout was wide.
     func useCompactLayout() {
         updateLayout(1)
     }
