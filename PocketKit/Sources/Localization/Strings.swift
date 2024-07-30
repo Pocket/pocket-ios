@@ -572,6 +572,8 @@ public enum Localization {
     public static let premiumRow = Localization.tr("Localizable", "settings.premiumRow", fallback: "Go Premium")
     /// Premium subscription
     public static let premiumSubscriptionRow = Localization.tr("Localizable", "settings.premiumSubscriptionRow", fallback: "Premium subscription")
+    /// Sign up or sign in
+    public static let singUpOrSignIn = Localization.tr("Localizable", "settings.singUpOrSignIn", fallback: "Sign up or sign in")
     public enum AccountManagement {
       /// Delete account
       public static let deleteAccount = Localization.tr("Localizable", "settings.accountManagement.deleteAccount", fallback: "Delete account")

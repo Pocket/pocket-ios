@@ -122,6 +122,7 @@
 "settings.PocketForiOS %@ (%@)" = "Pocket for iOS %@ (%@)";
 "settings.openSourceLicenses" = "Open source licenses";
 "settings.logout" = "Log out";
+"settings.singUpOrSignIn" = "Sign up or sign in";
 "settings.logout.areYouSureMessage" = "You will be logged out of your account and any items that have been saved for offline viewing will be removed from your device.";
 "settings.logout.areyousure" = "Are you sure?";
 "settings.help" = "Get help and support";

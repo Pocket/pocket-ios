@@ -42,7 +42,7 @@ struct SettingsForm: View {
                     }
                     .textCase(nil)
                 }
-                topSectionWithLeadingDivider()
+                accountSectionWithLeadingDivider()
                     .textCase(nil)
                 Section(header: Text(Localization.appCustomization).style(.settings.header)) {
                     VStack {
@@ -66,8 +66,8 @@ struct SettingsForm: View {
                             }
                         }
                     }
-                    .textCase(nil)
                 }
+                .textCase(nil)
                 .sheet(isPresented: $model.isPresentingHooray) {
                     PremiumUpgradeSuccessView()
                 }
@@ -92,7 +92,8 @@ struct SettingsForm: View {
                             SFSafariView(url: LinkedExternalURLS.OpenSourceNotices, readerMode: true)
                                 .edgesIgnoringSafeArea(.bottom)
                         }
-                }.textCase(nil)
+                }
+                .textCase(nil)
             }
             .listRowBackground(Color(.ui.grey7))
             settingsCredits()
@@ -125,29 +126,45 @@ struct SettingsForm: View {
     }
 }
 
-// MARK: Top Section
-// These methods should be removed once we support iOS 16+
+// MARK: Account Section
 extension SettingsForm {
-    /// Handles top section separator on different versions of iOS
-    private func topSectionWithLeadingDivider() -> some View {
-        topSection()
+    /// Handles account section separator to take up the entire space
+    private func accountSectionWithLeadingDivider() -> some View {
+        accountSection()
             .alignmentGuide(.listRowSeparatorLeading) { _ in
                 return 0
             }
     }
 
-    private func header() -> some View {
-        VStack(alignment: .leading, spacing: 4) {
+    /// Builds the header of the account section
+    /// - Returns: the header
+    private func accountSectionHeader() -> some View {
+        let padding: CGFloat = model.isAnonymous ? 0 : 16
+
+        return VStack(alignment: .leading, spacing: 4) {
             Text(Localization.yourAccount)
                 .style(.settings.header)
-            Text(model.userEmail)
-                .style(.credits)
+            if !model.isAnonymous {
+                Text(model.userEmail)
+                    .style(.credits)
+            }
         }
-        .padding(.bottom, 16)
+        .padding(.bottom, padding)
     }
-    /// Provides the standard top section view
-    private func topSection() -> some View {
-        Section(header: header()) {
+
+    /// Builds the account section
+    /// - Returns: the account section
+    @ViewBuilder
+    private func accountSection() -> some View {
+        if model.isAnonymous {
+            anonymousAccountSection()
+        } else {
+            authenticatedAccountSection()
+        }
+    }
+    /// Builds the account section for an authenticated user
+    private func authenticatedAccountSection() -> some View {
+        Section(header: accountSectionHeader()) {
             if model.isPremium {
                 makePremiumSubscriptionRow()
                     .accessibilityIdentifier("premium-subscription-button")
@@ -194,6 +211,24 @@ extension SettingsForm {
                         Text(Localization.Settings.Logout.areYouSureMessage)
                     }
                 )
+        }
+    }
+    /// Builds the account section for an anonymous user
+    private func anonymousAccountSection() -> some View {
+        Section(header: accountSectionHeader()) {
+            SettingsRowButton(
+                title: Localization.Settings.singUpOrSignIn,
+                titleStyle: .settings.button.default,
+                icon: SFIconModel(
+                    // TODO: SIGNEDOUT - replace with the final icon
+                    "figure.walk.arrival",
+                    weight: .semibold,
+                    color: Color(.ui.black1)
+                )
+            ) {
+                // TODO: SIGNEDOUT - replace with the login action
+                model.signOut()
+            }
         }
     }
 

@@ -14,6 +14,7 @@ import Network
 class AccountViewModel: ObservableObject {
     static let ToggleAppBadgeKey = UserDefaults.Key.toggleAppBadge
 
+    private let appSession: AppSession
     private let user: User
     private let tracker: Tracker
     private let userDefaults: UserDefaults
@@ -72,6 +73,7 @@ class AccountViewModel: ObservableObject {
          premiumStatusViewModelFactory: @escaping PremiumStatusViewModelFactory,
          featureFlags: FeatureFlagServiceProtocol
     ) {
+        self.appSession = appSession
         self.user = user
         self.tracker = tracker
         self.userDefaults = userDefaults
@@ -94,6 +96,10 @@ class AccountViewModel: ObservableObject {
             .sink { [weak self] status in
                 self?.isPremium = status == .premium
             }
+    }
+
+    var isAnonymous: Bool {
+        appSession.currentSession?.isAnonymous ?? true
     }
 
     /// Calls the user management service to sign the user out.
