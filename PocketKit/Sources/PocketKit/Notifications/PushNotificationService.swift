@@ -41,6 +41,7 @@ protocol PushNotificationProtocol {
 /**
  Coordinator class that handles InstantSync, and Braze notifications from and to Apple.
  */
+@MainActor
 class PushNotificationService: NSObject {
     /**
      Instance of our API client for pulling in data when we recieve pushes.
@@ -83,6 +84,7 @@ class PushNotificationService: NSObject {
 
         // Register for login notifications
         NotificationCenter.default.publisher(for: .userLoggedIn)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] notification in
                 guard let session = notification.object as? SharedPocketKit.Session  else {
                     Log.capture(message: "Logged in publisher in PocketNotificationService could not convert to session")
@@ -94,6 +96,7 @@ class PushNotificationService: NSObject {
 
         // Register for anonymous login notifications
         NotificationCenter.default.publisher(for: .anonymousAccess)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] notification in
                 guard let session = notification.object as? SharedPocketKit.Session  else {
                     Log.capture(message: "Logged in publisher in PocketNotificationService could not convert to session")
@@ -105,6 +108,7 @@ class PushNotificationService: NSObject {
 
         // Register for logout notifications
         NotificationCenter.default.publisher(for: .userLoggedOut)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] notification in
                 guard let session = notification.object as? SharedPocketKit.Session  else {
                     Log.capture(message: "Logged out publisher in PocketNotificationService could not convert to session")
