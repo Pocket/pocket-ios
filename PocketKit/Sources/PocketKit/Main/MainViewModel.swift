@@ -83,6 +83,8 @@ class MainViewModel: ObservableObject {
             home: HomeViewModel(
                 source: Services.shared.source,
                 tracker: Services.shared.tracker.childTracker(hosting: .home.screen),
+                appsession: Services.shared.appSession,
+                accessService: Services.shared.accessService,
                 networkPathMonitor: NWPathMonitor(),
                 homeRefreshCoordinator: Services.shared.homeRefreshCoordinator,
                 user: Services.shared.user,

@@ -30,6 +30,7 @@ struct Services {
     let featureFlagsRefreshCoordinator: FeatureFlagsRefreshCoordinator
     let refreshCoordinators: [RefreshCoordinator]
     let authClient: AuthorizationClient
+    let accessService: PocketAccessService
     let imageManager: ImageManager
     let notificationService: PushNotificationService
     let v3Client: V3ClientProtocol
@@ -75,6 +76,7 @@ struct Services {
             tracker: tracker,
             authenticationSessionFactory: ASWebAuthenticationSession.init
         )
+        accessService = PocketAccessService(authorizationClient: authClient, appSession: appSession)
         user = PocketUser(userDefaults: userDefaults)
 
         source = PocketSource(

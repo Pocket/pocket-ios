@@ -38,7 +38,6 @@ class LoggedOutViewModel: ObservableObject {
         currentNetworkStatus == .unsatisfied
     }
 
-    private let authorizationClient: AuthorizationClient
     private let appSession: AppSession
     private let networkPathMonitor: NetworkPathMonitor
     private let tracker: Tracker
@@ -48,27 +47,33 @@ class LoggedOutViewModel: ObservableObject {
     private let accessService: PocketAccessService
 
     convenience init() {
-        self.init(authorizationClient: Services.shared.authClient, appSession: Services.shared.appSession, networkPathMonitor: NWPathMonitor(), tracker: Services.shared.tracker, userManagementService: Services.shared.userManagementService, featureFlags: Services.shared.featureFlagService, refreshCoordinator: Services.shared.featureFlagsRefreshCoordinator)
+        self.init(
+            appSession: Services.shared.appSession,
+            networkPathMonitor: NWPathMonitor(),
+            tracker: Services.shared.tracker,
+            userManagementService: Services.shared.userManagementService,
+            featureFlags: Services.shared.featureFlagService,
+            refreshCoordinator: Services.shared.featureFlagsRefreshCoordinator,
+            accessService: Services.shared.accessService
+        )
     }
 
     init(
-        authorizationClient: AuthorizationClient,
         appSession: AppSession,
         networkPathMonitor: NetworkPathMonitor,
         tracker: Tracker,
         userManagementService: UserManagementServiceProtocol,
         featureFlags: FeatureFlagServiceProtocol,
-        refreshCoordinator: RefreshCoordinator
+        refreshCoordinator: RefreshCoordinator,
+        accessService: PocketAccessService
     ) {
-        self.authorizationClient = authorizationClient
         self.appSession = appSession
         self.networkPathMonitor = networkPathMonitor
         self.tracker = tracker
         self.userManagementService = userManagementService
         self.featureFlags = featureFlags
         self.refreshCoordinator = refreshCoordinator
-        // TODO: - SIGNEDOUT - authenticator could be directly provided by Services
-        self.accessService = PocketAccessService(authorizationClient: authorizationClient, appSession: appSession)
+        self.accessService = accessService
 
         networkPathMonitor.start(queue: DispatchQueue.main)
         currentNetworkStatus = networkPathMonitor.currentNetworkPath.status
