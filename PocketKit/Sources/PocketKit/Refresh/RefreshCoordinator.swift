@@ -75,14 +75,13 @@ extension RefreshCoordinator {
     /// Handles a session if it exists.
     /// - Parameter session: The session we need to operate with
     func handleSession(session: SharedPocketKit.Session?) {
-        guard let session = session else {
-            // If the session is nil, ensure the user's view is logged out
-            self.tearDownSession()
+        // if the login status changes, we tear down the session anyway
+        self.tearDownSession()
+        guard let session else {
             return
         }
-
         // We have a session! Ensure the user is logged in.
-        self.setUpSession(session)
+        setUpSession(session)
     }
 
     /// Sets up the class with the logged in session
