@@ -63,8 +63,6 @@ final class PocketAccessService: NSObject, ObservableObject {
     /// Request anonymous access for the current user
     func requestAnonymousAccess() {
         appSession.setCurrentSession(Session.anonymous())
-        NotificationCenter.default.post(name: .anonymousAccess, object: appSession.currentSession)
-        // update access level upon successul request
         accessLevel = .anonymous
     }
 
@@ -103,8 +101,6 @@ final class PocketAccessService: NSObject, ObservableObject {
             userIdentifier: response.userIdentifier
         )
         appSession.setCurrentSession(session)
-        // Post that we logged in to the rest of the app
-        NotificationCenter.default.post(name: .userLoggedIn, object: session)
     }
 }
 

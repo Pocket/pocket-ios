@@ -28,6 +28,11 @@ public class RootViewModel: ObservableObject {
     private let refreshCoordinators: [RefreshCoordinator]
 
     private var subscriptions: Set<AnyCancellable> = []
+    // stores the currently active session
+    // NOTE: because appSession publishes session changes,
+    // we could potentially rely on a comparison between projected and wrapped value
+    // from appSession, but using a local state is probably safer and avoids any threading issue.
+    private var activeSession: SharedPocketKit.Session?
 
     public convenience init() {
         self.init(services: Services.shared)
@@ -61,6 +66,7 @@ public class RootViewModel: ObservableObject {
         refreshCoordinators: [RefreshCoordinator]
     ) {
         self.appSession = appSession
+        self.activeSession = appSession.currentSession
         self.tracker = tracker
         self.source = source
         self.userDefaults = userDefaults
@@ -70,48 +76,57 @@ public class RootViewModel: ObservableObject {
     }
 
     private func startObservingLogin() {
-        // Register for login notifications
-        NotificationCenter.default.publisher(
-            for: .userLoggedIn
-        ).sink { [weak self] notification in
-            self?.handleSession(session: notification.object as? SharedPocketKit.Session)
-        }.store(in: &subscriptions)
-
-        // Register for anonymous login notifications
-        NotificationCenter.default.publisher(
-            for: .anonymousAccess
-        ).sink { [weak self] notification in
-            self?.handleSession(session: notification.object as? SharedPocketKit.Session)
-        }.store(in: &subscriptions)
-
-        // Register for logout notifications
-        NotificationCenter.default.publisher(
-            for: .userLoggedOut
-        ).sink { [weak self] notification in
-            self?.handleSession(session: nil)
-        }.store(in: &subscriptions)
-        // Because session could already be available at init, lets try and use it.
-        handleSession(session: appSession.currentSession)
+        initializeSession(session: appSession.currentSession)
+        appSession
+            .$currentSession
+            .receive(on: DispatchQueue.global())
+            .sink { [weak self] session in
+                self?.updateSession(session)
+            }
+            .store(in: &subscriptions)
     }
 
-    /**
-     Handles a session if it exists.
-     */
-    func handleSession(session: SharedPocketKit.Session?) {
+    /// Handle session changes published by `AppSession`
+    /// - Parameter newSession: the new session
+    private func updateSession(_ newSession: SharedPocketKit.Session?) {
+        guard activeSession != newSession else {
+            // nothing to update
+            return
+        }
+        tearDownSession()
+        loggedOutViewModel = nil
+        mainViewModel = nil
+        guard let newSession else {
+            // TODO: in other places, we attach the old session, but we might not need this
+            NotificationCenter.default.post(name: .userLoggedOut, object: activeSession)
+            loggedOutViewModel = LoggedOutViewModel()
+            return
+        }
+        if newSession.isAnonymous {
+            NotificationCenter.default.post(name: .anonymousAccess, object: newSession)
+        } else {
+            NotificationCenter.default.post(name: .userLoggedIn, object: newSession)
+        }
+        mainViewModel = MainViewModel()
+    }
+
+    /// Initialize session at app launch
+    /// - Parameter session: the current session
+    private func initializeSession(session: SharedPocketKit.Session?) {
         guard let session = session else {
             // If the session is nil, ensure the user's view is logged out
-            self.tearDownSession()
-            self.mainViewModel = nil
-            self.loggedOutViewModel = LoggedOutViewModel()
+            tearDownSession()
+            mainViewModel = nil
+            loggedOutViewModel = LoggedOutViewModel()
             return
         }
 
         // We have a session! Ensure the user is logged in.
-        self.setUpSession(session)
+        setUpSession(session)
         // TODO: SIGNEDOUT - If session is handled as a state change between loggedIn and anonymousLogin,
         // we might need to deallocate or reuse the existing MainViewModel instance.
-        self.mainViewModel = MainViewModel()
-        self.loggedOutViewModel = nil
+        mainViewModel = MainViewModel()
+        loggedOutViewModel = nil
     }
 
     private func setUpSession(_ session: SharedPocketKit.Session) {

@@ -67,8 +67,6 @@ final class UserManagementService: ObservableObject, UserManagementServiceProtoc
     /// We do this on the main thread because the Notification Center will post to areas that will change the UI
     @MainActor
     func logout() {
-        // Post that we logged out to the rest of the app using the old session
-        notificationCenter.post(name: .userLoggedOut, object: appSession.currentSession)
         user.clear()
         appSession.clearCurrentSession()
         // TODO: SIGNEDOUT - handle anonymous session
