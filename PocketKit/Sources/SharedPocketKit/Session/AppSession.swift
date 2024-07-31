@@ -20,6 +20,11 @@ public class AppSession: ObservableObject {
         storedSession = nil
     }
 
+    /// Sets the current session to `anonymous`
+    public func setAnonymousSession() {
+        setCurrentSession(.anonymous())
+    }
+
     /// Set the current session to the passed session, both in memory and in the keychain
     /// - Parameter session: the passed session object
     public func setCurrentSession(_ session: Session) {
