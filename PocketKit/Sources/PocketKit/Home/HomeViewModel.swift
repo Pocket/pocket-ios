@@ -128,6 +128,8 @@ class HomeViewModel: NSObject {
 
     private let source: Source
     let tracker: Tracker
+    private let appSession: AppSession
+    private let accessService: PocketAccessService
     private let user: User
     private let userDefaults: UserDefaults
     private let networkPathMonitor: NetworkPathMonitor
@@ -150,6 +152,8 @@ class HomeViewModel: NSObject {
     init(
         source: Source,
         tracker: Tracker,
+        appsession: AppSession,
+        accessService: PocketAccessService,
         networkPathMonitor: NetworkPathMonitor,
         homeRefreshCoordinator: RefreshCoordinator,
         user: User,
@@ -162,6 +166,8 @@ class HomeViewModel: NSObject {
     ) {
         self.source = source
         self.tracker = tracker
+        self.appSession = appsession
+        self.accessService = accessService
         self.networkPathMonitor = networkPathMonitor
         networkPathMonitor.start(queue: .global(qos: .utility))
         self.homeRefreshCoordinator = homeRefreshCoordinator
@@ -796,6 +802,13 @@ extension HomeViewModel {
     private func primaryAction(for recommendation: Recommendation, at indexPath: IndexPath?) -> ItemAction? {
         guard let indexPath = indexPath else {
             return nil
+        }
+        // NOTE: we don't need to listen to session changes since HomeViewModel gets re-instantiated every time
+        // the app state changes (e.g. from Onboarding to signed in to anonymous, etc.
+        if let session = appSession.currentSession, session.isAnonymous {
+            return .recommendationPrimary { [weak self] _ in
+                self?.accessService.requestAuthentication()
+            }
         }
 
         return .recommendationPrimary { [weak self] _ in
