@@ -72,13 +72,13 @@ class LoggedOutViewModelTests: XCTestCase {
         refreshCoordinator: RefreshCoordinator? = nil
     ) -> LoggedOutViewModel {
         let viewModel = LoggedOutViewModel(
-            authorizationClient: authorizationClient ?? self.authorizationClient,
             appSession: appSession ?? self.appSession,
             networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor,
             tracker: tracker ?? self.tracker,
             userManagementService: userManagementService ?? self.userManagementService,
-            featureFlags: featureFlags ?? self.featureFlags,
-            refreshCoordinator: refreshCoordinator ?? self.refreshCoordinator
+            featureFlags: featureFlags ?? self.featureFlags, 
+            refreshCoordinator: refreshCoordinator ?? self.refreshCoordinator, 
+            accessService: PocketAccessService(authorizationClient: self.authorizationClient, appSession: self.appSession)
         )
         return viewModel
     }

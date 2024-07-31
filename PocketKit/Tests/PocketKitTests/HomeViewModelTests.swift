@@ -18,6 +18,7 @@ class HomeViewModelTests: XCTestCase {
     var space: Space!
     var networkPathMonitor: MockNetworkPathMonitor!
     var appSession: AppSession!
+    var accessService: PocketAccessService!
     var taskScheduler: MockBGTaskScheduler!
     var homeRefreshCoordinator: RefreshCoordinator!
     var subscriptions: Set<AnyCancellable> = []
@@ -30,6 +31,7 @@ class HomeViewModelTests: XCTestCase {
     var lastRefresh: UserDefaultsLastRefresh!
     var notificationCenter: NotificationCenter!
     var featureFlags: MockFeatureFlagService!
+    private var mockAuthenticationSession: MockAuthenticationSession!
 
     override func setUp() async throws {
         try await super.setUp()
@@ -46,6 +48,7 @@ class HomeViewModelTests: XCTestCase {
         lastRefresh.reset()
 
         appSession = AppSession(keychain: MockKeychain(), groupID: "groupId")
+
         appSession.setCurrentSession(SharedPocketKit.Session(guid: "test-guid", accessToken: "test-access-token", userIdentifier: "test-id"))
         homeRefreshCoordinator = HomeRefreshCoordinator(notificationCenter: .default, taskScheduler: taskScheduler, appSession: appSession, source: source, lastRefresh: lastRefresh)
         homeController = space.makeRecomendationsSlateLineupController()
@@ -53,9 +56,22 @@ class HomeViewModelTests: XCTestCase {
         sharedWithYouController = space.makeSharedWithYouController()
         subscriptionStore = MockSubscriptionStore()
         user = PocketUser(userDefaults: userDefaults)
-
+        
         tracker = MockTracker()
-
+        mockAuthenticationSession = MockAuthenticationSession()
+        mockAuthenticationSession.stubStart {
+            self.mockAuthenticationSession.completionHandler?(
+                self.mockAuthenticationSession.url,
+                self.mockAuthenticationSession.error
+            )
+            return true
+        }
+        
+        let authClient = AuthorizationClient(consumerKey: "the-consumer-key", adjustSignupEventToken: "token", tracker: tracker) { (_, _, completion) in
+            self.mockAuthenticationSession.completionHandler = completion
+            return self.mockAuthenticationSession
+        }
+        accessService = PocketAccessService(authorizationClient: authClient, appSession: appSession)
         source.stubMakeHomeController {
             self.homeController
         }
@@ -99,6 +115,8 @@ class HomeViewModelTests: XCTestCase {
         return HomeViewModel(
             source: source ?? self.source,
             tracker: tracker ?? self.tracker,
+            appsession: appSession,
+            accessService: accessService,
             networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor,
             homeRefreshCoordinator: homeRefreshCoordinator ?? self.homeRefreshCoordinator,
             user: user ?? self.user,

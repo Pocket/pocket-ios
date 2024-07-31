@@ -19,6 +19,7 @@ final class PushNotificationServiceTests: XCTestCase {
 
     private var subject: PushNotificationService!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         subscriptions = []
