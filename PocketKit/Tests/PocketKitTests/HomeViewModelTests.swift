@@ -56,7 +56,7 @@ class HomeViewModelTests: XCTestCase {
         sharedWithYouController = space.makeSharedWithYouController()
         subscriptionStore = MockSubscriptionStore()
         user = PocketUser(userDefaults: userDefaults)
-        
+
         tracker = MockTracker()
         mockAuthenticationSession = MockAuthenticationSession()
         mockAuthenticationSession.stubStart {
@@ -66,7 +66,7 @@ class HomeViewModelTests: XCTestCase {
             )
             return true
         }
-        
+
         let authClient = AuthorizationClient(consumerKey: "the-consumer-key", adjustSignupEventToken: "token", tracker: tracker) { (_, _, completion) in
             self.mockAuthenticationSession.completionHandler = completion
             return self.mockAuthenticationSession

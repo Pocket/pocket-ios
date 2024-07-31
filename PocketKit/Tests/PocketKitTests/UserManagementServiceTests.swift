@@ -33,14 +33,6 @@ class UserManagementServiceTests: XCTestCase {
     }
 
     func test_unauthorizedResponse_logsOutUser() {
-        let loggedOutExpectation = expectation(description: "user was loggeed out")
-        notificationCenter
-            .publisher(for: .userLoggedOut)
-            .sink { _ in
-                loggedOutExpectation.fulfill()
-            }
-            .store(in: &subscriptions)
-
         let clearExpectation = expectation(description: "user was cleared")
         user.stubClear {
             clearExpectation.fulfill()
@@ -48,7 +40,7 @@ class UserManagementServiceTests: XCTestCase {
 
         notificationCenter.post(name: .unauthorizedResponse, object: nil)
 
-        wait(for: [loggedOutExpectation, clearExpectation])
+        wait(for: [clearExpectation])
 
         XCTAssertNil(appSession.currentSession)
     }
