@@ -73,6 +73,15 @@ class SavedItemViewModel {
                 self?.infoViewModel = .loggedOut
             }
             .store(in: &subscriptions)
+
+        notificationCenter
+            .publisher(for: .anonymousAccess)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                // anonymous access is equivalent to logged out since saved items are not available.
+                self?.infoViewModel = .loggedOut
+            }
+            .store(in: &subscriptions)
     }
 
     func save(from context: ExtensionContext?) async {

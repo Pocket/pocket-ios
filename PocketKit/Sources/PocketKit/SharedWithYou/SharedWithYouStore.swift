@@ -57,15 +57,29 @@ private extension SharedWithYouStore {
         // Register for login notifications
         NotificationCenter.default.publisher(
             for: .userLoggedIn
-        ).sink { [weak self] _ in
+        )
+        .sink { [weak self] _ in
             self?.start()
-        }.store(in: &subscriptions)
+        }
+        .store(in: &subscriptions)
 
         // Register for logout notifications
         NotificationCenter.default.publisher(
             for: .userLoggedOut
-        ).sink { [weak self] _ in
+        )
+        .sink { [weak self] _ in
             self?.stop()
-        }.store(in: &subscriptions)
+        }
+        .store(in: &subscriptions)
+
+        // Register for anonymous access notifications
+        NotificationCenter.default.publisher(
+            for: .anonymousAccess
+        )
+        .sink { [weak self] _ in
+            // we do not show shared with you in anonymous access
+            self?.stop()
+        }
+        .store(in: &subscriptions)
     }
 }

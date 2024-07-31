@@ -105,16 +105,30 @@ private extension PocketSubscriptionStore {
         // Register for login notifications
         NotificationCenter.default.publisher(
             for: .userLoggedIn
-        ).sink { [weak self] _ in
+        )
+        .sink { [weak self] _ in
             self?.start()
-        }.store(in: &sessionSubscriptions)
+        }
+        .store(in: &sessionSubscriptions)
 
         // Register for logout notifications
         NotificationCenter.default.publisher(
             for: .userLoggedOut
-        ).sink { [weak self] _ in
+        )
+        .sink { [weak self] _ in
             self?.stop()
-        }.store(in: &sessionSubscriptions)
+        }
+        .store(in: &sessionSubscriptions)
+
+        // Register for logout notifications
+        NotificationCenter.default.publisher(
+            for: .anonymousAccess
+        )
+        .sink { [weak self] _ in
+            // premium upgrades are not available in anonymous access
+            self?.stop()
+        }
+        .store(in: &sessionSubscriptions)
     }
 
     /// Varify the passed transaction
