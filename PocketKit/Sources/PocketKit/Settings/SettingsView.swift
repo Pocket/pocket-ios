@@ -223,7 +223,7 @@ extension SettingsForm {
                 titleStyle: .settings.button.default,
                 icon: SFIconModel(
                     // TODO: SIGNEDOUT - replace with the final icon
-                    "figure.walk.arrival",
+                    "person",
                     weight: .semibold,
                     color: Color(.ui.black1)
                 )
