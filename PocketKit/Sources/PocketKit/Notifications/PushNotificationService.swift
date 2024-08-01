@@ -72,6 +72,8 @@ class PushNotificationService: NSObject {
      App wide subscriptions that we listen to.
      */
     private var subscriptions: Set<AnyCancellable> = []
+    /// used to store the registered session, so that it can be used to deregister it
+    private var registeredSession: SharedPocketKit.Session?
 
     init(source: Source, tracker: Tracker, appSession: AppSession, braze: BrazeProtocol, instantSync: InstantSyncProtocol) {
         self.source = source
@@ -91,6 +93,7 @@ class PushNotificationService: NSObject {
                     return
                 }
                 self?.loggedIn(session: session)
+                self?.registeredSession = session
             }
             .store(in: &subscriptions)
 
@@ -103,18 +106,15 @@ class PushNotificationService: NSObject {
                     return
                 }
                 self?.anonymousLogin(session: session)
+                self?.registeredSession = session
             }
             .store(in: &subscriptions)
 
         // Register for logout notifications
         NotificationCenter.default.publisher(for: .userLoggedOut)
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] notification in
-                guard let session = notification.object as? SharedPocketKit.Session  else {
-                    Log.capture(message: "Logged out publisher in PocketNotificationService could not convert to session")
-                    return
-                }
-                self?.loggedOut(session: session)
+            .sink { [weak self] _ in
+                self?.loggedOut()
             }
             .store(in: &subscriptions)
 
@@ -126,7 +126,7 @@ class PushNotificationService: NSObject {
      */
     private func handleSessionInitilization(session: SharedPocketKit.Session?) {
         guard let session = session else {
-            loggedOut(session: nil)
+            loggedOut()
             return
         }
         loggedIn(session: session)
@@ -141,21 +141,30 @@ class PushNotificationService: NSObject {
         registerForRemoteNotificationsWithApple()
         braze.loggedIn(session: session)
         instantSync.loggedIn(session: session)
+        registeredSession = session
     }
 
+    /// Notification actions upon receiving an anonymous session
+    /// - Parameter session: the anonymous session
     private func anonymousLogin(session: SharedPocketKit.Session) {
-        // TODO: SIGNEDOUT - handle anonymous login
+        // TODO: SIGNEDOUT - InstantSync requires auth to register, 
+        // thus since we don't have a valid session the only thing we can do is to deregister if we come from a logged in session.
+        // We could on the other hand still register braze, but for now let's keep the behavior consistent with the logged out status.
+        // TBD if this will change.
+        if registeredSession != nil {
+            loggedOut()
+        }
     }
 
     /**
      Perform the following notification actions on Logout:
      - Remove instant sync
      */
-    private func loggedOut(session: SharedPocketKit.Session?) {
-        // TODO: SIGNEDOUT - we might need to change this once signed out home is in place
+    private func loggedOut() {
         unregisterForRemoteNotificationsWithApple()
-        instantSync.loggedOut(session: session)
-        braze.loggedOut(session: session)
+        instantSync.loggedOut(session: registeredSession)
+        braze.loggedOut(session: registeredSession)
+        registeredSession = nil
     }
 }
 

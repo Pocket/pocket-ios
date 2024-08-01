@@ -28,11 +28,6 @@ public class RootViewModel: ObservableObject {
     private let refreshCoordinators: [RefreshCoordinator]
 
     private var subscriptions: Set<AnyCancellable> = []
-    // stores the currently active session
-    // NOTE: because appSession publishes session changes,
-    // we could potentially rely on a comparison between projected and wrapped value
-    // from appSession, but using a local state is probably safer and avoids any threading issue.
-    private var activeSession: SharedPocketKit.Session?
 
     public convenience init() {
         self.init(services: Services.shared)
@@ -66,7 +61,6 @@ public class RootViewModel: ObservableObject {
         refreshCoordinators: [RefreshCoordinator]
     ) {
         self.appSession = appSession
-        self.activeSession = appSession.currentSession
         self.tracker = tracker
         self.source = source
         self.userDefaults = userDefaults
@@ -79,7 +73,8 @@ public class RootViewModel: ObservableObject {
         initializeSession(session: appSession.currentSession)
         appSession
             .$currentSession
-            .receive(on: DispatchQueue.global())
+            .receive(on: DispatchQueue.main)
+            .dropFirst() // drop the value at init time
             .sink { [weak self] session in
                 self?.updateSession(session)
             }
@@ -89,16 +84,11 @@ public class RootViewModel: ObservableObject {
     /// Handle session changes published by `AppSession`
     /// - Parameter newSession: the new session
     private func updateSession(_ newSession: SharedPocketKit.Session?) {
-        guard activeSession != newSession else {
-            // nothing to update
-            return
-        }
         tearDownSession()
         loggedOutViewModel = nil
         mainViewModel = nil
         guard let newSession else {
-            // TODO: in other places, we attach the old session, but we might not need this
-            NotificationCenter.default.post(name: .userLoggedOut, object: activeSession)
+            NotificationCenter.default.post(name: .userLoggedOut, object: nil)
             loggedOutViewModel = LoggedOutViewModel()
             return
         }
