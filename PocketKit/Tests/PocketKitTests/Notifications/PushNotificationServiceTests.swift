@@ -19,7 +19,6 @@ final class PushNotificationServiceTests: XCTestCase {
 
     private var subject: PushNotificationService!
 
-    @MainActor
     override func setUp() {
         super.setUp()
         subscriptions = []
@@ -37,7 +36,6 @@ final class PushNotificationServiceTests: XCTestCase {
         braze.stubLoggedIn { _ in }
         instantSync.stubLoggedOut { _ in }
         braze.stubLoggedOut { _ in }
-        subject = PushNotificationService(source: source, tracker: tracker, appSession: appSession, braze: braze, instantSync: instantSync)
     }
 
     override func tearDown() {
@@ -45,8 +43,9 @@ final class PushNotificationServiceTests: XCTestCase {
 
         subscriptions = []
     }
-
-    func test_onLogin_didCallSubscribers() {
+    @MainActor
+    func test_onLogin_didCallSubscribers() async {
+        subject = PushNotificationService(source: source, tracker: tracker, appSession: appSession, braze: braze, instantSync: instantSync)
         let sessionExpectation = expectation(description: "published error event")
 
         NotificationCenter.default.publisher(
@@ -63,14 +62,16 @@ final class PushNotificationServiceTests: XCTestCase {
         }.store(in: &subscriptions)
 
         NotificationCenter.default.post(name: .userLoggedIn, object: session)
-
-        wait(for: [sessionExpectation], timeout: 2)
+        
+        await fulfillment(of: [sessionExpectation], timeout: 2)
 
         XCTAssertEqual(braze.loggedInCalls(), 2)
         XCTAssertEqual(instantSync.loggedInCalls(), 2)
     }
 
-    func test_onLogout_callsSubscribersWithLogoutSession() {
+    @MainActor
+    func test_onLogout_callsSubscribersWithLogoutSession() async {
+        subject = PushNotificationService(source: source, tracker: tracker, appSession: appSession, braze: braze, instantSync: instantSync)
         let sessionExpectation = expectation(description: "published error event")
 
         NotificationCenter.default.publisher(
@@ -88,7 +89,7 @@ final class PushNotificationServiceTests: XCTestCase {
 
         NotificationCenter.default.post(name: .userLoggedOut, object: SharedPocketKit.Session(guid: "logout-test-guid", accessToken: "logout-test-access-token", userIdentifier: "logout-test-id"))
 
-        wait(for: [sessionExpectation])
+        await fulfillment(of: [sessionExpectation], timeout: 2)
 
         XCTAssertEqual(braze.loggedOutCalls(), 1)
         XCTAssertEqual(instantSync.loggedOutCalls(), 1)
