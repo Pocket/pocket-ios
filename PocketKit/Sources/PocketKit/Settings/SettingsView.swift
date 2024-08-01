@@ -46,8 +46,10 @@ struct SettingsForm: View {
                     .textCase(nil)
                 Section(header: Text(Localization.appCustomization).style(.settings.header)) {
                     VStack {
-                        Toggle(Localization.showAppBadgeCount, isOn: model.$appBadgeToggle)
-                            .accessibilityIdentifier("app-badge-toggle")
+                        if !model.isAnonymous {
+                            Toggle(Localization.showAppBadgeCount, isOn: model.$appBadgeToggle)
+                                .accessibilityIdentifier("app-badge-toggle")
+                        }
                         Toggle(Localization.Settings.alwaysOpenOriginalView, isOn: model.$originalViewToggle)
                             .accessibilityIdentifier("original-view-toggle")
                         // Custom implementation to hide the > arrow and let us use our own.
