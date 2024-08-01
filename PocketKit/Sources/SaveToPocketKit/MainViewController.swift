@@ -43,7 +43,7 @@ class MainViewController: UIViewController {
             APIUserEntity(consumerKey: Keys.shared.pocketApiConsumerKey)
         ])
 
-        if let currentSession = appSession.currentSession {
+        if let currentSession = appSession.currentSession, !currentSession.isAnonymous {
             // Attach a user entity at launch if it exists
             tracker.addPersistentEntity(UserEntity(guid: currentSession.guid, userID: currentSession.userIdentifier, adjustAdId: Adjust.adid()))
         }
@@ -54,7 +54,7 @@ class MainViewController: UIViewController {
             userDefaults: userDefaults
         ).execute()
 
-        if appSession.currentSession == nil {
+        if appSession.currentSession == nil || appSession.currentSession?.isAnonymous == true {
             Log.clearUser()
             child = LoggedOutViewController(
                 viewModel: LoggedOutViewModel()
