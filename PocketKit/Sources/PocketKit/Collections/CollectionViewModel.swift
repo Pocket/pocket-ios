@@ -147,6 +147,10 @@ class CollectionViewModel: NSObject {
 
     // If savedItem exists, then unarchive the item to appear in Saves, otherwise save the item
     func moveToSaves(completion: (Bool) -> Void) {
+        guard accessService.accessLevel == .authenticated else {
+            accessService.requestAuthentication()
+            return
+        }
         guard let savedItem = item?.savedItem else {
             trackSave()
             source.save(url: url)
