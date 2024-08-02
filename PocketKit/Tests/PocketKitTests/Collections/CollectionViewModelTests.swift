@@ -21,6 +21,9 @@ class CollectionViewModelTests: XCTestCase {
     private var featureFlags: MockFeatureFlagService!
     private var notificationCenter: NotificationCenter!
     private var collectionController: RichFetchedResultsController<CollectionStory>!
+    var appSession: AppSession!
+    var accessService: PocketAccessService!
+    private var mockAuthenticationSession: MockAuthenticationSession!
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -38,6 +41,24 @@ class CollectionViewModelTests: XCTestCase {
 
         userDefaults = UserDefaults(suiteName: "CollectionViewModelTests")
         self.collectionController = space.makeCollectionStoriesController(slug: "slug-1")
+
+        appSession = AppSession(keychain: MockKeychain(), groupID: "groupId")
+        appSession.setCurrentSession(SharedPocketKit.Session(guid: "test-guid", accessToken: "test-access-token", userIdentifier: "test-id"))
+
+        mockAuthenticationSession = MockAuthenticationSession()
+        mockAuthenticationSession.stubStart {
+            self.mockAuthenticationSession.completionHandler?(
+                self.mockAuthenticationSession.url,
+                self.mockAuthenticationSession.error
+            )
+            return true
+        }
+
+        let authClient = AuthorizationClient(consumerKey: "the-consumer-key", adjustSignupEventToken: "token", tracker: tracker) { (_, _, completion) in
+            self.mockAuthenticationSession.completionHandler = completion
+            return self.mockAuthenticationSession
+        }
+        accessService = PocketAccessService(authorizationClient: authClient, appSession: appSession)
     }
 
     override func tearDownWithError() throws {
@@ -68,7 +89,8 @@ class CollectionViewModelTests: XCTestCase {
             networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor,
             userDefaults: userDefaults ?? self.userDefaults,
             featureFlags: featureFlags ?? self.featureFlags,
-            notificationCenter: notificationCenter ?? self.notificationCenter
+            notificationCenter: notificationCenter ?? self.notificationCenter,
+            accessService: accessService
         )
     }
 

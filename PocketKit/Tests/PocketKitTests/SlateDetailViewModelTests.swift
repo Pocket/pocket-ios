@@ -20,9 +20,12 @@ class SlateDetailViewModelTests: XCTestCase {
     var user: User!
     var userDefaults: UserDefaults!
     var featureFlags: MockFeatureFlagService!
+    var appSession: AppSession!
+    var accessService: PocketAccessService!
     private var subscriptionStore: SubscriptionStore!
     private var networkPathMonitor: MockNetworkPathMonitor!
     private var notificationCenter: NotificationCenter!
+    private var mockAuthenticationSession: MockAuthenticationSession!
 
     @MainActor
     override func setUp() {
@@ -44,6 +47,21 @@ class SlateDetailViewModelTests: XCTestCase {
         }
 
         featureFlags = MockFeatureFlagService()
+        appSession = AppSession(keychain: MockKeychain(), groupID: "groupId")
+        mockAuthenticationSession = MockAuthenticationSession()
+        mockAuthenticationSession.stubStart {
+            self.mockAuthenticationSession.completionHandler?(
+                self.mockAuthenticationSession.url,
+                self.mockAuthenticationSession.error
+            )
+            return true
+        }
+
+        let authClient = AuthorizationClient(consumerKey: "the-consumer-key", adjustSignupEventToken: "token", tracker: tracker) { (_, _, completion) in
+            self.mockAuthenticationSession.completionHandler = completion
+            return self.mockAuthenticationSession
+        }
+        accessService = PocketAccessService(authorizationClient: authClient, appSession: appSession)
     }
 
     override func tearDownWithError() throws {
@@ -71,7 +89,8 @@ class SlateDetailViewModelTests: XCTestCase {
             userDefaults: userDefaults ?? self.userDefaults,
             networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor,
             featureFlags: featureFlags,
-            notificationCenter: notificationCenter ?? self.notificationCenter
+            notificationCenter: notificationCenter ?? self.notificationCenter,
+            accessService: accessService
         )
     }
 

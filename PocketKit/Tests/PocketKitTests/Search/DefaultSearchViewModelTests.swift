@@ -24,6 +24,9 @@ class DefaultSearchViewModelTests: XCTestCase {
     private var itemsController: MockSavedItemsController!
     private var notificationCenter: NotificationCenter!
     private var featureFlags: MockFeatureFlagService!
+    var appSession: AppSession!
+    var accessService: PocketAccessService!
+    private var mockAuthenticationSession: MockAuthenticationSession!
 
     @MainActor
     override func setUpWithError() throws {
@@ -37,6 +40,22 @@ class DefaultSearchViewModelTests: XCTestCase {
         notificationCenter = .default
         searchService = MockSearchService()
         source.stubMakeSearchService { self.searchService }
+        appSession = AppSession(keychain: MockKeychain(), groupID: "groupId")
+        appSession.setCurrentSession(SharedPocketKit.Session(guid: "test-guid", accessToken: "test-access-token", userIdentifier: "test-id"))
+        mockAuthenticationSession = MockAuthenticationSession()
+        mockAuthenticationSession.stubStart {
+            self.mockAuthenticationSession.completionHandler?(
+                self.mockAuthenticationSession.url,
+                self.mockAuthenticationSession.error
+            )
+            return true
+        }
+
+        let authClient = AuthorizationClient(consumerKey: "the-consumer-key", adjustSignupEventToken: "token", tracker: tracker) { (_, _, completion) in
+            self.mockAuthenticationSession.completionHandler = completion
+            return self.mockAuthenticationSession
+        }
+        accessService = PocketAccessService(authorizationClient: authClient, appSession: appSession)
 
         subscriptionStore = MockSubscriptionStore()
 
@@ -85,6 +104,7 @@ class DefaultSearchViewModelTests: XCTestCase {
             tracker: tracker ?? self.tracker,
             store: subscriptionStore ?? self.subscriptionStore,
             notificationCenter: notificationCenter ?? self.notificationCenter,
+            accessService: accessService,
             premiumUpgradeViewModelFactory: {_ in
                 premiumViewModel
             }

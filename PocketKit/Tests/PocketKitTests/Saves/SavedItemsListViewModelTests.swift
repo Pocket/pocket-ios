@@ -16,7 +16,7 @@ class SavedItemsListViewModelTests: XCTestCase {
     var space: Space!
     var refreshCoordinator: RefreshCoordinator!
     var appSession: AppSession!
-
+    var accessService: PocketAccessService!
     var tracker: MockTracker!
     var itemsController: FetchedSavedItemsController!
     var listOptions: ListOptions!
@@ -27,6 +27,7 @@ class SavedItemsListViewModelTests: XCTestCase {
     var networkPathMonitor: NetworkPathMonitor!
     var userDefaults: UserDefaults!
     var featureFlags: MockFeatureFlagService!
+    private var mockAuthenticationSession: MockAuthenticationSession!
 
     @MainActor
     override func setUp() {
@@ -46,6 +47,21 @@ class SavedItemsListViewModelTests: XCTestCase {
         user = PocketUser(userDefaults: userDefaults)
         listOptions = .saved(userDefaults: userDefaults)
         listOptions.selectedSortOption = .newest
+
+        mockAuthenticationSession = MockAuthenticationSession()
+        mockAuthenticationSession.stubStart {
+            self.mockAuthenticationSession.completionHandler?(
+                self.mockAuthenticationSession.url,
+                self.mockAuthenticationSession.error
+            )
+            return true
+        }
+
+        let authClient = AuthorizationClient(consumerKey: "the-consumer-key", adjustSignupEventToken: "token", tracker: tracker) { (_, _, completion) in
+            self.mockAuthenticationSession.completionHandler = completion
+            return self.mockAuthenticationSession
+        }
+        accessService = PocketAccessService(authorizationClient: authClient, appSession: appSession)
 
         itemsController = FetchedSavedItemsController(resultsController: NSFetchedResultsController(
             fetchRequest: Requests.fetchSavedItems(),
@@ -108,7 +124,8 @@ class SavedItemsListViewModelTests: XCTestCase {
             refreshCoordinator: refreshCoordinator,
             networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor,
             userDefaults: userDefaults ?? self.userDefaults,
-            featureFlags: featureFlags ?? self.featureFlags
+            featureFlags: featureFlags ?? self.featureFlags,
+            accessService: accessService
         )
     }
 
