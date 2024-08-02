@@ -62,31 +62,37 @@ public struct RootView: View {
     }
 
     public var body: some View {
-        if let model = model.mainViewModel {
-            mainView(model: model)
-                .onOpenURL { url in
-                    model.handle(url)
-                }
-                .onContinueUserActivity(NSUserActivityTypeBrowsingWeb, perform: { userActivity in
-                    guard let url = userActivity.webpageURL else {
-                        return
-                    }
-                    model.handle(url)
-                })
-                // Continues opening an Item that a user tapped on.
-                // we could also listen on CSQueryContinuationActionType which will contiunue a search.
-                .onContinueUserActivity(CSSearchableItemActionType, perform: { userActivity in
-                    model.handleSpotlight(userActivity)
-                })
-        }
+        switch model.viewState {
+        case .loggedIn(let mainViewModel):
+            mainView(model: mainViewModel)
 
-        if let model = model.loggedOutViewModel {
-            loggedOutView(model: model)
+        case .anonymous(let mainViewModel):
+            mainView(model: mainViewModel)
+
+        case .loggedOut(let loggedOutViewModel):
+            loggedOutView(model: loggedOutViewModel)
+
+        case .none:
+            EmptyView()
         }
     }
 
-    private func mainView(model: MainViewModel) -> MainView {
+    private func mainView(model: MainViewModel) -> some View {
         MainView(model: model, bannerPresenter: Services.shared.bannerPresenter)
+            .onOpenURL { url in
+                model.handle(url)
+            }
+            .onContinueUserActivity(NSUserActivityTypeBrowsingWeb, perform: { userActivity in
+                guard let url = userActivity.webpageURL else {
+                    return
+                }
+                model.handle(url)
+            })
+        // Continues opening an Item that a user tapped on.
+        // we could also listen on CSQueryContinuationActionType which will contiunue a search.
+            .onContinueUserActivity(CSSearchableItemActionType, perform: { userActivity in
+                model.handleSpotlight(userActivity)
+            })
     }
 
     private func loggedOutView(model: LoggedOutViewModel) -> LoggedOutViewControllerSwiftUI {

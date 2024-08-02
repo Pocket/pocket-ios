@@ -15,9 +15,14 @@ import SwiftUI
 
 @MainActor
 public class RootViewModel: ObservableObject {
-    @Published var mainViewModel: MainViewModel?
-    @Published var loggedOutViewModel: LoggedOutViewModel?
-    @Published var isLoggedIn = false
+    enum ViewState {
+        case loggedIn(MainViewModel)
+        case anonymous(MainViewModel)
+        case loggedOut(LoggedOutViewModel)
+    }
+
+    /// determines the state of RootView at any given moment
+    @Published private(set) var viewState: ViewState?
 
     private let appSession: AppSession
     private let tracker: Tracker
@@ -85,19 +90,18 @@ public class RootViewModel: ObservableObject {
     /// - Parameter newSession: the new session
     private func updateSession(_ newSession: SharedPocketKit.Session?) {
         tearDownSession()
-        loggedOutViewModel = nil
-        mainViewModel = nil
         guard let newSession else {
+            viewState = .loggedOut(LoggedOutViewModel())
             NotificationCenter.default.post(name: .userLoggedOut, object: nil)
-            loggedOutViewModel = LoggedOutViewModel()
             return
         }
         if newSession.isAnonymous {
+            viewState = .anonymous(MainViewModel())
             NotificationCenter.default.post(name: .anonymousAccess, object: newSession)
         } else {
             NotificationCenter.default.post(name: .userLoggedIn, object: newSession)
+            viewState = .loggedIn(MainViewModel())
         }
-        mainViewModel = MainViewModel()
     }
 
     /// Initialize session at app launch
@@ -106,17 +110,13 @@ public class RootViewModel: ObservableObject {
         guard let session = session else {
             // If the session is nil, ensure the user's view is logged out
             tearDownSession()
-            mainViewModel = nil
-            loggedOutViewModel = LoggedOutViewModel()
+            viewState = .loggedOut(LoggedOutViewModel())
             return
         }
 
         // We have a session! Ensure the user is logged in.
         setUpSession(session)
-        // TODO: SIGNEDOUT - If session is handled as a state change between loggedIn and anonymousLogin,
-        // we might need to deallocate or reuse the existing MainViewModel instance.
-        mainViewModel = MainViewModel()
-        loggedOutViewModel = nil
+        viewState = session.isAnonymous ? .anonymous(MainViewModel()) : .loggedIn(MainViewModel())
     }
 
     private func setUpSession(_ session: SharedPocketKit.Session) {
