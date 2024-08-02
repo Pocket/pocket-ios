@@ -133,29 +133,7 @@ class HomeViewController: UIViewController {
         collectionView.refreshControl = UIRefreshControl(frame: .zero, primaryAction: action)
 
         navigationItem.title = Localization.home
-        collectionView
-            .publisher(for: \.contentSize, options: [.new])
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] contentSize in
-            self?.setupOverflowView(contentSize: contentSize)
-        }.store(in: &subscriptions)
-
-        collectionView
-            .publisher(for: \.contentOffset, options: [.new])
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] contentOffset in
-            self?.updateOverflowView(contentOffset: contentOffset)
-        }.store(in: &subscriptions)
-
-        model.$snapshot
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] snapshot in
-                guard let self, let dataSource = self.dataSource else {
-                    return
-                }
-                dataSource.apply(snapshot)
-                Log.breadcrumb(category: "home", level: .debug, message: "➡️ Applying snapshot - #sections: \(snapshot.numberOfSections), #items: \(snapshot.numberOfItems)")
-            }.store(in: &subscriptions)
+        subscribeToPublishers()
     }
 
     override func viewDidLoad() {
@@ -190,6 +168,50 @@ class HomeViewController: UIViewController {
                 }
             }
         }
+    }
+
+    /// Subscribe to all publishers
+    private func subscribeToPublishers() {
+        collectionView
+            .publisher(for: \.contentSize, options: [.new])
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] contentSize in
+            self?.setupOverflowView(contentSize: contentSize)
+        }.store(in: &subscriptions)
+
+        collectionView
+            .publisher(for: \.contentOffset, options: [.new])
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] contentOffset in
+            self?.updateOverflowView(contentOffset: contentOffset)
+        }.store(in: &subscriptions)
+
+        model.$snapshot
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] snapshot in
+                guard let self, let dataSource = self.dataSource else {
+                    return
+                }
+                dataSource.apply(snapshot)
+                Log.breadcrumb(category: "home", level: .debug, message: "➡️ Applying snapshot - #sections: \(snapshot.numberOfSections), #items: \(snapshot.numberOfItems)")
+            }.store(in: &subscriptions)
+
+        // ensure that any child view gets popped when switching between anonymous and logged in modes
+        NotificationCenter.default
+            .publisher(for: .userLoggedIn)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.navigationController?.popViewController(animated: false)
+            }
+            .store(in: &subscriptions)
+
+        NotificationCenter.default
+            .publisher(for: .anonymousAccess)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.navigationController?.popViewController(animated: false)
+            }
+            .store(in: &subscriptions)
     }
 
     private func handleRefresh(isForced: Bool = false, completion: @escaping () -> Void) {
