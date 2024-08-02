@@ -30,8 +30,20 @@ class SharedWithYouListViewModel {
     private var subscriptions: [AnyCancellable] = []
     private let featureFlags: FeatureFlagServiceProtocol
     private let notificationCenter: NotificationCenter
+    private let accessService: PocketAccessService
 
-    init(list: [SharedWithYouItem], source: Source, tracker: Tracker, user: User, store: SubscriptionStore, userDefaults: UserDefaults, networkPathMonitor: NetworkPathMonitor, featureFlags: FeatureFlagServiceProtocol, notificationCenter: NotificationCenter) {
+    init(
+        list: [SharedWithYouItem],
+        source: Source,
+        tracker: Tracker,
+        user: User,
+        store: SubscriptionStore,
+        userDefaults: UserDefaults,
+        networkPathMonitor: NetworkPathMonitor,
+        featureFlags: FeatureFlagServiceProtocol,
+        notificationCenter: NotificationCenter,
+        accessService: PocketAccessService
+    ) {
         self.list = list
         self.source = source
         self.tracker = tracker
@@ -42,6 +54,7 @@ class SharedWithYouListViewModel {
         self.featureFlags = featureFlags
         self.networkPathMonitor = networkPathMonitor
         self.notificationCenter = notificationCenter
+        self.accessService = accessService
 
         NotificationCenter.default.publisher(
             for: NSManagedObjectContext.didSaveObjectsNotification,
@@ -101,7 +114,18 @@ extension SharedWithYouListViewModel {
         var destination: ContentOpen.Destination = .internal
 
         if let slug = item.collectionSlug {
-            selectedCollectionViewModel = CollectionViewModel(slug: slug, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults, featureFlags: featureFlags, notificationCenter: notificationCenter)
+            selectedCollectionViewModel = CollectionViewModel(
+                slug: slug,
+                source: source,
+                tracker: tracker,
+                user: user,
+                store: store,
+                networkPathMonitor: networkPathMonitor,
+                userDefaults: userDefaults,
+                featureFlags: featureFlags,
+                notificationCenter: notificationCenter,
+                accessService: accessService
+            )
         } else if item.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
             guard let bestURL = URL(percentEncoding: item.bestURL) else { return }
             let url = pocketPremiumURL(bestURL, user: user)

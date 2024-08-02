@@ -80,6 +80,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     private let tracker: Tracker
     private let itemsController: SavedItemsController
     private let user: User
+    private let accessService: PocketAccessService
 
     private var subscriptions: [AnyCancellable] = []
     private var store: SubscriptionStore
@@ -93,7 +94,20 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
     let userDefaults: UserDefaults
 
-    init(source: Source, tracker: Tracker, viewType: SavesViewType, listOptions: ListOptions, notificationCenter: NotificationCenter, user: User, store: SubscriptionStore, refreshCoordinator: RefreshCoordinator, networkPathMonitor: NetworkPathMonitor, userDefaults: UserDefaults, featureFlags: FeatureFlagServiceProtocol) {
+    init(
+        source: Source,
+        tracker: Tracker,
+        viewType: SavesViewType,
+        listOptions: ListOptions,
+        notificationCenter: NotificationCenter,
+        user: User,
+        store: SubscriptionStore,
+        refreshCoordinator: RefreshCoordinator,
+        networkPathMonitor: NetworkPathMonitor,
+        userDefaults: UserDefaults,
+        featureFlags: FeatureFlagServiceProtocol,
+        accessService: PocketAccessService
+    ) {
         self.source = source
         self.refreshCoordinator = refreshCoordinator
         self.tracker = tracker
@@ -106,6 +120,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         self.networkPathMonitor = networkPathMonitor
         self.userDefaults = userDefaults
         self.featureFlags = featureFlags
+        self.accessService = accessService
 
         switch self.viewType {
         case .saves:
@@ -637,7 +652,18 @@ extension SavedItemsListViewModel {
         )
 
         if let slug = readable.collection?.slug ?? readable.slug {
-            let collectionViewModel = CollectionViewModel(slug: slug, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults, featureFlags: featureFlags, notificationCenter: notificationCenter)
+            let collectionViewModel = CollectionViewModel(
+                slug: slug,
+                source: source,
+                tracker: tracker,
+                user: user,
+                store: store,
+                networkPathMonitor: networkPathMonitor,
+                userDefaults: userDefaults,
+                featureFlags: featureFlags,
+                notificationCenter: notificationCenter,
+                accessService: accessService
+            )
             selectedItem = .collection(collectionViewModel)
         } else if savedItem.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
             selectedItem = .webView(readable)

@@ -20,14 +20,19 @@ struct CollectionStoryViewModel: Hashable {
     }
 
     private(set) var collectionStory: CollectionStory
-    private let source: Source?
     private let tracker: Tracker
+    var primaryAction: ItemAction?
     let overflowActions: [ItemAction]?
 
-    init(collectionStory: CollectionStory, source: Source? = nil, tracker: Tracker, overflowActions: [ItemAction]?) {
+    init(
+        collectionStory: CollectionStory,
+        tracker: Tracker,
+        primaryAction: ItemAction,
+        overflowActions: [ItemAction]?
+    ) {
         self.collectionStory = collectionStory
-        self.source = source
         self.tracker = tracker
+        self.primaryAction = primaryAction
         self.overflowActions = overflowActions
     }
 }
@@ -96,33 +101,8 @@ extension CollectionStoryViewModel: ItemCellViewModel {
         return Localization.Home.Recommendation.readTime(timeToRead)
     }
 
-    var primaryAction: ItemAction? {
-        .recommendationPrimary { _ in
-            if !self.collectionStory.isSaved {
-                trackStorySave()
-                self.source?.save(collectionStory: self.collectionStory)
-            } else {
-                trackStoryUnSave()
-                self.source?.archive(collectionStory: self.collectionStory)
-            }
-        }
-    }
-
     var sharedWithYouUrlString: String? {
         // not applicable for collection story
         nil
-    }
-}
-
-// MARK: - Analytics
-private extension CollectionStoryViewModel {
-    /// track user saving a story
-    func trackStorySave() {
-        tracker.track(event: Events.Collection.storySaveClicked(url: collectionStory.url))
-    }
-
-    /// track user unsaving a story
-    func trackStoryUnSave() {
-        tracker.track(event: Events.Collection.storyUnSaveClicked(url: collectionStory.url))
     }
 }

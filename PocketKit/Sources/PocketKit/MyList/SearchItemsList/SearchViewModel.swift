@@ -48,6 +48,7 @@ class DefaultSearchViewModel: ObservableObject {
     private let source: Source
     private let premiumUpgradeViewModelFactory: PremiumUpgradeViewModelFactory
     private let notificationCenter: NotificationCenter
+    private let accessService: PocketAccessService
 
     private var savesLocalSearch: LocalSavesSearch
     private var savesOnlineSearch: OnlineSearch
@@ -125,15 +126,18 @@ class DefaultSearchViewModel: ObservableObject {
         }
     }
 
-    init(networkPathMonitor: NetworkPathMonitor,
-         user: User,
-         userDefaults: UserDefaults,
-         featureFlags: FeatureFlagServiceProtocol,
-         source: Source,
-         tracker: Tracker,
-         store: SubscriptionStore,
-         notificationCenter: NotificationCenter,
-         premiumUpgradeViewModelFactory: @escaping PremiumUpgradeViewModelFactory) {
+    init(
+        networkPathMonitor: NetworkPathMonitor,
+        user: User,
+        userDefaults: UserDefaults,
+        featureFlags: FeatureFlagServiceProtocol,
+        source: Source,
+        tracker: Tracker,
+        store: SubscriptionStore,
+        notificationCenter: NotificationCenter,
+        accessService: PocketAccessService,
+        premiumUpgradeViewModelFactory: @escaping PremiumUpgradeViewModelFactory
+    ) {
         self.networkPathMonitor = networkPathMonitor
         self.user = user
         self.userDefaults = userDefaults
@@ -143,6 +147,7 @@ class DefaultSearchViewModel: ObservableObject {
         self.store = store
         self.notificationCenter = notificationCenter
         self.premiumUpgradeViewModelFactory = premiumUpgradeViewModelFactory
+        self.accessService = accessService
         itemsController = source.makeSavesController()
 
         savesLocalSearch = LocalSavesSearch(source: source)
@@ -526,7 +531,18 @@ extension DefaultSearchViewModel: SearchResultActionDelegate {
         )
 
         if let slug = readable.slug {
-            let collectionViewModel = CollectionViewModel(slug: slug, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults, featureFlags: featureFlags, notificationCenter: notificationCenter)
+            let collectionViewModel = CollectionViewModel(
+                slug: slug,
+                source: source,
+                tracker: tracker,
+                user: user,
+                store: store,
+                networkPathMonitor: networkPathMonitor,
+                userDefaults: userDefaults,
+                featureFlags: featureFlags,
+                notificationCenter: notificationCenter,
+                accessService: accessService
+            )
             selectedItem = .collection(collectionViewModel)
         } else if savedItem.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
             trackOpenSearchItem(url: savedItem.url, index: index, destination: .internal)

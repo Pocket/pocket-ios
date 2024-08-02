@@ -377,7 +377,8 @@ extension HomeViewModel {
             userDefaults: userDefaults,
             networkPathMonitor: networkPathMonitor,
             featureFlags: featureFlags,
-            notificationCenter: notificationCenter
+            notificationCenter: notificationCenter,
+            accessService: accessService
         ))
     }
 
@@ -391,7 +392,8 @@ extension HomeViewModel {
             userDefaults: userDefaults,
             networkPathMonitor: networkPathMonitor,
             featureFlags: featureFlags,
-            notificationCenter: notificationCenter
+            notificationCenter: notificationCenter,
+            accessService: accessService
         ))
     }
 
@@ -408,7 +410,8 @@ extension HomeViewModel {
                 userDefaults: userDefaults,
                 featureFlags: featureFlags,
                 notificationCenter: notificationCenter,
-                readableSource: .external
+                readableSource: .external,
+                accessService: accessService
             ))
         } else {
             let viewModel = RecommendableItemViewModel(
@@ -446,7 +449,8 @@ extension HomeViewModel {
                 userDefaults: userDefaults,
                 featureFlags: featureFlags,
                 notificationCenter: notificationCenter,
-                readableSource: readableSource
+                readableSource: readableSource,
+                accessService: accessService
             ))
         } else {
             let viewModel = RecommendableItemViewModel(
@@ -526,7 +530,8 @@ extension HomeViewModel {
                 userDefaults: userDefaults,
                 featureFlags: featureFlags,
                 notificationCenter: notificationCenter,
-                readableSource: readableSource
+                readableSource: readableSource,
+                accessService: accessService
             ))
         } else {
             let viewModel = SavedItemViewModel(
@@ -566,7 +571,8 @@ extension HomeViewModel {
                 userDefaults: userDefaults,
                 featureFlags: featureFlags,
                 notificationCenter: notificationCenter,
-                readableSource: readableSource
+                readableSource: readableSource,
+                accessService: accessService
             ))
         } else {
             let viewModel = RecommendableItemViewModel(

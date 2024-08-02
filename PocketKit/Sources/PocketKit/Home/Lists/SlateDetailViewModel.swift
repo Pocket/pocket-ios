@@ -40,8 +40,20 @@ class SlateDetailViewModel {
     private var subscriptions: [AnyCancellable] = []
     private let featureFlags: FeatureFlagServiceProtocol
     private let notificationCenter: NotificationCenter
+    private let accessService: PocketAccessService
 
-    init(slate: Slate, source: Source, tracker: Tracker, user: User, store: SubscriptionStore, userDefaults: UserDefaults, networkPathMonitor: NetworkPathMonitor, featureFlags: FeatureFlagServiceProtocol, notificationCenter: NotificationCenter) {
+    init(
+        slate: Slate,
+        source: Source,
+        tracker: Tracker,
+        user: User,
+        store: SubscriptionStore,
+        userDefaults: UserDefaults,
+        networkPathMonitor: NetworkPathMonitor,
+        featureFlags: FeatureFlagServiceProtocol,
+        notificationCenter: NotificationCenter,
+        accessService: PocketAccessService
+    ) {
         self.slate = slate
         self.source = source
         self.tracker = tracker
@@ -52,6 +64,7 @@ class SlateDetailViewModel {
         self.featureFlags = featureFlags
         self.networkPathMonitor = networkPathMonitor
         self.notificationCenter = notificationCenter
+        self.accessService = accessService
 
         NotificationCenter.default.publisher(
             for: NSManagedObjectContext.didSaveObjectsNotification,
@@ -128,7 +141,18 @@ extension SlateDetailViewModel {
         var destination: ContentOpen.Destination = .internal
 
         if let slug = recommendation.collection?.slug ?? recommendation.item.collectionSlug {
-            selectedCollectionViewModel = CollectionViewModel(slug: slug, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults, featureFlags: featureFlags, notificationCenter: notificationCenter)
+            selectedCollectionViewModel = CollectionViewModel(
+                slug: slug,
+                source: source,
+                tracker: tracker,
+                user: user,
+                store: store,
+                networkPathMonitor: networkPathMonitor,
+                userDefaults: userDefaults,
+                featureFlags: featureFlags,
+                notificationCenter: notificationCenter,
+                accessService: accessService
+            )
         } else if item.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
             guard let bestURL = URL(percentEncoding: item.bestURL) else { return }
             let url = pocketPremiumURL(bestURL, user: user)
@@ -173,7 +197,20 @@ extension SlateDetailViewModel {
                 title: recommendation.title
             )
         }
+        let primaryAction: ItemAction = accessService.accessLevel == .anonymous ?
+            .recommendationPrimary { [weak self] _ in
+                self?.accessService.requestAuthentication()
+            } :
+            .recommendationPrimary { [weak self] _ in
+                let isSaved = recommendation.item.savedItem != nil
+                && recommendation.item.savedItem?.isArchived == false
 
+                if isSaved {
+                    self?.archive(recommendation, at: indexPath)
+                } else {
+                    self?.save(recommendation, at: indexPath)
+                }
+            }
         return HomeItemCellViewModel(
             item: recommendation.item,
             overflowActions: [
@@ -185,16 +222,7 @@ extension SlateDetailViewModel {
                     self?.report(recommendation, at: indexPath)
                 }
             ],
-            primaryAction: .recommendationPrimary { [weak self] _ in
-                let isSaved = recommendation.item.savedItem != nil
-                && recommendation.item.savedItem?.isArchived == false
-
-                if isSaved {
-                    self?.archive(recommendation, at: indexPath)
-                } else {
-                    self?.save(recommendation, at: indexPath)
-                }
-            },
+            primaryAction: primaryAction,
             imageURL: recommendation.bestImageURL,
             title: recommendation.title
         )

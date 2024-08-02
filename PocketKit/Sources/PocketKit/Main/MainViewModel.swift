@@ -40,7 +40,8 @@ class MainViewModel: ObservableObject {
                     source: Services.shared.source,
                     tracker: Services.shared.tracker.childTracker(hosting: .saves.search),
                     store: Services.shared.subscriptionStore,
-                    notificationCenter: Services.shared.notificationCenter
+                    notificationCenter: Services.shared.notificationCenter,
+                    accessService: Services.shared.accessService
                 ) { source in
                     PremiumUpgradeViewModel(
                         store: Services.shared.subscriptionStore,
@@ -60,7 +61,8 @@ class MainViewModel: ObservableObject {
                     refreshCoordinator: Services.shared.savesRefreshCoordinator,
                     networkPathMonitor: NWPathMonitor(),
                     userDefaults: Services.shared.userDefaults,
-                    featureFlags: Services.shared.featureFlagService
+                    featureFlags: Services.shared.featureFlagService,
+                    accessService: Services.shared.accessService
                 ),
                 archivedItemsList: SavedItemsListViewModel(
                     source: Services.shared.source,
@@ -73,7 +75,8 @@ class MainViewModel: ObservableObject {
                     refreshCoordinator: Services.shared.archiveRefreshCoordinator,
                     networkPathMonitor: NWPathMonitor(),
                     userDefaults: Services.shared.userDefaults,
-                    featureFlags: Services.shared.featureFlagService
+                    featureFlags: Services.shared.featureFlagService,
+                    accessService: Services.shared.accessService
                 ),
                 addSavedItemModel: AddSavedItemViewModel(
                     source: Services.shared.source,

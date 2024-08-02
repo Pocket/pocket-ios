@@ -47,6 +47,7 @@ class CollectionViewModel: NSObject {
     private let userDefaults: UserDefaults
     private let featureFlags: FeatureFlagServiceProtocol
     private let notificationCenter: NotificationCenter
+    private let accessService: PocketAccessService
 
     private let collectionController: RichFetchedResultsController<CollectionStory>
 
@@ -65,7 +66,8 @@ class CollectionViewModel: NSObject {
         userDefaults: UserDefaults,
         featureFlags: FeatureFlagServiceProtocol,
         notificationCenter: NotificationCenter,
-        readableSource: ReadableSource = .app
+        readableSource: ReadableSource = .app,
+        accessService: PocketAccessService
     ) {
         self.slug = slug
         self.source = source
@@ -77,6 +79,7 @@ class CollectionViewModel: NSObject {
         self.featureFlags = featureFlags
         self.notificationCenter = notificationCenter
         self.readableSource = readableSource
+        self.accessService = accessService
 
         self.collectionController = source.makeCollectionStoriesController(slug: slug)
 
@@ -281,10 +284,23 @@ extension CollectionViewModel {
 // MARK: - Cell Selection
 extension CollectionViewModel {
     func storyViewModel(for story: CollectionStory) -> CollectionStoryViewModel {
+        let primaryAction: ItemAction = accessService.accessLevel == .anonymous ?
+            .recommendationPrimary { [weak self] _ in
+                self?.accessService.requestAuthentication()
+            } :
+            .recommendationPrimary { [weak self] _ in
+                if !story.isSaved {
+                    self?.source.save(collectionStory: story)
+                    self?.tracker.track(event: Events.Collection.storySaveClicked(url: story.url))
+                } else {
+                    self?.source.archive(collectionStory: story)
+                    self?.tracker.track(event: Events.Collection.storyUnSaveClicked(url: story.url))
+                }
+            }
         return CollectionStoryViewModel(
             collectionStory: story,
-            source: source,
             tracker: tracker,
+            primaryAction: primaryAction,
             overflowActions: [
                 .share { [weak self] sender in
                     self?.trackStoryShare(storyURL: story.url)
@@ -312,7 +328,18 @@ extension CollectionViewModel {
         // Check if item is a collection
         if let slug = story.item?.collectionSlug {
             selectedItem = .collection(
-                CollectionViewModel(slug: slug, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults, featureFlags: featureFlags, notificationCenter: notificationCenter)
+                CollectionViewModel(
+                    slug: slug,
+                    source: source,
+                    tracker: tracker,
+                    user: user,
+                    store: store,
+                    networkPathMonitor: networkPathMonitor,
+                    userDefaults: userDefaults,
+                    featureFlags: featureFlags,
+                    notificationCenter: notificationCenter,
+                    accessService: accessService
+                )
             )
             // Check if item is a saved item
         } else if let item = story.item, !item.shouldOpenInWebView(override: featureFlags.shouldDisableReader), let savedItem = item.savedItem {
@@ -345,7 +372,18 @@ extension CollectionViewModel {
         // Else open item in webview
         } else if let slug = CollectionUrlFormatter.slug(from: story.url) {
             selectedItem = .collection(
-                CollectionViewModel(slug: slug, source: source, tracker: tracker, user: user, store: store, networkPathMonitor: networkPathMonitor, userDefaults: userDefaults, featureFlags: featureFlags, notificationCenter: notificationCenter)
+                CollectionViewModel(
+                    slug: slug,
+                    source: source,
+                    tracker: tracker,
+                    user: user,
+                    store: store,
+                    networkPathMonitor: networkPathMonitor,
+                    userDefaults: userDefaults,
+                    featureFlags: featureFlags,
+                    notificationCenter: notificationCenter,
+                    accessService: accessService
+                )
             )
         } else {
             guard let bestURL = URL(percentEncoding: story.url) else { return }
