@@ -43,8 +43,6 @@ private extension RootView {
                 }
                 model.handle(url)
             })
-        // Continues opening an Item that a user tapped on.
-        // we could also listen on CSQueryContinuationActionType which will contiunue a search.
             .onContinueUserActivity(CSSearchableItemActionType, perform: { userActivity in
                 model.handleSpotlight(userActivity)
             })
@@ -64,8 +62,8 @@ private extension RootView {
     }
 
     func configureNavigationBarAppearance() {
-        let standardAppearance = standardNavigationBarAppearance
-        let largeTitleAppearance = largeTitleNavigationBarAppearance
+        let standardAppearance = makeStandardNavigationBarAppearance()
+        let largeTitleAppearance = makeLargeTitleNavigationBarAppearance()
 
         UINavigationBar.appearance().standardAppearance = standardAppearance
         UINavigationBar.appearance().compactAppearance = standardAppearance
@@ -74,52 +72,58 @@ private extension RootView {
     }
 
     func configureTabBarAppearance() {
-        let appearance = tabBarAppearance
+        let appearance = makeTabBarAppearance()
 
-        // Use this appearance when scrolling behind the TabView:
         UITabBar.appearance().standardAppearance = appearance
-        // Use this appearance when scrolled all the way up:
         UITabBar.appearance().scrollEdgeAppearance = appearance
     }
     /// Large title navigation bar appearance with blur effect
-    var largeTitleNavigationBarAppearance: UINavigationBarAppearance {
+    func makeLargeTitleNavigationBarAppearance() -> UINavigationBarAppearance {
         let appearance = UINavigationBarAppearance()
+
         appearance.backgroundEffect = blurEffect
         appearance.titleTextAttributes[.foregroundColor] = UIColor(.ui.grey1)
         appearance.backgroundColor = UIColor(.ui.white1)
         appearance.shadowColor = UIColor(.ui.white1)
+
         return appearance
     }
     /// Standard navigation bar appearance with blur effect
-    var standardNavigationBarAppearance: UINavigationBarAppearance {
+    func makeStandardNavigationBarAppearance() -> UINavigationBarAppearance {
         let appearance = UINavigationBarAppearance()
+
         appearance.backgroundEffect = blurEffect
         appearance.titleTextAttributes[.foregroundColor] = UIColor(.ui.grey1)
+
         return appearance
     }
 
     /// Tab bar blur effect
     /// see https://stackoverflow.com/questions/56969309/change-tabbed-view-bar-color-swiftui
     var blurEffect: UIBlurEffect? {
-        tabBarAppearance.backgroundEffect
+        makeTabBarAppearance().backgroundEffect
     }
 
-    var tabBarAppearance: UITabBarAppearance {
+    func makeTabBarAppearance() -> UITabBarAppearance {
+        let itemAppearance = makeTabItemAppearance()
         let tabBarAppearance = UITabBarAppearance()
-        tabBarAppearance.selectionIndicatorTintColor = UIColor(.ui.grey1)
 
-        tabBarAppearance.stackedLayoutAppearance = tabItemAppearance
-        tabBarAppearance.compactInlineLayoutAppearance = tabItemAppearance
-        tabBarAppearance.inlineLayoutAppearance = tabItemAppearance
+        tabBarAppearance.selectionIndicatorTintColor = UIColor(.ui.grey1)
+        tabBarAppearance.stackedLayoutAppearance = itemAppearance
+        tabBarAppearance.compactInlineLayoutAppearance = itemAppearance
+        tabBarAppearance.inlineLayoutAppearance = itemAppearance
+
         return tabBarAppearance
     }
 
-    var tabItemAppearance: UITabBarItemAppearance {
+    func makeTabItemAppearance() -> UITabBarItemAppearance {
        let tabItemAppeareance =  UITabBarItemAppearance()
+
        tabItemAppeareance.selected.iconColor = UIColor(.ui.grey1)
        tabItemAppeareance.selected.titleTextAttributes[.foregroundColor] = UIColor(.ui.grey1)
        tabItemAppeareance.normal.iconColor = UIColor(.ui.grey1)
        tabItemAppeareance.normal.titleTextAttributes[.foregroundColor] = UIColor(.ui.grey1)
+
        return tabItemAppeareance
     }
 }
