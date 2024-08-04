@@ -103,13 +103,17 @@ class LoggedOutViewModel: ObservableObject {
                 }
             }
             .store(in: &cancellables)
-        // TODO: SIGNEDOUT - Once we release, the feature flag service and fetch shall be removed from here
+        // TODO: SIGNEDOUT - Once we release, the feature flag service and fetch shall be removed from here, as well as the build time contidion.
+        #if DEBUG
+        showNewOnboarding = true
+        #else
         refreshCoordinator.refresh(isForced: false) { [weak self] in
             guard let self else {
                 return
             }
-            showNewOnboarding = true // featureFlags.isAssigned(flag: .newOnboarding)
+            showNewOnboarding = featureFlags.isAssigned(flag: .newOnboarding)
         }
+        #endif
 
         accessService
             .$accessLevel
