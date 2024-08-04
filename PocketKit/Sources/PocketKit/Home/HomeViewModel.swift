@@ -267,7 +267,9 @@ extension HomeViewModel {
             return snapshot
         }
         // Add Shared With You section right below recent saves
-        if let sharedWithYouItems = sharedWithYouController.fetchedObjects as? [SharedWithYouItem], !sharedWithYouItems.isEmpty {
+        if let session = appSession.currentSession,
+           !session.isAnonymous,
+           let sharedWithYouItems = sharedWithYouController.fetchedObjects as? [SharedWithYouItem], !sharedWithYouItems.isEmpty {
             numberOfSharedWithYouItems = sharedWithYouItems.count
             snapshot.appendSections([.sharedWithYou])
             snapshot.appendItems(sharedWithYouItems.prefix(4).map { .sharedWithYou($0.objectID) }, toSection: .sharedWithYou)
@@ -1061,7 +1063,9 @@ extension HomeViewModel: NSFetchedResultsControllerDelegate {
             Log.breadcrumb(category: "home", level: .debug, message: "➡️ Building recommendations section in didChangeContentWith. #reloaded items: \(reloadedItems.count), #reconfigured items: \(reconfiguredItems.count)")
         }
 
-        if controller == sharedWithYouController {
+        if let session = appSession.currentSession,
+            !session.isAnonymous,
+            controller == sharedWithYouController {
             let existingItemIdentifiers = newSnapshot.itemIdentifiers
             let reloadedItems: [Cell] =
             snapshot
