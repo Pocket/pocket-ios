@@ -23,6 +23,8 @@ class ReaderSettings: StylerModifier, ObservableObject {
     @Published var isPresentingPremiumUpgrade = false
     @Published var isPresentingHooray = false
 
+    let isAnonymous: Bool
+
     enum AlignmentOption: String, CaseIterable {
         case natural
         case justified
@@ -120,7 +122,7 @@ class ReaderSettings: StylerModifier, ObservableObject {
         1
     }
 
-    init(tracker: Tracker, userDefaults: UserDefaults) {
+    init(tracker: Tracker, userDefaults: UserDefaults, isAnonymous: Bool = false) {
         _fontSizeAdjustment = AppStorage(wrappedValue: 0, UserDefaults.Key.readerFontSizeAdjustment, store: userDefaults)
         _fontFamily = AppStorage(wrappedValue: .blanco, UserDefaults.Key.readerFontFamily, store: userDefaults)
         _lineHeightScaleFactorIndex = AppStorage(wrappedValue: 3, UserDefaults.Key.readerScaleFactorIndex, store: userDefaults)
@@ -128,6 +130,7 @@ class ReaderSettings: StylerModifier, ObservableObject {
         _userStatus = AppStorage(wrappedValue: .unknown, UserDefaults.Key.userStatus, store: userDefaults)
         _alignmentOption = AppStorage(wrappedValue: .natural, UserDefaults.Key.readerTextAlignment, store: userDefaults)
         self.tracker = tracker
+        self.isAnonymous = isAnonymous
     }
 
     func reset() {

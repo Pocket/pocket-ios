@@ -56,7 +56,7 @@ struct ReaderSettingsView: View {
                         }
                         .navigationBarTitleDisplayMode(.inline)
                     }
-                } else {
+                } else if !settings.isAnonymous {
                     Button {
                         settings.presentPremiumUpgrade()
                     } label: {

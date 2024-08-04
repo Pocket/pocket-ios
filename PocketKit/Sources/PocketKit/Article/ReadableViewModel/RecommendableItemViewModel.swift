@@ -81,7 +81,7 @@ class RecommendableItemViewModel: ReadableViewModel {
     }
 
     lazy var readerSettings: ReaderSettings = {
-        ReaderSettings(tracker: tracker, userDefaults: userDefaults)
+        ReaderSettings(tracker: tracker, userDefaults: userDefaults, isAnonymous: accessService.accessLevel == .anonymous)
     }()
 
     var textAlignment: Textile.TextAlignment {
