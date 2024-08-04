@@ -135,6 +135,7 @@ extension SharedWithYouListViewModel {
             selectedReadableViewModel = RecommendableItemViewModel(
                 item: sharedWithYouItem.item,
                 source: source,
+                accessService: accessService,
                 tracker: tracker.childTracker(hosting: .articleView.screen),
                 pasteboard: UIPasteboard.general,
                 user: user,

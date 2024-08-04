@@ -367,6 +367,7 @@ extension CollectionViewModel {
                 RecommendableItemViewModel(
                     item: recommendation.item,
                     source: source,
+                    accessService: accessService,
                     tracker: tracker,
                     pasteboard: UIPasteboard.general,
                     user: user,

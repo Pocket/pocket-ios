@@ -17,9 +17,13 @@ class RecommendableItemViewModelTests: XCTestCase {
     private var pasteboard: MockPasteboard!
     private var user: User!
     private var userDefaults: UserDefaults!
+    private var appSession: AppSession!
+    private var mockAuthenticationSession: MockAuthenticationSession!
+    private var accessService: PocketAccessService!
 
     private var subscriptions: Set<AnyCancellable> = []
 
+    @MainActor
     override func setUp() {
         super.setUp()
         source = MockSource()
@@ -28,6 +32,24 @@ class RecommendableItemViewModelTests: XCTestCase {
         space = .testSpace()
         userDefaults = .standard
         user = PocketUser(userDefaults: userDefaults)
+
+        appSession = AppSession(keychain: MockKeychain(), groupID: "groupId")
+        appSession.setCurrentSession(SharedPocketKit.Session(guid: "test-guid", accessToken: "test-access-token", userIdentifier: "test-id"))
+
+        mockAuthenticationSession = MockAuthenticationSession()
+        mockAuthenticationSession.stubStart {
+            self.mockAuthenticationSession.completionHandler?(
+                self.mockAuthenticationSession.url,
+                self.mockAuthenticationSession.error
+            )
+            return true
+        }
+
+        let authClient = AuthorizationClient(consumerKey: "the-consumer-key", adjustSignupEventToken: "token", tracker: tracker) { (_, _, completion) in
+            self.mockAuthenticationSession.completionHandler = completion
+            return self.mockAuthenticationSession
+        }
+        accessService = PocketAccessService(authorizationClient: authClient, appSession: appSession)
 
         continueAfterFailure = false
     }
@@ -50,6 +72,7 @@ class RecommendableItemViewModelTests: XCTestCase {
         RecommendableItemViewModel(
             item: recommendation.item,
             source: source ?? self.source,
+            accessService: accessService,
             tracker: tracker ?? self.tracker,
             pasteboard: pasteboard ?? self.pasteboard,
             user: user ?? self.user,

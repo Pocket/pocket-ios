@@ -162,6 +162,7 @@ extension SlateDetailViewModel {
             selectedReadableViewModel = RecommendableItemViewModel(
                 item: recommendation.item,
                 source: source,
+                accessService: accessService,
                 tracker: tracker.childTracker(hosting: .articleView.screen),
                 pasteboard: UIPasteboard.general,
                 user: user,

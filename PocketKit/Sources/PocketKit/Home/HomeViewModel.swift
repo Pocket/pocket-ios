@@ -419,6 +419,7 @@ extension HomeViewModel {
             let viewModel = RecommendableItemViewModel(
                 item: externalItem,
                 source: source,
+                accessService: accessService,
                 tracker: tracker.childTracker(hosting: .articleView.screen),
                 pasteboard: UIPasteboard.general,
                 user: user,
@@ -458,6 +459,7 @@ extension HomeViewModel {
             let viewModel = RecommendableItemViewModel(
                 item: recommendation.item,
                 source: source,
+                accessService: accessService,
                 tracker: tracker.childTracker(hosting: .articleView.screen),
                 pasteboard: UIPasteboard.general,
                 user: user,
@@ -580,6 +582,7 @@ extension HomeViewModel {
             let viewModel = RecommendableItemViewModel(
                 item: sharedWithYouItem.item,
                 source: source,
+                accessService: accessService,
                 tracker: tracker,
                 pasteboard: UIPasteboard.general,
                 user: user,

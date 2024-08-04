@@ -33,6 +33,7 @@ class RecommendableItemViewModel: ReadableViewModel {
 
     private let item: Item
     private let source: Source
+    private let accessService: PocketAccessService
     private let pasteboard: Pasteboard
     private let user: User
     private let userDefaults: UserDefaults
@@ -46,6 +47,7 @@ class RecommendableItemViewModel: ReadableViewModel {
     init(
         item: Item,
         source: Source,
+        accessService: PocketAccessService,
         tracker: Tracker,
         pasteboard: Pasteboard,
         user: User,
@@ -54,6 +56,7 @@ class RecommendableItemViewModel: ReadableViewModel {
     ) {
         self.item = item
         self.source = source
+        self.accessService = accessService
         self.tracker = tracker
         self.pasteboard = pasteboard
         self.user = user
@@ -359,6 +362,10 @@ extension RecommendableItemViewModel {
     }
 
     func save(completion: (Bool) -> Void) {
+        guard accessService.accessLevel != .anonymous else {
+            accessService.requestAuthentication()
+            return
+        }
         source.save(item: item)
         trackSave()
         completion(true)
