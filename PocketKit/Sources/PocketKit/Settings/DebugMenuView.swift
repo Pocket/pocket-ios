@@ -14,9 +14,24 @@ enum SnowplowEndpoint: String, CaseIterable, Identifiable {
 }
 struct DebugMenuView: View {
     @State private var selectedSnowplowEndpoint: SnowplowEndpoint = .micro
+    @ObservedObject var viewModel: AccountViewModel
     let userIdentifier = Services.shared.appSession.currentSession?.userIdentifier ?? ""
+
     var body: some View {
         List {
+            Section {
+                SettingsRowButton(
+                    title: "Reset to onboarding",
+                    titleStyle: .settings.button.default,
+                    icon: nil
+                ) {
+                    viewModel.signOut()
+                }
+            } header: {
+                Text("Reset access state")
+            } footer: {
+                Text("Reset anonymous/authenticated back to onboarding.")
+            }
             Section {
                 DebugMenuRow(title: "user identifier", detail: userIdentifier)
                     .contextMenu {

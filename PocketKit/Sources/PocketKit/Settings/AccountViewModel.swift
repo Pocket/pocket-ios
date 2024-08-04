@@ -14,7 +14,7 @@ import Network
 class AccountViewModel: ObservableObject {
     static let ToggleAppBadgeKey = UserDefaults.Key.toggleAppBadge
 
-    private let appSession: AppSession
+    private let accessService: PocketAccessService
     private let user: User
     private let tracker: Tracker
     private let userDefaults: UserDefaults
@@ -61,7 +61,7 @@ class AccountViewModel: ObservableObject {
         user.email
     }
 
-    init(appSession: AppSession,
+    init(accessService: PocketAccessService,
          user: User,
          tracker: Tracker,
          userDefaults: UserDefaults,
@@ -73,7 +73,7 @@ class AccountViewModel: ObservableObject {
          premiumStatusViewModelFactory: @escaping PremiumStatusViewModelFactory,
          featureFlags: FeatureFlagServiceProtocol
     ) {
-        self.appSession = appSession
+        self.accessService = accessService
         self.user = user
         self.tracker = tracker
         self.userDefaults = userDefaults
@@ -98,14 +98,20 @@ class AccountViewModel: ObservableObject {
             }
     }
 
-    var isAnonymous: Bool {
-        appSession.currentSession?.isAnonymous ?? true
+    @MainActor var isAnonymous: Bool {
+        accessService.accessLevel == .anonymous
     }
 
     /// Calls the user management service to sign the user out.
     func signOut() {
         Log.breadcrumb(category: "auth", level: .error, message: "User did log out")
         userManagementService.logout()
+    }
+
+    /// Presents the FxA authentication
+    @MainActor
+    func signupOrSignin() {
+        accessService.requestAuthentication()
     }
 
     func toggleAppBadge(to isEnabled: Bool) {
@@ -141,7 +147,11 @@ class AccountViewModel: ObservableObject {
     }
 
     var showDebugMenu: Bool {
+        #if DEBUG
+        true
+        #else
         featureFlags.isAssigned(flag: .debugMenu)
+        #endif
     }
 }
 

@@ -37,7 +37,7 @@ struct SettingsForm: View {
                             model.isPresentingDebugMenu.toggle()
                         }
                         .sheet(isPresented: $model.isPresentingDebugMenu) {
-                            DebugMenuView()
+                            DebugMenuView(viewModel: model)
                         }
                     }
                     .textCase(nil)
@@ -222,14 +222,12 @@ extension SettingsForm {
                 title: Localization.Settings.singUpOrSignIn,
                 titleStyle: .settings.button.default,
                 icon: SFIconModel(
-                    // TODO: SIGNEDOUT - replace with the final icon
                     "person",
                     weight: .semibold,
                     color: Color(.ui.black1)
                 )
             ) {
-                // TODO: SIGNEDOUT - replace with the login action
-                model.signOut()
+                model.signupOrSignin()
             }
         }
     }

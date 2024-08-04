@@ -99,7 +99,7 @@ class MainViewModel: ObservableObject {
                 featureFlags: Services.shared.featureFlagService
             ),
             account: AccountViewModel(
-                appSession: Services.shared.appSession,
+                accessService: Services.shared.accessService,
                 user: Services.shared.user,
                 tracker: Services.shared.tracker,
                 userDefaults: Services.shared.userDefaults,
