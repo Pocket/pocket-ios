@@ -657,6 +657,10 @@ extension SavedItemsListViewModel {
     }
 
     private func apply(filter: ItemsListFilter, from cell: ItemsListCell<ItemIdentifier>, sender: Any? = nil) {
+        guard !isAnonymous else {
+            accessService.requestAuthentication()
+            return
+        }
         handleFilterSelection(with: filter, sender: sender)
 
         fetch()
