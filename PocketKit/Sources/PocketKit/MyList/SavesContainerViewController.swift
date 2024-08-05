@@ -110,6 +110,10 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate, UISea
 
     @objc
     func addButtonTapped() {
+        guard !model.isAnonymous else {
+            model.requestAuthentication()
+            return
+        }
         let addItemView = UIHostingController(rootView: AddSavedItemView(model: model.addSavedItemModel))
         addItemView.configurePocketDefaultDetents()
         present(addItemView, animated: true)
@@ -162,6 +166,9 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate, UISea
 
     // MARK: Search
     private func setupSearch() {
+        guard !model.isAnonymous else {
+            return
+        }
         let searchViewController = UIHostingController(rootView: SearchView(viewModel: searchViewModel))
         searchViewController.view.backgroundColor = UIColor(.ui.white1)
         navigationItem.searchController = UISearchController(searchResultsController: searchViewController)

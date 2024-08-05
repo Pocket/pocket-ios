@@ -22,23 +22,34 @@ class SavesContainerViewModel {
     let savedItemsList: SavedItemsListViewModel
     let archivedItemsList: SavedItemsListViewModel
     let addSavedItemModel: AddSavedItemViewModel
+    private let accessService: PocketAccessService
 
     init(
         tracker: Tracker,
         searchList: DefaultSearchViewModel,
         savedItemsList: SavedItemsListViewModel,
         archivedItemsList: SavedItemsListViewModel,
-        addSavedItemModel: AddSavedItemViewModel
+        addSavedItemModel: AddSavedItemViewModel,
+        accessService: PocketAccessService
     ) {
         self.tracker = tracker
         self.searchList = searchList
         self.savedItemsList = savedItemsList
         self.archivedItemsList = archivedItemsList
         self.addSavedItemModel = addSavedItemModel
+        self.accessService = accessService
     }
 
     var selectedItem: SelectedItem? {
         savedItemsList.selectedItem ?? archivedItemsList.selectedItem
+    }
+
+    var isAnonymous: Bool {
+        accessService.accessLevel == .anonymous
+    }
+
+    func requestAuthentication() {
+        accessService.requestAuthentication()
     }
 
     func activityItemsForSelectedItem(url: URL) -> [UIActivity] {

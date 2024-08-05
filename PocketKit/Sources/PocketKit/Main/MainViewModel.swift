@@ -81,7 +81,8 @@ class MainViewModel: ObservableObject {
                 addSavedItemModel: AddSavedItemViewModel(
                     source: Services.shared.source,
                     tracker: Services.shared.tracker.childTracker(hosting: .saves.saves)
-                )
+                ),
+                accessService: Services.shared.accessService
             ),
             home: HomeViewModel(
                 source: Services.shared.source,
