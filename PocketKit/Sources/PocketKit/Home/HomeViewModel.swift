@@ -275,6 +275,7 @@ extension HomeViewModel {
 
         for slateSection in slateSections {
             guard var recommendations = slateSection.objects as? [Recommendation],
+                  !recommendations.isEmpty,
                   let slateId = recommendations.first?.slate?.objectID
             else {
                 continue
@@ -286,8 +287,10 @@ extension HomeViewModel {
                 [.recommendationHero(hero.objectID)],
                 toSection: .slateHero(slateId)
             )
-
-            if numberOfHeroItems == 2 {
+            // Check if recommendations is empty. It shouldn't, but there
+            // is still a theoretic scenario where we removed an element
+            // as the first hero, and the list becomes empty.
+            if numberOfHeroItems == 2, !recommendations.isEmpty {
                 let hero2 = recommendations.removeFirst()
                 snapshot.appendItems(
                     [.recommendationHero(hero2.objectID)],
