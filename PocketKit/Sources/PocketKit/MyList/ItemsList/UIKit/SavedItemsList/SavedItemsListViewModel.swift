@@ -55,26 +55,6 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
     private let listOptions: ListOptions
 
-    var emptyState: EmptyStateViewModel? {
-        let items = itemsController.fetchedObjects ?? []
-        guard items.isEmpty else {
-            return nil
-        }
-
-        if selectedFilters.contains(.favorites) {
-            return FavoritesEmptyStateViewModel()
-        } else if selectedFilters.contains(.tagged) {
-            return TagsEmptyStateViewModel()
-        }
-
-        switch self.viewType {
-        case .saves:
-            return SavesEmptyStateViewModel()
-        case .archive:
-            return ArchiveEmptyStateViewModel()
-        }
-    }
-
     private let source: Source
     private let refreshCoordinator: RefreshCoordinator
     private let tracker: Tracker
@@ -806,6 +786,41 @@ extension SavedItemsListViewModel: SavedItemsControllerDelegate {
         // Set the new snapshot which is subscribed to in ItemListController and will apply this snapshot over the existing one
         _snapshot = newSnapshot
         notificationCenter.post(name: .listUpdated, object: nil)
+    }
+}
+
+// MARK: empty state handling
+extension SavedItemsListViewModel {
+    var isAnonymous: Bool {
+        accessService.accessLevel == .anonymous
+    }
+
+    var emptyState: EmptyStateViewModel? {
+        let items = itemsController.fetchedObjects ?? []
+        guard items.isEmpty else {
+            return nil
+        }
+
+        if selectedFilters.contains(.favorites) {
+            return FavoritesEmptyStateViewModel()
+        } else if selectedFilters.contains(.tagged) {
+            return TagsEmptyStateViewModel()
+        }
+
+        return makeEmptyStateViewModel()
+    }
+
+    private func makeEmptyStateViewModel() -> EmptyStateViewModel {
+        let buttonAction: (() -> Void)? = isAnonymous ? { [weak self] in
+            self?.accessService.requestAuthentication()
+        } : nil
+
+        switch self.viewType {
+        case .saves:
+            return SavesEmptyStateViewModel(buttonTitle: Localization.LoggedOut.Continue.authenticate, buttonAction: buttonAction)
+        case .archive:
+            return ArchiveEmptyStateViewModel(buttonTitle: Localization.LoggedOut.Continue.authenticate, buttonAction: buttonAction)
+        }
     }
 }
 

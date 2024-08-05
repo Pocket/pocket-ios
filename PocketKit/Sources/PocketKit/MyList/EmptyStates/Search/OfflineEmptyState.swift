@@ -28,6 +28,7 @@ struct OfflineEmptyState: EmptyStateViewModel {
         }
     }
     let buttonType: ButtonType? = nil
+    let buttonAction: (() -> Void)? = nil
     let webURL: URL? = nil
     let accessibilityIdentifier = "offline-empty-state"
 }

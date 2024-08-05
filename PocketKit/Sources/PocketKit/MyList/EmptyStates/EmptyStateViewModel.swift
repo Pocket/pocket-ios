@@ -13,6 +13,7 @@ protocol EmptyStateViewModel {
     var headline: String? { get }
     var detailText: String? { get }
     var buttonType: ButtonType? { get }
+    var buttonAction: (() -> Void)? { get }
     var webURL: URL? { get }
     var accessibilityIdentifier: String { get }
 }

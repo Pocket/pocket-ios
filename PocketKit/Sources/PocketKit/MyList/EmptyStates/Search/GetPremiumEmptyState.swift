@@ -13,6 +13,7 @@ struct GetPremiumEmptyState: EmptyStateViewModel {
     let headline: String? = Localization.Search.AllItems.Premium.header
     let detailText: String? = Localization.Search.AllItems.Premium.detail
     let buttonType: ButtonType? = .premium(Localization.Search.AllItems.Premium.button)
+    let buttonAction: (() -> Void)? = nil
     let webURL: URL? = URL(string: "https://getpocket.com/premium")
     let accessibilityIdentifier = "get-premium-empty-state"
 }

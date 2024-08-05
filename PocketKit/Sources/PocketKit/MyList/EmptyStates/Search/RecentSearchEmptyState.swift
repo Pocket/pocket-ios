@@ -13,6 +13,7 @@ struct RecentSearchEmptyState: EmptyStateViewModel {
     let headline: String? = nil
     let detailText: String? = Localization.Search.Recent.empty
     let buttonType: ButtonType? = nil
+    let buttonAction: (() -> Void)? = nil
     let webURL: URL? = nil
     let accessibilityIdentifier = "recent-search-empty-state"
 }

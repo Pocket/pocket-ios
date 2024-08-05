@@ -85,7 +85,11 @@ struct EmptyStateView<Content: View>: View {
                     content
                 } else if case .normal(let buttonText) = viewModel.buttonType, let webURL = viewModel.webURL {
                     Button(action: {
-                        self.showSafariView = true
+                        if let action = viewModel.buttonAction {
+                            action()
+                        } else {
+                            self.showSafariView = true
+                        }
                     }, label: {
                         Text(buttonText).style(.buttonLabel)
                             .padding(EdgeInsets(top: 12, leading: 0, bottom: 12, trailing: 0))

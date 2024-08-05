@@ -23,6 +23,7 @@ struct ErrorEmptyState: EmptyStateViewModel {
     let detailText: String? = Localization.Search.errorMessage
     let webURL: URL? = nil
     let accessibilityIdentifier = "error-empty-state"
+    let buttonAction: (() -> Void)? = nil
 
     var buttonType: ButtonType? {
         if featureFlags.isAssigned(flag: .reportIssue) {

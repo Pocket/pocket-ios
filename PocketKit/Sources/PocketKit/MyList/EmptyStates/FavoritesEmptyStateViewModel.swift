@@ -13,6 +13,7 @@ struct FavoritesEmptyStateViewModel: EmptyStateViewModel {
     let headline: String? = Localization.Favourites.Empty.header
     let detailText: String? = Localization.Favourites.Empty.detail
     let buttonType: ButtonType? = nil
+    let buttonAction: (() -> Void)? = nil
     let webURL: URL? = nil
     let accessibilityIdentifier = "favorites-empty-state"
 }
