@@ -61,6 +61,7 @@ class AccountViewModel: ObservableObject {
         user.email
     }
 
+    @MainActor
     init(accessService: PocketAccessService,
          user: User,
          tracker: Tracker,
