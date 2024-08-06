@@ -252,11 +252,6 @@ extension HomeViewModel {
     private func buildSnapshot() -> Snapshot {
         var snapshot = Snapshot()
 
-        if accessService.accessLevel == .anonymous {
-            snapshot.appendSections([.signinBanner])
-            snapshot.appendItems([.singinBanner], toSection: .signinBanner)
-        }
-
         let recentSaves = self.recentSavesController.fetchedObjects
         if let recentSaves, !recentSaves.isEmpty {
             recentSavesCount = recentSaves.count
@@ -285,6 +280,11 @@ extension HomeViewModel {
             snapshot.appendSections([.loading])
             snapshot.appendItems([.loading], toSection: .loading)
             return snapshot
+        }
+
+        if accessService.accessLevel == .anonymous {
+            snapshot.appendSections([.signinBanner])
+            snapshot.appendItems([.singinBanner], toSection: .signinBanner)
         }
 
         for slateSection in slateSections {
