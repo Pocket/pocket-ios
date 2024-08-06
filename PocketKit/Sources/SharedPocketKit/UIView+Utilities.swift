@@ -8,7 +8,7 @@ public extension UIView {
     /// Creates a UIView instance with a SwiftUI view embedded in it
     /// - Parameter view: the original SwiftUI view
     /// - Returns: the UIView instance
-    class func embedSwiftUIView<Content: View>(_ view: Content) -> UIView {
+    class func embedSwiftUIView(_ view: some View) -> UIView {
         let controller = UIHostingController(rootView: view)
         controller.view.translatesAutoresizingMaskIntoConstraints = false
         controller.view.backgroundColor = .clear
