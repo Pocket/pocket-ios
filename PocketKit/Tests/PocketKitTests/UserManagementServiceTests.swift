@@ -14,18 +14,35 @@ class UserManagementServiceTests: XCTestCase {
     var notificationCenter: NotificationCenter!
     var source: MockSource!
     var service: UserManagementService!
+    var accessService: PocketAccessService!
+    private var mockAuthenticationSession: MockAuthenticationSession!
 
+    @MainActor
     override func setUp() {
         super.setUp()
 
         subscriptions = []
 
         appSession = AppSession(keychain: MockKeychain(), groupID: "pocket")
+        mockAuthenticationSession = MockAuthenticationSession()
+                mockAuthenticationSession.stubStart {
+                    self.mockAuthenticationSession.completionHandler?(
+                        self.mockAuthenticationSession.url,
+                        self.mockAuthenticationSession.error
+                    )
+                    return true
+                }
+
+                let authClient = AuthorizationClient(consumerKey: "the-consumer-key", adjustSignupEventToken: "token", tracker: MockTracker()) { (_, _, completion) in
+                    self.mockAuthenticationSession.completionHandler = completion
+                    return self.mockAuthenticationSession
+                }
+                accessService = PocketAccessService(authorizationClient: authClient, appSession: appSession)
         user = MockUser()
         notificationCenter = .default
         source = MockSource()
         service = UserManagementService(
-            appSession: appSession,
+            accessService: accessService,
             user: user,
             notificationCenter: notificationCenter,
             source: source
@@ -42,6 +59,6 @@ class UserManagementServiceTests: XCTestCase {
 
         wait(for: [clearExpectation])
 
-        XCTAssertNil(appSession.currentSession)
+        XCTAssertEqual(appSession.currentSession, Session.anonymous())
     }
 }
