@@ -63,7 +63,6 @@ final class PocketAccessService: NSObject, ObservableObject {
     /// Request anonymous access for the current user
     func requestAnonymousAccess() {
         appSession.setAnonymousSession()
-        accessLevel = .anonymous
     }
 
     /// Parse response from `AuthorizationClient`, provided by the passed authentication closuse

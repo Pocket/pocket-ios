@@ -43,7 +43,6 @@ final class SaveToUserManagementService: ObservableObject, SaveToUserManagementS
     @MainActor
     func logout() {
         user.clear()
-        appSession.clearCurrentSession()
-        // TODO: SIGNEDOUT - handle anonymous session
+        appSession.setAnonymousSession()
     }
 }
