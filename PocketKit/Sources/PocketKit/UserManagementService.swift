@@ -69,6 +69,5 @@ final class UserManagementService: ObservableObject, UserManagementServiceProtoc
     func logout() {
         user.clear()
         accessService.requestAnonymousAccess()
-        // TODO: SIGNEDOUT - handle anonymous session
     }
 }
