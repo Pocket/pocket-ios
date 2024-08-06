@@ -5,22 +5,9 @@
 import SwiftUI
 import Textile
 
-open class SwiftUICollectionViewCell<T>: UICollectionViewCell where T: View {
-    /// Conveets  a `SwiftUI View` in a `UIKit UIView`
-    /// - Parameters:
-    ///   - content: the `SwiftUI View`
-    /// - Returns: the `UIKit View` that embeds the original `SwiftUI View`
-    func uiView(from content: T) -> UIView {
-        let controller = UIHostingController(rootView: content)
-        controller.view.translatesAutoresizingMaskIntoConstraints = false
-        controller.view.backgroundColor = .clear
-        return controller.view
-    }
-}
-
-class EmptyStateCollectionViewCell: SwiftUICollectionViewCell<EmptyStateView<EmptyView>> {
+class EmptyStateCollectionViewCell: UICollectionViewCell {
     func configure(viewModel: EmptyStateViewModel) {
-        let view = uiView(from: EmptyStateView(viewModel: viewModel))
+        let view = UIView.embedSwiftUIView(EmptyStateView<EmptyView>(viewModel: viewModel))
         contentView.addSubview(view)
         contentView.pinSubviewToAllEdges(view)
         view.accessibilityIdentifier = viewModel.accessibilityIdentifier
