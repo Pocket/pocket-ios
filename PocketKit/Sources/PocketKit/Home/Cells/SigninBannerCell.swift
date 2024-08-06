@@ -15,20 +15,6 @@ class SigninBannerCell: UICollectionViewCell {
         contentView.addSubview(view)
         contentView.pinSubviewToAllEdges(view)
     }
-
-    private func configureLayout() {
-        layer.cornerRadius = 16
-        layer.shadowColor = UIColor(.ui.border).cgColor
-        layer.shadowOffset = .zero
-        layer.shadowOpacity = 1.0
-        layer.shadowRadius = 6
-        layer.shadowPath = UIBezierPath(roundedRect: layer.bounds, cornerRadius: 16).cgPath
-        layer.backgroundColor = UIColor(.ui.homeCellBackground).cgColor
-    }
-
-    override func layoutSubviews() {
-        configureLayout()
-    }
 }
 
 /// The SwiftUI view associated with `SigninBannerCell`
@@ -63,7 +49,7 @@ struct SigninBannerView: View {
         }
         .buttonStyle(ActionsPrimaryButtonStyle())
         }
-        .padding()
+        .homeCellStyle()
     }
 
     func makeRegularWidthView() -> some View {
@@ -80,7 +66,7 @@ struct SigninBannerView: View {
         }
         .buttonStyle(ActionsPrimaryButtonStyle())
         }
-        .padding()
+        .homeCellStyle()
     }
 }
 
