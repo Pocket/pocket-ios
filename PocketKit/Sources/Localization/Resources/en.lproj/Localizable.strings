@@ -366,6 +366,7 @@
 "loggedOut.continue.authenticate" = "Sign up or sign in";
 "loggedOut.continue.signedOut" = "Skip sign in";
 "loggedOut.footer" = "By proceeding, you agree to the Pocket [Terms of Service](https://getpocket.com/tos) and [Privacy Notice](https://getpocket.com/privacy)";
+"loggedOut.Banner.title" = "Sign in to get the best of Pocket";
 
 // Errors
 "error.problemOccurred" = "A problem occurred";

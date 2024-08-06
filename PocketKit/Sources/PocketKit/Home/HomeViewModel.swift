@@ -124,7 +124,8 @@ class HomeViewModel: NSObject {
 
     @Published var tappedSeeAll: SeeAll?
 
-    private var numberOfHeroItems: Int = 1
+    // private var numberOfHeroItems: Int = 1
+    private var useWideLayout: Bool = false
 
     private let source: Source
     let tracker: Tracker
@@ -251,6 +252,11 @@ extension HomeViewModel {
     private func buildSnapshot() -> Snapshot {
         var snapshot = Snapshot()
 
+        if accessService.accessLevel == .anonymous {
+            snapshot.appendSections([.signinBanner])
+            snapshot.appendItems([.singinBanner], toSection: .signinBanner)
+        }
+
         let recentSaves = self.recentSavesController.fetchedObjects
         if let recentSaves, !recentSaves.isEmpty {
             recentSavesCount = recentSaves.count
@@ -298,7 +304,7 @@ extension HomeViewModel {
             // Check if recommendations is empty. It shouldn't, but there
             // is still a theoretic scenario where we removed an element
             // as the first hero, and the list becomes empty.
-            if numberOfHeroItems == 2, !recommendations.isEmpty {
+            if useWideLayout, !recommendations.isEmpty {
                 let hero2 = recommendations.removeFirst()
                 snapshot.appendItems(
                     [.recommendationHero(hero2.objectID)],
@@ -322,22 +328,12 @@ extension HomeViewModel {
     /// Updates the collection view layout for compact or wide layout, if this changed.
     /// Wide layout has two columns and two hero items per recommendation section.
     /// - Parameter heroItems: the number of hero items to use.
-    private func updateLayout(_ heroItems: Int) {
-        guard heroItems != numberOfHeroItems else {
+    func updateLayout(_ shouldUseWideLayout: Bool) {
+        guard shouldUseWideLayout != useWideLayout else {
             return
         }
-        numberOfHeroItems = heroItems
+        useWideLayout = shouldUseWideLayout
         snapshot = buildSnapshot()
-    }
-
-    /// Updates the layout to wide, if the previous layout was compact.
-    func useWideLayout() {
-        updateLayout(2)
-    }
-
-    /// Updates the layout to compact, if the previpus layout was wide.
-    func useCompactLayout() {
-        updateLayout(1)
     }
 }
 
@@ -366,6 +362,8 @@ extension HomeViewModel {
                 return
             }
             select(sharedWithYouItem: sharedWithYouItem, at: indexPath)
+        case .singinBanner:
+            return
         }
     }
 
@@ -648,7 +646,7 @@ extension HomeViewModel {
                 }
                 self?.select(sharedWithYouList: list)
             }
-        case .loading, .slateCarousel, .offline:
+        case .loading, .slateCarousel, .offline, .signinBanner:
             return nil
         }
     }
@@ -662,6 +660,13 @@ extension HomeViewModel {
         snapshot.appendItems([.loading], toSection: .loading)
         Log.breadcrumb(category: "home", level: .debug, message: "➡️ Sending loading snapshot.")
         return snapshot
+    }
+}
+
+// MARK: - Signed out home
+extension HomeViewModel {
+    func requestAuthentication() {
+        self.accessService.requestAuthentication()
     }
 }
 
@@ -937,6 +942,9 @@ extension HomeViewModel {
 
             let givenURL = item.givenURL
             tracker.track(event: Events.Home.SlateArticleImpression(url: givenURL, positionInList: indexPath.item, recommendationId: recommendation.analyticsID))
+        case .singinBanner:
+            // TODO: SIGNEDOUT - Add analytics tracking
+            return
         }
     }
 }
@@ -949,6 +957,7 @@ extension HomeViewModel {
         case slateCarousel(NSManagedObjectID)
         case sharedWithYou
         case offline
+        case signinBanner
 
         var description: String {
             switch self {
@@ -964,6 +973,8 @@ extension HomeViewModel {
                 return "Shared With You"
             case .offline:
                 return "Offline"
+            case .signinBanner:
+                return "Sign in or sign up"
             }
         }
     }
@@ -975,6 +986,7 @@ extension HomeViewModel {
         case recommendationCarousel(NSManagedObjectID)
         case sharedWithYou(NSManagedObjectID)
         case offline
+        case singinBanner
     }
 }
 

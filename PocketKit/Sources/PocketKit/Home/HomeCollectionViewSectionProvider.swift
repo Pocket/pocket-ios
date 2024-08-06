@@ -36,7 +36,7 @@ class HomeViewControllerSectionProvider {
         return NSCollectionLayoutSection(group: group)
     }
 
-    func recentSavesSection(in viewModel: HomeViewModel, env: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? {
+    func recentSavesSection(in viewModel: HomeViewModel, environment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? {
         let numberOfRecentSavesItems = viewModel.numberOfRecentSavesItem()
         guard numberOfRecentSavesItems > 0 else {
             Log.breadcrumb(category: "home", level: .debug, message: "➡️ Returning an empty section when building Recent Saves section in section provider. Reason: number of items is 0.")
@@ -52,7 +52,7 @@ class HomeViewControllerSectionProvider {
 
         let itemWidthPercentage: CGFloat
         let sideMargin: CGFloat
-        if env.traitCollection.shouldUseWideLayout() {
+        if environment.traitCollection.shouldUseWideLayout() {
             sideMargin = Constants.iPadSideMargin
             itemWidthPercentage = 2/5
         } else {
@@ -71,7 +71,7 @@ class HomeViewControllerSectionProvider {
         group.interItemSpacing = .fixed(16)
 
         let sectionHeaderViewModel = viewModel.sectionHeaderViewModel(for: .recentSaves)
-        let width = env.container.effectiveContentSize.width
+        let width = environment.container.effectiveContentSize.width
         let headerItem = NSCollectionLayoutBoundarySupplementaryItem(
             layoutSize: NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
@@ -98,7 +98,7 @@ class HomeViewControllerSectionProvider {
     }
 
     /// Handles hero section for both regular and compact layout. For wide layout, the hero section display two hero cards, otherwise, it displays a single hero card
-    func heroSection(for slateID: NSManagedObjectID, in viewModel: HomeViewModel, env: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? {
+    func heroSection(for slateID: NSManagedObjectID, in viewModel: HomeViewModel, environment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? {
         let slate = viewModel.slateModel(for: slateID)
         let recommendations: [Recommendation] = slate?.recommendations?.compactMap { $0 as? Recommendation } ?? []
 
@@ -107,12 +107,12 @@ class HomeViewControllerSectionProvider {
             Log.breadcrumb(category: "home", level: .debug, message: "➡️ Returning an empty section when building Hero section in section provider. Reason: could not retrieve the recommendation.")
             return .empty()
         }
-        let width = env.container.effectiveContentSize.width
+        let width = environment.container.effectiveContentSize.width
         let heroHeight: CGFloat
         let sideMargin: CGFloat
         let heroGroup: NSCollectionLayoutGroup
 
-        if env.traitCollection.shouldUseWideLayout() {
+        if environment.traitCollection.shouldUseWideLayout() {
             sideMargin = Constants.iPadSideMargin
             let firstCard = HomeItemView.fullHeight(viewModel: hero, availableWidth: width / 2 - (sideMargin * 2))
             let secondCard = HomeItemView.fullHeight(viewModel: viewModel.recommendationHeroViewModel(for: recommendations[safe: 1]?.objectID) ?? hero, availableWidth: width / 2 - (sideMargin * 2))
@@ -159,15 +159,15 @@ class HomeViewControllerSectionProvider {
         return section
     }
 
-    func additionalRecommendationsSection(for slateID: NSManagedObjectID, in viewModel: HomeViewModel, env: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? {
-        if env.traitCollection.shouldUseWideLayout() {
-            return recommendationCellGridSection(for: slateID, in: viewModel, env: env)
+    func additionalRecommendationsSection(for slateID: NSManagedObjectID, in viewModel: HomeViewModel, environment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? {
+        if environment.traitCollection.shouldUseWideLayout() {
+            return recommendationCellGridSection(for: slateID, in: viewModel, environment: environment)
         } else {
-            return carouselSection(for: slateID, in: viewModel, env: env)
+            return carouselSection(for: slateID, in: viewModel, environment: environment)
         }
     }
 
-    private func carouselSection(for slateID: NSManagedObjectID, in viewModel: HomeViewModel, env: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? {
+    private func carouselSection(for slateID: NSManagedObjectID, in viewModel: HomeViewModel, environment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? {
         let numberOfCarouselItems = viewModel.numberOfCarouselItemsForSlate(with: slateID)
         guard numberOfCarouselItems > 0 else {
             Log.breadcrumb(category: "home", level: .debug, message: "➡️ Returning an empty section when building Carousel section in section provider. Reason: number of carousel items is 0.")
@@ -192,7 +192,7 @@ class HomeViewControllerSectionProvider {
         return section
     }
 
-    func sharedWithYouSection(in viewModel: HomeViewModel, env: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? {
+    func sharedWithYouSection(in viewModel: HomeViewModel, environment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? {
         let numberOfSharedWithYouItems = viewModel.numberOfSharedWithYouItems
         guard numberOfSharedWithYouItems > 0 else {
             Log.breadcrumb(category: "home", level: .debug, message: "➡️ Returning an empty section when building Shared With You section in section provider. Reason: number of shared with you items is 0.")
@@ -203,7 +203,7 @@ class HomeViewControllerSectionProvider {
 
         let itemWidthPercentage: CGFloat
                 let sideMargin: CGFloat
-                if env.traitCollection.shouldUseWideLayout() {
+                if environment.traitCollection.shouldUseWideLayout() {
                     sideMargin = Constants.iPadSideMargin
                     itemWidthPercentage = 2/5
                 } else {
@@ -221,7 +221,7 @@ class HomeViewControllerSectionProvider {
                 widthDimension: .fractionalWidth(1.0),
                 heightDimension: .absolute(
                     sectionHeaderViewModel?.height(
-                        width: env.container.effectiveContentSize.width - Constants.sideMargin * 2
+                        width: environment.container.effectiveContentSize.width - Constants.sideMargin * 2
                     ) ?? 1
                 )
             ),
@@ -241,7 +241,7 @@ class HomeViewControllerSectionProvider {
         return section
     }
 
-    private func recommendationCellGridSection(for slateID: NSManagedObjectID, in viewModel: HomeViewModel, env: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection {
+    private func recommendationCellGridSection(for slateID: NSManagedObjectID, in viewModel: HomeViewModel, environment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection {
         let numberOfCarouselItems = viewModel.numberOfCarouselItemsForSlate(with: slateID)
         guard numberOfCarouselItems > 0 else {
             Log.breadcrumb(category: "home", level: .debug, message: "➡️ Returning an empty section when building Carousel Grid section in section provider. Reason: number of carousel items is 0.")
@@ -291,6 +291,7 @@ class HomeViewControllerSectionProvider {
     }
 }
 
+// MARK: offline section
 extension HomeViewControllerSectionProvider {
     func offlineSection(environment: NSCollectionLayoutEnvironment, withRecentSaves: Bool) -> NSCollectionLayoutSection {
         var config = UICollectionLayoutListConfiguration(appearance: .plain)
@@ -311,6 +312,18 @@ extension HomeViewControllerSectionProvider {
             )
         }
 
+        return section
+    }
+}
+
+// MARK: sign in banner section
+extension HomeViewControllerSectionProvider {
+    func signinSection(environment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection {
+        var configuration = UICollectionLayoutListConfiguration(appearance: .plain)
+        configuration.backgroundColor = UIColor(.ui.white1)
+        configuration.showsSeparators = false
+        let section = NSCollectionLayoutSection.list(using: configuration, layoutEnvironment: environment)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16)
         return section
     }
 }

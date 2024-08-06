@@ -45,7 +45,7 @@ class HomeViewController: UIViewController {
     var tipObservationTask: Task<Void, Error>?
     weak var tipViewController: UIViewController?
 
-    private lazy var layout = UICollectionViewCompositionalLayout { [weak self] sectionIndex, env in
+    private lazy var layout = UICollectionViewCompositionalLayout { [weak self] sectionIndex, environment in
         guard let self else {
             Log.breadcrumb(category: "home", level: .debug, message: "➡️ Returning an empty section. Reason: HomeViewController is nil.")
             return .empty()
@@ -61,18 +61,20 @@ class HomeViewController: UIViewController {
         Log.breadcrumb(category: "home", level: .debug, message: "➡️ Proceeding with section calculation - section index is \(sectionIndex), section is \(section.description)")
         switch section {
         case .loading:
-            return self.sectionProvider.loadingSection()
+            return sectionProvider.loadingSection()
         case .recentSaves:
-            return self.sectionProvider.recentSavesSection(in: self.model, env: env)
+            return sectionProvider.recentSavesSection(in: model, environment: environment)
         case .slateHero(let slateID):
-            return self.sectionProvider.heroSection(for: slateID, in: self.model, env: env)
+            return sectionProvider.heroSection(for: slateID, in: model, environment: environment)
         case .slateCarousel(let slateID):
-            return self.sectionProvider.additionalRecommendationsSection(for: slateID, in: self.model, env: env)
+            return sectionProvider.additionalRecommendationsSection(for: slateID, in: model, environment: environment)
         case .offline:
             let hasRecentSaves = dataSource.index(for: .recentSaves) != nil
-            return self.sectionProvider.offlineSection(environment: env, withRecentSaves: hasRecentSaves)
+            return sectionProvider.offlineSection(environment: environment, withRecentSaves: hasRecentSaves)
         case .sharedWithYou:
-            return self.sectionProvider.sharedWithYouSection(in: self.model, env: env)
+            return sectionProvider.sharedWithYouSection(in: model, environment: environment)
+        case .signinBanner:
+            return sectionProvider.signinSection(environment: environment)
         }
     }
 
@@ -117,6 +119,7 @@ class HomeViewController: UIViewController {
         collectionView.register(cellClass: HomeCarouselCell.self)
         collectionView.register(cellClass: SharedWithYouCarouselCell.self)
         collectionView.register(cellClass: ItemsListOfflineCell.self)
+        collectionView.register(cellClass: SigninBannerCell.self)
         collectionView.register(viewClass: SectionHeaderView.self, forSupplementaryViewOfKind: SectionHeaderView.kind)
         collectionView.delegate = self
 
@@ -229,11 +232,7 @@ class HomeViewController: UIViewController {
     }
 
     fileprivate func updateLayout() {
-        if traitCollection.shouldUseWideLayout() {
-            model.useWideLayout()
-        } else {
-            model.useCompactLayout()
-        }
+        model.updateLayout(traitCollection.shouldUseWideLayout())
     }
 }
 
@@ -286,6 +285,12 @@ extension HomeViewController {
                 let sourceRect = CGRect(x: x, y: y, width: 0, height: 0)
                 let configuration = TipUIConfiguration(sourceRect: sourceRect, permittedArrowDirections: .up, backgroundColor: nil, tintColor: nil)
                 displayTip(SharedWithYouTip(), configuration: configuration, sourceView: sourceView)
+            }
+            return cell
+        case .singinBanner:
+            let cell: SigninBannerCell = collectionView.dequeueCell(for: indexPath)
+            cell.configure { [weak self] in
+                self?.model.requestAuthentication()
             }
             return cell
         }

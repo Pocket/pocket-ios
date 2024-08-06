@@ -323,6 +323,10 @@ public enum Localization {
     public static let `continue` = Localization.tr("Localizable", "loggedOut.continue", fallback: "Continue")
     /// By proceeding, you agree to the Pocket [Terms of Service](https://getpocket.com/tos) and [Privacy Notice](https://getpocket.com/privacy)
     public static let footer = Localization.tr("Localizable", "loggedOut.footer", fallback: "By proceeding, you agree to the Pocket [Terms of Service](https://getpocket.com/tos) and [Privacy Notice](https://getpocket.com/privacy)")
+    public enum Banner {
+      /// Sign in to get the best of Pocket
+      public static let title = Localization.tr("Localizable", "loggedOut.Banner.title", fallback: "Sign in to get the best of Pocket")
+    }
     public enum Continue {
       /// Sign up or sign in
       public static let authenticate = Localization.tr("Localizable", "loggedOut.continue.authenticate", fallback: "Sign up or sign in")
