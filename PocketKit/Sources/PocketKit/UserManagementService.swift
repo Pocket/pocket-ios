@@ -15,7 +15,7 @@ protocol UserManagementServiceProtocol {
 }
 
 final class UserManagementService: ObservableObject, UserManagementServiceProtocol {
-    let appSession: AppSession
+    let accessService: PocketAccessService
     let user: User
     let notificationCenter: NotificationCenter
     let source: Source
@@ -26,8 +26,8 @@ final class UserManagementService: ObservableObject, UserManagementServiceProtoc
 
     private var subscriptions: Set<AnyCancellable> = []
 
-    init(appSession: AppSession, user: User, notificationCenter: NotificationCenter, source: Source) {
-        self.appSession = appSession
+    init(accessService: PocketAccessService, user: User, notificationCenter: NotificationCenter, source: Source) {
+        self.accessService = accessService
         self.user = user
         self.notificationCenter = notificationCenter
         self.source = source
@@ -68,7 +68,7 @@ final class UserManagementService: ObservableObject, UserManagementServiceProtoc
     @MainActor
     func logout() {
         user.clear()
-        appSession.clearCurrentSession()
+        accessService.requestAnonymousAccess()
         // TODO: SIGNEDOUT - handle anonymous session
     }
 }

@@ -102,9 +102,8 @@ class AccountViewModel: ObservableObject {
         accessService.accessLevel == .anonymous
     }
 
-    /// Calls the user management service to sign the user out.
+    /// Resets to the onboarding screen. This is only used in the debug screen.
     func signOut() {
-        Log.breadcrumb(category: "auth", level: .error, message: "User did log out")
         userManagementService.logout()
     }
 
@@ -112,6 +111,12 @@ class AccountViewModel: ObservableObject {
     @MainActor
     func signupOrSignin() {
         accessService.requestAuthentication()
+    }
+
+    /// Logs out the current user and switches to anonymous mode
+    @MainActor
+    func logout() {
+        accessService.requestAnonymousAccess()
     }
 
     func toggleAppBadge(to isEnabled: Bool) {
