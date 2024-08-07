@@ -55,7 +55,7 @@ class DefaultSearchViewModelTests: XCTestCase {
             self.mockAuthenticationSession.completionHandler = completion
             return self.mockAuthenticationSession
         }
-        accessService = PocketAccessService(authorizationClient: authClient, appSession: appSession)
+        accessService = PocketAccessService(authorizationClient: authClient, appSession: appSession, tracker: tracker)
 
         subscriptionStore = MockSubscriptionStore()
 

@@ -37,7 +37,7 @@ class UserManagementServiceTests: XCTestCase {
                     self.mockAuthenticationSession.completionHandler = completion
                     return self.mockAuthenticationSession
                 }
-                accessService = PocketAccessService(authorizationClient: authClient, appSession: appSession)
+        accessService = PocketAccessService(authorizationClient: authClient, appSession: appSession, tracker: MockTracker())
         user = MockUser()
         notificationCenter = .default
         source = MockSource()

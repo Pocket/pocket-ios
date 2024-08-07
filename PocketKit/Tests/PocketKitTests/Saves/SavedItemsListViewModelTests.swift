@@ -61,7 +61,7 @@ class SavedItemsListViewModelTests: XCTestCase {
             self.mockAuthenticationSession.completionHandler = completion
             return self.mockAuthenticationSession
         }
-        accessService = PocketAccessService(authorizationClient: authClient, appSession: appSession)
+        accessService = PocketAccessService(authorizationClient: authClient, appSession: appSession, tracker: tracker)
 
         itemsController = FetchedSavedItemsController(resultsController: NSFetchedResultsController(
             fetchRequest: Requests.fetchSavedItems(),
