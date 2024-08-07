@@ -6,8 +6,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apollographql/apollo-ios.git",
       "state" : {
-        "revision" : "e218b565661b12c3a1e5c0964eac805d44da7c76",
-        "version" : "1.14.0"
+        "revision" : "104cc94e97741e71f5c8fc9709bf909c464a9702",
+        "version" : "1.14.1"
       }
     },
     {
@@ -87,8 +87,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SDWebImage/SDWebImage.git",
       "state" : {
-        "revision" : "86e9185ef41c4238a93ad8efe61ddeb701e80bbf",
-        "version" : "5.19.5"
+        "revision" : "5191b801aca999b704eb93f118f91468b4570571",
+        "version" : "5.19.6"
       }
     },
     {
@@ -141,8 +141,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio.git",
       "state" : {
-        "revision" : "fc79798d5a150d61361a27ce0c51169b889e23de",
-        "version" : "2.68.0"
+        "revision" : "4c4453b489cf76e6b3b0f300aba663eb78182fad",
+        "version" : "2.70.0"
       }
     },
     {
