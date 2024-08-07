@@ -26,8 +26,8 @@ class SettingsTest: PocketXCTestCase {
         await loadDeleteConfirmationView()
         freeUser_tapDeleteToggles()
         await tap_deleteOnDeleteConfirmation(deletePromise: &deletePromise)
-        app.loggedOutView.wait()
-        await loadExitSurvey()
+        // go back to anonymous home
+        app.homeView.wait()
         deletePromise = nil
     }
 
@@ -51,8 +51,7 @@ class SettingsTest: PocketXCTestCase {
         await loadDeleteConfirmationView()
         premiumUser_tapDeleteToggles()
         await tap_deleteOnDeleteConfirmation(deletePromise: &deletePromise)
-        app.loggedOutView.wait()
-        await loadExitSurvey()
+        app.homeView.wait()
         deletePromise = nil
     }
 
