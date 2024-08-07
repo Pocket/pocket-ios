@@ -69,4 +69,10 @@ extension LaunchEnvironment {
         sessionGUID: nil,
         sessionUserID: nil
     )
+
+    static let anonymousSession = LaunchEnvironment(
+        accessToken: "",
+        sessionGUID: "",
+        sessionUserID: ""
+    )
 }

@@ -18,6 +18,20 @@ class HomeTests: PocketXCTestCase {
             return .fallbackResponses(apiRequest: apiRequest)
         }
     }
+    /// test that the sign in banner shows up and calls FxA in anonymous mode
+    @MainActor
+    func testAnonymousSessionShowsSigninBanner() async {
+        let home = app.launch(environment: .anonymousSession).waitForSignedOutHomeToLoad()
+        home.sectionHeader("Slate 1").wait()
+
+        let signinButton = home.signinContinueButton.wait()
+        signinButton.tap()
+
+        async let authRequest = snowplowMicro.getFirstEvent(with: "signedOut.authentication.requested")
+
+        let events = await [authRequest].compactMap { $0 }
+        XCTAssertEqual(events.count, 1)
+    }
 
     @MainActor
     func test_navigatingToHomeTab_showsASectionForEachSlate() async {

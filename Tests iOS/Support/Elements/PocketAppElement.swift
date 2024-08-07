@@ -183,6 +183,10 @@ struct PocketAppElement {
         return self.homeView
     }
 
+    func waitForSignedOutHomeToLoad() -> HomeViewElement {
+        self.homeView.wait()
+    }
+
     func terminate() {
         app.terminate()
     }

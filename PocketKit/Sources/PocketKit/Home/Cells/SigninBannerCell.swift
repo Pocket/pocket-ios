@@ -14,6 +14,7 @@ class SigninBannerCell: UICollectionViewCell {
         let view = UIView.embedSwiftUIView(SigninBannerView(action: action))
         contentView.addSubview(view)
         contentView.pinSubviewToAllEdges(view)
+        accessibilityIdentifier = "home-signinBanner"
     }
 }
 

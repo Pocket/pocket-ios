@@ -15,6 +15,15 @@ struct HomeViewElement: PocketUIElement {
         element.otherElements["home-overscroll"]
     }
 
+    var signinBanner: XCUIElement {
+        element.cells.matching(identifier: "home-signinBanner").firstMatch
+    }
+
+    var signinContinueButton: XCUIElement {
+        let predicate = NSPredicate(format: "label = %@", "Continue")
+        return signinBanner.buttons.element(matching: predicate)
+    }
+
     func savedItemCell(_ title: String) -> XCUIElement {
         let predicate = NSPredicate(format: "label = %@", title)
         return savedItemCells.containing(predicate).element(boundBy: 0)
