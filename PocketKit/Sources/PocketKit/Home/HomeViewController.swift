@@ -290,7 +290,7 @@ extension HomeViewController {
         case .singinBanner:
             let cell: SigninBannerCell = collectionView.dequeueCell(for: indexPath)
             cell.configure { [weak self] in
-                self?.model.requestAuthentication()
+                self?.model.requestAuthentication(.homeBanner)
             }
             return cell
         }

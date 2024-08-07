@@ -665,8 +665,8 @@ extension HomeViewModel {
 
 // MARK: - Signed out home
 extension HomeViewModel {
-    func requestAuthentication() {
-        self.accessService.requestAuthentication()
+    func requestAuthentication(_ analyticsSource: Events.SignedOut.LoginSource) {
+        self.accessService.requestAuthentication(analyticsSource)
     }
 }
 
@@ -823,7 +823,7 @@ extension HomeViewModel {
         // the app state changes (e.g. from Onboarding to signed in to anonymous, etc.
         if let session = appSession.currentSession, session.isAnonymous {
             return .recommendationPrimary { [weak self] _ in
-                self?.accessService.requestAuthentication()
+                self?.accessService.requestAuthentication(.recommendationCard)
             }
         }
 

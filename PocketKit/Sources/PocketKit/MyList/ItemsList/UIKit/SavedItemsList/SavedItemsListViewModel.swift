@@ -658,7 +658,7 @@ extension SavedItemsListViewModel {
 
     private func apply(filter: ItemsListFilter, from cell: ItemsListCell<ItemIdentifier>, sender: Any? = nil) {
         guard !isAnonymous else {
-            accessService.requestAuthentication()
+            accessService.requestAuthentication(.savesFilter)
             return
         }
         handleFilterSelection(with: filter, sender: sender)
@@ -816,7 +816,7 @@ extension SavedItemsListViewModel {
 
     private func makeEmptyStateViewModel() -> EmptyStateViewModel {
         let buttonAction: (() -> Void)? = isAnonymous ? { [weak self] in
-            self?.accessService.requestAuthentication()
+            self?.accessService.requestAuthentication(.emptySavesButton)
         } : nil
 
         switch self.viewType {

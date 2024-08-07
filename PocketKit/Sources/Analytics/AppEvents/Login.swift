@@ -55,6 +55,16 @@ public extension Events.Login {
         )
     }
 
+    /// Skip sign in button was tapped
+    static func skipSigninButtonTapped() -> Engagement {
+        return Engagement(
+            uiEntity: UiEntity(
+                .button,
+                identifier: "login.skipSignin.tapped"
+            )
+        )
+    }
+
     /// Login complete
     static func loginComplete() -> Engagement {
         return Engagement(

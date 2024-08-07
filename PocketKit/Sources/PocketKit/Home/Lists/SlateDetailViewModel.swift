@@ -200,7 +200,7 @@ extension SlateDetailViewModel {
         }
         let primaryAction: ItemAction = accessService.accessLevel == .anonymous ?
             .recommendationPrimary { [weak self] _ in
-                self?.accessService.requestAuthentication()
+                self?.accessService.requestAuthentication(.recommendationCard)
             } :
             .recommendationPrimary { [weak self] _ in
                 let isSaved = recommendation.item.savedItem != nil

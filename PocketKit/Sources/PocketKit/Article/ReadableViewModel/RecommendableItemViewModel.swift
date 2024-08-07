@@ -231,7 +231,7 @@ class RecommendableItemViewModel: ReadableViewModel {
                 if item.isSaved {
                     self?.archive()
                 } else {
-                    self?.save(completion: { _ in })
+                    self?.save(nil, completion: { _ in })
                 }
             }
 
@@ -256,7 +256,7 @@ extension RecommendableItemViewModel {
         guard let savedItem = item.savedItem else {
             _actions = [
                 .displaySettings { [weak self] _ in self?.displaySettings() },
-                .save { [weak self] _ in self?.save(completion: { _ in }) },
+                .save { [weak self] _ in self?.save(.syndicatedArticle, completion: { _ in }) },
                 .share { [weak self] _ in self?.share() },
                 .report { [weak self] _ in self?.report() }
             ]
@@ -361,9 +361,9 @@ extension RecommendableItemViewModel {
     func beginBulkEdit() {
     }
 
-    func save(completion: (Bool) -> Void) {
+    func save(_ analyticsSource: Events.SignedOut.LoginSource?, completion: (Bool) -> Void) {
         guard accessService.accessLevel != .anonymous else {
-            accessService.requestAuthentication()
+            accessService.requestAuthentication(analyticsSource)
             return
         }
         source.save(item: item)

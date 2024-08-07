@@ -183,7 +183,7 @@ class LoggedOutViewModel: ObservableObject {
             isPresentingOfflineView = true
             return
         }
-        accessService.requestAuthentication()
+        accessService.requestAuthentication(.onboarding)
     }
 
     /// Called from the `Skip sign in` button
@@ -196,6 +196,7 @@ class LoggedOutViewModel: ObservableObject {
         }
 
         accessService.requestAnonymousAccess()
+        tracker.track(event: Events.Login.skipSigninButtonTapped())
     }
 
     func offlineViewDidDisappear() {

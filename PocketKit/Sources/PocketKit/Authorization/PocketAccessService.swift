@@ -2,6 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import Analytics
 import AuthenticationServices
 import Combine
 import SharedPocketKit
@@ -19,6 +20,7 @@ final class PocketAccessService: NSObject, ObservableObject {
 
     private let authorizationClient: AuthorizationClient
     private let appSession: AppSession
+    private let tracker: Tracker
 
     private var subscriptions = Set<AnyCancellable>()
 
@@ -28,9 +30,11 @@ final class PocketAccessService: NSObject, ObservableObject {
     /// Publish any authentication related error, for the client to manage.
     @Published private(set) var authenticationError: Error?
 
-    init(authorizationClient: AuthorizationClient, appSession: AppSession) {
+    init(authorizationClient: AuthorizationClient, appSession: AppSession, tracker: Tracker) {
         self.authorizationClient = authorizationClient
         self.appSession = appSession
+        self.tracker = tracker
+
         if let session = appSession.currentSession {
             self.accessLevel = session.isAnonymous ? .anonymous : .authenticated
         } else {
@@ -51,18 +55,26 @@ final class PocketAccessService: NSObject, ObservableObject {
     }
 
     /// Request authenticated access for the current user
-    func requestAuthentication() {
+    /// - Parameter analyticsSource: the source from where the authentication was requested, for analytics purposes.
+    func requestAuthentication(_ analyticsSource: Events.SignedOut.LoginSource?) {
         Task { [weak self] in
             guard let self else {
                 return
             }
             await self.parseResponse(authenticator: self.authorizationClient.authenticate)
         }
+        tracker.track(event: Events.SignedOut.authenticationRequested(analyticsSource))
     }
 
     /// Request anonymous access for the current user
     func requestAnonymousAccess() {
         appSession.setAnonymousSession()
+    }
+
+    /// nullifies the app session and goes back to the onboarding screen
+    /// only used for debugging purposes
+    func resetToOnboarding() {
+        appSession.clearCurrentSession()
     }
 
     /// Parse response from `AuthorizationClient`, provided by the passed authentication closuse

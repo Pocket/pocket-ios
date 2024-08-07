@@ -310,7 +310,7 @@ extension SavedItemViewModel {
         completion(true)
     }
 
-    func save(completion: (Bool) -> Void) {
+    func save(_ analyticsSource: Events.SignedOut.LoginSource?, completion: (Bool) -> Void) {
         // NO-OP: this type is initialized with a valid SavedItem, which won't need to be saved.
     }
 

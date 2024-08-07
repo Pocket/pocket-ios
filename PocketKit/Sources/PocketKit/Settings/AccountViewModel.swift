@@ -104,14 +104,15 @@ class AccountViewModel: ObservableObject {
     }
 
     /// Resets to the onboarding screen. This is only used in the debug screen.
+    @MainActor
     func signOut() {
-        userManagementService.logout()
+        accessService.resetToOnboarding()
     }
 
     /// Presents the FxA authentication
     @MainActor
     func signupOrSignin() {
-        accessService.requestAuthentication()
+        accessService.requestAuthentication(.settingsSignin)
     }
 
     /// Logs out the current user and switches to anonymous mode

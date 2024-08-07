@@ -76,7 +76,7 @@ struct Services {
             tracker: tracker,
             authenticationSessionFactory: ASWebAuthenticationSession.init
         )
-        accessService = PocketAccessService(authorizationClient: authClient, appSession: appSession)
+        accessService = PocketAccessService(authorizationClient: authClient, appSession: appSession, tracker: tracker)
         user = PocketUser(userDefaults: userDefaults)
 
         source = PocketSource(

@@ -49,7 +49,7 @@ class SavesContainerViewModel {
     }
 
     func requestAuthentication() {
-        accessService.requestAuthentication()
+        accessService.requestAuthentication(.savesAddUrl)
     }
 
     func activityItemsForSelectedItem(url: URL) -> [UIActivity] {

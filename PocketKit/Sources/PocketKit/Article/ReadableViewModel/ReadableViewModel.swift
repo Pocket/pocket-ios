@@ -72,7 +72,7 @@ protocol ReadableViewModel: ReadableViewControllerDelegate {
     func openExternalLink(url: URL)
     func archive()
     func moveFromArchiveToSaves(completion: (Bool) -> Void)
-    func save(completion: (Bool) -> Void)
+    func save(_ analyticsSource: Events.SignedOut.LoginSource?, completion: (Bool) -> Void)
     func fetchDetailsIfNeeded()
     func externalActions(for url: URL) -> [ItemAction]
     func clearPresentedWebReaderURL()
