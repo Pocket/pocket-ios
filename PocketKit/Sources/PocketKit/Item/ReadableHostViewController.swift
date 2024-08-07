@@ -195,7 +195,7 @@ class ReadableHostViewController: UIViewController {
 
     @objc
     private func save() {
-        readableViewModel.save(.syndicatedArticle) { [weak self] success in
+        readableViewModel.save { [weak self] success in
             if success,
                let items = self?.navigationItem.rightBarButtonItems,
                let saveButton = self?.saveButton,
