@@ -24,14 +24,14 @@ class LoggedOutViewModelTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        let mockTracker = MockTracker()
-        authorizationClient = AuthorizationClient(consumerKey: "the-consumer-key", adjustSignupEventToken: "token", tracker: mockTracker) { (_, _, completion) in
+        tracker = MockTracker()
+        authorizationClient = AuthorizationClient(consumerKey: "the-consumer-key", adjustSignupEventToken: "token", tracker: tracker) { (_, _, completion) in
             self.mockAuthenticationSession.completionHandler = completion
             return self.mockAuthenticationSession
         }
         appSession = AppSession(keychain: MockKeychain(), groupID: "group.com.ideashower.ReadItLaterPro")
         networkPathMonitor = MockNetworkPathMonitor()
-        tracker = MockTracker()
+
         mockAuthenticationSession = MockAuthenticationSession()
         userManagementService = MockUserManagementService()
         featureFlags = MockFeatureFlagService()
@@ -78,7 +78,7 @@ class LoggedOutViewModelTests: XCTestCase {
             userManagementService: userManagementService ?? self.userManagementService,
             featureFlags: featureFlags ?? self.featureFlags,
             refreshCoordinator: refreshCoordinator ?? self.refreshCoordinator,
-            accessService: PocketAccessService(authorizationClient: self.authorizationClient, appSession: self.appSession, tracker: tracker!)
+            accessService: PocketAccessService(authorizationClient: self.authorizationClient, appSession: self.appSession, tracker: self.tracker)
         )
         return viewModel
     }
