@@ -11,8 +11,7 @@ import WidgetKit
 @available(iOS 17.0, *)
 struct TopicTimelineProvider: AppIntentTimelineProvider {
     func placeholder(in context: Context) -> ItemsListEntry {
-        let content = ItemsWidgetContent.sampleContent
-        return ItemsListEntry(date: Date(), name: content.name, contentType: content.contentType)
+        ItemsListEntry(date: Date(), name: "Pocket list", contentType: .items(makePlaceholder(for: context.family)))
     }
 
     func snapshot(for configuration: TopicIntent, in context: Context) async -> ItemsListEntry {
@@ -25,5 +24,26 @@ struct TopicTimelineProvider: AppIntentTimelineProvider {
         let entry = ItemsListEntry(date: Date(), name: content.name, contentType: content.contentType)
 
       return Timeline(entries: [entry], policy: .never)
+    }
+}
+
+// MARK: helper methods
+@available(iOSApplicationExtension 17.0, *)
+private extension TopicTimelineProvider {
+    func numberOfItems(for widgetFamily: WidgetFamily) -> Int {
+        switch widgetFamily {
+        case .systemLarge:
+            return 4
+        case .systemMedium:
+            return 2
+        default:
+            return 1
+        }
+    }
+
+    func makePlaceholder(for family: WidgetFamily) -> [ItemRowContent] {
+        let rowCount = numberOfItems(for: family)
+        let rowContent = ItemRowContent(content: .placeHolder, image: nil)
+        return Array(repeating: rowContent, count: rowCount)
     }
 }

@@ -33,7 +33,7 @@ struct ItemWidgetsProvider: TimelineProvider {
     }
 
     func placeholder(in context: Context) -> ItemsListEntry {
-        ItemsListEntry(date: Date(), name: "", contentType: .items([ItemRowContent(content: .placeHolder, image: nil)]))
+        ItemsListEntry(date: Date(), name: "Pocket list", contentType: .items(makePlaceholder(for: context.family)))
     }
 
     func getSnapshot(in context: Context, completion: @escaping (ItemsListEntry) -> Void) {
@@ -128,6 +128,12 @@ private extension ItemWidgetsProvider {
             newIndex = max(0, newIndex)
             return Self.rotatingTitleColors[newIndex]
         }
+    }
+
+    func makePlaceholder(for family: WidgetFamily) -> [ItemRowContent] {
+        let rowCount = numberOfItems(for: family)
+        let rowContent = ItemRowContent(content: .placeHolder, image: nil)
+        return Array(repeating: rowContent, count: rowCount)
     }
 }
 
