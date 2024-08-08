@@ -72,6 +72,7 @@
         "AddTagsItemTests",
         "AddTagsItemTests\/test_addTagsToItemFromSaves_savesNewTags()",
         "AddTagsItemTests\/test_addTags_withPremiumUser_showsRecentTagsView()",
+        "AnonymousModeTests",
         "ArchiveFiltersTests",
         "ArchiveTests",
         "BannerViewTests",

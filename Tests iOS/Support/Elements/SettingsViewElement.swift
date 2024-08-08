@@ -15,6 +15,10 @@ struct SettingsViewElement: PocketUIElement {
         element.buttons["log-out-button"]
     }
 
+    var signinButton: XCUIElement {
+        element.buttons["sign-in-button"]
+    }
+
     var accountManagementButton: XCUIElement {
         element.buttons["account-management-button"]
     }

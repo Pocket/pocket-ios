@@ -229,6 +229,7 @@ extension SettingsForm {
             ) {
                 model.signupOrSignin()
             }
+            .accessibilityIdentifier("sign-in-button")
         }
     }
 

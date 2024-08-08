@@ -125,6 +125,7 @@
 		AA9DB97429B6E6480046AEF6 /* Test_Subscriptions.storekit in Resources */ = {isa = PBXBuildFile; fileRef = AA909ACC299F4D5400F90FA7 /* Test_Subscriptions.storekit */; };
 		AAB4F3A62BBCA6140047A003 /* BrazeNotificationService in Frameworks */ = {isa = PBXBuildFile; productRef = AAB4F3A52BBCA6140047A003 /* BrazeNotificationService */; };
 		AAB4F3A82BBCA6140047A003 /* BrazePushStory in Frameworks */ = {isa = PBXBuildFile; productRef = AAB4F3A72BBCA6140047A003 /* BrazePushStory */; };
+		AADE043C2C64380300F9BD9F /* AnonymousModeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AADE043B2C64380300F9BD9F /* AnonymousModeTests.swift */; };
 		AAEE908229B69BA70028587D /* PremiumTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAEE908129B69BA70028587D /* PremiumTests.swift */; };
 		AAEE908429B69E9F0028587D /* PremiumUpgradeViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAEE908329B69E9F0028587D /* PremiumUpgradeViewElement.swift */; };
 		C8E6161E2A3A075000324777 /* AddSavedItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8E6161D2A3A075000324777 /* AddSavedItemTests.swift */; };
@@ -347,6 +348,7 @@
 		AA909AC8299EFD3A00F90FA7 /* secrets_test.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = secrets_test.xcconfig; sourceTree = "<group>"; };
 		AA909ACC299F4D5400F90FA7 /* Test_Subscriptions.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Test_Subscriptions.storekit; sourceTree = "<group>"; };
 		AAC9F5AA2B0BDBF800FD614A /* UITests-4.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = "UITests-4.xctestplan"; sourceTree = "<group>"; };
+		AADE043B2C64380300F9BD9F /* AnonymousModeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnonymousModeTests.swift; sourceTree = "<group>"; };
 		AAE33A7F2A0ED5A600214652 /* ItemWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ItemWidgets.entitlements; sourceTree = "<group>"; };
 		AAEE908129B69BA70028587D /* PremiumTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremiumTests.swift; sourceTree = "<group>"; };
 		AAEE908329B69E9F0028587D /* PremiumUpgradeViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremiumUpgradeViewElement.swift; sourceTree = "<group>"; };
@@ -522,6 +524,7 @@
 				160056F226CC7FFD00700A80 /* FavoriteAnItemTests.swift */,
 				16EE3F4F26CEC80900249AF4 /* PullToRefreshTests.swift */,
 				1606F21A26EBC1A200238111 /* HomeTests.swift */,
+				AADE043B2C64380300F9BD9F /* AnonymousModeTests.swift */,
 				F2843C1D2714D18200E03ED5 /* ReportARecommendationTests.swift */,
 				1613B2B02755696B0014F301 /* SignOutTests.swift */,
 				656041ED29B18105007E7CD0 /* SettingsTests.swift */,
@@ -1170,6 +1173,7 @@
 				3879243129BA816200C43F87 /* PremiumStatusViewElement.swift in Sources */,
 				8ADD6AA1292C1B2C007F419D /* SearchViewElement.swift in Sources */,
 				656BF0732A09A5EC008BA8E3 /* ErrorTests.swift in Sources */,
+				AADE043C2C64380300F9BD9F /* AnonymousModeTests.swift in Sources */,
 				8A9C60232A1D12CC0079DD8B /* ReportIssueViewElement.swift in Sources */,
 				1612D7E426C32321009A5BFD /* ByteBuffer+read.swift in Sources */,
 				16FCADBF26CB04AC00906C03 /* ArchiveAnItemTests.swift in Sources */,

@@ -70,6 +70,7 @@
       "skippedTests" : [
         "AddSavedItemTests",
         "AddTagsItemTests",
+        "AnonymousModeTests",
         "ArchiveAnItemTests",
         "ArchiveFiltersTests",
         "ArchiveTests",
