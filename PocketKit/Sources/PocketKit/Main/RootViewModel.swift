@@ -98,9 +98,11 @@ public class RootViewModel: ObservableObject {
         if newSession.isAnonymous {
             viewState = .anonymous(MainViewModel())
             NotificationCenter.default.post(name: .anonymousAccess, object: newSession)
+            widgetsSessionService.setStatus(.anonymous)
         } else {
-            NotificationCenter.default.post(name: .userLoggedIn, object: newSession)
             viewState = .loggedIn(MainViewModel())
+            NotificationCenter.default.post(name: .userLoggedIn, object: newSession)
+            widgetsSessionService.setStatus(.loggedIn)
         }
     }
 
@@ -125,14 +127,16 @@ public class RootViewModel: ObservableObject {
             UserEntity(guid: session.guid, userID: session.userIdentifier, adjustAdId: Adjust.adid())
         ])
         if !session.isAnonymous {
-            widgetsSessionService.setLoggedIn(true)
+            widgetsSessionService.setStatus(.loggedIn)
             Log.setUserID(session.userIdentifier)
+        } else {
+            widgetsSessionService.setStatus(.anonymous)
         }
     }
 
     private func tearDownSession() {
         source.clear()
-        widgetsSessionService.setLoggedIn(false)
+        widgetsSessionService.setStatus(.loggedOut)
         userDefaults.resetKeys()
 
         tracker.resetPersistentEntities([

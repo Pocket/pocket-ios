@@ -6,7 +6,8 @@ import Foundation
 import SharedPocketKit
 import WidgetKit
 
-/// Service that reads recent saves from a store
+/// Service that reads items from a store
+/// Items can be either recent saves or recommendations
 public struct ItemWidgetsService {
     private let store: ItemWidgetsStore
     private let sessionService: WidgetsSessionService
@@ -15,12 +16,16 @@ public struct ItemWidgetsService {
         store.kind
     }
 
+    public var status: WidgetStatus {
+        sessionService.status
+    }
+
     public init(store: ItemWidgetsStore, sessionStore: WidgetsSessionService) {
         self.store = store
         self.sessionService = sessionStore
     }
 
-    /// Returns the current recent saves list, sliced at the specified limit.
+    /// Returns the current items list, sliced at the specified limit.
     /// if limit is `0`, the full list is returned
     /// - Parameter limit: the specified limit
     /// - Returns: the list of items
@@ -34,9 +39,10 @@ public struct ItemWidgetsService {
         }
     }
 
-    /// True if the user is logged in
+    /// Convenience property that returns if the user is logged in, false otherwise (including anonymous)
+    /// Used for recent saves since they are not to be displayed in anonymous mode.
     public var isLoggedIn: Bool {
-        sessionService.isLoggedIn
+        status == .loggedIn
     }
 }
 

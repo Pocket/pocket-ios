@@ -22,6 +22,18 @@ public extension Events.SignedOut {
 }
 
 public extension Events.SignedOut {
+    /// Sign up or sign in banner viewed
+    /// - Returns: the impression event
+    static func signinBannerImpression() -> Impression {
+        return Impression(
+            component: .card,
+            requirement: .viewable,
+            uiEntity: UiEntity(
+                .card,
+                identifier: "home.signin.banner.impression"
+            )
+        )
+    }
     /// Authentication was requested
     /// - Parameter loginSource: the source where the authentication was requested from
     /// - Returns: The associated engagement event

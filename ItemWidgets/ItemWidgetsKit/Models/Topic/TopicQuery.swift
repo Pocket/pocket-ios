@@ -19,18 +19,26 @@ struct TopicQuery: EntityQuery {
             Log.capture(message: "Item widget: unable to initialize service")
             return [TopicEntity(topic: ItemsWidgetContent(name: "", contentType: .error))]
         }
-        // Logged out
-        guard service.isLoggedIn else {
-            return [TopicEntity(topic: ItemsWidgetContent(name: "", contentType: .loggedOut))]
-        }
+
         let topics = service.getTopics(limit: 4)
 
-        // Empty result
+        // Empty result.
         guard !topics.isEmpty else {
-            return [TopicEntity(topic: ItemsWidgetContent(name: "", contentType: .recommendationsEmpty))]
+            return [TopicEntity(topic: ItemsWidgetContent(name: "", contentType: emptyContentType(for: service.status)))]
         }
 
         return await getEntriesWithImages(topics)
+    }
+
+    func emptyContentType(for status: WidgetStatus) -> ItemsListContentType {
+        switch status {
+        case .loggedIn, .anonymous:
+            return .recommendationsEmpty
+        case .loggedOut:
+            return .loggedOut
+        case .unknown:
+            return .error
+        }
     }
 
     func entities(for identifiers: [TopicEntity.ID]) async throws -> [TopicEntity] {
