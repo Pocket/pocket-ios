@@ -125,7 +125,6 @@ class LoggedOutViewModel: ObservableObject {
                     // reset lastAction upon completing of access request, either anonymous or authenticated
                     lastAction = nil
                 default:
-                    // TODO: SIGNEDOUT - no need to do anything in onboarding?
                     break
                 }
             }

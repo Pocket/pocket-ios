@@ -124,7 +124,6 @@ class HomeViewModel: NSObject {
 
     @Published var tappedSeeAll: SeeAll?
 
-    // private var numberOfHeroItems: Int = 1
     private var useWideLayout: Bool = false
 
     private let source: Source
