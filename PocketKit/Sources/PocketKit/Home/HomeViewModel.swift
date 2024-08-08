@@ -204,7 +204,7 @@ class HomeViewModel: NSObject {
     }
 
     /// Fetch the latest data from core data and get the NSFetechedResults Controllers subscribing to updates
-    private func fetch() {
+    func fetch() {
         // NOTE: despite HomeViewModel runs on MainActor, this call ends up on a different thread
         // when the app is backgrounded, thus we force it back to the main queue to avoid crashes
         // since these fetched result controller are created on viewContext
