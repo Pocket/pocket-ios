@@ -55,7 +55,7 @@ class AnonymousModeTests: PocketXCTestCase {
         let listView = app.saves.wait()
         listView.verify()
 
-        let signinButton = 
+        let signinButton =
         listView
             .emptyStateView(for: "saves-empty-state")
             .otherElements
