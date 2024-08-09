@@ -5,7 +5,6 @@
 import Foundation
 
 public class AppSession: ObservableObject {
-    // TODO: SIGNEDOUT - we should find a better way to store and publish a value that does not involve two property wrappers
     @KeychainStorage private var storedSession: Session?
     @Published public private(set) var currentSession: Session?
 

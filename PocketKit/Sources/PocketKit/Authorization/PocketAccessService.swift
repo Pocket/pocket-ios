@@ -116,8 +116,6 @@ final class PocketAccessService: NSObject, ObservableObject {
 }
 
 extension PocketAccessService: ASWebAuthenticationPresentationContextProviding {
-    // TODO: SIGNEDOUT - verify that using a generic presentation anchor instead of the current window
-    // does not introduce any issues
     func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
         ASPresentationAnchor()
     }
