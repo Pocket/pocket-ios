@@ -115,7 +115,7 @@ extension RefreshCoordinator {
 
     /// Unsubscribes all listeners and cancels any pending background tasks
     private func tearDownSession() {
-        subscriptions = []
+        subscriptions.removeAll()
         taskScheduler.cancel(taskID)
     }
 
