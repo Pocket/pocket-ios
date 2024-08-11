@@ -252,7 +252,7 @@ extension HomeViewModel {
         var snapshot = Snapshot()
 
         let recentSaves = self.recentSavesController.fetchedObjects
-        if let recentSaves, !recentSaves.isEmpty {
+        if let recentSaves, !recentSaves.isEmpty, accessService.accessLevel != .anonymous {
             recentSavesCount = recentSaves.count
             snapshot.appendSections([.recentSaves])
             snapshot.appendItems(
@@ -1038,7 +1038,7 @@ extension HomeViewModel: NSFetchedResultsControllerDelegate {
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
         var newSnapshot = buildSnapshot()
 
-        if controller == recentSavesController {
+        if controller == recentSavesController, accessService.accessLevel != .anonymous {
             let reloadedItems: [Cell] = snapshot.reloadedItemIdentifiers.compactMap({ .recentSaves($0 as! NSManagedObjectID) })
             let reconfiguredItems: [Cell] = snapshot.reconfiguredItemIdentifiers.compactMap({ .recentSaves($0 as! NSManagedObjectID) })
             newSnapshot.reloadItems(reloadedItems)

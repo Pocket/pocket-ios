@@ -504,6 +504,11 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
         let filters = snapshot.itemIdentifiers(inSection: .filters)
         snapshot.reloadItems(filters)
+
+        guard accessService.accessLevel != .anonymous else {
+            return appendEmptySection(to: snapshot)
+        }
+
         let itemCellIDs: [ItemsListCell<ItemIdentifier>]
 
         switch self._initialDownloadState {
@@ -533,14 +538,19 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         }
 
         guard !itemCellIDs.isEmpty else {
-            snapshot.appendSections([.emptyState])
-            snapshot.appendItems([ItemsListCell<ItemIdentifier>.emptyState], toSection: .emptyState)
-            snapshot.reloadSections([.emptyState])
-            return snapshot
+            return appendEmptySection(to: snapshot)
         }
 
         snapshot.appendSections([.items])
         snapshot.appendItems(itemCellIDs, toSection: .items)
+        return snapshot
+    }
+
+    private func appendEmptySection(to snapshot: Snapshot) -> Snapshot {
+        var snapshot = snapshot
+        snapshot.appendSections([.emptyState])
+        snapshot.appendItems([ItemsListCell<ItemIdentifier>.emptyState], toSection: .emptyState)
+        snapshot.reloadSections([.emptyState])
         return snapshot
     }
 
@@ -778,15 +788,15 @@ extension SavedItemsListViewModel: SavedItemsControllerDelegate {
     func controller(_ controller: SavedItemsController, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
         // Build up a snapshot for us to use
         var newSnapshot = buildSnapshot()
-
-        // Grab any ids that have changed, filter them based on what newSnapshot contains, map them to .item and then setup our custom snapshot to reload them
-        let idsToReload: [ItemsListCell<ItemIdentifier>] =  snapshot.reloadedItemIdentifiers.compactMap({ .item($0 as! NSManagedObjectID) })
-            .filter { newSnapshot.itemIdentifiers.contains($0) }
-        let idsToReconfigure: [ItemsListCell<ItemIdentifier>] =  snapshot.reconfiguredItemIdentifiers.compactMap({ .item($0 as! NSManagedObjectID) })
-            .filter { newSnapshot.itemIdentifiers.contains($0) }
-        newSnapshot.reloadItems(idsToReload)
-        newSnapshot.reconfigureItems(idsToReconfigure)
-
+        if accessService.accessLevel != .anonymous {
+            // Grab any ids that have changed, filter them based on what newSnapshot contains, map them to .item and then setup our custom snapshot to reload them
+            let idsToReload: [ItemsListCell<ItemIdentifier>] =  snapshot.reloadedItemIdentifiers.compactMap({ .item($0 as! NSManagedObjectID) })
+                .filter { newSnapshot.itemIdentifiers.contains($0) }
+            let idsToReconfigure: [ItemsListCell<ItemIdentifier>] =  snapshot.reconfiguredItemIdentifiers.compactMap({ .item($0 as! NSManagedObjectID) })
+                .filter { newSnapshot.itemIdentifiers.contains($0) }
+            newSnapshot.reloadItems(idsToReload)
+            newSnapshot.reconfigureItems(idsToReconfigure)
+        }
         // Set the new snapshot which is subscribed to in ItemListController and will apply this snapshot over the existing one
         _snapshot = newSnapshot
         notificationCenter.post(name: .listUpdated, object: nil)
@@ -801,7 +811,7 @@ extension SavedItemsListViewModel {
 
     var emptyState: EmptyStateViewModel? {
         let items = itemsController.fetchedObjects ?? []
-        guard items.isEmpty else {
+        guard items.isEmpty || accessService.accessLevel == .anonymous else {
             return nil
         }
 
