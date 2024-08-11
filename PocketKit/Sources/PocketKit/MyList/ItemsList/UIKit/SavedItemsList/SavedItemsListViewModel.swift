@@ -279,7 +279,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         return TopicChipPresenter(
             title: filter.localized,
             image: filter.image,
-            isSelected: selectedFilters.contains(filter)
+            isSelected: accessService.accessLevel == .anonymous ? false : selectedFilters.contains(filter)
         )
     }
 
