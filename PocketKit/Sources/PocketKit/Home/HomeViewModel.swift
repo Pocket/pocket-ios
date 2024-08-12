@@ -1038,13 +1038,17 @@ extension HomeViewModel: NSFetchedResultsControllerDelegate {
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
         var newSnapshot = buildSnapshot()
 
-        if controller == recentSavesController, accessService.accessLevel != .anonymous {
-            let reloadedItems: [Cell] = snapshot.reloadedItemIdentifiers.compactMap({ .recentSaves($0 as! NSManagedObjectID) })
-            let reconfiguredItems: [Cell] = snapshot.reconfiguredItemIdentifiers.compactMap({ .recentSaves($0 as! NSManagedObjectID) })
-            newSnapshot.reloadItems(reloadedItems)
-            newSnapshot.reconfigureItems(reconfiguredItems)
-            updateRecentSavesWidget()
-            Log.breadcrumb(category: "home", level: .debug, message: "➡️ Building recent saves section in didChangeContentWith. #reloaded items: \(reloadedItems.count), #reconfigured items: \(reconfiguredItems.count)")
+        if controller == recentSavesController {
+            if accessService.accessLevel == .anonymous {
+                clearRecentSavesWidget()
+            } else {
+                let reloadedItems: [Cell] = snapshot.reloadedItemIdentifiers.compactMap({ .recentSaves($0 as! NSManagedObjectID) })
+                let reconfiguredItems: [Cell] = snapshot.reconfiguredItemIdentifiers.compactMap({ .recentSaves($0 as! NSManagedObjectID) })
+                newSnapshot.reloadItems(reloadedItems)
+                newSnapshot.reconfigureItems(reconfiguredItems)
+                updateRecentSavesWidget()
+                Log.breadcrumb(category: "home", level: .debug, message: "➡️ Building recent saves section in didChangeContentWith. #reloaded items: \(reloadedItems.count), #reconfigured items: \(reconfiguredItems.count)")
+            }
         }
 
         if isOffline {
@@ -1102,6 +1106,7 @@ extension HomeViewModel: NSFetchedResultsControllerDelegate {
 
 // MARK: recent saves widget
 private extension HomeViewModel {
+    /// Updates the recent saves widget with the latest recommendations
     func updateRecentSavesWidget() {
         guard let items = recentSavesController.fetchedObjects else {
             recentSavesWidgetUpdateService.update([])
@@ -1109,6 +1114,11 @@ private extension HomeViewModel {
         }
         // because we might still end up with more items, slice the first n elements anyway.
         recentSavesWidgetUpdateService.update(Array(items.prefix(SyncConstants.Home.recentSaves)))
+    }
+
+    /// Clears the recent saves widget. Used for anonymous access
+    func clearRecentSavesWidget() {
+        recentSavesWidgetUpdateService.update([])
     }
 }
 
