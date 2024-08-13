@@ -56,6 +56,7 @@ protocol ReadableViewModel: ReadableViewControllerDelegate {
     var itemSaveStatus: ItemSaveStatus { get }
     var premiumURL: String? { get }
     var shouldAllowHighlights: Bool { get }
+    var shouldOpenListenOnAppear: Bool { get }
 
     func delete()
     /// Opens an item presented in the reader in a web view instead

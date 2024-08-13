@@ -51,6 +51,8 @@ class SavedItemViewModel: ReadableViewModel, ObservableObject {
 
     let shouldAllowHighlights = true
 
+    let shouldOpenListenOnAppear: Bool
+
     @Published private(set) var _actions: [ItemAction] = []
     var actions: Published<[ItemAction]>.Publisher { $_actions }
 
@@ -107,7 +109,8 @@ class SavedItemViewModel: ReadableViewModel, ObservableObject {
         userDefaults: UserDefaults,
         notificationCenter: NotificationCenter,
         readableSource: ReadableSource = .app,
-        featureFlagService: FeatureFlagServiceProtocol
+        featureFlagService: FeatureFlagServiceProtocol,
+        shouldOpenListenOnAppear: Bool = false
     ) {
         self.item = item
         self.source = source
@@ -120,6 +123,7 @@ class SavedItemViewModel: ReadableViewModel, ObservableObject {
         self.notificationCenter = notificationCenter
         self.readableSource = readableSource
         self.featureFlagService = featureFlagService
+        self.shouldOpenListenOnAppear = shouldOpenListenOnAppear
 
         item.publisher(for: \.isFavorite).sink { [weak self] _ in
             self?.buildActions()

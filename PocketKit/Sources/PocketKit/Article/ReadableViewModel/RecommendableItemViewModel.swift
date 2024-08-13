@@ -38,6 +38,7 @@ class RecommendableItemViewModel: ReadableViewModel {
     private let userDefaults: UserDefaults
     let tracker: Tracker
     let shouldAllowHighlights = false
+    let shouldOpenListenOnAppear: Bool = false
 
     private var savedItemCancellable: AnyCancellable?
     private var savedItemSubscriptions: Set<AnyCancellable> = []
