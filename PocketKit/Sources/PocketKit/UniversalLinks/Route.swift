@@ -28,7 +28,24 @@ private extension URLComponents {
 }
 
 private extension URL {
-    /// Look for a match between the passed url with the passed host and scheme, and extract
+    /// Builds `URLComponents` matching the passed elements, if they exist
+    /// NOTE: the matching criteria for path is contains instead of equality, to account
+    /// for localized paths.
+    /// - Parameters:
+    ///   - host: the host to match
+    ///   - scheme: the scheme to match
+    ///   - path: the path to match
+    /// - Returns: matching URLComponents, or nil.
+    func matchedComponents(host: String?, scheme: String?, path: String) -> URLComponents? {
+        guard let components = URLComponents(url: self, resolvingAgainstBaseURL: true),
+              components.host == host,
+              components.scheme == scheme,
+              components.path.contains(path) else {
+            return nil
+        }
+        return components
+    }
+    /// Look for a match between the passed url with the passed host, scheme and path, and extract
     /// the origin url from from the query item named `url`. This is commonly used for special
     /// urls like widgets and Spotlight, but also some standard urls that contain a different origin.
     /// - Parameters:
@@ -36,13 +53,10 @@ private extension URL {
     ///   - scheme: the scheme to match
     /// - Returns: the absolute string of the matched url found, or nil
     func origin(host: String?, scheme: String?, path: String) -> String? {
-        guard let components = URLComponents(url: self, resolvingAgainstBaseURL: true),
-              components.host == host,
-              components.scheme == scheme,
-              components.path == path else {
-            return nil
-        }
-        return components.queryItems?.first(where: { $0.name == "url" })?.value
+        matchedComponents(host: host, scheme: scheme, path: path)?
+            .queryItems?
+            .first(where: { $0.name == "url" })?
+            .value
     }
     /// Look for a match between the passed url with the passed host, scheme and path.
     /// The returned value is the url absolute string minus the `utm_source` query item.
@@ -53,13 +67,10 @@ private extension URL {
     ///   - path: the path to match
     /// - Returns: the absolute string of the matched url, if it's found.
     func matched(host: String?, scheme: String?, path: String) -> String? {
-        guard let components = URLComponents(url: self, resolvingAgainstBaseURL: true),
-              components.host == host,
-              components.scheme == scheme,
-              components.path.contains(path) else {
-            return nil
-        }
-        return components.removedUtmSource.url?.absoluteString
+        matchedComponents(host: host, scheme: scheme, path: path)?
+            .removedUtmSource
+            .url?
+            .absoluteString
     }
 
     /// Look for a match between the passed url with the passed host and scheme.
