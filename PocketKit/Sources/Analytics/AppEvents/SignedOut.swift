@@ -30,7 +30,7 @@ public extension Events.SignedOut {
             requirement: .viewable,
             uiEntity: UiEntity(
                 .card,
-                identifier: "home.signin.banner.impression"
+                identifier: "home.signin.banner"
             )
         )
     }
