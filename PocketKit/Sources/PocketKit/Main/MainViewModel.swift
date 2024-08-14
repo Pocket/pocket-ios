@@ -363,20 +363,18 @@ extension MainViewModel {
 
         let navigationAction: (URL, ReadableSource) -> Void = { [weak self] url, source in
             self?.account.dismissAll()
-            if let components = URLComponents(url: url, resolvingAgainstBaseURL: true) {
-                switch components.path {
-                case "/home":
-                    self?.selectedSection = .home
-                case "/saves":
-                    self?.selectedSection = .saves
-                case "/settings":
-                    self?.selectedSection = .account
-                case "/premium/manage":
-                    self?.selectedSection = .account
-                    self?.account.isPresentingPremiumStatus = true
-                default:
-                    break
-                }
+            guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true) else {
+                return
+            }
+            if components.path.contains("/home") {
+                self?.selectedSection = .home
+            } else if components.path.contains("/saves") {
+                self?.selectedSection = .saves
+            } else if components.path.contains("/settings") {
+                self?.selectedSection = .account
+            } else if components.path.contains("/premium/manage") {
+                self?.selectedSection = .account
+                self?.account.isPresentingPremiumStatus = true
             }
         }
 
