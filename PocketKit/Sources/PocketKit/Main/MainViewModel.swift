@@ -361,6 +361,47 @@ extension MainViewModel {
             self?.account.isPresentingIconSwitcher = true
         }
 
+        let navigationAction: (URL, ReadableSource) -> Void = { [weak self] url, source in
+            self?.account.dismissAll()
+            guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true) else {
+                return
+            }
+            if components.path.contains("/home") {
+                self?.selectedSection = .home
+            } else if components.path.contains("/saves") {
+                self?.selectedSection = .saves
+            } else if components.path.contains("/settings") {
+                self?.selectedSection = .account
+            } else if components.path.contains("/premium/manage") {
+                self?.selectedSection = .account
+                self?.account.isPresentingPremiumStatus = true
+            }
+        }
+
+        let listenAction: (URL, ReadableSource) -> Void = { [weak self] url, source in
+            self?.account.dismissAll()
+            self?.selectedSection = .home
+            Task {
+                do {
+                    if let item = try await self?.source.fetchViewItem(from: url.absoluteString) {
+                        if let savedItem = item.savedItem {
+                            // if the saved item is found, open it and attempt to start listening
+                            self?.home.select(savedItem: savedItem, readableSource: source, shouldOpenListenOnAppear: true)
+                            // otherwise, we can still fall back to the usual actions
+                        } else if let recommendation = item.recommendation {
+                            self?.home.select(recommendation: recommendation, readableSource: source)
+                        } else {
+                            self?.home.select(externalItem: item)
+                        }
+                    } else {
+                        fallbackAction(url)
+                    }
+                } catch {
+                    fallbackAction(url)
+                }
+            }
+        }
+
         let widgetRoute = WidgetRoute(action: routingAction)
         let collectionRoute = CollectionRoute(action: routingAction)
         let syndicatedRoute = SyndicationRoute(action: routingAction)
@@ -370,18 +411,31 @@ extension MainViewModel {
         let pocketShareRoute = PocketShareRoute(action: pocketShareUrlRoutingAction)
         let pocketReadRoute = PocketReadRoute(action: pocketReadUrlRoutingAction)
         let brazeIconSwitcherRoute = BrazeIconSwitcherRoute(action: brazeShowIconSwitcherAction)
+        let homeRoute = HomeRoute(action: navigationAction)
+        let savesRoute = SavesRoute(action: navigationAction)
+        let settingsRoute = SettingsRoute(action: navigationAction)
+        let managePremiumRoute = ManagePremiumRoute(action: navigationAction)
+        let listenRoute = ListenRoute(action: listenAction)
         // NOTE: order matters, because there might be overlapping patterns
         // we can probably optimize by having exclusive-patterns only routes, and handle additional logic within
         // the route itself
         linkRouter.addRoutes(
             [
+                // specialized routes
                 widgetRoute,
+                spotlightRoute,
+                // getpocket.com/[path] routes
                 collectionRoute,
                 syndicatedRoute,
-                genericItemRoute,
-                spotlightRoute,
-                pocketShareRoute,
                 pocketReadRoute,
+                listenRoute,
+                homeRoute,
+                savesRoute,
+                settingsRoute,
+                managePremiumRoute,
+                genericItemRoute,
+                // pocket.co/[path] routes
+                pocketShareRoute,
                 brazeIconSwitcherRoute,
                 shortUrlRoute
             ]

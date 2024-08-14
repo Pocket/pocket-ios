@@ -508,7 +508,7 @@ extension HomeViewModel {
         }
     }
 
-    func select(savedItem: SavedItem, at indexPath: IndexPath? = nil, readableSource: ReadableSource = .app) {
+    func select(savedItem: SavedItem, at indexPath: IndexPath? = nil, readableSource: ReadableSource = .app, shouldOpenListenOnAppear: Bool = false) {
         if let slug = savedItem.item?.collection?.slug ?? savedItem.item?.collectionSlug {
             selectedReadableType = .collection(CollectionViewModel(
                 slug: slug,
@@ -534,7 +534,8 @@ extension HomeViewModel {
                 userDefaults: userDefaults,
                 notificationCenter: notificationCenter,
                 readableSource: readableSource,
-                featureFlagService: featureFlags
+                featureFlagService: featureFlags,
+                shouldOpenListenOnAppear: shouldOpenListenOnAppear
             )
 
             if let item = savedItem.item, item.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
