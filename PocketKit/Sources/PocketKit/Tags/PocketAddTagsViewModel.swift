@@ -94,9 +94,9 @@ class PocketAddTagsViewModel: AddTagsViewModel {
     }
 
     /// Saves tags to an item
-    func addTags() {
+    func saveTags() {
         trackSaveTagsToItem()
-        source.addTags(item: item, tags: tags)
+        source.replaceTags(item, tags: tags)
         saveAction()
         recentTagsFactory.updateRecentTags(with: itemTagNames, and: tags)
     }

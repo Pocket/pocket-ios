@@ -126,7 +126,7 @@ class PocketAddTagsViewModelTests: XCTestCase {
             XCTAssert(true, "expect call to save action")
         }
 
-        viewModel.addTags()
+        viewModel.saveTags()
 
         wait(for: [expectAddTagsCall], timeout: 2)
         XCTAssertNotNil(source.addTagsToSavedItemCall(at: 0))
