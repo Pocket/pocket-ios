@@ -53,7 +53,7 @@ public struct AddTagsView<ViewModel>: View where ViewModel: AddTagsViewModel {
                 .toolbar {
                     ToolbarItem(placement: .confirmationAction) {
                         Button("Save", action: {
-                            viewModel.addTags()
+                            viewModel.saveTags()
                             dismiss()
                         }).accessibilityIdentifier("save-button")
                     }

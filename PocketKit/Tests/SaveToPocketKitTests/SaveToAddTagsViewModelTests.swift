@@ -108,7 +108,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
             item.tags = NSOrderedSet(array: tags.compactMap { $0 })
         }
 
-        viewModel.addTags()
+        viewModel.saveTags()
         XCTAssertEqual(item.tags?.compactMap { ($0 as? Tag)?.name }, ["tag 1", "tag 2"])
     }
 

@@ -62,6 +62,8 @@ public protocol Source {
 
     func addTags(item: SavedItem, tags: [String])
 
+    func replaceTags(_ savedItem: SavedItem, tags: [String])
+
     func deleteTag(tag: Tag)
 
     func renameTag(from oldTag: Tag, to name: String)
