@@ -118,6 +118,12 @@ mutation UpdateSavedItemRemoveTags($savedItemId: ID!) {
   }
 }
 
+mutation ReplaceSavedItemTags($input: [SavedItemTagsInput!]!) {
+  replaceSavedItemTags(input: $input) {
+    id
+  }
+}
+
 mutation DeleteSavedItemHighlight($highlightId: ID!) {
   deleteSavedItemHighlight(id: $highlightId)
 }
