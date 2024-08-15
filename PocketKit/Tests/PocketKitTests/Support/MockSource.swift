@@ -8,9 +8,6 @@ import CoreData
 import Combine
 
 class MockSource: Source {
-    func replaceTags(_ savedItem: Sync.SavedItem, tags: [String]) {
-    }
-
     func readerItem(by slug: String) async throws -> (Sync.SavedItem?, Sync.Item?) {
         return (nil, nil)
     }
@@ -541,6 +538,36 @@ extension MockSource {
               }
 
         return calls[index] as? DeleteSavedItemCall
+    }
+}
+
+// MARK: - Replace Tags on a SavedItem
+extension MockSource {
+    static let replaceTagsOnSavedItem = "replaceTagsOnSavdItem"
+    typealias ReplaceTagsImpl = (SavedItem, [String]) -> Void
+    struct ReplaceTagsCall {
+        let savedItem: SavedItem
+        let tags: [String]
+    }
+
+    func stubReplaceTags(impl: @escaping ReplaceTagsImpl) {
+        implementations[Self.replaceTagsOnSavedItem] = impl
+    }
+
+    func replaceTags(_ savedItem: SavedItem, tags: [String]) {
+        guard let impl = implementations[Self.replaceTagsOnSavedItem] as? ReplaceTagsImpl else {
+            fatalError("\(Self.self)#\(#function) has not been stubbed")
+        }
+        calls[Self.replaceTagsOnSavedItem] = (calls[Self.replaceTagsOnSavedItem] ?? []) +
+        [ReplaceTagsCall(savedItem: savedItem, tags: tags)]
+        impl(savedItem, tags)
+    }
+
+    func replaceTagsCall(at index: Int) -> ReplaceTagsCall? {
+        guard let calls = calls[Self.replaceTagsOnSavedItem], calls.count > index else {
+            return nil
+        }
+        return calls[index] as? ReplaceTagsCall
     }
 }
 

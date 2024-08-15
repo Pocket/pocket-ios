@@ -116,7 +116,7 @@ class PocketAddTagsViewModelTests: XCTestCase {
         source.stubFetchAllTags { return [] }
         let expectAddTagsCall = expectation(description: "expect source.addTags(_:_:)")
 
-        source.stubAddTagsSavedItem { savedItem, tags in
+        source.stubReplaceTags { savedItem, tags in
             defer { expectAddTagsCall.fulfill() }
             XCTAssertEqual(savedItem, item)
             XCTAssertEqual(tags, ["tag 1"])
@@ -129,7 +129,7 @@ class PocketAddTagsViewModelTests: XCTestCase {
         viewModel.saveTags()
 
         wait(for: [expectAddTagsCall], timeout: 2)
-        XCTAssertNotNil(source.addTagsToSavedItemCall(at: 0))
+        XCTAssertNotNil(source.replaceTagsCall(at: 0))
     }
 
     @MainActor
