@@ -602,6 +602,40 @@ extension PocketSource {
         }
     }
 
+    public func replaceTags(_ savedItem: SavedItem, tags: [String]) {
+        Log.breadcrumb(category: "sync", level: .debug, message: "Replacing tags on saved item with id \(String(describing: savedItem.remoteID))")
+        space.performAndWait {
+            guard let existingSavedItem = space.backgroundObject(with: savedItem.objectID) as? SavedItem else {
+                Log.capture(message: "Could not retreive saved item from background context for mutation")
+                return
+            }
+
+            existingSavedItem.tags = NSOrderedSet(array: tags.compactMap { $0 }.map({ tag in
+                space.fetchOrCreateTag(byName: tag)
+            }))
+
+            do {
+                try space.save()
+            } catch {
+                Log.capture(error: error)
+            }
+
+            guard let mutation = replaceTagsMutation(for: existingSavedItem, tags: tags),
+                  let task = replaceSyncTask(for: existingSavedItem, tags: tags) else {
+                Log.capture(message: "Could not construct replace tags mutation and sync task for SavedItem")
+                return
+            }
+
+            let operation = operations.savedItemMutationOperation(
+                apollo: apollo,
+                events: _events,
+                mutation: mutation
+            )
+
+            enqueue(operation: operation, task: task, queue: saveQueue)
+        }
+    }
+
     public func deleteTag(tag: Tag) {
         Log.breadcrumb(category: "sync", level: .debug, message: "Deleting tags")
         space.performAndWait {
@@ -715,6 +749,27 @@ extension PocketSource {
         }
     }
 
+    private func replaceTagsMutation(for savedItem: SavedItem, tags: [String]) -> AnyMutation? {
+        guard let remoteID = savedItem.remoteID else {
+            Log.capture(message: "Could not retreive remoteID from SavedItem for mutation")
+            return nil
+        }
+        guard !tags.isEmpty else {
+            return AnyMutation(updateSavedItemRemoveTagsMutation(remoteID: remoteID))
+        }
+
+        return AnyMutation(
+            ReplaceSavedItemTagsMutation(
+                input: [
+                    SavedItemTagsInput(
+                        savedItemId: remoteID,
+                        tags: tags
+                    )
+                ]
+            )
+        )
+    }
+
     private func savedItemTagMutation(url: String, tags: [String]) -> SavedItemTagMutation {
         return SavedItemTagMutation(
             input: SavedItemTagInput(
@@ -744,6 +799,18 @@ extension PocketSource {
             }
 
             return .addTags(givenURL: givenURL, tags: tags)
+        }
+    }
+
+    private func replaceSyncTask(for savedItem: SavedItem, tags: [String]) -> SyncTask? {
+        guard let remoteID = savedItem.remoteID else {
+            Log.capture(message: "Could not retreive remoteID from SavedItem for mutation")
+            return nil
+        }
+        if tags.isEmpty {
+            return .clearTags(remoteID: remoteID)
+        } else {
+            return .replaceTags(remoteID: remoteID, tags: tags)
         }
     }
 
@@ -1016,6 +1083,20 @@ extension PocketSource {
                     apollo: apollo,
                     events: _events,
                     mutation: savedItemTagMutation(url: givenURL, tags: tags)
+                )
+                enqueue(operation: operation, persistentTask: persistentTask, queue: self.saveQueue)
+            case .replaceTags(let remoteID, let tags):
+                let operation = operations.savedItemMutationOperation(
+                    apollo: apollo,
+                    events: _events,
+                    mutation: ReplaceSavedItemTagsMutation(
+                        input: [
+                            SavedItemTagsInput(
+                                savedItemId: remoteID,
+                                tags: tags
+                            )
+                        ]
+                    )
                 )
                 enqueue(operation: operation, persistentTask: persistentTask, queue: self.saveQueue)
             case .clearTags(let remoteID):

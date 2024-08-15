@@ -8,6 +8,9 @@ import CoreData
 import Combine
 
 class MockSource: Source {
+    func replaceTags(_ savedItem: Sync.SavedItem, tags: [String]) {
+    }
+
     func readerItem(by slug: String) async throws -> (Sync.SavedItem?, Sync.Item?) {
         return (nil, nil)
     }
