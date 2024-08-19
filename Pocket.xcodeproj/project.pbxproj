@@ -125,6 +125,8 @@
 		AA9DB97429B6E6480046AEF6 /* Test_Subscriptions.storekit in Resources */ = {isa = PBXBuildFile; fileRef = AA909ACC299F4D5400F90FA7 /* Test_Subscriptions.storekit */; };
 		AAB4F3A62BBCA6140047A003 /* BrazeNotificationService in Frameworks */ = {isa = PBXBuildFile; productRef = AAB4F3A52BBCA6140047A003 /* BrazeNotificationService */; };
 		AAB4F3A82BBCA6140047A003 /* BrazePushStory in Frameworks */ = {isa = PBXBuildFile; productRef = AAB4F3A72BBCA6140047A003 /* BrazePushStory */; };
+		AABD1F812C73073500797EAB /* PocketShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABD1F802C73073500797EAB /* PocketShortcuts.swift */; };
+		AABD1F852C7309AD00797EAB /* SearchSavesIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABD1F842C7309AD00797EAB /* SearchSavesIntent.swift */; };
 		AADE043C2C64380300F9BD9F /* AnonymousModeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AADE043B2C64380300F9BD9F /* AnonymousModeTests.swift */; };
 		AAEE908229B69BA70028587D /* PremiumTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAEE908129B69BA70028587D /* PremiumTests.swift */; };
 		AAEE908429B69E9F0028587D /* PremiumUpgradeViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAEE908329B69E9F0028587D /* PremiumUpgradeViewElement.swift */; };
@@ -347,6 +349,8 @@
 		AA8BADEB2BC88C64004F1959 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		AA909AC8299EFD3A00F90FA7 /* secrets_test.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = secrets_test.xcconfig; sourceTree = "<group>"; };
 		AA909ACC299F4D5400F90FA7 /* Test_Subscriptions.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Test_Subscriptions.storekit; sourceTree = "<group>"; };
+		AABD1F802C73073500797EAB /* PocketShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PocketShortcuts.swift; sourceTree = "<group>"; };
+		AABD1F842C7309AD00797EAB /* SearchSavesIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchSavesIntent.swift; sourceTree = "<group>"; };
 		AAC9F5AA2B0BDBF800FD614A /* UITests-4.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = "UITests-4.xctestplan"; sourceTree = "<group>"; };
 		AADE043B2C64380300F9BD9F /* AnonymousModeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnonymousModeTests.swift; sourceTree = "<group>"; };
 		AAE33A7F2A0ED5A600214652 /* ItemWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ItemWidgets.entitlements; sourceTree = "<group>"; };
@@ -945,7 +949,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastSwiftUpdateCheck = 1500;
+				LastSwiftUpdateCheck = 1610;
 				LastUpgradeCheck = 1530;
 				TargetAttributes = {
 					166A81AF2637406C0015AA1D = {
@@ -1133,6 +1137,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				16BA7D6326851513009A17C1 /* PocketApp.swift in Sources */,
+				AABD1F852C7309AD00797EAB /* SearchSavesIntent.swift in Sources */,
+				AABD1F812C73073500797EAB /* PocketShortcuts.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1368,6 +1374,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				POCKET_API_BASE_URL = "https://api.getpocket.com/graphql";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -1428,6 +1435,7 @@
 				MTL_FAST_MATH = YES;
 				POCKET_API_BASE_URL = "https://api.getpocket.com/graphql";
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 			};
 			name = Release;
@@ -1447,7 +1455,7 @@
 				ENABLE_BITCODE = NO;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1479,7 +1487,7 @@
 				ENABLE_BITCODE = NO;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1866,6 +1874,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				POCKET_API_BASE_URL = "https://api.getpocket.com/graphql";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug_Tests;
@@ -1885,7 +1894,7 @@
 				ENABLE_BITCODE = NO;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

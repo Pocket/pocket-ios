@@ -12,6 +12,7 @@ import UIKit
 import Adjust
 import Localization
 import SwiftUI
+import AppIntents
 
 @MainActor
 public class RootViewModel: ObservableObject {
@@ -34,6 +35,8 @@ public class RootViewModel: ObservableObject {
 
     private var subscriptions: Set<AnyCancellable> = []
 
+    private var mainViewModel: MainViewModel?
+
     public convenience init() {
         self.init(services: Services.shared)
     }
@@ -53,6 +56,7 @@ public class RootViewModel: ObservableObject {
             guard let self else { return }
             self.persistentContainerDidReset()
         }
+        AppDependencyManager.shared.add(dependency: self.mainViewModel)
         startObservingLogin()
     }
 
@@ -96,11 +100,15 @@ public class RootViewModel: ObservableObject {
             return
         }
         if newSession.isAnonymous {
-            viewState = .anonymous(MainViewModel())
+            let mainViewModel = MainViewModel()
+            self.mainViewModel = mainViewModel
+            viewState = .anonymous(mainViewModel)
             NotificationCenter.default.post(name: .anonymousAccess, object: newSession)
             widgetsSessionService.setStatus(.anonymous)
         } else {
-            viewState = .loggedIn(MainViewModel())
+            let mainViewModel = MainViewModel()
+            self.mainViewModel = mainViewModel
+            viewState = .loggedIn(mainViewModel)
             NotificationCenter.default.post(name: .userLoggedIn, object: newSession)
             widgetsSessionService.setStatus(.loggedIn)
         }
@@ -118,7 +126,9 @@ public class RootViewModel: ObservableObject {
 
         // We have a session! Ensure the user is logged in.
         setUpSession(session)
-        viewState = session.isAnonymous ? .anonymous(MainViewModel()) : .loggedIn(MainViewModel())
+        let mainViewModel = MainViewModel()
+        self.mainViewModel = mainViewModel
+        viewState = session.isAnonymous ? .anonymous(mainViewModel) : .loggedIn(mainViewModel)
     }
 
     private func setUpSession(_ session: SharedPocketKit.Session) {
@@ -135,6 +145,7 @@ public class RootViewModel: ObservableObject {
     }
 
     private func tearDownSession() {
+        mainViewModel = nil
         source.clear()
         widgetsSessionService.setStatus(.loggedOut)
         userDefaults.resetKeys()

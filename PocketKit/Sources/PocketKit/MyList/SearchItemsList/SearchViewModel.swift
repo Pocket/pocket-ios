@@ -35,7 +35,7 @@ protocol SearchResultActionDelegate: AnyObject {
 }
 
 /// View model that holds business logic for the SearchView
-class DefaultSearchViewModel: ObservableObject {
+public class DefaultSearchViewModel: ObservableObject {
     static let recentSearchesKey = UserDefaults.Key.recentSearches
 
     private var subscriptions: [AnyCancellable] = []
@@ -79,7 +79,7 @@ class DefaultSearchViewModel: ObservableObject {
     @Published var isPresentingReportIssue = false
     @Published var searchState: SearchViewState?
     @Published var selectedItem: SelectedItem?
-    @Published var searchText = "" {
+    @Published public var searchText = "" {
         didSet {
             updateSearchResults(with: searchText)
         }
@@ -202,7 +202,7 @@ class DefaultSearchViewModel: ObservableObject {
 
     /// Handles logic for when a user enters a search, such as showing Get Premium for user in All Items, checking if user is Offline or submitting a search
     /// - Parameter searchTerm: the term the user enters in search bar
-    func updateSearchResults(with searchTerm: String) {
+    public func updateSearchResults(with searchTerm: String) {
         let shouldShowUpsell = !isPremium && selectedScope == .all
 
         guard !shouldShowUpsell else {
@@ -680,7 +680,7 @@ extension DefaultSearchViewModel {
 }
 
 extension DefaultSearchViewModel: SavedItemsControllerDelegate {
-    func controller(
+    public func controller(
         _ controller: SavedItemsController,
         didChange savedItem: SavedItem,
         at indexPath: IndexPath?,
@@ -690,7 +690,7 @@ extension DefaultSearchViewModel: SavedItemsControllerDelegate {
         // no-op
     }
 
-    func controller(_ controller: SavedItemsController, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
+    public func controller(_ controller: SavedItemsController, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
         guard case .searchResults(let items) = searchState, let savedItems = items.map({ $0.item }) as? [SavedItem] else {
             return
         }

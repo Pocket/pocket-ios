@@ -12,9 +12,10 @@ import Textile
 import Localization
 import CoreSpotlight
 import SharedPocketKit
+import AppIntents
 
 @MainActor
-class MainViewModel: ObservableObject {
+public class MainViewModel: ObservableObject {
     let home: HomeViewModel
     let saves: SavesContainerViewModel
     let account: AccountViewModel
@@ -28,28 +29,33 @@ class MainViewModel: ObservableObject {
     private var subscriptions: Set<AnyCancellable> = []
     private let userDefaults: UserDefaults
 
-    convenience init() {
+    public var defaultSearch: DefaultSearchViewModel
+
+    public convenience init() {
+        let defaultSearch = DefaultSearchViewModel(
+            networkPathMonitor: NWPathMonitor(),
+            user: Services.shared.user,
+            userDefaults: Services.shared.userDefaults,
+            featureFlags: Services.shared.featureFlagService,
+            source: Services.shared.source,
+            tracker: Services.shared.tracker.childTracker(hosting: .saves.search),
+            store: Services.shared.subscriptionStore,
+            notificationCenter: Services.shared.notificationCenter,
+            accessService: Services.shared.accessService
+        ) { source in
+            PremiumUpgradeViewModel(
+                store: Services.shared.subscriptionStore,
+                tracker: Services.shared.tracker,
+                source: source,
+                networkPathMonitor: NWPathMonitor()
+            )
+        }
+        AppDependencyManager.shared.add(dependency: defaultSearch)
         self.init(
+            defaultSearch: defaultSearch,
             saves: SavesContainerViewModel(
                 tracker: Services.shared.tracker,
-                searchList: DefaultSearchViewModel(
-                    networkPathMonitor: NWPathMonitor(),
-                    user: Services.shared.user,
-                    userDefaults: Services.shared.userDefaults,
-                    featureFlags: Services.shared.featureFlagService,
-                    source: Services.shared.source,
-                    tracker: Services.shared.tracker.childTracker(hosting: .saves.search),
-                    store: Services.shared.subscriptionStore,
-                    notificationCenter: Services.shared.notificationCenter,
-                    accessService: Services.shared.accessService
-                ) { source in
-                    PremiumUpgradeViewModel(
-                        store: Services.shared.subscriptionStore,
-                        tracker: Services.shared.tracker,
-                        source: source,
-                        networkPathMonitor: NWPathMonitor()
-                    )
-                },
+                searchList: defaultSearch,
                 savedItemsList: SavedItemsListViewModel(
                     source: Services.shared.source,
                     tracker: Services.shared.tracker.childTracker(hosting: .saves.saves),
@@ -131,6 +137,7 @@ class MainViewModel: ObservableObject {
     }
 
     init(
+        defaultSearch: DefaultSearchViewModel,
         saves: SavesContainerViewModel,
         home: HomeViewModel,
         account: AccountViewModel,
@@ -138,6 +145,7 @@ class MainViewModel: ObservableObject {
         userDefaults: UserDefaults,
         linkRouter: LinkRouter
     ) {
+        self.defaultSearch = defaultSearch
         self.saves = saves
         self.home = home
         self.account = account
@@ -204,7 +212,7 @@ class MainViewModel: ObservableObject {
         saves.clearPresentedWebReaderURL()
     }
 
-    func selectSavesTab() {
+    public func selectSavesTab() {
         self.selectedSection = .saves
     }
 
