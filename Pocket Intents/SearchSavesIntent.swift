@@ -7,14 +7,15 @@ import AppIntents
 @preconcurrency import PocketKit
 
 struct SearchSavesIntent: AppIntent {
-    static var title: LocalizedStringResource = "Search for Articles"
+    static var title: LocalizedStringResource = "Search Pocket"
     static var description = IntentDescription("Search for saved articles in Pocket.")
     static var openAppWhenRun: Bool = true
 
     @Dependency private var mainViewModel: MainViewModel?
     @Dependency private var defaultSeatch: DefaultSearchViewModel
 
-    @Parameter var criteria: String
+    @Parameter(title: "Cool stuff about")
+    var criteria: String
 
     static var parameterSummary: some ParameterSummary {
         Summary("Find articles related to \(\.$criteria)")
@@ -25,7 +26,6 @@ struct SearchSavesIntent: AppIntent {
         guard let mainViewModel else { return .result() }
         mainViewModel.selectSavesTab()
         defaultSeatch.searchText = criteria
-        defaultSeatch.updateSearchResults(with: criteria)
         return .result()
     }
 }

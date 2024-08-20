@@ -13,7 +13,11 @@ class PocketShortcuts: AppShortcutsProvider {
             intent: SearchSavesIntent(),
             phrases: [
                 "Find articles about \(\.$criteria) in \(.applicationName)",
-                "Search for \(\.$criteria) in \(.applicationName)"
+                "Search for \(\.$criteria) in \(.applicationName)",
+                "Search \(.applicationName) for \(\.$criteria)",
+                "Go to \(.applicationName) and search Saves",
+                "Go to \(.applicationName) and search for \(\.$criteria)",
+                "Find me some cool stuff in \(.applicationName)"
             ],
             shortTitle: "Pocket Saves",
             systemImageName: "bookmark.fill"

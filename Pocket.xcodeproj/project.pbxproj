@@ -115,6 +115,8 @@
 		AA41DD8D2BD04DD6003CEDBF /* TopicRecommendationsWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA41DD792BD04D09003CEDBF /* TopicRecommendationsWidget.swift */; };
 		AA41DD8F2BD04EC9003CEDBF /* Textile in Frameworks */ = {isa = PBXBuildFile; productRef = AA41DD8E2BD04EC9003CEDBF /* Textile */; };
 		AA41DD912BD04EF0003CEDBF /* Sync in Frameworks */ = {isa = PBXBuildFile; productRef = AA41DD902BD04EF0003CEDBF /* Sync */; };
+		AA561B912C740F10006DF948 /* PocketShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA561B8E2C740F10006DF948 /* PocketShortcuts.swift */; };
+		AA561B922C740F10006DF948 /* SearchSavesIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA561B8F2C740F10006DF948 /* SearchSavesIntent.swift */; };
 		AA69A28429B7FC6E00BBA644 /* SearchGetPremiumEmptyViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA69A28329B7FC6E00BBA644 /* SearchGetPremiumEmptyViewElement.swift */; };
 		AA7D6A2B2995F0A20094FD18 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA7D6A2A2995F0A20094FD18 /* StoreKit.framework */; };
 		AA8BADE42BC88A5D004F1959 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = AA8BADE32BC88A5D004F1959 /* PrivacyInfo.xcprivacy */; };
@@ -125,8 +127,6 @@
 		AA9DB97429B6E6480046AEF6 /* Test_Subscriptions.storekit in Resources */ = {isa = PBXBuildFile; fileRef = AA909ACC299F4D5400F90FA7 /* Test_Subscriptions.storekit */; };
 		AAB4F3A62BBCA6140047A003 /* BrazeNotificationService in Frameworks */ = {isa = PBXBuildFile; productRef = AAB4F3A52BBCA6140047A003 /* BrazeNotificationService */; };
 		AAB4F3A82BBCA6140047A003 /* BrazePushStory in Frameworks */ = {isa = PBXBuildFile; productRef = AAB4F3A72BBCA6140047A003 /* BrazePushStory */; };
-		AABD1F812C73073500797EAB /* PocketShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABD1F802C73073500797EAB /* PocketShortcuts.swift */; };
-		AABD1F852C7309AD00797EAB /* SearchSavesIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABD1F842C7309AD00797EAB /* SearchSavesIntent.swift */; };
 		AADE043C2C64380300F9BD9F /* AnonymousModeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AADE043B2C64380300F9BD9F /* AnonymousModeTests.swift */; };
 		AAEE908229B69BA70028587D /* PremiumTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAEE908129B69BA70028587D /* PremiumTests.swift */; };
 		AAEE908429B69E9F0028587D /* PremiumUpgradeViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAEE908329B69E9F0028587D /* PremiumUpgradeViewElement.swift */; };
@@ -340,6 +340,8 @@
 		AA41DD772BD04D09003CEDBF /* RecentSavesWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentSavesWidget.swift; sourceTree = "<group>"; };
 		AA41DD782BD04D09003CEDBF /* RecommendationsWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationsWidget.swift; sourceTree = "<group>"; };
 		AA41DD792BD04D09003CEDBF /* TopicRecommendationsWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicRecommendationsWidget.swift; sourceTree = "<group>"; };
+		AA561B8E2C740F10006DF948 /* PocketShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PocketShortcuts.swift; sourceTree = "<group>"; };
+		AA561B8F2C740F10006DF948 /* SearchSavesIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchSavesIntent.swift; sourceTree = "<group>"; };
 		AA69A28329B7FC6E00BBA644 /* SearchGetPremiumEmptyViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchGetPremiumEmptyViewElement.swift; sourceTree = "<group>"; };
 		AA7D6A2A2995F0A20094FD18 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.2.sdk/System/Library/Frameworks/StoreKit.framework; sourceTree = DEVELOPER_DIR; };
 		AA8BADE32BC88A5D004F1959 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
@@ -349,8 +351,6 @@
 		AA8BADEB2BC88C64004F1959 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		AA909AC8299EFD3A00F90FA7 /* secrets_test.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = secrets_test.xcconfig; sourceTree = "<group>"; };
 		AA909ACC299F4D5400F90FA7 /* Test_Subscriptions.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Test_Subscriptions.storekit; sourceTree = "<group>"; };
-		AABD1F802C73073500797EAB /* PocketShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PocketShortcuts.swift; sourceTree = "<group>"; };
-		AABD1F842C7309AD00797EAB /* SearchSavesIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchSavesIntent.swift; sourceTree = "<group>"; };
 		AAC9F5AA2B0BDBF800FD614A /* UITests-4.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = "UITests-4.xctestplan"; sourceTree = "<group>"; };
 		AADE043B2C64380300F9BD9F /* AnonymousModeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnonymousModeTests.swift; sourceTree = "<group>"; };
 		AAE33A7F2A0ED5A600214652 /* ItemWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ItemWidgets.entitlements; sourceTree = "<group>"; };
@@ -485,6 +485,7 @@
 				650D169B28FFA54B00EE9339 /* Dangerfile.swift */,
 				650D169A28FFA42800EE9339 /* Package.swift */,
 				650D169728FFA40B00EE9339 /* Sources */,
+				AA561B902C740F10006DF948 /* Pocket Intents */,
 				9367E9D62A05AF070052DF47 /* Launch Screen */,
 				16973354263CBB290003DE2A /* Config */,
 				166A81C32637406C0015AA1D /* Tests iOS */,
@@ -752,6 +753,15 @@
 				AA41DD7A2BD04D09003CEDBF /* Widgets */,
 			);
 			path = ItemWidgetsKit;
+			sourceTree = "<group>";
+		};
+		AA561B902C740F10006DF948 /* Pocket Intents */ = {
+			isa = PBXGroup;
+			children = (
+				AA561B8E2C740F10006DF948 /* PocketShortcuts.swift */,
+				AA561B8F2C740F10006DF948 /* SearchSavesIntent.swift */,
+			);
+			path = "Pocket Intents";
 			sourceTree = "<group>";
 		};
 		F204A76127E22EC50010E155 /* SaveToPocket */ = {
@@ -1137,8 +1147,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				16BA7D6326851513009A17C1 /* PocketApp.swift in Sources */,
-				AABD1F852C7309AD00797EAB /* SearchSavesIntent.swift in Sources */,
-				AABD1F812C73073500797EAB /* PocketShortcuts.swift in Sources */,
+				AA561B912C740F10006DF948 /* PocketShortcuts.swift in Sources */,
+				AA561B922C740F10006DF948 /* SearchSavesIntent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1455,7 +1465,7 @@
 				ENABLE_BITCODE = NO;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1487,7 +1497,7 @@
 				ENABLE_BITCODE = NO;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1894,7 +1904,7 @@
 				ENABLE_BITCODE = NO;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
