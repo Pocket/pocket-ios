@@ -26,8 +26,6 @@ class LoggedOutViewModel: ObservableObject {
 
     @Published var isPresentingExitSurvey: Bool = false
 
-    @Published var showNewOnboarding: Bool = false
-
     private(set) var automaticallyDismissed = false
     private(set) var lastAction: LoggedOutAction?
     private let featureFlags: FeatureFlagServiceProtocol
@@ -103,17 +101,6 @@ class LoggedOutViewModel: ObservableObject {
                 }
             }
             .store(in: &cancellables)
-        // TODO: SIGNEDOUT - Once we release, the feature flag service and fetch shall be removed from here, as well as the build time contidion.
-        #if DEBUG
-        showNewOnboarding = true
-        #else
-        refreshCoordinator.refresh(isForced: false) { [weak self] in
-            guard let self else {
-                return
-            }
-            showNewOnboarding = featureFlags.isAssigned(flag: .newOnboarding)
-        }
-        #endif
 
         accessService
             .$accessLevel
