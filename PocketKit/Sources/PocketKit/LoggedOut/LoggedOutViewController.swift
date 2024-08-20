@@ -162,20 +162,18 @@ private struct LoggedOutActionsView: View {
                     .frame(maxWidth: 320)
             }
             .buttonStyle(ActionsPrimaryButtonStyle())
-            if viewModel.showNewOnboarding {
-                Button {
-                    viewModel.skipSignIn()
-                } label: {
-                    Text(Localization.LoggedOut.Continue.signedOut).style(.header.sansSerif.h8.with(underlineStyle: .single).with(color: .ui.black1))
-                        .padding(EdgeInsets(top: 12, leading: 0, bottom: 12, trailing: 0))
-                        .frame(maxWidth: 320)
-                }
-                if let footerMarkdown {
-                    Text(footerMarkdown)
-                        .style(.header.sansSerif.p3.with(color: .ui.grey5).with(alignment: .center))
-                        .tint(Color(ColorAsset.ui.black1))
-                        .padding([.leading, .trailing], 32)
-                }
+            Button {
+                viewModel.skipSignIn()
+            } label: {
+                Text(Localization.LoggedOut.Continue.signedOut).style(.header.sansSerif.h8.with(underlineStyle: .single).with(color: .ui.black1))
+                    .padding(EdgeInsets(top: 12, leading: 0, bottom: 12, trailing: 0))
+                    .frame(maxWidth: 320)
+            }
+            if let footerMarkdown {
+                Text(footerMarkdown)
+                    .style(.header.sansSerif.p3.with(color: .ui.grey5).with(alignment: .center))
+                    .tint(Color(ColorAsset.ui.black1))
+                    .padding([.leading, .trailing], 32)
             }
         }
     }
@@ -183,7 +181,7 @@ private struct LoggedOutActionsView: View {
 
 private extension LoggedOutActionsView {
     @MainActor var signInText: String {
-        viewModel.showNewOnboarding ? Localization.LoggedOut.Continue.authenticate : Localization.LoggedOut.continue
+        Localization.LoggedOut.Continue.authenticate
     }
     var footerMarkdown: AttributedString? {
         try? AttributedString(markdown: Localization.LoggedOut.footer, options: .init(allowsExtendedAttributes: true))
