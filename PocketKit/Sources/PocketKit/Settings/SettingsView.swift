@@ -45,27 +45,25 @@ struct SettingsForm: View {
                 accountSectionWithLeadingDivider()
                     .textCase(nil)
                 Section(header: Text(Localization.appCustomization).style(.settings.header)) {
-                    VStack {
-                        if !model.isAnonymous {
-                            Toggle(Localization.showAppBadgeCount, isOn: model.$appBadgeToggle)
-                                .accessibilityIdentifier("app-badge-toggle")
-                        }
-                        Toggle(Localization.Settings.alwaysOpenOriginalView, isOn: model.$originalViewToggle)
-                            .accessibilityIdentifier("original-view-toggle")
-                        // Custom implementation to hide the > arrow and let us use our own.
-                        if !ProcessInfo.processInfo.isiOSAppOnMac, !ProcessInfo.processInfo.isMacCatalystApp {
-                            ZStack {
-                                // TODO: this method of programmatic navigation is deprecated. This entire view needs to be migrated to the SwiftUI navigation
-                                NavigationLink(destination: SelectIconView(viewModel: model.makeSelectIconViewModel()), isActive: $model.isPresentingIconSwitcher) {
-                                    EmptyView()
-                                }
-                                .opacity(0.0)
-                                .buttonStyle(PlainButtonStyle())
-                                SettingsRowButton(title: Localization.Settings.AppIcon.title, trailingImageAsset: .chevronRight) {
-                                    model.trackAppIconTapped()
-                                }
-                                .accessibilityIdentifier("app-icon-button")
+                    if !model.isAnonymous {
+                        Toggle(Localization.showAppBadgeCount, isOn: model.$appBadgeToggle)
+                            .accessibilityIdentifier("app-badge-toggle")
+                    }
+                    Toggle(Localization.Settings.alwaysOpenOriginalView, isOn: model.$originalViewToggle)
+                        .accessibilityIdentifier("original-view-toggle")
+                    // Custom implementation to hide the > arrow and let us use our own.
+                    if !ProcessInfo.processInfo.isiOSAppOnMac, !ProcessInfo.processInfo.isMacCatalystApp {
+                        ZStack {
+                            // TODO: this method of programmatic navigation is deprecated. This entire view needs to be migrated to the SwiftUI navigation
+                            NavigationLink(destination: SelectIconView(viewModel: model.makeSelectIconViewModel()), isActive: $model.isPresentingIconSwitcher) {
+                                EmptyView()
                             }
+                            .opacity(0.0)
+                            .buttonStyle(PlainButtonStyle())
+                            SettingsRowButton(title: Localization.Settings.AppIcon.title, trailingImageAsset: .chevronRight) {
+                                model.trackAppIconTapped()
+                            }
+                            .accessibilityIdentifier("app-icon-button")
                         }
                     }
                 }
@@ -74,26 +72,30 @@ struct SettingsForm: View {
                     PremiumUpgradeSuccessView()
                 }
                 Section(header: Text(Localization.aboutSupport).style(.settings.header)) {
-                    SettingsRowButton(title: Localization.Settings.help, icon: SFIconModel("questionmark.circle")) { model.isPresentingHelp.toggle() }
-                        .sheet(isPresented: $model.isPresentingHelp) {
-                            SFSafariView(url: LinkedExternalURLS.Help)
-                                .edgesIgnoringSafeArea(.bottom)
-                        }
-                    SettingsRowButton(title: Localization.termsOfService, icon: SFIconModel("doc.plaintext")) { model.isPresentingTerms.toggle() }
-                        .sheet(isPresented: $model.isPresentingTerms) {
-                            SFSafariView(url: LinkedExternalURLS.TermsOfService, readerMode: true)
-                                .edgesIgnoringSafeArea(.bottom)
-                        }
-                    SettingsRowButton(title: Localization.privacyPolicy, icon: SFIconModel("doc.plaintext")) { model.isPresentingPrivacy.toggle() }
-                        .sheet(isPresented: $model.isPresentingPrivacy) {
-                            SFSafariView(url: LinkedExternalURLS.PrivacyPolicy, readerMode: true)
-                                .edgesIgnoringSafeArea(.bottom)
-                        }
-                    SettingsRowButton(title: Localization.Settings.openSourceLicenses, icon: SFIconModel("doc.plaintext")) { model.isPresentingLicenses.toggle() }
-                        .sheet(isPresented: $model.isPresentingLicenses) {
-                            SFSafariView(url: LinkedExternalURLS.OpenSourceNotices, readerMode: true)
-                                .edgesIgnoringSafeArea(.bottom)
-                        }
+                    SettingsRowButton(title: Localization.Settings.help, icon: SFIconModel("questionmark.circle")) { model.isPresentingHelp.toggle()
+                    }
+                    .sheet(isPresented: $model.isPresentingHelp) {
+                        SFSafariView(url: LinkedExternalURLS.Help)
+                            .edgesIgnoringSafeArea(.bottom)
+                    }
+                    SettingsRowButton(title: Localization.termsOfService, icon: SFIconModel("doc.plaintext")) { model.isPresentingTerms.toggle()
+                    }
+                    .sheet(isPresented: $model.isPresentingTerms) {
+                        SFSafariView(url: LinkedExternalURLS.TermsOfService, readerMode: true)
+                            .edgesIgnoringSafeArea(.bottom)
+                    }
+                    SettingsRowButton(title: Localization.privacyPolicy, icon: SFIconModel("doc.plaintext")) { model.isPresentingPrivacy.toggle()
+                    }
+                    .sheet(isPresented: $model.isPresentingPrivacy) {
+                        SFSafariView(url: LinkedExternalURLS.PrivacyPolicy, readerMode: true)
+                            .edgesIgnoringSafeArea(.bottom)
+                    }
+                    SettingsRowButton(title: Localization.Settings.openSourceLicenses, icon: SFIconModel("doc.plaintext")) { model.isPresentingLicenses.toggle()
+                    }
+                    .sheet(isPresented: $model.isPresentingLicenses) {
+                        SFSafariView(url: LinkedExternalURLS.OpenSourceNotices, readerMode: true)
+                            .edgesIgnoringSafeArea(.bottom)
+                    }
                 }
                 .textCase(nil)
             }
