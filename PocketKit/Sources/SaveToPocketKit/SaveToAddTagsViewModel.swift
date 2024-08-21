@@ -68,6 +68,7 @@ class SaveToAddTagsViewModel: AddTagsViewModel {
 
     /// Saves tags to an item
     func saveTags() {
+        addNewTag(with: newTagInput)
         trackSaveTagsToItem()
         saveAction(tags)
         recentTagsFactory.updateRecentTags(with: originalTagNames, and: tags)

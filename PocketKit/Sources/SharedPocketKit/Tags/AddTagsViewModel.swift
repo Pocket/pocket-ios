@@ -38,6 +38,7 @@ public extension AddTagsViewModel {
     /// Add tag after user enters tag name in the text field
     /// - Parameter tag: tag name user input in the text field
     /// - Returns: true if tag is a valid input
+    @discardableResult
     func addNewTag(with tag: String) -> Bool {
         let tagName = validateInput(tag)
         guard !tagName.isEmpty,

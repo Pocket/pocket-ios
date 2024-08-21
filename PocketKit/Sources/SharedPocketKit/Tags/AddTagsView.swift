@@ -2,9 +2,8 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import Localization
 import SwiftUI
-import UIKit
-import Combine
 import Textile
 
 public struct AddTagsView<ViewModel>: View where ViewModel: AddTagsViewModel {
@@ -48,17 +47,17 @@ public struct AddTagsView<ViewModel>: View where ViewModel: AddTagsViewModel {
                         .focused($isTextFieldFocused)
                         .accessibilityIdentifier("enter-tag-name")
                 }
-                .navigationTitle("Add Tags")
+                .navigationTitle(viewModel.tags.isEmpty ? Localization.addTags : Localization.ItemAction.editTags)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .confirmationAction) {
-                        Button("Save", action: {
+                        Button(Localization.ItemAction.save, action: {
                             viewModel.saveTags()
                             dismiss()
                         }).accessibilityIdentifier("save-button")
                     }
                     ToolbarItem(placement: .cancellationAction) {
-                        Button("Cancel", action: {
+                        Button(Localization.cancel, action: {
                             dismiss()
                         })
                     }
