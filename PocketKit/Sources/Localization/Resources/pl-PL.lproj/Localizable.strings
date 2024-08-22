@@ -122,6 +122,7 @@
 "settings.PocketForiOS %@ (%@)" = "Pocket dla iOS %1$@ (%2$@)";
 "settings.openSourceLicenses" = "Licencje open source";
 "settings.logout" = "Wyloguj się";
+"settings.singUpOrSignIn" = "Zarejestruj się lub zaloguj się";
 "settings.logout.areYouSureMessage" = "Nastąpi wylogowanie z Twojego konta, a wszelkie elementy, które zostały zapisane do przeglądania w trybie offline, zostaną usunięte z Twojego urządzenia.";
 "settings.logout.areyousure" = "Czy na pewno?";
 "settings.help" = "Uzyskaj pomoc i wsparcie";
@@ -365,6 +366,7 @@
 "loggedOut.continue.authenticate" = "Zarejestruj się lub zaloguj się";
 "loggedOut.continue.signedOut" = "Pomiń logowanie";
 "loggedOut.footer" = "Kontynuując, akceptujesz [Warunki korzystania z usługi](https://getpocket.com/tos) i [Informację o ochronie prywatności](https://getpocket.com/privacy) Pocket.";
+"loggedOut.Banner.title" = "Zaloguj się, aby w pełni korzystać z Pocket";
 
 // Errors
 "error.problemOccurred" = "Wystąpił problem";
