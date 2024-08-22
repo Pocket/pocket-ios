@@ -122,6 +122,7 @@
 "settings.PocketForiOS %@ (%@)" = "iOS용 Pocket %1$@(%2$@)";
 "settings.openSourceLicenses" = "오픈 소스 라이선스";
 "settings.logout" = "로그아웃";
+"settings.singUpOrSignIn" = "등록 또는 로그인";
 "settings.logout.areYouSureMessage" = "계정이 로그아웃되고 오프라인 보기용으로 저장된 모든 항목이 장치에서 제거됩니다.";
 "settings.logout.areyousure" = "계속하시겠습니까?";
 "settings.help" = "도움말 및 지원 받기";
@@ -365,6 +366,7 @@
 "loggedOut.continue.authenticate" = "등록 또는 로그인";
 "loggedOut.continue.signedOut" = "로그인 건너뛰기";
 "loggedOut.footer" = "계속 진행하면 Pocket [서비스 약관](https://getpocket.com/tos) 및 [개인정보 보호정책](https://getpocket.com/privacy)에 동의하는 것으로 간주됩니다";
+"loggedOut.Banner.title" = "Pocket을 최대한 활용하려면 로그인하세요";
 
 // Errors
 "error.problemOccurred" = "문제가 발생했습니다.";

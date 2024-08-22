@@ -122,6 +122,7 @@
 "settings.PocketForiOS %@ (%@)" = "iOS 版 Pocket %1$@ (%2$@)";
 "settings.openSourceLicenses" = "开源许可证";
 "settings.logout" = "注销";
+"settings.singUpOrSignIn" = "注册或登录";
 "settings.logout.areYouSureMessage" = "您的帐号将被注销，所有已保存供脱机阅读的项目都将从您的设备中删除。";
 "settings.logout.areyousure" = "您确定吗？";
 "settings.help" = "获取帮助和支持";
@@ -365,6 +366,7 @@
 "loggedOut.continue.authenticate" = "注册或登录";
 "loggedOut.continue.signedOut" = "跳过登录";
 "loggedOut.footer" = "继续使用即表示您同意 Pocket [服务条款](https://getpocket.com/tos) 和[隐私声明](https://getpocket.com/privacy)";
+"loggedOut.Banner.title" = "登录以获得 Pocket 的最佳功能";
 
 // Errors
 "error.problemOccurred" = "出现问题";

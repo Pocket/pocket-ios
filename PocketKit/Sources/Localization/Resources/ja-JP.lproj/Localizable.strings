@@ -122,6 +122,7 @@
 "settings.PocketForiOS %@ (%@)" = "iOS 向け Pocket %1$@ (%2$@)";
 "settings.openSourceLicenses" = "オープンソースライセンス";
 "settings.logout" = "ログアウト";
+"settings.singUpOrSignIn" = "登録またはログイン";
 "settings.logout.areYouSureMessage" = "アカウントからログアウトされ、オフライン表示用に保存されたアイテムがすべてデバイスから削除されます。";
 "settings.logout.areyousure" = "よろしいですか？";
 "settings.help" = "サポートに問い合わせる";
@@ -365,6 +366,7 @@
 "loggedOut.continue.authenticate" = "登録またはログイン";
 "loggedOut.continue.signedOut" = "登録をスキップ";
 "loggedOut.footer" = "続行すると、Pocket の[利用規約](https://getpocket.com/tos)および[プライバシーに関する通知](https://getpocket.com/privacy)に同意したことになります。";
+"loggedOut.Banner.title" = "サインインしてPocketを最大限に活用";
 
 // Errors
 "error.problemOccurred" = "問題が発生しました";
