@@ -242,11 +242,11 @@ extension HomeViewController {
         case .loading:
             let cell: LoadingCell = collectionView.dequeueCell(for: indexPath)
             return cell
-        case .recentSaves(let objectID):
+        case .recentSaves(let configuration):
             let cell: HomeCarouselCell = collectionView.dequeueCell(for: indexPath)
-            guard let configuration = model.recentSavesCellConfiguration(for: objectID, at: indexPath) else {
-                return cell
-            }
+//            guard let configuration = model.recentSavesCellConfiguration(for: objectID, at: indexPath) else {
+//                return cell
+//            }
 
             cell.configure(with: configuration)
             return cell

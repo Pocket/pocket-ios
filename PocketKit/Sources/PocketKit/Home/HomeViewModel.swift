@@ -256,7 +256,7 @@ extension HomeViewModel {
             recentSavesCount = recentSaves.count
             snapshot.appendSections([.recentSaves])
             snapshot.appendItems(
-                recentSaves.map { .recentSaves($0.objectID) },
+                recentSaves.map { .recentSaves(recentSavesCellConfiguration(for: $0.objectID)!) },
                 toSection: .recentSaves
             )
         }
@@ -342,10 +342,11 @@ extension HomeViewModel {
         switch cell {
         case .loading, .offline:
             return
-        case .recentSaves(let objectID):
-            guard let savedItem = source.viewObject(id: objectID) as? SavedItem else {
+        case .recentSaves(let configuration):
+            guard let savedItem = configuration.item as? SavedItem else {
                 return
             }
+
             select(savedItem: savedItem, at: indexPath)
         case .recommendationHero(let objectID), .recommendationCarousel(let objectID):
             guard let recommendation = source.viewObject(id: objectID) as? Recommendation else {
@@ -677,7 +678,7 @@ extension HomeViewModel {
 
     func recentSavesCellConfiguration(
         for objectID: NSManagedObjectID,
-        at indexPath: IndexPath
+        at index: Int? = nil
     ) -> RecentSavesCellConfiguration? {
         guard let savedItem = source.viewObject(id: objectID) as? SavedItem else {
             return nil
@@ -700,20 +701,20 @@ extension HomeViewModel {
             overflowActions: [
                 .share { [weak self] sender in
                     Task {
-                        await self?.share(savedItem, at: indexPath, with: sender)
+                        await self?.share(savedItem, at: index, with: sender)
                     }
                 },
                 .archive { [weak self] _ in
-                    self?.archive(savedItem, at: indexPath)
+                    self?.archive(savedItem, at: index)
                 },
                 .delete { [weak self] _ in
-                    self?.confirmDelete(item: savedItem, indexPath: indexPath)
+                    self?.confirmDelete(item: savedItem, index: index)
                 }
             ]
         )
     }
 
-    private func confirmDelete(item: SavedItem, indexPath: IndexPath) {
+    private func confirmDelete(item: SavedItem, index: Int?) {
         presentedAlert = PocketAlert(
             title: Localization.areYouSureYouWantToDeleteThisItem,
             message: nil,
@@ -724,16 +725,16 @@ extension HomeViewModel {
                 },
                 UIAlertAction(title: Localization.yes, style: .destructive) { [weak self] _ in
                     self?.presentedAlert = nil
-                    self?.delete(item: item, indexPath: indexPath)
+                    self?.delete(item: item, index: index)
                 }
             ],
             preferredAction: nil
         )
     }
 
-    private func delete(item: SavedItem, indexPath: IndexPath) {
+    private func delete(item: SavedItem, index: Int?) {
         presentedAlert = nil
-        tracker.track(event: Events.Home.RecentSavesCardDelete(url: item.url, positionInList: indexPath.item))
+        tracker.track(event: Events.Home.RecentSavesCardDelete(url: item.url, positionInList: index))
         source.delete(item: item)
     }
 }
@@ -861,12 +862,12 @@ extension HomeViewModel {
         tracker.track(event: Events.Home.SlateArticleShare(url: shareableUrl, positionInList: indexPath.item, recommendationId: recommendation.analyticsID))
     }
 
-    private func share(_ savedItem: SavedItem, at indexPath: IndexPath, with sender: Any?) async {
+    private func share(_ savedItem: SavedItem, at index: Int? = nil, with sender: Any?) async {
         // This view model is used within the context of a view that is presented within Home, but
         // within the context of "Recent Saves"
         let shareableUrl = await shareableUrl(savedItem.item) ?? savedItem.url
         self.sharedActivity = PocketItemActivity.fromSaves(url: shareableUrl, sender: sender)
-        tracker.track(event: Events.Home.RecentSavesCardShare(url: shareableUrl, positionInList: indexPath.item))
+        tracker.track(event: Events.Home.RecentSavesCardShare(url: shareableUrl, positionInList: index))
     }
 
     private func share(_ sharedWithYouItem: SharedWithYouItem, at indexPath: IndexPath, with sender: Any?) async {
@@ -900,9 +901,9 @@ extension HomeViewModel {
         tracker.track(event: Events.Home.SlateArticleArchive(url: givenURL, positionInList: indexPath.item, recommendationId: recommendation.analyticsID))
     }
 
-    private func archive(_ savedItem: SavedItem, at indexPath: IndexPath) {
+    private func archive(_ savedItem: SavedItem, at index: Int? = nil) {
         self.source.archive(item: savedItem)
-        tracker.track(event: Events.Home.RecentSavesCardArchive(url: savedItem.url, positionInList: indexPath.item))
+        tracker.track(event: Events.Home.RecentSavesCardArchive(url: savedItem.url, positionInList: index))
     }
 }
 
@@ -919,9 +920,9 @@ extension HomeViewModel {
                 return
             }
             tracker.track(event: Events.Home.sharedWithYouCardImpression(url: sharedWithYouItem.url, positionInList: indexPath.item))
-        case .recentSaves(let objectID):
-            guard let savedItem = source.viewObject(id: objectID) as? SavedItem else {
-                Log.breadcrumb(category: "home", level: .debug, message: "Could not turn recent save into Saved Item from objectID: \(String(describing: objectID))")
+        case .recentSaves(let configuration):
+            guard let savedItem = configuration.item as? SavedItem else {
+                Log.breadcrumb(category: "home", level: .debug, message: "Could not turn recent save into Saved Item from objectID: \(String(describing: configuration.item.id)))")
                 Log.capture(message: "SavedItem is null on willDisplay Home Recent Saves")
                 return
             }
@@ -980,7 +981,7 @@ extension HomeViewModel {
 
     enum Cell: Hashable {
         case loading
-        case recentSaves(NSManagedObjectID)
+        case recentSaves(RecentSavesCellConfiguration)
         case recommendationHero(NSManagedObjectID)
         case recommendationCarousel(NSManagedObjectID)
         case sharedWithYou(NSManagedObjectID)
@@ -1042,8 +1043,10 @@ extension HomeViewModel: NSFetchedResultsControllerDelegate {
             if accessService.accessLevel == .anonymous {
                 clearRecentSavesWidget()
             } else {
-                let reloadedItems: [Cell] = snapshot.reloadedItemIdentifiers.compactMap({ .recentSaves($0 as! NSManagedObjectID) })
-                let reconfiguredItems: [Cell] = snapshot.reconfiguredItemIdentifiers.compactMap({ .recentSaves($0 as! NSManagedObjectID) })
+                let reloadedItems: [Cell] = snapshot.reloadedItemIdentifiers.compactMap { .recentSaves(self.recentSavesCellConfiguration(for: $0 as! NSManagedObjectID)!)
+                }
+                let reconfiguredItems: [Cell] = snapshot.reconfiguredItemIdentifiers.compactMap { .recentSaves(self.recentSavesCellConfiguration(for: $0 as! NSManagedObjectID)!)
+                }
                 newSnapshot.reloadItems(reloadedItems)
                 newSnapshot.reconfigureItems(reconfiguredItems)
                 updateRecentSavesWidget()

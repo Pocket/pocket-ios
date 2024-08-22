@@ -29,7 +29,7 @@ public extension Events.Home {
     /**
      Fired when a card in the `Recent Saves` section is shared
      */
-    static func RecentSavesCardShare(url: String, positionInList: Int) -> Engagement {
+    static func RecentSavesCardShare(url: String, positionInList: Int?) -> Engagement {
         return Engagement(
             uiEntity: UiEntity(
                 .button,
@@ -45,7 +45,7 @@ public extension Events.Home {
     /**
      Fired when a card in the `Recent Saves` section is deleted
      */
-    static func RecentSavesCardDelete(url: String, positionInList: Int) -> Engagement {
+    static func RecentSavesCardDelete(url: String, positionInList: Int?) -> Engagement {
         return Engagement(
             uiEntity: UiEntity(
                 .button,
@@ -61,7 +61,7 @@ public extension Events.Home {
     /**
      Fired when a card in the `Recent Saves` section is archived
      */
-    static func RecentSavesCardArchive(url: String, positionInList: Int) -> Engagement {
+    static func RecentSavesCardArchive(url: String, positionInList: Int?) -> Engagement {
         return Engagement(
             uiEntity: UiEntity(
                 .button,

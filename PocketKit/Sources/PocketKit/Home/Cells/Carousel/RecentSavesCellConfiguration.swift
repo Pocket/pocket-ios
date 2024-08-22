@@ -8,8 +8,19 @@ import Textile
 import Localization
 import SharedPocketKit
 
-struct RecentSavesCellConfiguration: HomeCarouselCellConfiguration {
-    let item: ItemsListItem
+struct RecentSavesCellConfiguration: HomeCarouselCellConfiguration, Identifiable, Equatable, Hashable {
+    static func == (lhs: RecentSavesCellConfiguration, rhs: RecentSavesCellConfiguration) -> Bool {
+        lhs.id == rhs.id
+        && lhs.item.id == rhs.item.id
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+        hasher.combine(item.id)
+    }
+
+    var id = UUID()
+    let item: any ItemsListItem
     let favoriteAction: ItemAction?
     let overflowActions: [ItemAction]?
     let thumbnailURL: URL?
@@ -19,7 +30,7 @@ struct RecentSavesCellConfiguration: HomeCarouselCellConfiguration {
     let saveAction: ItemAction? = nil
 
     init(
-        item: ItemsListItem,
+        item: any ItemsListItem,
         favoriteAction: ItemAction?,
         overflowActions: [ItemAction]?
     ) {
