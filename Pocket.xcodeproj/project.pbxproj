@@ -125,6 +125,7 @@
 		AA8BADEA2BC88C4B004F1959 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = AA8BADE92BC88C4B004F1959 /* PrivacyInfo.xcprivacy */; };
 		AA8BADEC2BC88C64004F1959 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = AA8BADEB2BC88C64004F1959 /* PrivacyInfo.xcprivacy */; };
 		AA9DB97429B6E6480046AEF6 /* Test_Subscriptions.storekit in Resources */ = {isa = PBXBuildFile; fileRef = AA909ACC299F4D5400F90FA7 /* Test_Subscriptions.storekit */; };
+		AA9FE0802C7FB3590081B7A3 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = AA9FE07F2C7FB3590081B7A3 /* Localizable.xcstrings */; };
 		AAB4F3A62BBCA6140047A003 /* BrazeNotificationService in Frameworks */ = {isa = PBXBuildFile; productRef = AAB4F3A52BBCA6140047A003 /* BrazeNotificationService */; };
 		AAB4F3A82BBCA6140047A003 /* BrazePushStory in Frameworks */ = {isa = PBXBuildFile; productRef = AAB4F3A72BBCA6140047A003 /* BrazePushStory */; };
 		AADE043C2C64380300F9BD9F /* AnonymousModeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AADE043B2C64380300F9BD9F /* AnonymousModeTests.swift */; };
@@ -351,6 +352,7 @@
 		AA8BADEB2BC88C64004F1959 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		AA909AC8299EFD3A00F90FA7 /* secrets_test.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = secrets_test.xcconfig; sourceTree = "<group>"; };
 		AA909ACC299F4D5400F90FA7 /* Test_Subscriptions.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Test_Subscriptions.storekit; sourceTree = "<group>"; };
+		AA9FE07F2C7FB3590081B7A3 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		AAC9F5AA2B0BDBF800FD614A /* UITests-4.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = "UITests-4.xctestplan"; sourceTree = "<group>"; };
 		AADE043B2C64380300F9BD9F /* AnonymousModeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnonymousModeTests.swift; sourceTree = "<group>"; };
 		AAE33A7F2A0ED5A600214652 /* ItemWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ItemWidgets.entitlements; sourceTree = "<group>"; };
@@ -760,6 +762,7 @@
 			children = (
 				AA561B8E2C740F10006DF948 /* PocketShortcuts.swift */,
 				AA561B8F2C740F10006DF948 /* SearchSavesIntent.swift */,
+				AA9FE07F2C7FB3590081B7A3 /* Localizable.xcstrings */,
 			);
 			path = "Pocket Intents";
 			sourceTree = "<group>";
@@ -1041,6 +1044,7 @@
 			files = (
 				65D3105229CEACF100952D64 /* PKTListenResources.bundle in Resources */,
 				16E32B0226851AEB000CC36D /* Assets.xcassets in Resources */,
+				AA9FE0802C7FB3590081B7A3 /* Localizable.xcstrings in Resources */,
 				938D45322A05B87D00E68B0B /* Launch Screen.storyboard in Resources */,
 				AA8BADE42BC88A5D004F1959 /* PrivacyInfo.xcprivacy in Resources */,
 				9367E9E82A05B6A10052DF47 /* Launch Screen.xcassets in Resources */,

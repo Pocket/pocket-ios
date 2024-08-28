@@ -1,0 +1,42 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Find saved articles related to ${criteria}" : {
+
+    },
+    "intents.searchSaves.criteria.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search Criteria"
+          }
+        }
+      }
+    },
+    "intents.searchSaves.description" : {
+      "comment" : "Description for the search saves intent",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search something in your Pocket saves"
+          }
+        }
+      }
+    },
+    "intents.searchSaves.title" : {
+      "comment" : "Title for the search saves intent",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search Pocket"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}
