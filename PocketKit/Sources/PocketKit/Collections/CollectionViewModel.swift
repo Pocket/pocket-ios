@@ -361,7 +361,8 @@ extension CollectionViewModel {
                     featureFlagService: featureFlags
                 )
             )
-        // Check if item has an associated recommendation
+        // Check if item should be opened in the reader, which means it's syndicated,
+        // since the previous step already checks if it's a saved item
         } else if let item = story.item, !item.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
             selectedItem = .recommendable(
                 RecommendableItemViewModel(
