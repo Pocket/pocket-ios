@@ -188,6 +188,7 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate, UISea
 
     func updateSearchBar(searchText: String) {
         let searchBar = navigationItem.searchController?.searchBar
+        searchBar?.becomeFirstResponder()
         searchBar?.text = searchText
         searchBar?.resignFirstResponder()
     }
