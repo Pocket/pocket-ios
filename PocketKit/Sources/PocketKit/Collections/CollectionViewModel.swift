@@ -362,10 +362,10 @@ extension CollectionViewModel {
                 )
             )
         // Check if item has an associated recommendation
-        } else if let item = story.item, !item.shouldOpenInWebView(override: featureFlags.shouldDisableReader), let recommendation = item.recommendation {
+        } else if let item = story.item, !item.shouldOpenInWebView(override: featureFlags.shouldDisableReader) {
             selectedItem = .recommendable(
                 RecommendableItemViewModel(
-                    item: recommendation.item,
+                    item: item,
                     source: source,
                     accessService: accessService,
                     tracker: tracker,
