@@ -4,6 +4,7 @@
 
 import Foundation
 import AppIntents
+import Localization
 
 class PocketShortcuts: AppShortcutsProvider {
     static var shortcutTitleColor = ShortcutTileColor.orange
@@ -12,7 +13,7 @@ class PocketShortcuts: AppShortcutsProvider {
         AppShortcut(
             intent: SearchSavesIntent(),
             phrases: [
-                "Find me some cool stuff in \(.applicationName)",
+                "Show me some cool stuff in \(.applicationName)",
                 "Search \(.applicationName)"
             ],
             shortTitle: "intents.searchSaves.title",

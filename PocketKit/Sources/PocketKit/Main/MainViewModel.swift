@@ -212,7 +212,7 @@ public class MainViewModel: ObservableObject {
         saves.clearPresentedWebReaderURL()
     }
 
-    public func selectSavesTab() {
+    public func selectSavesTabForIntent() {
         self.selectedSection = .saves
     }
 

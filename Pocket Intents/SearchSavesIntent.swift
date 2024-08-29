@@ -4,6 +4,7 @@
 
 import Foundation
 import AppIntents
+import Localization
 @preconcurrency import PocketKit
 
 struct SearchSavesIntent: AppIntent {
@@ -18,14 +19,14 @@ struct SearchSavesIntent: AppIntent {
     var criteria: String
 
     static var parameterSummary: some ParameterSummary {
-        Summary("Find saved articles related to \(\.$criteria)")
+        Summary("intents.searchSaves.criteria.summary")
     }
 
     @MainActor
     func perform() async throws -> some IntentResult {
         guard let mainViewModel else { return .result() }
-        mainViewModel.selectSavesTab()
-        defaultSeatch.searchText = criteria
+        mainViewModel.selectSavesTabForIntent()
+        defaultSeatch.searchIntentCriteria = criteria
         return .result()
     }
 }
