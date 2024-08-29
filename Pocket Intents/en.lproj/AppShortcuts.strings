@@ -1,7 +1,2 @@
-/* 
-  AppShortcuts.strings
-  Pocket
-
-  Created by Giorgio Ruscigno on 8/29/24.
-  
-*/
+"Show me some cool stuff in ${applicationName}" = "Show me some cool stuff in ${applicationName}";
+"Search ${applicationName}" = "Search ${applicationName}";
