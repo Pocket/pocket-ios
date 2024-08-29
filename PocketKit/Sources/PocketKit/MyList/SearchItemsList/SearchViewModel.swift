@@ -35,6 +35,7 @@ protocol SearchResultActionDelegate: AnyObject {
 }
 
 /// View model that holds business logic for the SearchView
+@MainActor
 public class DefaultSearchViewModel: ObservableObject {
     static let recentSearchesKey = UserDefaults.Key.recentSearches
     // search-specific subscriptions, get cleared at each search
@@ -71,7 +72,7 @@ public class DefaultSearchViewModel: ObservableObject {
     }
 
     private(set) var scopeTitles: [String] = SearchScope.defaultScopes.map { $0.rawValue }
-    var selectedScope: SearchScope = .saves
+    private var selectedScope: SearchScope = .saves
 
     @Published var showBanner: Bool = false
     @Published var isPresentingPremiumUpgrade = false

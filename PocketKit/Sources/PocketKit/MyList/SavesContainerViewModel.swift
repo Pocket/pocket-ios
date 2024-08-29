@@ -9,13 +9,13 @@ import SharedPocketKit
 import Analytics
 
 @MainActor
-class SavesContainerViewModel {
-    enum Selection {
+public class SavesContainerViewModel {
+    public enum Selection {
         case saves
         case archive
     }
 
-    @Published var selection: Selection = .saves
+    @Published public var selection: Selection = .saves
 
     let tracker: Tracker
     let searchList: DefaultSearchViewModel

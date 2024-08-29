@@ -59,7 +59,7 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate, UISea
         }
     }
 
-    var isFromSaves: Bool
+    private var isFromSaves: Bool
 
     private let viewControllers: [SelectableViewController]
     private var searchViewModel: DefaultSearchViewModel

@@ -50,46 +50,48 @@ public class MainViewModel: ObservableObject {
                 networkPathMonitor: NWPathMonitor()
             )
         }
+        let savesContainerViewModel = SavesContainerViewModel(
+            tracker: Services.shared.tracker,
+            searchList: defaultSearch,
+            savedItemsList: SavedItemsListViewModel(
+                source: Services.shared.source,
+                tracker: Services.shared.tracker.childTracker(hosting: .saves.saves),
+                viewType: .saves,
+                listOptions: .saved(userDefaults: Services.shared.userDefaults),
+                notificationCenter: .default,
+                user: Services.shared.user,
+                store: Services.shared.subscriptionStore,
+                refreshCoordinator: Services.shared.savesRefreshCoordinator,
+                networkPathMonitor: NWPathMonitor(),
+                userDefaults: Services.shared.userDefaults,
+                featureFlags: Services.shared.featureFlagService,
+                accessService: Services.shared.accessService
+            ),
+            archivedItemsList: SavedItemsListViewModel(
+                source: Services.shared.source,
+                tracker: Services.shared.tracker.childTracker(hosting: .saves.archive),
+                viewType: .archive,
+                listOptions: .archived(userDefaults: Services.shared.userDefaults),
+                notificationCenter: .default,
+                user: Services.shared.user,
+                store: Services.shared.subscriptionStore,
+                refreshCoordinator: Services.shared.archiveRefreshCoordinator,
+                networkPathMonitor: NWPathMonitor(),
+                userDefaults: Services.shared.userDefaults,
+                featureFlags: Services.shared.featureFlagService,
+                accessService: Services.shared.accessService
+            ),
+            addSavedItemModel: AddSavedItemViewModel(
+                source: Services.shared.source,
+                tracker: Services.shared.tracker.childTracker(hosting: .saves.saves)
+            ),
+            accessService: Services.shared.accessService
+        )
+        AppDependencyManager.shared.add(dependency: savesContainerViewModel)
         AppDependencyManager.shared.add(dependency: defaultSearch)
         self.init(
             defaultSearch: defaultSearch,
-            saves: SavesContainerViewModel(
-                tracker: Services.shared.tracker,
-                searchList: defaultSearch,
-                savedItemsList: SavedItemsListViewModel(
-                    source: Services.shared.source,
-                    tracker: Services.shared.tracker.childTracker(hosting: .saves.saves),
-                    viewType: .saves,
-                    listOptions: .saved(userDefaults: Services.shared.userDefaults),
-                    notificationCenter: .default,
-                    user: Services.shared.user,
-                    store: Services.shared.subscriptionStore,
-                    refreshCoordinator: Services.shared.savesRefreshCoordinator,
-                    networkPathMonitor: NWPathMonitor(),
-                    userDefaults: Services.shared.userDefaults,
-                    featureFlags: Services.shared.featureFlagService,
-                    accessService: Services.shared.accessService
-                ),
-                archivedItemsList: SavedItemsListViewModel(
-                    source: Services.shared.source,
-                    tracker: Services.shared.tracker.childTracker(hosting: .saves.archive),
-                    viewType: .archive,
-                    listOptions: .archived(userDefaults: Services.shared.userDefaults),
-                    notificationCenter: .default,
-                    user: Services.shared.user,
-                    store: Services.shared.subscriptionStore,
-                    refreshCoordinator: Services.shared.archiveRefreshCoordinator,
-                    networkPathMonitor: NWPathMonitor(),
-                    userDefaults: Services.shared.userDefaults,
-                    featureFlags: Services.shared.featureFlagService,
-                    accessService: Services.shared.accessService
-                ),
-                addSavedItemModel: AddSavedItemViewModel(
-                    source: Services.shared.source,
-                    tracker: Services.shared.tracker.childTracker(hosting: .saves.saves)
-                ),
-                accessService: Services.shared.accessService
-            ),
+            saves: savesContainerViewModel,
             home: HomeViewModel(
                 source: Services.shared.source,
                 tracker: Services.shared.tracker.childTracker(hosting: .home.screen),
