@@ -191,6 +191,7 @@ public class DefaultSearchViewModel: ObservableObject {
                 guard let self else { return }
                 if let criteria, !criteria.isEmpty {
                     searchText = criteria
+                    tracker.track(event: Events.PocketIntents.searchSavesIntentCalled(criteria))
                 }
             }
             .store(in: &subscriptions)
