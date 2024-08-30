@@ -16,7 +16,8 @@ struct SearchSavesIntent: AppIntent {
     @Dependency private var mainViewModel: MainViewModel?
     @Dependency private var savesContainerViewModel: SavesContainerViewModel
     @Dependency private var defaultSeatch: DefaultSearchViewModel
-
+    // this simple intent triggers the search in Pocket and uses
+    // just a String as a parameter, not an AppEntity
     @Parameter(title: "intents.searchSaves.criteria.title")
     var criteria: String
 
