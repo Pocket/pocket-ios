@@ -29,6 +29,7 @@ class TagsFilterViewModel: ObservableObject {
     }
 
     @Published var selectedTag: TagType?
+    @Published var presentExistingTagAlert: Bool = false
 
     init(source: Source, tracker: Tracker, userDefaults: UserDefaults, user: User, selectAllAction: @escaping () -> Void?) {
         self.source = source
@@ -59,21 +60,23 @@ class TagsFilterViewModel: ObservableObject {
         }
     }
 
-    func rename(from oldName: String?, to newName: String) {
+    func rename(from oldName: String?, to newName: String) -> Bool {
         guard let oldName else {
             Log.capture(message: "Unable to rename tag due to oldName being nil")
-            return
+            return false
         }
         let newName = newName.lowercased()
 
         // TODO: To be updated when working on https://getpocket.atlassian.net/browse/IN-1350
         guard let tag: Tag = fetchedTags.filter({ $0.name == oldName }).first,
               !fetchedTags.compactMap({ $0.name }).contains(newName) else {
+            presentExistingTagAlert = true
             Log.capture(message: "Unable to rename tag due to name already existing")
-            return
+            return false
         }
         source.renameTag(from: tag, to: newName)
         trackTagRename(from: oldName, to: newName)
+        return true
     }
 }
 

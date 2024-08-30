@@ -8,10 +8,10 @@ import Textile
 
 struct EditTagsBottomBar: ViewModifier {
     @Binding var editMode: EditMode
+    @Binding var showRenameAlert: Bool
     let selectedItems: Set<TagType>
     let onDelete: () -> Void
     let onRename: (String) -> Void
-    @State private var showRenameAlert: Bool = false
     @State private var showDeleteAlert: Bool = false
     @State private var name = ""
 
@@ -33,6 +33,7 @@ struct EditTagsBottomBar: ViewModifier {
                             onRename(name)
                             name = ""
                         })
+                        .disabled(name.isEmpty)
                     } message: {
                         Text(Localization.Tags.RenameTag.message)
                     }
@@ -61,7 +62,7 @@ struct EditTagsBottomBar: ViewModifier {
 }
 
 extension View {
-    public func editBottomBar(editMode: Binding<EditMode>, selectedItems: Set<TagType>, onDelete: @escaping () -> Void, onRename: @escaping (String) -> Void) -> some View {
-        self.modifier(EditTagsBottomBar(editMode: editMode, selectedItems: selectedItems, onDelete: onDelete, onRename: onRename))
+    public func editBottomBar(editMode: Binding<EditMode>, showRenameAlert: Binding<Bool>, selectedItems: Set<TagType>, onDelete: @escaping () -> Void, onRename: @escaping (String) -> Void) -> some View {
+        self.modifier(EditTagsBottomBar(editMode: editMode, showRenameAlert: showRenameAlert, selectedItems: selectedItems, onDelete: onDelete, onRename: onRename))
     }
 }

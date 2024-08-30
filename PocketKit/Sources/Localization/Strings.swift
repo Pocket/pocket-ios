@@ -715,6 +715,12 @@ public enum Localization {
       public static let message = Localization.tr("Localizable", "tags.renameTag.message", fallback: "Enter a new name for this tag")
       /// Tag name
       public static let prompt = Localization.tr("Localizable", "tags.renameTag.prompt", fallback: "Tag name")
+      public enum TagAlreadyInUse {
+        /// This tag is already in use, please choose a different name.
+        public static let message = Localization.tr("Localizable", "tags.renameTag.tagAlreadyInUse.message", fallback: "This tag is already in use, please choose a different name.")
+        /// Tag already in use
+        public static let title = Localization.tr("Localizable", "tags.renameTag.tagAlreadyInUse.title", fallback: "Tag already in use")
+      }
     }
     public enum Section {
       /// Recent tags
