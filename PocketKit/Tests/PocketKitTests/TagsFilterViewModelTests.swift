@@ -42,51 +42,53 @@ class TagsFilterViewModelTests: XCTestCase {
         user: User? = nil,
         fetchedTags: [Tag]?,
         selectAllAction: @escaping () -> Void
-    ) -> TagsFilterViewModel {
+    ) async -> TagsFilterViewModel {
         let source: MockSource = source ?? self.source
         source.stubFetchAllTags {
             fetchedTags
         }
-        return TagsFilterViewModel(source: source, tracker: tracker ?? self.tracker, userDefaults: userDefaults ?? self.userDefaults, user: user ?? self.user, selectAllAction: selectAllAction)
+        return await TagsFilterViewModel(source: source, tracker: tracker ?? self.tracker, userDefaults: userDefaults ?? self.userDefaults, user: user ?? self.user, selectAllAction: selectAllAction)
     }
 
-    func test_recentTags_withThreeTags_andPremiumUser_returnsNoRecentTags() {
+    func test_recentTags_withThreeTags_andPremiumUser_returnsNoRecentTags() async {
         _ = try? space.createSavedItem(createdAt: Date(), tags: ["tag 1"])
         _ = try? space.createSavedItem(createdAt: Date() + 1, tags: ["tag 2"])
         _ = try? space.createSavedItem(createdAt: Date() + 2, tags: ["tag 3"])
         let savedTags = try? space.fetchTags(isArchived: false)
-        let viewModel = subject(user: MockUser(status: .premium), fetchedTags: savedTags) { }
+        let viewModel = await subject(user: MockUser(status: .premium), fetchedTags: savedTags) { }
+        let recentTags = await viewModel.recentTags
 
-        XCTAssertEqual(viewModel.recentTags, [])
+        XCTAssertEqual(recentTags, [])
     }
 
-    func test_recentTags_withMoreThanThreeTags_andPremiumUser_returnsRecentTags() {
-        _ = try? space.createSavedItem(createdAt: Date(), tags: ["tag 1"])
-        _ = try? space.createSavedItem(createdAt: Date() + 1, tags: ["tag 2"])
-        _ = try? space.createSavedItem(createdAt: Date() + 2, tags: ["tag 3"])
-        _ = try? space.createSavedItem(createdAt: Date() + 3, tags: ["tag 4"])
-
-        let savedTags = try? space.fetchTags(isArchived: false)
-        let viewModel = subject(user: MockUser(status: .premium), fetchedTags: savedTags) { }
-        XCTAssertEqual(viewModel.recentTags, [TagType.recent("tag 3"), TagType.recent("tag 2"), TagType.recent("tag 1")])
-    }
-
-    func test_recentTags_withMoreThanThreeTags_andFreeUser_returnsNoRecentTags() {
+    func test_recentTags_withMoreThanThreeTags_andPremiumUser_returnsRecentTags() async {
         _ = try? space.createSavedItem(createdAt: Date(), tags: ["tag 1"])
         _ = try? space.createSavedItem(createdAt: Date() + 1, tags: ["tag 2"])
         _ = try? space.createSavedItem(createdAt: Date() + 2, tags: ["tag 3"])
         _ = try? space.createSavedItem(createdAt: Date() + 3, tags: ["tag 4"])
-        let savedTags = try? space.fetchTags(isArchived: false)
-        let viewModel = subject(user: MockUser(status: .free), fetchedTags: savedTags) { }
 
-        XCTAssertEqual(viewModel.recentTags, [])
+        let savedTags = try? space.fetchTags(isArchived: false)
+        let viewModel = await subject(user: MockUser(status: .premium), fetchedTags: savedTags) { }
+        let recentTags = await viewModel.recentTags
+        XCTAssertEqual(recentTags, [TagType.recent("tag 3"), TagType.recent("tag 2"), TagType.recent("tag 1")])
     }
 
-    func test_selectedTag_withTagName_sendsPredicate() {
+    func test_recentTags_withMoreThanThreeTags_andFreeUser_returnsNoRecentTags() async {
+        _ = try? space.createSavedItem(createdAt: Date(), tags: ["tag 1"])
+        _ = try? space.createSavedItem(createdAt: Date() + 1, tags: ["tag 2"])
+        _ = try? space.createSavedItem(createdAt: Date() + 2, tags: ["tag 3"])
+        _ = try? space.createSavedItem(createdAt: Date() + 3, tags: ["tag 4"])
+        let savedTags = try? space.fetchTags(isArchived: false)
+        let viewModel = await subject(user: MockUser(status: .free), fetchedTags: savedTags) { }
+        let recentTags = await viewModel.recentTags
+        XCTAssertEqual(recentTags, [])
+    }
+
+    func test_selectedTag_withTagName_sendsPredicate() async {
         let expectSeletedTagCall = expectation(description: "expect selectedTag to be sent")
-        let viewModel = subject(fetchedTags: nil) { }
+        let viewModel = await subject(fetchedTags: nil) { }
 
-        viewModel.$selectedTag.dropFirst().sink { selectedTag in
+        await viewModel.$selectedTag.dropFirst().sink { selectedTag in
             defer { expectSeletedTagCall.fulfill() }
             guard case .notTagged = selectedTag else {
                 XCTFail("should get notTagged")
@@ -95,15 +97,15 @@ class TagsFilterViewModelTests: XCTestCase {
             XCTAssertEqual(selectedTag?.name, "not tagged")
         }.store(in: &subscriptions)
 
-        viewModel.selectTag(.notTagged)
-        wait(for: [expectSeletedTagCall], timeout: 5)
+        await viewModel.selectTag(.notTagged)
+        await fulfillment(of: [expectSeletedTagCall], timeout: 1)
     }
 
-    func test_selectedTag_withNotTagged_sendsPredicate() {
+    func test_selectedTag_withNotTagged_sendsPredicate() async {
         let expectSeletedTagCall = expectation(description: "expect selectedTag to be sent")
-        let viewModel = subject(fetchedTags: nil) { }
+        let viewModel = await subject(fetchedTags: nil) { }
 
-        viewModel.$selectedTag.dropFirst().sink { selectedTag in
+        await viewModel.$selectedTag.dropFirst().sink { selectedTag in
             defer { expectSeletedTagCall.fulfill() }
             guard case .tag(let name) = selectedTag else {
                 XCTFail("should get tag")
@@ -112,11 +114,11 @@ class TagsFilterViewModelTests: XCTestCase {
             XCTAssertEqual(selectedTag?.name, name)
         }.store(in: &subscriptions)
 
-        viewModel.selectTag(.tag("tag 0"))
-        wait(for: [expectSeletedTagCall], timeout: 5)
+        await viewModel.selectTag(.tag("tag 0"))
+        await fulfillment(of: [expectSeletedTagCall], timeout: 1)
     }
 
-    func test_deleteTag_removesExistingTags() {
+    func test_deleteTag_removesExistingTags() async {
         _ = try? space.createSavedItem(createdAt: Date(), tags: ["a"])
         _ = try? space.createSavedItem(createdAt: Date() + 1, tags: ["b"])
         _ = try? space.createSavedItem(createdAt: Date() + 2, tags: ["c"])
@@ -130,14 +132,14 @@ class TagsFilterViewModelTests: XCTestCase {
             deletedTags.append(tag.name)
         }
         let savedTags = try? space.fetchTags(isArchived: false)
-        let viewModel = subject(fetchedTags: savedTags) { }
-        viewModel.delete(tags: ["b", "e", "q"])
+        let viewModel = await subject(fetchedTags: savedTags) { }
+        await viewModel.delete(tags: ["b", "e", "q"])
 
         XCTAssertEqual(deletedTags, ["b", "e"])
-        wait(for: [expectDelete], timeout: 2)
+        await fulfillment(of: [expectDelete], timeout: 2)
     }
 
-    func test_renameTag_showsNewName() {
+    func test_renameTag_showsNewName() async {
         _ = try? space.createSavedItem(createdAt: Date(), tags: ["tag 1"])
         _ = try? space.createSavedItem(createdAt: Date() + 1, tags: ["tag 2"])
 
@@ -147,13 +149,13 @@ class TagsFilterViewModelTests: XCTestCase {
             XCTAssertEqual(tag, "tag 0")
         }
         let savedTags = try? space.fetchTags(isArchived: false)
-        let viewModel = subject(fetchedTags: savedTags) { }
-        viewModel.rename(from: "tag 1", to: "tag 0")
+        let viewModel = await subject(fetchedTags: savedTags) { }
+        _ = await viewModel.rename(from: "tag 1", to: "tag 0")
 
-        wait(for: [expectRename], timeout: 2)
+        await fulfillment(of: [expectRename], timeout: 2)
     }
 
-    func test_renameTag_withNoOldName_doesNotRenameTag() {
+    func test_renameTag_withNoOldName_doesNotRenameTag() async {
         _ = try? space.createSavedItem(createdAt: Date(), tags: ["tag 1"])
         _ = try? space.createSavedItem(createdAt: Date() + 1, tags: ["tag 2"])
 
@@ -161,11 +163,11 @@ class TagsFilterViewModelTests: XCTestCase {
             XCTFail("Should not have been called")
         }
         let savedTags = try? space.fetchTags(isArchived: false)
-        let viewModel = subject(fetchedTags: savedTags) { }
-        viewModel.rename(from: nil, to: "tag 0")
+        let viewModel = await subject(fetchedTags: savedTags) { }
+        _ = await viewModel.rename(from: nil, to: "tag 0")
     }
 
-    func test_renameTag_withTagThatDoesNotExist_doesNotRenameTag() {
+    func test_renameTag_withTagThatDoesNotExist_doesNotRenameTag() async {
         _ = try? space.createSavedItem(createdAt: Date(), tags: ["tag 1"])
         _ = try? space.createSavedItem(createdAt: Date() + 1, tags: ["tag 2"])
 
@@ -173,7 +175,7 @@ class TagsFilterViewModelTests: XCTestCase {
             XCTFail("Should not have been called")
         }
         let savedTags = try? space.fetchTags(isArchived: false)
-        let viewModel = subject(fetchedTags: savedTags) { }
-        viewModel.rename(from: "tag does not exist", to: "tag 2")
+        let viewModel = await subject(fetchedTags: savedTags) { }
+        _ = await viewModel.rename(from: "tag does not exist", to: "tag 2")
     }
 }
