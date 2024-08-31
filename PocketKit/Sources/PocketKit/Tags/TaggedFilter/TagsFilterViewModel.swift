@@ -9,6 +9,7 @@ import Foundation
 import Textile
 import SharedPocketKit
 
+@MainActor
 class TagsFilterViewModel: ObservableObject {
     /// Grab the latest tags from the database on each ask for them to ensure we are up to date
     private var fetchedTags: [Tag] {

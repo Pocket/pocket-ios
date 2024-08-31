@@ -29,11 +29,20 @@ struct EditTagsBottomBar: ViewModifier {
                         TextField(Localization.Tags.RenameTag.prompt, text: $name)
                             .autocapitalization(.none)
                         Button(Localization.cancel, role: .cancel, action: {})
-                        Button(Localization.rename, role: .destructive, action: {
-                            onRename(name)
-                            name = ""
-                        })
-                        .disabled(name.isEmpty)
+                        // Apparently, iOS17+ does not play well with the .disabled() method
+                        // so we just keep the button as it is for now on it.
+                        if #available(iOS 18.0, *) {
+                            Button(Localization.rename, role: .destructive, action: {
+                                onRename(name)
+                                name = ""
+                            })
+                            .disabled(name.isEmpty)
+                        } else {
+                            Button(Localization.rename, role: .destructive, action: {
+                                onRename(name)
+                                name = ""
+                            })
+                        }
                     } message: {
                         Text(Localization.Tags.RenameTag.message)
                     }
