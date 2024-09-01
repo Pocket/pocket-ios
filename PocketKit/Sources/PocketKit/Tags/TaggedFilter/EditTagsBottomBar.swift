@@ -8,10 +8,10 @@ import Textile
 
 struct EditTagsBottomBar: ViewModifier {
     @Binding var editMode: EditMode
+    @Binding var showRenameAlert: Bool
     let selectedItems: Set<TagType>
     let onDelete: () -> Void
     let onRename: (String) -> Void
-    @State private var showRenameAlert: Bool = false
     @State private var showDeleteAlert: Bool = false
     @State private var name = ""
 
@@ -29,10 +29,20 @@ struct EditTagsBottomBar: ViewModifier {
                         TextField(Localization.Tags.RenameTag.prompt, text: $name)
                             .autocapitalization(.none)
                         Button(Localization.cancel, role: .cancel, action: {})
-                        Button(Localization.rename, role: .destructive, action: {
-                            onRename(name)
-                            name = ""
-                        })
+                        // Apparently, iOS17+ does not play well with the .disabled() method
+                        // so we just keep the button as it is for now on it.
+                        if #available(iOS 18.0, *) {
+                            Button(Localization.rename, role: .destructive, action: {
+                                onRename(name)
+                                name = ""
+                            })
+                            .disabled(name.isEmpty)
+                        } else {
+                            Button(Localization.rename, role: .destructive, action: {
+                                onRename(name)
+                                name = ""
+                            })
+                        }
                     } message: {
                         Text(Localization.Tags.RenameTag.message)
                     }
@@ -61,7 +71,7 @@ struct EditTagsBottomBar: ViewModifier {
 }
 
 extension View {
-    public func editBottomBar(editMode: Binding<EditMode>, selectedItems: Set<TagType>, onDelete: @escaping () -> Void, onRename: @escaping (String) -> Void) -> some View {
-        self.modifier(EditTagsBottomBar(editMode: editMode, selectedItems: selectedItems, onDelete: onDelete, onRename: onRename))
+    public func editBottomBar(editMode: Binding<EditMode>, showRenameAlert: Binding<Bool>, selectedItems: Set<TagType>, onDelete: @escaping () -> Void, onRename: @escaping (String) -> Void) -> some View {
+        self.modifier(EditTagsBottomBar(editMode: editMode, showRenameAlert: showRenameAlert, selectedItems: selectedItems, onDelete: onDelete, onRename: onRename))
     }
 }

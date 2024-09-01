@@ -17,6 +17,7 @@ struct TagsFilterView: View {
     @State private var selectedItems = Set<TagType>()
     @State private var editMode: EditMode = .inactive
     @State private var renameTagText = ""
+    @State private var showRenameAlert: Bool = false
 
     @FetchRequest(sortDescriptors: [
         NSSortDescriptor( keyPath: \Tag.name, ascending: true)
@@ -44,13 +45,14 @@ struct TagsFilterView: View {
                 .listRowInsets(EdgeInsets())
                 .navigationBarTitleDisplayMode(.inline)
                 .tagsFilterToolBar($editMode, viewModel: viewModel)
-                .editBottomBar(editMode: $editMode, selectedItems: selectedItems) {
+                .editBottomBar(editMode: $editMode, showRenameAlert: $showRenameAlert, selectedItems: selectedItems) {
                     viewModel.delete(tags: Array(selectedItems.compactMap({ $0.name })))
                     selectedItems.removeAll()
                 } onRename: { text in
-                    viewModel.rename(from: selectedItems.first?.name, to: text)
-                    selectedItems.removeAll()
-                    renameTagText = text
+                    if viewModel.rename(from: selectedItems.first?.name, to: text) {
+                        selectedItems.removeAll()
+                        renameTagText = text
+                    }
                 }
                 .onChange(of: renameTagText) { _ in
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -67,6 +69,13 @@ struct TagsFilterView: View {
         .onDisappear {
             guard !didTap else { return }
             viewModel.selectAllAction()
+        }
+        .alert(Localization.Tags.RenameTag.TagAlreadyInUse.title, isPresented: $viewModel.presentExistingTagAlert) {
+            Button(Localization.ok, role: .cancel, action: {
+                showRenameAlert = true
+            })
+        } message: {
+            Text(Localization.Tags.RenameTag.TagAlreadyInUse.message)
         }
     }
 }
