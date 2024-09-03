@@ -75,7 +75,9 @@ public extension NSMutableAttributedString {
 
     private func calculateLineHeight(for image: UIImage) -> CGFloat {
         var imageLineHeight: CGFloat = 0
-        if let font = self.attribute(.font, at: 0, effectiveRange: nil) as? UIFont {
+        // we need to check if the string is empty, otherwise the attirbute(_:, _:, _:) method will
+        // throw an exception whatever is the index, causing the app to crash
+        if !self.string.isEmpty, let font = self.attribute(.font, at: 0, effectiveRange: nil) as? UIFont {
             /// See image to explain calculation here https://stackoverflow.com/questions/26105803/center-nstextattachment-image-next-to-single-line-uilabel
             imageLineHeight = (font.capHeight - image.size.height) / 2
         }

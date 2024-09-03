@@ -89,7 +89,10 @@ extension CollectionStoryViewModel: ItemCellViewModel {
     }
 
     var domain: String? {
-        collectionStory.publisher
+        if let publisher = collectionStory.publisher, !publisher.isEmpty {
+            return publisher
+        }
+        return collectionStory.item?.bestDomain
     }
 
     var timeToRead: String? {
