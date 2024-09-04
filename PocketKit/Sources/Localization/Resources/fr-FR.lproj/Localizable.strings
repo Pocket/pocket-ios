@@ -199,6 +199,8 @@
 "tags.renameTag" = "Renommer le label";
 "tags.renameTag.message" = "Saisissez le nouveau nom du label";
 "tags.renameTag.prompt" = "Nom du label";
+"tags.renameTag.tagAlreadyInUse.title" = "Le label est déjà utilisé";
+"tags.renameTag.tagAlreadyInUse.message" = "Ce label est déjà utilisé, choisissez un nom différent.";
 
 //Reader 
 "reader.activity.save" = "Enregistrer";
