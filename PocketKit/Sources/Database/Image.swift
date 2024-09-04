@@ -8,12 +8,14 @@ import SwiftData
 
 @available(iOS 17, *)
 @Model
-public class Author {
-    public var id: String
-    var name: String?
-    var url: URL?
+public class Image {
+    var isDownloaded: Bool? = false
+    var source: URL?
     var item: Item?
-    public init(id: String) {
-        self.id = id
+    @Relationship(inverse: \Recommendation.image)
+    var recommendation: Recommendation?
+    @Relationship(inverse: \SyndicatedArticle.image)
+    var syndicatedArticle: SyndicatedArticle?
+    public init() {
     }
 }

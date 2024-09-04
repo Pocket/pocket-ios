@@ -8,12 +8,13 @@ import SwiftData
 
 @available(iOS 17, *)
 @Model
-public class Author {
-    public var id: String
-    var name: String?
-    var url: URL?
-    var item: Item?
-    public init(id: String) {
-        self.id = id
+public class FeatureFlag {
+    var assigned: Bool
+    var name: String
+    var payloadValue: String?
+    var variant: String?
+    public init(assigned: Bool, name: String) {
+        self.assigned = assigned
+        self.name = name
     }
 }
