@@ -199,6 +199,8 @@
 "tags.renameTag" = "タグの名前を変更する";
 "tags.renameTag.message" = "このタグの新しい名前を入力";
 "tags.renameTag.prompt" = "タグ名";
+"tags.renameTag.tagAlreadyInUse.title" = "タグが既に使用されています";
+"tags.renameTag.tagAlreadyInUse.message" = "このタグはすでに使用されています。別の名前を選択してください。";
 
 //Reader 
 "reader.activity.save" = "保存";
