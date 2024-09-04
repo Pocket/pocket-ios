@@ -199,6 +199,8 @@
 "tags.renameTag" = "Mudar o Nome da Etiqueta";
 "tags.renameTag.message" = "Introduza um nome novo para esta etiqueta";
 "tags.renameTag.prompt" = "Nome da etiqueta";
+"tags.renameTag.tagAlreadyInUse.title" = "Etiqueta já em utilização";
+"tags.renameTag.tagAlreadyInUse.message" = "Esta etiqueta já está a ser utilizada. Escolhe um nome diferente.";
 
 //Reader 
 "reader.activity.save" = "Guardar";
