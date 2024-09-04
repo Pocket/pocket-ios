@@ -8,12 +8,8 @@ import SwiftData
 
 @available(iOS 17, *)
 @Model
-public class Author {
-    public var id: String
-    var name: String?
-    var url: URL?
-    var item: Item?
-    public init(id: String) {
-        self.id = id
+public class SavedItemUpdatedNotification {
+    var savedItem: SavedItem?
+    public init() {
     }
 }
