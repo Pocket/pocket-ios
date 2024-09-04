@@ -199,6 +199,8 @@
 "tags.renameTag" = "Renommer la balise";
 "tags.renameTag.message" = "Entrez un nouveau nom pour cette balise";
 "tags.renameTag.prompt" = "Nom de la balise";
+"tags.renameTag.tagAlreadyInUse.title" = "La balise est déjà utilisée";
+"tags.renameTag.tagAlreadyInUse.message" = "Cette balise est déjà utilisée, veuillez choisir un nom différent.";
 
 //Reader 
 "reader.activity.save" = "Sauvegarder";
