@@ -8,12 +8,11 @@ import SwiftData
 
 @available(iOS 17, *)
 @Model
-public class Author {
-    public var id: String
-    var name: String?
-    var url: URL?
+public class SharedWithYouItem {
+    var sortOrder: Int32 = 0
+    var url: String
     var item: Item?
-    public init(id: String) {
-        self.id = id
+    public init(url: String) {
+        self.url = url
     }
 }
