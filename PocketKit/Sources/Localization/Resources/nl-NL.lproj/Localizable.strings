@@ -199,6 +199,8 @@
 "tags.renameTag" = "Hernoem tag";
 "tags.renameTag.message" = "Voer een nieuwe naam voor deze tag in";
 "tags.renameTag.prompt" = "Tagnaam";
+"tags.renameTag.tagAlreadyInUse.title" = "Tag is al in gebruik";
+"tags.renameTag.tagAlreadyInUse.message" = "Deze tag is al in gebruik, kies een andere naam.";
 
 //Reader 
 "reader.activity.save" = "Opslaan";
