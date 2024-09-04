@@ -4,12 +4,17 @@
 
 import SwiftUI
 import CoreSpotlight
+import Database
+import SwiftData
 
 public struct RootView: View {
     @ObservedObject var model: RootViewModel
 
     public init(model: RootViewModel) {
         self.model = model
+        if #available(iOS 17, *) {
+            DataController.appGroupContainerID = Keys.shared.groupID
+        }
         configureAppearance()
     }
 
@@ -46,6 +51,11 @@ private extension RootView {
             .onContinueUserActivity(CSSearchableItemActionType, perform: { userActivity in
                 model.handleSpotlight(userActivity)
             })
+            .modify {
+                if #available(iOS 17.0, *) {
+                    $0.modelContainer(DataController.sharedModelContainer)
+                }
+            }
     }
 
     func loggedOutView(model: LoggedOutViewModel) -> LoggedOutViewControllerSwiftUI {
