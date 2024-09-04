@@ -1,5 +1,5 @@
 {
-  "originHash" : "cff6b251f41571e70ca1f7197761aeaa2efd4700fc0b21a7d57a030c25e82e94",
+  "originHash" : "b7e4f9942e329472e99d03f7424a75859da9a7f37fde164ff5db80983354086d",
   "pins" : [
     {
       "identity" : "apollo-ios",
@@ -26,6 +26,15 @@
       "state" : {
         "revision" : "f34b166be1f1db4aa8f573067e901d72f2a6be57",
         "version" : "0.11.0"
+      }
+    },
+    {
+      "identity" : "fakery",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/vadymmarkov/Fakery",
+      "state" : {
+        "revision" : "71cb3bf36a808534659d1248780c2bf3c4c4fc91",
+        "version" : "5.1.0"
       }
     },
     {

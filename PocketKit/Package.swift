@@ -37,6 +37,7 @@ let package = Package(
         .package(url: "https://github.com/braze-inc/braze-swift-sdk.git", from: "9.3.0"),
         .package(url: "https://github.com/adjust/ios_sdk", from: "4.38.3"),
         .package(url: "https://github.com/RNCryptor/RNCryptor.git", from: "5.1.0"),
+        .package(url: "https://github.com/vadymmarkov/Fakery", from: "5.1.0")
     ],
     targets: [
         .binaryTarget(
@@ -62,7 +63,9 @@ let package = Package(
                 .copy("Stickers")
             ]
         ),
-        .target(name: "Database"),
+        .target(name: "Database", dependencies: [
+            .product(name: "Fakery", package: "Fakery"),
+        ]),
         .target(
             name: "PocketKit",
             dependencies: [
@@ -70,7 +73,6 @@ let package = Package(
                 "Textile",
                 "Analytics",
                 "SharedPocketKit",
-                "Database",
                 "Localization",
                 "PKTListen",
                 "DiffMatchPatch",
@@ -143,6 +145,7 @@ let package = Package(
             dependencies: [
                 .product(name: "Apollo", package: "apollo-ios"),
                 "PocketGraph",
+                "Database",
                 "SharedPocketKit"
             ],
             resources: [.process("PocketModel.xcdatamodeld")]
