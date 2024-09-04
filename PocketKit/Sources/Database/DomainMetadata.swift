@@ -8,12 +8,11 @@ import SwiftData
 
 @available(iOS 17, *)
 @Model
-public class Author {
-    public var id: String
+public class DomainMetadata {
+    var logo: URL?
     var name: String?
-    var url: URL?
+    @Relationship(inverse: \Item.domainMetadata)
     var item: Item?
-    public init(id: String) {
-        self.id = id
+    public init() {
     }
 }
