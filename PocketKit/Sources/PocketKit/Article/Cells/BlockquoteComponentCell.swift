@@ -37,7 +37,7 @@ class BlockquoteComponentCell: UICollectionViewCell, ArticleComponentTextCell, A
     }()
 
     private lazy var textView: ArticleComponentTextView = {
-        let textView = ArticleComponentTextView()
+        let textView = ArticleComponentTextView.makeArticleComponentTextView()
         textView.actionDelegate = self
         return textView
     }()

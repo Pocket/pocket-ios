@@ -38,7 +38,7 @@ class CodeBlockComponentCell: UICollectionViewCell, ArticleComponentTextCell, Ar
     }()
 
     lazy var textView: ArticleComponentTextView = {
-        let view = ArticleComponentTextView()
+        let view = ArticleComponentTextView.makeArticleComponentTextView()
         view.dataDetectorTypes = []
         view.actionDelegate = self
         return view

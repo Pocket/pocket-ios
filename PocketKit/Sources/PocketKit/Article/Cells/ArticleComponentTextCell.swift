@@ -69,22 +69,25 @@ class ArticleComponentTextView: UITextView {
         attributedText.isFullyHighlighted(fullRange)
     }
 
-    override init(frame: CGRect, textContainer: NSTextContainer?) {
-        super.init(frame: frame, textContainer: textContainer)
+    static func makeArticleComponentTextView() -> ArticleComponentTextView {
+        let view = ArticleComponentTextView(usingTextLayoutManager: true)
+        view.backgroundColor = .clear
+        view.textContainerInset = .zero
+        view.textContainer.lineFragmentPadding = .zero
+        view.isEditable = false
+        view.isScrollEnabled = false
+        view.delegate = view
 
-        backgroundColor = .clear
-        textContainerInset = .zero
-        self.textContainer.lineFragmentPadding = .zero
-        isEditable = false
-        isScrollEnabled = false
-        delegate = self
-
-        linkTextAttributes = [.foregroundColor: UIColor(.ui.black1)]
-
-        interactions
+        view.linkTextAttributes = [.foregroundColor: UIColor(.ui.black1)]
+        view.interactions
             .filter { $0 is UIContextMenuInteraction }
-            .forEach { removeInteraction($0) }
-        addInteraction(UIContextMenuInteraction(delegate: self))
+            .forEach { view.removeInteraction($0) }
+        view.addInteraction(UIContextMenuInteraction(delegate: view))
+        return view
+    }
+
+    private override init(frame: CGRect, textContainer: NSTextContainer?) {
+        super.init(frame: frame, textContainer: textContainer)
     }
 
     required init?(coder: NSCoder) {
