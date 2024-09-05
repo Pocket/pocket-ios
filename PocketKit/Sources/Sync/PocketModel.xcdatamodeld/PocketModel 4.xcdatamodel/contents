@@ -20,7 +20,7 @@
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
-    <entity name="CollectionAuthor" representedClassName="CollectionAuthor" syncable="YES">
+    <entity name="CollectionAuthor" representedClassName="CDCollectionAuthor" syncable="YES">
         <attribute name="name" attributeType="String"/>
         <relationship name="collection" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Collection" inverseName="authors" inverseEntity="Collection"/>
         <relationship name="collectionStory" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CollectionStory" inverseName="authors" inverseEntity="CollectionStory"/>

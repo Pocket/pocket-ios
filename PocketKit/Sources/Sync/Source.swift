@@ -78,7 +78,7 @@ public protocol Source {
 
     func fetchCollection(by slug: String) async throws
 
-    func fetchCollectionAuthors(by slug: String) -> [CollectionAuthor]
+    func fetchCollectionAuthors(by slug: String) -> [CDCollectionAuthor]
 
     func restore()
 
