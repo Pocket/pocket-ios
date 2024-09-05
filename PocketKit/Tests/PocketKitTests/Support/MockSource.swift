@@ -342,7 +342,7 @@ extension MockSource {
 // MARK: - Make home controller
 extension MockSource {
     static let makeHomeController = "makeHomeController"
-    typealias MakeHomeControllerImpl = () -> RichFetchedResultsController<Sync.Recommendation>
+    typealias MakeHomeControllerImpl = () -> RichFetchedResultsController<Sync.CDRecommendation>
 
     struct MakeHomeControllerCall {
     }
@@ -351,7 +351,7 @@ extension MockSource {
         implementations[Self.makeHomeController] = impl
     }
 
-    func makeHomeController() -> RichFetchedResultsController<Sync.Recommendation> {
+    func makeHomeController() -> RichFetchedResultsController<Sync.CDRecommendation> {
         guard let impl = implementations[Self.makeHomeController] as? MakeHomeControllerImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
@@ -1066,9 +1066,9 @@ extension MockSource {
 // MARK: - Recommendations
 extension MockSource {
     static let saveRecommendation = "saveRecommendation"
-    typealias SaveRecommendationImpl = (Recommendation) -> Void
+    typealias SaveRecommendationImpl = (CDRecommendation) -> Void
     struct SaveRecommendationCall {
-        let recommendation: Recommendation
+        let recommendation: CDRecommendation
     }
 
     static let saveItem = "saveItem"
@@ -1078,15 +1078,15 @@ extension MockSource {
     }
 
     static let archiveRecommendation = "archiveRecommendation"
-    typealias ArchiveRecommendationImpl = (Recommendation) -> Void
+    typealias ArchiveRecommendationImpl = (CDRecommendation) -> Void
     struct ArchiveRecommendationCall {
-        let recommendation: Recommendation
+        let recommendation: CDRecommendation
     }
 
     static let removeRecommendation = "removeRecommendation"
-    typealias RemoveRecommendationImpl = (Recommendation) -> Void
+    typealias RemoveRecommendationImpl = (CDRecommendation) -> Void
     struct RemoveRecommendationCall {
-        let recommendation: Recommendation
+        let recommendation: CDRecommendation
     }
 
     func stubSaveRecommendation(_ impl: @escaping SaveRecommendationImpl) {
@@ -1103,7 +1103,7 @@ extension MockSource {
         return call
     }
 
-    func save(recommendation: Recommendation) {
+    func save(recommendation: CDRecommendation) {
         guard let impl = implementations[Self.saveRecommendation] as? SaveRecommendationImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
@@ -1150,7 +1150,7 @@ extension MockSource {
         return call
     }
 
-    func archive(recommendation: Recommendation) {
+    func archive(recommendation: CDRecommendation) {
         guard let impl = implementations[Self.archiveRecommendation] as? ArchiveRecommendationImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
@@ -1176,7 +1176,7 @@ extension MockSource {
         return call
     }
 
-    func remove(recommendation: Recommendation) {
+    func remove(recommendation: CDRecommendation) {
         guard let impl = implementations[Self.removeRecommendation] as? RemoveRecommendationImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }

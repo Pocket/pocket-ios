@@ -76,7 +76,7 @@ extension RecomendationExtensionTests {
         )
     }
 
-    func subject(item: CDItem? = nil, syndicatedArticle: SyndicatedArticle? = nil, imageURL: URL? = nil, title: String? = nil, excerpt: String? = nil) -> Recommendation {
+    func subject(item: CDItem? = nil, syndicatedArticle: SyndicatedArticle? = nil, imageURL: URL? = nil, title: String? = nil, excerpt: String? = nil) -> CDRecommendation {
         let item = item ?? buildItem()
         item.syndicatedArticle = syndicatedArticle
 
@@ -89,7 +89,7 @@ extension RecomendationExtensionTests {
         return recommendation
     }
 
-    func subjectWithCuratedInfo() -> Recommendation {
+    func subjectWithCuratedInfo() -> CDRecommendation {
         return subject(
             imageURL: URL(string: "https://curated-info-image.jpeg"),
             title: "A Curated Title",
@@ -97,13 +97,13 @@ extension RecomendationExtensionTests {
         )
     }
 
-    func subjectWithSyndicated() -> Recommendation {
+    func subjectWithSyndicated() -> CDRecommendation {
         return subject(
             syndicatedArticle: buildSyndicatedArticle()
         )
     }
 
-    func subjectWithAllFields() -> Recommendation {
+    func subjectWithAllFields() -> CDRecommendation {
         return subject(
             syndicatedArticle: buildSyndicatedArticle(),
             imageURL: URL(string: "https://curated-info-image.jpeg"),
@@ -126,7 +126,7 @@ extension RecomendationExtensionTests {
         XCTAssertNotNil(imageURL.absoluteString.range(of: string))
     }
 
-    func assertCuratedInfo(_ subject: Recommendation) {
+    func assertCuratedInfo(_ subject: CDRecommendation) {
         assertCachedImageURLContainsOriginalImageURL(imageURL: subject.bestImageURL!, originalUrl: URL(string: "https://curated-info-image.jpeg")!)
         XCTAssertEqual(subject.bestTitle, "A Curated Title")
         XCTAssertEqual(subject.bestExcerpt, "Some curated excerpt")

@@ -32,7 +32,7 @@ extension CDItem {
     @NSManaged public var collection: CDCollection?
     @NSManaged public var domainMetadata: CDDomainMetadata?
     @NSManaged public var images: NSOrderedSet?
-    @NSManaged public var recommendation: Recommendation?
+    @NSManaged public var recommendation: CDRecommendation?
     @NSManaged public var savedItem: SavedItem?
     @NSManaged public var syndicatedArticle: SyndicatedArticle?
     @NSManaged public var collectionStories: NSSet?

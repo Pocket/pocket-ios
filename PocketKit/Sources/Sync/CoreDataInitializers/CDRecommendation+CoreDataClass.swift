@@ -6,8 +6,8 @@
 import Foundation
 import CoreData
 
-@objc(Recommendation)
-public class Recommendation: NSManagedObject {
+@objc(CDRecommendation)
+public class CDRecommendation: NSManagedObject {
     @available(*, unavailable)
     public init() {
         fatalError()

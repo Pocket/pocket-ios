@@ -83,7 +83,7 @@ extension SavedItem {
         }
     }
 
-    public func update(from recommendation: Recommendation) {
+    public func update(from recommendation: CDRecommendation) {
         let url = recommendation.item.givenURL
         self.url = url
         self.createdAt = Date()

@@ -21,7 +21,7 @@ public struct RecommendationsWidgetUpdateService {
 
     /// Update the recommendations using a collection of slates, normalized to `[String: [Recommendation]]`
     /// - Parameter items: the given collection of normalized slates
-    public func update(_ topics: [String: [Recommendation]]) {
+    public func update(_ topics: [String: [CDRecommendation]]) {
         let newTopics: [ItemContentContainer] = topics.map { makeItemContentContainer($0.key, $0.value) }
         // avoid triggering widget updates if stored data did not change
         guard (store.topics.sorted { $0.name > $1.name }) != (newTopics.sorted { $0.name > $1.name }) else {
@@ -37,7 +37,7 @@ public struct RecommendationsWidgetUpdateService {
         }
     }
 
-    private func makeItemContentContainer(_ name: String, _ recommendations: [Recommendation]) -> ItemContentContainer {
+    private func makeItemContentContainer(_ name: String, _ recommendations: [CDRecommendation]) -> ItemContentContainer {
             let itemContent = recommendations.map {
                 ItemContent(
                     url: $0.item.givenURL,
