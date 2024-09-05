@@ -40,7 +40,7 @@ class SpaceTests: XCTestCase {
 
     func testFetchTagsForSavedAndArchivedItems() throws {
         let space = subject()
-        let tag: Tag = Tag(context: space.backgroundContext)
+        let tag: CDTag = CDTag(context: space.backgroundContext)
         tag.name = "tag 0"
         tag.remoteID = tag.name.uppercased()
         _ = space.buildSavedItem(tags: [tag])
@@ -52,7 +52,7 @@ class SpaceTests: XCTestCase {
 
     func testFetchOrCreateTags() throws {
         let space = subject()
-        let tag1: Tag = Tag(context: space.backgroundContext)
+        let tag1: CDTag = CDTag(context: space.backgroundContext)
         tag1.name = "tag 1"
         tag1.remoteID = tag1.name.uppercased()
 
@@ -66,7 +66,7 @@ class SpaceTests: XCTestCase {
 
     func testFetchTagsByID() throws {
         let space = subject()
-        let tag1: Tag = Tag(context: space.backgroundContext)
+        let tag1: CDTag = CDTag(context: space.backgroundContext)
         tag1.name = "tag 1"
 
         let fetchedTag1 = try space.fetchTag(by: "tag 1")
@@ -79,7 +79,7 @@ class SpaceTests: XCTestCase {
     func testRetrieveTagsExcludingCertainTags() throws {
         let space = subject()
         let items = createItemsWithTags(3)
-        guard let tag1 = items[1].tags?[0] as? Tag, let tag2 = items[2].tags?[0] as? Tag else {
+        guard let tag1 = items[1].tags?[0] as? CDTag, let tag2 = items[2].tags?[0] as? CDTag else {
             XCTFail("Should not be nil")
             return
         }
@@ -93,7 +93,7 @@ class SpaceTests: XCTestCase {
     func testFilterTagsExcludingCertainTags() throws {
         let space = subject()
         let items = createItemsWithTags(3)
-        guard let tag0 = items[0].tags?[0] as? Tag, let tag2 = items[2].tags?[0] as? Tag else {
+        guard let tag0 = items[0].tags?[0] as? CDTag, let tag2 = items[2].tags?[0] as? CDTag else {
             XCTFail("Should not be nil")
             return
         }
@@ -108,7 +108,7 @@ class SpaceTests: XCTestCase {
         guard number > 0 else { return [] }
         return (1...number).compactMap { num in
             let space = subject()
-            let tag: Tag = Tag(context: space.backgroundContext)
+            let tag: CDTag = CDTag(context: space.backgroundContext)
             tag.remoteID = "id \(num)"
             tag.name = "tag \(num)"
             return space.buildSavedItem(isArchived: isArchived, tags: [tag])

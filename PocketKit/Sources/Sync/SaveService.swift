@@ -19,7 +19,7 @@ public enum SaveServiceStatus {
 
 public protocol SaveService {
     func save(url: String) -> SaveServiceStatus
-    func retrieveTags(excluding tags: [String]) -> [Tag]?
-    func filterTags(with text: String, excluding tags: [String]) -> [Tag]?
+    func retrieveTags(excluding tags: [String]) -> [CDTag]?
+    func filterTags(with text: String, excluding tags: [String]) -> [CDTag]?
     func addTags(savedItem: CDSavedItem, tags: [String]) -> SaveServiceStatus
 }

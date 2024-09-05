@@ -12,7 +12,7 @@ import SharedPocketKit
 @MainActor
 class TagsFilterViewModel: ObservableObject {
     /// Grab the latest tags from the database on each ask for them to ensure we are up to date
-    private var fetchedTags: [Tag] {
+    private var fetchedTags: [CDTag] {
         self.source.fetchAllTags() ?? []
     }
     private let tracker: Tracker
@@ -56,7 +56,7 @@ class TagsFilterViewModel: ObservableObject {
     func delete(tags: [String]) {
         trackTagsDelete(tags)
         tags.forEach { tag in
-            guard let tag: Tag = fetchedTags.filter({ $0.name == tag }).first else { return }
+            guard let tag: CDTag = fetchedTags.filter({ $0.name == tag }).first else { return }
             source.deleteTag(tag: tag)
         }
     }
@@ -69,7 +69,7 @@ class TagsFilterViewModel: ObservableObject {
         let newName = newName.lowercased()
 
         // TODO: To be updated when working on https://getpocket.atlassian.net/browse/IN-1350
-        guard let tag: Tag = fetchedTags.filter({ $0.name == oldName }).first,
+        guard let tag: CDTag = fetchedTags.filter({ $0.name == oldName }).first,
               !fetchedTags.compactMap({ $0.name }).contains(newName) else {
             presentExistingTagAlert = true
             Log.capture(message: "Unable to rename tag due to name already existing")

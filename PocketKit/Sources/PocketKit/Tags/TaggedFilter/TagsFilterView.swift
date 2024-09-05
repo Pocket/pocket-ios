@@ -20,9 +20,9 @@ struct TagsFilterView: View {
     @State private var showRenameAlert: Bool = false
 
     @FetchRequest(sortDescriptors: [
-        NSSortDescriptor( keyPath: \Tag.name, ascending: true)
+        NSSortDescriptor( keyPath: \CDTag.name, ascending: true)
     ], animation: .default)
-    private var tags: FetchedResults<Tag>
+    private var tags: FetchedResults<CDTag>
 
     var body: some View {
         NavigationStack {

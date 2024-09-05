@@ -636,10 +636,10 @@ extension PocketSource {
         }
     }
 
-    public func deleteTag(tag: Tag) {
+    public func deleteTag(tag: CDTag) {
         Log.breadcrumb(category: "sync", level: .debug, message: "Deleting tags")
         space.performAndWait {
-            guard let tag = space.backgroundObject(with: tag.objectID) as? Tag,
+            guard let tag = space.backgroundObject(with: tag.objectID) as? CDTag,
                   let remoteID = tag.remoteID else {
                 Log.capture(message: "Could not retreive item from background context for mutation")
                 return
@@ -662,10 +662,10 @@ extension PocketSource {
         }
     }
 
-    public func renameTag(from oldTag: Tag, to name: String) {
+    public func renameTag(from oldTag: CDTag, to name: String) {
         Log.breadcrumb(category: "sync", level: .debug, message: "Renaming tag")
         space.performAndWait {
-            guard let oldTag = space.backgroundObject(with: oldTag.objectID) as? Tag else {
+            guard let oldTag = space.backgroundObject(with: oldTag.objectID) as? CDTag else {
                 Log.capture(message: "Could not retreive item from background context for mutation")
                 return
             }
@@ -694,15 +694,15 @@ extension PocketSource {
         }
     }
 
-    public func retrieveTags(excluding tags: [String]) -> [Tag]? {
+    public func retrieveTags(excluding tags: [String]) -> [CDTag]? {
         try? space.retrieveTags(excluding: tags)
     }
 
-    public func fetchAllTags() -> [Tag]? {
+    public func fetchAllTags() -> [CDTag]? {
         try? space.fetchAllTags()
     }
 
-    public func filterTags(with input: String, excluding tags: [String]) -> [Tag]? {
+    public func filterTags(with input: String, excluding tags: [String]) -> [CDTag]? {
         try? space.filterTags(with: input, excluding: tags)
     }
 

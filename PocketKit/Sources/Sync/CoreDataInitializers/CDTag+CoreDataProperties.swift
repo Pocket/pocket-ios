@@ -6,10 +6,10 @@
 import Foundation
 import CoreData
 
-extension Tag {
+extension CDTag {
     @nonobjc
-    public class func fetchRequest() -> NSFetchRequest<Tag> {
-        return NSFetchRequest<Tag>(entityName: "Tag")
+    public class func fetchRequest() -> NSFetchRequest<CDTag> {
+        return NSFetchRequest<CDTag>(entityName: "Tag")
     }
 
     @NSManaged public var name: String
@@ -18,7 +18,7 @@ extension Tag {
 }
 
 // MARK: Generated accessors for savedItems
-extension Tag {
+extension CDTag {
     @objc(insertObject:inSavedItemsAtIndex:)
     @NSManaged public func insertIntoSavedItems(_ value: CDSavedItem, at idx: Int)
 
