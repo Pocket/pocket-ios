@@ -276,7 +276,7 @@ class SaveOperation<Mutation: GraphQLMutation>: AsyncOperation {
                 Log.capture(message: "Save Service could not get a savedItem from the background context, for unresolved item")
                 return
             }
-            let unresolved: UnresolvedSavedItem = UnresolvedSavedItem(context: space.backgroundContext)
+            let unresolved: CDUnresolvedSavedItem = CDUnresolvedSavedItem(context: space.backgroundContext)
             unresolved.savedItem = savedItem
             try space.save()
         }

@@ -7,5 +7,5 @@ import Foundation
 import CoreData
 
 @objc(UnresolvedSavedItem)
-public class UnresolvedSavedItem: NSManagedObject {
+public class CDUnresolvedSavedItem: NSManagedObject {
 }

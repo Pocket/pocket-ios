@@ -62,7 +62,7 @@ extension PocketSourceTests {
         var source: PocketSource? = subject()
 
         let savedItem = try! space.createSavedItem()
-        let unresolved: UnresolvedSavedItem = UnresolvedSavedItem(context: space.backgroundContext)
+        let unresolved: CDUnresolvedSavedItem = CDUnresolvedSavedItem(context: space.backgroundContext)
         unresolved.savedItem = savedItem
         try space.save()
 
