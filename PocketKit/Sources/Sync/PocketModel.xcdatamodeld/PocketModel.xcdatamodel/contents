@@ -6,7 +6,7 @@
         <attribute name="url" optional="YES" attributeType="URI"/>
         <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="authors" inverseEntity="Item"/>
     </entity>
-    <entity name="DomainMetadata" representedClassName="DomainMetadata" syncable="YES">
+    <entity name="DomainMetadata" representedClassName="CDDomainMetadata" syncable="YES">
         <attribute name="logo" optional="YES" attributeType="URI"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="domainMetadata" inverseEntity="Item"/>
