@@ -69,9 +69,8 @@ class ArticleComponentTextView: UITextView {
         attributedText.isFullyHighlighted(fullRange)
     }
 
-    override init(frame: CGRect, textContainer: NSTextContainer?) {
-        super.init(frame: frame, textContainer: textContainer)
-
+    convenience override init(frame: CGRect, textContainer: NSTextContainer?) {
+        self.init(usingTextLayoutManager: true)
         backgroundColor = .clear
         textContainerInset = .zero
         self.textContainer.lineFragmentPadding = .zero
@@ -80,7 +79,6 @@ class ArticleComponentTextView: UITextView {
         delegate = self
 
         linkTextAttributes = [.foregroundColor: UIColor(.ui.black1)]
-
         interactions
             .filter { $0 is UIContextMenuInteraction }
             .forEach { removeInteraction($0) }
