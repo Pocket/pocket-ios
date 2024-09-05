@@ -93,7 +93,7 @@ class RecommendableItemViewModel: ReadableViewModel {
     }
 
     var authors: [ReadableAuthor]? {
-        item.authors?.compactMap { $0 as? Author }
+        item.authors?.compactMap { $0 as? CDAuthor }
     }
 
     var domain: String? {
