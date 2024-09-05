@@ -5,7 +5,7 @@
 import Foundation
 import PocketGraph
 
-extension DomainMetadata {
+extension CDDomainMetadata {
     func update(remote: DomainMetadataParts) {
         name = remote.name
         logo = remote.logo.flatMap(URL.init(string:))
