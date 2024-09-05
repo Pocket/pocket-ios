@@ -366,7 +366,7 @@ extension HomeViewModel {
         }
     }
 
-    private func select(slate: Slate) {
+    private func select(slate: CDSlate) {
         tappedSeeAll = .slate(SlateDetailViewModel(
             slate: slate,
             source: source,
@@ -623,7 +623,7 @@ extension HomeViewModel {
                 self?.tappedSeeAll = .saves
             }
         case .slateHero(let objectID):
-            guard let slate = source.viewObject(id: objectID) as? Slate else {
+            guard let slate = source.viewObject(id: objectID) as? CDSlate else {
                 return nil
             }
 
@@ -740,15 +740,15 @@ extension HomeViewModel {
 
 // MARK: - Slate Model
 extension HomeViewModel {
-    func slateModel(for objectID: NSManagedObjectID) -> Slate? {
-        return source.viewObject(id: objectID) as? Slate
+    func slateModel(for objectID: NSManagedObjectID) -> CDSlate? {
+        return source.viewObject(id: objectID) as? CDSlate
     }
 }
 
 // MARK: Recommendation View Model & Actions
 extension HomeViewModel {
     func numberOfCarouselItemsForSlate(with id: NSManagedObjectID) -> Int {
-        let count = (source.viewObject(id: id) as? Slate)?
+        let count = (source.viewObject(id: id) as? CDSlate)?
             .recommendations?.count ?? 0
 
         return max(0, count - 1)
