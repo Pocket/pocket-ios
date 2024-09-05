@@ -159,7 +159,7 @@
         <relationship name="recommendations" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Recommendation" inverseName="slate" inverseEntity="Recommendation"/>
         <relationship name="slateLineup" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SlateLineup" inverseName="slates" inverseEntity="SlateLineup"/>
     </entity>
-    <entity name="SlateLineup" representedClassName="SlateLineup" syncable="YES">
+    <entity name="SlateLineup" representedClassName="CDSlateLineup" syncable="YES">
         <attribute name="experimentID" attributeType="String"/>
         <attribute name="remoteID" attributeType="String"/>
         <attribute name="requestID" attributeType="String"/>

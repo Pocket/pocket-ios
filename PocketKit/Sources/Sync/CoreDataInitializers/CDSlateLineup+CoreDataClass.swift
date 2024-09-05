@@ -5,8 +5,8 @@
 import Foundation
 import CoreData
 
-@objc(SlateLineup)
-public class SlateLineup: NSManagedObject {
+@objc(CDSlateLineup)
+public class CDSlateLineup: NSManagedObject {
     @available(*, unavailable)
     public init() {
         fatalError()

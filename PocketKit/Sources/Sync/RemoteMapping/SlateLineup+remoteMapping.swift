@@ -7,7 +7,7 @@ import CoreData
 import PocketGraph
 import SharedPocketKit
 
-extension SlateLineup {
+extension CDSlateLineup {
     public typealias RemoteSlateLineup = GetSlateLineupQuery.Data.GetSlateLineup
     public typealias RemoteHomeLineup = HomeSlateLineupQuery.Data.HomeSlateLineup
 
