@@ -38,7 +38,7 @@ public protocol Source {
 
     func makeSearchService() -> SearchService
 
-    func makeCollectionStoriesController(slug: String) -> RichFetchedResultsController<CollectionStory>
+    func makeCollectionStoriesController(slug: String) -> RichFetchedResultsController<CDCollectionStory>
 
     func makeImagesController() -> ImagesController
 
@@ -86,11 +86,11 @@ public protocol Source {
 
     func save(item: Item)
 
-    func save(collectionStory: CollectionStory)
+    func save(collectionStory: CDCollectionStory)
 
     func archive(recommendation: Recommendation)
 
-    func archive(collectionStory: CollectionStory)
+    func archive(collectionStory: CDCollectionStory)
 
     func remove(recommendation: Recommendation)
 

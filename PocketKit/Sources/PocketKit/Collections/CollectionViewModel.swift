@@ -49,7 +49,7 @@ class CollectionViewModel: NSObject {
     private let notificationCenter: NotificationCenter
     private let accessService: PocketAccessService
 
-    private let collectionController: RichFetchedResultsController<CollectionStory>
+    private let collectionController: RichFetchedResultsController<CDCollectionStory>
 
     private let slug: String
 
@@ -287,7 +287,7 @@ extension CollectionViewModel {
 
 // MARK: - Cell Selection
 extension CollectionViewModel {
-    func storyViewModel(for story: CollectionStory) -> CollectionStoryViewModel {
+    func storyViewModel(for story: CDCollectionStory) -> CollectionStoryViewModel {
         let primaryAction: ItemAction = accessService.accessLevel == .anonymous ?
             .recommendationPrimary { [weak self] _ in
                 self?.accessService.requestAuthentication(.collectionStory)
@@ -328,7 +328,7 @@ extension CollectionViewModel {
         }
     }
 
-    private func selectItem(with story: CollectionStory) {
+    private func selectItem(with story: CDCollectionStory) {
         // Check if item is a collection
         if let slug = story.item?.collectionSlug {
             selectedItem = .collection(
@@ -442,7 +442,7 @@ private extension CollectionViewModel {
     /// Builds collections, metadata and stories when collection data are found in Core Data
     func buildCollection(_ identifiers: [NSManagedObjectID]) {
         guard let id = identifiers.first,
-        let story = source.viewObject(id: id) as? CollectionStory,
+        let story = source.viewObject(id: id) as? CDCollectionStory,
             let collection = story.collection else {
             return
         }
@@ -480,8 +480,8 @@ private extension CollectionViewModel {
     }
 
     func buildStoryCells( from identifiers: [NSManagedObjectID]) -> [Cell] {
-        let collectionStories: [CollectionStory] = identifiers.compactMap {
-            source.viewObject(id: $0) as? CollectionStory
+        let collectionStories: [CDCollectionStory] = identifiers.compactMap {
+            source.viewObject(id: $0) as? CDCollectionStory
         }
 
         let cells = collectionStories.map {

@@ -27,7 +27,7 @@ extension CDCollection {
 
         stories = try? NSOrderedSet(array: remote.stories.enumerated().map {
             let story =
-            CollectionStory(
+            CDCollectionStory(
                 context: context,
                 url: $0.element.url,
                 title: $0.element.title,

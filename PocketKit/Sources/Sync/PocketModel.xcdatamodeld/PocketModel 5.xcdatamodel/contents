@@ -30,7 +30,7 @@
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
-    <entity name="CollectionStory" representedClassName="CollectionStory" syncable="YES">
+    <entity name="CollectionStory" representedClassName="CDCollectionStory" syncable="YES">
         <attribute name="excerpt" attributeType="String"/>
         <attribute name="imageUrl" optional="YES" attributeType="String"/>
         <attribute name="publisher" optional="YES" attributeType="String"/>

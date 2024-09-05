@@ -255,7 +255,7 @@ private extension CollectionViewController {
 
             return section
         case .collection(let collection):
-            let stories = collection.stories?.compactMap { $0 as? CollectionStory } ?? []
+            let stories = collection.stories?.compactMap { $0 as? CDCollectionStory } ?? []
             let viewModels = stories.compactMap { model.storyViewModel(for: $0) }
 
             return sectionProvider.gridSection(for: viewModels, with: environment, and: view)
