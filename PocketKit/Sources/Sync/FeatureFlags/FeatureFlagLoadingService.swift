@@ -74,7 +74,7 @@ class APIFeatureFlagService: FeatureFlagLoadingService {
             }
 
             for remoteAssignment in remoteAssignments {
-                let assignment = try space.fetchFeatureFlag(by: remoteAssignment.name, in: context) ?? FeatureFlag(context: context)
+                let assignment = try space.fetchFeatureFlag(by: remoteAssignment.name, in: context) ?? CDFeatureFlag(context: context)
                 assignment.update(from: remoteAssignment)
             }
             // save the child context

@@ -5,7 +5,7 @@
 import CoreData
 import PocketGraph
 
-extension FeatureFlag {
+extension CDFeatureFlag {
     func update(from remote: RemoteFeatureFlagAssignment) {
         name = remote.name
         assigned = remote.assigned

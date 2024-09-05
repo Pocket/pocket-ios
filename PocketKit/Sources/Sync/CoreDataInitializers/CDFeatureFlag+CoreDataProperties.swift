@@ -6,10 +6,10 @@
 import Foundation
 import CoreData
 
-extension FeatureFlag {
+extension CDFeatureFlag {
     @nonobjc
-    public class func fetchRequest() -> NSFetchRequest<FeatureFlag> {
-        return NSFetchRequest<FeatureFlag>(entityName: "FeatureFlag")
+    public class func fetchRequest() -> NSFetchRequest<CDFeatureFlag> {
+        return NSFetchRequest<CDFeatureFlag>(entityName: "FeatureFlag")
     }
     @NSManaged public var assigned: Bool
     @NSManaged public var name: String?

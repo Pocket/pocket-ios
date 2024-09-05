@@ -404,7 +404,7 @@ extension MockSource {
 // MARK: - Make feature flags controller
 extension MockSource {
     static let makeFeatureFlagsController = "makeFeatureFlagController"
-    typealias MakeFeatureFlagsControllerImpl = () -> NSFetchedResultsController<FeatureFlag>
+    typealias MakeFeatureFlagsControllerImpl = () -> NSFetchedResultsController<CDFeatureFlag>
 
     struct MakeFeatureFlagsControllerCall {
     }
@@ -413,7 +413,7 @@ extension MockSource {
         implementations[Self.makeFeatureFlagsController] = impl
     }
 
-    func makeFeatureFlagsController() -> NSFetchedResultsController<FeatureFlag> {
+    func makeFeatureFlagsController() -> NSFetchedResultsController<CDFeatureFlag> {
         guard let impl = implementations[Self.makeFeatureFlagsController] as? MakeFeatureFlagsControllerImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
@@ -1610,7 +1610,7 @@ extension MockSource {
 // MARK: - fetchAllFeatureFlags
 extension MockSource {
     private static let fetchFeatureFlag = "fetchFeatureFlag"
-    typealias FetchFeatureFlagImpl = (String) -> Sync.FeatureFlag?
+    typealias FetchFeatureFlagImpl = (String) -> Sync.CDFeatureFlag?
 
     struct FetchFeatureFlagCall {
         let name: String
@@ -1620,7 +1620,7 @@ extension MockSource {
         implementations[Self.fetchFeatureFlag] = impl
     }
 
-    func fetchFeatureFlag(by name: String) -> Sync.FeatureFlag? {
+    func fetchFeatureFlag(by name: String) -> Sync.CDFeatureFlag? {
         guard let impl = implementations[Self.fetchFeatureFlag] as? FetchFeatureFlagImpl else {
             fatalError("\(Self.self)#\(#function) has not been stubbed")
         }
