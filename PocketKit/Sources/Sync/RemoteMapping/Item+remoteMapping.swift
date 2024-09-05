@@ -42,7 +42,7 @@ extension Item {
         }
 
         if let metaParts = remote.domainMetadata?.fragments.domainMetadataParts {
-            domainMetadata = domainMetadata ?? DomainMetadata(context: context)
+            domainMetadata = domainMetadata ?? CDDomainMetadata(context: context)
             domainMetadata?.update(remote: metaParts)
         }
 
@@ -163,7 +163,7 @@ extension Item {
         }
 
         if let metaParts = storyItem.domainMetadata?.fragments.domainMetadataParts {
-            domainMetadata = domainMetadata ?? DomainMetadata(context: context)
+            domainMetadata = domainMetadata ?? CDDomainMetadata(context: context)
             domainMetadata?.update(remote: metaParts)
         }
 
@@ -236,7 +236,7 @@ extension Item {
         }
 
         if let metaParts = summary.domainMetadata?.fragments.domainMetadataParts {
-            domainMetadata = domainMetadata ?? DomainMetadata(context: context)
+            domainMetadata = domainMetadata ?? CDDomainMetadata(context: context)
             domainMetadata?.update(remote: metaParts)
         }
 

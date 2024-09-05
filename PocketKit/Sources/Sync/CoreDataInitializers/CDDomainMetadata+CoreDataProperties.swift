@@ -6,10 +6,10 @@
 import Foundation
 import CoreData
 
-extension DomainMetadata {
+extension CDDomainMetadata {
     @nonobjc
-    public class func fetchRequest() -> NSFetchRequest<DomainMetadata> {
-        return NSFetchRequest<DomainMetadata>(entityName: "DomainMetadata")
+    public class func fetchRequest() -> NSFetchRequest<CDDomainMetadata> {
+        return NSFetchRequest<CDDomainMetadata>(entityName: "DomainMetadata")
     }
 
     @NSManaged public var logo: URL?
