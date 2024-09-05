@@ -6,7 +6,6 @@
 import Foundation
 import SwiftData
 
-@available(iOS 17, *)
 @Model
 public class Author {
     public var id: String

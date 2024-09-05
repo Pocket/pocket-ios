@@ -10,7 +10,7 @@ import PackageDescription
 let package = Package(
     name: "PocketKit",
     defaultLocalization: "en",
-    platforms: [.iOS("16"), .macOS("13")],
+    platforms: [.iOS("17"), .macOS("14")],
     products: [
         .library(name: "PocketKit", targets: ["PocketKit"]),
         .library(name: "PocketGraphTestMocks", targets: ["PocketGraphTestMocks"]),
@@ -73,6 +73,7 @@ let package = Package(
                 "Textile",
                 "Analytics",
                 "SharedPocketKit",
+                "Database",
                 "Localization",
                 "PKTListen",
                 "DiffMatchPatch",
@@ -145,7 +146,6 @@ let package = Package(
             dependencies: [
                 .product(name: "Apollo", package: "apollo-ios"),
                 "PocketGraph",
-                "Database",
                 "SharedPocketKit"
             ],
             resources: [.process("PocketModel.xcdatamodeld")]

@@ -6,7 +6,6 @@
 import Foundation
 import SwiftData
 
-@available(iOS 17, *)
 @MainActor
 public class DataController {
     public static var appGroupContainerID: String?
