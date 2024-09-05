@@ -264,11 +264,11 @@ public enum Requests {
         return request
     }
 
-    public static func fetchFeatureFlags() -> NSFetchRequest<FeatureFlag> {
-        FeatureFlag.fetchRequest()
+    public static func fetchFeatureFlags() -> NSFetchRequest<CDFeatureFlag> {
+        CDFeatureFlag.fetchRequest()
     }
 
-    public static func fetchFeatureFlag(byName name: String) -> NSFetchRequest<FeatureFlag> {
+    public static func fetchFeatureFlag(byName name: String) -> NSFetchRequest<CDFeatureFlag> {
         let request = fetchFeatureFlags()
         request.predicate = NSPredicate(format: "name = %@", name)
         request.fetchLimit = 1

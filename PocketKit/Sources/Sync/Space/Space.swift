@@ -524,7 +524,7 @@ extension Space {
     /// - Parameter name: Name of the flag in the database
     /// - Parameter context: Context to operate in
     /// - Returns: A feature flag if it exists
-    func fetchFeatureFlag(by name: String, in context: NSManagedObjectContext?) throws -> FeatureFlag? {
+    func fetchFeatureFlag(by name: String, in context: NSManagedObjectContext?) throws -> CDFeatureFlag? {
         let request = Requests.fetchFeatureFlags()
         request.predicate = NSPredicate(format: "name = %@", name)
         request.fetchLimit = 1
@@ -534,12 +534,12 @@ extension Space {
     /// Gets all feature flags in CoreData
     /// - Parameter context: Context to operate in
     /// - Returns: The set of feature flags
-    func fetchFeatureFlags(in context: NSManagedObjectContext?) throws -> [FeatureFlag] {
+    func fetchFeatureFlags(in context: NSManagedObjectContext?) throws -> [CDFeatureFlag] {
         return try fetch(Requests.fetchFeatureFlags(), context: context)
     }
 
     /// Returns an NSFetchedResultsController that fetches FeatureFlag objects.
-    func makeFeatureFlagsController() -> NSFetchedResultsController<FeatureFlag> {
+    func makeFeatureFlagsController() -> NSFetchedResultsController<CDFeatureFlag> {
         let request = Requests.fetchFeatureFlags()
         request.sortDescriptors = [NSSortDescriptor(key: "name", ascending: false)]
         let resultsController = NSFetchedResultsController(
