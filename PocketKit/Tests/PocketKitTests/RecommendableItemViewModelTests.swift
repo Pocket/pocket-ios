@@ -67,7 +67,7 @@ class RecommendableItemViewModelTests: XCTestCase {
 
     @MainActor
     func subject(
-        recommendation: Recommendation,
+        recommendation: CDRecommendation,
         source: Source? = nil,
         tracker: Tracker? = nil,
         pasteboard: Pasteboard? = nil,

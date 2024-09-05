@@ -30,7 +30,7 @@ public protocol Source {
 
     func makeRecentSavesController() -> NSFetchedResultsController<SavedItem>
 
-    func makeHomeController() -> RichFetchedResultsController<Recommendation>
+    func makeHomeController() -> RichFetchedResultsController<CDRecommendation>
 
     func makeSavesController() -> SavedItemsController
 
@@ -82,17 +82,17 @@ public protocol Source {
 
     func restore()
 
-    func save(recommendation: Recommendation)
+    func save(recommendation: CDRecommendation)
 
     func save(item: CDItem)
 
     func save(collectionStory: CDCollectionStory)
 
-    func archive(recommendation: Recommendation)
+    func archive(recommendation: CDRecommendation)
 
     func archive(collectionStory: CDCollectionStory)
 
-    func remove(recommendation: Recommendation)
+    func remove(recommendation: CDRecommendation)
 
     func delete(images: [CDImage])
 

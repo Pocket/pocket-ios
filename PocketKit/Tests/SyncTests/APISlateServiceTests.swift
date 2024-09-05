@@ -71,7 +71,7 @@ extension APISlateServiceTests {
             XCTAssertEqual(slate.name, "Slate 1")
             XCTAssertEqual(slate.slateDescription, "The description of slate 1")
 
-            let recommendations = slate.recommendations?.compactMap { $0 as? Recommendation } ?? []
+            let recommendations = slate.recommendations?.compactMap { $0 as? CDRecommendation } ?? []
             XCTAssertEqual(recommendations.count, 2)
 
             do {
@@ -100,7 +100,7 @@ extension APISlateServiceTests {
             XCTAssertEqual(slate.name, "Slate 2")
             XCTAssertEqual(slate.slateDescription, "The description of slate 2")
 
-            let recommendations = slate.recommendations?.compactMap { $0 as? Recommendation } ?? []
+            let recommendations = slate.recommendations?.compactMap { $0 as? CDRecommendation } ?? []
             XCTAssertEqual(recommendations.count, 1)
 
             do {
