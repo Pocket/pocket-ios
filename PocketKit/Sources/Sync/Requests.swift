@@ -136,8 +136,8 @@ public enum Requests {
         return request
     }
 
-    public static func fetchCollection(by slug: String) -> NSFetchRequest<Collection> {
-        let request = Collection.fetchRequest()
+    public static func fetchCollection(by slug: String) -> NSFetchRequest<CDCollection> {
+        let request = CDCollection.fetchRequest()
         request.predicate = NSPredicate(format: "slug = %@", slug)
         request.fetchLimit = 1
         return request

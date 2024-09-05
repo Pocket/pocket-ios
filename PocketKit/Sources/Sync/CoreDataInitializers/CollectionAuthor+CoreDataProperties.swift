@@ -13,6 +13,6 @@ extension CollectionAuthor {
     }
 
     @NSManaged public var name: String
-    @NSManaged public var collection: Collection?
+    @NSManaged public var collection: CDCollection?
     @NSManaged public var collectionStory: CollectionStory?
 }

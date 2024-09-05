@@ -37,7 +37,7 @@ class CollectionViewModel: NSObject {
 
     let readableSource: ReadableSource
 
-    private var collection: Collection?
+    private var collection: CDCollection?
     private let source: Source
     private let tracker: Tracker
     private let user: User
@@ -500,7 +500,7 @@ extension CollectionViewModel {
         case empty
         case loading
         case collectionHeader
-        case collection(Collection)
+        case collection(CDCollection)
         case error
     }
 

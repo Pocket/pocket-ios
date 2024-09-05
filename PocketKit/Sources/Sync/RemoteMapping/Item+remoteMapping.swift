@@ -83,7 +83,7 @@ extension Item {
             self.collection = (try? space.fetchCollection(by: collection.slug, context: context)) ??
             // it's preferable not fetch authors and stories at this time, they'll be fetched once the collection
             // is accessed from the native view
-            Collection(context: context, slug: collection.slug, title: collection.title, authors: [], stories: [])
+            CDCollection(context: context, slug: collection.slug, title: collection.title, authors: [], stories: [])
         }
     }
 
@@ -121,7 +121,7 @@ extension Item {
         }
 
         if let slug = corpusItem.target?.asCollection?.slug {
-            let collection = (try? space.fetchCollection(by: slug, context: context)) ?? Collection(context: context, slug: slug, title: "", authors: [], stories: [])
+            let collection = (try? space.fetchCollection(by: slug, context: context)) ?? CDCollection(context: context, slug: slug, title: "", authors: [], stories: [])
             collection.item = self
 
             if let authors = corpusItem.target?.asCollection?.authors {

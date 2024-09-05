@@ -6,10 +6,10 @@
 import Foundation
 import CoreData
 
-extension Collection {
+extension CDCollection {
     @nonobjc
-    public class func fetchRequest() -> NSFetchRequest<Collection> {
-        return NSFetchRequest<Collection>(entityName: "Collection")
+    public class func fetchRequest() -> NSFetchRequest<CDCollection> {
+        return NSFetchRequest<CDCollection>(entityName: "Collection")
     }
 
     @NSManaged public var intro: String?
@@ -22,7 +22,7 @@ extension Collection {
 }
 
 // MARK: Generated accessors for authors
-extension Collection {
+extension CDCollection {
     @objc(insertObject:inAuthorsAtIndex:)
     @NSManaged public func insertIntoAuthors(_ value: CollectionAuthor, at idx: Int)
 
@@ -55,7 +55,7 @@ extension Collection {
 }
 
 // MARK: Generated accessors for stories
-extension Collection {
+extension CDCollection {
     @objc(insertObject:inStoriesAtIndex:)
     @NSManaged public func insertIntoStories(_ value: CollectionStory, at idx: Int)
 
