@@ -21,7 +21,7 @@ extension CDSavedItem {
     @NSManaged public var remoteID: String?
     @NSManaged public var url: String
     @NSManaged public var item: CDItem?
-    @NSManaged public var savedItemUpdatedNotification: SavedItemUpdatedNotification?
+    @NSManaged public var savedItemUpdatedNotification: CDSavedItemUpdatedNotification?
     @NSManaged public var tags: NSOrderedSet?
     @NSManaged public var highlights: NSOrderedSet?
     @NSManaged public var unresolvedSavedItem: UnresolvedSavedItem?

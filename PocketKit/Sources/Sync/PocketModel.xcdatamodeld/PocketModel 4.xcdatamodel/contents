@@ -139,7 +139,7 @@
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
-    <entity name="SavedItemUpdatedNotification" representedClassName="SavedItemUpdatedNotification" syncable="YES">
+    <entity name="SavedItemUpdatedNotification" representedClassName="CDSavedItemUpdatedNotification" syncable="YES">
         <relationship name="savedItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SavedItem" inverseName="savedItemUpdatedNotification" inverseEntity="SavedItem"/>
     </entity>
     <entity name="Slate" representedClassName="Slate" syncable="YES">
