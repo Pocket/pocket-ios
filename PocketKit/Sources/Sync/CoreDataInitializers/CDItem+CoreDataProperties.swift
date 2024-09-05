@@ -36,7 +36,7 @@ extension CDItem {
     @NSManaged public var savedItem: CDSavedItem?
     @NSManaged public var syndicatedArticle: SyndicatedArticle?
     @NSManaged public var collectionStories: NSSet?
-    @NSManaged public var sharedWithYouItem: SharedWithYouItem?
+    @NSManaged public var sharedWithYouItem: CDSharedWithYouItem?
 }
 
 // MARK: Generated accessors for authors

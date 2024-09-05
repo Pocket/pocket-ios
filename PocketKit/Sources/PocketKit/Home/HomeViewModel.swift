@@ -144,7 +144,7 @@ class HomeViewModel: NSObject {
 
     private let recentSavesController: NSFetchedResultsController<CDSavedItem>
     private let recomendationsController: RichFetchedResultsController<CDRecommendation>
-    private let sharedWithYouController: RichFetchedResultsController<SharedWithYouItem>
+    private let sharedWithYouController: RichFetchedResultsController<CDSharedWithYouItem>
     private(set) var numberOfSharedWithYouItems = 0
 
     private var refreshState: RefreshState = .ready
@@ -269,7 +269,7 @@ extension HomeViewModel {
         // Add Shared With You section right below recent saves
         if let session = appSession.currentSession,
            !session.isAnonymous,
-           let sharedWithYouItems = sharedWithYouController.fetchedObjects as? [SharedWithYouItem], !sharedWithYouItems.isEmpty {
+           let sharedWithYouItems = sharedWithYouController.fetchedObjects as? [CDSharedWithYouItem], !sharedWithYouItems.isEmpty {
             numberOfSharedWithYouItems = sharedWithYouItems.count
             snapshot.appendSections([.sharedWithYou])
             snapshot.appendItems(sharedWithYouItems.prefix(4).map { .sharedWithYou($0.objectID) }, toSection: .sharedWithYou)
@@ -357,7 +357,7 @@ extension HomeViewModel {
                 select(recommendation: recommendation, at: indexPath)
             }
         case .sharedWithYou(let objectID):
-            guard let sharedWithYouItem = source.viewObject(id: objectID) as? SharedWithYouItem else {
+            guard let sharedWithYouItem = source.viewObject(id: objectID) as? CDSharedWithYouItem else {
                 return
             }
             select(sharedWithYouItem: sharedWithYouItem, at: indexPath)
@@ -381,7 +381,7 @@ extension HomeViewModel {
         ))
     }
 
-    private func select(sharedWithYouList: [SharedWithYouItem]) {
+    private func select(sharedWithYouList: [CDSharedWithYouItem]) {
         tappedSeeAll = .sharedWithYou(SharedWithYouListViewModel(
             list: sharedWithYouList,
             source: source,
@@ -559,7 +559,7 @@ extension HomeViewModel {
         trackRecentSavesOpen(url: savedItem.url, positionInList: indexPath?.item, source: readableSource)
     }
 
-    func select(sharedWithYouItem: SharedWithYouItem, at indexPath: IndexPath, readableSource: ReadableSource = .app) {
+    func select(sharedWithYouItem: CDSharedWithYouItem, at indexPath: IndexPath, readableSource: ReadableSource = .app) {
         var destination: ContentOpen.Destination = .internal
         if let slug = sharedWithYouItem.item.collectionSlug {
             selectedReadableType = .collection(CollectionViewModel(
@@ -640,7 +640,7 @@ extension HomeViewModel {
                 buttonTitle: Localization.seeAll,
                 buttonImage: UIImage(asset: .chevronRight)
             ) { [weak self] in
-                guard let list = self?.sharedWithYouController.fetchedObjects as? [SharedWithYouItem] else {
+                guard let list = self?.sharedWithYouController.fetchedObjects as? [CDSharedWithYouItem] else {
                     return
                 }
                 self?.select(sharedWithYouList: list)
@@ -780,7 +780,7 @@ extension HomeViewModel {
     }
 
     func sharedWithYouCellConfiguration(for objectID: NSManagedObjectID, at indexPath: IndexPath) -> SharedWithYouCellConfiguration? {
-        guard let sharedWithYouItem = source.viewObject(id: objectID) as? SharedWithYouItem else {
+        guard let sharedWithYouItem = source.viewObject(id: objectID) as? CDSharedWithYouItem else {
             return nil
         }
         let viewModel = HomeItemCellViewModel(
@@ -838,7 +838,7 @@ extension HomeViewModel {
         }
     }
 
-    private func primaryAction(for sharedWithYouItem: SharedWithYouItem, at indexPath: IndexPath) -> ItemAction? {
+    private func primaryAction(for sharedWithYouItem: CDSharedWithYouItem, at indexPath: IndexPath) -> ItemAction? {
         return .sharedWithYouPrimary { [weak self] _ in
             if let savedItem = sharedWithYouItem.item.savedItem, !savedItem.isArchived {
                 self?.source.archive(item: savedItem)
@@ -869,7 +869,7 @@ extension HomeViewModel {
         tracker.track(event: Events.Home.RecentSavesCardShare(url: shareableUrl, positionInList: indexPath.item))
     }
 
-    private func share(_ sharedWithYouItem: SharedWithYouItem, at indexPath: IndexPath, with sender: Any?) async {
+    private func share(_ sharedWithYouItem: CDSharedWithYouItem, at indexPath: IndexPath, with sender: Any?) async {
         let shareableUrl = await shareableUrl(sharedWithYouItem.item) ?? sharedWithYouItem.url
         self.sharedActivity = PocketItemActivity.fromHome(url: shareableUrl, sender: sender)
         tracker.track(event: Events.Home.sharedWithYouItemShare(url: shareableUrl, positionInList: indexPath.item))
@@ -913,7 +913,7 @@ extension HomeViewModel {
         case .loading, .offline:
             return
         case .sharedWithYou(let objectID):
-            guard let sharedWithYouItem = source.viewObject(id: objectID) as? SharedWithYouItem else {
+            guard let sharedWithYouItem = source.viewObject(id: objectID) as? CDSharedWithYouItem else {
                 Log.breadcrumb(category: "home", level: .debug, message: "Could retrieve Shared With You Item from objectID: \(String(describing: objectID))")
                 Log.capture(message: "Shared With You Item is null on willDisplay Home Recent Saves")
                 return

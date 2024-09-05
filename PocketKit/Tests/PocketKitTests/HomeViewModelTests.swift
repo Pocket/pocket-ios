@@ -24,7 +24,7 @@ class HomeViewModelTests: XCTestCase {
     var subscriptions: Set<AnyCancellable> = []
     var homeController: RichFetchedResultsController<CDRecommendation>!
     var recentSavesController: NSFetchedResultsController<CDSavedItem>!
-    var sharedWithYouController: RichFetchedResultsController<SharedWithYouItem>!
+    var sharedWithYouController: RichFetchedResultsController<CDSharedWithYouItem>!
     var user: User!
     var subscriptionStore: SubscriptionStore!
     var userDefaults: UserDefaults!
