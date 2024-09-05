@@ -94,7 +94,7 @@ public protocol Source {
 
     func remove(recommendation: Recommendation)
 
-    func delete(images: [Image])
+    func delete(images: [CDImage])
 
     func fetchDetails(for savedItem: SavedItem) async throws -> Bool
 

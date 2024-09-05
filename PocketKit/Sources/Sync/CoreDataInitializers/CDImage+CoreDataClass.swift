@@ -6,6 +6,6 @@
 import Foundation
 import CoreData
 
-@objc(Image)
-public class Image: NSManagedObject {
+@objc(CDImage)
+public class CDImage: NSManagedObject {
 }

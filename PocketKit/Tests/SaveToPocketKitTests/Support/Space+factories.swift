@@ -240,9 +240,9 @@ extension Space {
     func buildImage(
         source: URL?,
         isDownloaded: Bool = false
-    ) -> Image {
+    ) -> CDImage {
         return backgroundContext.performAndWait {
-            let image: Image = Image(context: backgroundContext)
+            let image: CDImage = CDImage(context: backgroundContext)
             image.source = source
             image.isDownloaded = isDownloaded
 
@@ -254,7 +254,7 @@ extension Space {
     func createImage(
         source: URL?,
         isDownloaded: Bool = false
-    ) throws -> Image {
+    ) throws -> CDImage {
         return try backgroundContext.performAndWait {
             let image = buildImage(source: source, isDownloaded: isDownloaded)
             try save()

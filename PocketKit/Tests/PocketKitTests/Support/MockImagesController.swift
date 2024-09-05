@@ -10,7 +10,7 @@ class MockImagesController: ImagesController {
 
     var delegate: ImagesControllerDelegate?
 
-    var images: [Image]?
+    var images: [CDImage]?
 }
 
 extension MockImagesController {

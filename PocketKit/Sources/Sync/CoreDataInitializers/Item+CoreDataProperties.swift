@@ -75,28 +75,28 @@ extension Item {
 // MARK: Generated accessors for images
 extension Item {
     @objc(insertObject:inImagesAtIndex:)
-    @NSManaged public func insertIntoImages(_ value: Image, at idx: Int)
+    @NSManaged public func insertIntoImages(_ value: CDImage, at idx: Int)
 
     @objc(removeObjectFromImagesAtIndex:)
     @NSManaged public func removeFromImages(at idx: Int)
 
     @objc(insertImages:atIndexes:)
-    @NSManaged public func insertIntoImages(_ values: [Image], at indexes: NSIndexSet)
+    @NSManaged public func insertIntoImages(_ values: [CDImage], at indexes: NSIndexSet)
 
     @objc(removeImagesAtIndexes:)
     @NSManaged public func removeFromImages(at indexes: NSIndexSet)
 
     @objc(replaceObjectInImagesAtIndex:withObject:)
-    @NSManaged public func replaceImages(at idx: Int, with value: Image)
+    @NSManaged public func replaceImages(at idx: Int, with value: CDImage)
 
     @objc(replaceImagesAtIndexes:withImages:)
-    @NSManaged public func replaceImages(at indexes: NSIndexSet, with values: [Image])
+    @NSManaged public func replaceImages(at indexes: NSIndexSet, with values: [CDImage])
 
     @objc(addImagesObject:)
-    @NSManaged public func addToImages(_ value: Image)
+    @NSManaged public func addToImages(_ value: CDImage)
 
     @objc(removeImagesObject:)
-    @NSManaged public func removeFromImages(_ value: Image)
+    @NSManaged public func removeFromImages(_ value: CDImage)
 
     @objc(addImages:)
     @NSManaged public func addToImages(_ values: NSOrderedSet)
