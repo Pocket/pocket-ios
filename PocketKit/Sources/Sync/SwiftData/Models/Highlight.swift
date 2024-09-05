@@ -14,6 +14,7 @@ public class Highlight {
     var remoteID: String
     var updatedAt: Date
     var version: Int16 = 0
+    @Relationship(inverse: \SavedItem.highlights)
     var savedItem: SavedItem?
     public init(createdAt: Date, patch: String, quote: String, remoteID: String, updatedAt: Date) {
         self.createdAt = createdAt

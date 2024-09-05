@@ -8,10 +8,9 @@ import SwiftData
 
 @Model
 public class Item {
-    // ios 18 only - #Unique<Item>([\.givenURL])
-    // TODO: Figure out how to do article in a seperate package... @Attribute(.transformable(by: "ArticleTransformer"))
-    // Should return Article? instead of Data
-    var article: Data?
+    // #Unique<Item>([\.givenURL])
+    @Attribute(.transformable(by: ArticleTransformer.self))
+    var article: Article?
     var datePublished: Date?
     var domain: String?
     var excerpt: String?
@@ -31,7 +30,7 @@ public class Item {
     var authors: [Author]?
     var collection: Collection?
     var collectionStories: [CollectionStory]?
-    @Relationship(deleteRule: .cascade)
+    @Relationship(deleteRule: .cascade, inverse: \DomainMetadata.item)
     var domainMetadata: DomainMetadata?
     @Relationship(deleteRule: .cascade)
     var images: [Image]?
@@ -48,6 +47,6 @@ public class Item {
         self.remoteID = remoteID
     }
 
-#warning("The property \"ordered\" on Item:authors is unsupported in SwiftData.")
-#warning("The property \"ordered\" on Item:images is unsupported in SwiftData.")
+// #warning("The property \"ordered\" on Item:authors is unsupported in SwiftData.")
+// #warning("The property \"ordered\" on Item:images is unsupported in SwiftData.")
 }

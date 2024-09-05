@@ -13,8 +13,10 @@ public class Article: NSObject, Codable {
         self.components = components
     }
 }
+@objc(ArticleTransformer)
+class ArticleTransformer: ValueTransformer {
+    static let name = NSValueTransformerName(rawValue: String(describing: ArticleTransformer.self))
 
-class ArticleTransformer: NSSecureUnarchiveFromDataTransformer {
     override func transformedValue(_ value: Any?) -> Any? {
         guard let data = value as? Data else {
             return nil
@@ -28,10 +30,15 @@ class ArticleTransformer: NSSecureUnarchiveFromDataTransformer {
             return nil
         }
 
-        return try? JSONEncoder().encode(article)
+        return try? JSONEncoder().encode(article) as NSData
     }
-}
 
-extension NSValueTransformerName {
-    public static let articleTransfomer = NSValueTransformerName(rawValue: "ArticleTransformer")
+    override class func transformedValueClass() -> AnyClass {
+        return NSData.self
+    }
+
+    public static func register() {
+        let transformer = ArticleTransformer()
+        ValueTransformer.setValueTransformer(transformer, forName: name)
+    }
 }

@@ -18,7 +18,6 @@ let package = Package(
         .library(name: "SharedPocketKit", targets: ["SharedPocketKit"]),
         .library(name: "Textile", targets: ["Textile"]),
         .library(name: "Sync", targets: ["Sync"]),
-        .library(name: "Database", targets: ["Database"]),
         .library(name: "Analytics", targets: ["Analytics"]),
         .library(name: "Localization", targets: ["Localization"]),
         .library(name: "PKTListen", targets: ["PKTListen"]),
@@ -63,9 +62,6 @@ let package = Package(
                 .copy("Stickers")
             ]
         ),
-        .target(name: "Database", dependencies: [
-            .product(name: "Fakery", package: "Fakery"),
-        ]),
         .target(
             name: "PocketKit",
             dependencies: [
@@ -73,7 +69,6 @@ let package = Package(
                 "Textile",
                 "Analytics",
                 "SharedPocketKit",
-                "Database",
                 "Localization",
                 "PKTListen",
                 "DiffMatchPatch",
@@ -145,6 +140,7 @@ let package = Package(
             name: "Sync",
             dependencies: [
                 .product(name: "Apollo", package: "apollo-ios"),
+                .product(name: "Fakery", package: "Fakery"),
                 "PocketGraph",
                 "SharedPocketKit"
             ],

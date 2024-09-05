@@ -8,7 +8,7 @@ import SwiftData
 
 @Model
 public class Collection {
-    // ios 18 only - #Unique<Collection>([\.slug])
+    // #Unique<Collection>([\.slug])
     var intro: String?
     var publishedAt: Date?
     var slug: String
@@ -24,7 +24,7 @@ public class Collection {
         self.authors = authors
         self.stories = stories
     }
-
-#warning("The property \"ordered\" on Collection:authors is unsupported in SwiftData.")
-#warning("The property \"ordered\" on Collection:stories is unsupported in SwiftData.")
+//
+// #warning("The property \"ordered\" on Collection:authors is unsupported in SwiftData.")
+// #warning("The property \"ordered\" on Collection:stories is unsupported in SwiftData.")
 }
