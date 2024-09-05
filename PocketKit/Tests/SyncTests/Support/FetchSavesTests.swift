@@ -133,7 +133,7 @@ class FetchSavesTests: XCTestCase {
         XCTAssertEqual(domain?.name, "WIRED")
         XCTAssertEqual(domain?.logo, URL(string: "http://example.com/item-1/domain-logo.jpg")!)
 
-        let images = item?.images?.compactMap { $0 as? Image } ?? []
+        let images = item?.images?.compactMap { $0 as? CDImage } ?? []
         XCTAssertEqual(images[0].source, URL(string: "http://example.com/item-1/image-1.jpg"))
 
         XCTAssertEqual(item?.syndicatedArticle?.itemID, "syndicated-article-item-id")

@@ -61,7 +61,7 @@
         <attribute name="version" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="savedItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SavedItem" inverseName="highlights" inverseEntity="SavedItem"/>
     </entity>
-    <entity name="Image" representedClassName="Image" syncable="YES">
+    <entity name="Image" representedClassName="CDImage" syncable="YES">
         <attribute name="isDownloaded" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="source" optional="YES" attributeType="URI"/>
         <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="images" inverseEntity="Item"/>

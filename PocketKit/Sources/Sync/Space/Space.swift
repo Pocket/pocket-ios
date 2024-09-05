@@ -233,7 +233,7 @@ extension Space {
 
 // MARK: Image
 extension Space {
-    func makeImagesController() -> NSFetchedResultsController<Image> {
+    func makeImagesController() -> NSFetchedResultsController<CDImage> {
         let request = Requests.fetchUndownloadedImages()
         request.sortDescriptors = [NSSortDescriptor(key: "source.absoluteString", ascending: true)]
         return NSFetchedResultsController(

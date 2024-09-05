@@ -1284,10 +1284,10 @@ extension PocketSource {
 
 // MARK: - Image
 extension PocketSource {
-    public func delete(images: [Image]) {
+    public func delete(images: [CDImage]) {
         space.performAndWait {
             let images = images.compactMap { image in
-               return space.backgroundObject(with: image.objectID) as? Image
+               return space.backgroundObject(with: image.objectID) as? CDImage
             }
             space.delete(images)
             try? space.save()

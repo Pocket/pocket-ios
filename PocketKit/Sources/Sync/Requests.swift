@@ -246,8 +246,8 @@ public enum Requests {
         return request
     }
 
-    public static func fetchUndownloadedImages() -> NSFetchRequest<Image> {
-        return Image.fetchRequest()
+    public static func fetchUndownloadedImages() -> NSFetchRequest<CDImage> {
+        return CDImage.fetchRequest()
     }
 
     public static func fetchSavedItem(for item: Item) -> NSFetchRequest<SavedItem> {

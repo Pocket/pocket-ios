@@ -5,7 +5,7 @@
 import CoreData
 import PocketGraph
 
-extension Image {
+extension CDImage {
     convenience init(remote: ItemParts.Image, context: NSManagedObjectContext) {
         self.init(context: context)
 

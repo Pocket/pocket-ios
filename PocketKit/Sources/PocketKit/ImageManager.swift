@@ -116,7 +116,7 @@ private extension ImageManager {
         )
     }
 
-    func handle(images: [Image]?) {
+    func handle(images: [CDImage]?) {
         guard let images = images, !images.isEmpty else {
             return
         }
