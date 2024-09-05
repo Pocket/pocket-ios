@@ -609,7 +609,7 @@ extension MockSource {
 // MARK: - Retrieve Tags
 extension MockSource {
     static let retrieveTags = "retrieveTags"
-    typealias RetrieveTagsImpl = ([String]) -> [Tag]?
+    typealias RetrieveTagsImpl = ([String]) -> [CDTag]?
     struct RetrieveTagsImplCall {
         let tags: [String]
     }
@@ -618,7 +618,7 @@ extension MockSource {
         implementations[Self.retrieveTags] = impl
     }
 
-    func retrieveTags(excluding tags: [String]) -> [Tag]? {
+    func retrieveTags(excluding tags: [String]) -> [CDTag]? {
         guard let impl = implementations[Self.retrieveTags] as? RetrieveTagsImpl else {
             fatalError("\(Self.self)#\(#function) has not been stubbed")
         }
@@ -643,7 +643,7 @@ extension MockSource {
 // MARK: - Filter Tags
 extension MockSource {
     private static let filterTags = "filterTags"
-    typealias FilterTagsImpl = ([String]) -> [Tag]?
+    typealias FilterTagsImpl = ([String]) -> [CDTag]?
 
     struct FilterTagsImplCall {
         let tags: [String]
@@ -653,7 +653,7 @@ extension MockSource {
         implementations[Self.filterTags] = impl
     }
 
-    func filterTags(with text: String, excluding tags: [String]) -> [Tag]? {
+    func filterTags(with text: String, excluding tags: [String]) -> [CDTag]? {
         guard let impl = implementations[Self.filterTags] as? FilterTagsImpl else {
             fatalError("\(Self.self)#\(#function) has not been stubbed")
         }
@@ -678,14 +678,14 @@ extension MockSource {
 // MARK: - Fetch Tags
 extension MockSource {
     static let fetchTags = "fetchTags"
-    typealias FetchTagsImpl = () -> [Tag]?
+    typealias FetchTagsImpl = () -> [CDTag]?
     struct FetchTagsImplCall { }
 
     func stubFetchTags(impl: @escaping FetchTagsImpl) {
         implementations[Self.fetchTags] = impl
     }
 
-    func fetchTags(isArchived: Bool = false) -> [Tag]? {
+    func fetchTags(isArchived: Bool = false) -> [CDTag]? {
         guard let impl = implementations[Self.fetchTags] as? FetchTagsImpl else {
             fatalError("\(Self.self)#\(#function) has not been stubbed")
         }
@@ -742,14 +742,14 @@ extension MockSource {
 // MARK: - Fetch All Tags
 extension MockSource {
     static let fetchAllTags = "fetchAllTags"
-    typealias FetchAllTagsImpl = () -> [Tag]?
+    typealias FetchAllTagsImpl = () -> [CDTag]?
     struct FetchAllTagsCall { }
 
     func stubFetchAllTags(impl: @escaping FetchAllTagsImpl) {
         implementations[Self.fetchAllTags] = impl
     }
 
-    func fetchAllTags() -> [Tag]? {
+    func fetchAllTags() -> [CDTag]? {
         guard let impl = implementations[Self.fetchAllTags] as? FetchAllTagsImpl else {
             fatalError("\(Self.self)#\(#function) has not been stubbed")
         }
@@ -774,16 +774,16 @@ extension MockSource {
 // MARK: - Delete Tag
 extension MockSource {
     static let deleteTag = "deleteTag"
-    typealias DeleteTagImpl = (Tag) -> Void
+    typealias DeleteTagImpl = (CDTag) -> Void
     struct DeleteTagImplCall {
-        let tag: Tag
+        let tag: CDTag
     }
 
     func stubDeleteTag(impl: @escaping DeleteTagImpl) {
         implementations[Self.deleteTag] = impl
     }
 
-    func deleteTag(tag: Tag) {
+    func deleteTag(tag: CDTag) {
         guard let impl = implementations[Self.deleteTag] as? DeleteTagImpl else {
             fatalError("\(Self.self)#\(#function) has not been stubbed")
         }
@@ -808,9 +808,9 @@ extension MockSource {
 // MARK: - Rename Tags
 extension MockSource {
     static let renameTag = "renameTag"
-    typealias RenameTagImpl = (Tag, String) -> Void
+    typealias RenameTagImpl = (CDTag, String) -> Void
     struct RenameTagsImplCall {
-        let oldTag: Tag
+        let oldTag: CDTag
         let name: String
     }
 
@@ -818,7 +818,7 @@ extension MockSource {
         implementations[Self.renameTag] = impl
     }
 
-    func renameTag(from oldTag: Tag, to name: String) {
+    func renameTag(from oldTag: CDTag, to name: String) {
         guard let impl = implementations[Self.renameTag] as? RenameTagImpl else {
             fatalError("\(Self.self)#\(#function) has not been stubbed")
         }

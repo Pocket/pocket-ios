@@ -5,7 +5,7 @@
 import CoreData
 import PocketGraph
 
-extension Tag {
+extension CDTag {
     typealias TagEdge = TagsQuery.Data.User.Tags.Edge
     func update(remote: TagParts) {
         remoteID = remote.id

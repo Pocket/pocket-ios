@@ -105,7 +105,7 @@ class FetchSavesTests: XCTestCase {
         XCTAssertEqual(savedItem.isArchived, false)
         XCTAssertTrue(savedItem.isFavorite)
 
-        let tags = savedItem.tags?.compactMap { $0 as? Tag }
+        let tags = savedItem.tags?.compactMap { $0 as? CDTag }
         XCTAssertEqual(tags?.count, 2)
         XCTAssertEqual(tags?[0].name, "tag-1")
 
@@ -410,7 +410,7 @@ class FetchSavesTests: XCTestCase {
         let fetchCall2 = apollo.fetchCall(withQueryType: TagsQuery.self, at: 1)
         XCTAssertEqual(fetchCall2?.query.pagination.unwrapped?.after.unwrapped, "tag-2-cursor")
 
-        let tags = try space.backgroundContext.fetch(Tag.fetchRequest())
+        let tags = try space.backgroundContext.fetch(CDTag.fetchRequest())
         XCTAssertEqual(tags.count, 4)
         XCTAssertFalse(space.backgroundContext.hasChanges)
     }
