@@ -452,7 +452,7 @@ private extension CollectionViewModel {
         buildActions()
         self.metadata = CollectionMetadata(
             title: collection.title ?? "",
-            authors: ((collection.authors?.compactMap { $0 as? CollectionAuthor }) ?? [CollectionAuthor]()).map { $0.name },
+            authors: ((collection.authors?.compactMap { $0 as? CDCollectionAuthor }) ?? [CDCollectionAuthor]()).map { $0.name },
             storiesCount: identifiers.count,
             intro: collection.intro
         )

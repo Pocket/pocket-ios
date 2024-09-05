@@ -143,15 +143,15 @@ public enum Requests {
         return request
     }
 
-    public static func fetchCollectionAuthor(by name: String) -> NSFetchRequest<CollectionAuthor> {
-        let request = CollectionAuthor.fetchRequest()
+    public static func fetchCollectionAuthor(by name: String) -> NSFetchRequest<CDCollectionAuthor> {
+        let request = CDCollectionAuthor.fetchRequest()
         request.predicate = NSPredicate(format: "name = %@", name)
         request.fetchLimit = 1
         return request
     }
 
-    public static func fetchCollectionAuthors(by slug: String) -> NSFetchRequest<CollectionAuthor> {
-        let request = CollectionAuthor.fetchRequest()
+    public static func fetchCollectionAuthors(by slug: String) -> NSFetchRequest<CDCollectionAuthor> {
+        let request = CDCollectionAuthor.fetchRequest()
         request.predicate = NSPredicate(format: "collection.slug = %@", slug)
         return request
     }
