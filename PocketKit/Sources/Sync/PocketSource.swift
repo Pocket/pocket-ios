@@ -203,7 +203,7 @@ public class PocketSource: Source {
         FetchedImagesController(resultsController: space.makeImagesController())
     }
 
-    public func makeRecentSavesController() -> NSFetchedResultsController<SavedItem> {
+    public func makeRecentSavesController() -> NSFetchedResultsController<CDSavedItem> {
         space.makeRecentSavesController(limit: SyncConstants.Home.recentSaves)
     }
 
@@ -320,10 +320,10 @@ extension PocketSource {
         enqueue(operation: operation, task: .fetchSaves, queue: fetchTagsQueue, completion: completion)
     }
 
-    public func favorite(item: SavedItem) {
+    public func favorite(item: CDSavedItem) {
         Log.breadcrumb(category: "sync", level: .debug, message: "Favoriting item with id \(String(describing: item.remoteID))")
         space.performAndWait {
-            guard let savedItem = space.backgroundObject(with: item.objectID) as? SavedItem else {
+            guard let savedItem = space.backgroundObject(with: item.objectID) as? CDSavedItem else {
                 Log.capture(message: "Could not retreive item from background context for mutation")
                 return
             }
@@ -351,10 +351,10 @@ extension PocketSource {
         }
     }
 
-    public func unfavorite(item: SavedItem) {
+    public func unfavorite(item: CDSavedItem) {
         Log.breadcrumb(category: "sync", level: .debug, message: "Unfavoriting item with id \(String(describing: item.remoteID))")
         space.performAndWait {
-            guard let savedItem = space.backgroundObject(with: item.objectID) as? SavedItem else {
+            guard let savedItem = space.backgroundObject(with: item.objectID) as? CDSavedItem else {
                 Log.capture(message: "Could not retreive item from background context for mutation")
                 return
             }
@@ -381,10 +381,10 @@ extension PocketSource {
         }
     }
 
-    public func delete(item savedItem: SavedItem) {
+    public func delete(item savedItem: CDSavedItem) {
         Log.breadcrumb(category: "sync", level: .debug, message: "Deleting item with id \(String(describing: savedItem.remoteID))")
         space.performAndWait {
-            guard let savedItem = space.backgroundObject(with: savedItem.objectID) as? SavedItem else {
+            guard let savedItem = space.backgroundObject(with: savedItem.objectID) as? CDSavedItem else {
                 Log.capture(message: "Could not retreive item from background context for mutation")
                 return
             }
@@ -419,10 +419,10 @@ extension PocketSource {
         }
     }
 
-    public func archive(item: SavedItem) {
+    public func archive(item: CDSavedItem) {
         Log.breadcrumb(category: "sync", level: .debug, message: "Archiving item with id \(String(describing: item.remoteID))")
         space.performAndWait {
-            guard let savedItem = space.backgroundObject(with: item.objectID) as? SavedItem else {
+            guard let savedItem = space.backgroundObject(with: item.objectID) as? CDSavedItem else {
                 Log.capture(message: "Could not retreive item from background context for mutation")
                 return
             }
@@ -452,10 +452,10 @@ extension PocketSource {
         }
     }
 
-    public func unarchive(item: SavedItem) {
+    public func unarchive(item: CDSavedItem) {
         Log.breadcrumb(category: "sync", level: .debug, message: "Unarchiving item with id \(String(describing: item.remoteID))")
         space.performAndWait {
-            guard let savedItem = space.backgroundObject(with: item.objectID) as? SavedItem else {
+            guard let savedItem = space.backgroundObject(with: item.objectID) as? CDSavedItem else {
                 Log.capture(message: "Could not retreive item from background context for mutation")
                 return
             }
@@ -480,7 +480,7 @@ extension PocketSource {
         }
     }
 
-    public func save(item: SavedItem) {
+    public func save(item: CDSavedItem) {
         // Not logging url for privacy
         Log.breadcrumb(category: "sync", level: .debug, message: "Saving item")
         let operation = operations.saveItemOperation(
@@ -520,7 +520,7 @@ extension PocketSource {
 
     public func addHighlight(itemIID: NSManagedObjectID, patch: String, quote: String) {
         space.performAndWait {
-            guard let savedItem = space.backgroundObject(with: itemIID) as? SavedItem, let context = savedItem.managedObjectContext, let itemID = savedItem.remoteID else {
+            guard let savedItem = space.backgroundObject(with: itemIID) as? CDSavedItem, let context = savedItem.managedObjectContext, let itemID = savedItem.remoteID else {
                 Log.capture(message: "Could not retreive Saved Item to add highlight from background context for mutation")
                 return
             }
@@ -568,10 +568,10 @@ extension PocketSource {
         }
     }
 
-    public func addTags(item: SavedItem, tags: [String]) {
+    public func addTags(item: CDSavedItem, tags: [String]) {
         Log.breadcrumb(category: "sync", level: .debug, message: "Adding tags to item with id \(String(describing: item.remoteID))")
         space.performAndWait {
-            guard let item = space.backgroundObject(with: item.objectID) as? SavedItem else {
+            guard let item = space.backgroundObject(with: item.objectID) as? CDSavedItem else {
                 Log.capture(message: "Could not retreive item from background context for mutation")
                 return
             }
@@ -602,10 +602,10 @@ extension PocketSource {
         }
     }
 
-    public func replaceTags(_ savedItem: SavedItem, tags: [String]) {
+    public func replaceTags(_ savedItem: CDSavedItem, tags: [String]) {
         Log.breadcrumb(category: "sync", level: .debug, message: "Replacing tags on saved item with id \(String(describing: savedItem.remoteID))")
         space.performAndWait {
-            guard let existingSavedItem = space.backgroundObject(with: savedItem.objectID) as? SavedItem else {
+            guard let existingSavedItem = space.backgroundObject(with: savedItem.objectID) as? CDSavedItem else {
                 Log.capture(message: "Could not retreive saved item from background context for mutation")
                 return
             }
@@ -706,7 +706,7 @@ extension PocketSource {
         try? space.filterTags(with: input, excluding: tags)
     }
 
-    public func fetchDetails(for savedItem: SavedItem) async throws -> Bool {
+    public func fetchDetails(for savedItem: CDSavedItem) async throws -> Bool {
         Log.breadcrumb(category: "sync", level: .debug, message: "Fetching details for item with id \(String(describing: savedItem.remoteID))")
 
         guard let remoteID = savedItem.remoteID else {
@@ -720,7 +720,7 @@ extension PocketSource {
         }
 
         return try space.performAndWait {
-            guard let savedItem = space.backgroundObject(with: savedItem.objectID) as? SavedItem else {
+            guard let savedItem = space.backgroundObject(with: savedItem.objectID) as? CDSavedItem else {
                 Log.capture(message: "Could not retreive item from background context for mutation")
                 return false
             }
@@ -731,7 +731,7 @@ extension PocketSource {
         }
     }
 
-    private func addTagsMutation(for savedItem: SavedItem, tags: [String]) -> AnyMutation? {
+    private func addTagsMutation(for savedItem: CDSavedItem, tags: [String]) -> AnyMutation? {
         if tags.isEmpty {
             guard let remoteID = savedItem.remoteID else {
                 Log.capture(message: "Could not retreive remoteID from SavedItem for mutation")
@@ -749,7 +749,7 @@ extension PocketSource {
         }
     }
 
-    private func replaceTagsMutation(for savedItem: SavedItem, tags: [String]) -> AnyMutation? {
+    private func replaceTagsMutation(for savedItem: CDSavedItem, tags: [String]) -> AnyMutation? {
         guard let remoteID = savedItem.remoteID else {
             Log.capture(message: "Could not retreive remoteID from SavedItem for mutation")
             return nil
@@ -784,7 +784,7 @@ extension PocketSource {
         return UpdateSavedItemRemoveTagsMutation(savedItemId: remoteID)
     }
 
-    private func addTagsSyncTask(for savedItem: SavedItem, tags: [String]) -> SyncTask? {
+    private func addTagsSyncTask(for savedItem: CDSavedItem, tags: [String]) -> SyncTask? {
         if tags.isEmpty {
             guard let remoteID = savedItem.remoteID else {
                 Log.capture(message: "Could not retreive remoteID from SavedItem for mutation")
@@ -802,7 +802,7 @@ extension PocketSource {
         }
     }
 
-    private func replaceSyncTask(for savedItem: SavedItem, tags: [String]) -> SyncTask? {
+    private func replaceSyncTask(for savedItem: CDSavedItem, tags: [String]) -> SyncTask? {
         guard let remoteID = savedItem.remoteID else {
             Log.capture(message: "Could not retreive remoteID from SavedItem for mutation")
             return nil
@@ -1203,7 +1203,7 @@ extension PocketSource {
             if let savedItem = try? space.fetchSavedItem(byURL: givenURL) {
                 unarchive(item: savedItem)
             } else {
-                let savedItem: SavedItem = SavedItem(context: space.backgroundContext, url: givenURL)
+                let savedItem: CDSavedItem = CDSavedItem(context: space.backgroundContext, url: givenURL)
                 savedItem.update(from: recommendation)
                 try? space.save()
 
@@ -1221,7 +1221,7 @@ extension PocketSource {
             if let savedItem = try? space.fetchSavedItem(byURL: givenURL) {
                 unarchive(item: savedItem)
             } else {
-                let savedItem: SavedItem = SavedItem(context: space.backgroundContext, url: givenURL)
+                let savedItem: CDSavedItem = CDSavedItem(context: space.backgroundContext, url: givenURL)
                 savedItem.update(from: item)
                 try? space.save()
 
@@ -1239,7 +1239,7 @@ extension PocketSource {
             if let savedItem = try? space.fetchSavedItem(byURL: givenURL) {
                 unarchive(item: savedItem)
             } else {
-                let savedItem: SavedItem = SavedItem(context: space.backgroundContext, url: givenURL)
+                let savedItem: CDSavedItem = CDSavedItem(context: space.backgroundContext, url: givenURL)
                 savedItem.createdAt = Date()
                 savedItem.item = collectionStory.item
                 try? space.save()
@@ -1302,7 +1302,7 @@ extension PocketSource {
             if let savedItem = try? space.fetchSavedItem(byURL: url) {
                 unarchive(item: savedItem)
             } else {
-                let savedItem: SavedItem = SavedItem(context: space.backgroundContext, url: url)
+                let savedItem: CDSavedItem = CDSavedItem(context: space.backgroundContext, url: url)
                 savedItem.url = url
                 savedItem.createdAt = Date()
                 try? space.save()
@@ -1337,7 +1337,7 @@ extension PocketSource {
         return try await fetchViewItem(from: givenUrl)
     }
 
-    public func readerItem(by slug: String) async throws -> (SavedItem?, CDItem?) {
+    public func readerItem(by slug: String) async throws -> (CDSavedItem?, CDItem?) {
         let data = try await apollo.fetch(query: ReaderSlugQuery(readerSlugSlug: slug))
 
         if let savedItemUrl = data.data?.readerSlug.savedItem?.url, let savedItem = fetchViewContextSavedItem(savedItemUrl) {
@@ -1381,11 +1381,11 @@ extension PocketSource {
 
 // MARK: - Search term
 extension PocketSource {
-    public func searchSaves(search: String) -> [SavedItem]? {
+    public func searchSaves(search: String) -> [CDSavedItem]? {
         try? space.fetchSavedItems(bySearchTerm: search, userPremium: user.status == .premium)
     }
 
-    public func fetchOrCreateSavedItem(with url: String, and remoteParts: SavedItem.RemoteSavedItem?) -> SavedItem? {
+    public func fetchOrCreateSavedItem(with url: String, and remoteParts: CDSavedItem.RemoteSavedItem?) -> CDSavedItem? {
         let savedItem = (try? space.fetchSavedItem(byURL: url))
 
         if let remoteParts {
@@ -1399,14 +1399,14 @@ extension PocketSource {
             return savedItem
         }
 
-        let remoteSavedItem = SavedItem(context: space.backgroundContext, url: url, remoteID: remoteParts.remoteID)
+        let remoteSavedItem = CDSavedItem(context: space.backgroundContext, url: url, remoteID: remoteParts.remoteID)
         remoteSavedItem.update(from: remoteParts, with: space)
         try? space.save()
 
         return remoteSavedItem
     }
 
-    public func fetchViewContextSavedItem(_ url: String) -> SavedItem? {
+    public func fetchViewContextSavedItem(_ url: String) -> CDSavedItem? {
         try? space.fetchSavedItem(byURL: url, context: viewContext)
     }
 }

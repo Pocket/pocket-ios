@@ -12,7 +12,7 @@ import Analytics
 
 @MainActor
 class PocketAddTagsViewModel: AddTagsViewModel {
-    private let item: SavedItem
+    private let item: CDSavedItem
     private let source: Source
     private let tracker: Tracker
     private let userDefaults: UserDefaults
@@ -55,7 +55,7 @@ class PocketAddTagsViewModel: AddTagsViewModel {
 
     @Published var otherTags: [TagType] = []
 
-    init(item: SavedItem, source: Source, tracker: Tracker, userDefaults: UserDefaults, user: User, store: SubscriptionStore, networkPathMonitor: NetworkPathMonitor, saveAction: @escaping () -> Void) {
+    init(item: CDSavedItem, source: Source, tracker: Tracker, userDefaults: UserDefaults, user: User, store: SubscriptionStore, networkPathMonitor: NetworkPathMonitor, saveAction: @escaping () -> Void) {
         self.item = item
         self.source = source
         self.tracker = tracker

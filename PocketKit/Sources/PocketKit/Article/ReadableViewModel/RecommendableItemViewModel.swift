@@ -279,7 +279,7 @@ extension RecommendableItemViewModel {
         ]
     }
 
-    private func subscribe(to savedItem: SavedItem?) {
+    private func subscribe(to savedItem: CDSavedItem?) {
         savedItem?.publisher(for: \.isFavorite).sink { [weak self] _ in
             self?.buildActions()
         }.store(in: &savedItemSubscriptions)
@@ -289,7 +289,7 @@ extension RecommendableItemViewModel {
         }.store(in: &savedItemSubscriptions)
     }
 
-    private func update(for savedItem: SavedItem?) {
+    private func update(for savedItem: CDSavedItem?) {
         if savedItem == nil {
             savedItemSubscriptions = []
         }

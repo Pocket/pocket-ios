@@ -5,8 +5,8 @@
 import Foundation
 import CoreData
 
-@objc(SavedItem)
-public class SavedItem: NSManagedObject {
+@objc(CDSavedItem)
+public class CDSavedItem: NSManagedObject {
     @available(*, unavailable)
     public init() {
         fatalError()

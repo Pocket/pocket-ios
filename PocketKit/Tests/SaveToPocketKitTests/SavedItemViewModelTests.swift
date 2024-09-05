@@ -65,7 +65,7 @@ class SavedItemViewModelTests: XCTestCase {
         user = MockUser()
         notificationCenter = .default
 
-        let savedItem = SavedItem(context: space.backgroundContext, url: "http://mozilla.com")
+        let savedItem = CDSavedItem(context: space.backgroundContext, url: "http://mozilla.com")
         saveService.stubSave { _ in .newItem(savedItem) }
     }
 
@@ -290,7 +290,7 @@ extension SavedItemViewModelTests {
                 userIdentifier: "mock-user-identifier"
             )
         )
-        let savedItem = SavedItem(context: self.space.backgroundContext, url: "http://mozilla.com")
+        let savedItem = CDSavedItem(context: self.space.backgroundContext, url: "http://mozilla.com")
         saveService.stubSave { _ in .existingItem(savedItem) }
 
         let provider = MockItemProvider()

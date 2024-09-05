@@ -87,7 +87,7 @@ class SavedItemViewModel: ReadableViewModel, ObservableObject {
 
     @Published private(set) var highlightIndexPath: IndexPath?
 
-    private let item: SavedItem
+    private let item: CDSavedItem
     private let source: Source
     private let pasteboard: Pasteboard
     private let user: User
@@ -99,7 +99,7 @@ class SavedItemViewModel: ReadableViewModel, ObservableObject {
     private let featureFlagService: FeatureFlagServiceProtocol
 
     init(
-        item: SavedItem,
+        item: CDSavedItem,
         source: Source,
         tracker: Tracker,
         pasteboard: Pasteboard,

@@ -6,7 +6,7 @@ import Foundation
 import Textile
 import Sync
 
-public extension SavedItem {
+public extension CDSavedItem {
     var textAlignment: TextAlignment {
         TextAlignment(language: item?.language)
     }

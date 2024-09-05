@@ -5,7 +5,7 @@
 import CoreData
 
 public enum Requests {
-    public static func fetchSavedItems(limit: Int? = nil) -> NSFetchRequest<SavedItem> {
+    public static func fetchSavedItems(limit: Int? = nil) -> NSFetchRequest<CDSavedItem> {
         let request = fetchAllSavedItems()
         request.predicate = Predicates.savedItems()
         if let limit = limit {
@@ -14,38 +14,38 @@ public enum Requests {
         return request
     }
 
-    public static func fetchArchivedItems(filters: [NSPredicate] = []) -> NSFetchRequest<SavedItem> {
-        let request: NSFetchRequest<SavedItem> = SavedItem.fetchRequest()
+    public static func fetchArchivedItems(filters: [NSPredicate] = []) -> NSFetchRequest<CDSavedItem> {
+        let request: NSFetchRequest<CDSavedItem> = CDSavedItem.fetchRequest()
         request.predicate = Predicates.archivedItems(filters: filters)
 
         request.sortDescriptors = [
-            NSSortDescriptor(keyPath: \SavedItem.archivedAt, ascending: false),
+            NSSortDescriptor(keyPath: \CDSavedItem.archivedAt, ascending: false),
             NSSortDescriptor(key: "item.title", ascending: true)
         ]
 
         return request
     }
 
-    public static func fetchAllSavedItems() -> NSFetchRequest<SavedItem> {
-        let request: NSFetchRequest<SavedItem> = SavedItem.fetchRequest()
+    public static func fetchAllSavedItems() -> NSFetchRequest<CDSavedItem> {
+        let request: NSFetchRequest<CDSavedItem> = CDSavedItem.fetchRequest()
 
         request.sortDescriptors = [
-            NSSortDescriptor(keyPath: \SavedItem.createdAt, ascending: false),
+            NSSortDescriptor(keyPath: \CDSavedItem.createdAt, ascending: false),
             NSSortDescriptor(key: "item.title", ascending: true)
         ]
 
         return request
     }
 
-    public static func fetchSavedItem(byURL url: String) -> NSFetchRequest<SavedItem> {
-        let request = SavedItem.fetchRequest()
+    public static func fetchSavedItem(byURL url: String) -> NSFetchRequest<CDSavedItem> {
+        let request = CDSavedItem.fetchRequest()
         request.predicate = NSPredicate(format: "url = %@", url as CVarArg)
         request.fetchLimit = 1
         return request
     }
 
-    public static func fetchSavedItems(bySearchTerm searchTerm: String, userPremium isPremium: Bool) -> NSFetchRequest<SavedItem> {
-        let request = SavedItem.fetchRequest()
+    public static func fetchSavedItems(bySearchTerm searchTerm: String, userPremium isPremium: Bool) -> NSFetchRequest<CDSavedItem> {
+        let request = CDSavedItem.fetchRequest()
         let urlPredicate = NSPredicate(format: "url CONTAINS %@", searchTerm)
         let titlePredicate = NSPredicate(format: "item.title CONTAINS %@", searchTerm)
         let urlTitlePredicate = NSCompoundPredicate(type: .or, subpredicates: [urlPredicate, titlePredicate])
@@ -250,7 +250,7 @@ public enum Requests {
         return CDImage.fetchRequest()
     }
 
-    public static func fetchSavedItem(for item: CDItem) -> NSFetchRequest<SavedItem> {
+    public static func fetchSavedItem(for item: CDItem) -> NSFetchRequest<CDSavedItem> {
         let request = fetchAllSavedItems()
         request.predicate = Predicates.savedItems(filters: [NSPredicate(format: "item = %@", item)])
 

@@ -18,7 +18,7 @@ extension Space {
         cursor: String? = nil,
         tags: [String]? = nil,
         item: CDItem? = nil
-    ) throws -> SavedItem {
+    ) throws -> CDSavedItem {
         try backgroundContext.performAndWait {
             let savedItem = buildSavedItem(
                 remoteID: remoteID,
@@ -48,9 +48,9 @@ extension Space {
         cursor: String? = nil,
         tags: [String]? = nil,
         item: CDItem? = nil
-    ) -> SavedItem {
+    ) -> CDSavedItem {
         backgroundContext.performAndWait {
-            let savedItem: SavedItem = SavedItem(context: backgroundContext, url: url, remoteID: remoteID)
+            let savedItem: CDSavedItem = CDSavedItem(context: backgroundContext, url: url, remoteID: remoteID)
             let tags: [Tag]? = tags?.map { tag -> Tag in
                 let newTag: Tag = Tag(context: backgroundContext)
                 newTag.name = tag
