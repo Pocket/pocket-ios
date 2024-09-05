@@ -317,7 +317,7 @@ extension Space {
         return try fetch(Requests.fetchPersistentSyncTasks())
     }
 
-    func fetchSavedItemUpdatedNotifications() throws -> [SavedItemUpdatedNotification] {
+    func fetchSavedItemUpdatedNotifications() throws -> [CDSavedItemUpdatedNotification] {
         return try fetch(Requests.fetchSavedItemUpdatedNotifications())
     }
 
