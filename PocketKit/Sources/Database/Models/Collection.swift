@@ -6,7 +6,6 @@
 import Foundation
 import SwiftData
 
-@available(iOS 17, *)
 @Model
 public class Collection {
     // ios 18 only - #Unique<Collection>([\.slug])
