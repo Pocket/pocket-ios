@@ -17,7 +17,7 @@ extension Space {
         archivedAt: Date? = nil,
         cursor: String? = nil,
         tags: [Tag]? = nil,
-        item: Item? = nil
+        item: CDItem? = nil
     ) throws -> SavedItem {
         try backgroundContext.performAndWait {
             let savedItem = buildSavedItem(
@@ -47,7 +47,7 @@ extension Space {
         archivedAt: Date? = nil,
         cursor: String? = nil,
         tags: [Tag]? = nil,
-        item: Item? = nil
+        item: CDItem? = nil
     ) -> SavedItem {
         backgroundContext.performAndWait {
             let savedItem: SavedItem = SavedItem(context: backgroundContext, url: url)
@@ -58,7 +58,7 @@ extension Space {
             savedItem.archivedAt = archivedAt
             savedItem.cursor = cursor
             savedItem.tags = NSOrderedSet(array: tags ?? [])
-            savedItem.item = item ?? Item(context: backgroundContext, givenURL: url, remoteID: remoteID)
+            savedItem.item = item ?? CDItem(context: backgroundContext, givenURL: url, remoteID: remoteID)
 
             return savedItem
         }
@@ -75,7 +75,7 @@ extension Space {
         itemID: String,
         publisherName: String? = nil,
         title: String,
-        item: Item? = nil
+        item: CDItem? = nil
     ) throws -> SyndicatedArticle {
         try backgroundContext.performAndWait {
             let syndicatedArticle = buildSyndicatedArticle(
@@ -99,7 +99,7 @@ extension Space {
         itemID: String,
         publisherName: String? = nil,
         title: String,
-        item: Item? = nil
+        item: CDItem? = nil
     ) -> SyndicatedArticle {
         backgroundContext.performAndWait {
             let syndicatedArticle: SyndicatedArticle = SyndicatedArticle(context: backgroundContext)
@@ -123,7 +123,7 @@ extension Space {
         givenURL: String = "https://example.com/items/item-1",
         isArticle: Bool = true,
         syndicatedArticle: SyndicatedArticle? = nil
-    ) throws -> Item {
+    ) throws -> CDItem {
         try backgroundContext.performAndWait {
             let item = buildItem(
                 remoteID: remoteID,
@@ -147,14 +147,14 @@ extension Space {
         isArticle: Bool = true,
         syndicatedArticle: SyndicatedArticle? = nil,
         num: Int? = nil
-    ) -> Item {
+    ) -> CDItem {
         var url = givenURL
         if url == nil, let num = num {
             url = "https://example.com/items/item-1-\(num)"
         }
 
         return backgroundContext.performAndWait {
-            let item: Item = Item(context: backgroundContext, givenURL: url!, remoteID: remoteID)
+            let item: CDItem = CDItem(context: backgroundContext, givenURL: url!, remoteID: remoteID)
             item.title = title
             item.resolvedURL = resolvedURL
             item.isArticle = isArticle
@@ -254,7 +254,7 @@ extension Space {
     @discardableResult
     func createRecommendation(
         remoteID: String = "slate-1-rec-1",
-        item: Item
+        item: CDItem
     ) throws -> Recommendation {
         try backgroundContext.performAndWait {
             let recommendation = buildRecommendation(
@@ -270,7 +270,7 @@ extension Space {
     @discardableResult
     func buildRecommendation(
         remoteID: String = "slate-1-rec-1",
-        item: Item
+        item: CDItem
     ) -> Recommendation {
         backgroundContext.performAndWait {
             let recommendation: Recommendation = Recommendation(context: backgroundContext, remoteID: remoteID, analyticsID: "")

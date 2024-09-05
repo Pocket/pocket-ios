@@ -28,7 +28,7 @@ public extension SavedItem {
     }
 }
 
-public extension Item {
+public extension CDItem {
     func shouldOpenInWebView(override: Bool) -> Bool {
         if override == true {
             return true

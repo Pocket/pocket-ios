@@ -121,8 +121,8 @@ public enum Requests {
         Recommendation.fetchRequest()
     }
 
-    public static func fetchItems() -> NSFetchRequest<Item> {
-        Item.fetchRequest()
+    public static func fetchItems() -> NSFetchRequest<CDItem> {
+        CDItem.fetchRequest()
     }
 
     public static func fetchSyndicatedArticles() -> NSFetchRequest<SyndicatedArticle> {
@@ -240,7 +240,7 @@ public enum Requests {
         return request
     }
 
-    public static func fetchUnsavedItems() -> NSFetchRequest<Item> {
+    public static func fetchUnsavedItems() -> NSFetchRequest<CDItem> {
         let request = self.fetchItems()
         request.predicate = NSPredicate(format: "savedItem = nil")
         return request
@@ -250,14 +250,14 @@ public enum Requests {
         return CDImage.fetchRequest()
     }
 
-    public static func fetchSavedItem(for item: Item) -> NSFetchRequest<SavedItem> {
+    public static func fetchSavedItem(for item: CDItem) -> NSFetchRequest<SavedItem> {
         let request = fetchAllSavedItems()
         request.predicate = Predicates.savedItems(filters: [NSPredicate(format: "item = %@", item)])
 
         return request
     }
 
-    public static func fetchItem(byURL url: String) -> NSFetchRequest<Item> {
+    public static func fetchItem(byURL url: String) -> NSFetchRequest<CDItem> {
         let request = fetchItems()
         request.predicate = NSPredicate(format: "givenURL = %@", url)
         request.fetchLimit = 1

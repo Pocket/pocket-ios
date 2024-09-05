@@ -84,7 +84,7 @@ public protocol Source {
 
     func save(recommendation: Recommendation)
 
-    func save(item: Item)
+    func save(item: CDItem)
 
     func save(collectionStory: CDCollectionStory)
 
@@ -98,7 +98,7 @@ public protocol Source {
 
     func fetchDetails(for savedItem: SavedItem) async throws -> Bool
 
-    func fetchDetails(for item: Item) async throws -> Bool
+    func fetchDetails(for item: CDItem) async throws -> Bool
 
     func save(url: String)
 
@@ -106,13 +106,13 @@ public protocol Source {
 
     func addHighlight(itemIID: NSManagedObjectID, patch: String, quote: String)
 
-    func fetchItem(_ url: String) -> Item?
+    func fetchItem(_ url: String) -> CDItem?
 
-    func fetchViewContextItem(_ url: String) -> Item?
+    func fetchViewContextItem(_ url: String) -> CDItem?
 
-    func fetchShortUrlViewItem(_ url: String) async throws -> Item?
+    func fetchShortUrlViewItem(_ url: String) async throws -> CDItem?
 
-    func fetchViewItem(from url: String) async throws -> Item?
+    func fetchViewItem(from url: String) async throws -> CDItem?
 
     func searchSaves(search: String) -> [SavedItem]?
 
@@ -146,8 +146,8 @@ public protocol Source {
     // MARK: Shared With You
     func updateSharedWithYouItems(with urls: [String])
     func makeSharedWithYouController() -> RichFetchedResultsController<SharedWithYouItem>
-    func item(by slug: String) async throws -> Item?
-    func readerItem(by slug: String) async throws -> (SavedItem?, Item?)
+    func item(by slug: String) async throws -> CDItem?
+    func readerItem(by slug: String) async throws -> (SavedItem?, CDItem?)
     func requestShareUrl(_ itemUrl: String) async throws -> String?
     func deleteAllSharedWithYouItems() throws
 

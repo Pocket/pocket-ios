@@ -8,11 +8,11 @@ import CoreData
 import Combine
 
 class MockSource: Source {
-    func readerItem(by slug: String) async throws -> (Sync.SavedItem?, Sync.Item?) {
+    func readerItem(by slug: String) async throws -> (Sync.SavedItem?, Sync.CDItem?) {
         return (nil, nil)
     }
 
-    func item(by slug: String) async throws -> Sync.Item? {
+    func item(by slug: String) async throws -> Sync.CDItem? {
         return nil
     }
 
@@ -27,7 +27,7 @@ class MockSource: Source {
     func deleteAllSharedWithYouItems() throws {
     }
 
-    func fetchShortUrlViewItem(_ url: String) async throws -> Sync.Item? {
+    func fetchShortUrlViewItem(_ url: String) async throws -> Sync.CDItem? {
         return nil
     }
 
@@ -41,11 +41,11 @@ class MockSource: Source {
     func deleteHighlight(highlight: Sync.CDHighlight) {
     }
 
-    func fetchViewItem(from url: String) async throws -> Sync.Item? {
+    func fetchViewItem(from url: String) async throws -> Sync.CDItem? {
         nil
     }
 
-    func fetchViewContextItem(_ url: String) -> Sync.Item? {
+    func fetchViewContextItem(_ url: String) -> Sync.CDItem? {
         return nil
     }
 
@@ -1072,9 +1072,9 @@ extension MockSource {
     }
 
     static let saveItem = "saveItem"
-    typealias SaveItemImpl = (Item) -> Void
+    typealias SaveItemImpl = (CDItem) -> Void
     struct SaveItemCall {
-        let item: Item
+        let item: CDItem
     }
 
     static let archiveRecommendation = "archiveRecommendation"
@@ -1128,7 +1128,7 @@ extension MockSource {
         return call
     }
 
-    func save(item: Item) {
+    func save(item: CDItem) {
         guard let impl = implementations[Self.saveItem] as? SaveItemImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
@@ -1325,17 +1325,17 @@ extension MockSource {
 // MARK: - Fetch Details for Recommendation
 extension MockSource {
     static let fetchDetailsForItem = "fetchDetailsForItem"
-    typealias FetchDetailsForItemImpl = (Item) async throws -> Bool
+    typealias FetchDetailsForItemImpl = (CDItem) async throws -> Bool
 
     struct FetchDetailsForItemCall {
-        let item: Item
+        let item: CDItem
     }
 
     func stubFetchDetailsForItem(impl: @escaping FetchDetailsForItemImpl) {
         implementations[Self.fetchDetailsForItem] = impl
     }
 
-    func fetchDetails(for item: Item) async throws -> Bool {
+    func fetchDetails(for item: CDItem) async throws -> Bool {
         guard let impl = implementations[Self.fetchDetailsForItem] as? FetchDetailsForItemImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
@@ -1360,7 +1360,7 @@ extension MockSource {
 // MARK: - Fetch item by URL
 extension MockSource {
     private static let fetchItem = "fetchItem"
-    typealias FetchItemImpl = (String) -> Item?
+    typealias FetchItemImpl = (String) -> CDItem?
 
     struct FetchItemCall {
         let url: String
@@ -1370,7 +1370,7 @@ extension MockSource {
         implementations[Self.fetchItem] = impl
     }
 
-    func fetchItem(_ url: String) -> Item? {
+    func fetchItem(_ url: String) -> CDItem? {
         guard let impl = implementations[Self.fetchItem] as? FetchItemImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }

@@ -286,7 +286,7 @@ private extension SlateDetailViewModel {
         // - Item.savedItem was set to nil or a new object
         // - SavedItem was archived
         itemsToReload += (
-            updatedObjects.compactMap { $0 as? Item }
+            updatedObjects.compactMap { $0 as? CDItem }
             + updatedObjects.compactMap { ($0 as? SavedItem)?.item }
         )
         .compactMap(\.recommendation)

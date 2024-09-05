@@ -15,5 +15,5 @@ extension CDAuthor {
     @NSManaged public var id: String
     @NSManaged public var name: String?
     @NSManaged public var url: URL?
-    @NSManaged public var item: Item?
+    @NSManaged public var item: CDItem?
 }

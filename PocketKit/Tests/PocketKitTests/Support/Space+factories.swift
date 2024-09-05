@@ -17,7 +17,7 @@ extension Space {
         archivedAt: Date? = nil,
         cursor: String? = nil,
         tags: [String]? = nil,
-        item: Item? = nil
+        item: CDItem? = nil
     ) throws -> SavedItem {
         try backgroundContext.performAndWait {
             let savedItem = buildSavedItem(
@@ -47,7 +47,7 @@ extension Space {
         archivedAt: Date? = nil,
         cursor: String? = nil,
         tags: [String]? = nil,
-        item: Item? = nil
+        item: CDItem? = nil
     ) -> SavedItem {
         backgroundContext.performAndWait {
             let savedItem: SavedItem = SavedItem(context: backgroundContext, url: url)
@@ -65,7 +65,7 @@ extension Space {
             savedItem.url = url
             savedItem.cursor = cursor
             savedItem.tags = NSOrderedSet(array: tags ?? [])
-            savedItem.item = item ?? Item(context: backgroundContext, givenURL: url, remoteID: remoteID)
+            savedItem.item = item ?? CDItem(context: backgroundContext, givenURL: url, remoteID: remoteID)
 
             return savedItem
         }
@@ -90,7 +90,7 @@ extension Space {
         givenURL: String = "https://example.com/items/item-1",
         isArticle: Bool = true,
         article: Article? = nil
-    ) throws -> Item {
+    ) throws -> CDItem {
         return try backgroundContext.performAndWait {
             let item = buildItem(
                 remoteID: remoteID,
@@ -116,9 +116,9 @@ extension Space {
         isArticle: Bool = true,
         article: Article? = nil,
         syndicatedArticle: SyndicatedArticle? = nil
-    ) -> Item {
+    ) -> CDItem {
         return backgroundContext.performAndWait {
-            let item: Item = Item(context: backgroundContext, givenURL: givenURL, remoteID: remoteID)
+            let item: CDItem = CDItem(context: backgroundContext, givenURL: givenURL, remoteID: remoteID)
             item.remoteID = remoteID
             item.title = title
             item.resolvedURL = resolvedURL
@@ -140,7 +140,7 @@ extension Space {
         title: String = "collection-title",
         authors: [String] = [],
         stories: [CDCollectionStory] = [],
-        item: Item? = nil
+        item: CDItem? = nil
     ) -> CDCollection {
         backgroundContext.performAndWait {
             let collection: CDCollection = CDCollection(context: backgroundContext, slug: slug, title: title, authors: NSOrderedSet(array: authors), stories: NSOrderedSet(array: stories))
@@ -156,7 +156,7 @@ extension Space {
         title: String = "story-title",
         excerpt: String = "",
         authors: [String] = [],
-        item: Item? = nil
+        item: CDItem? = nil
     ) -> CDCollectionStory {
         backgroundContext.performAndWait {
             let collectionStory: CDCollectionStory = CDCollectionStory(context: backgroundContext, url: url, title: title, excerpt: excerpt, authors: NSOrderedSet(array: authors))
@@ -268,7 +268,7 @@ extension Space {
     @discardableResult
     func createRecommendation(
         remoteID: String = "slate-1-rec-1",
-        item: Item
+        item: CDItem
     ) throws -> Recommendation {
         try backgroundContext.performAndWait {
             let recommendation = buildRecommendation(
@@ -284,7 +284,7 @@ extension Space {
     @discardableResult
     func buildRecommendation(
         remoteID: String = "slate-1-rec-1",
-        item: Item,
+        item: CDItem,
         imageURL: URL? = nil,
         title: String? = nil,
         excerpt: String?  = nil,
@@ -328,7 +328,7 @@ extension Space {
     func buildImage(
         source: URL?,
         isDownloaded: Bool = false,
-        item: Item? = nil
+        item: CDItem? = nil
     ) -> CDImage {
         return backgroundContext.performAndWait {
             let image: CDImage = CDImage(context: backgroundContext)
@@ -344,7 +344,7 @@ extension Space {
     func createImage(
         source: URL?,
         isDownloaded: Bool = false,
-        item: Item? = nil
+        item: CDItem? = nil
     ) throws -> CDImage {
         return try backgroundContext.performAndWait {
             let image = buildImage(
