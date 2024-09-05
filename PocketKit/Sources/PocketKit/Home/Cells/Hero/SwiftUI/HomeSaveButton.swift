@@ -21,12 +21,12 @@ struct HomeSaveButton: View {
             }
         }
 
-        var image: Image {
+        var image: ImageAsset {
             switch self {
             case .save:
-                return Image("save")
+                return .save
             case .saved:
-                return Image("saved")
+                return .saved
             }
         }
 
@@ -53,7 +53,7 @@ struct HomeSaveButton: View {
             mode = mode == .save ? .saved : .save
         }) {
             HStack(spacing: 6) {
-                mode.image
+                Image(asset: mode.image)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .foregroundColor(imageColor())
