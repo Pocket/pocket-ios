@@ -125,11 +125,11 @@ public enum Requests {
         CDItem.fetchRequest()
     }
 
-    public static func fetchSyndicatedArticles() -> NSFetchRequest<SyndicatedArticle> {
-        SyndicatedArticle.fetchRequest()
+    public static func fetchSyndicatedArticles() -> NSFetchRequest<CDSyndicatedArticle> {
+        CDSyndicatedArticle.fetchRequest()
     }
 
-    public static func fetchSyndicatedArticle(byItemId id: String) -> NSFetchRequest<SyndicatedArticle> {
+    public static func fetchSyndicatedArticle(byItemId id: String) -> NSFetchRequest<CDSyndicatedArticle> {
         let request = self.fetchSyndicatedArticles()
         request.predicate = NSPredicate(format: "itemID = %@", id)
         request.fetchLimit = 1
