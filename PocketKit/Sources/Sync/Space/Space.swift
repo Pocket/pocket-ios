@@ -378,11 +378,11 @@ extension Space {
 
 // MARK: Slate/SlateLineUp
 extension Space {
-    func fetchSlateLineups(context: NSManagedObjectContext? = nil) throws -> [SlateLineup] {
+    func fetchSlateLineups(context: NSManagedObjectContext? = nil) throws -> [CDSlateLineup] {
         return try fetch(Requests.fetchSlateLineups(), context: context)
     }
 
-    func fetchSlateLineup(byRemoteID id: String, context: NSManagedObjectContext? = nil) throws -> SlateLineup? {
+    func fetchSlateLineup(byRemoteID id: String, context: NSManagedObjectContext? = nil) throws -> CDSlateLineup? {
         return try fetch(Requests.fetchSlateLineup(byID: id), context: context).first
     }
 
@@ -397,7 +397,7 @@ extension Space {
         return try fetch(request, context: context).first
     }
 
-    func makeSlateLineupController() -> NSFetchedResultsController<SlateLineup> {
+    func makeSlateLineupController() -> NSFetchedResultsController<CDSlateLineup> {
         let request = Requests.fetchSlateLineups()
         request.fetchLimit = 1
         request.sortDescriptors = [NSSortDescriptor(key: "requestID", ascending: true)]
@@ -422,7 +422,7 @@ extension Space {
 
     /// Updates unified home lineup from the specified remote object
     /// - Parameter remote: the specified remote object
-    func updateHomeLineup(from remote: SlateLineup.RemoteHomeLineup) throws {
+    func updateHomeLineup(from remote: CDSlateLineup.RemoteHomeLineup) throws {
         let context = makeChildBackgroundContext()
 
         try context.performAndWait { [weak self] in
@@ -433,7 +433,7 @@ extension Space {
                 context.delete($0)
             }
 
-            let lineup = SlateLineup(context: context, remoteID: remote.id, expermimentID: "", requestID: "")
+            let lineup = CDSlateLineup(context: context, remoteID: remote.id, expermimentID: "", requestID: "")
 
             lineup.update(from: remote, in: self, context: context)
         }

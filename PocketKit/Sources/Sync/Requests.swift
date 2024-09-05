@@ -75,11 +75,11 @@ public enum Requests {
         UnresolvedSavedItem.fetchRequest()
     }
 
-    public static func fetchSlateLineups() -> NSFetchRequest<SlateLineup> {
-        SlateLineup.fetchRequest()
+    public static func fetchSlateLineups() -> NSFetchRequest<CDSlateLineup> {
+        CDSlateLineup.fetchRequest()
     }
 
-    public static func fetchSlateLineup(byID id: String) -> NSFetchRequest<SlateLineup> {
+    public static func fetchSlateLineup(byID id: String) -> NSFetchRequest<CDSlateLineup> {
         let request = Self.fetchSlateLineups()
         request.predicate = NSPredicate(format: "remoteID = %@", id)
         request.fetchLimit = 1

@@ -17,7 +17,7 @@ extension CDSlate {
     @NSManaged public var requestID: String
     @NSManaged public var slateDescription: String?
     @NSManaged public var recommendations: NSOrderedSet?
-    @NSManaged public var slateLineup: SlateLineup?
+    @NSManaged public var slateLineup: CDSlateLineup?
     @NSManaged public var sortIndex: NSNumber?
 }
 
