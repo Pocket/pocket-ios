@@ -108,10 +108,10 @@ extension Item {
 // MARK: Generated accessors for collectionStories
 extension Item {
     @objc(addCollectionStoriesObject:)
-    @NSManaged public func addToCollectionStories(_ value: CollectionStory)
+    @NSManaged public func addToCollectionStories(_ value: CDCollectionStory)
 
     @objc(removeCollectionStoriesObject:)
-    @NSManaged public func removeFromCollectionStories(_ value: CollectionStory)
+    @NSManaged public func removeFromCollectionStories(_ value: CDCollectionStory)
 
     @objc(addCollectionStories:)
     @NSManaged public func addToCollectionStories(_ values: NSSet)

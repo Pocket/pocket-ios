@@ -139,7 +139,7 @@ extension Space {
         slug: String = "slug-1",
         title: String = "collection-title",
         authors: [String] = [],
-        stories: [CollectionStory] = [],
+        stories: [CDCollectionStory] = [],
         item: Item? = nil
     ) -> CDCollection {
         backgroundContext.performAndWait {
@@ -157,9 +157,9 @@ extension Space {
         excerpt: String = "",
         authors: [String] = [],
         item: Item? = nil
-    ) -> CollectionStory {
+    ) -> CDCollectionStory {
         backgroundContext.performAndWait {
-            let collectionStory: CollectionStory = CollectionStory(context: backgroundContext, url: url, title: title, excerpt: excerpt, authors: NSOrderedSet(array: authors))
+            let collectionStory: CDCollectionStory = CDCollectionStory(context: backgroundContext, url: url, title: title, excerpt: excerpt, authors: NSOrderedSet(array: authors))
             collectionStory.item = item
             return collectionStory
         }

@@ -14,5 +14,5 @@ extension CDCollectionAuthor {
 
     @NSManaged public var name: String
     @NSManaged public var collection: CDCollection?
-    @NSManaged public var collectionStory: CollectionStory?
+    @NSManaged public var collectionStory: CDCollectionStory?
 }

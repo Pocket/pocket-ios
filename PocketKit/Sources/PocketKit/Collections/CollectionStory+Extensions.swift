@@ -4,7 +4,7 @@
 
 import Sync
 
-extension CollectionStory {
+extension CDCollectionStory {
     var isSaved: Bool {
         item?.savedItem != nil && item?.savedItem?.isArchived == false
     }

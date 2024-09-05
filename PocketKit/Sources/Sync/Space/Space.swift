@@ -157,7 +157,7 @@ extension Space {
         return try fetch(Requests.fetchCollectionAuthors(by: slug))
     }
 
-    func fetchCollectionStory(by url: String, context: NSManagedObjectContext? = nil) throws -> CollectionStory? {
+    func fetchCollectionStory(by url: String, context: NSManagedObjectContext? = nil) throws -> CDCollectionStory? {
         return try fetch(Requests.fetchCollectionStory(by: url), context: context).first
     }
 
@@ -184,7 +184,7 @@ extension Space {
         }
     }
 
-    func makeCollectionStoriesController(slug: String) -> RichFetchedResultsController<CollectionStory> {
+    func makeCollectionStoriesController(slug: String) -> RichFetchedResultsController<CDCollectionStory> {
         RichFetchedResultsController(
             fetchRequest: Requests.fetchCollectionStories(by: slug),
             managedObjectContext: viewContext,
@@ -595,7 +595,7 @@ private extension Space {
     }
 
     func deleteOrphanedStories(context: NSManagedObjectContext) throws {
-        let fetchRequest = CollectionStory.fetchRequest()
+        let fetchRequest = CDCollectionStory.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "collection = NULL")
         try deleteEntities(request: fetchRequest, context: context)
     }
