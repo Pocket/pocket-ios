@@ -144,9 +144,9 @@ class PocketAddTagsViewModelTests: XCTestCase {
 
         source.stubFetchAllTags {
             defer { expectFetchAllTagsCall.fulfill() }
-            let tag1: Tag = Tag(context: self.space.backgroundContext)
-            let tag2: Tag = Tag(context: self.space.backgroundContext)
-            let tag3: Tag = Tag(context: self.space.backgroundContext)
+            let tag1: CDTag = CDTag(context: self.space.backgroundContext)
+            let tag2: CDTag = CDTag(context: self.space.backgroundContext)
+            let tag3: CDTag = CDTag(context: self.space.backgroundContext)
             tag1.name = "tag 1"
             tag1.remoteID = tag1.name.uppercased()
             tag2.name = "tag 2"
@@ -173,10 +173,10 @@ class PocketAddTagsViewModelTests: XCTestCase {
 
         source.stubFetchAllTags {
             defer { expectRetrieveTagsCall.fulfill() }
-            let tag1: Tag = Tag(context: self.space.backgroundContext)
-            let tag2: Tag = Tag(context: self.space.backgroundContext)
-            let tag3: Tag = Tag(context: self.space.backgroundContext)
-            let tag4: Tag = Tag(context: self.space.backgroundContext)
+            let tag1: CDTag = CDTag(context: self.space.backgroundContext)
+            let tag2: CDTag = CDTag(context: self.space.backgroundContext)
+            let tag3: CDTag = CDTag(context: self.space.backgroundContext)
+            let tag4: CDTag = CDTag(context: self.space.backgroundContext)
             tag1.name = "tag 1"
             tag1.remoteID = tag1.name.uppercased()
             tag2.name = "tag 2"
@@ -205,10 +205,10 @@ class PocketAddTagsViewModelTests: XCTestCase {
 
         source.stubFetchAllTags {
             defer { expectRetrieveTagsCall.fulfill() }
-            let tag1: Tag = Tag(context: self.space.backgroundContext)
-            let tag2: Tag = Tag(context: self.space.backgroundContext)
-            let tag3: Tag = Tag(context: self.space.backgroundContext)
-            let tag4: Tag = Tag(context: self.space.backgroundContext)
+            let tag1: CDTag = CDTag(context: self.space.backgroundContext)
+            let tag2: CDTag = CDTag(context: self.space.backgroundContext)
+            let tag3: CDTag = CDTag(context: self.space.backgroundContext)
+            let tag4: CDTag = CDTag(context: self.space.backgroundContext)
             tag1.name = "tag 1"
             tag1.remoteID = tag1.name.uppercased()
             tag2.name = "tag 2"
@@ -232,8 +232,8 @@ class PocketAddTagsViewModelTests: XCTestCase {
         expectRetrieveTagsCall.assertForOverFulfill = false
         source.stubRetrieveTags { [weak self] _ in
             defer { expectRetrieveTagsCall.fulfill() }
-            let tag2: Tag = Tag(context: self!.space.backgroundContext)
-            let tag3: Tag = Tag(context: self!.space.backgroundContext)
+            let tag2: CDTag = CDTag(context: self!.space.backgroundContext)
+            let tag3: CDTag = CDTag(context: self!.space.backgroundContext)
             tag2.name = "c"
             tag2.remoteID = tag2.name.uppercased()
             tag3.name = "b"
@@ -286,8 +286,8 @@ class PocketAddTagsViewModelTests: XCTestCase {
         source.stubFetchAllTags { return [] }
 
         source.stubFilterTags { [weak self] _ in
-            let tag2: Tag = Tag(context: self!.space.backgroundContext)
-            let tag3: Tag = Tag(context: self!.space.backgroundContext)
+            let tag2: CDTag = CDTag(context: self!.space.backgroundContext)
+            let tag3: CDTag = CDTag(context: self!.space.backgroundContext)
             tag2.name = "tag 2"
             tag2.remoteID = tag2.name.uppercased()
             tag3.name = "tag 3"
@@ -319,8 +319,8 @@ class PocketAddTagsViewModelTests: XCTestCase {
         source.stubFetchAllTags { return [] }
 
         source.stubFilterTags { [weak self] _ in
-            let tag2: Tag = Tag(context: self!.space.backgroundContext)
-            let tag3: Tag = Tag(context: self!.space.backgroundContext)
+            let tag2: CDTag = CDTag(context: self!.space.backgroundContext)
+            let tag3: CDTag = CDTag(context: self!.space.backgroundContext)
             tag2.name = "tag 2"
             tag2.remoteID = tag2.name.uppercased()
             tag3.name = "tag 3"

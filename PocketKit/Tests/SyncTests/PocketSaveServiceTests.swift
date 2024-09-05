@@ -329,7 +329,7 @@ extension PocketSaveServiceTests {
         wait(for: [performMutationCalled, notificationReceived], timeout: 2)
 
         let unresolved = try space.fetchUnresolvedSavedItems()
-        XCTAssertEqual(unresolved[0].savedItem?.tags?.compactMap { ($0 as? Tag)?.name }, ["tag 1", "tag 2"] )
+        XCTAssertEqual(unresolved[0].savedItem?.tags?.compactMap { ($0 as? CDTag)?.name }, ["tag 1", "tag 2"] )
         XCTAssertEqual(unresolved[0].hasChanges, false)
     }
 
@@ -385,15 +385,15 @@ extension PocketSaveServiceTests {
         wait(for: [performMutationCalled, notificationReceived], timeout: 2)
 
         let unresolved = try space.fetchUnresolvedSavedItems()
-        XCTAssertEqual(unresolved[0].savedItem?.tags?.compactMap { ($0 as? Tag)?.name }, [] )
+        XCTAssertEqual(unresolved[0].savedItem?.tags?.compactMap { ($0 as? CDTag)?.name }, [] )
         XCTAssertEqual(unresolved[0].hasChanges, false)
     }
 
     func test_retrieveTags_updatesInfoViewModel() {
-        let tag: Tag = Tag(context: space.backgroundContext)
+        let tag: CDTag = CDTag(context: space.backgroundContext)
         tag.name = "tag 1"
         tag.remoteID = tag.name.uppercased()
-        let tag2: Tag = Tag(context: space.backgroundContext)
+        let tag2: CDTag = CDTag(context: space.backgroundContext)
         tag2.name = "tag 2"
         tag2.remoteID = tag2.name.uppercased()
         let service = subject()
@@ -403,10 +403,10 @@ extension PocketSaveServiceTests {
     }
 
     func test_filterTags_retrievesFilteredTags() {
-        let tag: Tag = Tag(context: space.backgroundContext)
+        let tag: CDTag = CDTag(context: space.backgroundContext)
         tag.name = "tag 1"
         tag.remoteID = tag.name.uppercased()
-        let tag2: Tag = Tag(context: space.backgroundContext)
+        let tag2: CDTag = CDTag(context: space.backgroundContext)
         tag2.name = "tag 2"
         tag2.remoteID = tag2.name.uppercased()
         let service = subject()
