@@ -17,7 +17,7 @@ extension Recommendation {
     @NSManaged public var remoteID: String
     @NSManaged public var title: String?
     @NSManaged public var analyticsID: String
-    @NSManaged public var item: Item
+    @NSManaged public var item: CDItem
     @NSManaged public var slate: Slate?
     @NSManaged public var image: CDImage?
     @NSManaged public var sortIndex: NSNumber?

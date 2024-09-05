@@ -18,5 +18,5 @@ extension SyndicatedArticle {
     @NSManaged public var publisherName: String?
     @NSManaged public var title: String
     @NSManaged public var image: CDImage?
-    @NSManaged public var item: Item?
+    @NSManaged public var item: CDItem?
 }

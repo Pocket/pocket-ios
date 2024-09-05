@@ -59,7 +59,7 @@ extension Recommendation {
         imageURL = URL(string: remote.corpusItem.imageUrl)
         image = CDImage(src: remote.corpusItem.imageUrl, context: context)
         let url = remote.corpusItem.url
-        let recommendationItem = (try? space.fetchItem(byURL: url, context: context)) ?? Item(context: context, givenURL: url, remoteID: remoteID)
+        let recommendationItem = (try? space.fetchItem(byURL: url, context: context)) ?? CDItem(context: context, givenURL: url, remoteID: remoteID)
         recommendationItem.update(from: remote.corpusItem, in: space)
         item = recommendationItem
     }

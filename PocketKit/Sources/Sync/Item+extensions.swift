@@ -4,7 +4,7 @@
 
 import Foundation
 
-extension Item {
+extension CDItem {
     public var bestURL: String {
         resolvedURL ?? givenURL
     }

@@ -24,12 +24,12 @@ class CollectionViewModel: NSObject {
     @Published private(set) var presentedAddTags: PocketAddTagsViewModel?
     @Published private(set) var sharedActivity: PocketActivity?
 
-    @Published private(set) var selectedCollectionItemToReport: Item?
+    @Published private(set) var selectedCollectionItemToReport: CDItem?
     @Published private(set) var selectedItem: ReadableType?
     @Published private(set) var presentedStoryWebReaderURL: URL?
 
     @Published private(set) var sharedStoryActivity: PocketActivity?
-    @Published private(set) var selectedStoryToReport: Item?
+    @Published private(set) var selectedStoryToReport: CDItem?
     @Published private(set) var events: ReadableEvent?
 
     @Published private(set) var actions: [ItemAction] = []
@@ -99,7 +99,7 @@ class CollectionViewModel: NSObject {
         collectionController.fetchedObjects?.isEmpty == false
     }
 
-    var item: Item? {
+    var item: CDItem? {
         return collection?.item
     }
 

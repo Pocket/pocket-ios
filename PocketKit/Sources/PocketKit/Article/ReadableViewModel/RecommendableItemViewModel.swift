@@ -27,11 +27,11 @@ class RecommendableItemViewModel: ReadableViewModel {
 
     @Published var isPresentingReaderSettings: Bool?
 
-    @Published var selectedItemToReport: Item?
+    @Published var selectedItemToReport: CDItem?
 
     let readableSource: ReadableSource
 
-    private let item: Item
+    private let item: CDItem
     private let source: Source
     private let accessService: PocketAccessService
     private let pasteboard: Pasteboard
@@ -45,7 +45,7 @@ class RecommendableItemViewModel: ReadableViewModel {
     private var savedItemSubscriptions: Set<AnyCancellable> = []
 
     init(
-        item: Item,
+        item: CDItem,
         source: Source,
         accessService: PocketAccessService,
         tracker: Tracker,

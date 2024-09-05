@@ -8,7 +8,7 @@ import Apollo
 import PocketGraph
 import SharedPocketKit
 
-extension Item {
+extension CDItem {
     func update(remote: ItemParts, with space: Space) {
         remoteID = remote.remoteID
 
