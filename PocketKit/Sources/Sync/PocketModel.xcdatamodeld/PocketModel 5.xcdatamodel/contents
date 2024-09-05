@@ -149,7 +149,7 @@
         <attribute name="url" attributeType="String"/>
         <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="sharedWithYouItem" inverseEntity="Item"/>
     </entity>
-    <entity name="Slate" representedClassName="Slate" syncable="YES">
+    <entity name="Slate" representedClassName="CDSlate" syncable="YES">
         <attribute name="experimentID" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="remoteID" attributeType="String"/>

@@ -5,10 +5,10 @@
 import Foundation
 import CoreData
 
-extension Slate {
+extension CDSlate {
     @nonobjc
-    public class func fetchRequest() -> NSFetchRequest<Slate> {
-        return NSFetchRequest<Slate>(entityName: "Slate")
+    public class func fetchRequest() -> NSFetchRequest<CDSlate> {
+        return NSFetchRequest<CDSlate>(entityName: "Slate")
     }
 
     @NSManaged public var experimentID: String
@@ -22,7 +22,7 @@ extension Slate {
 }
 
 // MARK: Generated accessors for recommendations
-extension Slate {
+extension CDSlate {
     @objc(insertObject:inRecommendationsAtIndex:)
     @NSManaged public func insertIntoRecommendations(_ value: CDRecommendation, at idx: Int)
 

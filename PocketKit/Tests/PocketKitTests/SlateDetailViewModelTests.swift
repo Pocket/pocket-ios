@@ -78,7 +78,7 @@ class SlateDetailViewModelTests: XCTestCase {
 
     @MainActor
     func subject(
-        slate: Slate,
+        slate: CDSlate,
         source: Source? = nil,
         tracker: Tracker? = nil,
         user: User? = nil,
@@ -101,7 +101,7 @@ class SlateDetailViewModelTests: XCTestCase {
 
     @MainActor
     func test_fetch_whenRecentSavesIsEmpty_andSlateLineupIsUnavailable_sendsLoadingSnapshot() throws {
-        let slate: Slate = try space.createSlate(
+        let slate: CDSlate = try space.createSlate(
             remoteID: "slate-1",
             recommendations: []
         )
@@ -125,7 +125,7 @@ class SlateDetailViewModelTests: XCTestCase {
             space.buildRecommendation(remoteID: "slate-1-recommendation-2", item: space.buildItem())
         ]
 
-        let slate: Slate = try space.createSlate(
+        let slate: CDSlate = try space.createSlate(
             remoteID: "slate-1",
             recommendations: recommendations
         )
@@ -162,7 +162,7 @@ class SlateDetailViewModelTests: XCTestCase {
 
         let slate = try space.createSlate(recommendations: recommendations)
         try space.save()
-        let viewModel = subject(slate: space.viewObject(with: slate.objectID) as! Slate)
+        let viewModel = subject(slate: space.viewObject(with: slate.objectID) as! CDSlate)
 
         let snapshotExpectation = expectation(description: "expected snapshot to update")
         viewModel.$snapshot.dropFirst().sink { snapshot in
@@ -191,7 +191,7 @@ class SlateDetailViewModelTests: XCTestCase {
         let recommendation = space.buildRecommendation(item: savedItem.item!)
         let slate = try space.createSlate(recommendations: [recommendation])
         try space.save()
-        let viewModel = subject(slate: space.viewObject(with: slate.objectID) as! Slate)
+        let viewModel = subject(slate: space.viewObject(with: slate.objectID) as! CDSlate)
 
         let readableExpectation = expectation(description: "expected to update selected readable")
         viewModel.$selectedReadableViewModel.dropFirst().sink { readable in
@@ -220,7 +220,7 @@ class SlateDetailViewModelTests: XCTestCase {
         let recommendation = space.buildRecommendation(item: item)
         let slate = try space.createSlate(recommendations: [recommendation])
         try space.save()
-        let viewModel = subject(slate: space.viewObject(with: slate.objectID) as! Slate)
+        let viewModel = subject(slate: space.viewObject(with: slate.objectID) as! CDSlate)
 
         let urlExpectation = expectation(description: "expected to update presented URL")
         urlExpectation.expectedFulfillmentCount = 3
@@ -269,7 +269,7 @@ class SlateDetailViewModelTests: XCTestCase {
         let recommendation = space.buildRecommendation(item: savedItem.item!)
         let slate = try space.createSlate(recommendations: [recommendation])
         try space.save()
-        let viewModel = subject(slate: space.viewObject(with: slate.objectID) as! Slate)
+        let viewModel = subject(slate: space.viewObject(with: slate.objectID) as! CDSlate)
         featureFlags.shouldDisableReader = true
 
         let webViewExpectation = expectation(description: "expected to set web view url")
@@ -300,7 +300,7 @@ class SlateDetailViewModelTests: XCTestCase {
         let slate = try space.createSlate(recommendations: [recommendation])
         try space.save()
 
-        let viewModel = subject(slate: space.viewObject(with: slate.objectID) as! Slate)
+        let viewModel = subject(slate: space.viewObject(with: slate.objectID) as! CDSlate)
         let reportExpectation = expectation(description: "expected to update selected recommendation to report")
         viewModel.$selectedRecommendationToReport.dropFirst().sink { recommendation in
             XCTAssertNotNil(recommendation)
@@ -326,7 +326,7 @@ class SlateDetailViewModelTests: XCTestCase {
         let slate = try space.createSlate(recommendations: [recommendation])
         try space.save()
 
-        let viewModel = subject(slate: space.viewObject(with: slate.objectID) as! Slate)
+        let viewModel = subject(slate: space.viewObject(with: slate.objectID) as! CDSlate)
 
         let action = viewModel
             .recommendationViewModel(for: recommendation.objectID, at: [0, 0])?
@@ -347,7 +347,7 @@ class SlateDetailViewModelTests: XCTestCase {
         let slate = try space.createSlate(recommendations: [recommendation])
 
         try space.save()
-        let viewModel = subject(slate: space.viewObject(with: slate.objectID) as! Slate)
+        let viewModel = subject(slate: space.viewObject(with: slate.objectID) as! CDSlate)
         let action = viewModel.recommendationViewModel(
             for: recommendation.objectID,
             at: IndexPath(item: 0, section: 0)

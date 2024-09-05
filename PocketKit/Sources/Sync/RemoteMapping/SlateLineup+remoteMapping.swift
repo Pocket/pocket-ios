@@ -13,7 +13,7 @@ extension SlateLineup {
 
     func update(from remote: RemoteHomeLineup, in space: Space, context: NSManagedObjectContext) {
         slates = try? NSOrderedSet(array: remote.slates.enumerated().map {
-            let slate = try space.fetchSlate(byRemoteID: $0.element.id, context: context) ?? Slate(context: context, remoteID: $0.element.id, expermimentID: "", requestID: "")
+            let slate = try space.fetchSlate(byRemoteID: $0.element.id, context: context) ?? CDSlate(context: context, remoteID: $0.element.id, expermimentID: "", requestID: "")
             slate.update(from: $0.element.fragments.corpusSlateParts, in: space, context: context)
             slate.sortIndex = NSNumber(value: $0.offset + 1)
             return slate
@@ -21,7 +21,7 @@ extension SlateLineup {
     }
 }
 
-extension Slate {
+extension CDSlate {
     public typealias RemoteSlate = SlateParts
     public typealias RemoteCorpusSlate = CorpusSlateParts
 

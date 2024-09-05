@@ -21,28 +21,28 @@ extension SlateLineup {
 // MARK: Generated accessors for slates
 extension SlateLineup {
     @objc(insertObject:inSlatesAtIndex:)
-    @NSManaged public func insertIntoSlates(_ value: Slate, at idx: Int)
+    @NSManaged public func insertIntoSlates(_ value: CDSlate, at idx: Int)
 
     @objc(removeObjectFromSlatesAtIndex:)
     @NSManaged public func removeFromSlates(at idx: Int)
 
     @objc(insertSlates:atIndexes:)
-    @NSManaged public func insertIntoSlates(_ values: [Slate], at indexes: NSIndexSet)
+    @NSManaged public func insertIntoSlates(_ values: [CDSlate], at indexes: NSIndexSet)
 
     @objc(removeSlatesAtIndexes:)
     @NSManaged public func removeFromSlates(at indexes: NSIndexSet)
 
     @objc(replaceObjectInSlatesAtIndex:withObject:)
-    @NSManaged public func replaceSlates(at idx: Int, with value: Slate)
+    @NSManaged public func replaceSlates(at idx: Int, with value: CDSlate)
 
     @objc(replaceSlatesAtIndexes:withSlates:)
-    @NSManaged public func replaceSlates(at indexes: NSIndexSet, with values: [Slate])
+    @NSManaged public func replaceSlates(at indexes: NSIndexSet, with values: [CDSlate])
 
     @objc(addSlatesObject:)
-    @NSManaged public func addToSlates(_ value: Slate)
+    @NSManaged public func addToSlates(_ value: CDSlate)
 
     @objc(removeSlatesObject:)
-    @NSManaged public func removeFromSlates(_ value: Slate)
+    @NSManaged public func removeFromSlates(_ value: CDSlate)
 
     @objc(addSlates:)
     @NSManaged public func addToSlates(_ values: NSOrderedSet)

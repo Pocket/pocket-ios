@@ -18,7 +18,7 @@ extension CDRecommendation {
     @NSManaged public var title: String?
     @NSManaged public var analyticsID: String
     @NSManaged public var item: CDItem
-    @NSManaged public var slate: Slate?
+    @NSManaged public var slate: CDSlate?
     @NSManaged public var image: CDImage?
     @NSManaged public var sortIndex: NSNumber?
 }
