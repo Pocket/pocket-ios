@@ -6,10 +6,10 @@
 import Foundation
 import CoreData
 
-extension SyndicatedArticle {
+extension CDSyndicatedArticle {
     @nonobjc
-    public class func fetchRequest() -> NSFetchRequest<SyndicatedArticle> {
-        return NSFetchRequest<SyndicatedArticle>(entityName: "SyndicatedArticle")
+    public class func fetchRequest() -> NSFetchRequest<CDSyndicatedArticle> {
+        return NSFetchRequest<CDSyndicatedArticle>(entityName: "SyndicatedArticle")
     }
 
     @NSManaged public var excerpt: String?
