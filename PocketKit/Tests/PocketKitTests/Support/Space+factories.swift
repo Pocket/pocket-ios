@@ -141,9 +141,9 @@ extension Space {
         authors: [String] = [],
         stories: [CollectionStory] = [],
         item: Item? = nil
-    ) -> Collection {
+    ) -> CDCollection {
         backgroundContext.performAndWait {
-            let collection: Collection = Collection(context: backgroundContext, slug: slug, title: title, authors: NSOrderedSet(array: authors), stories: NSOrderedSet(array: stories))
+            let collection: CDCollection = CDCollection(context: backgroundContext, slug: slug, title: title, authors: NSOrderedSet(array: authors), stories: NSOrderedSet(array: stories))
             collection.item = item
 
             return collection

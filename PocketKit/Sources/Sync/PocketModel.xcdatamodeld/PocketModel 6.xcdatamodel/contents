@@ -6,7 +6,7 @@
         <attribute name="url" optional="YES" attributeType="URI"/>
         <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="authors" inverseEntity="Item"/>
     </entity>
-    <entity name="Collection" representedClassName="Collection" syncable="YES">
+    <entity name="Collection" representedClassName="CDCollection" syncable="YES">
         <attribute name="intro" optional="YES" attributeType="String"/>
         <attribute name="publishedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="slug" attributeType="String"/>
