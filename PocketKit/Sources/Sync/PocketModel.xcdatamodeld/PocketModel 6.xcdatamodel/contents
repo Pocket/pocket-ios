@@ -144,7 +144,7 @@
     <entity name="SavedItemUpdatedNotification" representedClassName="CDSavedItemUpdatedNotification" syncable="YES">
         <relationship name="savedItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SavedItem" inverseName="savedItemUpdatedNotification" inverseEntity="SavedItem"/>
     </entity>
-    <entity name="SharedWithYouItem" representedClassName="SharedWithYouItem" syncable="YES">
+    <entity name="SharedWithYouItem" representedClassName="CDSharedWithYouItem" syncable="YES">
         <attribute name="sortOrder" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="url" attributeType="String"/>
         <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="sharedWithYouItem" inverseEntity="Item"/>

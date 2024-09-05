@@ -274,32 +274,32 @@ public enum Requests {
         request.fetchLimit = 1
         return request
     }
-    public static func fetchSharedWithYouItem() -> NSFetchRequest<SharedWithYouItem> {
-        SharedWithYouItem.fetchRequest()
+    public static func fetchSharedWithYouItem() -> NSFetchRequest<CDSharedWithYouItem> {
+        CDSharedWithYouItem.fetchRequest()
     }
 
-    public static func fetchAllSharedWithYouItems() -> NSFetchRequest<SharedWithYouItem> {
-        let request: NSFetchRequest<SharedWithYouItem> = SharedWithYouItem.fetchRequest()
+    public static func fetchAllSharedWithYouItems() -> NSFetchRequest<CDSharedWithYouItem> {
+        let request: NSFetchRequest<CDSharedWithYouItem> = CDSharedWithYouItem.fetchRequest()
 
         request.sortDescriptors = [
-            NSSortDescriptor(keyPath: \SharedWithYouItem.sortOrder, ascending: true),
+            NSSortDescriptor(keyPath: \CDSharedWithYouItem.sortOrder, ascending: true),
             NSSortDescriptor(key: "item.title", ascending: true)
         ]
 
         return request
     }
 
-    public static func fetchSharedWithYouItems(limit: Int? = nil) -> RichFetchRequest<SharedWithYouItem> {
-        let request = RichFetchRequest<SharedWithYouItem>(entityName: "SharedWithYouItem")
+    public static func fetchSharedWithYouItems(limit: Int? = nil) -> RichFetchRequest<CDSharedWithYouItem> {
+        let request = RichFetchRequest<CDSharedWithYouItem>(entityName: "SharedWithYouItem")
         request.sortDescriptors = [
-            NSSortDescriptor(keyPath: \SharedWithYouItem.sortOrder, ascending: true),
-            NSSortDescriptor(keyPath: \SharedWithYouItem.item.title, ascending: true)
+            NSSortDescriptor(keyPath: \CDSharedWithYouItem.sortOrder, ascending: true),
+            NSSortDescriptor(keyPath: \CDSharedWithYouItem.item.title, ascending: true)
         ]
         request.relationshipKeyPathsForRefreshing = [
-            #keyPath(SharedWithYouItem.item.title),
-            #keyPath(SharedWithYouItem.item.savedItem.archivedAt),
-            #keyPath(SharedWithYouItem.item.savedItem.isFavorite),
-            #keyPath(SharedWithYouItem.item.savedItem.createdAt),
+            #keyPath(CDSharedWithYouItem.item.title),
+            #keyPath(CDSharedWithYouItem.item.savedItem.archivedAt),
+            #keyPath(CDSharedWithYouItem.item.savedItem.isFavorite),
+            #keyPath(CDSharedWithYouItem.item.savedItem.createdAt),
         ]
         if let limit = limit {
             request.fetchLimit = limit
