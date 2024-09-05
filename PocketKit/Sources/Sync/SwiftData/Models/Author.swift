@@ -7,11 +7,13 @@ import Foundation
 import SwiftData
 
 @Model
-public class DomainMetadata {
-    var logo: URL?
+public class Author {
+    public var id: String
     var name: String?
-    @Relationship(inverse: \Item.domainMetadata)
+    var url: URL?
+    @Relationship(inverse: \Item.authors)
     var item: Item?
-    public init() {
+    public init(id: String) {
+        self.id = id
     }
 }

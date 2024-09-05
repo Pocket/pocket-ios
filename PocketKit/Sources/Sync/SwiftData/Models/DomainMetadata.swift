@@ -7,12 +7,10 @@ import Foundation
 import SwiftData
 
 @Model
-public class Author {
-    public var id: String
+public class DomainMetadata {
+    var logo: URL?
     var name: String?
-    var url: URL?
     var item: Item?
-    public init(id: String) {
-        self.id = id
+    public init() {
     }
 }

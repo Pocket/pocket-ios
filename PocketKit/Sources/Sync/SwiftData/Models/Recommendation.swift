@@ -7,17 +7,19 @@ import Foundation
 import SwiftData
 
 @Model
-public class SyndicatedArticle {
-    // ios 18 only - #Unique<SyndicatedArticle>([\.itemID])
+public class Recommendation {
+    // #Unique<Recommendation>([\.remoteID])
+    var analyticsID: String
     var excerpt: String?
     var imageURL: URL?
-    var itemID: String
-    var publisherName: String?
-    var title: String
+    var remoteID: String
+    var sortIndex: Int16? = 0
+    var title: String?
     var image: Image?
     var item: Item?
-    public init(itemID: String, title: String) {
-        self.itemID = itemID
-        self.title = title
+    var slate: Slate?
+    public init(analyticsID: String, remoteID: String) {
+        self.analyticsID = analyticsID
+        self.remoteID = remoteID
     }
 }

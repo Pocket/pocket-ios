@@ -19,5 +19,5 @@ public class SlateLineup {
         self.requestID = requestID
     }
 
-#warning("The property \"ordered\" on SlateLineup:slates is unsupported in SwiftData.")
+// #warning("The property \"ordered\" on SlateLineup:slates is unsupported in SwiftData.")
 }

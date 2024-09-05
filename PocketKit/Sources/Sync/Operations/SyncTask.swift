@@ -23,6 +23,7 @@ enum SyncTask: Codable {
     case fetchSharedWithYouItems(urls: [String])
 }
 
+@objc(SyncTaskContainer)
 public class SyncTaskContainer: NSObject, Codable {
     public static var supportsSecureCoding: Bool = true
 
@@ -34,7 +35,10 @@ public class SyncTaskContainer: NSObject, Codable {
     }
 }
 
-class SyncTaskTransformer: NSSecureUnarchiveFromDataTransformer {
+@objc(SyncTaskTransformer)
+class SyncTaskTransformer: ValueTransformer {
+    static let name = NSValueTransformerName(rawValue: String(describing: SyncTaskTransformer.self))
+
     override func transformedValue(_ value: Any?) -> Any? {
         guard let data = value as? Data else {
             return nil
@@ -48,10 +52,15 @@ class SyncTaskTransformer: NSSecureUnarchiveFromDataTransformer {
             return nil
         }
 
-        return try? JSONEncoder().encode(syncTaskContainer)
+        return try? JSONEncoder().encode(syncTaskContainer) as NSData
     }
-}
 
-extension NSValueTransformerName {
-    static let syncTaskTransformer = NSValueTransformerName(rawValue: "SyncTaskTransformer")
+    override class func transformedValueClass() -> AnyClass {
+        return NSData.self
+    }
+
+    public static func register() {
+        let transformer = SyncTaskTransformer()
+        ValueTransformer.setValueTransformer(transformer, forName: name)
+    }
 }
