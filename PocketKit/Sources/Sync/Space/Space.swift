@@ -266,18 +266,18 @@ extension Space {
 
 // MARK: Recommendation
 extension Space {
-    func fetchRecommendations(context: NSManagedObjectContext? = nil) throws -> [Recommendation] {
+    func fetchRecommendations(context: NSManagedObjectContext? = nil) throws -> [CDRecommendation] {
         return try fetch(Requests.fetchRecommendations(), context: context)
     }
 
-    func fetchRecommendation(byRemoteID id: String, context: NSManagedObjectContext? = nil) throws -> Recommendation? {
+    func fetchRecommendation(byRemoteID id: String, context: NSManagedObjectContext? = nil) throws -> CDRecommendation? {
         let request = Requests.fetchRecommendations()
         request.predicate = NSPredicate(format: "remoteID = %@", id)
         request.fetchLimit = 1
         return try fetch(request, context: context).first
     }
 
-    func makeRecomendationsSlateLineupController() -> RichFetchedResultsController<Recommendation> {
+    func makeRecomendationsSlateLineupController() -> RichFetchedResultsController<CDRecommendation> {
         RichFetchedResultsController(
             fetchRequest: Requests.fetchRecomendations(),
             managedObjectContext: viewContext,
@@ -574,7 +574,7 @@ private extension Space {
     }
 
     func deleteOrphanedRecommendations(context: NSManagedObjectContext) throws {
-        let fetchRequest = Recommendation.fetchRequest()
+        let fetchRequest = CDRecommendation.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "slate = NULL")
         try deleteEntities(request: fetchRequest, context: context)
     }

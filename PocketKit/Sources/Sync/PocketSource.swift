@@ -207,7 +207,7 @@ public class PocketSource: Source {
         space.makeRecentSavesController(limit: SyncConstants.Home.recentSaves)
     }
 
-    public func makeHomeController() -> RichFetchedResultsController<Recommendation> {
+    public func makeHomeController() -> RichFetchedResultsController<CDRecommendation> {
         space.makeRecomendationsSlateLineupController()
     }
 
@@ -1193,9 +1193,9 @@ extension PocketSource {
 
 // MARK: - Recommendations
 extension PocketSource {
-    public func save(recommendation: Recommendation) {
+    public func save(recommendation: CDRecommendation) {
         space.performAndWait {
-            guard let recommendation = space.backgroundObject(with: recommendation.objectID) as? Recommendation else {
+            guard let recommendation = space.backgroundObject(with: recommendation.objectID) as? CDRecommendation else {
                 return
             }
 
@@ -1249,9 +1249,9 @@ extension PocketSource {
         }
     }
 
-    public func archive(recommendation: Recommendation) {
+    public func archive(recommendation: CDRecommendation) {
         space.performAndWait {
-            guard let recommendation = space.backgroundObject(with: recommendation.objectID) as? Recommendation,
+            guard let recommendation = space.backgroundObject(with: recommendation.objectID) as? CDRecommendation,
                   let savedItem = recommendation.item.savedItem, savedItem.isArchived == false else {
                 return
             }
@@ -1270,9 +1270,9 @@ extension PocketSource {
         }
     }
 
-    public func remove(recommendation: Recommendation) {
+    public func remove(recommendation: CDRecommendation) {
         space.performAndWait {
-            guard let recommendation = space.backgroundObject(with: recommendation.objectID) as? Recommendation else {
+            guard let recommendation = space.backgroundObject(with: recommendation.objectID) as? CDRecommendation else {
                 return
             }
 

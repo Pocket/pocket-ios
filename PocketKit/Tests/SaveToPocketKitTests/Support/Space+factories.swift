@@ -165,7 +165,7 @@ extension Space {
         name: String = "Slate 1",
         requestID: String = "slate-1-request",
         slateDescription: String = "The description of slate 1",
-        recommendations: [Recommendation] = []
+        recommendations: [CDRecommendation] = []
     ) throws -> Slate {
         try backgroundContext.performAndWait {
             let slate = buildSlate(
@@ -189,7 +189,7 @@ extension Space {
         name: String = "Slate 1",
         requestID: String = "slate-1-request",
         slateDescription: String = "The description of slate 1",
-        recommendations: [Recommendation] = []
+        recommendations: [CDRecommendation] = []
     ) -> Slate {
         backgroundContext.performAndWait {
             let slate: Slate = Slate(context: backgroundContext, remoteID: remoteID, expermimentID: experimentID, requestID: requestID)
@@ -208,7 +208,7 @@ extension Space {
     func createRecommendation(
         remoteID: String = "slate-1-rec-1",
         item: CDItem
-    ) throws -> Recommendation {
+    ) throws -> CDRecommendation {
         try backgroundContext.performAndWait {
             let recommendation = buildRecommendation(
                 remoteID: remoteID,
@@ -224,9 +224,9 @@ extension Space {
     func buildRecommendation(
         remoteID: String = "slate-1-rec-1",
         item: CDItem
-    ) -> Recommendation {
+    ) -> CDRecommendation {
         backgroundContext.performAndWait {
-            let recommendation: Recommendation = Recommendation(context: backgroundContext, remoteID: remoteID, analyticsID: "")
+            let recommendation: CDRecommendation = CDRecommendation(context: backgroundContext, remoteID: remoteID, analyticsID: "")
             recommendation.item = item
 
             return recommendation

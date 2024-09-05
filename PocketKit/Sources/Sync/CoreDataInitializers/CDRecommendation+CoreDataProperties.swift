@@ -6,10 +6,10 @@
 import Foundation
 import CoreData
 
-extension Recommendation {
+extension CDRecommendation {
     @nonobjc
-    public class func fetchRequest() -> NSFetchRequest<Recommendation> {
-        return NSFetchRequest<Recommendation>(entityName: "Recommendation")
+    public class func fetchRequest() -> NSFetchRequest<CDRecommendation> {
+        return NSFetchRequest<CDRecommendation>(entityName: "Recommendation")
     }
 
     @NSManaged public var excerpt: String?
@@ -23,7 +23,7 @@ extension Recommendation {
     @NSManaged public var sortIndex: NSNumber?
 }
 
-extension Recommendation {
+extension CDRecommendation {
     /// The slug of the associated collection
     public var collectionSlug: String? {
         item.collection?.slug

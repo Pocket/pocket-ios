@@ -90,22 +90,22 @@ public enum Requests {
         Slate.fetchRequest()
     }
 
-    public static func fetchRecomendations() -> RichFetchRequest<Recommendation> {
-        let request = RichFetchRequest<Recommendation>(entityName: "Recommendation")
+    public static func fetchRecomendations() -> RichFetchRequest<CDRecommendation> {
+        let request = RichFetchRequest<CDRecommendation>(entityName: "Recommendation")
         // We only search for valid recommendations without specifying a lineup, since the lineup will be only 1 (from unified home)
         request.predicate = NSPredicate(format: "item != NULL")
         request.sortDescriptors = [
-            NSSortDescriptor(keyPath: \Recommendation.slate?.sortIndex, ascending: true),
-            NSSortDescriptor(keyPath: \Recommendation.sortIndex, ascending: true),
+            NSSortDescriptor(keyPath: \CDRecommendation.slate?.sortIndex, ascending: true),
+            NSSortDescriptor(keyPath: \CDRecommendation.sortIndex, ascending: true),
         ]
         request.relationshipKeyPathsForRefreshing = [
-            #keyPath(Recommendation.slate.sortIndex),
+            #keyPath(CDRecommendation.slate.sortIndex),
             // Reload the cell when the image finishes downloading. Kingfisher has a bug where the cell is not always reloaded with the image.
-            #keyPath(Recommendation.image.isDownloaded),
-            #keyPath(Recommendation.item.title),
-            #keyPath(Recommendation.item.savedItem.archivedAt),
-            #keyPath(Recommendation.item.savedItem.isFavorite),
-            #keyPath(Recommendation.item.savedItem.createdAt),
+            #keyPath(CDRecommendation.image.isDownloaded),
+            #keyPath(CDRecommendation.item.title),
+            #keyPath(CDRecommendation.item.savedItem.archivedAt),
+            #keyPath(CDRecommendation.item.savedItem.isFavorite),
+            #keyPath(CDRecommendation.item.savedItem.createdAt),
         ]
         return request
     }
@@ -117,8 +117,8 @@ public enum Requests {
         return request
     }
 
-    public static func fetchRecommendations() -> NSFetchRequest<Recommendation> {
-        Recommendation.fetchRequest()
+    public static func fetchRecommendations() -> NSFetchRequest<CDRecommendation> {
+        CDRecommendation.fetchRequest()
     }
 
     public static func fetchItems() -> NSFetchRequest<CDItem> {

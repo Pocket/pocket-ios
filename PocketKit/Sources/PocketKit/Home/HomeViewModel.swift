@@ -120,7 +120,7 @@ class HomeViewModel: NSObject {
 
     @Published var selectedReadableType: ReadableType?
 
-    @Published var selectedRecommendationToReport: Recommendation?
+    @Published var selectedRecommendationToReport: CDRecommendation?
 
     @Published var tappedSeeAll: SeeAll?
 
@@ -143,7 +143,7 @@ class HomeViewModel: NSObject {
     private let recommendationsWidgetUpdateService: RecommendationsWidgetUpdateService
 
     private let recentSavesController: NSFetchedResultsController<SavedItem>
-    private let recomendationsController: RichFetchedResultsController<Recommendation>
+    private let recomendationsController: RichFetchedResultsController<CDRecommendation>
     private let sharedWithYouController: RichFetchedResultsController<SharedWithYouItem>
     private(set) var numberOfSharedWithYouItems = 0
 
@@ -287,7 +287,7 @@ extension HomeViewModel {
         }
 
         for slateSection in slateSections {
-            guard var recommendations = slateSection.objects as? [Recommendation],
+            guard var recommendations = slateSection.objects as? [CDRecommendation],
                   !recommendations.isEmpty,
                   let slateId = recommendations.first?.slate?.objectID
             else {
@@ -348,7 +348,7 @@ extension HomeViewModel {
             }
             select(savedItem: savedItem, at: indexPath)
         case .recommendationHero(let objectID), .recommendationCarousel(let objectID):
-            guard let recommendation = source.viewObject(id: objectID) as? Recommendation else {
+            guard let recommendation = source.viewObject(id: objectID) as? CDRecommendation else {
                 return
             }
             if let savedItem = recommendation.item.savedItem {
@@ -434,7 +434,7 @@ extension HomeViewModel {
         tracker.track(event: Events.Deeplinks.deeplinkArticleContentOpen(url: externalItem.givenURL, destination: destination))
     }
 
-    func select(recommendation: Recommendation, at indexPath: IndexPath? = nil, readableSource: ReadableSource = .app) {
+    func select(recommendation: CDRecommendation, at indexPath: IndexPath? = nil, readableSource: ReadableSource = .app) {
         var destination: ContentOpen.Destination = .internal
         let item = recommendation.item
 
@@ -758,7 +758,7 @@ extension HomeViewModel {
         for objectID: NSManagedObjectID? = nil,
         at indexPath: IndexPath? = nil
     ) -> HomeItemCellViewModel? {
-        guard let objectID = objectID, let recommendation = source.viewObject(id: objectID) as? Recommendation else {
+        guard let objectID = objectID, let recommendation = source.viewObject(id: objectID) as? CDRecommendation else {
             return nil
         }
 
@@ -797,7 +797,7 @@ extension HomeViewModel {
         return SharedWithYouCellConfiguration(viewModel: viewModel, sharedWithYouUrlString: sharedWithYouItem.url)
     }
 
-    private func overflowActions(for recommendation: Recommendation, at indexPath: IndexPath?) -> [ItemAction] {
+    private func overflowActions(for recommendation: CDRecommendation, at indexPath: IndexPath?) -> [ItemAction] {
         guard let indexPath = indexPath else {
             return []
         }
@@ -814,7 +814,7 @@ extension HomeViewModel {
         ]
     }
 
-    private func primaryAction(for recommendation: Recommendation, at indexPath: IndexPath?) -> ItemAction? {
+    private func primaryAction(for recommendation: CDRecommendation, at indexPath: IndexPath?) -> ItemAction? {
         guard let indexPath = indexPath else {
             return nil
         }
@@ -850,11 +850,11 @@ extension HomeViewModel {
         }
     }
 
-    private func report(_ recommendation: Recommendation, at indexPath: IndexPath) {
+    private func report(_ recommendation: CDRecommendation, at indexPath: IndexPath) {
         selectedRecommendationToReport = recommendation
     }
 
-    private func share(_ recommendation: Recommendation, at indexPath: IndexPath, with sender: Any?) async {
+    private func share(_ recommendation: CDRecommendation, at indexPath: IndexPath, with sender: Any?) async {
         // This view model is used within the context of a view that is presented within Saves
         let shareableUrl = await shareableUrl(recommendation.item) ?? recommendation.item.bestURL
         self.sharedActivity = PocketItemActivity.fromHome(url: shareableUrl, sender: sender)
@@ -888,13 +888,13 @@ extension HomeViewModel {
         return shareUrl
     }
 
-    private func save(_ recommendation: Recommendation, at indexPath: IndexPath) {
+    private func save(_ recommendation: CDRecommendation, at indexPath: IndexPath) {
         source.save(recommendation: recommendation)
         let givenURL = recommendation.item.givenURL
         tracker.track(event: Events.Home.SlateArticleSave(url: givenURL, positionInList: indexPath.item, recommendationId: recommendation.analyticsID))
     }
 
-    private func archive(_ recommendation: Recommendation, at indexPath: IndexPath) {
+    private func archive(_ recommendation: CDRecommendation, at indexPath: IndexPath) {
         source.archive(recommendation: recommendation)
         let givenURL = recommendation.item.givenURL
         tracker.track(event: Events.Home.SlateArticleArchive(url: givenURL, positionInList: indexPath.item, recommendationId: recommendation.analyticsID))
@@ -928,7 +928,7 @@ extension HomeViewModel {
             tracker.track(event: Events.Home.RecentSavesCardImpression(url: savedItem.url, positionInList: indexPath.item))
             return
         case .recommendationHero(let objectID), .recommendationCarousel(let objectID):
-            guard let recommendation = source.viewObject(id: objectID) as? Recommendation else {
+            guard let recommendation = source.viewObject(id: objectID) as? CDRecommendation else {
                 Log.breadcrumb(category: "home", level: .debug, message: "Could not turn recomendation into Recommendation from objectID: \(String(describing: objectID))")
                 Log.capture(message: "Recommendation is null on willDisplay Home Recommendation")
                 return
@@ -1130,8 +1130,8 @@ private extension HomeViewModel {
             return
         }
 
-        let topics = sections.reduce(into: [String: [Recommendation]]()) {
-            if let recommendations = $1.objects as? [Recommendation], let name = recommendations.first?.slate?.name {
+        let topics = sections.reduce(into: [String: [CDRecommendation]]()) {
+            if let recommendations = $1.objects as? [CDRecommendation], let name = recommendations.first?.slate?.name {
                 $0[name] = recommendations
             }
         }

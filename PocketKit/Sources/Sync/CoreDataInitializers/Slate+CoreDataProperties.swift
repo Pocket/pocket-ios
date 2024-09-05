@@ -24,28 +24,28 @@ extension Slate {
 // MARK: Generated accessors for recommendations
 extension Slate {
     @objc(insertObject:inRecommendationsAtIndex:)
-    @NSManaged public func insertIntoRecommendations(_ value: Recommendation, at idx: Int)
+    @NSManaged public func insertIntoRecommendations(_ value: CDRecommendation, at idx: Int)
 
     @objc(removeObjectFromRecommendationsAtIndex:)
     @NSManaged public func removeFromRecommendations(at idx: Int)
 
     @objc(insertRecommendations:atIndexes:)
-    @NSManaged public func insertIntoRecommendations(_ values: [Recommendation], at indexes: NSIndexSet)
+    @NSManaged public func insertIntoRecommendations(_ values: [CDRecommendation], at indexes: NSIndexSet)
 
     @objc(removeRecommendationsAtIndexes:)
     @NSManaged public func removeFromRecommendations(at indexes: NSIndexSet)
 
     @objc(replaceObjectInRecommendationsAtIndex:withObject:)
-    @NSManaged public func replaceRecommendations(at idx: Int, with value: Recommendation)
+    @NSManaged public func replaceRecommendations(at idx: Int, with value: CDRecommendation)
 
     @objc(replaceRecommendationsAtIndexes:withRecommendations:)
-    @NSManaged public func replaceRecommendations(at indexes: NSIndexSet, with values: [Recommendation])
+    @NSManaged public func replaceRecommendations(at indexes: NSIndexSet, with values: [CDRecommendation])
 
     @objc(addRecommendationsObject:)
-    @NSManaged public func addToRecommendations(_ value: Recommendation)
+    @NSManaged public func addToRecommendations(_ value: CDRecommendation)
 
     @objc(removeRecommendationsObject:)
-    @NSManaged public func removeFromRecommendations(_ value: Recommendation)
+    @NSManaged public func removeFromRecommendations(_ value: CDRecommendation)
 
     @objc(addRecommendations:)
     @NSManaged public func addToRecommendations(_ values: NSOrderedSet)

@@ -103,7 +103,7 @@
         <attribute name="currentCursor" optional="YES" attributeType="String"/>
         <attribute name="syncTaskContainer" attributeType="Transformable" valueTransformerName="SyncTaskTransformer" customClassName="SyncTaskContainer"/>
     </entity>
-    <entity name="Recommendation" representedClassName="Recommendation" syncable="YES">
+    <entity name="Recommendation" representedClassName="CDRecommendation" syncable="YES">
         <attribute name="analyticsID" attributeType="String"/>
         <attribute name="excerpt" optional="YES" attributeType="String"/>
         <attribute name="imageURL" optional="YES" attributeType="URI"/>

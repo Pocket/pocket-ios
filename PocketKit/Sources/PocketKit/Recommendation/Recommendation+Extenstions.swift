@@ -6,7 +6,7 @@ import Foundation
 import SharedPocketKit
 import Sync
 
-extension Recommendation {
+extension CDRecommendation {
     var bestImageURL: URL? {
         guard let topImageURL = imageURL ?? item.syndicatedArticle?.imageURL ?? item.topImageURL ?? (item.images?.firstObject as? CDImage)?.source else {
             return nil
