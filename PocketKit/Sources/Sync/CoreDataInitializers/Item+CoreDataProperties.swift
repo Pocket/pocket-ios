@@ -42,28 +42,28 @@ extension Item {
 // MARK: Generated accessors for authors
 extension Item {
     @objc(insertObject:inAuthorsAtIndex:)
-    @NSManaged public func insertIntoAuthors(_ value: Author, at idx: Int)
+    @NSManaged public func insertIntoAuthors(_ value: CDAuthor, at idx: Int)
 
     @objc(removeObjectFromAuthorsAtIndex:)
     @NSManaged public func removeFromAuthors(at idx: Int)
 
     @objc(insertAuthors:atIndexes:)
-    @NSManaged public func insertIntoAuthors(_ values: [Author], at indexes: NSIndexSet)
+    @NSManaged public func insertIntoAuthors(_ values: [CDAuthor], at indexes: NSIndexSet)
 
     @objc(removeAuthorsAtIndexes:)
     @NSManaged public func removeFromAuthors(at indexes: NSIndexSet)
 
     @objc(replaceObjectInAuthorsAtIndex:withObject:)
-    @NSManaged public func replaceAuthors(at idx: Int, with value: Author)
+    @NSManaged public func replaceAuthors(at idx: Int, with value: CDAuthor)
 
     @objc(replaceAuthorsAtIndexes:withAuthors:)
-    @NSManaged public func replaceAuthors(at indexes: NSIndexSet, with values: [Author])
+    @NSManaged public func replaceAuthors(at indexes: NSIndexSet, with values: [CDAuthor])
 
     @objc(addAuthorsObject:)
-    @NSManaged public func addToAuthors(_ value: Author)
+    @NSManaged public func addToAuthors(_ value: CDAuthor)
 
     @objc(removeAuthorsObject:)
-    @NSManaged public func removeFromAuthors(_ value: Author)
+    @NSManaged public func removeFromAuthors(_ value: CDAuthor)
 
     @objc(addAuthors:)
     @NSManaged public func addToAuthors(_ values: NSOrderedSet)

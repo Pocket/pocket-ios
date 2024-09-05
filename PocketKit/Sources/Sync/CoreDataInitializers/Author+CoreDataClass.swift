@@ -6,6 +6,6 @@
 import Foundation
 import CoreData
 
-@objc(Author)
-public class Author: NSManagedObject {
+@objc(CDAuthor)
+public class CDAuthor: NSManagedObject {
 }

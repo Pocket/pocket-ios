@@ -59,7 +59,7 @@ extension Item {
                 return
             }
 
-            addToAuthors(Author(remote: remoteAuthor, context: context))
+            addToAuthors(CDAuthor(remote: remoteAuthor, context: context))
         }
 
         if let images = images {
@@ -180,7 +180,7 @@ extension Item {
                 return
             }
 
-            addToAuthors(Author(remote: remoteAuthor, context: context))
+            addToAuthors(CDAuthor(remote: remoteAuthor, context: context))
         }
 
         if let images = images {
@@ -249,7 +249,7 @@ extension Item {
                 return
             }
 
-            addToAuthors(Author(remote: remoteAuthor, context: context))
+            addToAuthors(CDAuthor(remote: remoteAuthor, context: context))
         }
 
         if let images = images {
