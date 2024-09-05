@@ -24,7 +24,7 @@ extension CDSavedItem {
     @NSManaged public var savedItemUpdatedNotification: CDSavedItemUpdatedNotification?
     @NSManaged public var tags: NSOrderedSet?
     @NSManaged public var highlights: NSOrderedSet?
-    @NSManaged public var unresolvedSavedItem: UnresolvedSavedItem?
+    @NSManaged public var unresolvedSavedItem: CDUnresolvedSavedItem?
 }
 
 // MARK: Generated accessors for tags
