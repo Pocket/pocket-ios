@@ -83,7 +83,7 @@ public class PocketSaveService: SaveService {
             // used within the space, here, and that within the app (used by Saves) may be different.
             // Once the notification is posted, and these types of notifications exist within the space,
             // the app target can appropriately update from the Save extension by listener (see PocketSource.init).
-            let notification: SavedItemUpdatedNotification = SavedItemUpdatedNotification(context: space.backgroundContext)
+            let notification: CDSavedItemUpdatedNotification = CDSavedItemUpdatedNotification(context: space.backgroundContext)
             notification.savedItem = savedItem
 
             try? space.save()
@@ -103,7 +103,7 @@ public class PocketSaveService: SaveService {
             if let existingItem = try? space.fetchSavedItem(byURL: url) {
                 existingItem.createdAt = Date()
 
-                let notification: SavedItemUpdatedNotification = SavedItemUpdatedNotification(context: space.backgroundContext)
+                let notification: CDSavedItemUpdatedNotification = CDSavedItemUpdatedNotification(context: space.backgroundContext)
                 notification.savedItem = existingItem
 
                 try? space.save()
@@ -262,7 +262,7 @@ class SaveOperation<Mutation: GraphQLMutation>: AsyncOperation {
                 return
             }
             savedItem.update(from: savedItemParts, with: space)
-            let notification: SavedItemUpdatedNotification = SavedItemUpdatedNotification(context: space.backgroundContext)
+            let notification: CDSavedItemUpdatedNotification = CDSavedItemUpdatedNotification(context: space.backgroundContext)
             notification.savedItem = savedItem
             try? space.save()
         }
