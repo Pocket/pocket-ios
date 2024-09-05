@@ -948,7 +948,7 @@ extension PocketSource {
     ///   - completion: The completion block to execute when the operation is done. If you need to do cleanup work, you should instead do the completion work within the operation itself because they launch BackgroundTasks
     private func enqueue(operation: SyncOperation, task: SyncTask, queue: OperationQueue, completion: (() -> Void)? = nil) {
         let childBGContext = space.makeChildBackgroundContext()
-        let persistentTask: PersistentSyncTask = PersistentSyncTask(context: childBGContext)
+        let persistentTask: CDPersistentSyncTask = CDPersistentSyncTask(context: childBGContext)
         persistentTask.createdAt = Date()
         persistentTask.syncTaskContainer = SyncTaskContainer(task: task)
 
@@ -971,7 +971,7 @@ extension PocketSource {
     ///   - persistentTask: The persistent sync task to track the task to disk
     ///   - queue: The operation queue to run the task on
     ///   - completion: The completion block to execute when the operation is done. If you need to do cleanup work, you should instead do the completion work within the operation itself because they launch BackgroundTasks
-    private func enqueue(operation: SyncOperation, persistentTask: PersistentSyncTask, queue: OperationQueue, completion: (() -> Void)? = nil) {
+    private func enqueue(operation: SyncOperation, persistentTask: CDPersistentSyncTask, queue: OperationQueue, completion: (() -> Void)? = nil) {
         let _operation = RetriableOperation(
             retrySignal: retrySignal.eraseToAnyPublisher(),
             backgroundTaskManager: backgroundTaskManager,

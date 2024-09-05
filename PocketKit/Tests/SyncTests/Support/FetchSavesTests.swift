@@ -21,7 +21,7 @@ class FetchSavesTests: XCTestCase {
     var queue: OperationQueue!
     var lastRefresh: MockLastRefresh!
     var cancellables: Set<AnyCancellable> = []
-    var task: PersistentSyncTask!
+    var task: CDPersistentSyncTask!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
@@ -32,7 +32,7 @@ class FetchSavesTests: XCTestCase {
         queue = OperationQueue()
         lastRefresh = MockLastRefresh()
         space = .testSpace()
-        task = PersistentSyncTask(context: space.backgroundContext)
+        task = CDPersistentSyncTask(context: space.backgroundContext)
         task.syncTaskContainer = SyncTaskContainer(task: .fetchSaves)
         try space.save()
     }

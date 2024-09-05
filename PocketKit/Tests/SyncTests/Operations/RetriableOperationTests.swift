@@ -12,14 +12,14 @@ class RetriableOperationTests: XCTestCase {
     var retrySignal: PassthroughSubject<Void, Never>!
     var backgroundTaskManager: MockBackgroundTaskManager!
     var space: Space!
-    var task: PersistentSyncTask!
+    var task: CDPersistentSyncTask!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
         retrySignal = .init()
         backgroundTaskManager = MockBackgroundTaskManager()
         space = .testSpace()
-        task = PersistentSyncTask(context: space.backgroundContext)
+        task = CDPersistentSyncTask(context: space.backgroundContext)
         task.syncTaskContainer = SyncTaskContainer(task: .fetchSaves)
         try space.save()
 
