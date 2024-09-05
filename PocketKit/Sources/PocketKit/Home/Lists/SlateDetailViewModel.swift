@@ -30,7 +30,7 @@ class SlateDetailViewModel {
         slate.name
     }
 
-    private let slate: Slate
+    private let slate: CDSlate
     private let source: Source
     private let tracker: Tracker
     private let user: User
@@ -43,7 +43,7 @@ class SlateDetailViewModel {
     private let accessService: PocketAccessService
 
     init(
-        slate: Slate,
+        slate: CDSlate,
         source: Source,
         tracker: Tracker,
         user: User,
@@ -302,7 +302,7 @@ private extension SlateDetailViewModel {
 extension SlateDetailViewModel {
     enum Section: Hashable {
         case loading
-        case slate(Slate)
+        case slate(CDSlate)
     }
 
     enum Cell: Hashable {

@@ -125,7 +125,7 @@ extension Space {
         remoteID: String = "slate-lineup-1",
         requestID: String = "slate-lineup-1-request",
         experimentID: String = "slate-lineup-1-experiment",
-        slates: [Slate] = []
+        slates: [CDSlate] = []
     ) throws -> SlateLineup {
         try backgroundContext.performAndWait {
             let slateLineup = buildSlateLineup(
@@ -145,7 +145,7 @@ extension Space {
         remoteID: String = "slate-lineup-1",
         requestID: String = "slate-lineup-1-request",
         experimentID: String = "slate-lineup-1-experiment",
-        slates: [Slate] = []
+        slates: [CDSlate] = []
     ) -> SlateLineup {
         backgroundContext.performAndWait {
             let lineup: SlateLineup = SlateLineup(context: backgroundContext, remoteID: remoteID, expermimentID: experimentID, requestID: requestID)
@@ -166,7 +166,7 @@ extension Space {
         requestID: String = "slate-1-request",
         slateDescription: String = "The description of slate 1",
         recommendations: [CDRecommendation] = []
-    ) throws -> Slate {
+    ) throws -> CDSlate {
         try backgroundContext.performAndWait {
             let slate = buildSlate(
                 experimentID: experimentID,
@@ -190,9 +190,9 @@ extension Space {
         requestID: String = "slate-1-request",
         slateDescription: String = "The description of slate 1",
         recommendations: [CDRecommendation] = []
-    ) -> Slate {
+    ) -> CDSlate {
         backgroundContext.performAndWait {
-            let slate: Slate = Slate(context: backgroundContext, remoteID: remoteID, expermimentID: experimentID, requestID: requestID)
+            let slate: CDSlate = CDSlate(context: backgroundContext, remoteID: remoteID, expermimentID: experimentID, requestID: requestID)
             slate.name = name
             slate.slateDescription = slateDescription
             slate.recommendations = NSOrderedSet(array: recommendations)

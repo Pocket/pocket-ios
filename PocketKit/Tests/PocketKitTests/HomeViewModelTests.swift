@@ -289,7 +289,7 @@ class HomeViewModelTests: XCTestCase {
         let viewModel = subject()
         viewModel.fetch()
 
-        var slate: Slate!
+        var slate: CDSlate!
         var rec: CDRecommendation!
 
         let snapshotSent = expectation(description: "snapshotSent")
@@ -332,7 +332,7 @@ class HomeViewModelTests: XCTestCase {
             space.buildRecommendation(item: item),
             space.buildRecommendation(remoteID: "recommendation-2", item: space.buildItem(remoteID: "item-2", givenURL: "https://example.com/items/item-2"))
         ]
-        let slates: [Slate] = [space.buildSlate(recommendations: recommendations)]
+        let slates: [CDSlate] = [space.buildSlate(recommendations: recommendations)]
         try space.createSlateLineup(
             remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: slates
@@ -378,7 +378,7 @@ class HomeViewModelTests: XCTestCase {
             space.buildRecommendation(item: item),
             space.buildRecommendation(remoteID: "recommendation-2", item: space.buildItem(remoteID: "item-2", givenURL: "https://example.com/items/item-2"))
         ]
-        let slates: [Slate] = [space.buildSlate(recommendations: recommendations)]
+        let slates: [CDSlate] = [space.buildSlate(recommendations: recommendations)]
         try space.createSlateLineup(
             remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: slates
@@ -424,7 +424,7 @@ class HomeViewModelTests: XCTestCase {
             space.buildRecommendation(remoteID: "recommendation-2", item: space.buildItem(remoteID: "item-2", givenURL: "https://example.com/items/item-2"))
         ]
 
-        let slates: [Slate] = [space.buildSlate(recommendations: recommendations)]
+        let slates: [CDSlate] = [space.buildSlate(recommendations: recommendations)]
         try space.createSlateLineup(
             remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: slates

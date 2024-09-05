@@ -62,7 +62,7 @@ extension APISlateServiceTests {
         let lineup = lineups.first!
         XCTAssertEqual(lineup.remoteID, "slate-lineup-1")
 
-        let slates = lineup.slates?.compactMap { $0 as? Slate } ?? []
+        let slates = lineup.slates?.compactMap { $0 as? CDSlate } ?? []
         XCTAssertEqual(slates.count, 2)
 
         do {
