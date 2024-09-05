@@ -5,7 +5,7 @@
 import CoreData
 import SharedPocketKit
 
-public class PersistentContainer: NSPersistentContainer {
+public class PersistentContainer: NSPersistentContainer, @unchecked Sendable {
     public lazy var rootSpace = { Space(backgroundContext: backgroundContext, viewContext: modifiedViewContext) }()
 
     private lazy var backgroundContext = {
@@ -15,7 +15,6 @@ public class PersistentContainer: NSPersistentContainer {
     }()
 
     private(set) var spotlightIndexer: CoreDataSpotlightDelegate?
-    private(set) var storeDescription: NSPersistentStoreDescription?
 
     private lazy var modifiedViewContext: NSManagedObjectContext = {
         viewContext.automaticallyMergesChangesFromParent = true
@@ -34,8 +33,8 @@ public class PersistentContainer: NSPersistentContainer {
     public init(storage: Storage = .shared, groupID: String) {
         self.storage = storage
 
-        ValueTransformer.setValueTransformer(ArticleTransformer(), forName: .articleTransfomer)
-        ValueTransformer.setValueTransformer(SyncTaskTransformer(), forName: .syncTaskTransformer)
+        ArticleTransformer.register()
+        SyncTaskTransformer.register()
 
         let url = Bundle.module.url(forResource: "PocketModel", withExtension: "momd")!
         let model = NSManagedObjectModel(contentsOf: url)!
@@ -43,28 +42,23 @@ public class PersistentContainer: NSPersistentContainer {
 
         switch storage {
         case .inMemory:
-            storeDescription = NSPersistentStoreDescription(url: URL(fileURLWithPath: "/dev/null"))
+            persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
+            persistentStoreDescriptions.first!.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
         case .shared:
-            let sharedContainerURL = FileManager.default
-                .containerURL(forSecurityApplicationGroupIdentifier: groupID)!
-                .appendingPathComponent("PocketModel.sqlite")
+            guard let appGroupContainer = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: groupID) else {
+                fatalError("Shared file container could not be created.")
+            }
 
-            Log.debug("Store URL: \(sharedContainerURL)")
-            storeDescription = NSPersistentStoreDescription(url: sharedContainerURL)
+            let url = appGroupContainer.appendingPathComponent("PocketModel.sqlite")
+
+            Log.debug("Store URL: \(url)")
+            if let description = persistentStoreDescriptions.first {
+                description.url = url
+                description.setOption(true as NSNumber, forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)
+                description.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
+                description.setOption(true as NSNumber, forKey: NSMigratePersistentStoresAutomaticallyOption)
+            }
         }
-
-        guard let storeDescription else {
-            fatalError("no store description")
-        }
-
-        persistentStoreDescriptions = [
-            storeDescription
-        ]
-
-        storeDescription.type = NSSQLiteStoreType
-        storeDescription.setOption(true as NSNumber, forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)
-        storeDescription.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
-        storeDescription.setOption(true as NSNumber, forKey: NSMigratePersistentStoresAutomaticallyOption)
 
         loadPersistentStores { [weak self] storeDescription, error in
             guard let self else { return }
@@ -80,7 +74,7 @@ public class PersistentContainer: NSPersistentContainer {
             }
         }
 
-        spotlightIndexer = CoreDataSpotlightDelegate(forStoreWith: storeDescription, coordinator: self.persistentStoreCoordinator)
+        spotlightIndexer = CoreDataSpotlightDelegate(forStoreWith: persistentStoreDescriptions.first!, coordinator: self.persistentStoreCoordinator)
         spotlightIndexer?.startSpotlightIndexing()
     }
 }
@@ -101,3 +95,4 @@ private extension PersistentContainer {
         }
     }
 }
+

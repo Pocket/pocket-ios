@@ -8,7 +8,7 @@ import SwiftData
 
 @Model
 public class SavedItem {
-    // ios 18 only - #Unique<SavedItem>([\.url])
+    // #Unique<SavedItem>([\.url])
     var archivedAt: Date?
     var createdAt: Date
     var cursor: String?
@@ -30,7 +30,8 @@ public class SavedItem {
         self.url = url
     }
 
-#warning("The property \"ordered\" on SavedItem:highlights is unsupported in SwiftData.")
-#warning("The property \"spotlight\" on SavedItem:item is unsupported in SwiftData.")
-#warning("The property \"ordered\" on SavedItem:tags is unsupported in SwiftData.")
+// #warning("The property \"ordered\" on SavedItem:highlights is unsupported in SwiftData.")
+// #warning("The property \"spotlight\" on SavedItem:item is unsupported in SwiftData.")
+// #warning("The property \"ordered\" on SavedItem:tags is unsupported in SwiftData.")
+
 }

@@ -23,5 +23,5 @@ public class Slate {
         self.requestID = requestID
     }
 
-#warning("The property \"ordered\" on Slate:recommendations is unsupported in SwiftData.")
+// #warning("The property \"ordered\" on Slate:recommendations is unsupported in SwiftData.")
 }
