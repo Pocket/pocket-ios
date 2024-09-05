@@ -59,7 +59,7 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate, UISea
         }
     }
 
-    var isFromSaves: Bool
+    private var isFromSaves: Bool
 
     private let viewControllers: [SelectableViewController]
     private var searchViewModel: DefaultSearchViewModel
@@ -181,15 +181,23 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate, UISea
         navigationItem.preferredSearchBarPlacement = .stacked
         navigationItem.searchController?.showsSearchResultsController = true
 
-        searchViewModel.$searchText.dropFirst().sink { searchText in
-            self.updateSearchBar(searchText: searchText)
-        }.store(in: &subscriptions)
+        searchViewModel
+            .$searchText
+            .receive(on: DispatchQueue.main)
+            .sink { searchText in
+                self.updateSearchBar(searchText: searchText)
+            }
+            .store(in: &subscriptions)
     }
 
     func updateSearchBar(searchText: String) {
-        let searchBar = navigationItem.searchController?.searchBar
-        searchBar?.text = searchText
-        searchBar?.resignFirstResponder()
+        guard let searchBar = navigationItem.searchController?.searchBar,
+              !searchText.isEmpty else {
+            return
+        }
+        searchBar.becomeFirstResponder()
+        searchBar.text = searchText
+        searchBar.resignFirstResponder()
     }
 
     func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {

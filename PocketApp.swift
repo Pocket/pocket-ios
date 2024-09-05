@@ -17,6 +17,9 @@ struct PocketApp: App {
     var body: some Scene {
         WindowGroup {
             RootView(model: rootViewModel)
+                .onAppear {
+                    PocketShortcuts.updateAppShortcutParameters()
+                }
         }.onChange(of: scenePhase) { newValue in
             rootViewModel.scenePhaseDidChange(newValue)
         }

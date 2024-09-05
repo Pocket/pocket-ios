@@ -35,10 +35,13 @@ protocol SearchResultActionDelegate: AnyObject {
 }
 
 /// View model that holds business logic for the SearchView
-class DefaultSearchViewModel: ObservableObject {
+@MainActor
+public class DefaultSearchViewModel: ObservableObject {
     static let recentSearchesKey = UserDefaults.Key.recentSearches
-
-    private var subscriptions: [AnyCancellable] = []
+    // search-specific subscriptions, get cleared at each search
+    private var searchSubscriptions = Set<AnyCancellable>()
+    // all other subscriptions
+    private var subscriptions = Set<AnyCancellable>()
     private let networkPathMonitor: NetworkPathMonitor
     private var lastPathStatus: NWPath.Status?
     private let user: User
@@ -55,8 +58,6 @@ class DefaultSearchViewModel: ObservableObject {
     private var archiveOnlineSearch: OnlineSearch
     private var allOnlineSearch: OnlineSearch
     private var premiumOnlineSearch: PremiumOnlineSearch
-    // separated from the subscriptions array as that one gets cleared between searches
-    private var userStatusListener: AnyCancellable?
 
     private let tracker: Tracker
     private let itemsController: SavedItemsController
@@ -71,7 +72,7 @@ class DefaultSearchViewModel: ObservableObject {
     }
 
     private(set) var scopeTitles: [String] = SearchScope.defaultScopes.map { $0.rawValue }
-    var selectedScope: SearchScope = .saves
+    private var selectedScope: SearchScope = .saves
 
     @Published var showBanner: Bool = false
     @Published var isPresentingPremiumUpgrade = false
@@ -79,11 +80,8 @@ class DefaultSearchViewModel: ObservableObject {
     @Published var isPresentingReportIssue = false
     @Published var searchState: SearchViewState?
     @Published var selectedItem: SelectedItem?
-    @Published var searchText = "" {
-        didSet {
-            updateSearchResults(with: searchText)
-        }
-    }
+    @Published var searchText = ""
+    @Published public var searchIntentCriteria: String?
 
     /// Create the banner details to populate the view
     var bannerData: BannerModifier.BannerData {
@@ -163,9 +161,13 @@ class DefaultSearchViewModel: ObservableObject {
 
         networkPathMonitor.start(queue: .global())
         observeNetworkChanges()
+        setupPublishersSubscriptions()
+    }
+
+    private func setupPublishersSubscriptions() {
         // Listen for user status changes and update the UI accordingly.
         // Drop the first occurrence that happens when user is initialized.
-        userStatusListener = user
+        user
             .statusPublisher
             .dropFirst()
             .receive(on: DispatchQueue.main)
@@ -175,6 +177,25 @@ class DefaultSearchViewModel: ObservableObject {
                 }
                 self?.searchState = self?.defaultState
             }
+            .store(in: &subscriptions)
+        // listen for search intent criteria, and trigger the action
+        // only when the app becomes active. This ensures the search
+        // controller can become active and show the search results.
+        Publishers
+            .Zip(
+                $searchIntentCriteria,
+                NotificationCenter.default.publisher(
+                    for: UIApplication.didBecomeActiveNotification
+                )
+            )
+            .sink { [weak self] criteria, _ in
+                guard let self else { return }
+                if let criteria, !criteria.isEmpty {
+                    searchText = criteria
+                    tracker.track(event: Events.PocketIntents.searchSavesIntentCalled(criteria))
+                }
+            }
+            .store(in: &subscriptions)
     }
 
     /// Updates the scope titles based on whether the user is enrolled in the premium search scopes experiment.
@@ -202,7 +223,7 @@ class DefaultSearchViewModel: ObservableObject {
 
     /// Handles logic for when a user enters a search, such as showing Get Premium for user in All Items, checking if user is Offline or submitting a search
     /// - Parameter searchTerm: the term the user enters in search bar
-    func updateSearchResults(with searchTerm: String) {
+    public func updateSearchResults(with searchTerm: String) {
         let shouldShowUpsell = !isPremium && selectedScope == .all
 
         guard !shouldShowUpsell else {
@@ -234,7 +255,7 @@ class DefaultSearchViewModel: ObservableObject {
         currentSearchTerm = nil
 
         showBanner = false
-        subscriptions = []
+        searchSubscriptions.removeAll()
 
         savesLocalSearch = LocalSavesSearch(source: source)
         savesOnlineSearch = OnlineSearch(source: source, scope: .saves)
@@ -246,7 +267,7 @@ class DefaultSearchViewModel: ObservableObject {
     /// Resets the search objects if it does not have a cache before each search
     private func resetSearch(with term: String) {
         showBanner = false
-        subscriptions = []
+        searchSubscriptions.removeAll()
 
         if !savesOnlineSearch.hasCache(with: term) {
             savesOnlineSearch = OnlineSearch(source: source, scope: .saves)
@@ -350,7 +371,7 @@ class DefaultSearchViewModel: ObservableObject {
                     self.showBanner = self.isPremium
                 }
             }
-            .store(in: &subscriptions)
+            .store(in: &searchSubscriptions)
     }
 
     /// Submit online search and update `searchState` with proper view
@@ -377,7 +398,7 @@ class DefaultSearchViewModel: ObservableObject {
                     self.searchState = .emptyState(OfflineEmptyState(type: scope))
                 }
             }
-            .store(in: &subscriptions)
+            .store(in: &searchSubscriptions)
     }
 
     /// Submit premium experiment search and update `searchState` with proper view
@@ -401,7 +422,7 @@ class DefaultSearchViewModel: ObservableObject {
                     self.searchState = .emptyState(OfflineEmptyState(type: scope))
                 }
             }
-            .store(in: &subscriptions)
+            .store(in: &searchSubscriptions)
     }
 
     /// Updates recent searches after user submits a search up to 5 terms
@@ -680,7 +701,7 @@ extension DefaultSearchViewModel {
 }
 
 extension DefaultSearchViewModel: SavedItemsControllerDelegate {
-    func controller(
+    public func controller(
         _ controller: SavedItemsController,
         didChange savedItem: SavedItem,
         at indexPath: IndexPath?,
@@ -690,7 +711,7 @@ extension DefaultSearchViewModel: SavedItemsControllerDelegate {
         // no-op
     }
 
-    func controller(_ controller: SavedItemsController, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
+    public func controller(_ controller: SavedItemsController, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
         guard case .searchResults(let items) = searchState, let savedItems = items.map({ $0.item }) as? [SavedItem] else {
             return
         }

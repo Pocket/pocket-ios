@@ -115,6 +115,8 @@
 		AA41DD8D2BD04DD6003CEDBF /* TopicRecommendationsWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA41DD792BD04D09003CEDBF /* TopicRecommendationsWidget.swift */; };
 		AA41DD8F2BD04EC9003CEDBF /* Textile in Frameworks */ = {isa = PBXBuildFile; productRef = AA41DD8E2BD04EC9003CEDBF /* Textile */; };
 		AA41DD912BD04EF0003CEDBF /* Sync in Frameworks */ = {isa = PBXBuildFile; productRef = AA41DD902BD04EF0003CEDBF /* Sync */; };
+		AA561B912C740F10006DF948 /* PocketShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA561B8E2C740F10006DF948 /* PocketShortcuts.swift */; };
+		AA561B922C740F10006DF948 /* SearchSavesIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA561B8F2C740F10006DF948 /* SearchSavesIntent.swift */; };
 		AA69A28429B7FC6E00BBA644 /* SearchGetPremiumEmptyViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA69A28329B7FC6E00BBA644 /* SearchGetPremiumEmptyViewElement.swift */; };
 		AA7D6A2B2995F0A20094FD18 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA7D6A2A2995F0A20094FD18 /* StoreKit.framework */; };
 		AA8BADE42BC88A5D004F1959 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = AA8BADE32BC88A5D004F1959 /* PrivacyInfo.xcprivacy */; };
@@ -123,6 +125,8 @@
 		AA8BADEA2BC88C4B004F1959 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = AA8BADE92BC88C4B004F1959 /* PrivacyInfo.xcprivacy */; };
 		AA8BADEC2BC88C64004F1959 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = AA8BADEB2BC88C64004F1959 /* PrivacyInfo.xcprivacy */; };
 		AA9DB97429B6E6480046AEF6 /* Test_Subscriptions.storekit in Resources */ = {isa = PBXBuildFile; fileRef = AA909ACC299F4D5400F90FA7 /* Test_Subscriptions.storekit */; };
+		AA9FE0802C7FB3590081B7A3 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = AA9FE07F2C7FB3590081B7A3 /* Localizable.xcstrings */; };
+		AAA2C2E32C80D62200F044F8 /* AppShortcuts.strings in Resources */ = {isa = PBXBuildFile; fileRef = AAA2C2E12C80D62200F044F8 /* AppShortcuts.strings */; };
 		AAB4F3A62BBCA6140047A003 /* BrazeNotificationService in Frameworks */ = {isa = PBXBuildFile; productRef = AAB4F3A52BBCA6140047A003 /* BrazeNotificationService */; };
 		AAB4F3A82BBCA6140047A003 /* BrazePushStory in Frameworks */ = {isa = PBXBuildFile; productRef = AAB4F3A72BBCA6140047A003 /* BrazePushStory */; };
 		AADE043C2C64380300F9BD9F /* AnonymousModeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AADE043B2C64380300F9BD9F /* AnonymousModeTests.swift */; };
@@ -338,6 +342,8 @@
 		AA41DD772BD04D09003CEDBF /* RecentSavesWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentSavesWidget.swift; sourceTree = "<group>"; };
 		AA41DD782BD04D09003CEDBF /* RecommendationsWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationsWidget.swift; sourceTree = "<group>"; };
 		AA41DD792BD04D09003CEDBF /* TopicRecommendationsWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicRecommendationsWidget.swift; sourceTree = "<group>"; };
+		AA561B8E2C740F10006DF948 /* PocketShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PocketShortcuts.swift; sourceTree = "<group>"; };
+		AA561B8F2C740F10006DF948 /* SearchSavesIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchSavesIntent.swift; sourceTree = "<group>"; };
 		AA69A28329B7FC6E00BBA644 /* SearchGetPremiumEmptyViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchGetPremiumEmptyViewElement.swift; sourceTree = "<group>"; };
 		AA7D6A2A2995F0A20094FD18 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.2.sdk/System/Library/Frameworks/StoreKit.framework; sourceTree = DEVELOPER_DIR; };
 		AA8BADE32BC88A5D004F1959 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
@@ -347,6 +353,23 @@
 		AA8BADEB2BC88C64004F1959 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		AA909AC8299EFD3A00F90FA7 /* secrets_test.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = secrets_test.xcconfig; sourceTree = "<group>"; };
 		AA909ACC299F4D5400F90FA7 /* Test_Subscriptions.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Test_Subscriptions.storekit; sourceTree = "<group>"; };
+		AA9FE07F2C7FB3590081B7A3 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		AAA2C2E22C80D62200F044F8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/AppShortcuts.strings; sourceTree = "<group>"; };
+		AAA2C2F32C80D98900F044F8 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/AppShortcuts.strings"; sourceTree = "<group>"; };
+		AAA2C2F42C80D98E00F044F8 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/AppShortcuts.strings"; sourceTree = "<group>"; };
+		AAA2C2F52C80D99100F044F8 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/AppShortcuts.strings; sourceTree = "<group>"; };
+		AAA2C2F62C80D99300F044F8 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/AppShortcuts.strings; sourceTree = "<group>"; };
+		AAA2C2F72C80D99600F044F8 /* fr-CA */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fr-CA"; path = "fr-CA.lproj/AppShortcuts.strings"; sourceTree = "<group>"; };
+		AAA2C2F82C80D99900F044F8 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/AppShortcuts.strings; sourceTree = "<group>"; };
+		AAA2C2F92C80D99C00F044F8 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/AppShortcuts.strings; sourceTree = "<group>"; };
+		AAA2C2FA2C80D99F00F044F8 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/AppShortcuts.strings; sourceTree = "<group>"; };
+		AAA2C2FB2C80D9A200F044F8 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/AppShortcuts.strings; sourceTree = "<group>"; };
+		AAA2C2FC2C80D9A500F044F8 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/AppShortcuts.strings; sourceTree = "<group>"; };
+		AAA2C2FD2C80D9A900F044F8 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/AppShortcuts.strings"; sourceTree = "<group>"; };
+		AAA2C2FE2C80D9AC00F044F8 /* pt-PT */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-PT"; path = "pt-PT.lproj/AppShortcuts.strings"; sourceTree = "<group>"; };
+		AAA2C2FF2C80D9B000F044F8 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/AppShortcuts.strings; sourceTree = "<group>"; };
+		AAA2C3002C80D9B400F044F8 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/AppShortcuts.strings; sourceTree = "<group>"; };
+		AAA2C3012C80D9B700F044F8 /* es-419 */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-419"; path = "es-419.lproj/AppShortcuts.strings"; sourceTree = "<group>"; };
 		AAC9F5AA2B0BDBF800FD614A /* UITests-4.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = "UITests-4.xctestplan"; sourceTree = "<group>"; };
 		AADE043B2C64380300F9BD9F /* AnonymousModeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnonymousModeTests.swift; sourceTree = "<group>"; };
 		AAE33A7F2A0ED5A600214652 /* ItemWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ItemWidgets.entitlements; sourceTree = "<group>"; };
@@ -481,6 +504,7 @@
 				650D169B28FFA54B00EE9339 /* Dangerfile.swift */,
 				650D169A28FFA42800EE9339 /* Package.swift */,
 				650D169728FFA40B00EE9339 /* Sources */,
+				AA561B902C740F10006DF948 /* Pocket Intents */,
 				9367E9D62A05AF070052DF47 /* Launch Screen */,
 				16973354263CBB290003DE2A /* Config */,
 				166A81C32637406C0015AA1D /* Tests iOS */,
@@ -750,6 +774,17 @@
 			path = ItemWidgetsKit;
 			sourceTree = "<group>";
 		};
+		AA561B902C740F10006DF948 /* Pocket Intents */ = {
+			isa = PBXGroup;
+			children = (
+				AA561B8E2C740F10006DF948 /* PocketShortcuts.swift */,
+				AA561B8F2C740F10006DF948 /* SearchSavesIntent.swift */,
+				AA9FE07F2C7FB3590081B7A3 /* Localizable.xcstrings */,
+				AAA2C2E12C80D62200F044F8 /* AppShortcuts.strings */,
+			);
+			path = "Pocket Intents";
+			sourceTree = "<group>";
+		};
 		F204A76127E22EC50010E155 /* SaveToPocket */ = {
 			isa = PBXGroup;
 			children = (
@@ -945,7 +980,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastSwiftUpdateCheck = 1500;
+				LastSwiftUpdateCheck = 1610;
 				LastUpgradeCheck = 1530;
 				TargetAttributes = {
 					166A81AF2637406C0015AA1D = {
@@ -1026,7 +1061,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				65D3105229CEACF100952D64 /* PKTListenResources.bundle in Resources */,
+				AAA2C2E32C80D62200F044F8 /* AppShortcuts.strings in Resources */,
 				16E32B0226851AEB000CC36D /* Assets.xcassets in Resources */,
+				AA9FE0802C7FB3590081B7A3 /* Localizable.xcstrings in Resources */,
 				938D45322A05B87D00E68B0B /* Launch Screen.storyboard in Resources */,
 				AA8BADE42BC88A5D004F1959 /* PrivacyInfo.xcprivacy in Resources */,
 				9367E9E82A05B6A10052DF47 /* Launch Screen.xcassets in Resources */,
@@ -1133,6 +1170,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				16BA7D6326851513009A17C1 /* PocketApp.swift in Sources */,
+				AA561B912C740F10006DF948 /* PocketShortcuts.swift in Sources */,
+				AA561B922C740F10006DF948 /* SearchSavesIntent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1304,6 +1343,32 @@
 		};
 /* End PBXTargetDependency section */
 
+/* Begin PBXVariantGroup section */
+		AAA2C2E12C80D62200F044F8 /* AppShortcuts.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AAA2C2E22C80D62200F044F8 /* en */,
+				AAA2C2F32C80D98900F044F8 /* zh-Hans */,
+				AAA2C2F42C80D98E00F044F8 /* zh-Hant */,
+				AAA2C2F52C80D99100F044F8 /* nl */,
+				AAA2C2F62C80D99300F044F8 /* fr */,
+				AAA2C2F72C80D99600F044F8 /* fr-CA */,
+				AAA2C2F82C80D99900F044F8 /* de */,
+				AAA2C2F92C80D99C00F044F8 /* it */,
+				AAA2C2FA2C80D99F00F044F8 /* ja */,
+				AAA2C2FB2C80D9A200F044F8 /* ko */,
+				AAA2C2FC2C80D9A500F044F8 /* pl */,
+				AAA2C2FD2C80D9A900F044F8 /* pt-BR */,
+				AAA2C2FE2C80D9AC00F044F8 /* pt-PT */,
+				AAA2C2FF2C80D9B000F044F8 /* ru */,
+				AAA2C3002C80D9B400F044F8 /* es */,
+				AAA2C3012C80D9B700F044F8 /* es-419 */,
+			);
+			name = AppShortcuts.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
 		166A81D82637406C0015AA1D /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -1362,12 +1427,13 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MARKETING_VERSION = 8.17.0;
+				MARKETING_VERSION = 8.18.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				POCKET_API_BASE_URL = "https://api.getpocket.com/graphql";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -1423,11 +1489,12 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MARKETING_VERSION = 8.17.0;
+				MARKETING_VERSION = 8.18.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				POCKET_API_BASE_URL = "https://api.getpocket.com/graphql";
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 			};
 			name = Release;
@@ -1453,7 +1520,7 @@
 					"@executable_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.17.0;
+				MARKETING_VERSION = 8.18.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro;
 				PRODUCT_NAME = Pocket;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1485,7 +1552,7 @@
 					"@executable_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.17.0;
+				MARKETING_VERSION = 8.18.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro;
 				PRODUCT_NAME = Pocket;
 				PROVISIONING_PROFILE_SPECIFIER = "Bitrise com.ideashower.ReadItLaterPro";
@@ -1511,7 +1578,7 @@
 					"@loader_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.17.0;
+				MARKETING_VERSION = 8.18.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ideashower.ReadItLaterProAlphaNeue.Tests-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1537,7 +1604,7 @@
 					"@loader_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.17.0;
+				MARKETING_VERSION = 8.18.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ideashower.ReadItLaterProAlphaNeue.Tests-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1570,7 +1637,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.17.0;
+				MARKETING_VERSION = 8.18.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.PushNotificationServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1603,7 +1670,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.17.0;
+				MARKETING_VERSION = 8.18.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.PushNotificationServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "Bitrise com.ideashower.ReadItLaterPro.PushNotifica";
@@ -1643,7 +1710,7 @@
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.17.0;
+				MARKETING_VERSION = 8.18.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.iMessageExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -1683,7 +1750,7 @@
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.17.0;
+				MARKETING_VERSION = 8.18.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.iMessageExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -1724,7 +1791,7 @@
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.17.0;
+				MARKETING_VERSION = 8.18.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.iMessageExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1758,7 +1825,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.17.0;
+				MARKETING_VERSION = 8.18.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.PushNotificationStoryExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1790,7 +1857,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.17.0;
+				MARKETING_VERSION = 8.18.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.PushNotificationStoryExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "Bitrise com.ideashower.ReadItLaterPro.PushStory";
@@ -1860,12 +1927,13 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MARKETING_VERSION = 8.17.0;
+				MARKETING_VERSION = 8.18.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				POCKET_API_BASE_URL = "https://api.getpocket.com/graphql";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug_Tests;
@@ -1891,7 +1959,7 @@
 					"@executable_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.17.0;
+				MARKETING_VERSION = 8.18.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro;
 				PRODUCT_NAME = Pocket;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1917,7 +1985,7 @@
 					"@loader_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.17.0;
+				MARKETING_VERSION = 8.18.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ideashower.ReadItLaterProAlphaNeue.Tests-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1949,7 +2017,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.17.0;
+				MARKETING_VERSION = 8.18.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.AddToPocketExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1983,7 +2051,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.17.0;
+				MARKETING_VERSION = 8.18.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.PushNotificationServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2015,7 +2083,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.17.0;
+				MARKETING_VERSION = 8.18.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.PushNotificationStoryExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2049,7 +2117,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.17.0;
+				MARKETING_VERSION = 8.18.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ideashower.ReadItLaterPro.Widget-Extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -2082,7 +2150,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.17.0;
+				MARKETING_VERSION = 8.18.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ideashower.ReadItLaterPro.Widget-Extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -2115,7 +2183,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.17.0;
+				MARKETING_VERSION = 8.18.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ideashower.ReadItLaterPro.Widget-Extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "Bitrise com.ideashower.ReadItLaterPro.Widget-Exten";
@@ -2149,7 +2217,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.17.0;
+				MARKETING_VERSION = 8.18.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.AddToPocketExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2183,7 +2251,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 8.17.0;
+				MARKETING_VERSION = 8.18.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.AddToPocketExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "Bitrise com.ideashower.ReadItLaterPro.AddToPocketE";
