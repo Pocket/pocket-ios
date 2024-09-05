@@ -102,7 +102,7 @@ public protocol Source {
 
     func save(url: String)
 
-    func deleteHighlight(highlight: Highlight)
+    func deleteHighlight(highlight: CDHighlight)
 
     func addHighlight(itemIID: NSManagedObjectID, patch: String, quote: String)
 

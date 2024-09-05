@@ -52,7 +52,7 @@
         <attribute name="payloadValue" optional="YES" attributeType="String"/>
         <attribute name="variant" optional="YES" attributeType="String"/>
     </entity>
-    <entity name="Highlight" representedClassName="Highlight" syncable="YES">
+    <entity name="Highlight" representedClassName="CDHighlight" syncable="YES">
         <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="patch" attributeType="String"/>
         <attribute name="quote" attributeType="String"/>

@@ -204,13 +204,13 @@ extension Space {
         quote: String,
         version: Int16,
         context: NSManagedObjectContext? = nil
-    ) -> Highlight {
+    ) -> CDHighlight {
         let context = context ?? backgroundContext
         let fetchRequest = Requests.fetchHighlight(by: ID)
         if let fetchedHighlight = (try? fetch(fetchRequest, context: context).first) {
             return fetchedHighlight
         }
-        let newHighlight = Highlight(
+        let newHighlight = CDHighlight(
             context: context,
             remoteID: ID,
             createdAt: createdAt,
