@@ -6,10 +6,10 @@
 import Foundation
 import CoreData
 
-extension SavedItemUpdatedNotification {
+extension CDSavedItemUpdatedNotification {
     @nonobjc
-    public class func fetchRequest() -> NSFetchRequest<SavedItemUpdatedNotification> {
-        return NSFetchRequest<SavedItemUpdatedNotification>(entityName: "SavedItemUpdatedNotification")
+    public class func fetchRequest() -> NSFetchRequest<CDSavedItemUpdatedNotification> {
+        return NSFetchRequest<CDSavedItemUpdatedNotification>(entityName: "SavedItemUpdatedNotification")
     }
 
     @NSManaged public var savedItem: CDSavedItem?

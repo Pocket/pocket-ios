@@ -6,6 +6,6 @@
 import Foundation
 import CoreData
 
-@objc(SavedItemUpdatedNotification)
-public class SavedItemUpdatedNotification: NSManagedObject {
+@objc(CDSavedItemUpdatedNotification)
+public class CDSavedItemUpdatedNotification: NSManagedObject {
 }
