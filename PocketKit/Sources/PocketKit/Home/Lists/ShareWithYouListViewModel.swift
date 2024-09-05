@@ -20,7 +20,7 @@ class SharedWithYouListViewModel {
     @Published var presentedWebReaderURL: URL?
     @Published var sharedActivity: PocketActivity?
 
-    private let list: [SharedWithYouItem]
+    private let list: [CDSharedWithYouItem]
     private let source: Source
     private let tracker: Tracker
     private let user: User
@@ -33,7 +33,7 @@ class SharedWithYouListViewModel {
     private let accessService: PocketAccessService
 
     init(
-        list: [SharedWithYouItem],
+        list: [CDSharedWithYouItem],
         source: Source,
         tracker: Tracker,
         user: User,
@@ -85,7 +85,7 @@ class SharedWithYouListViewModel {
         case .loading:
             return
         case .item(let objectID):
-            guard let sharedWithYouItem = source.viewObject(id: objectID) as? SharedWithYouItem else {
+            guard let sharedWithYouItem = source.viewObject(id: objectID) as? CDSharedWithYouItem else {
                 return
             }
 
@@ -106,7 +106,7 @@ extension SharedWithYouListViewModel {
     }
 
     private func selectItem(with objectID: NSManagedObjectID, at indexPath: IndexPath) {
-        guard let sharedWithYouItem = source.viewObject(id: objectID) as? SharedWithYouItem else {
+        guard let sharedWithYouItem = source.viewObject(id: objectID) as? CDSharedWithYouItem else {
             return
         }
 
@@ -161,7 +161,7 @@ extension SharedWithYouListViewModel {
         for objectID: NSManagedObjectID,
         at indexPath: IndexPath? = nil
     ) -> HomeItemCellViewModel? {
-        guard let sharedWithYouItem = source.viewObject(id: objectID) as? SharedWithYouItem else {
+        guard let sharedWithYouItem = source.viewObject(id: objectID) as? CDSharedWithYouItem else {
             return nil
         }
 
@@ -263,7 +263,7 @@ private extension SharedWithYouListViewModel {
 extension SharedWithYouListViewModel {
     enum Section: Hashable {
         case loading
-        case list([SharedWithYouItem])
+        case list([CDSharedWithYouItem])
     }
 
     enum Cell: Hashable {

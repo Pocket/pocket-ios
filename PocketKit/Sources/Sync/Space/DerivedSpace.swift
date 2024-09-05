@@ -152,8 +152,8 @@ extension DerivedSpace: TagSpace {
 extension DerivedSpace: SharedWithYouSpace {
     func cleanupSharedWithYouItems(validUrls: [String]) throws {
         try context.performAndWait {
-            let fetchRequest = SharedWithYouItem.fetchRequest()
-            fetchRequest.predicate = NSPredicate(format: "NOT %K IN %@", #keyPath(SharedWithYouItem.url), validUrls)
+            let fetchRequest = CDSharedWithYouItem.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "NOT %K IN %@", #keyPath(CDSharedWithYouItem.url), validUrls)
 
             let itemsToDelete = try context.fetch(fetchRequest)
 
@@ -171,7 +171,7 @@ extension DerivedSpace: SharedWithYouSpace {
             item.update(from: remote, with: space)
 
             let sharedWithYouItem = try space.fetchSharedWithYouItem(with: url, in: context) ??
-            SharedWithYouItem(context: context, url: url, sortOrder: Int32(sortOrder), item: item)
+            CDSharedWithYouItem(context: context, url: url, sortOrder: Int32(sortOrder), item: item)
             sharedWithYouItem.sortOrder = Int32(sortOrder)
         }
         try saveContexts()

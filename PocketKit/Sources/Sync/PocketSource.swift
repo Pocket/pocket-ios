@@ -1320,7 +1320,7 @@ extension PocketSource {
         enqueue(operation: operation, task: .fetchSharedWithYouItems(urls: urls), queue: fetchSharedWithYouQueue)
     }
 
-    public func makeSharedWithYouController() -> RichFetchedResultsController<SharedWithYouItem> {
+    public func makeSharedWithYouController() -> RichFetchedResultsController<CDSharedWithYouItem> {
         space.makeSharedWithYouController()
     }
 

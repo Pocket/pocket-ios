@@ -296,7 +296,7 @@ extension MockSource {
 // MARK: Shared With You Controller
 extension MockSource {
     private static let makeSharedWithYouController = "makeSharedWithYouController"
-    typealias MakeSharedWithYouControllerImpl = () -> RichFetchedResultsController<SharedWithYouItem>
+    typealias MakeSharedWithYouControllerImpl = () -> RichFetchedResultsController<CDSharedWithYouItem>
 
     struct MakeSharedWithYouControllerCall {}
 
@@ -304,7 +304,7 @@ extension MockSource {
         implementations[Self.makeSharedWithYouController] = impl
     }
 
-    func makeSharedWithYouController() -> RichFetchedResultsController<SharedWithYouItem> {
+    func makeSharedWithYouController() -> RichFetchedResultsController<CDSharedWithYouItem> {
         guard let impl = implementations[Self.makeSharedWithYouController] as? MakeSharedWithYouControllerImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
