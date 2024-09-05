@@ -51,8 +51,8 @@ extension Space {
     ) -> CDSavedItem {
         backgroundContext.performAndWait {
             let savedItem: CDSavedItem = CDSavedItem(context: backgroundContext, url: url, remoteID: remoteID)
-            let tags: [Tag]? = tags?.map { tag -> Tag in
-                let newTag: Tag = Tag(context: backgroundContext)
+            let tags: [CDTag]? = tags?.map { tag -> CDTag in
+                let newTag: CDTag = CDTag(context: backgroundContext)
                 newTag.name = tag
                 newTag.remoteID = tag.uppercased()
                 return newTag

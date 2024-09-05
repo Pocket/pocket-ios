@@ -55,7 +55,7 @@ extension CDSavedItem: ItemsListItem {
     }
 
     var tagNames: [String]? {
-        tags?.compactMap { $0 as? Tag }.compactMap { $0.name }.sorted()
+        tags?.compactMap { $0 as? CDTag }.compactMap { $0.name }.sorted()
     }
 
     var cursor: String? {

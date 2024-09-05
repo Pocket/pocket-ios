@@ -16,8 +16,8 @@ class SaveToAddTagsViewModel: AddTagsViewModel {
     private let userDefaults: UserDefaults
     private let user: User
     private let recentTagsFactory: RecentTagsProvider
-    private let retrieveAction: ([String]) -> [Tag]?
-    private let filterAction: (String, [String]) -> [Tag]?
+    private let retrieveAction: ([String]) -> [CDTag]?
+    private let filterAction: (String, [String]) -> [CDTag]?
     private let saveAction: ([String]) -> Void
     private var userInputListener: AnyCancellable?
     var upsellView: AnyView { return AnyView(erasing: EmptyView()) }
@@ -31,7 +31,7 @@ class SaveToAddTagsViewModel: AddTagsViewModel {
     private var originalTagNames: [String]
 
     /// Fetches all tags associated with a user
-    private var fetchAllTags: [Tag] {
+    private var fetchAllTags: [CDTag] {
         self.retrieveAction([]) ?? []
     }
 
@@ -41,7 +41,7 @@ class SaveToAddTagsViewModel: AddTagsViewModel {
 
     @Published var otherTags: [TagType] = []
 
-    init(item: CDSavedItem?, tracker: Tracker, userDefaults: UserDefaults, user: User, retrieveAction: @escaping ([String]) -> [Tag]?, filterAction: @escaping (String, [String]) -> [Tag]?, saveAction: @escaping ([String]) -> Void) {
+    init(item: CDSavedItem?, tracker: Tracker, userDefaults: UserDefaults, user: User, retrieveAction: @escaping ([String]) -> [CDTag]?, filterAction: @escaping (String, [String]) -> [CDTag]?, saveAction: @escaping ([String]) -> Void) {
         self.item = item
         self.tracker = tracker
         self.retrieveAction = retrieveAction
@@ -51,7 +51,7 @@ class SaveToAddTagsViewModel: AddTagsViewModel {
         self.user = user
         self.recentTagsFactory = RecentTagsProvider(userDefaults: userDefaults, key: UserDefaults.Key.recentTags)
 
-        originalTagNames = item?.tags?.compactMap { ($0 as? Tag)?.name } ?? []
+        originalTagNames = item?.tags?.compactMap { ($0 as? CDTag)?.name } ?? []
         tags = originalTagNames
         allOtherTags()
 

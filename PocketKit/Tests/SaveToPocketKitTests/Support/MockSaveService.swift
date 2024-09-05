@@ -39,7 +39,7 @@ extension MockSaveService {
 // MARK: - Retrieve Tags
 extension MockSaveService {
     private static let retrieveTags = "retrieveTags"
-    typealias RetrieveTagsImpl = ([String]) -> [Tag]?
+    typealias RetrieveTagsImpl = ([String]) -> [CDTag]?
 
     struct RetrieveTagsImplCall {
         let tags: [String]
@@ -49,7 +49,7 @@ extension MockSaveService {
         implementations[Self.retrieveTags] = impl
     }
 
-    func retrieveTags(excluding tags: [String]) -> [Tag]? {
+    func retrieveTags(excluding tags: [String]) -> [CDTag]? {
         guard let impl = implementations[Self.retrieveTags] as? RetrieveTagsImpl else {
             fatalError("\(Self.self)#\(#function) has not been stubbed")
         }
@@ -110,7 +110,7 @@ extension MockSaveService {
 // MARK: - Retrieve Tags
 extension MockSaveService {
     private static let filterTags = "filterTags"
-    typealias FilterTagsImpl = ([String]) -> [Tag]?
+    typealias FilterTagsImpl = ([String]) -> [CDTag]?
 
     struct FilterTagsImplCall {
         let tags: [String]
@@ -120,7 +120,7 @@ extension MockSaveService {
         implementations[Self.filterTags] = impl
     }
 
-    func filterTags(with text: String, excluding tags: [String]) -> [Tag]? {
+    func filterTags(with text: String, excluding tags: [String]) -> [CDTag]? {
         guard let impl = implementations[Self.filterTags] as? FilterTagsImpl else {
             fatalError("\(Self.self)#\(#function) has not been stubbed")
         }

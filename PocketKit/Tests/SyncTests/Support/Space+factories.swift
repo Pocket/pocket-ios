@@ -16,7 +16,7 @@ extension Space {
         createdAt: Date = Date(),
         archivedAt: Date? = nil,
         cursor: String? = nil,
-        tags: [Tag]? = nil,
+        tags: [CDTag]? = nil,
         item: CDItem? = nil
     ) throws -> CDSavedItem {
         try backgroundContext.performAndWait {
@@ -46,7 +46,7 @@ extension Space {
         createdAt: Date = Date(),
         archivedAt: Date? = nil,
         cursor: String? = nil,
-        tags: [Tag]? = nil,
+        tags: [CDTag]? = nil,
         item: CDItem? = nil
     ) -> CDSavedItem {
         backgroundContext.performAndWait {

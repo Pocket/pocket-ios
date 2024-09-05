@@ -60,11 +60,11 @@ public class PocketSaveService: SaveService {
         }
     }
 
-    public func retrieveTags(excluding tags: [String]) -> [Tag]? {
+    public func retrieveTags(excluding tags: [String]) -> [CDTag]? {
         try? space.retrieveTags(excluding: tags)
     }
 
-    public func filterTags(with input: String, excluding tags: [String]) -> [Tag]? {
+    public func filterTags(with input: String, excluding tags: [String]) -> [CDTag]? {
         try? space.filterTags(with: input, excluding: tags)
     }
 
@@ -135,7 +135,7 @@ public class PocketSaveService: SaveService {
             }
 
             guard let tags = savedItem.tags, let remoteID = savedItem.remoteID else { return }
-            let names = Array(tags).compactMap { ($0 as? Tag)?.name }
+            let names = Array(tags).compactMap { ($0 as? CDTag)?.name }
 
             if names.isEmpty {
                 let mutation = UpdateSavedItemRemoveTagsMutation(savedItemId: remoteID)
