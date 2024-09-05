@@ -71,5 +71,5 @@ extension SavedItem: ItemsListItem {
     }
 }
 
-extension DomainMetadata: ItemsListItemDomainMetadata {
+extension CDDomainMetadata: ItemsListItemDomainMetadata {
 }
