@@ -19,7 +19,7 @@ extension Recommendation {
     @NSManaged public var analyticsID: String
     @NSManaged public var item: Item
     @NSManaged public var slate: Slate?
-    @NSManaged public var image: Image?
+    @NSManaged public var image: CDImage?
     @NSManaged public var sortIndex: NSNumber?
 }
 

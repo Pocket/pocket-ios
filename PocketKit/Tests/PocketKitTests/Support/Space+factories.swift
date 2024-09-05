@@ -329,9 +329,9 @@ extension Space {
         source: URL?,
         isDownloaded: Bool = false,
         item: Item? = nil
-    ) -> Image {
+    ) -> CDImage {
         return backgroundContext.performAndWait {
-            let image: Image = Image(context: backgroundContext)
+            let image: CDImage = CDImage(context: backgroundContext)
             image.source = source
             image.isDownloaded = isDownloaded
             image.item = item
@@ -345,7 +345,7 @@ extension Space {
         source: URL?,
         isDownloaded: Bool = false,
         item: Item? = nil
-    ) throws -> Image {
+    ) throws -> CDImage {
         return try backgroundContext.performAndWait {
             let image = buildImage(
                 source: source,

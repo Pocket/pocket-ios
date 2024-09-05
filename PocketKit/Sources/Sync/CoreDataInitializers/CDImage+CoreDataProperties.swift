@@ -6,10 +6,10 @@
 import Foundation
 import CoreData
 
-extension Image {
+extension CDImage {
     @nonobjc
-    public class func fetchRequest() -> NSFetchRequest<Image> {
-        return NSFetchRequest<Image>(entityName: "Image")
+    public class func fetchRequest() -> NSFetchRequest<CDImage> {
+        return NSFetchRequest<CDImage>(entityName: "Image")
     }
 
     @NSManaged public var isDownloaded: Bool
