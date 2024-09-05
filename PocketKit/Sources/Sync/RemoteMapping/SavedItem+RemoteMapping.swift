@@ -67,7 +67,7 @@ extension SavedItem {
             Log.breadcrumb(category: "sync", level: .debug, message: "Updating item parts for \(itemParts.remoteID)")
 
             let givenURL = itemParts.givenUrl
-            let itemToUpdate = (try? space.fetchItem(byURL: givenURL, context: context)) ?? Item(context: context, givenURL: givenURL, remoteID: itemParts.remoteID)
+            let itemToUpdate = (try? space.fetchItem(byURL: givenURL, context: context)) ?? CDItem(context: context, givenURL: givenURL, remoteID: itemParts.remoteID)
             itemToUpdate.update(remote: itemParts, with: space)
             if let corpusItem = remote.corpusItem {
                 itemToUpdate.domain = corpusItem.publisher
@@ -77,7 +77,7 @@ extension SavedItem {
             Log.breadcrumb(category: "sync", level: .debug, message: "Updating pending parts for \(pendingParts.remoteID)")
 
             let givenURL = pendingParts.givenUrl
-            let itemToUpdate = (try? space.fetchItem(byURL: givenURL, context: context)) ?? Item(context: context, givenURL: givenURL, remoteID: pendingParts.remoteID)
+            let itemToUpdate = (try? space.fetchItem(byURL: givenURL, context: context)) ?? CDItem(context: context, givenURL: givenURL, remoteID: pendingParts.remoteID)
             itemToUpdate.update(remote: pendingParts, with: space)
             item = itemToUpdate
         }
@@ -91,7 +91,7 @@ extension SavedItem {
         self.item = recommendation.item
     }
 
-    public func update(from item: Item) {
+    public func update(from item: CDItem) {
         self.url = item.givenURL
         self.createdAt = Date()
 
@@ -126,7 +126,7 @@ extension SavedItem {
             Log.breadcrumb(category: "sync", level: .debug, message: "Updating item parts from summary for \(itemSummary.remoteID)")
 
             let givenURL = itemSummary.givenUrl
-            let itemToUpdate = (try? space.fetchItem(byURL: givenURL, context: context)) ?? Item(context: context, givenURL: givenURL, remoteID: itemSummary.remoteID)
+            let itemToUpdate = (try? space.fetchItem(byURL: givenURL, context: context)) ?? CDItem(context: context, givenURL: givenURL, remoteID: itemSummary.remoteID)
             itemToUpdate.update(from: itemSummary, with: space)
             if let corpusItem = summary.corpusItem {
                 itemToUpdate.domain = corpusItem.publisher
@@ -136,7 +136,7 @@ extension SavedItem {
             Log.breadcrumb(category: "sync", level: .debug, message: "Updating pending parts from summary for \(pendingParts.remoteID)")
 
             let givenURL = pendingParts.givenUrl
-            let itemToUpdate = (try? space.fetchItem(byURL: givenURL, context: context)) ?? Item(context: context, givenURL: givenURL, remoteID: pendingParts.remoteID)
+            let itemToUpdate = (try? space.fetchItem(byURL: givenURL, context: context)) ?? CDItem(context: context, givenURL: givenURL, remoteID: pendingParts.remoteID)
             itemToUpdate.update(remote: pendingParts, with: space)
             item = itemToUpdate
         }

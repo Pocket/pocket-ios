@@ -195,7 +195,7 @@ extension SharedWithYouListViewModel {
         )
     }
 
-    private func save(_ item: Item, at indexPath: IndexPath) {
+    private func save(_ item: CDItem, at indexPath: IndexPath) {
         source.save(item: item)
         if let url = item.sharedWithYouItem?.url {
             tracker.track(event: Events.SharedWithYou.itemSaved(url: url, index: indexPath.item))
@@ -247,7 +247,7 @@ private extension SharedWithYouListViewModel {
         }
 
         let itemsToReload: [Cell] = (
-            updatedObjects.compactMap { $0 as? Item }
+            updatedObjects.compactMap { $0 as? CDItem }
             + updatedObjects.compactMap { ($0 as? SavedItem)?.item }
         )
         .compactMap(\.sharedWithYouItem)

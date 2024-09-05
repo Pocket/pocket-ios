@@ -396,7 +396,7 @@ extension HomeViewModel {
         ))
     }
 
-    func select(externalItem: Item) {
+    func select(externalItem: CDItem) {
         var destination: ContentOpen.Destination = .internal
         if let slug = externalItem.collection?.slug ?? externalItem.collectionSlug {
             selectedReadableType = .collection(CollectionViewModel(
@@ -875,7 +875,7 @@ extension HomeViewModel {
         tracker.track(event: Events.Home.sharedWithYouItemShare(url: shareableUrl, positionInList: indexPath.item))
     }
 
-    private func shareableUrl(_ item: Item?) async -> String? {
+    private func shareableUrl(_ item: CDItem?) async -> String? {
         guard let item else {
             return nil
         }

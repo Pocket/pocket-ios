@@ -14,5 +14,5 @@ extension SharedWithYouItem {
 
     @NSManaged public var url: String
     @NSManaged public var sortOrder: Int32
-    @NSManaged public var item: Item
+    @NSManaged public var item: CDItem
 }
