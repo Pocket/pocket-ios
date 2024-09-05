@@ -14,7 +14,7 @@ extension CDImage {
 
     @NSManaged public var isDownloaded: Bool
     @NSManaged public var source: URL?
-    @NSManaged public var item: Item?
+    @NSManaged public var item: CDItem?
     @NSManaged public var recommendation: Recommendation?
     @NSManaged public var syndicatedArticle: SyndicatedArticle?
 }

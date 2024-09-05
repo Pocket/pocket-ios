@@ -11,7 +11,7 @@ import Localization
 
 /// View model for Item cells in unified Home
 class HomeItemCellViewModel {
-    let item: Item
+    let item: CDItem
     let overflowActions: [ItemAction]?
     let primaryAction: ItemAction?
     var imageURL: URL?
@@ -24,7 +24,7 @@ class HomeItemCellViewModel {
     }
 
     init(
-        item: Item,
+        item: CDItem,
         overflowActions: [ItemAction]? = nil,
         primaryAction: ItemAction? = nil,
         imageURL: URL?,

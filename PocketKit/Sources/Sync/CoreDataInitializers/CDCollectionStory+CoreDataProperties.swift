@@ -20,7 +20,7 @@ extension CDCollectionStory {
     @NSManaged public var sortOrder: NSNumber?
     @NSManaged public var authors: NSOrderedSet
     @NSManaged public var collection: CDCollection?
-    @NSManaged public var item: Item?
+    @NSManaged public var item: CDItem?
 }
 
 // MARK: Generated accessors for authors

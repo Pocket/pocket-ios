@@ -18,7 +18,7 @@ extension CDCollection {
     @NSManaged public var title: String?
     @NSManaged public var authors: NSOrderedSet?
     @NSManaged public var stories: NSOrderedSet?
-    @NSManaged public var item: Item?
+    @NSManaged public var item: CDItem?
 }
 
 // MARK: Generated accessors for authors

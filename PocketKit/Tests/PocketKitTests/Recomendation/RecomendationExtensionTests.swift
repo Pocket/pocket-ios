@@ -68,7 +68,7 @@ extension RecomendationExtensionTests {
         )
     }
 
-    func buildItem(syndicatedArticle: SyndicatedArticle? = nil) -> Item {
+    func buildItem(syndicatedArticle: SyndicatedArticle? = nil) -> CDItem {
         return space.buildItem(
             topImageURL: URL(string: "https://top-image-url.jpeg"),
             excerpt: "Some item excerpt",
@@ -76,7 +76,7 @@ extension RecomendationExtensionTests {
         )
     }
 
-    func subject(item: Item? = nil, syndicatedArticle: SyndicatedArticle? = nil, imageURL: URL? = nil, title: String? = nil, excerpt: String? = nil) -> Recommendation {
+    func subject(item: CDItem? = nil, syndicatedArticle: SyndicatedArticle? = nil, imageURL: URL? = nil, title: String? = nil, excerpt: String? = nil) -> Recommendation {
         let item = item ?? buildItem()
         item.syndicatedArticle = syndicatedArticle
 

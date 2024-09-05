@@ -6,10 +6,10 @@
 import Foundation
 import CoreData
 
-extension Item {
+extension CDItem {
     @nonobjc
-    public class func fetchRequest() -> NSFetchRequest<Item> {
-        return NSFetchRequest<Item>(entityName: "Item")
+    public class func fetchRequest() -> NSFetchRequest<CDItem> {
+        return NSFetchRequest<CDItem>(entityName: "Item")
     }
 
     @NSManaged public var article: Article?
@@ -40,7 +40,7 @@ extension Item {
 }
 
 // MARK: Generated accessors for authors
-extension Item {
+extension CDItem {
     @objc(insertObject:inAuthorsAtIndex:)
     @NSManaged public func insertIntoAuthors(_ value: CDAuthor, at idx: Int)
 
@@ -73,7 +73,7 @@ extension Item {
 }
 
 // MARK: Generated accessors for images
-extension Item {
+extension CDItem {
     @objc(insertObject:inImagesAtIndex:)
     @NSManaged public func insertIntoImages(_ value: CDImage, at idx: Int)
 
@@ -106,7 +106,7 @@ extension Item {
 }
 
 // MARK: Generated accessors for collectionStories
-extension Item {
+extension CDItem {
     @objc(addCollectionStoriesObject:)
     @NSManaged public func addToCollectionStories(_ value: CDCollectionStory)
 
