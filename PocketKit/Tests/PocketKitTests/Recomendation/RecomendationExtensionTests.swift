@@ -59,7 +59,7 @@ class RecomendationExtensionTests: XCTestCase {
  Extension to build the subjects and data
  */
 extension RecomendationExtensionTests {
-    func buildSyndicatedArticle() -> SyndicatedArticle {
+    func buildSyndicatedArticle() -> CDSyndicatedArticle {
         return space.buildSyndicatedArticle(
             title: "Syndicated Title",
             imageURL: URL(string: "https://syndicated-image.jpeg"),
@@ -68,7 +68,7 @@ extension RecomendationExtensionTests {
         )
     }
 
-    func buildItem(syndicatedArticle: SyndicatedArticle? = nil) -> CDItem {
+    func buildItem(syndicatedArticle: CDSyndicatedArticle? = nil) -> CDItem {
         return space.buildItem(
             topImageURL: URL(string: "https://top-image-url.jpeg"),
             excerpt: "Some item excerpt",
@@ -76,7 +76,7 @@ extension RecomendationExtensionTests {
         )
     }
 
-    func subject(item: CDItem? = nil, syndicatedArticle: SyndicatedArticle? = nil, imageURL: URL? = nil, title: String? = nil, excerpt: String? = nil) -> CDRecommendation {
+    func subject(item: CDItem? = nil, syndicatedArticle: CDSyndicatedArticle? = nil, imageURL: URL? = nil, title: String? = nil, excerpt: String? = nil) -> CDRecommendation {
         let item = item ?? buildItem()
         item.syndicatedArticle = syndicatedArticle
 

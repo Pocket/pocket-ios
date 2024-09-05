@@ -74,7 +74,7 @@ extension CDItem {
         }
 
         if let syndicatedArticle = remote.syndicatedArticle, let itemId = syndicatedArticle.itemId {
-            self.syndicatedArticle = (try? space.fetchSyndicatedArticle(byItemId: itemId, context: context)) ?? SyndicatedArticle(context: context)
+            self.syndicatedArticle = (try? space.fetchSyndicatedArticle(byItemId: itemId, context: context)) ?? CDSyndicatedArticle(context: context)
             self.syndicatedArticle?.itemID = itemId
             self.syndicatedArticle?.title = syndicatedArticle.title
         }
@@ -109,7 +109,7 @@ extension CDItem {
         }
 
         if let syndicatedArticle = corpusItem.target?.asSyndicatedArticle, let itemId = syndicatedArticle.itemId {
-            self.syndicatedArticle = (try? space.fetchSyndicatedArticle(byItemId: itemId, context: context)) ?? SyndicatedArticle(context: context)
+            self.syndicatedArticle = (try? space.fetchSyndicatedArticle(byItemId: itemId, context: context)) ?? CDSyndicatedArticle(context: context)
             self.syndicatedArticle?.itemID = itemId
             self.syndicatedArticle?.publisherName = syndicatedArticle.publisher?.name
             self.syndicatedArticle?.title = syndicatedArticle.title
@@ -195,7 +195,7 @@ extension CDItem {
         }
 
         if let syndicatedArticle = storyItem.syndicatedArticle, let itemId = syndicatedArticle.itemId {
-            self.syndicatedArticle = (try? space.fetchSyndicatedArticle(byItemId: itemId, context: context)) ?? SyndicatedArticle(context: context)
+            self.syndicatedArticle = (try? space.fetchSyndicatedArticle(byItemId: itemId, context: context)) ?? CDSyndicatedArticle(context: context)
             self.syndicatedArticle?.itemID = itemId
             self.syndicatedArticle?.title = syndicatedArticle.title
         }
@@ -265,7 +265,7 @@ extension CDItem {
         }
 
         if let syndicatedArticle = summary.syndicatedArticle, let itemId = syndicatedArticle.itemId {
-            self.syndicatedArticle = (try? space.fetchSyndicatedArticle(byItemId: itemId, context: context)) ?? SyndicatedArticle(context: context)
+            self.syndicatedArticle = (try? space.fetchSyndicatedArticle(byItemId: itemId, context: context)) ?? CDSyndicatedArticle(context: context)
             self.syndicatedArticle?.itemID = itemId
             self.syndicatedArticle?.publisherName = syndicatedArticle.publisher?.name
             self.syndicatedArticle?.title = syndicatedArticle.title

@@ -16,5 +16,5 @@ extension CDImage {
     @NSManaged public var source: URL?
     @NSManaged public var item: CDItem?
     @NSManaged public var recommendation: CDRecommendation?
-    @NSManaged public var syndicatedArticle: SyndicatedArticle?
+    @NSManaged public var syndicatedArticle: CDSyndicatedArticle?
 }

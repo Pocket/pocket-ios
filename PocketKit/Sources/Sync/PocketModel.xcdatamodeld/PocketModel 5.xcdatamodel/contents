@@ -165,7 +165,7 @@
         <attribute name="requestID" attributeType="String"/>
         <relationship name="slates" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Slate" inverseName="slateLineup" inverseEntity="Slate"/>
     </entity>
-    <entity name="SyndicatedArticle" representedClassName="SyndicatedArticle" syncable="YES">
+    <entity name="SyndicatedArticle" representedClassName="CDSyndicatedArticle" syncable="YES">
         <attribute name="excerpt" optional="YES" attributeType="String"/>
         <attribute name="imageURL" optional="YES" attributeType="URI"/>
         <attribute name="itemID" attributeType="String"/>
