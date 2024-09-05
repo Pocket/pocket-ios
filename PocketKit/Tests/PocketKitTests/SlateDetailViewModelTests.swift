@@ -120,7 +120,7 @@ class SlateDetailViewModelTests: XCTestCase {
 
     @MainActor
     func test_fetch_sendsSnapshotWithItemForEachRecommendation() throws {
-        let recommendations: [Recommendation] = [
+        let recommendations: [CDRecommendation] = [
             space.buildRecommendation(remoteID: "slate-1-recommendation-1", item: space.buildItem()),
             space.buildRecommendation(remoteID: "slate-1-recommendation-2", item: space.buildItem())
         ]

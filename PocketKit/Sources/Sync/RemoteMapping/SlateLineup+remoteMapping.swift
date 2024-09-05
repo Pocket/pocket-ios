@@ -36,7 +36,7 @@ extension Slate {
             // present in more than one slate
             let remoteID = remote.id + remoteSlate.id
             let analyticsID = remote.id
-            guard let recommendation = try? space.fetchRecommendation(byRemoteID: remoteID, context: context) ?? Recommendation(context: context, remoteID: remoteID, analyticsID: analyticsID) else {
+            guard let recommendation = try? space.fetchRecommendation(byRemoteID: remoteID, context: context) ?? CDRecommendation(context: context, remoteID: remoteID, analyticsID: analyticsID) else {
                 return
             }
             recommendation.update(from: remote, in: space, context: context)
@@ -49,7 +49,7 @@ extension Slate {
     }
 }
 
-extension Recommendation {
+extension CDRecommendation {
     public typealias RemoteRecommendation = SlateParts.Recommendation
     public typealias RemoteCorpusRecommendation = CorpusSlateParts.Recommendation
 
