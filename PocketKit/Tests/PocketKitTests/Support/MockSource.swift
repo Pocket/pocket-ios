@@ -322,7 +322,7 @@ extension MockSource {
 // MARK: fetch collection authors
 extension MockSource {
     private static let fetchCollectionAuthors = "fetchCollectionAuthors"
-    typealias FetchCollectionAuthorsImpl = (String) -> [Sync.CollectionAuthor]
+    typealias FetchCollectionAuthorsImpl = (String) -> [Sync.CDCollectionAuthor]
 
     struct FetchCollectionAuthorsCall {}
 
@@ -330,7 +330,7 @@ extension MockSource {
         implementations[Self.fetchCollectionAuthors] = impl
     }
 
-    func fetchCollectionAuthors(by slug: String) -> [Sync.CollectionAuthor] {
+    func fetchCollectionAuthors(by slug: String) -> [Sync.CDCollectionAuthor] {
         guard let impl = implementations[Self.fetchCollectionAuthors] as? FetchCollectionAuthorsImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
