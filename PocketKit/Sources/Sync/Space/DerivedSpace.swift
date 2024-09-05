@@ -34,7 +34,7 @@ protocol SharedWithYouSpace {
 struct DerivedSpace {
     private let space: Space
     private let context: NSManagedObjectContext
-    private let task: PersistentSyncTask
+    private let task: CDPersistentSyncTask
 
     var currentCursor: String? {
         task.currentCursor
@@ -43,9 +43,9 @@ struct DerivedSpace {
     init?(space: Space, taskID: NSManagedObjectID) {
         let context = space.makeChildBackgroundContext()
 
-        var fetchedTask: PersistentSyncTask?
+        var fetchedTask: CDPersistentSyncTask?
         context.performAndWait {
-            fetchedTask = context.object(with: taskID) as? PersistentSyncTask
+            fetchedTask = context.object(with: taskID) as? CDPersistentSyncTask
         }
         guard let task = fetchedTask else {
             return nil

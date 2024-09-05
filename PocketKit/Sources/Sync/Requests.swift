@@ -60,9 +60,9 @@ public enum Requests {
         return request
     }
 
-    public static func fetchPersistentSyncTasks() -> NSFetchRequest<PersistentSyncTask> {
-        let request = PersistentSyncTask.fetchRequest()
-        request.sortDescriptors = [NSSortDescriptor(keyPath: \PersistentSyncTask.createdAt, ascending: true)]
+    public static func fetchPersistentSyncTasks() -> NSFetchRequest<CDPersistentSyncTask> {
+        let request = CDPersistentSyncTask.fetchRequest()
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \CDPersistentSyncTask.createdAt, ascending: true)]
 
         return request
     }
