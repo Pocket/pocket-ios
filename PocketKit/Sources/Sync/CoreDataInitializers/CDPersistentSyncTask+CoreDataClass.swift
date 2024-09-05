@@ -6,6 +6,6 @@
 import Foundation
 import CoreData
 
-@objc(PersistentSyncTask)
-public class PersistentSyncTask: NSManagedObject {
+@objc(CDPersistentSyncTask)
+public class CDPersistentSyncTask: NSManagedObject {
 }

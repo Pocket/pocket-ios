@@ -52,7 +52,7 @@
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
-    <entity name="PersistentSyncTask" representedClassName="PersistentSyncTask" syncable="YES">
+    <entity name="PersistentSyncTask" representedClassName="CDPersistentSyncTask" syncable="YES">
         <attribute name="createdAt" optional="YES" attributeType="Date" defaultDateTimeInterval="666643260" usesScalarValueType="NO"/>
         <attribute name="currentCursor" optional="YES" attributeType="String"/>
         <attribute name="syncTaskContainer" attributeType="Transformable" valueTransformerName="SyncTaskTransformer" customClassName="SyncTaskContainer"/>
