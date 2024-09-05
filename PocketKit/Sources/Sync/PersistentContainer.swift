@@ -43,6 +43,7 @@ public class PersistentContainer: NSPersistentContainer {
         switch storage {
         case .inMemory:
             persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
+            persistentStoreDescriptions.first!.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
         case .shared:
             guard let appGroupContainer = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: groupID) else {
                 fatalError("Shared file container could not be created.")
