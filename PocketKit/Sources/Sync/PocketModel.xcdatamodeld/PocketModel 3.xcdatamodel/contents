@@ -162,7 +162,7 @@
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
-    <entity name="Tag" representedClassName="Tag" syncable="YES">
+    <entity name="Tag" representedClassName="CDTag" syncable="YES">
         <attribute name="name" attributeType="String"/>
         <attribute name="remoteID" optional="YES" attributeType="String"/>
         <relationship name="savedItems" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="SavedItem" inverseName="tags" inverseEntity="SavedItem"/>
@@ -172,7 +172,7 @@
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
-    <entity name="UnresolvedSavedItem" representedClassName="UnresolvedSavedItem" syncable="YES">
+    <entity name="UnresolvedSavedItem" representedClassName="CDUnresolvedSavedItem" syncable="YES">
         <relationship name="savedItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SavedItem" inverseName="unresolvedSavedItem" inverseEntity="SavedItem"/>
     </entity>
 </model>
