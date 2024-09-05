@@ -20,28 +20,28 @@ extension Tag {
 // MARK: Generated accessors for savedItems
 extension Tag {
     @objc(insertObject:inSavedItemsAtIndex:)
-    @NSManaged public func insertIntoSavedItems(_ value: SavedItem, at idx: Int)
+    @NSManaged public func insertIntoSavedItems(_ value: CDSavedItem, at idx: Int)
 
     @objc(removeObjectFromSavedItemsAtIndex:)
     @NSManaged public func removeFromSavedItems(at idx: Int)
 
     @objc(insertSavedItems:atIndexes:)
-    @NSManaged public func insertIntoSavedItems(_ values: [SavedItem], at indexes: NSIndexSet)
+    @NSManaged public func insertIntoSavedItems(_ values: [CDSavedItem], at indexes: NSIndexSet)
 
     @objc(removeSavedItemsAtIndexes:)
     @NSManaged public func removeFromSavedItems(at indexes: NSIndexSet)
 
     @objc(replaceObjectInSavedItemsAtIndex:withObject:)
-    @NSManaged public func replaceSavedItems(at idx: Int, with value: SavedItem)
+    @NSManaged public func replaceSavedItems(at idx: Int, with value: CDSavedItem)
 
     @objc(replaceSavedItemsAtIndexes:withSavedItems:)
-    @NSManaged public func replaceSavedItems(at indexes: NSIndexSet, with values: [SavedItem])
+    @NSManaged public func replaceSavedItems(at indexes: NSIndexSet, with values: [CDSavedItem])
 
     @objc(addSavedItemsObject:)
-    @NSManaged public func addToSavedItems(_ value: SavedItem)
+    @NSManaged public func addToSavedItems(_ value: CDSavedItem)
 
     @objc(removeSavedItemsObject:)
-    @NSManaged public func removeFromSavedItems(_ value: SavedItem)
+    @NSManaged public func removeFromSavedItems(_ value: CDSavedItem)
 
     @objc(addSavedItems:)
     @NSManaged public func addToSavedItems(_ values: NSOrderedSet)

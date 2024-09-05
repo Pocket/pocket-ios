@@ -40,7 +40,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
 
     @MainActor
     private func subject(
-        item: SavedItem,
+        item: CDSavedItem,
         tracker: Tracker? = nil,
         userDefaults: UserDefaults? = nil,
         user: User? = nil,
@@ -96,7 +96,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
     func test_addTags_delegatesToSaveServiceAndCallsSaveAction() throws {
         let item = space.buildSavedItem(tags: ["tag 1"])
         try space.save()
-        let viewModel = subject(item: space.viewObject(with: item.objectID) as! SavedItem) { tags in
+        let viewModel = subject(item: space.viewObject(with: item.objectID) as! CDSavedItem) { tags in
             XCTAssert(true, "expect call to save action")
             var tags: [Tag] = []
             for index in 1...2 {
@@ -117,7 +117,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         let item = space.buildSavedItem(tags: [])
         try space.save()
         let viewModel = subject(
-            item: space.viewObject(with: item.objectID) as! SavedItem,
+            item: space.viewObject(with: item.objectID) as! CDSavedItem,
             user: MockUser(status: .premium),
             retrieveAction: { _ in
                 var tags: [Tag] = []
@@ -139,7 +139,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         let item = space.buildSavedItem(tags: [])
         try space.save()
         let viewModel = subject(
-            item: space.viewObject(with: item.objectID) as! SavedItem,
+            item: space.viewObject(with: item.objectID) as! CDSavedItem,
             user: MockUser(status: .premium),
             retrieveAction: { _ in
                 var tags: [Tag] = []
@@ -161,7 +161,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         let item = space.buildSavedItem(tags: [])
         try space.save()
         let viewModel = subject(
-            item: space.viewObject(with: item.objectID) as! SavedItem,
+            item: space.viewObject(with: item.objectID) as! CDSavedItem,
             user: MockUser(status: .free),
             retrieveAction: { _ in
                 var tags: [Tag] = []
@@ -183,7 +183,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         let item = space.buildSavedItem(tags: [])
         try space.save()
         let viewModel = subject(
-            item: space.viewObject(with: item.objectID) as! SavedItem,
+            item: space.viewObject(with: item.objectID) as! CDSavedItem,
             retrieveAction: { _ in
                 var tags: [Tag] = []
                 for index in 1...3 {
@@ -204,7 +204,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         let item = space.buildSavedItem(tags: ["a"])
         try space.save()
         let viewModel = subject(
-            item: space.viewObject(with: item.objectID) as! SavedItem,
+            item: space.viewObject(with: item.objectID) as! CDSavedItem,
             retrieveAction: { _ in
                 let tag2: Tag = Tag(context: self.space.viewContext)
                 let tag3: Tag = Tag(context: self.space.viewContext)
@@ -226,7 +226,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         let item = space.buildSavedItem(tags: ["a"])
         try space.save()
         let viewModel = subject(
-            item: space.viewObject(with: item.objectID) as! SavedItem,
+            item: space.viewObject(with: item.objectID) as! CDSavedItem,
             retrieveAction: { _ in
                 let tag2: Tag = Tag(context: self.space.viewContext)
                 let tag3: Tag = Tag(context: self.space.viewContext)
@@ -247,7 +247,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
     func test_removeTag_withValidName_updatesTags() throws {
         let item = space.buildSavedItem(tags: ["tag 1"])
         try space.save()
-        let viewModel = subject(item: space.viewObject(with: item.objectID) as! SavedItem) { _ in }
+        let viewModel = subject(item: space.viewObject(with: item.objectID) as! CDSavedItem) { _ in }
         viewModel.tags = ["tag 1", "tag 2", "tag 3"]
         viewModel.removeTag(with: "tag 2")
 
@@ -258,7 +258,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
     func test_removeTag_withNotExistingName_updatesTags() throws {
         let item = space.buildSavedItem(tags: ["tag 1"])
         try space.save()
-        let viewModel = subject(item: space.viewObject(with: item.objectID) as! SavedItem) { _ in }
+        let viewModel = subject(item: space.viewObject(with: item.objectID) as! CDSavedItem) { _ in }
         viewModel.tags = ["tag 1", "tag 2", "tag 3"]
         viewModel.removeTag(with: "tag 4")
 
@@ -270,7 +270,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         let item = space.buildSavedItem(tags: ["tag 1"])
         try space.save()
         let viewModel = subject(
-            item: space.viewObject(with: item.objectID) as! SavedItem,
+            item: space.viewObject(with: item.objectID) as! CDSavedItem,
             filterAction: { _, _  in
                 var tags: [Tag] = []
                 for index in 2...3 {
@@ -302,7 +302,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         let item = space.buildSavedItem(tags: ["tag 1"])
         try space.save()
         let viewModel = subject(
-            item: space.viewObject(with: item.objectID) as! SavedItem,
+            item: space.viewObject(with: item.objectID) as! CDSavedItem,
             filterAction: { _, _  in
                 var tags: [Tag] = []
                 for index in 2...3 {

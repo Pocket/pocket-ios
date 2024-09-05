@@ -186,7 +186,7 @@ class CollectionViewModel: NSObject {
         ]
     }
 
-    private func tagsAction(for item: SavedItem) -> ItemAction {
+    private func tagsAction(for item: CDSavedItem) -> ItemAction {
         let hasTags = (item.tags?.count ?? 0) > 0
         if hasTags {
             return .editTags { [weak self] _ in self?.showAddTagsView(for: item) }
@@ -195,7 +195,7 @@ class CollectionViewModel: NSObject {
         }
     }
 
-    private func showAddTagsView(for item: SavedItem) {
+    private func showAddTagsView(for item: CDSavedItem) {
         trackAddTags()
         presentedAddTags = PocketAddTagsViewModel(
             item: item,
@@ -209,17 +209,17 @@ class CollectionViewModel: NSObject {
         )
     }
 
-    private func favorite(_ savedItem: SavedItem) {
+    private func favorite(_ savedItem: CDSavedItem) {
         trackFavorite()
         source.favorite(item: savedItem)
     }
 
-    private func unfavorite(_ savedItem: SavedItem) {
+    private func unfavorite(_ savedItem: CDSavedItem) {
         trackUnfavorite()
         source.unfavorite(item: savedItem)
     }
 
-    private func confirmDelete(for savedItem: SavedItem) {
+    private func confirmDelete(for savedItem: CDSavedItem) {
         trackDelete()
         presentedAlert = PocketAlert(
             title: Localization.areYouSureYouWantToDeleteThisItem,
@@ -235,7 +235,7 @@ class CollectionViewModel: NSObject {
         )
     }
 
-    private func delete(_ savedItem: SavedItem) {
+    private func delete(_ savedItem: CDSavedItem) {
         presentedAlert = nil
         source.delete(item: savedItem)
         events = .delete

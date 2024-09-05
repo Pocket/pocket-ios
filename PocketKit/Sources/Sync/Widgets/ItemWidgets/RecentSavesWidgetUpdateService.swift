@@ -20,7 +20,7 @@ public struct RecentSavesWidgetUpdateService {
 
     /// Update the recent saves using the given array of `SavedItem`
     /// - Parameter items: the given array
-    public func update(_ items: [SavedItem]) {
+    public func update(_ items: [CDSavedItem]) {
         let saves = items.map {
             ItemContent(
                 url: $0.url,
@@ -49,7 +49,7 @@ public struct RecentSavesWidgetUpdateService {
         }
     }
 
-    public func insert(_ savedItem: SavedItem) {
+    public func insert(_ savedItem: CDSavedItem) {
         var currentItems = store.topics.first?.items ?? [ItemContent]()
 
         if let index = currentItems.firstIndex(where: { $0.url == savedItem.url }) {

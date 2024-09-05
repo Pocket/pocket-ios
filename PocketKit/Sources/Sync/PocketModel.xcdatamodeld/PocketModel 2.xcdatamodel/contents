@@ -73,7 +73,7 @@
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
-    <entity name="SavedItem" representedClassName="SavedItem" syncable="YES">
+    <entity name="SavedItem" representedClassName="CDSavedItem" syncable="YES">
         <attribute name="archivedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="cursor" optional="YES" attributeType="String"/>

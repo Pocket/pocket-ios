@@ -68,9 +68,9 @@ public class PocketSaveService: SaveService {
         try? space.filterTags(with: input, excluding: tags)
     }
 
-    public func addTags(savedItem: SavedItem, tags: [String]) -> SaveServiceStatus {
+    public func addTags(savedItem: CDSavedItem, tags: [String]) -> SaveServiceStatus {
         return space.performAndWait {
-            guard let savedItem = space.backgroundObject(with: savedItem.objectID) as? SavedItem else {
+            guard let savedItem = space.backgroundObject(with: savedItem.objectID) as? CDSavedItem else {
                 Log.capture(message: "Save Service could not get a savedItem from the background context, for add tags")
                 return .taggedItem(savedItem)
             }
@@ -111,7 +111,7 @@ public class PocketSaveService: SaveService {
                 osNotifications.post(name: .savedItemUpdated)
                 return .existingItem(existingItem)
             } else {
-                let savedItem: SavedItem = SavedItem(context: space.backgroundContext, url: url)
+                let savedItem: CDSavedItem = CDSavedItem(context: space.backgroundContext, url: url)
                 savedItem.url = url
                 savedItem.createdAt = Date()
                 try? space.save()
@@ -122,14 +122,14 @@ public class PocketSaveService: SaveService {
         }
     }
 
-    private func _addTags(expiring: Bool, savedItem: SavedItem) {
+    private func _addTags(expiring: Bool, savedItem: CDSavedItem) {
         space.performAndWait {
             guard !expiring else {
                 queue.cancelAllOperations()
                 queue.waitUntilAllOperationsAreFinished()
                 return
             }
-            guard let savedItem = space.backgroundObject(with: savedItem.objectID) as? SavedItem else {
+            guard let savedItem = space.backgroundObject(with: savedItem.objectID) as? CDSavedItem else {
                 Log.capture(message: "Save Service could not get a savedItem from the background context, for _addTags")
                 return
             }
@@ -172,7 +172,7 @@ public class PocketSaveService: SaveService {
         queue.waitUntilAllOperationsAreFinished()
     }
 
-    private func _save(expiring: Bool, savedItem: SavedItem) {
+    private func _save(expiring: Bool, savedItem: CDSavedItem) {
         space.performAndWait {
             guard !expiring else {
                 queue.cancelAllOperations()
@@ -180,7 +180,7 @@ public class PocketSaveService: SaveService {
                 return
             }
 
-            guard let savedItem = space.backgroundObject(with: savedItem.objectID) as? SavedItem else {
+            guard let savedItem = space.backgroundObject(with: savedItem.objectID) as? CDSavedItem else {
                 Log.capture(message: "Save Service could not get a savedItem from the background context, for _save")
                 return
             }
@@ -207,7 +207,7 @@ class SaveOperation<Mutation: GraphQLMutation>: AsyncOperation {
     private let apollo: ApolloClientProtocol
     private let osNotifications: OSNotificationCenter
     private let space: Space
-    private let savedItem: SavedItem
+    private let savedItem: CDSavedItem
     private let mutation: Mutation
     private let savedItemParts: (any RootSelectionSet) -> SavedItemParts?
 
@@ -217,7 +217,7 @@ class SaveOperation<Mutation: GraphQLMutation>: AsyncOperation {
         apollo: ApolloClientProtocol,
         osNotifications: OSNotificationCenter,
         space: Space,
-        savedItem: SavedItem,
+        savedItem: CDSavedItem,
         mutation: Mutation,
         savedItemParts: @escaping (any RootSelectionSet) -> SavedItemParts?
     ) {
@@ -257,7 +257,7 @@ class SaveOperation<Mutation: GraphQLMutation>: AsyncOperation {
 
     private func updateSavedItem(savedItemParts: SavedItemParts) {
         space.performAndWait {
-            guard let savedItem = space.backgroundObject(with: savedItem.objectID) as? SavedItem else {
+            guard let savedItem = space.backgroundObject(with: savedItem.objectID) as? CDSavedItem else {
                 Log.capture(message: "Save Service could not get a savedItem from the background context, for update")
                 return
             }
@@ -272,7 +272,7 @@ class SaveOperation<Mutation: GraphQLMutation>: AsyncOperation {
 
     private func storeUnresolvedSavedItem() {
         try? space.performAndWait {
-            guard let savedItem = space.backgroundObject(with: savedItem.objectID) as? SavedItem else {
+            guard let savedItem = space.backgroundObject(with: savedItem.objectID) as? CDSavedItem else {
                 Log.capture(message: "Save Service could not get a savedItem from the background context, for unresolved item")
                 return
             }

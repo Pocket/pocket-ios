@@ -202,7 +202,7 @@ extension SharedWithYouListViewModel {
         }
     }
 
-    private func archive(_ savedItem: SavedItem, at indexPath: IndexPath) {
+    private func archive(_ savedItem: CDSavedItem, at indexPath: IndexPath) {
         source.archive(item: savedItem)
         if let url = savedItem.item?.sharedWithYouItem?.url {
             tracker.track(event: Events.SharedWithYou.itemArchived(url: url, index: indexPath.item))
@@ -248,7 +248,7 @@ private extension SharedWithYouListViewModel {
 
         let itemsToReload: [Cell] = (
             updatedObjects.compactMap { $0 as? CDItem }
-            + updatedObjects.compactMap { ($0 as? SavedItem)?.item }
+            + updatedObjects.compactMap { ($0 as? CDSavedItem)?.item }
         )
         .compactMap(\.sharedWithYouItem)
         .map { .item($0.objectID) }

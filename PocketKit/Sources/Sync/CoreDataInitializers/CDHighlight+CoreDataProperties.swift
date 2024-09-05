@@ -18,5 +18,5 @@ extension CDHighlight {
     @NSManaged public var updatedAt: Date
     @NSManaged public var version: Int16
     @NSManaged public var remoteID: String?
-    @NSManaged public var savedItem: SavedItem?
+    @NSManaged public var savedItem: CDSavedItem?
 }

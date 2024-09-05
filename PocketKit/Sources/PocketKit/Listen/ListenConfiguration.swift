@@ -10,10 +10,10 @@ import Down
 
 class ListenConfiguration: NSObject {
     let title: String
-    private let savedItems: [SavedItem]?
+    private let savedItems: [CDSavedItem]?
     private let featureFlagService: FeatureFlagServiceProtocol
 
-    init(title: String, savedItems: [SavedItem]?, featureFlagService: FeatureFlagServiceProtocol) {
+    init(title: String, savedItems: [CDSavedItem]?, featureFlagService: FeatureFlagServiceProtocol) {
         self.title = title
         self.savedItems = savedItems
         self.featureFlagService = featureFlagService
@@ -28,10 +28,10 @@ class ListenConfiguration: NSObject {
 }
 
 private class ListenSource: PKTListenDataSource<PKTListDiffable>, PKTListenPlayerDelegate {
-    private var savedItems: [SavedItem]!
+    private var savedItems: [CDSavedItem]!
     private var featureFlagService: FeatureFlagServiceProtocol!
 
-    convenience init(savedItems: [SavedItem]?, featureFlagService: FeatureFlagServiceProtocol) {
+    convenience init(savedItems: [CDSavedItem]?, featureFlagService: FeatureFlagServiceProtocol) {
         let config = PKTListenAppKusariConfiguration()
 
         let listenItems: [PKTKusari<PKTListenItem>] = savedItems?
