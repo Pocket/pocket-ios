@@ -6,7 +6,6 @@
 import Foundation
 import SwiftData
 
-@available(iOS 17, *)
 @Model
 public class Item {
     // ios 18 only - #Unique<Item>([\.givenURL])

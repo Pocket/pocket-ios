@@ -7,7 +7,6 @@ import Foundation
 import SwiftData
 import Fakery
 
-@available(iOS 17, *)
 @MainActor
 class MockData {
     /**

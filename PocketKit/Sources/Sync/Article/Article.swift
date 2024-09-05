@@ -14,7 +14,7 @@ public class Article: NSObject, Codable {
     }
 }
 
-public class ArticleTransformer: NSSecureUnarchiveFromDataTransformer {
+class ArticleTransformer: NSSecureUnarchiveFromDataTransformer {
     override func transformedValue(_ value: Any?) -> Any? {
         guard let data = value as? Data else {
             return nil
