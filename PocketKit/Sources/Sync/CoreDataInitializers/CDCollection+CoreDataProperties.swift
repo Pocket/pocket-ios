@@ -57,28 +57,28 @@ extension CDCollection {
 // MARK: Generated accessors for stories
 extension CDCollection {
     @objc(insertObject:inStoriesAtIndex:)
-    @NSManaged public func insertIntoStories(_ value: CollectionStory, at idx: Int)
+    @NSManaged public func insertIntoStories(_ value: CDCollectionStory, at idx: Int)
 
     @objc(removeObjectFromStoriesAtIndex:)
     @NSManaged public func removeFromStories(at idx: Int)
 
     @objc(insertStories:atIndexes:)
-    @NSManaged public func insertIntoStories(_ values: [CollectionStory], at indexes: NSIndexSet)
+    @NSManaged public func insertIntoStories(_ values: [CDCollectionStory], at indexes: NSIndexSet)
 
     @objc(removeStoriesAtIndexes:)
     @NSManaged public func removeFromStories(at indexes: NSIndexSet)
 
     @objc(replaceObjectInStoriesAtIndex:withObject:)
-    @NSManaged public func replaceStories(at idx: Int, with value: CollectionStory)
+    @NSManaged public func replaceStories(at idx: Int, with value: CDCollectionStory)
 
     @objc(replaceStoriesAtIndexes:withStories:)
-    @NSManaged public func replaceStories(at indexes: NSIndexSet, with values: [CollectionStory])
+    @NSManaged public func replaceStories(at indexes: NSIndexSet, with values: [CDCollectionStory])
 
     @objc(addStoriesObject:)
-    @NSManaged public func addToStories(_ value: CollectionStory)
+    @NSManaged public func addToStories(_ value: CDCollectionStory)
 
     @objc(removeStoriesObject:)
-    @NSManaged public func removeFromStories(_ value: CollectionStory)
+    @NSManaged public func removeFromStories(_ value: CDCollectionStory)
 
     @objc(addStories:)
     @NSManaged public func addToStories(_ values: NSOrderedSet)
