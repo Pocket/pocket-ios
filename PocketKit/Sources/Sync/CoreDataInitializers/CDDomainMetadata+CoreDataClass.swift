@@ -6,6 +6,6 @@
 import Foundation
 import CoreData
 
-@objc(DomainMetadata)
-public class DomainMetadata: NSManagedObject {
+@objc(CDDomainMetadata)
+public class CDDomainMetadata: NSManagedObject {
 }

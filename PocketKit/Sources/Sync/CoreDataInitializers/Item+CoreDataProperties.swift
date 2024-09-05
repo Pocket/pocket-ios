@@ -30,7 +30,7 @@ extension Item {
     @NSManaged public var videoness: String?
     @NSManaged public var authors: NSOrderedSet?
     @NSManaged public var collection: CDCollection?
-    @NSManaged public var domainMetadata: DomainMetadata?
+    @NSManaged public var domainMetadata: CDDomainMetadata?
     @NSManaged public var images: NSOrderedSet?
     @NSManaged public var recommendation: Recommendation?
     @NSManaged public var savedItem: SavedItem?
