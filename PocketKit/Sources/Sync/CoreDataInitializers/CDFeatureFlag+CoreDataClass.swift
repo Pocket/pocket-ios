@@ -6,6 +6,6 @@
 import Foundation
 import CoreData
 
-@objc(FeatureFlag)
-public class FeatureFlag: NSManagedObject {
+@objc(CDFeatureFlag)
+public class CDFeatureFlag: NSManagedObject {
 }
