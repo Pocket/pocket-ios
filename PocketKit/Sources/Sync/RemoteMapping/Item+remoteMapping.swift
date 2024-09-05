@@ -70,7 +70,7 @@ extension Item {
                 return
             }
 
-            addToImages(Image(remote: remoteImage, context: context))
+            addToImages(CDImage(remote: remoteImage, context: context))
         }
 
         if let syndicatedArticle = remote.syndicatedArticle, let itemId = syndicatedArticle.itemId {
@@ -105,7 +105,7 @@ extension Item {
         }
 
         if let topImageURL {
-            addToImages(Image(url: topImageURL, context: context))
+            addToImages(CDImage(url: topImageURL, context: context))
         }
 
         if let syndicatedArticle = corpusItem.target?.asSyndicatedArticle, let itemId = syndicatedArticle.itemId {
@@ -116,7 +116,7 @@ extension Item {
             self.syndicatedArticle?.excerpt = syndicatedArticle.excerpt
             self.syndicatedArticle?.imageURL = syndicatedArticle.mainImage.flatMap(URL.init(string:))
             if let imageSrc = syndicatedArticle.mainImage {
-                self.syndicatedArticle?.image = Image(src: imageSrc, context: context)
+                self.syndicatedArticle?.image = CDImage(src: imageSrc, context: context)
             }
         }
 
@@ -159,7 +159,7 @@ extension Item {
         }
         if let imageUrl = storyItem.topImageUrl, let url = URL(string: imageUrl) {
             topImageURL = url
-            addToImages(Image(url: url, context: context))
+            addToImages(CDImage(url: url, context: context))
         }
 
         if let metaParts = storyItem.domainMetadata?.fragments.domainMetadataParts {
@@ -191,7 +191,7 @@ extension Item {
                 return
             }
 
-            addToImages(Image(remote: remoteImage, context: context))
+            addToImages(CDImage(remote: remoteImage, context: context))
         }
 
         if let syndicatedArticle = storyItem.syndicatedArticle, let itemId = syndicatedArticle.itemId {
@@ -232,7 +232,7 @@ extension Item {
         }
 
         if let topImageURL {
-            addToImages(Image(url: topImageURL, context: context))
+            addToImages(CDImage(url: topImageURL, context: context))
         }
 
         if let metaParts = summary.domainMetadata?.fragments.domainMetadataParts {
@@ -261,7 +261,7 @@ extension Item {
                 return
             }
 
-            addToImages(Image(remote: remoteImage, context: context))
+            addToImages(CDImage(remote: remoteImage, context: context))
         }
 
         if let syndicatedArticle = summary.syndicatedArticle, let itemId = syndicatedArticle.itemId {
@@ -272,7 +272,7 @@ extension Item {
             self.syndicatedArticle?.excerpt = syndicatedArticle.excerpt
             self.syndicatedArticle?.imageURL = syndicatedArticle.mainImage.flatMap(URL.init(string:))
             if let imageSrc = syndicatedArticle.mainImage {
-                self.syndicatedArticle?.image = Image(src: imageSrc, context: context)
+                self.syndicatedArticle?.image = CDImage(src: imageSrc, context: context)
             }
         }
     }

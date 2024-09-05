@@ -12,7 +12,7 @@ public protocol ImagesControllerDelegate: AnyObject {
 public protocol ImagesController: AnyObject {
     var delegate: ImagesControllerDelegate? { get set }
 
-    var images: [Image]? { get }
+    var images: [CDImage]? { get }
 
     func performFetch() throws
 }
@@ -20,9 +20,9 @@ public protocol ImagesController: AnyObject {
 class FetchedImagesController: NSObject, ImagesController {
     weak var delegate: ImagesControllerDelegate?
 
-    private let resultsController: NSFetchedResultsController<Image>
+    private let resultsController: NSFetchedResultsController<CDImage>
 
-    init(resultsController: NSFetchedResultsController<Image>) {
+    init(resultsController: NSFetchedResultsController<CDImage>) {
         self.resultsController = resultsController
 
         super.init()
@@ -30,7 +30,7 @@ class FetchedImagesController: NSObject, ImagesController {
         resultsController.delegate = self
     }
 
-    var images: [Image]? {
+    var images: [CDImage]? {
         resultsController.fetchedObjects
     }
 

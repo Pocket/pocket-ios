@@ -8,7 +8,7 @@ import Sync
 
 extension Recommendation {
     var bestImageURL: URL? {
-        guard let topImageURL = imageURL ?? item.syndicatedArticle?.imageURL ?? item.topImageURL ?? (item.images?.firstObject as? Image)?.source else {
+        guard let topImageURL = imageURL ?? item.syndicatedArticle?.imageURL ?? item.topImageURL ?? (item.images?.firstObject as? CDImage)?.source else {
             return nil
         }
 
