@@ -933,7 +933,7 @@ extension PocketSource {
         try await collectionService.fetchCollection(by: slug)
     }
 
-    public func fetchCollectionAuthors(by slug: String) -> [CollectionAuthor] {
+    public func fetchCollectionAuthors(by slug: String) -> [CDCollectionAuthor] {
         (try? space.fetchCollectionAuthors(by: slug)) ?? []
     }
 }

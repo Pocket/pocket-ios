@@ -149,11 +149,11 @@ extension Space {
         return try fetch(Requests.fetchCollection(by: slug), context: context).first
     }
 
-    func fetchCollectionAuthor(by name: String, context: NSManagedObjectContext? = nil) throws -> CollectionAuthor? {
+    func fetchCollectionAuthor(by name: String, context: NSManagedObjectContext? = nil) throws -> CDCollectionAuthor? {
         return try fetch(Requests.fetchCollectionAuthor(by: name), context: context).first
     }
 
-    func fetchCollectionAuthors(by slug: String, context: NSManagedObjectContext? = nil) throws -> [CollectionAuthor] {
+    func fetchCollectionAuthors(by slug: String, context: NSManagedObjectContext? = nil) throws -> [CDCollectionAuthor] {
         return try fetch(Requests.fetchCollectionAuthors(by: slug))
     }
 
