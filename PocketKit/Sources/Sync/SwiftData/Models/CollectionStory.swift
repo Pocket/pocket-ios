@@ -15,7 +15,7 @@ public class CollectionStory {
     var title: String
     var url: String
     var authors: [CollectionAuthor]
-    var collection: Collection?
+    var collection: Sync.Collection?
     var item: Item?
     public init(excerpt: String, title: String, url: String, authors: [CollectionAuthor] = []) {
         self.excerpt = excerpt
@@ -24,5 +24,5 @@ public class CollectionStory {
         self.authors = authors
     }
 
-#warning("The property \"ordered\" on CollectionStory:authors is unsupported in SwiftData.")
+// #warning("The property \"ordered\" on CollectionStory:authors is unsupported in SwiftData.")
 }

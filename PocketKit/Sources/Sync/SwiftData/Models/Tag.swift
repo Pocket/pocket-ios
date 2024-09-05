@@ -7,14 +7,15 @@ import Foundation
 import SwiftData
 
 @Model
-public class CollectionAuthor {
-    // ios 18 only - #Unique<CollectionAuthor>([\.name])
+public class Tag {
+    // #Unique<Tag>([\.name])
     var name: String
-    @Relationship(inverse: \Collection.authors)
-    var collection: [Collection]?
-    @Relationship(inverse: \CollectionStory.authors)
-    var collectionStory: [CollectionStory]?
+    var remoteID: String?
+    var savedItems: [SavedItem]?
     public init(name: String) {
         self.name = name
     }
+
+// #warning("The property \"ordered\" on Tag:savedItems is unsupported in SwiftData.")
+
 }
