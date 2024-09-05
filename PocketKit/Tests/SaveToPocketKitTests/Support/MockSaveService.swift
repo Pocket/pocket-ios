@@ -74,10 +74,10 @@ extension MockSaveService {
 // MARK: - Add Tags
 extension MockSaveService {
     private static let addTags = "addTags"
-    typealias AddTagsImpl = (SavedItem, [String]?) -> SaveServiceStatus
+    typealias AddTagsImpl = (CDSavedItem, [String]?) -> SaveServiceStatus
 
     struct AddTagsImplCall {
-        let savedItem: SavedItem
+        let savedItem: CDSavedItem
         let tags: [String]?
     }
 
@@ -85,7 +85,7 @@ extension MockSaveService {
         implementations[Self.addTags] = impl
     }
 
-    func addTags(savedItem: SavedItem, tags: [String]) -> SaveServiceStatus {
+    func addTags(savedItem: CDSavedItem, tags: [String]) -> SaveServiceStatus {
         guard let impl = implementations[Self.addTags] as? AddTagsImpl else {
             fatalError("\(Self.self)#\(#function) has not been stubbed")
         }

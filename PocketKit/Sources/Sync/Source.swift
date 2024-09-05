@@ -28,7 +28,7 @@ public protocol Source {
 
     func deleteAccount() async throws
 
-    func makeRecentSavesController() -> NSFetchedResultsController<SavedItem>
+    func makeRecentSavesController() -> NSFetchedResultsController<CDSavedItem>
 
     func makeHomeController() -> RichFetchedResultsController<CDRecommendation>
 
@@ -50,19 +50,19 @@ public protocol Source {
 
     func retryImmediately()
 
-    func favorite(item: SavedItem)
+    func favorite(item: CDSavedItem)
 
-    func unfavorite(item: SavedItem)
+    func unfavorite(item: CDSavedItem)
 
-    func delete(item: SavedItem)
+    func delete(item: CDSavedItem)
 
-    func archive(item: SavedItem)
+    func archive(item: CDSavedItem)
 
-    func unarchive(item: SavedItem)
+    func unarchive(item: CDSavedItem)
 
-    func addTags(item: SavedItem, tags: [String])
+    func addTags(item: CDSavedItem, tags: [String])
 
-    func replaceTags(_ savedItem: SavedItem, tags: [String])
+    func replaceTags(_ savedItem: CDSavedItem, tags: [String])
 
     func deleteTag(tag: Tag)
 
@@ -96,7 +96,7 @@ public protocol Source {
 
     func delete(images: [CDImage])
 
-    func fetchDetails(for savedItem: SavedItem) async throws -> Bool
+    func fetchDetails(for savedItem: CDSavedItem) async throws -> Bool
 
     func fetchDetails(for item: CDItem) async throws -> Bool
 
@@ -114,11 +114,11 @@ public protocol Source {
 
     func fetchViewItem(from url: String) async throws -> CDItem?
 
-    func searchSaves(search: String) -> [SavedItem]?
+    func searchSaves(search: String) -> [CDSavedItem]?
 
-    func fetchOrCreateSavedItem(with url: String, and remoteParts: SavedItem.RemoteSavedItem?) -> SavedItem?
+    func fetchOrCreateSavedItem(with url: String, and remoteParts: CDSavedItem.RemoteSavedItem?) -> CDSavedItem?
 
-    func fetchViewContextSavedItem(_ url: String) -> SavedItem?
+    func fetchViewContextSavedItem(_ url: String) -> CDSavedItem?
 
     /// Get the count of unread saves
     /// - Returns: Int of unread saves
@@ -147,7 +147,7 @@ public protocol Source {
     func updateSharedWithYouItems(with urls: [String])
     func makeSharedWithYouController() -> RichFetchedResultsController<SharedWithYouItem>
     func item(by slug: String) async throws -> CDItem?
-    func readerItem(by slug: String) async throws -> (SavedItem?, CDItem?)
+    func readerItem(by slug: String) async throws -> (CDSavedItem?, CDItem?)
     func requestShareUrl(_ itemUrl: String) async throws -> String?
     func deleteAllSharedWithYouItems() throws
 

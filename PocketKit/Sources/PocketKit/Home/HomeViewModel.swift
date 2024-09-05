@@ -142,7 +142,7 @@ class HomeViewModel: NSObject {
     private let recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService
     private let recommendationsWidgetUpdateService: RecommendationsWidgetUpdateService
 
-    private let recentSavesController: NSFetchedResultsController<SavedItem>
+    private let recentSavesController: NSFetchedResultsController<CDSavedItem>
     private let recomendationsController: RichFetchedResultsController<CDRecommendation>
     private let sharedWithYouController: RichFetchedResultsController<SharedWithYouItem>
     private(set) var numberOfSharedWithYouItems = 0
@@ -343,7 +343,7 @@ extension HomeViewModel {
         case .loading, .offline:
             return
         case .recentSaves(let objectID):
-            guard let savedItem = source.viewObject(id: objectID) as? SavedItem else {
+            guard let savedItem = source.viewObject(id: objectID) as? CDSavedItem else {
                 return
             }
             select(savedItem: savedItem, at: indexPath)
@@ -519,7 +519,7 @@ extension HomeViewModel {
         }
     }
 
-    func select(savedItem: SavedItem, at indexPath: IndexPath? = nil, readableSource: ReadableSource = .app, shouldOpenListenOnAppear: Bool = false) {
+    func select(savedItem: CDSavedItem, at indexPath: IndexPath? = nil, readableSource: ReadableSource = .app, shouldOpenListenOnAppear: Bool = false) {
         if let slug = savedItem.item?.collection?.slug ?? savedItem.item?.collectionSlug {
             selectedReadableType = .collection(CollectionViewModel(
                 slug: slug,
@@ -679,7 +679,7 @@ extension HomeViewModel {
         for objectID: NSManagedObjectID,
         at indexPath: IndexPath
     ) -> RecentSavesCellConfiguration? {
-        guard let savedItem = source.viewObject(id: objectID) as? SavedItem else {
+        guard let savedItem = source.viewObject(id: objectID) as? CDSavedItem else {
             return nil
         }
 
@@ -713,7 +713,7 @@ extension HomeViewModel {
         )
     }
 
-    private func confirmDelete(item: SavedItem, indexPath: IndexPath) {
+    private func confirmDelete(item: CDSavedItem, indexPath: IndexPath) {
         presentedAlert = PocketAlert(
             title: Localization.areYouSureYouWantToDeleteThisItem,
             message: nil,
@@ -731,7 +731,7 @@ extension HomeViewModel {
         )
     }
 
-    private func delete(item: SavedItem, indexPath: IndexPath) {
+    private func delete(item: CDSavedItem, indexPath: IndexPath) {
         presentedAlert = nil
         tracker.track(event: Events.Home.RecentSavesCardDelete(url: item.url, positionInList: indexPath.item))
         source.delete(item: item)
@@ -861,7 +861,7 @@ extension HomeViewModel {
         tracker.track(event: Events.Home.SlateArticleShare(url: shareableUrl, positionInList: indexPath.item, recommendationId: recommendation.analyticsID))
     }
 
-    private func share(_ savedItem: SavedItem, at indexPath: IndexPath, with sender: Any?) async {
+    private func share(_ savedItem: CDSavedItem, at indexPath: IndexPath, with sender: Any?) async {
         // This view model is used within the context of a view that is presented within Home, but
         // within the context of "Recent Saves"
         let shareableUrl = await shareableUrl(savedItem.item) ?? savedItem.url
@@ -900,7 +900,7 @@ extension HomeViewModel {
         tracker.track(event: Events.Home.SlateArticleArchive(url: givenURL, positionInList: indexPath.item, recommendationId: recommendation.analyticsID))
     }
 
-    private func archive(_ savedItem: SavedItem, at indexPath: IndexPath) {
+    private func archive(_ savedItem: CDSavedItem, at indexPath: IndexPath) {
         self.source.archive(item: savedItem)
         tracker.track(event: Events.Home.RecentSavesCardArchive(url: savedItem.url, positionInList: indexPath.item))
     }
@@ -920,7 +920,7 @@ extension HomeViewModel {
             }
             tracker.track(event: Events.Home.sharedWithYouCardImpression(url: sharedWithYouItem.url, positionInList: indexPath.item))
         case .recentSaves(let objectID):
-            guard let savedItem = source.viewObject(id: objectID) as? SavedItem else {
+            guard let savedItem = source.viewObject(id: objectID) as? CDSavedItem else {
                 Log.breadcrumb(category: "home", level: .debug, message: "Could not turn recent save into Saved Item from objectID: \(String(describing: objectID))")
                 Log.capture(message: "SavedItem is null on willDisplay Home Recent Saves")
                 return

@@ -12,5 +12,5 @@ extension SavedItemUpdatedNotification {
         return NSFetchRequest<SavedItemUpdatedNotification>(entityName: "SavedItemUpdatedNotification")
     }
 
-    @NSManaged public var savedItem: SavedItem?
+    @NSManaged public var savedItem: CDSavedItem?
 }

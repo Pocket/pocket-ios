@@ -602,20 +602,20 @@ extension DefaultSearchViewModel: SearchResultActionDelegate {
     }
 
     /// Triggers action to archive an item in a list
-    func archive(_ savedItem: SavedItem, index: Int) {
+    func archive(_ savedItem: CDSavedItem, index: Int) {
         tracker.track(event: Events.Search.archiveItem(itemUrl: savedItem.url, positionInList: index, scope: selectedScope))
         source.archive(item: savedItem)
         updateLocalSearchResults(ByRemoving: savedItem)
     }
 
     /// Triggers action to move an item from archive to saves in a list
-    func moveToSaves(_ savedItem: SavedItem, index: Int) {
+    func moveToSaves(_ savedItem: CDSavedItem, index: Int) {
         tracker.track(event: Events.Search.unarchiveItem(itemUrl: savedItem.url, positionInList: index, scope: selectedScope))
         source.unarchive(item: savedItem)
         updateLocalSearchResults(ByRemoving: savedItem)
     }
 
-    private func updateLocalSearchResults(ByRemoving item: SavedItem) {
+    private func updateLocalSearchResults(ByRemoving item: CDSavedItem) {
         guard selectedScope != .all else { return }
 
         if case let .searchResults(results) = searchState {
@@ -631,7 +631,7 @@ extension DefaultSearchViewModel: SearchResultActionDelegate {
         }
     }
 
-    func fetchSavedItem(_ searchItem: PocketItem) -> SavedItem? {
+    func fetchSavedItem(_ searchItem: PocketItem) -> CDSavedItem? {
         guard let savedItem = source.fetchOrCreateSavedItem(
             with: searchItem.savedItemURL,
             and: searchItem.remoteItemParts
@@ -703,7 +703,7 @@ extension DefaultSearchViewModel {
 extension DefaultSearchViewModel: SavedItemsControllerDelegate {
     public func controller(
         _ controller: SavedItemsController,
-        didChange savedItem: SavedItem,
+        didChange savedItem: CDSavedItem,
         at indexPath: IndexPath?,
         for type: NSFetchedResultsChangeType,
         newIndexPath: IndexPath?
@@ -712,7 +712,7 @@ extension DefaultSearchViewModel: SavedItemsControllerDelegate {
     }
 
     public func controller(_ controller: SavedItemsController, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
-        guard case .searchResults(let items) = searchState, let savedItems = items.map({ $0.item }) as? [SavedItem] else {
+        guard case .searchResults(let items) = searchState, let savedItems = items.map({ $0.item }) as? [CDSavedItem] else {
             return
         }
         let currentObjectIDs = savedItems.map { $0.objectID }
@@ -726,7 +726,7 @@ extension DefaultSearchViewModel: SavedItemsControllerDelegate {
     }
 
     /// Checks if a saved item should be moved to archive or vice versa
-    private func outOfScope(_ savedItem: SavedItem) -> Bool {
+    private func outOfScope(_ savedItem: CDSavedItem) -> Bool {
         (savedItem.isArchived && selectedScope == .saves) || (!savedItem.isArchived && selectedScope == .archive)
     }
 }

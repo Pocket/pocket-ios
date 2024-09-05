@@ -11,7 +11,7 @@ import Analytics
 import SharedPocketKit
 
 class SaveToAddTagsViewModel: AddTagsViewModel {
-    private let item: SavedItem?
+    private let item: CDSavedItem?
     private let tracker: Tracker
     private let userDefaults: UserDefaults
     private let user: User
@@ -41,7 +41,7 @@ class SaveToAddTagsViewModel: AddTagsViewModel {
 
     @Published var otherTags: [TagType] = []
 
-    init(item: SavedItem?, tracker: Tracker, userDefaults: UserDefaults, user: User, retrieveAction: @escaping ([String]) -> [Tag]?, filterAction: @escaping (String, [String]) -> [Tag]?, saveAction: @escaping ([String]) -> Void) {
+    init(item: CDSavedItem?, tracker: Tracker, userDefaults: UserDefaults, user: User, retrieveAction: @escaping ([String]) -> [Tag]?, filterAction: @escaping (String, [String]) -> [Tag]?, saveAction: @escaping ([String]) -> Void) {
         self.item = item
         self.tracker = tracker
         self.retrieveAction = retrieveAction

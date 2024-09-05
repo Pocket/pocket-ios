@@ -136,7 +136,7 @@ extension ReadableViewModel {
         delete()
     }
 
-    func webViewActivityItems(for item: SavedItem) -> [UIActivity] {
+    func webViewActivityItems(for item: CDSavedItem) -> [UIActivity] {
         let archiveActivityTitle: WebActivityTitle = (item.isArchived
                                                       ? .moveToSaves
                                                        : .archive)

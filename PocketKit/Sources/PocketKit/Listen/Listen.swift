@@ -204,7 +204,7 @@ extension Listen: PKTListenPocketProxy {
     ///   - kusari: An object representing the item the user saved
     ///   - userInfo: Extra context info as needed
     func archiveKusari(_ kusari: PKTKusari<PKTListenItem>, userInfo: [AnyHashable: Any] = [:]) {
-        guard let savedItem = kusari.album as? SavedItem else {
+        guard let savedItem = kusari.album as? CDSavedItem else {
             Log.capture(message: "Tried to archive item from Listen where we dont have the SavedItem")
             return
         }

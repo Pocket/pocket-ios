@@ -27,11 +27,11 @@ public protocol SearchService: AnyObject {
 }
 
 public struct SearchSavedItem {
-    public var remoteItem: SavedItem.RemoteSavedItem
-    public var item: SavedItem.RemoteSavedItem.Item
+    public var remoteItem: CDSavedItem.RemoteSavedItem
+    public var item: CDSavedItem.RemoteSavedItem.Item
     public var cursor: String?
 
-    init(remoteItem: SavedItem.RemoteSavedItem) {
+    init(remoteItem: CDSavedItem.RemoteSavedItem) {
         self.remoteItem = remoteItem
         self.item = remoteItem.item
     }

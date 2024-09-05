@@ -21,35 +21,35 @@ class ItemExtensionsTests: XCTestCase {
     }
 
     func test_shouldOpenInWebView_andIsNotArticle_returnsTrue() throws {
-        let savedItem: SavedItem = try space.createSavedItem()
+        let savedItem: CDSavedItem = try space.createSavedItem()
         savedItem.item?.isArticle = false
 
         XCTAssertEqual(savedItem.shouldOpenInWebView(override: false), true)
     }
 
     func test_shouldOpenInWebView_andIsArticle_returnsFalse() throws {
-        let savedItem: SavedItem = try space.createSavedItem()
+        let savedItem: CDSavedItem = try space.createSavedItem()
         savedItem.item?.isArticle = true
 
         XCTAssertEqual(savedItem.shouldOpenInWebView(override: false), false)
     }
 
     func test_shouldOpenInWebView_withArticleComponents_returnsTrue() throws {
-        let savedItem: SavedItem = try space.createSavedItem()
+        let savedItem: CDSavedItem = try space.createSavedItem()
         savedItem.item?.article = .some(Article(components: [.text(TextComponent(content: "This article has components"))]))
 
         XCTAssertEqual(savedItem.item?.hasArticleComponents, true)
     }
 
     func test_hasArticleComponents_withEmptyArticleComponents_returnsFalse() throws {
-        let savedItem: SavedItem = try space.createSavedItem()
+        let savedItem: CDSavedItem = try space.createSavedItem()
         savedItem.item?.article = .some(Article(components: []))
 
         XCTAssertEqual(savedItem.item?.hasArticleComponents, false)
     }
 
     func test_hasArticleComponents_withNilArticleComponents_returnsFalse() throws {
-        let savedItem: SavedItem = try space.createSavedItem()
+        let savedItem: CDSavedItem = try space.createSavedItem()
         savedItem.item?.article = nil
 
         XCTAssertEqual(savedItem.item?.hasArticleComponents, false)

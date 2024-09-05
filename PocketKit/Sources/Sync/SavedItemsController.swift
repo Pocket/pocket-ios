@@ -9,7 +9,7 @@ import UIKit
 public protocol SavedItemsControllerDelegate: AnyObject {
     func controller(
         _ controller: SavedItemsController,
-        didChange aSavedItem: SavedItem,
+        didChange aSavedItem: CDSavedItem,
         at indexPath: IndexPath?,
         for type: NSFetchedResultsChangeType,
         newIndexPath: IndexPath?
@@ -25,19 +25,19 @@ public protocol SavedItemsController: AnyObject {
 
     var sortDescriptors: [NSSortDescriptor]? { get set }
 
-    var fetchedObjects: [SavedItem]? { get }
+    var fetchedObjects: [CDSavedItem]? { get }
 
     func performFetch() throws
 
-    func indexPath(forObject: SavedItem) -> IndexPath?
+    func indexPath(forObject: CDSavedItem) -> IndexPath?
 }
 
 class FetchedSavedItemsController: NSObject, SavedItemsController {
     weak var delegate: SavedItemsControllerDelegate?
 
-    private let resultsController: NSFetchedResultsController<SavedItem>
+    private let resultsController: NSFetchedResultsController<CDSavedItem>
 
-    init(resultsController: NSFetchedResultsController<SavedItem>) {
+    init(resultsController: NSFetchedResultsController<CDSavedItem>) {
         self.resultsController = resultsController
 
         super.init()
@@ -55,7 +55,7 @@ class FetchedSavedItemsController: NSObject, SavedItemsController {
         set { resultsController.fetchRequest.predicate = newValue }
     }
 
-    var fetchedObjects: [SavedItem]? {
+    var fetchedObjects: [CDSavedItem]? {
         resultsController.fetchedObjects
     }
 
@@ -63,7 +63,7 @@ class FetchedSavedItemsController: NSObject, SavedItemsController {
         try resultsController.performFetch()
     }
 
-    func indexPath(forObject object: SavedItem) -> IndexPath? {
+    func indexPath(forObject object: CDSavedItem) -> IndexPath? {
         resultsController.indexPath(forObject: object)
     }
 }
@@ -76,7 +76,7 @@ extension FetchedSavedItemsController: NSFetchedResultsControllerDelegate {
         for type: NSFetchedResultsChangeType,
         newIndexPath: IndexPath?
     ) {
-        guard let savedItem = anObject as? SavedItem else {
+        guard let savedItem = anObject as? CDSavedItem else {
             return
         }
 

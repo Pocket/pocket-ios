@@ -150,7 +150,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         viewModel.snapshot.dropFirst().sink { [unowned self] snapshot in
             XCTAssertEqual(
                 self.itemsController.sortDescriptors,
-                [NSSortDescriptor(keyPath: \SavedItem.createdAt, ascending: true)]
+                [NSSortDescriptor(keyPath: \CDSavedItem.createdAt, ascending: true)]
             )
 
             snapshotSent.fulfill()
