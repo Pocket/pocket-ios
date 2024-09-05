@@ -199,6 +199,8 @@
 "tags.renameTag" = "Zmień nazwę tagu";
 "tags.renameTag.message" = "Wprowadź nową nazwę tego tagu";
 "tags.renameTag.prompt" = "Nazwa tagu";
+"tags.renameTag.tagAlreadyInUse.title" = "Tag jest już używany";
+"tags.renameTag.tagAlreadyInUse.message" = "Ten tag jest już używany, wybierz inną nazwę.";
 
 //Reader 
 "reader.activity.save" = "Zapisz";

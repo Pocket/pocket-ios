@@ -199,6 +199,8 @@
 "tags.renameTag" = "重新命名標籤";
 "tags.renameTag.message" = "輸入此標籤的新名稱";
 "tags.renameTag.prompt" = "標籤名稱";
+"tags.renameTag.tagAlreadyInUse.title" = "已有此標籤";
+"tags.renameTag.tagAlreadyInUse.message" = "已有此標籤，請選擇其他名稱。";
 
 //Reader 
 "reader.activity.save" = "儲存";
