@@ -6,10 +6,10 @@
 import Foundation
 import CoreData
 
-extension SharedWithYouItem {
+extension CDSharedWithYouItem {
     @nonobjc
-    public class func fetchRequest() -> NSFetchRequest<SharedWithYouItem> {
-        return NSFetchRequest<SharedWithYouItem>(entityName: "SharedWithYouItem")
+    public class func fetchRequest() -> NSFetchRequest<CDSharedWithYouItem> {
+        return NSFetchRequest<CDSharedWithYouItem>(entityName: "SharedWithYouItem")
     }
 
     @NSManaged public var url: String

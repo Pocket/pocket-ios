@@ -355,7 +355,7 @@ extension Space {
 
 // MARK: Shared With You
 extension Space {
-    func makeSharedWithYouController(limit: Int? = nil) -> RichFetchedResultsController<SharedWithYouItem> {
+    func makeSharedWithYouController(limit: Int? = nil) -> RichFetchedResultsController<CDSharedWithYouItem> {
         RichFetchedResultsController(
             fetchRequest: Requests.fetchSharedWithYouItems(limit: limit),
             managedObjectContext: viewContext,
@@ -364,7 +364,7 @@ extension Space {
         )
     }
 
-    func fetchSharedWithYouItem(with url: String, in context: NSManagedObjectContext?) throws -> SharedWithYouItem? {
+    func fetchSharedWithYouItem(with url: String, in context: NSManagedObjectContext?) throws -> CDSharedWithYouItem? {
         let request = Requests.fetchSharedWithYouItem()
         request.predicate = NSPredicate(format: "url = %@", url)
         request.fetchLimit = 1
@@ -601,7 +601,7 @@ private extension Space {
     }
 
     func deleteOrphanedSharedWithYouItems(context: NSManagedObjectContext) throws {
-        let fetchRequest = SharedWithYouItem.fetchRequest()
+        let fetchRequest = CDSharedWithYouItem.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "item = NULL")
         try deleteEntities(request: fetchRequest, context: context)
     }
