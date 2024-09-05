@@ -48,7 +48,7 @@ private extension RootView {
             .onContinueUserActivity(CSSearchableItemActionType, perform: { userActivity in
                 model.handleSpotlight(userActivity)
             })
-//            .modelContainer(Services.shared.dataController)
+            .modelContainer(Services.shared.dataController)
     }
 
     func loggedOutView(model: LoggedOutViewModel) -> LoggedOutViewControllerSwiftUI {

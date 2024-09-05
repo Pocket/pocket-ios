@@ -731,7 +731,7 @@ class CollectionViewModelTests: XCTestCase {
         wait(for: [reportExpectation], timeout: 1)
     }
 
-    private func setupCollection(with item: CDItem?, space: Space? = nil, stories: [CDCollectionStory] = []) -> Collection {
+    private func setupCollection(with item: CDItem?, space: Space? = nil, stories: [CDCollectionStory] = []) -> CDCollection {
         let space = space ?? self.space!
 
         source.stubFetchItem { url in

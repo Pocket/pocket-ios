@@ -49,7 +49,7 @@ struct Services {
     let recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService
     let recommendationsWidgetUpdateService: RecommendationsWidgetUpdateService
     let sharedWithYouStore: SharedWithYouStore
-//    let dataController: ModelContainer
+    let dataController: ModelContainer
 
     private let persistentContainer: PersistentContainer
     private let sceneTracker: SceneTracker
@@ -64,10 +64,10 @@ struct Services {
         Self.handleUpgrades(lastLaunchedAppVersion: lastLaunchedAppVersion, lastRefresh: lastRefresh)
         notificationCenter = .default
 
+        // Init the Group ID for Swift Data
+        DataController.appGroupContainerID = Keys.shared.groupID
+        dataController = DataController.sharedModelContainer
         persistentContainer = .init(storage: .shared, groupID: Keys.shared.groupID)
-//        // Init the Group ID for Swift Data
-//        DataController.appGroupContainerID = Keys.shared.groupID
-//        dataController = DataController.sharedModelContainer
 
         urlSession = URLSession.shared
 
