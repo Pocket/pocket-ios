@@ -174,7 +174,7 @@ extension Space {
         requestID: String = "slate-lineup-1-request",
         experimentID: String = "slate-lineup-1-experiment",
         slates: [CDSlate] = []
-    ) throws -> SlateLineup {
+    ) throws -> CDSlateLineup {
         try backgroundContext.performAndWait {
             let slateLineup = buildSlateLineup(
                 remoteID: remoteID,
@@ -194,9 +194,9 @@ extension Space {
         requestID: String = "slate-lineup-1-request",
         experimentID: String = "slate-lineup-1-experiment",
         slates: [CDSlate] = []
-    ) -> SlateLineup {
+    ) -> CDSlateLineup {
         backgroundContext.performAndWait {
-            let lineup: SlateLineup = SlateLineup(context: backgroundContext, remoteID: remoteID, expermimentID: experimentID, requestID: requestID)
+            let lineup: CDSlateLineup = CDSlateLineup(context: backgroundContext, remoteID: remoteID, expermimentID: experimentID, requestID: requestID)
             lineup.slates = NSOrderedSet(array: slates)
             var i = 1
             lineup.slates?.forEach { slate in
