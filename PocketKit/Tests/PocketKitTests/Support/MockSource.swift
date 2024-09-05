@@ -1191,9 +1191,9 @@ extension MockSource {
 
 extension MockSource {
     private static let deleteImages = "deleteImages"
-    typealias DeleteImagesImpl = ([Image]) -> Void
+    typealias DeleteImagesImpl = ([CDImage]) -> Void
     struct DeleteImagesCall {
-        let images: [Image]
+        let images: [CDImage]
     }
 
     func stubDeleteImages(_ impl: @escaping DeleteImagesImpl) {
@@ -1210,7 +1210,7 @@ extension MockSource {
         return call
     }
 
-    func delete(images: [Image]) {
+    func delete(images: [CDImage]) {
         guard let impl = implementations[Self.deleteImages] as? DeleteImagesImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }

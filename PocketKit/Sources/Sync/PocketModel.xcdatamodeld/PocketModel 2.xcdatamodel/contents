@@ -17,7 +17,7 @@
         <attribute name="payloadValue" optional="YES" attributeType="String"/>
         <attribute name="variant" optional="YES" attributeType="String"/>
     </entity>
-    <entity name="Image" representedClassName="Image" syncable="YES">
+    <entity name="Image" representedClassName="CDImage" syncable="YES">
         <attribute name="isDownloaded" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="source" optional="YES" attributeType="URI"/>
         <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="images" inverseEntity="Item"/>
