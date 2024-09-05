@@ -6,10 +6,10 @@
 import Foundation
 import CoreData
 
-extension PersistentSyncTask {
+extension CDPersistentSyncTask {
     @nonobjc
-    public class func fetchRequest() -> NSFetchRequest<PersistentSyncTask> {
-        return NSFetchRequest<PersistentSyncTask>(entityName: "PersistentSyncTask")
+    public class func fetchRequest() -> NSFetchRequest<CDPersistentSyncTask> {
+        return NSFetchRequest<CDPersistentSyncTask>(entityName: "PersistentSyncTask")
     }
 
     @NSManaged public var createdAt: Date?

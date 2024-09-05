@@ -313,7 +313,7 @@ extension Space {
         return try fetch(Requests.fetchAllSavedItems())
     }
 
-    func fetchPersistentSyncTasks() throws -> [PersistentSyncTask] {
+    func fetchPersistentSyncTasks() throws -> [CDPersistentSyncTask] {
         return try fetch(Requests.fetchPersistentSyncTasks())
     }
 

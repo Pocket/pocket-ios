@@ -98,7 +98,7 @@ class RetriableOperation: AsyncOperation {
     private func clearPersistentTask() {
         do {
             Log.info("Deleting persistent task with objectID \(self.syncTaskId)")
-            guard let task = space.backgroundObject(with: syncTaskId) as? PersistentSyncTask else { return }
+            guard let task = space.backgroundObject(with: syncTaskId) as? CDPersistentSyncTask else { return }
             space.delete(task)
             try space.save()
         } catch {

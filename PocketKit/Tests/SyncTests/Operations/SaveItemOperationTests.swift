@@ -16,7 +16,7 @@ class SaveItemOperationTests: XCTestCase {
     var subscriptions: [AnyCancellable] = []
     var queue: OperationQueue!
     var events: SyncEvents!
-    var task: PersistentSyncTask!
+    var task: CDPersistentSyncTask!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
@@ -24,7 +24,7 @@ class SaveItemOperationTests: XCTestCase {
         space = .testSpace()
         queue = OperationQueue()
         events = PassthroughSubject()
-        task = PersistentSyncTask(context: space.backgroundContext)
+        task = CDPersistentSyncTask(context: space.backgroundContext)
         task.syncTaskContainer = SyncTaskContainer(task: .fetchSaves)
         try space.save()
     }
