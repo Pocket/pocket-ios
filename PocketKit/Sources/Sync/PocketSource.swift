@@ -215,7 +215,7 @@ public class PocketSource: Source {
         space.makeFeatureFlagsController()
     }
 
-    public func makeCollectionStoriesController(slug: String) -> RichFetchedResultsController<CollectionStory> {
+    public func makeCollectionStoriesController(slug: String) -> RichFetchedResultsController<CDCollectionStory> {
         space.makeCollectionStoriesController(slug: slug)
     }
 
@@ -1230,9 +1230,9 @@ extension PocketSource {
         }
     }
 
-    public func save(collectionStory: CollectionStory) {
+    public func save(collectionStory: CDCollectionStory) {
         space.performAndWait {
-            guard let collectionStory = space.backgroundObject(with: collectionStory.objectID) as? CollectionStory,
+            guard let collectionStory = space.backgroundObject(with: collectionStory.objectID) as? CDCollectionStory,
             let givenURL = collectionStory.item?.givenURL else {
                 return
             }
@@ -1260,9 +1260,9 @@ extension PocketSource {
         }
     }
 
-    public func archive(collectionStory: CollectionStory) {
+    public func archive(collectionStory: CDCollectionStory) {
         space.performAndWait {
-            guard let collectionStory = space.backgroundObject(with: collectionStory.objectID) as? CollectionStory,
+            guard let collectionStory = space.backgroundObject(with: collectionStory.objectID) as? CDCollectionStory,
                   let savedItem = collectionStory.item?.savedItem, savedItem.isArchived == false else {
                 return
             }
