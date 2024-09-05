@@ -493,10 +493,10 @@ extension PocketSource {
         enqueue(operation: operation, task: .save(localID: item.objectID.uriRepresentation(), url: item.url), queue: saveQueue)
     }
 
-    public func deleteHighlight(highlight: Highlight) {
+    public func deleteHighlight(highlight: CDHighlight) {
         Log.breadcrumb(category: "sync", level: .debug, message: "Deleting a single highlight")
         space.performAndWait {
-            guard let highlight = space.backgroundObject(with: highlight.objectID) as? Highlight, let remoteID = highlight.remoteID else {
+            guard let highlight = space.backgroundObject(with: highlight.objectID) as? CDHighlight, let remoteID = highlight.remoteID else {
                 Log.capture(message: "Could not retreive highlight from background context for mutation")
                 return
             }
@@ -527,7 +527,7 @@ extension PocketSource {
 
             let remoteID = UUID().uuidString
 
-            let highlight = Highlight(
+            let highlight = CDHighlight(
                 context: context,
                 remoteID: remoteID,
                 createdAt: Date(),

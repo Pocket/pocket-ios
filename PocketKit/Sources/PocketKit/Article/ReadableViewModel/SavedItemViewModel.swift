@@ -417,8 +417,8 @@ extension SavedItemViewModel {
     }
 
     /// Array of fetched highlights, sorted by patch index
-    var highlights: [Highlight]? {
-        guard let highlights = item.highlights?.array as? [Highlight], !highlights.isEmpty else {
+    var highlights: [CDHighlight]? {
+        guard let highlights = item.highlights?.array as? [CDHighlight], !highlights.isEmpty else {
             return nil
         }
         return highlights.sorted {
