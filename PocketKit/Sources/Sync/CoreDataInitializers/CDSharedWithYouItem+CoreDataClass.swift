@@ -6,8 +6,8 @@
 import Foundation
 import CoreData
 
-@objc(SharedWithYouItem)
-public class SharedWithYouItem: NSManagedObject {
+@objc(CDSharedWithYouItem)
+public class CDSharedWithYouItem: NSManagedObject {
     @available(*, unavailable)
         public init() {
             fatalError()
