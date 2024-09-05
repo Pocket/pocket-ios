@@ -124,7 +124,7 @@ class FetchSavesTests: XCTestCase {
         let expected: [ArticleComponent] = Fixture.load(name: "marticle").decode()
         XCTAssertEqual(item?.article?.components, expected)
 
-        let authors = item?.authors?.compactMap { $0 as? Author }
+        let authors = item?.authors?.compactMap { $0 as? CDAuthor }
         XCTAssertEqual(authors?[0].id, "author-1")
         XCTAssertEqual(authors?[0].name, "Eleanor")
         XCTAssertEqual(authors?[0].url, URL(string: "https://example.com/authors/eleanor")!)

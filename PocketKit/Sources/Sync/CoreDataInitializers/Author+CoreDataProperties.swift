@@ -6,10 +6,10 @@
 import Foundation
 import CoreData
 
-extension Author {
+extension CDAuthor {
     @nonobjc
-    public class func fetchRequest() -> NSFetchRequest<Author> {
-        return NSFetchRequest<Author>(entityName: "Author")
+    public class func fetchRequest() -> NSFetchRequest<CDAuthor> {
+        return NSFetchRequest<CDAuthor>(entityName: "Author")
     }
 
     @NSManaged public var id: String

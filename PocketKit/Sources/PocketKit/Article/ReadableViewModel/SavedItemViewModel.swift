@@ -163,7 +163,7 @@ class SavedItemViewModel: ReadableViewModel, ObservableObject {
     }
 
     var authors: [ReadableAuthor]? {
-        item.item?.authors?.compactMap { $0 as? Author }
+        item.item?.authors?.compactMap { $0 as? CDAuthor }
     }
 
     var domain: String? {
