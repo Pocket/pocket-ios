@@ -11,25 +11,25 @@ public class DataController {
     public static var appGroupContainerID: String?
 
     public static let schema = Schema([
-//        Author.self,
-//        Sync.Collection.self,
-//        CollectionAuthor.self,
-//        CollectionStory.self,
-//        DomainMetadata.self,
+        Author.self,
+        Sync.Collection.self,
+        CollectionAuthor.self,
+        CollectionStory.self,
+        DomainMetadata.self,
         FeatureFlag.self,
-//        Highlight.self,
-//        Sync.Image.self,
-//        Item.self,
-//        PersistentSyncTask.self,
-//        Recommendation.self,
-//        SavedItem.self,
-//        SavedItemUpdatedNotification.self,
-//        SharedWithYouItem.self,
-//        Slate.self,
-//        SlateLineup.self,
-//        SyndicatedArticle.self,
-//        Tag.self,
-//        UnresolvedSavedItem.self
+        Highlight.self,
+        Sync.Image.self,
+        Item.self,
+        PersistentSyncTask.self,
+        Recommendation.self,
+        SavedItem.self,
+        SavedItemUpdatedNotification.self,
+        SharedWithYouItem.self,
+        Slate.self,
+        SlateLineup.self,
+        SyndicatedArticle.self,
+        Tag.self,
+        UnresolvedSavedItem.self
     ])
 
     public static let previewContainer: ModelContainer = {

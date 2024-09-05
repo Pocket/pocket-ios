@@ -11,7 +11,7 @@ public class PersistentSyncTask {
     var createdAt: Date? = Date(timeIntervalSinceReferenceDate: 666643260.000000)
     var currentCursor: String?
     @Attribute(.transformable(by: SyncTaskTransformer.self))
-    var syncTaskContainer: SyncTaskContainer
+    var syncTaskContainer: SyncTaskContainer?
     public init(syncTaskContainer: SyncTaskContainer) {
         self.syncTaskContainer = syncTaskContainer
     }
