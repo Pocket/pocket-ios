@@ -4,7 +4,7 @@
 
 import SwiftUI
 import CoreSpotlight
-import Database
+import Sync
 import SwiftData
 
 public struct RootView: View {
@@ -12,8 +12,6 @@ public struct RootView: View {
 
     public init(model: RootViewModel) {
         self.model = model
-        // Init the Group ID for Swift Data
-        DataController.appGroupContainerID = Keys.shared.groupID
         configureAppearance()
     }
 
@@ -50,8 +48,7 @@ private extension RootView {
             .onContinueUserActivity(CSSearchableItemActionType, perform: { userActivity in
                 model.handleSpotlight(userActivity)
             })
-            // TODO: Uncomment when SwiftData is not crashing on startup
-            // .modelContainer(DataController.sharedModelContainer)
+//            .modelContainer(Services.shared.dataController)
     }
 
     func loggedOutView(model: LoggedOutViewModel) -> LoggedOutViewControllerSwiftUI {

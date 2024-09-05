@@ -10,34 +10,35 @@ import SwiftData
 public class DataController {
     public static var appGroupContainerID: String?
 
-    static let schema = Schema([
-        Author.self,
-        Collection.self,
-        CollectionAuthor.self,
-        CollectionStory.self,
-        DomainMetadata.self,
+    public static let schema = Schema([
+//        Author.self,
+//        Sync.Collection.self,
+//        CollectionAuthor.self,
+//        CollectionStory.self,
+//        DomainMetadata.self,
         FeatureFlag.self,
-        Highlight.self,
-        Image.self,
-        Item.self,
-        // PersistentSyncTask.self,
-        Recommendation.self,
-        SavedItem.self,
-        SavedItemUpdatedNotification.self,
-        SharedWithYouItem.self,
-        Slate.self,
-        SlateLineup.self,
-        SyndicatedArticle.self,
-        Tag.self,
-        UnresolvedSavedItem.self
+//        Highlight.self,
+//        Sync.Image.self,
+//        Item.self,
+//        PersistentSyncTask.self,
+//        Recommendation.self,
+//        SavedItem.self,
+//        SavedItemUpdatedNotification.self,
+//        SharedWithYouItem.self,
+//        Slate.self,
+//        SlateLineup.self,
+//        SyndicatedArticle.self,
+//        Tag.self,
+//        UnresolvedSavedItem.self
     ])
-    // The Version MUST match the specirfied version in Pocket Model, otherwise the two systems try to migrate
 
     public static let previewContainer: ModelContainer = {
+        ArticleTransformer.register()
+        SyncTaskTransformer.register()
         do {
             let config = ModelConfiguration(isStoredInMemoryOnly: true)
             let container = try ModelContainer(for: schema, configurations: config)
-            // MockData.insertFakeData(container: container)
+            MockData.insertFakeData(container: container)
             return container
         } catch {
             fatalError("Failed to create model container for previewing: \(error.localizedDescription)")
@@ -45,6 +46,9 @@ public class DataController {
     }()
 
     public static let sharedModelContainer: ModelContainer = {
+        ArticleTransformer.register()
+        SyncTaskTransformer.register()
+
         guard let appGroupContainerID = appGroupContainerID else {
             fatalError("appGroupContainerID must be set before accessing the sharedModelContainer.")
         }
@@ -53,7 +57,7 @@ public class DataController {
         }
         let url = appGroupContainer.appendingPathComponent("PocketModel.sqlite")
         do {
-            return try ModelContainer(for: schema, configurations: [ModelConfiguration(schema: schema, url: url)])
+            return try ModelContainer(for: schema, configurations: ModelConfiguration(url: url))
         } catch {
             fatalError("Could not create ModelContainer: \(error)")
         }

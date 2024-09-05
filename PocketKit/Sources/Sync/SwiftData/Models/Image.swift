@@ -10,6 +10,7 @@ import SwiftData
 public class Image {
     var isDownloaded: Bool? = false
     var source: URL?
+    @Relationship(inverse: \Item.images)
     var item: Item?
     @Relationship(inverse: \Recommendation.image)
     var recommendation: Recommendation?
