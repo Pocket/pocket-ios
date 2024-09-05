@@ -6,8 +6,8 @@
 import Foundation
 import CoreData
 
-@objc(Collection)
-public class Collection: NSManagedObject {
+@objc(CDCollection)
+public class CDCollection: NSManagedObject {
     @available(*, unavailable)
     public init() {
         fatalError()

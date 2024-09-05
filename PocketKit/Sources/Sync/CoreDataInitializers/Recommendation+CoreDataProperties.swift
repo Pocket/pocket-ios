@@ -29,7 +29,7 @@ extension Recommendation {
         item.collection?.slug
     }
 
-    public var collection: Collection? {
+    public var collection: CDCollection? {
         item.collection
     }
 }

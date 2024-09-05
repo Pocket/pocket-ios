@@ -145,7 +145,7 @@ public class Space {
 
 // MARK: Collection
 extension Space {
-    func fetchCollection(by slug: String, context: NSManagedObjectContext? = nil) throws -> Collection? {
+    func fetchCollection(by slug: String, context: NSManagedObjectContext? = nil) throws -> CDCollection? {
         return try fetch(Requests.fetchCollection(by: slug), context: context).first
     }
 
@@ -161,14 +161,14 @@ extension Space {
         return try fetch(Requests.fetchCollectionStory(by: url), context: context).first
     }
 
-    func updateCollection(from remote: Collection.RemoteCollection) throws {
+    func updateCollection(from remote: CDCollection.RemoteCollection) throws {
         let context = makeChildBackgroundContext()
 
         context.performAndWait { [weak self] in
             guard let self else { return }
 
             let collection = (try? fetchCollection(by: remote.slug, context: context)) ??
-            Collection(context: context, slug: remote.slug, title: remote.title, authors: [], stories: [])
+            CDCollection(context: context, slug: remote.slug, title: remote.title, authors: [], stories: [])
 
             collection.update(from: remote, in: self, context: context)
         }
@@ -589,7 +589,7 @@ private extension Space {
     }
 
     func deleteOrphanedCollections(context: NSManagedObjectContext) throws {
-        let fetchRequest = Collection.fetchRequest()
+        let fetchRequest = CDCollection.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "item = NULL")
         try deleteEntities(request: fetchRequest, context: context)
     }

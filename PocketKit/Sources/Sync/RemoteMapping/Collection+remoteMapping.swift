@@ -13,7 +13,7 @@ protocol RemoteAuthor {
 
 extension CorpusSlateParts.Recommendation.CorpusItem.Target.AsCollection.Author: RemoteAuthor {}
 
-extension Collection {
+extension CDCollection {
     public typealias RemoteCollection = GetCollectionBySlugQuery.Data.Collection
 
     func update(from remote: RemoteCollection, in space: Space, context: NSManagedObjectContext) {

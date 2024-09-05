@@ -192,7 +192,7 @@ class SavedItemViewModel: ReadableViewModel, ObservableObject {
         item.isCollection
     }
 
-    var collection: Collection? {
+    var collection: CDCollection? {
         item.item?.collection
     }
 
