@@ -6,10 +6,10 @@
 import Foundation
 import CoreData
 
-extension Highlight {
+extension CDHighlight {
     @nonobjc
-    public class func fetchRequest() -> NSFetchRequest<Highlight> {
-        return NSFetchRequest<Highlight>(entityName: "Highlight")
+    public class func fetchRequest() -> NSFetchRequest<CDHighlight> {
+        return NSFetchRequest<CDHighlight>(entityName: "Highlight")
     }
 
     @NSManaged public var createdAt: Date

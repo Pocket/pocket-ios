@@ -6,8 +6,8 @@
 import Foundation
 import CoreData
 
-@objc(Highlight)
-public class Highlight: NSManagedObject {
+@objc(CDHighlight)
+public class CDHighlight: NSManagedObject {
     @available(*, unavailable)
     public init() {
         fatalError()
