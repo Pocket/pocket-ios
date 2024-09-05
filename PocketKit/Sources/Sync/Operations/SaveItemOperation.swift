@@ -60,7 +60,7 @@ class SaveItemOperation: SyncOperation {
     private func handle(result: GraphQLResult<SaveItemMutation.Data>) {
         space.performAndWait {
             guard let remote = result.data?.upsertSavedItem.fragments.savedItemParts,
-                  let savedItem: SavedItem = space.backgroundContext.object(with: managedItemID) as? SavedItem else {
+                  let savedItem: CDSavedItem = space.backgroundContext.object(with: managedItemID) as? CDSavedItem else {
                 return
             }
 

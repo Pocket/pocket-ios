@@ -23,7 +23,7 @@ class HomeViewModelTests: XCTestCase {
     var homeRefreshCoordinator: RefreshCoordinator!
     var subscriptions: Set<AnyCancellable> = []
     var homeController: RichFetchedResultsController<CDRecommendation>!
-    var recentSavesController: NSFetchedResultsController<SavedItem>!
+    var recentSavesController: NSFetchedResultsController<CDSavedItem>!
     var sharedWithYouController: RichFetchedResultsController<SharedWithYouItem>!
     var user: User!
     var subscriptionStore: SubscriptionStore!
@@ -344,7 +344,7 @@ class HomeViewModelTests: XCTestCase {
         )
         try space.save()
 
-        var savedItem: SavedItem!
+        var savedItem: CDSavedItem!
         let viewModel = subject()
         viewModel.fetch()
 
@@ -510,7 +510,7 @@ class HomeViewModelTests: XCTestCase {
     }
 
     func test_snapshot_withRecentSaves_andNetworkIsUnavailable_hasCorrectSnapshot() throws {
-        let items: [SavedItem] = [
+        let items: [CDSavedItem] = [
             space.buildSavedItem(createdAt: Date())
         ]
         try space.save()

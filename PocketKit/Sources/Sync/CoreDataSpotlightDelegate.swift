@@ -17,7 +17,7 @@ class CoreDataSpotlightDelegate: NSCoreDataCoreSpotlightDelegate {
     }
 
     override func attributeSet(for object: NSManagedObject) -> CSSearchableItemAttributeSet? {
-        if let savedItem = object as? SavedItem {
+        if let savedItem = object as? CDSavedItem {
             return csSearchableItemAttributeSet(for: savedItem)
         }
 
@@ -27,7 +27,7 @@ class CoreDataSpotlightDelegate: NSCoreDataCoreSpotlightDelegate {
     /// Helper function to turn a SavedItem into a CSSearchableItemAttributeSet
     /// - Parameter savedItem: The saved item to search
     /// - Returns: The CoreSpotlight result
-    private func csSearchableItemAttributeSet(for savedItem: SavedItem) -> CSSearchableItemAttributeSet {
+    private func csSearchableItemAttributeSet(for savedItem: CDSavedItem) -> CSSearchableItemAttributeSet {
         let identifier = savedItem.remoteID
         let attributeSet = CSSearchableItemAttributeSet(contentType: .content)
         attributeSet.identifier = identifier

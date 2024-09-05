@@ -8,7 +8,7 @@ import CoreData
 import Combine
 
 class MockSource: Source {
-    func readerItem(by slug: String) async throws -> (Sync.SavedItem?, Sync.CDItem?) {
+    func readerItem(by slug: String) async throws -> (Sync.CDSavedItem?, Sync.CDItem?) {
         return (nil, nil)
     }
 
@@ -31,7 +31,7 @@ class MockSource: Source {
         return nil
     }
 
-    func fetchViewContextSavedItem(_ url: String) -> Sync.SavedItem? {
+    func fetchViewContextSavedItem(_ url: String) -> Sync.CDSavedItem? {
         return nil
     }
 
@@ -243,7 +243,7 @@ extension MockSource {
 // MARK: - Make recent saves controller
 extension MockSource {
     static let makeRecentSavesController = "makeRecentSavesController"
-    typealias MakeRecentSavesControllerImpl = () -> NSFetchedResultsController<Sync.SavedItem>
+    typealias MakeRecentSavesControllerImpl = () -> NSFetchedResultsController<Sync.CDSavedItem>
 
     struct MakeRecentSavesControllerCall {
     }
@@ -252,7 +252,7 @@ extension MockSource {
         implementations[Self.makeRecentSavesController] = impl
     }
 
-    func makeRecentSavesController() -> NSFetchedResultsController<Sync.SavedItem> {
+    func makeRecentSavesController() -> NSFetchedResultsController<Sync.CDSavedItem> {
         guard let impl = implementations[Self.makeRecentSavesController] as? MakeRecentSavesControllerImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
@@ -510,16 +510,16 @@ extension MockSource {
 // MARK: - Delete an item
 extension MockSource {
     static let deleteSavedItem = "deleteSavedItem"
-    typealias DeleteSavedItemImpl = (SavedItem) -> Void
+    typealias DeleteSavedItemImpl = (CDSavedItem) -> Void
     struct DeleteSavedItemCall {
-        let item: SavedItem
+        let item: CDSavedItem
     }
 
     func stubDeleteSavedItem(impl: @escaping DeleteSavedItemImpl) {
         implementations[Self.deleteSavedItem] = impl
     }
 
-    func delete(item: SavedItem) {
+    func delete(item: CDSavedItem) {
         guard let impl = implementations[Self.deleteSavedItem] as? DeleteSavedItemImpl else {
             fatalError("\(Self.self)#\(#function) has not been stubbed")
         }
@@ -544,9 +544,9 @@ extension MockSource {
 // MARK: - Replace Tags on a SavedItem
 extension MockSource {
     static let replaceTagsOnSavedItem = "replaceTagsOnSavdItem"
-    typealias ReplaceTagsImpl = (SavedItem, [String]) -> Void
+    typealias ReplaceTagsImpl = (CDSavedItem, [String]) -> Void
     struct ReplaceTagsCall {
-        let savedItem: SavedItem
+        let savedItem: CDSavedItem
         let tags: [String]
     }
 
@@ -554,7 +554,7 @@ extension MockSource {
         implementations[Self.replaceTagsOnSavedItem] = impl
     }
 
-    func replaceTags(_ savedItem: SavedItem, tags: [String]) {
+    func replaceTags(_ savedItem: CDSavedItem, tags: [String]) {
         guard let impl = implementations[Self.replaceTagsOnSavedItem] as? ReplaceTagsImpl else {
             fatalError("\(Self.self)#\(#function) has not been stubbed")
         }
@@ -574,9 +574,9 @@ extension MockSource {
 // MARK: - Add Tags to an item
 extension MockSource {
     static let addTagsToSavedItem = "addTagsToSavedItem"
-    typealias AddTagsSavedItemImpl = (SavedItem, [String]) -> Void
+    typealias AddTagsSavedItemImpl = (CDSavedItem, [String]) -> Void
     struct AddTagsSavedItemCall {
-        let item: SavedItem
+        let item: CDSavedItem
         let tags: [String]
     }
 
@@ -584,7 +584,7 @@ extension MockSource {
         implementations[Self.addTagsToSavedItem] = impl
     }
 
-    func addTags(item: SavedItem, tags: [String]) {
+    func addTags(item: CDSavedItem, tags: [String]) {
         guard let impl = implementations[Self.addTagsToSavedItem] as? AddTagsSavedItemImpl else {
             fatalError("\(Self.self)#\(#function) has not been stubbed")
         }
@@ -843,16 +843,16 @@ extension MockSource {
 // MARK: - Favorite an item
 extension MockSource {
     static let favoriteSavedItem = "favoriteSavedItem"
-    typealias FavoriteSavedItemImpl = (SavedItem) -> Void
+    typealias FavoriteSavedItemImpl = (CDSavedItem) -> Void
     struct FavoriteSavedItemCall {
-        let item: SavedItem
+        let item: CDSavedItem
     }
 
     func stubFavoriteSavedItem(impl: @escaping FavoriteSavedItemImpl) {
         implementations[Self.favoriteSavedItem] = impl
     }
 
-    func favorite(item: SavedItem) {
+    func favorite(item: CDSavedItem) {
         guard let impl = implementations[Self.favoriteSavedItem] as? FavoriteSavedItemImpl else {
             fatalError("\(Self.self)#\(#function) has not been stubbed")
         }
@@ -877,16 +877,16 @@ extension MockSource {
 // MARK: - Unfavorite an item
 extension MockSource {
     static let unfavoriteSavedItem = "unfavoriteSavedItem"
-    typealias UnfavoriteSavedItemImpl = (SavedItem) -> Void
+    typealias UnfavoriteSavedItemImpl = (CDSavedItem) -> Void
     struct UnfavoriteSavedItemCall {
-        let item: SavedItem
+        let item: CDSavedItem
     }
 
     func stubUnfavoriteSavedItem(impl: @escaping UnfavoriteSavedItemImpl) {
         implementations[Self.unfavoriteSavedItem] = impl
     }
 
-    func unfavorite(item: SavedItem) {
+    func unfavorite(item: CDSavedItem) {
         guard let impl = implementations[Self.unfavoriteSavedItem] as? UnfavoriteSavedItemImpl else {
             fatalError("\(Self.self)#\(#function) has not been stubbed")
         }
@@ -911,16 +911,16 @@ extension MockSource {
 // MARK: - Unarchive an item
 extension MockSource {
     static let unarchiveSavedItem = "unarchiveSavedItem"
-    typealias UnarchiveSavedItemImpl = (SavedItem) -> Void
+    typealias UnarchiveSavedItemImpl = (CDSavedItem) -> Void
     struct UnarchiveSavedItemCall {
-        let item: SavedItem
+        let item: CDSavedItem
     }
 
     func stubUnarchiveSavedItem(impl: @escaping UnarchiveSavedItemImpl) {
         implementations[Self.unarchiveSavedItem] = impl
     }
 
-    func unarchive(item: SavedItem) {
+    func unarchive(item: CDSavedItem) {
         guard let impl = implementations[Self.unarchiveSavedItem] as? UnarchiveSavedItemImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
@@ -936,16 +936,16 @@ extension MockSource {
 // MARK: - Archive an item
 extension MockSource {
     static let archiveSavedItem = "archiveSavedItem"
-    typealias ArchiveSavedItemImpl = (SavedItem) -> Void
+    typealias ArchiveSavedItemImpl = (CDSavedItem) -> Void
     struct ArchiveSavedItemCall {
-        let item: SavedItem
+        let item: CDSavedItem
     }
 
     func stubArchiveSavedItem(impl: @escaping ArchiveSavedItemImpl) {
         implementations[Self.archiveSavedItem] = impl
     }
 
-    func archive(item: SavedItem) {
+    func archive(item: CDSavedItem) {
         guard let impl = implementations[Self.archiveSavedItem] as? ArchiveSavedItemImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
@@ -1226,17 +1226,17 @@ extension MockSource {
 // MARK: - Fetch details
 extension MockSource {
     static let fetchDetails = "fetchDetails"
-    typealias FetchDetailsImpl = (SavedItem) async throws -> Bool
+    typealias FetchDetailsImpl = (CDSavedItem) async throws -> Bool
 
     struct FetchDetailsCall {
-        let savedItem: SavedItem
+        let savedItem: CDSavedItem
     }
 
     func stubFetchDetails(impl: @escaping FetchDetailsImpl) {
         implementations[Self.fetchDetails] = impl
     }
 
-    func fetchDetails(for savedItem: SavedItem) async throws -> Bool {
+    func fetchDetails(for savedItem: CDSavedItem) async throws -> Bool {
         guard let impl = implementations[Self.fetchDetails] as? FetchDetailsImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
@@ -1383,7 +1383,7 @@ extension MockSource {
 // MARK: - Fetch Items by Search
 extension MockSource {
     private static let searchTerm = "searchTerm"
-    typealias SearchItemsImpl = (String) -> [SavedItem]?
+    typealias SearchItemsImpl = (String) -> [CDSavedItem]?
 
     struct SearchItemsCall {
         let searchTerm: String
@@ -1393,7 +1393,7 @@ extension MockSource {
         implementations[Self.searchTerm] = impl
     }
 
-    func searchSaves(search: String) -> [Sync.SavedItem]? {
+    func searchSaves(search: String) -> [Sync.CDSavedItem]? {
         guard let impl = implementations[Self.searchTerm] as? SearchItemsImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
@@ -1415,7 +1415,7 @@ extension MockSource {
 // MARK: - Fetch SavedItem by Remote ID
 extension MockSource {
     private static let fetchSavedItem = "fetchSavedItem"
-    typealias FetchSavedItemImpl = (String) -> SavedItem?
+    typealias FetchSavedItemImpl = (String) -> CDSavedItem?
 
     struct FetchSavedItemCall {
         let url: String
@@ -1425,7 +1425,7 @@ extension MockSource {
         implementations[Self.fetchSavedItem] = impl
     }
 
-    func fetchOrCreateSavedItem(with url: String, and remoteParts: SavedItem.RemoteSavedItem?) -> SavedItem? {
+    func fetchOrCreateSavedItem(with url: String, and remoteParts: CDSavedItem.RemoteSavedItem?) -> CDSavedItem? {
         guard let impl = implementations[Self.fetchSavedItem] as? FetchSavedItemImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }

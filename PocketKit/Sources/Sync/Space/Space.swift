@@ -289,27 +289,27 @@ extension Space {
 
 // MARK: SavedItem
 extension Space {
-    func fetchSavedItem(byURL url: String, context: NSManagedObjectContext? = nil) throws -> SavedItem? {
+    func fetchSavedItem(byURL url: String, context: NSManagedObjectContext? = nil) throws -> CDSavedItem? {
         return try fetch(Requests.fetchSavedItem(byURL: url), context: context).first
     }
 
-    func fetchSavedItem(byURL url: String) throws -> SavedItem? {
+    func fetchSavedItem(byURL url: String) throws -> CDSavedItem? {
         return try fetch(Requests.fetchSavedItem(byURL: url)).first
     }
 
-    func fetchSavedItems(bySearchTerm searchTerm: String, userPremium isPremium: Bool) throws -> [SavedItem]? {
+    func fetchSavedItems(bySearchTerm searchTerm: String, userPremium isPremium: Bool) throws -> [CDSavedItem]? {
         return try fetch(Requests.fetchSavedItems(bySearchTerm: searchTerm, userPremium: isPremium))
     }
 
-    func fetchSavedItems(limit: Int? = nil) throws -> [SavedItem] {
+    func fetchSavedItems(limit: Int? = nil) throws -> [CDSavedItem] {
         return try fetch(Requests.fetchSavedItems(limit: limit))
     }
 
-    func fetchArchivedItems() throws -> [SavedItem] {
+    func fetchArchivedItems() throws -> [CDSavedItem] {
         return try fetch(Requests.fetchArchivedItems())
     }
 
-    func fetchAllSavedItems() throws -> [SavedItem] {
+    func fetchAllSavedItems() throws -> [CDSavedItem] {
         return try fetch(Requests.fetchAllSavedItems())
     }
 
@@ -325,7 +325,7 @@ extension Space {
         return try fetch(Requests.fetchUnresolvedSavedItems())
     }
 
-    func makeItemsController() -> NSFetchedResultsController<SavedItem> {
+    func makeItemsController() -> NSFetchedResultsController<CDSavedItem> {
         NSFetchedResultsController(
             fetchRequest: Requests.fetchSavedItems(),
             managedObjectContext: viewContext,
@@ -334,7 +334,7 @@ extension Space {
         )
     }
 
-    func makeRecentSavesController(limit: Int) -> NSFetchedResultsController<SavedItem> {
+    func makeRecentSavesController(limit: Int) -> NSFetchedResultsController<CDSavedItem> {
         NSFetchedResultsController(
             fetchRequest: Requests.fetchSavedItems(limit: limit),
             managedObjectContext: viewContext,
@@ -343,7 +343,7 @@ extension Space {
         )
     }
 
-    func makeArchivedItemsController(filters: [NSPredicate] = []) -> NSFetchedResultsController<SavedItem> {
+    func makeArchivedItemsController(filters: [NSPredicate] = []) -> NSFetchedResultsController<CDSavedItem> {
         NSFetchedResultsController(
             fetchRequest: Requests.fetchArchivedItems(filters: filters),
             managedObjectContext: viewContext,

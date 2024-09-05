@@ -5,11 +5,11 @@
 import Foundation
 
 public enum SaveServiceStatus {
-    case existingItem(SavedItem)
-    case newItem(SavedItem)
-    case taggedItem(SavedItem)
+    case existingItem(CDSavedItem)
+    case newItem(CDSavedItem)
+    case taggedItem(CDSavedItem)
 
-    var savedItem: SavedItem {
+    var savedItem: CDSavedItem {
         switch self {
         case .existingItem(let savedItem), .newItem(let savedItem), .taggedItem(let savedItem):
             return savedItem
@@ -21,5 +21,5 @@ public protocol SaveService {
     func save(url: String) -> SaveServiceStatus
     func retrieveTags(excluding tags: [String]) -> [Tag]?
     func filterTags(with text: String, excluding tags: [String]) -> [Tag]?
-    func addTags(savedItem: SavedItem, tags: [String]) -> SaveServiceStatus
+    func addTags(savedItem: CDSavedItem, tags: [String]) -> SaveServiceStatus
 }

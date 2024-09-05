@@ -18,7 +18,7 @@ extension Space {
         cursor: String? = nil,
         tags: [Tag]? = nil,
         item: CDItem? = nil
-    ) throws -> SavedItem {
+    ) throws -> CDSavedItem {
         try backgroundContext.performAndWait {
             let savedItem = buildSavedItem(
                 remoteID: remoteID,
@@ -48,9 +48,9 @@ extension Space {
         cursor: String? = nil,
         tags: [Tag]? = nil,
         item: CDItem? = nil
-    ) -> SavedItem {
+    ) -> CDSavedItem {
         backgroundContext.performAndWait {
-            let savedItem: SavedItem = SavedItem(context: backgroundContext, url: url)
+            let savedItem: CDSavedItem = CDSavedItem(context: backgroundContext, url: url)
             savedItem.remoteID = remoteID
             savedItem.isFavorite = isFavorite
             savedItem.isArchived = isArchived

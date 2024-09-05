@@ -634,7 +634,7 @@ extension PocketSourceTests {
         wait(for: [expectationToRunOperation], timeout: 2)
     }
 
-    private func createItemsWithTags(_ number: Int, isArchived: Bool = false) -> [SavedItem] {
+    private func createItemsWithTags(_ number: Int, isArchived: Bool = false) -> [CDSavedItem] {
         guard number > 0 else { return [] }
         return (1...number).compactMap { num in
             let tag: Tag = Tag(context: space.backgroundContext)

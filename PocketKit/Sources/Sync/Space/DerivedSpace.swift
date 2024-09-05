@@ -13,11 +13,11 @@ protocol Paginated {
 
 /// Set of protocols that update a set of a specified entity in Core Data. Used to specialize `DerivedSpace` for that same entity.
 protocol SavedItemSpace: Paginated {
-    func updateSavedItems(edges: [SavedItem.SavedItemEdge?], cursor: String) throws
+    func updateSavedItems(edges: [CDSavedItem.SavedItemEdge?], cursor: String) throws
 }
 
 protocol ArchivedItemSpace: Paginated {
-    func updateArchivedItems(edges: [SavedItem.ArchivedItemEdge?], cursor: String) throws
+    func updateArchivedItems(edges: [CDSavedItem.ArchivedItemEdge?], cursor: String) throws
 }
 
 protocol TagSpace: Paginated {
@@ -83,7 +83,7 @@ struct DerivedSpace {
 }
 
 extension DerivedSpace: SavedItemSpace {
-    func updateSavedItems(edges: [SavedItem.SavedItemEdge?], cursor: String) throws {
+    func updateSavedItems(edges: [CDSavedItem.SavedItemEdge?], cursor: String) throws {
         updateCursor(cursor)
         for edge in edges {
             guard let edge = edge, let node = edge.node else {
@@ -94,7 +94,7 @@ extension DerivedSpace: SavedItemSpace {
 
             context.performAndWait {
                 let url = node.url
-                let item = (try? space.fetchSavedItem(byURL: url, context: context)) ?? SavedItem(context: context, url: url, remoteID: node.remoteID)
+                let item = (try? space.fetchSavedItem(byURL: url, context: context)) ?? CDSavedItem(context: context, url: url, remoteID: node.remoteID)
                 item.update(from: edge, with: space)
 
                 if item.deletedAt != nil {
@@ -108,7 +108,7 @@ extension DerivedSpace: SavedItemSpace {
 }
 
 extension DerivedSpace: ArchivedItemSpace {
-    func updateArchivedItems(edges: [SavedItem.ArchivedItemEdge?], cursor: String) throws {
+    func updateArchivedItems(edges: [CDSavedItem.ArchivedItemEdge?], cursor: String) throws {
         updateCursor(cursor)
 
         for edge in edges {
@@ -120,7 +120,7 @@ extension DerivedSpace: ArchivedItemSpace {
 
             context.performAndWait {
                 let url = node.url
-                let item = (try? space.fetchSavedItem(byURL: url, context: context)) ?? SavedItem(context: context, url: url, remoteID: node.remoteID)
+                let item = (try? space.fetchSavedItem(byURL: url, context: context)) ?? CDSavedItem(context: context, url: url, remoteID: node.remoteID)
                 item.update(from: node.fragments.savedItemSummary, with: space)
                 item.cursor = edge.cursor
                 if item.deletedAt != nil {
