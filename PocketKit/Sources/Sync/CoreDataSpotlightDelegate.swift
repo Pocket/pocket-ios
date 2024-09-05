@@ -32,7 +32,7 @@ class CoreDataSpotlightDelegate: NSCoreDataCoreSpotlightDelegate {
         let attributeSet = CSSearchableItemAttributeSet(contentType: .content)
         attributeSet.identifier = identifier
         attributeSet.displayName = savedItem.item?.title
-        attributeSet.publishers = (savedItem.item?.authors?.array as? [Author] ?? []).compactMap { $0.name }
+        attributeSet.publishers = (savedItem.item?.authors?.array as? [CDAuthor] ?? []).compactMap { $0.name }
         attributeSet.thumbnailURL = savedItem.item?.topImageURL // TODO: Image cache url..
         attributeSet.contentURL = URL(string: savedItem.url)
         attributeSet.contentDescription = savedItem.item?.excerpt
