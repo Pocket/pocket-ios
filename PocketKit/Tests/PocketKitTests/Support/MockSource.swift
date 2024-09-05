@@ -49,10 +49,10 @@ class MockSource: Source {
         return nil
     }
 
-    func save(collectionStory: Sync.CollectionStory) {
+    func save(collectionStory: Sync.CDCollectionStory) {
     }
 
-    func archive(collectionStory: Sync.CollectionStory) {
+    func archive(collectionStory: Sync.CDCollectionStory) {
     }
 
     var _events: SyncEvents = SyncEvents()
@@ -274,7 +274,7 @@ extension MockSource {
 // MARK: - Make collection stories controller
 extension MockSource {
     private static let makeCollectionStoriesController = "makeCollectionStoriesController"
-    typealias MakeCollectionStoriesControllerImpl = () -> RichFetchedResultsController<Sync.CollectionStory>
+    typealias MakeCollectionStoriesControllerImpl = () -> RichFetchedResultsController<Sync.CDCollectionStory>
 
     struct MakeCollectionStoriesControllerCall {}
 
@@ -282,7 +282,7 @@ extension MockSource {
         implementations[Self.makeCollectionStoriesController] = impl
     }
 
-    func makeCollectionStoriesController(slug: String) -> Sync.RichFetchedResultsController<Sync.CollectionStory> {
+    func makeCollectionStoriesController(slug: String) -> Sync.RichFetchedResultsController<Sync.CDCollectionStory> {
         guard let impl = implementations[Self.makeCollectionStoriesController] as? MakeCollectionStoriesControllerImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }

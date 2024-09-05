@@ -20,7 +20,7 @@ class CollectionViewModelTests: XCTestCase {
     private var space: Space!
     private var featureFlags: MockFeatureFlagService!
     private var notificationCenter: NotificationCenter!
-    private var collectionController: RichFetchedResultsController<CollectionStory>!
+    private var collectionController: RichFetchedResultsController<CDCollectionStory>!
     var appSession: AppSession!
     var accessService: PocketAccessService!
     private var mockAuthenticationSession: MockAuthenticationSession!
@@ -726,7 +726,7 @@ class CollectionViewModelTests: XCTestCase {
         wait(for: [reportExpectation], timeout: 1)
     }
 
-    private func setupCollection(with item: Item?, space: Space? = nil, stories: [CollectionStory] = []) -> Collection {
+    private func setupCollection(with item: Item?, space: Space? = nil, stories: [CDCollectionStory] = []) -> Collection {
         let space = space ?? self.space!
 
         source.stubFetchItem { url in
