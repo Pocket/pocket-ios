@@ -12,9 +12,8 @@ public struct RootView: View {
 
     public init(model: RootViewModel) {
         self.model = model
-        if #available(iOS 17, *) {
-            DataController.appGroupContainerID = Keys.shared.groupID
-        }
+        // Init the Group ID for Swift Data
+        DataController.appGroupContainerID = Keys.shared.groupID
         configureAppearance()
     }
 
@@ -51,11 +50,8 @@ private extension RootView {
             .onContinueUserActivity(CSSearchableItemActionType, perform: { userActivity in
                 model.handleSpotlight(userActivity)
             })
-            .modify {
-                if #available(iOS 17.0, *) {
-                    $0.modelContainer(DataController.sharedModelContainer)
-                }
-            }
+            // TODO: Uncomment when SwiftData is not crashing on startup
+            // .modelContainer(DataController.sharedModelContainer)
     }
 
     func loggedOutView(model: LoggedOutViewModel) -> LoggedOutViewControllerSwiftUI {
