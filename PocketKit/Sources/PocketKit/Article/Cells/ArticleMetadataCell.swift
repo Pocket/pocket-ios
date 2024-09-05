@@ -20,9 +20,9 @@ class ArticleMetadataCell: UICollectionViewCell, ArticleComponentTextCell, Artic
         let title: NSAttributedString?
     }
 
-    private let bylineTextView = ArticleComponentTextView.makeArticleComponentTextView()
-    private let publishedDateTextView = ArticleComponentTextView.makeArticleComponentTextView()
-    private let titleTextView = ArticleComponentTextView.makeArticleComponentTextView()
+    private let bylineTextView = ArticleComponentTextView.initialize()
+    private let publishedDateTextView = ArticleComponentTextView.initialize()
+    private let titleTextView = ArticleComponentTextView.initialize()
 
     private var metaStack: UIStackView = {
         let stack = UIStackView()

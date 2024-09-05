@@ -44,7 +44,7 @@ class ImageComponentCell: UICollectionViewCell {
         return imageView
     }()
 
-    private let captionTextView = ArticleComponentTextView.makeArticleComponentTextView()
+    private let captionTextView = ArticleComponentTextView.initialize()
 
     private let stack: UIStackView = {
         let stack = UIStackView()

@@ -19,10 +19,10 @@ class CollectionMetadataCell: UICollectionViewCell {
         let intro: NSAttributedString?
     }
 
-    private let bylineTextView = ArticleComponentTextView.makeArticleComponentTextView()
-    private let itemCountView = ArticleComponentTextView.makeArticleComponentTextView()
-    private let titleTextView = ArticleComponentTextView.makeArticleComponentTextView()
-    private let introTextView = ArticleComponentTextView.makeArticleComponentTextView()
+    private let bylineTextView = ArticleComponentTextView.initialize()
+    private let itemCountView = ArticleComponentTextView.initialize()
+    private let titleTextView = ArticleComponentTextView.initialize()
+    private let introTextView = ArticleComponentTextView.initialize()
 
     private var metaStackView: UIStackView = {
         let stack = UIStackView()
