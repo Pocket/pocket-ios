@@ -464,7 +464,7 @@ extension Space {
 
 // MARK: SyndicatedArticle
 extension Space {
-    func fetchSyndicatedArticle(byItemId id: String, context: NSManagedObjectContext? = nil) throws -> SyndicatedArticle? {
+    func fetchSyndicatedArticle(byItemId id: String, context: NSManagedObjectContext? = nil) throws -> CDSyndicatedArticle? {
         return try fetch(Requests.fetchSyndicatedArticle(byItemId: id), context: context).first
     }
 }

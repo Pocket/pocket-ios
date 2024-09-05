@@ -115,7 +115,7 @@ extension Space {
         excerpt: String? = nil,
         isArticle: Bool = true,
         article: Article? = nil,
-        syndicatedArticle: SyndicatedArticle? = nil
+        syndicatedArticle: CDSyndicatedArticle? = nil
     ) -> CDItem {
         return backgroundContext.performAndWait {
             let item: CDItem = CDItem(context: backgroundContext, givenURL: givenURL, remoteID: remoteID)
@@ -310,9 +310,9 @@ extension Space {
         imageURL: URL? = nil,
         excerpt: String? = nil,
         publisherName: String? = nil
-    ) -> SyndicatedArticle {
+    ) -> CDSyndicatedArticle {
         backgroundContext.performAndWait {
-            let syndicatedArticle: SyndicatedArticle = SyndicatedArticle(context: backgroundContext)
+            let syndicatedArticle: CDSyndicatedArticle = CDSyndicatedArticle(context: backgroundContext)
             syndicatedArticle.title = title
             syndicatedArticle.imageURL = imageURL
             syndicatedArticle.excerpt  = excerpt
