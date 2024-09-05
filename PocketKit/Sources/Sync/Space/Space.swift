@@ -386,11 +386,11 @@ extension Space {
         return try fetch(Requests.fetchSlateLineup(byID: id), context: context).first
     }
 
-    func fetchSlates() throws -> [Slate] {
+    func fetchSlates() throws -> [CDSlate] {
         return try fetch(Requests.fetchSlates())
     }
 
-    func fetchSlate(byRemoteID id: String, context: NSManagedObjectContext? = nil) throws -> Slate? {
+    func fetchSlate(byRemoteID id: String, context: NSManagedObjectContext? = nil) throws -> CDSlate? {
         let request = Requests.fetchSlates()
         request.predicate = NSPredicate(format: "remoteID = %@", id)
         request.fetchLimit = 1
@@ -409,7 +409,7 @@ extension Space {
         )
     }
 
-    func makeSlateController(byID id: String) -> NSFetchedResultsController<Slate> {
+    func makeSlateController(byID id: String) -> NSFetchedResultsController<CDSlate> {
         let request = Requests.fetchSlate(byID: id)
         request.sortDescriptors = [NSSortDescriptor(key: "remoteID", ascending: true)]
         return NSFetchedResultsController(
@@ -568,7 +568,7 @@ private extension Space {
     }
 
     func deleteOrphanedSlates(context: NSManagedObjectContext) throws {
-        let fetchRequest: NSFetchRequest<Slate> = Slate.fetchRequest()
+        let fetchRequest: NSFetchRequest<CDSlate> = CDSlate.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "slateLineup = NULL")
         try deleteEntities(request: fetchRequest, context: context)
     }
