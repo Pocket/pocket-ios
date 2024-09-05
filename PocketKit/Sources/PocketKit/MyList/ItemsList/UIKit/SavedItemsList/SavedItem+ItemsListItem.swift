@@ -45,7 +45,7 @@ extension SavedItem: ItemsListItem {
     }
 
     var displayAuthors: String? {
-        let authors: [String]? = item?.authors?.compactMap { ($0 as? Author)?.name }
+        let authors: [String]? = item?.authors?.compactMap { ($0 as? CDAuthor)?.name }
         return authors?.joined(separator: ", ")
     }
 
