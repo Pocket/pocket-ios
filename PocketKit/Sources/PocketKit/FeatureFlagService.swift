@@ -36,7 +36,7 @@ class FeatureFlagService: NSObject, FeatureFlagServiceProtocol {
     private let source: Source
     private let tracker: Tracker
     private let userDefaults: UserDefaults
-    private let resultsController: NSFetchedResultsController<FeatureFlag>
+    private let resultsController: NSFetchedResultsController<CDFeatureFlag>
     private let braze: BrazeProtocol
     private var featureFlags: [CurrentFeatureFlags: InMemoryFeatureFlag] = [:]
 
@@ -100,7 +100,7 @@ class FeatureFlagService: NSObject, FeatureFlagServiceProtocol {
 
 extension FeatureFlagService: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        let flags = controller.fetchedObjects?.compactMap { $0 as? FeatureFlag } ?? []
+        let flags = controller.fetchedObjects?.compactMap { $0 as? CDFeatureFlag } ?? []
         guard flags.isEmpty == false else {
             return
         }
@@ -132,7 +132,7 @@ private struct InMemoryFeatureFlag {
     let payloadValue: String?
     let variant: String?
 
-    init(featureFlag: FeatureFlag) {
+    init(featureFlag: CDFeatureFlag) {
         assigned = featureFlag.assigned
         name = featureFlag.name
         payloadValue = featureFlag.payloadValue

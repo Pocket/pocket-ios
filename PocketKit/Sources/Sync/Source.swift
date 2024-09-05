@@ -42,7 +42,7 @@ public protocol Source {
 
     func makeImagesController() -> ImagesController
 
-    func makeFeatureFlagsController() -> NSFetchedResultsController<FeatureFlag>
+    func makeFeatureFlagsController() -> NSFetchedResultsController<CDFeatureFlag>
 
     func viewObject<T: NSManagedObject>(id: NSManagedObjectID) -> T?
 
@@ -141,7 +141,7 @@ public protocol Source {
 
     func fetchAllFeatureFlags() async throws
 
-    func fetchFeatureFlag(by name: String) -> FeatureFlag?
+    func fetchFeatureFlag(by name: String) -> CDFeatureFlag?
 
     // MARK: Shared With You
     func updateSharedWithYouItems(with urls: [String])

@@ -46,7 +46,7 @@
         <attribute name="name" optional="YES" attributeType="String"/>
         <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="domainMetadata" inverseEntity="Item"/>
     </entity>
-    <entity name="FeatureFlag" representedClassName="FeatureFlag" syncable="YES">
+    <entity name="FeatureFlag" representedClassName="CDFeatureFlag" syncable="YES">
         <attribute name="assigned" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String"/>
         <attribute name="payloadValue" optional="YES" attributeType="String"/>

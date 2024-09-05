@@ -211,7 +211,7 @@ public class PocketSource: Source {
         space.makeRecomendationsSlateLineupController()
     }
 
-    public func makeFeatureFlagsController() -> NSFetchedResultsController<FeatureFlag> {
+    public func makeFeatureFlagsController() -> NSFetchedResultsController<CDFeatureFlag> {
         space.makeFeatureFlagsController()
     }
 
@@ -837,7 +837,7 @@ extension PocketSource {
         try await featureFlagService.fetchFeatureFlags()
     }
 
-    public func fetchFeatureFlag(by name: String) -> FeatureFlag? {
+    public func fetchFeatureFlag(by name: String) -> CDFeatureFlag? {
         try? space.fetchFeatureFlag(by: name, in: space.backgroundContext)
     }
 }
