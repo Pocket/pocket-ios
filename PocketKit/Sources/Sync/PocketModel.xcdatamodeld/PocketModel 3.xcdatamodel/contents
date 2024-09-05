@@ -59,7 +59,7 @@
         <relationship name="recommendation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Recommendation" inverseName="image" inverseEntity="Recommendation"/>
         <relationship name="syndicatedArticle" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SyndicatedArticle" inverseName="image" inverseEntity="SyndicatedArticle"/>
     </entity>
-    <entity name="Item" representedClassName="Item" syncable="YES">
+    <entity name="Item" representedClassName="CDItem" syncable="YES">
         <attribute name="article" optional="YES" attributeType="Transformable" valueTransformerName="ArticleTransformer" customClassName=".Article"/>
         <attribute name="datePublished" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="domain" optional="YES" attributeType="String"/>

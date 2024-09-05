@@ -247,11 +247,11 @@ extension Space {
 
 // MARK: Item
 extension Space {
-    func fetchItems() throws -> [Item] {
+    func fetchItems() throws -> [CDItem] {
         return try fetch(Requests.fetchItems())
     }
 
-    func fetchItem(byURL url: String, context: NSManagedObjectContext? = nil) throws -> Item? {
+    func fetchItem(byURL url: String, context: NSManagedObjectContext? = nil) throws -> CDItem? {
         return try fetch(Requests.fetchItem(byURL: url), context: context).first
     }
 
@@ -259,7 +259,7 @@ extension Space {
         try delete(fetchUnsavedItems())
     }
 
-    func fetchUnsavedItems() throws -> [Item] {
+    func fetchUnsavedItems() throws -> [CDItem] {
         return try fetch(Requests.fetchUnsavedItems())
     }
 }
@@ -580,7 +580,7 @@ private extension Space {
     }
 
     func deleteOrphanedItems(context: NSManagedObjectContext) throws {
-        let fetchRequest: NSFetchRequest<Item> = Item.fetchRequest()
+        let fetchRequest: NSFetchRequest<CDItem> = CDItem.fetchRequest()
         fetchRequest.predicate =
         NSPredicate(
             format: "recommendation = NULL && savedItem = NULL && sharedWithYouItem = NULL && collection == NULL && syndicatedArticle == NULL"

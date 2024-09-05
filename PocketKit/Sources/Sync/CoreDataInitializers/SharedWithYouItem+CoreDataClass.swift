@@ -26,7 +26,7 @@ public class SharedWithYouItem: NSManagedObject {
             context: NSManagedObjectContext,
             url: String,
             sortOrder: Int32,
-            item: Item
+            item: CDItem
         ) {
             let entity = NSEntityDescription.entity(forEntityName: "SharedWithYouItem", in: context)!
             super.init(entity: entity, insertInto: context)

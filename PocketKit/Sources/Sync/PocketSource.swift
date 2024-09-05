@@ -814,11 +814,11 @@ extension PocketSource {
         }
     }
 
-    public func fetchItem(_ url: String) -> Item? {
+    public func fetchItem(_ url: String) -> CDItem? {
         return try? space.fetchItem(byURL: url)
     }
 
-    public func fetchViewContextItem(_ url: String) -> Item? {
+    public func fetchViewContextItem(_ url: String) -> CDItem? {
         return try? space.fetchItem(byURL: url, context: viewContext)
     }
 }
@@ -848,7 +848,7 @@ extension PocketSource {
         try await slateService.fetchHomeSlateLineup()
     }
 
-    public func fetchDetails(for item: Item) async throws -> Bool {
+    public func fetchDetails(for item: CDItem) async throws -> Bool {
         Log.breadcrumb(category: "recommendations", level: .debug, message: "Loading details for Recomendation: \(String(describing: item.remoteID))")
 
         guard let remoteItem = try await apollo
@@ -858,7 +858,7 @@ extension PocketSource {
         }
 
         return try space.performAndWait {
-            guard let backgroundItem = space.backgroundObject(with: item.objectID) as? Item else {
+            guard let backgroundItem = space.backgroundObject(with: item.objectID) as? CDItem else {
                 Log.capture(message: "Could not fetch a background item when fetching details for Recommendations")
                 return false
             }
@@ -869,7 +869,7 @@ extension PocketSource {
         }
     }
 
-    public func fetchShortUrlViewItem(_ url: String) async throws -> Item? {
+    public func fetchShortUrlViewItem(_ url: String) async throws -> CDItem? {
         guard let resolvedItemData = try await apollo
             .fetch(query: ResolveItemUrlQuery(url: url)).data else {
             return nil
@@ -894,7 +894,7 @@ extension PocketSource {
         return nil
     }
 
-    public func fetchViewItem(from url: String) async throws -> Item? {
+    public func fetchViewItem(from url: String) async throws -> CDItem? {
         if let item = fetchViewContextItem(url) {
             defer {
                 Task {
@@ -918,7 +918,7 @@ extension PocketSource {
         }
         let context = space.viewContext
         let updatedItem = try context.performAndWait {
-            let item = Item(context: context, givenURL: remoteItem.givenUrl, remoteID: remoteItem.remoteID)
+            let item = CDItem(context: context, givenURL: remoteItem.givenUrl, remoteID: remoteItem.remoteID)
             item.update(remote: remoteItem, with: space)
             try space.save(context: context)
             return item
@@ -1212,9 +1212,9 @@ extension PocketSource {
         }
     }
 
-    public func save(item: Item) {
+    public func save(item: CDItem) {
         space.performAndWait {
-            guard let item = space.backgroundObject(with: item.objectID) as? Item else {
+            guard let item = space.backgroundObject(with: item.objectID) as? CDItem else {
                 return
             }
             let givenURL = item.givenURL
@@ -1328,7 +1328,7 @@ extension PocketSource {
         try space.deleteSharedWithYouItems()
     }
 
-    public func item(by slug: String) async throws -> Item? {
+    public func item(by slug: String) async throws -> CDItem? {
         let data = try await apollo.fetch(query: ShareSlugQuery(slug: slug))
         guard let givenUrl = data.data?.shareSlug?.asPocketShare?.preview?.item?.givenUrl else {
             // TODO: we might want to use the share not found message
@@ -1337,7 +1337,7 @@ extension PocketSource {
         return try await fetchViewItem(from: givenUrl)
     }
 
-    public func readerItem(by slug: String) async throws -> (SavedItem?, Item?) {
+    public func readerItem(by slug: String) async throws -> (SavedItem?, CDItem?) {
         let data = try await apollo.fetch(query: ReaderSlugQuery(readerSlugSlug: slug))
 
         if let savedItemUrl = data.data?.readerSlug.savedItem?.url, let savedItem = fetchViewContextSavedItem(savedItemUrl) {

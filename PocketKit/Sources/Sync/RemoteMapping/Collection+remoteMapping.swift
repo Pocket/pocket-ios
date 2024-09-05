@@ -41,7 +41,7 @@ extension CDCollection {
             story.collection = self
             if let remoteItem = $0.element.item {
                 let item = (try? space.fetchItem(byURL: remoteItem.givenUrl, context: context)) ??
-                Item(context: context, givenURL: remoteItem.givenUrl, remoteID: remoteItem.remoteID)
+                CDItem(context: context, givenURL: remoteItem.givenUrl, remoteID: remoteItem.remoteID)
                 item.update(from: remoteItem, in: space)
                 item.addToCollectionStories(story)
                 story.item = item
