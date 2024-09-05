@@ -6,6 +6,6 @@
 import Foundation
 import CoreData
 
-@objc(SyndicatedArticle)
-public class SyndicatedArticle: NSManagedObject {
+@objc(CDSyndicatedArticle)
+public class CDSyndicatedArticle: NSManagedObject {
 }

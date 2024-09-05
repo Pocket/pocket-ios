@@ -76,7 +76,7 @@ extension Space {
         publisherName: String? = nil,
         title: String,
         item: CDItem? = nil
-    ) throws -> SyndicatedArticle {
+    ) throws -> CDSyndicatedArticle {
         try backgroundContext.performAndWait {
             let syndicatedArticle = buildSyndicatedArticle(
                 excerpt: excerpt,
@@ -100,9 +100,9 @@ extension Space {
         publisherName: String? = nil,
         title: String,
         item: CDItem? = nil
-    ) -> SyndicatedArticle {
+    ) -> CDSyndicatedArticle {
         backgroundContext.performAndWait {
-            let syndicatedArticle: SyndicatedArticle = SyndicatedArticle(context: backgroundContext)
+            let syndicatedArticle: CDSyndicatedArticle = CDSyndicatedArticle(context: backgroundContext)
             syndicatedArticle.excerpt = excerpt
             syndicatedArticle.imageURL = imageURL
             syndicatedArticle.itemID = itemID
@@ -122,7 +122,7 @@ extension Space {
         title: String = "Item 1",
         givenURL: String = "https://example.com/items/item-1",
         isArticle: Bool = true,
-        syndicatedArticle: SyndicatedArticle? = nil
+        syndicatedArticle: CDSyndicatedArticle? = nil
     ) throws -> CDItem {
         try backgroundContext.performAndWait {
             let item = buildItem(
@@ -145,7 +145,7 @@ extension Space {
         givenURL: String? = "https://example.com/items/item-1",
         resolvedURL: String? = nil,
         isArticle: Bool = true,
-        syndicatedArticle: SyndicatedArticle? = nil,
+        syndicatedArticle: CDSyndicatedArticle? = nil,
         num: Int? = nil
     ) -> CDItem {
         var url = givenURL
