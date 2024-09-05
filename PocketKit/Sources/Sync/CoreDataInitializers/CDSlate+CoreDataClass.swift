@@ -5,8 +5,8 @@
 import Foundation
 import CoreData
 
-@objc(Slate)
-public class Slate: NSManagedObject {
+@objc(CDSlate)
+public class CDSlate: NSManagedObject {
     @available(*, unavailable)
     public init() {
         fatalError()

@@ -86,8 +86,8 @@ public enum Requests {
         return request
     }
 
-    public static func fetchSlates() -> NSFetchRequest<Slate> {
-        Slate.fetchRequest()
+    public static func fetchSlates() -> NSFetchRequest<CDSlate> {
+        CDSlate.fetchRequest()
     }
 
     public static func fetchRecomendations() -> RichFetchRequest<CDRecommendation> {
@@ -110,7 +110,7 @@ public enum Requests {
         return request
     }
 
-    public static func fetchSlate(byID id: String) -> NSFetchRequest<Slate> {
+    public static func fetchSlate(byID id: String) -> NSFetchRequest<CDSlate> {
         let request = Self.fetchSlates()
         request.predicate = NSPredicate(format: "remoteID = %@", id)
         request.fetchLimit = 1

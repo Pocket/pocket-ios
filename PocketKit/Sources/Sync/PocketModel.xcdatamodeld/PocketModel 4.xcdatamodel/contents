@@ -142,7 +142,7 @@
     <entity name="SavedItemUpdatedNotification" representedClassName="CDSavedItemUpdatedNotification" syncable="YES">
         <relationship name="savedItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SavedItem" inverseName="savedItemUpdatedNotification" inverseEntity="SavedItem"/>
     </entity>
-    <entity name="Slate" representedClassName="Slate" syncable="YES">
+    <entity name="Slate" representedClassName="CDSlate" syncable="YES">
         <attribute name="experimentID" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="remoteID" attributeType="String"/>
