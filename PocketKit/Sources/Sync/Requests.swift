@@ -190,49 +190,49 @@ public enum Requests {
         return request
     }
 
-    public static func fetchTags() -> NSFetchRequest<Tag> {
-        return Tag.fetchRequest()
+    public static func fetchTags() -> NSFetchRequest<CDTag> {
+        return CDTag.fetchRequest()
     }
 
-    public static func fetchSavedTags() -> NSFetchRequest<Tag> {
+    public static func fetchSavedTags() -> NSFetchRequest<CDTag> {
         let request = fetchTags()
         request.predicate = NSPredicate(format: "ANY savedItems.isArchived = false")
         return request
     }
 
-    public static func fetchArchivedTags() -> NSFetchRequest<Tag> {
+    public static func fetchArchivedTags() -> NSFetchRequest<CDTag> {
         let request = fetchTags()
         request.predicate = NSPredicate(format: "ANY savedItems.isArchived = true")
         return request
     }
 
-    public static func fetchTag(byName name: String) -> NSFetchRequest<Tag> {
+    public static func fetchTag(byName name: String) -> NSFetchRequest<CDTag> {
         let request = fetchTags()
         request.predicate = NSPredicate(format: "name = %@", name)
         request.fetchLimit = 1
         return request
     }
 
-    public static func fetchTag(byID id: String) -> NSFetchRequest<Tag> {
+    public static func fetchTag(byID id: String) -> NSFetchRequest<CDTag> {
         let request = fetchTags()
         request.predicate = NSPredicate(format: "remoteID = %@", id)
         request.fetchLimit = 1
         return request
     }
 
-    public static func fetchTagsWithNoSavedItems() -> NSFetchRequest<Tag> {
+    public static func fetchTagsWithNoSavedItems() -> NSFetchRequest<CDTag> {
         let request = fetchTags()
         request.predicate = NSPredicate(format: "savedItems.@count = 0")
         return request
     }
 
-    public static func fetchTags(excluding tags: [String]) -> NSFetchRequest<Tag> {
+    public static func fetchTags(excluding tags: [String]) -> NSFetchRequest<CDTag> {
         let request = fetchTags()
         request.predicate = NSPredicate(format: "NOT (self.name IN %@)", tags)
         return request
     }
 
-    public static func filterTags(with input: String, excluding tags: [String]) -> NSFetchRequest<Tag> {
+    public static func filterTags(with input: String, excluding tags: [String]) -> NSFetchRequest<CDTag> {
         let request = fetchTags()
         let filterPredicate = NSPredicate(format: "name BEGINSWITH %@", input)
         let excludePredicate = NSPredicate(format: "NOT (self.name IN %@)", tags)

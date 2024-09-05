@@ -17,10 +17,10 @@ class SaveToAddTagsViewModelTests: XCTestCase {
     private var userDefaults: UserDefaults!
     private var user: MockUser!
     private var subscriptions: [AnyCancellable] = []
-    private let retrieveAction: ([String]) -> [Tag]? = { _ in
+    private let retrieveAction: ([String]) -> [CDTag]? = { _ in
         return nil
     }
-    private let filterAction: (String, [String]) -> [Tag]? = { _, _  in
+    private let filterAction: (String, [String]) -> [CDTag]? = { _, _  in
         return nil
     }
 
@@ -44,8 +44,8 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         tracker: Tracker? = nil,
         userDefaults: UserDefaults? = nil,
         user: User? = nil,
-        retrieveAction: (([String]) -> [Tag]?)? = nil,
-        filterAction: ((String, [String]) -> [Tag]?)? = nil,
+        retrieveAction: (([String]) -> [CDTag]?)? = nil,
+        filterAction: ((String, [String]) -> [CDTag]?)? = nil,
         saveAction: @escaping ([String]) -> Void
     ) -> SaveToAddTagsViewModel {
         SaveToAddTagsViewModel(
@@ -98,9 +98,9 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         try space.save()
         let viewModel = subject(item: space.viewObject(with: item.objectID) as! CDSavedItem) { tags in
             XCTAssert(true, "expect call to save action")
-            var tags: [Tag] = []
+            var tags: [CDTag] = []
             for index in 1...2 {
-                let tag: Tag = Tag(context: self.space.backgroundContext)
+                let tag: CDTag = CDTag(context: self.space.backgroundContext)
                 tag.name = "tag \(index)"
                 tag.remoteID = tag.name.uppercased()
                 tags.append(tag)
@@ -109,7 +109,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         }
 
         viewModel.saveTags()
-        XCTAssertEqual(item.tags?.compactMap { ($0 as? Tag)?.name }, ["tag 1", "tag 2"])
+        XCTAssertEqual(item.tags?.compactMap { ($0 as? CDTag)?.name }, ["tag 1", "tag 2"])
     }
 
     @MainActor
@@ -120,9 +120,9 @@ class SaveToAddTagsViewModelTests: XCTestCase {
             item: space.viewObject(with: item.objectID) as! CDSavedItem,
             user: MockUser(status: .premium),
             retrieveAction: { _ in
-                var tags: [Tag] = []
+                var tags: [CDTag] = []
                 for index in 1...3 {
-                    let tag: Tag = Tag(context: self.space.viewContext)
+                    let tag: CDTag = CDTag(context: self.space.viewContext)
                     tag.name = "tag \(index)"
                     tag.remoteID = tag.name.uppercased()
                     tags.append(tag)
@@ -142,9 +142,9 @@ class SaveToAddTagsViewModelTests: XCTestCase {
             item: space.viewObject(with: item.objectID) as! CDSavedItem,
             user: MockUser(status: .premium),
             retrieveAction: { _ in
-                var tags: [Tag] = []
+                var tags: [CDTag] = []
                 for index in 1...4 {
-                    let tag: Tag = Tag(context: self.space.viewContext)
+                    let tag: CDTag = CDTag(context: self.space.viewContext)
                     tag.name = "tag \(index)"
                     tag.remoteID = tag.name.uppercased()
                     tags.append(tag)
@@ -164,9 +164,9 @@ class SaveToAddTagsViewModelTests: XCTestCase {
             item: space.viewObject(with: item.objectID) as! CDSavedItem,
             user: MockUser(status: .free),
             retrieveAction: { _ in
-                var tags: [Tag] = []
+                var tags: [CDTag] = []
                 for index in 1...4 {
-                    let tag: Tag = Tag(context: self.space.viewContext)
+                    let tag: CDTag = CDTag(context: self.space.viewContext)
                     tag.name = "tag \(index)"
                     tag.remoteID = tag.name.uppercased()
                     tags.append(tag)
@@ -185,9 +185,9 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         let viewModel = subject(
             item: space.viewObject(with: item.objectID) as! CDSavedItem,
             retrieveAction: { _ in
-                var tags: [Tag] = []
+                var tags: [CDTag] = []
                 for index in 1...3 {
-                    let tag: Tag = Tag(context: self.space.viewContext)
+                    let tag: CDTag = CDTag(context: self.space.viewContext)
                     tag.name = "tag \(index)"
                     tag.remoteID = tag.name.uppercased()
                     tags.append(tag)
@@ -206,8 +206,8 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         let viewModel = subject(
             item: space.viewObject(with: item.objectID) as! CDSavedItem,
             retrieveAction: { _ in
-                let tag2: Tag = Tag(context: self.space.viewContext)
-                let tag3: Tag = Tag(context: self.space.viewContext)
+                let tag2: CDTag = CDTag(context: self.space.viewContext)
+                let tag3: CDTag = CDTag(context: self.space.viewContext)
                 tag2.name = "c"
                 tag2.remoteID = tag2.name.uppercased()
                 tag3.name = "b"
@@ -228,8 +228,8 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         let viewModel = subject(
             item: space.viewObject(with: item.objectID) as! CDSavedItem,
             retrieveAction: { _ in
-                let tag2: Tag = Tag(context: self.space.viewContext)
-                let tag3: Tag = Tag(context: self.space.viewContext)
+                let tag2: CDTag = CDTag(context: self.space.viewContext)
+                let tag3: CDTag = CDTag(context: self.space.viewContext)
                 tag2.name = "c"
                 tag2.remoteID = tag2.name.uppercased()
                 tag3.name = "b"
@@ -272,9 +272,9 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         let viewModel = subject(
             item: space.viewObject(with: item.objectID) as! CDSavedItem,
             filterAction: { _, _  in
-                var tags: [Tag] = []
+                var tags: [CDTag] = []
                 for index in 2...3 {
-                    let tag: Tag = Tag(context: self.space.viewContext)
+                    let tag: CDTag = CDTag(context: self.space.viewContext)
                     tag.name = "tag \(index)"
                     tag.remoteID = tag.name.uppercased()
                     tags.append(tag)
@@ -304,9 +304,9 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         let viewModel = subject(
             item: space.viewObject(with: item.objectID) as! CDSavedItem,
             filterAction: { _, _  in
-                var tags: [Tag] = []
+                var tags: [CDTag] = []
                 for index in 2...3 {
-                    let tag: Tag = Tag(context: self.space.viewContext)
+                    let tag: CDTag = CDTag(context: self.space.viewContext)
                     tag.name = "tag \(index)"
                     tag.remoteID = tag.name.uppercased()
                     tags.append(tag)

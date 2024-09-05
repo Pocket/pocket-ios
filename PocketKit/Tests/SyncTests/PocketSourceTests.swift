@@ -554,8 +554,8 @@ extension PocketSourceTests {
         let source = subject()
         source.addTags(item: items[0], tags: ["tag 2", "tag 3"])
         XCTAssertEqual(items[0].tags?.count, 2)
-        XCTAssertEqual((items[0].tags?[0] as? Tag)?.name, "tag 2")
-        XCTAssertEqual((items[0].tags?[1] as? Tag)?.name, "tag 3")
+        XCTAssertEqual((items[0].tags?[0] as? CDTag)?.name, "tag 2")
+        XCTAssertEqual((items[0].tags?[1] as? CDTag)?.name, "tag 3")
         waitForExpectations(timeout: 1)
     }
 
@@ -604,7 +604,7 @@ extension PocketSourceTests {
         }
         try XCTAssertEqual( space.fetchAllTags().compactMap { $0.name }, ["tag 1"])
         let source = subject()
-        guard let tag = items[0].tags?[0] as? Tag else {
+        guard let tag = items[0].tags?[0] as? CDTag else {
             XCTFail("Should not be nil")
             return
         }
@@ -615,7 +615,7 @@ extension PocketSourceTests {
     }
 
     func test_renameTag_executesUpdateTagMutation() throws {
-        let tag1: Tag = Tag(context: space.backgroundContext)
+        let tag1: CDTag = CDTag(context: space.backgroundContext)
         tag1.remoteID = "id 1"
         tag1.name = "tag 1"
         let source = subject()
@@ -637,7 +637,7 @@ extension PocketSourceTests {
     private func createItemsWithTags(_ number: Int, isArchived: Bool = false) -> [CDSavedItem] {
         guard number > 0 else { return [] }
         return (1...number).compactMap { num in
-            let tag: Tag = Tag(context: space.backgroundContext)
+            let tag: CDTag = CDTag(context: space.backgroundContext)
             tag.remoteID = "id \(num)"
             tag.name = "tag \(num)"
             return space.buildSavedItem(remoteID: "saved-item-\(num)", url: "http://example.com/item-\(num)", isArchived: isArchived, tags: [tag])

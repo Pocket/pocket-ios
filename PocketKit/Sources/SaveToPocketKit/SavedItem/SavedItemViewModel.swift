@@ -173,11 +173,11 @@ class SavedItemViewModel {
         finish(context: context)
     }
 
-    func retrieveTags(excluding tags: [String]) -> [Tag]? {
+    func retrieveTags(excluding tags: [String]) -> [CDTag]? {
         return saveService.retrieveTags(excluding: tags)
     }
 
-    func filterTags(with text: String, excluding tags: [String]) -> [Tag]? {
+    func filterTags(with text: String, excluding tags: [String]) -> [CDTag]? {
         return saveService.filterTags(with: text, excluding: tags)
     }
 

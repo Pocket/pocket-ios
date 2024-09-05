@@ -21,7 +21,7 @@ protocol ArchivedItemSpace: Paginated {
 }
 
 protocol TagSpace: Paginated {
-    func updateTags(edges: [Tag.TagEdge?], cursor: String?) throws
+    func updateTags(edges: [CDTag.TagEdge?], cursor: String?) throws
 }
 
 protocol SharedWithYouSpace {
@@ -133,7 +133,7 @@ extension DerivedSpace: ArchivedItemSpace {
 }
 
 extension DerivedSpace: TagSpace {
-    func updateTags(edges: [Tag.TagEdge?], cursor: String?) throws {
+    func updateTags(edges: [CDTag.TagEdge?], cursor: String?) throws {
         if let cursor {
             updateCursor(cursor)
         }

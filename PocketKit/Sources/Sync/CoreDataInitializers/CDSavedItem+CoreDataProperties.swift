@@ -30,28 +30,28 @@ extension CDSavedItem {
 // MARK: Generated accessors for tags
 extension CDSavedItem {
     @objc(insertObject:inTagsAtIndex:)
-    @NSManaged public func insertIntoTags(_ value: Tag, at idx: Int)
+    @NSManaged public func insertIntoTags(_ value: CDTag, at idx: Int)
 
     @objc(removeObjectFromTagsAtIndex:)
     @NSManaged public func removeFromTags(at idx: Int)
 
     @objc(insertTags:atIndexes:)
-    @NSManaged public func insertIntoTags(_ values: [Tag], at indexes: NSIndexSet)
+    @NSManaged public func insertIntoTags(_ values: [CDTag], at indexes: NSIndexSet)
 
     @objc(removeTagsAtIndexes:)
     @NSManaged public func removeFromTags(at indexes: NSIndexSet)
 
     @objc(replaceObjectInTagsAtIndex:withObject:)
-    @NSManaged public func replaceTags(at idx: Int, with value: Tag)
+    @NSManaged public func replaceTags(at idx: Int, with value: CDTag)
 
     @objc(replaceTagsAtIndexes:withTags:)
-    @NSManaged public func replaceTags(at indexes: NSIndexSet, with values: [Tag])
+    @NSManaged public func replaceTags(at indexes: NSIndexSet, with values: [CDTag])
 
     @objc(addTagsObject:)
-    @NSManaged public func addToTags(_ value: Tag)
+    @NSManaged public func addToTags(_ value: CDTag)
 
     @objc(removeTagsObject:)
-    @NSManaged public func removeFromTags(_ value: Tag)
+    @NSManaged public func removeFromTags(_ value: CDTag)
 
     @objc(addTags:)
     @NSManaged public func addToTags(_ values: NSOrderedSet)

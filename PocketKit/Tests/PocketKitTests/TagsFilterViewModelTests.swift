@@ -40,7 +40,7 @@ class TagsFilterViewModelTests: XCTestCase {
         source: MockSource? = nil,
         userDefaults: UserDefaults? = nil,
         user: User? = nil,
-        fetchedTags: [Tag]?,
+        fetchedTags: [CDTag]?,
         selectAllAction: @escaping () -> Void
     ) async -> TagsFilterViewModel {
         let source: MockSource = source ?? self.source

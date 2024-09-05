@@ -471,11 +471,11 @@ extension Space {
 
 // MARK: Tag
 extension Space {
-    func fetchAllTags() throws -> [Tag] {
+    func fetchAllTags() throws -> [CDTag] {
         return try fetch(Requests.fetchTags())
     }
 
-    func fetchTags(isArchived: Bool) throws -> [Tag] {
+    func fetchTags(isArchived: Bool) throws -> [CDTag] {
         if isArchived {
             return try fetch(Requests.fetchArchivedTags())
         } else {
@@ -483,30 +483,30 @@ extension Space {
         }
     }
 
-    func fetchOrCreateTag(byName name: String, context: NSManagedObjectContext? = nil) -> Tag {
+    func fetchOrCreateTag(byName name: String, context: NSManagedObjectContext? = nil) -> CDTag {
         let context = context ?? backgroundContext
         let fetchRequest = Requests.fetchTag(byName: name)
         fetchRequest.fetchLimit = 1
         if let fetchedTag = (try? fetch(fetchRequest, context: context).first) {
             return fetchedTag
         }
-        let createTag = Tag(context: context)
+        let createTag = CDTag(context: context)
         createTag.name = name
         return createTag
     }
 
-    func fetchTag(by name: String, context: NSManagedObjectContext? = nil) throws -> Tag? {
+    func fetchTag(by name: String, context: NSManagedObjectContext? = nil) throws -> CDTag? {
         let context = context ?? backgroundContext
         let fetchRequest = Requests.fetchTag(byName: name)
         fetchRequest.fetchLimit = 1
         return try fetch(fetchRequest, context: context).first
     }
 
-    func retrieveTags(excluding tags: [String]) throws -> [Tag] {
+    func retrieveTags(excluding tags: [String]) throws -> [CDTag] {
         return try fetch(Requests.fetchTags(excluding: tags))
     }
 
-    func filterTags(with input: String, excluding tags: [String]) throws -> [Tag] {
+    func filterTags(with input: String, excluding tags: [String]) throws -> [CDTag] {
         return try fetch(Requests.filterTags(with: input, excluding: tags))
     }
 

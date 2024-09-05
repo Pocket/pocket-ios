@@ -41,11 +41,11 @@ class PocketAddTagsViewModel: AddTagsViewModel {
 
     /// Fetches all tags associated with item
     private var itemTagNames: [String] {
-        item.tags?.compactMap { ($0 as? Tag)?.name }.sorted() ?? []
+        item.tags?.compactMap { ($0 as? CDTag)?.name }.sorted() ?? []
     }
 
     /// Fetches all tags associated with a user
-    private var fetchAllTags: [Tag] {
+    private var fetchAllTags: [CDTag] {
         self.source.fetchAllTags() ?? []
     }
 

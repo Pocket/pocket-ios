@@ -64,15 +64,15 @@ public protocol Source {
 
     func replaceTags(_ savedItem: CDSavedItem, tags: [String])
 
-    func deleteTag(tag: Tag)
+    func deleteTag(tag: CDTag)
 
-    func renameTag(from oldTag: Tag, to name: String)
+    func renameTag(from oldTag: CDTag, to name: String)
 
-    func retrieveTags(excluding: [String]) -> [Tag]?
+    func retrieveTags(excluding: [String]) -> [CDTag]?
 
-    func fetchAllTags() -> [Tag]?
+    func fetchAllTags() -> [CDTag]?
 
-    func filterTags(with input: String, excluding tags: [String]) -> [Tag]?
+    func filterTags(with input: String, excluding tags: [String]) -> [CDTag]?
 
     func fetchUnifiedHomeLineup() async throws
 
