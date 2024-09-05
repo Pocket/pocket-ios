@@ -26,28 +26,28 @@ extension CollectionStory {
 // MARK: Generated accessors for authors
 extension CollectionStory {
     @objc(insertObject:inAuthorsAtIndex:)
-    @NSManaged public func insertIntoAuthors(_ value: CollectionAuthor, at idx: Int)
+    @NSManaged public func insertIntoAuthors(_ value: CDCollectionAuthor, at idx: Int)
 
     @objc(removeObjectFromAuthorsAtIndex:)
     @NSManaged public func removeFromAuthors(at idx: Int)
 
     @objc(insertAuthors:atIndexes:)
-    @NSManaged public func insertIntoAuthors(_ values: [CollectionAuthor], at indexes: NSIndexSet)
+    @NSManaged public func insertIntoAuthors(_ values: [CDCollectionAuthor], at indexes: NSIndexSet)
 
     @objc(removeAuthorsAtIndexes:)
     @NSManaged public func removeFromAuthors(at indexes: NSIndexSet)
 
     @objc(replaceObjectInAuthorsAtIndex:withObject:)
-    @NSManaged public func replaceAuthors(at idx: Int, with value: CollectionAuthor)
+    @NSManaged public func replaceAuthors(at idx: Int, with value: CDCollectionAuthor)
 
     @objc(replaceAuthorsAtIndexes:withAuthors:)
-    @NSManaged public func replaceAuthors(at indexes: NSIndexSet, with values: [CollectionAuthor])
+    @NSManaged public func replaceAuthors(at indexes: NSIndexSet, with values: [CDCollectionAuthor])
 
     @objc(addAuthorsObject:)
-    @NSManaged public func addToAuthors(_ value: CollectionAuthor)
+    @NSManaged public func addToAuthors(_ value: CDCollectionAuthor)
 
     @objc(removeAuthorsObject:)
-    @NSManaged public func removeFromAuthors(_ value: CollectionAuthor)
+    @NSManaged public func removeFromAuthors(_ value: CDCollectionAuthor)
 
     @objc(addAuthors:)
     @NSManaged public func addToAuthors(_ values: NSOrderedSet)
