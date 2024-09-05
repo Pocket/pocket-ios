@@ -71,8 +71,8 @@ public enum Requests {
         return CDSavedItemUpdatedNotification.fetchRequest()
     }
 
-    public static func fetchUnresolvedSavedItems() -> NSFetchRequest<UnresolvedSavedItem> {
-        UnresolvedSavedItem.fetchRequest()
+    public static func fetchUnresolvedSavedItems() -> NSFetchRequest<CDUnresolvedSavedItem> {
+        CDUnresolvedSavedItem.fetchRequest()
     }
 
     public static func fetchSlateLineups() -> NSFetchRequest<CDSlateLineup> {

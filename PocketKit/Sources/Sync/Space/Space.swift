@@ -321,7 +321,7 @@ extension Space {
         return try fetch(Requests.fetchSavedItemUpdatedNotifications())
     }
 
-    func fetchUnresolvedSavedItems() throws -> [UnresolvedSavedItem] {
+    func fetchUnresolvedSavedItems() throws -> [CDUnresolvedSavedItem] {
         return try fetch(Requests.fetchUnresolvedSavedItems())
     }
 

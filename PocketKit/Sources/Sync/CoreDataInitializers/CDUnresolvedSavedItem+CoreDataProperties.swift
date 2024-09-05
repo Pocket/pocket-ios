@@ -6,10 +6,10 @@
 import Foundation
 import CoreData
 
-extension UnresolvedSavedItem {
+extension CDUnresolvedSavedItem {
     @nonobjc
-    public class func fetchRequest() -> NSFetchRequest<UnresolvedSavedItem> {
-        return NSFetchRequest<UnresolvedSavedItem>(entityName: "UnresolvedSavedItem")
+    public class func fetchRequest() -> NSFetchRequest<CDUnresolvedSavedItem> {
+        return NSFetchRequest<CDUnresolvedSavedItem>(entityName: "UnresolvedSavedItem")
     }
 
     @NSManaged public var savedItem: CDSavedItem?
