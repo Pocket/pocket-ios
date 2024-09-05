@@ -38,7 +38,7 @@ class MockSource: Source {
     func addHighlight(itemIID: NSManagedObjectID, patch: String, quote: String) {
     }
 
-    func deleteHighlight(highlight: Sync.Highlight) {
+    func deleteHighlight(highlight: Sync.CDHighlight) {
     }
 
     func fetchViewItem(from url: String) async throws -> Sync.Item? {
