@@ -69,8 +69,20 @@ class ArticleComponentTextView: UITextView {
         attributedText.isFullyHighlighted(fullRange)
     }
 
-    private override init(frame: CGRect, textContainer: NSTextContainer?) {
-        super.init(frame: frame, textContainer: textContainer)
+    convenience override init(frame: CGRect, textContainer: NSTextContainer?) {
+        self.init(usingTextLayoutManager: true)
+        backgroundColor = .clear
+        textContainerInset = .zero
+        self.textContainer.lineFragmentPadding = .zero
+        isEditable = false
+        isScrollEnabled = false
+        delegate = self
+
+        linkTextAttributes = [.foregroundColor: UIColor(.ui.black1)]
+        interactions
+            .filter { $0 is UIContextMenuInteraction }
+            .forEach { removeInteraction($0) }
+        addInteraction(UIContextMenuInteraction(delegate: self))
     }
 
     required init?(coder: NSCoder) {
@@ -92,26 +104,6 @@ class ArticleComponentTextView: UITextView {
         let quote = mutable.mutableString.substring(with: range)
         self.attributedText = mutable
         onHighlight?(range, quote, String(mutable.mutableString))
-    }
-}
-
-// MARK: Textkit 2 support
-extension ArticleComponentTextView {
-    static func initialize() -> ArticleComponentTextView {
-        let view = ArticleComponentTextView(usingTextLayoutManager: true)
-        view.backgroundColor = .clear
-        view.textContainerInset = .zero
-        view.textContainer.lineFragmentPadding = .zero
-        view.isEditable = false
-        view.isScrollEnabled = false
-        view.delegate = view
-
-        view.linkTextAttributes = [.foregroundColor: UIColor(.ui.black1)]
-        view.interactions
-            .filter { $0 is UIContextMenuInteraction }
-            .forEach { view.removeInteraction($0) }
-        view.addInteraction(UIContextMenuInteraction(delegate: view))
-        return view
     }
 }
 

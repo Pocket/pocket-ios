@@ -39,7 +39,7 @@ class MarkdownComponentCell: UICollectionViewCell, ArticleComponentTextCell, Art
     }
 
     lazy var textView: ArticleComponentTextView = {
-        let textView = ArticleComponentTextView.initialize()
+        let textView = ArticleComponentTextView()
         textView.actionDelegate = self
         return textView
     }()
