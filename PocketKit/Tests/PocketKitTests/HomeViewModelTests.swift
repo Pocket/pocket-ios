@@ -22,7 +22,7 @@ class HomeViewModelTests: XCTestCase {
     var taskScheduler: MockBGTaskScheduler!
     var homeRefreshCoordinator: RefreshCoordinator!
     var subscriptions: Set<AnyCancellable> = []
-    var homeController: RichFetchedResultsController<Recommendation>!
+    var homeController: RichFetchedResultsController<CDRecommendation>!
     var recentSavesController: NSFetchedResultsController<SavedItem>!
     var sharedWithYouController: RichFetchedResultsController<SharedWithYouItem>!
     var user: User!
@@ -290,7 +290,7 @@ class HomeViewModelTests: XCTestCase {
         viewModel.fetch()
 
         var slate: Slate!
-        var rec: Recommendation!
+        var rec: CDRecommendation!
 
         let snapshotSent = expectation(description: "snapshotSent")
         viewModel.$snapshot.dropFirst(2).first().sink { snapshot in

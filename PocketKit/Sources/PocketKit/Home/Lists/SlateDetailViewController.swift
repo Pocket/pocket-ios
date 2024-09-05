@@ -188,7 +188,7 @@ private extension SlateDetailViewController {
 
             return NSCollectionLayoutSection(group: group)
         case .slate(let slate):
-            let recommendations = slate.recommendations?.compactMap { $0 as? Recommendation } ?? []
+            let recommendations = slate.recommendations?.compactMap { $0 as? CDRecommendation } ?? []
             let viewModels = recommendations.compactMap { model.recommendationViewModel(for: $0.objectID) }
 
             return sectionProvider.gridSection(for: viewModels, with: environment, and: view)

@@ -22,7 +22,7 @@ class SlateDetailViewModel {
 
     @Published var presentedWebReaderURL: URL?
 
-    @Published var selectedRecommendationToReport: Recommendation?
+    @Published var selectedRecommendationToReport: CDRecommendation?
 
     @Published var sharedActivity: PocketActivity?
 
@@ -102,7 +102,7 @@ class SlateDetailViewModel {
         case .loading:
             return
         case .recommendation(let objectID):
-            guard let recommendation = source.viewObject(id: objectID) as? Recommendation else {
+            guard let recommendation = source.viewObject(id: objectID) as? CDRecommendation else {
                 return
             }
 
@@ -133,7 +133,7 @@ extension SlateDetailViewModel {
     }
 
     private func selectRecommendation(with objectID: NSManagedObjectID, at indexPath: IndexPath) {
-        guard let recommendation = source.viewObject(id: objectID) as? Recommendation else {
+        guard let recommendation = source.viewObject(id: objectID) as? CDRecommendation else {
             return
         }
 
@@ -187,7 +187,7 @@ extension SlateDetailViewModel {
         for objectID: NSManagedObjectID,
         at indexPath: IndexPath? = nil
     ) -> HomeItemCellViewModel? {
-        guard let recommendation = source.viewObject(id: objectID) as? Recommendation else {
+        guard let recommendation = source.viewObject(id: objectID) as? CDRecommendation else {
             return nil
         }
 
@@ -229,19 +229,19 @@ extension SlateDetailViewModel {
         )
     }
 
-    private func save(_ recommendation: Recommendation, at indexPath: IndexPath) {
+    private func save(_ recommendation: CDRecommendation, at indexPath: IndexPath) {
         source.save(recommendation: recommendation)
         let givenURL =  recommendation.item.givenURL
         tracker.track(event: Events.ExpandedSlate.SlateArticleSave(url: givenURL, positionInList: indexPath.item, recommendationId: recommendation.analyticsID))
     }
 
-    private func archive(_ recommendation: Recommendation, at indexPath: IndexPath) {
+    private func archive(_ recommendation: CDRecommendation, at indexPath: IndexPath) {
         source.archive(recommendation: recommendation)
         let givenURL = recommendation.item.givenURL
         tracker.track(event: Events.ExpandedSlate.SlateArticleArchive(url: givenURL, positionInList: indexPath.item, recommendationId: recommendation.analyticsID))
     }
 
-    private func report(_ recommendation: Recommendation, at indexPath: IndexPath) {
+    private func report(_ recommendation: CDRecommendation, at indexPath: IndexPath) {
         selectedRecommendationToReport = recommendation
     }
 }
@@ -256,7 +256,7 @@ private extension SlateDetailViewModel {
 
     func buildSnapshot() -> Snapshot {
         var snapshot = Snapshot()
-        let recommendations = slate.recommendations?.compactMap { $0 as? Recommendation } ?? []
+        let recommendations = slate.recommendations?.compactMap { $0 as? CDRecommendation } ?? []
 
         let section: SlateDetailViewModel.Section = .slate(slate)
         snapshot.appendSections([section])

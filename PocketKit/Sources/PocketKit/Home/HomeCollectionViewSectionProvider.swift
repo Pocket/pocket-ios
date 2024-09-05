@@ -100,7 +100,7 @@ class HomeViewControllerSectionProvider {
     /// Handles hero section for both regular and compact layout. For wide layout, the hero section display two hero cards, otherwise, it displays a single hero card
     func heroSection(for slateID: NSManagedObjectID, in viewModel: HomeViewModel, environment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? {
         let slate = viewModel.slateModel(for: slateID)
-        let recommendations: [Recommendation] = slate?.recommendations?.compactMap { $0 as? Recommendation } ?? []
+        let recommendations: [CDRecommendation] = slate?.recommendations?.compactMap { $0 as? CDRecommendation } ?? []
 
         guard !recommendations.isEmpty,
               let hero = viewModel.recommendationHeroViewModel(for: recommendations[safe: 0]?.objectID) else {
