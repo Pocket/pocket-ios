@@ -246,7 +246,7 @@ extension MainViewModel {
         guard let uriRepresentation = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String,
               let uri = URL(string: uriRepresentation),
               let objectID = source.objectID(from: uri),
-              let savedItem = source.viewObject(id: objectID) as? SavedItem else {
+              let savedItem = source.viewObject(id: objectID) as? CDSavedItem else {
             return
         }
         var components = URLComponents()

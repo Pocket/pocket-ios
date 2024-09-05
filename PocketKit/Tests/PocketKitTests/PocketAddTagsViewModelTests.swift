@@ -45,7 +45,7 @@ class PocketAddTagsViewModelTests: XCTestCase {
 
     @MainActor
     private func subject(
-        item: SavedItem,
+        item: CDSavedItem,
         source: Source? = nil,
         tracker: Tracker? = nil,
         userDefaults: UserDefaults? = nil,

@@ -7,7 +7,7 @@ import Sync
 import PKTListen
 import SharedPocketKit
 
-extension SavedItem: PKTListenItem {
+extension CDSavedItem: PKTListenItem {
     public var isEligibleForListen: Bool {
         if remoteID == nil {
             return false
@@ -94,7 +94,7 @@ extension SavedItem: PKTListenItem {
     }
 }
 
-extension SavedItem: PKTImageResource {
+extension CDSavedItem: PKTImageResource {
     // TODO: Followup with nicole on this class.
     public var imageIsEphemeral: Bool {
         self.isArchived // TODO: Ask nicole what this does
@@ -121,7 +121,7 @@ extension SavedItem: PKTImageResource {
     }
 }
 
-extension SavedItem: PKTListDiffable {
+extension CDSavedItem: PKTListDiffable {
     public func diffIdentifier() -> NSObjectProtocol {
         NSString(string: self.remoteID ?? "nil")
     }

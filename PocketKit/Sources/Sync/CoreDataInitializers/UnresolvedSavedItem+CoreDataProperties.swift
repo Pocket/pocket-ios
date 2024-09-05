@@ -12,5 +12,5 @@ extension UnresolvedSavedItem {
         return NSFetchRequest<UnresolvedSavedItem>(entityName: "UnresolvedSavedItem")
     }
 
-    @NSManaged public var savedItem: SavedItem?
+    @NSManaged public var savedItem: CDSavedItem?
 }

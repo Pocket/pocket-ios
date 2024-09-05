@@ -14,7 +14,7 @@ class TestSavedItemsControllerDelegate: SavedItemsControllerDelegate {
         self.handler = handler
     }
 
-    func controller(_ controller: SavedItemsController, didChange aSavedItem: SavedItem, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+    func controller(_ controller: SavedItemsController, didChange aSavedItem: CDSavedItem, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
     }
 
     func controller(_ controller: SavedItemsController, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {

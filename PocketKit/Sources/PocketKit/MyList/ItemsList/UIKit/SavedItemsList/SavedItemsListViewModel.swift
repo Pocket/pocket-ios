@@ -347,12 +347,12 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         }
     }
 
-    private func _favorite(item: SavedItem) {
+    private func _favorite(item: CDSavedItem) {
         source.favorite(item: item)
         tracker.track(event: Events.Saves.favoriteItem(engagementIndex(item), listType: viewType.rawValue))
     }
 
-    private func _unfavorite(item: SavedItem) {
+    private func _unfavorite(item: CDSavedItem) {
         source.unfavorite(item: item)
         tracker.track(event: Events.Saves.unFavoriteItem(engagementIndex(item), listType: viewType.rawValue))
     }
@@ -364,13 +364,13 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
         return .share { [weak self] sender in self?._share(item: item, sender: sender) }
     }
-    func _share(item: SavedItem, sender: Any?) {
+    func _share(item: CDSavedItem, sender: Any?) {
         Task {
             await share(item: item, sender: sender)
         }
     }
     @MainActor
-    func share(item: SavedItem, sender: Any?) async {
+    func share(item: CDSavedItem, sender: Any?) async {
         var shareUrl: String?
         if let existingSharetUrl = item.item?.shareURL {
             shareUrl = existingSharetUrl
@@ -453,17 +453,17 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         }
     }
 
-    private func _archive(item: SavedItem) {
+    private func _archive(item: CDSavedItem) {
         source.archive(item: item)
         tracker.track(event: Events.Saves.archiveItem(engagementIndex(item), listType: viewType.rawValue))
     }
 
-    private func _moveToSaves(item: SavedItem) {
+    private func _moveToSaves(item: CDSavedItem) {
         source.unarchive(item: item)
         tracker.track(event: Events.Saves.unArchiveItem(engagementIndex(item), listType: viewType.rawValue))
     }
 
-    private func confirmDelete(item: SavedItem) {
+    private func confirmDelete(item: CDSavedItem) {
         presentedAlert = PocketAlert(
             title: Localization.areYouSureYouWantToDeleteThisItem,
             message: nil,
@@ -480,13 +480,13 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         )
     }
 
-    private func _delete(item: SavedItem) {
+    private func _delete(item: CDSavedItem) {
         presentedAlert = nil
         source.delete(item: item)
         tracker.track(event: Events.Saves.deleteItem(engagementIndex(item), listType: viewType.rawValue))
     }
 
-    private func bareItem(with id: NSManagedObjectID) -> SavedItem? {
+    private func bareItem(with id: NSManagedObjectID) -> CDSavedItem? {
         source.viewObject(id: id)
     }
 
@@ -562,15 +562,43 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         }
     }
 
-    private func engagementIndex(_ item: SavedItem) -> Int? {
+    private func engagementIndex(_ item: CDSavedItem) -> Int? {
         itemsController.indexPath(forObject: item)?.item
     }
 
-    private func trackContentOpen(destination: ContentOpen.Destination, item: SavedItem) {
+    private func trackContentOpen(destination: ContentOpen.Destination, item: CDSavedItem) {
         tracker.track(event: Events.Saves.contentOpen(destination: destination, url: item.bestURL, listType: viewType.rawValue))
     }
 
-    private func withSavedItem(from cell: ItemsListCell<ItemIdentifier>, handler: ((SavedItem) -> Void)?) {
+    private func trackButton(item: CDSavedItem, identifier: UIContext.Identifier) {
+        let contexts: [Context] = [
+            UIContext.button(identifier: identifier),
+            ContentContext(url: item.bestURL)
+        ]
+
+        let event = SnowplowEngagement(type: .general, value: nil)
+        tracker.track(event: event, contexts)
+    }
+
+    private func trackImpression(of item: CDSavedItem) {
+        guard let indexPath = self.itemsController.indexPath(forObject: item) else {
+            return
+        }
+
+        var contexts: [Context] = [
+            UIContext.saves.item(index: UIIndex(indexPath.item)),
+            ContentContext(url: item.bestURL)
+        ]
+
+        if selectedFilters.contains(.favorites) {
+            contexts.insert(UIContext.saves.favorites, at: 0)
+        }
+
+        let event = ImpressionEvent(component: .card, requirement: .instant)
+        self.tracker.track(event: event, contexts)
+    }
+
+    private func withSavedItem(from cell: ItemsListCell<ItemIdentifier>, handler: ((CDSavedItem) -> Void)?) {
         guard case .item(let identifier) = cell, let item = bareItem(with: identifier) else {
             return
         }
@@ -638,14 +666,14 @@ extension SavedItemsListViewModel {
 
         switch listOptions.selectedSortOption {
         case .longestToRead, .shortestToRead:
-            sortDescriptorTemp = NSSortDescriptor(keyPath: \SavedItem.item?.timeToRead, ascending: (listOptions.selectedSortOption == .shortestToRead))
+            sortDescriptorTemp = NSSortDescriptor(keyPath: \CDSavedItem.item?.timeToRead, ascending: (listOptions.selectedSortOption == .shortestToRead))
         case .newest, .oldest:
 
             switch self.viewType {
             case .saves:
-                sortDescriptorTemp = NSSortDescriptor(keyPath: \SavedItem.createdAt, ascending: (listOptions.selectedSortOption == .oldest))
+                sortDescriptorTemp = NSSortDescriptor(keyPath: \CDSavedItem.createdAt, ascending: (listOptions.selectedSortOption == .oldest))
             case .archive:
-                sortDescriptorTemp = NSSortDescriptor(keyPath: \SavedItem.archivedAt, ascending: (listOptions.selectedSortOption == .oldest))
+                sortDescriptorTemp = NSSortDescriptor(keyPath: \CDSavedItem.archivedAt, ascending: (listOptions.selectedSortOption == .oldest))
             }
         }
 
@@ -730,7 +758,7 @@ extension SavedItemsListViewModel {
 extension SavedItemsListViewModel: SavedItemsControllerDelegate {
     func controller(
         _ controller: SavedItemsController,
-        didChange savedItem: SavedItem,
+        didChange savedItem: CDSavedItem,
         at indexPath: IndexPath?,
         for type: NSFetchedResultsChangeType,
         newIndexPath: IndexPath?
@@ -797,7 +825,7 @@ extension SavedItemsListViewModel {
 
 // MARK: - Add Tags to an item
 extension SavedItemsListViewModel {
-    private func tagsAction(for item: SavedItem) -> ItemAction {
+    private func tagsAction(for item: CDSavedItem) -> ItemAction {
         let hasTags = (item.tags?.count ?? 0) > 0
         if hasTags {
             return .editTags { [weak self] _ in self?.showAddTagsView(item: item) }
@@ -806,7 +834,7 @@ extension SavedItemsListViewModel {
         }
     }
 
-    private func showAddTagsView(item: SavedItem) {
+    private func showAddTagsView(item: CDSavedItem) {
         presentedAddTags = PocketAddTagsViewModel(
             item: item,
             source: source,
@@ -872,7 +900,7 @@ extension SavedItemsListViewModel {
 }
 
 extension SavedItemsListViewModel {
-    static func isItemDisabled(_ item: SavedItem, networkStatus: NWPath.Status) -> Bool {
+    static func isItemDisabled(_ item: CDSavedItem, networkStatus: NWPath.Status) -> Bool {
         guard networkStatus == .unsatisfied, item.isArchived else {
             return item.isPending
         }

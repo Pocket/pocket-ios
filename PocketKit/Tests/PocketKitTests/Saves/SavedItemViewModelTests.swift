@@ -49,7 +49,7 @@ class SavedItemViewModelTests: XCTestCase {
 
     @MainActor
     func subject(
-        item: SavedItem,
+        item: CDSavedItem,
         source: Source? = nil,
         tracker: Tracker? = nil,
         pasteboard: UIPasteboard? = nil,

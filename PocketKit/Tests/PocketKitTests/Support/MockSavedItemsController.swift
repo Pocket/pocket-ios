@@ -13,7 +13,7 @@ class MockSavedItemsController: SavedItemsController {
 
     var predicate: NSPredicate?
 
-    var fetchedObjects: [SavedItem]?
+    var fetchedObjects: [CDSavedItem]?
 
     var sortDescriptors: [NSSortDescriptor]?
 }
@@ -48,16 +48,16 @@ extension MockSavedItemsController {
 
 extension MockSavedItemsController {
     static let indexPathForObject = "indexPathForObject"
-    typealias IndexPathForObjectImpl = (SavedItem) -> IndexPath?
+    typealias IndexPathForObjectImpl = (CDSavedItem) -> IndexPath?
     struct IndexPathForObjectCall {
-        let savedItem: SavedItem
+        let savedItem: CDSavedItem
     }
 
     func stubIndexPathForObject(impl: @escaping IndexPathForObjectImpl) {
         implementations[Self.indexPathForObject] = impl
     }
 
-    func indexPath(forObject savedItem: SavedItem) -> IndexPath? {
+    func indexPath(forObject savedItem: CDSavedItem) -> IndexPath? {
         guard let impl = implementations[Self.indexPathForObject] as? IndexPathForObjectImpl else {
             fatalError("\(Self.self).\(#function) has not been implemented")
         }

@@ -28,7 +28,7 @@ class SavedItemViewModel {
 
     @Published var presentedAddTags: SaveToAddTagsViewModel?
 
-    var savedItem: SavedItem?
+    var savedItem: CDSavedItem?
 
     var tagsActionAttributedText: NSAttributedString {
         let tagCount = savedItem?.tags?.count ?? 0

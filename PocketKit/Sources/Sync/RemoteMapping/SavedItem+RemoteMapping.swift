@@ -7,7 +7,7 @@ import CoreData
 import PocketGraph
 import SharedPocketKit
 
-extension SavedItem {
+extension CDSavedItem {
     typealias SavedItemEdge = FetchSavesQuery.Data.User.SavedItems.Edge
     typealias ArchivedItemEdge = FetchArchiveQuery.Data.User.SavedItems.Edge
     public typealias RemoteSavedItem = SavedItemParts

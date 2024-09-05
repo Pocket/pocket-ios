@@ -6,7 +6,7 @@ import Sync
 import Foundation
 import Localization
 
-extension SavedItem: ItemsListItem {
+extension CDSavedItem: ItemsListItem {
     var id: String? {
         remoteID
     }
