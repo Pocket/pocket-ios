@@ -36,7 +36,7 @@ public class SyncTaskContainer: NSObject, Codable {
 }
 
 @objc(SyncTaskTransformer)
-class SyncTaskTransformer: ValueTransformer {
+class SyncTaskTransformer: NSSecureUnarchiveFromDataTransformer {
     static let name = NSValueTransformerName(rawValue: String(describing: SyncTaskTransformer.self))
 
     override func transformedValue(_ value: Any?) -> Any? {
