@@ -9,11 +9,11 @@ import SwiftData
 @Model
 public class CollectionAuthor {
     // #Unique<CollectionAuthor>([\.name])
-    var name: String
+    public var name: String
     @Relationship(inverse: \Collection.authors)
-    var collection: [Collection]?
+    public var collection: [Collection]?
     @Relationship(inverse: \CollectionStory.authors)
-    var collectionStory: [CollectionStory]?
+    public var collectionStory: [CollectionStory]?
     public init(name: String) {
         self.name = name
     }

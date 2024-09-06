@@ -10,38 +10,38 @@ import SwiftData
 public class Item {
     // #Unique<Item>([\.givenURL])
     @Attribute(.transformable(by: ArticleTransformer.self))
-    var article: Article?
-    var datePublished: Date?
-    var domain: String?
-    var excerpt: String?
-    var givenURL: String
-    var imageness: String?
-    var isArticle: Bool?
-    var language: String?
-    var remoteID: String
-    var resolvedURL: String?
-    var shareURL: String?
-    var timeToRead: Int32? = 0
-    var title: String?
-    var topImageURL: URL?
-    var videoness: String?
-    var wordCount: Int16? = 0
+    public var article: Article?
+    public var datePublished: Date?
+    public var domain: String?
+    public var excerpt: String?
+    public var givenURL: String
+    public var imageness: String?
+    public var isArticle: Bool?
+    public var language: String?
+    public var remoteID: String
+    public var resolvedURL: String?
+    public var shareURL: String?
+    public var timeToRead: Int32? = 0
+    public var title: String?
+    public var topImageURL: URL?
+    public var videoness: String?
+    public var wordCount: Int16? = 0
     @Relationship(deleteRule: .cascade)
-    var authors: [Author]?
-    var collection: Collection?
-    var collectionStories: [CollectionStory]?
+    public var authors: [Author]?
+    public var collection: Collection?
+    public var collectionStories: [CollectionStory]?
     @Relationship(deleteRule: .cascade, inverse: \DomainMetadata.item)
-    var domainMetadata: DomainMetadata?
+    public var domainMetadata: DomainMetadata?
     @Relationship(deleteRule: .cascade)
-    var images: [Image]?
+    public var images: [Image]?
     @Relationship(inverse: \Recommendation.item)
-    var recommendation: Recommendation?
+    public var recommendation: Recommendation?
     @Relationship(inverse: \SavedItem.item)
-    var savedItem: SavedItem?
+    public var savedItem: SavedItem?
     @Relationship(inverse: \SharedWithYouItem.item)
-    var sharedWithYouItem: SharedWithYouItem?
+    public var sharedWithYouItem: SharedWithYouItem?
     @Relationship(inverse: \SyndicatedArticle.item)
-    var syndicatedArticle: SyndicatedArticle?
+    public var syndicatedArticle: SyndicatedArticle?
     public init(givenURL: String, remoteID: String) {
         self.givenURL = givenURL
         self.remoteID = remoteID

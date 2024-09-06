@@ -8,9 +8,9 @@ import SwiftData
 
 @Model
 public class DomainMetadata {
-    var logo: URL?
-    var name: String?
-    var item: Item?
+    public var logo: URL?
+    public var name: String?
+    public var item: Item?
     public init() {
     }
 }
