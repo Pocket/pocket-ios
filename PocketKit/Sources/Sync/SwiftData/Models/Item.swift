@@ -50,3 +50,82 @@ public class Item {
 // #warning("The property \"ordered\" on Item:authors is unsupported in SwiftData.")
 // #warning("The property \"ordered\" on Item:images is unsupported in SwiftData.")
 }
+
+// MARK: Helpers
+extension Item {
+    public var bestURL: String {
+        resolvedURL ?? givenURL
+    }
+
+    public var hasImage: ItemImageness? {
+        imageness.flatMap(ItemImageness.init)
+    }
+
+    public var hasVideo: ItemVideoness? {
+        videoness.flatMap(ItemVideoness.init)
+    }
+
+    public func shouldOpenInWebView(override: Bool) -> Bool {
+        if override == true {
+            return true
+        }
+
+        if isSyndicated {
+            return false
+        }
+
+        if isSaved {
+            // We are legally allowed to open the item in reader view
+            // BUT: if any of the following are true...
+            // a) the item is not an article (i.e. it was not parseable)
+            // b) the item is an image
+            // c) the item is a video
+            if isArticle == false || isImage || isVideo {
+                // then we should open in web view
+                return true
+            } else {
+                // the item is safe to open in reader view
+                return false
+            }
+        } else {
+            // We are not legally allowed to open the item in reader view
+            // open in web view
+            return true
+        }
+    }
+
+    public var isSyndicated: Bool {
+        syndicatedArticle != nil
+    }
+
+    public var isSaved: Bool {
+        savedItem != nil
+    }
+
+    var isVideo: Bool {
+        hasVideo == .isVideo
+    }
+
+    var isImage: Bool {
+        hasImage == .isImage
+    }
+
+    var hasArticleComponents: Bool {
+        article?.components.isEmpty == false
+    }
+
+    var isCollection: Bool {
+        CollectionUrlFormatter.isCollectionUrl(givenURL)
+    }
+
+    var collectionSlug: String? {
+        CollectionUrlFormatter.slug(from: givenURL)
+    }
+
+    var bestDomain: String? {
+        syndicatedArticle?.publisherName
+        ?? domainMetadata?.name
+        ?? domain
+        ?? URL(percentEncoding: bestURL)?.host
+    }
+}
