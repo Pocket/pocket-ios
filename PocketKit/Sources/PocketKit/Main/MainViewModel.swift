@@ -165,12 +165,13 @@ public class MainViewModel: ObservableObject {
 
     enum AppSection: CaseIterable, Identifiable, Hashable {
         static var allCases: [MainViewModel.AppSection] {
-            return [.home, .saves, .account]
+            return [.home, .saves, .account, .newHome]
         }
 
         case home
         case saves
         case account
+        case newHome
 
         init(from rawValue: String?) {
             switch rawValue {
@@ -191,6 +192,8 @@ public class MainViewModel: ObservableObject {
                 return "saves"
             case .account:
                 return "account"
+            case .newHome:
+                return "new SwiftUI Home"
             }
         }
     }
@@ -222,7 +225,7 @@ public class MainViewModel: ObservableObject {
 
     private func loadStartingAppSection() {
         let selectedSectionID = userDefaults.string(forKey: UserDefaults.Key.startingAppSection)
-        selectedSection = AppSection(from: selectedSectionID)
+        selectedSection = .newHome // AppSection(from: selectedSectionID)
     }
 
     private func saveStartingAppSection() {

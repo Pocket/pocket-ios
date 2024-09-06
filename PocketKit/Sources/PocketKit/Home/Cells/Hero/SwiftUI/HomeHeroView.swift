@@ -12,34 +12,36 @@ struct HomeHeroView: View {
     @State private var state: SaveButtonState = .save
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Constants.stackSpacing) {
+        VStack(alignment: .leading, spacing: 0) {
             if let imageUrl = model.imageURL {
                 loadImage(from: imageUrl)
                     .resizable()
-                    .aspectRatio(Constants.imageAspectRatio, contentMode: .fill)
-                    .frame(width: UIScreen.main.bounds.width - Constants.layoutMargins.leading - Constants.layoutMargins.trailing)
-                    .cornerRadius(Constants.cornerRadius)
+                    .aspectRatio(16/9, contentMode: .fit)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(maxWidth: .infinity)
                     .clipped()
             }
+            VStack(alignment: .leading, spacing: 4) {
+                if let collectionText = model.attributedCollection {
+                    Text(AttributedString(collectionText))
+                        .lineLimit(Constants.numberOfCollectionLines)
+                        .accessibilityIdentifier("collection-label")
+                }
 
-            if let collectionText = model.attributedCollection {
-                Text(AttributedString(collectionText))
-                    .lineLimit(Constants.numberOfCollectionLines)
-                    .accessibilityIdentifier("collection-label")
+                Text(AttributedString(model.attributedTitle))
+                    .lineLimit(Constants.numberOfTitleLines)
+                    .accessibilityIdentifier("title-label")
+
+                if let excerptText = model.attributedExcerpt {
+                    Text(AttributedString(excerptText))
+                        .lineLimit(nil)
+                        .accessibilityIdentifier("excerpt-text")
+                }
             }
-
-            Text(AttributedString(model.attributedTitle))
-                .lineLimit(Constants.numberOfTitleLines)
-                .accessibilityIdentifier("title-label")
-
-            if let excerptText = model.attributedExcerpt {
-                Text(AttributedString(excerptText))
-                    .lineLimit(nil)
-                    .accessibilityIdentifier("excerpt-text")
-            }
+            .padding()
 
             HStack {
-                VStack {
+                VStack(alignment: .leading) {
                     Text(AttributedString(model.attributedDomain))
                         .lineLimit(Constants.numberOfSubtitleLines)
                         .accessibilityIdentifier("domain-label")
@@ -68,16 +70,20 @@ struct HomeHeroView: View {
                     }
                 } label: {
                     Image(systemName: "ellipsis")
+                        .foregroundColor(Color(.ui.saveButtonText))
                 }
                 .accessibilityIdentifier("overflow-button")
             }
             .padding(.top, Constants.stackSpacing)
+            .padding(.leading, 16)
+            .padding(.trailing, 16)
         }
-        .padding(.horizontal, Constants.layoutMargins.leading)
-        .padding(.vertical, Constants.layoutMargins.top)
         .background(Color(UIColor(.ui.homeCellBackground)))
-        .cornerRadius(Constants.cornerRadius)
+        .clipShape(RoundedRectangle(cornerRadius: Constants.cornerRadius))
+        .padding(.vertical, Constants.layoutMargins.top)
         .shadow(color: Color(UIColor(.ui.border)), radius: 6, x: 0, y: 0)
+        .listRowSeparator(.hidden)
+        .listRowSpacing(0)
     }
 
     private func loadImage(from url: URL) -> KFImage {
