@@ -102,27 +102,27 @@ extension Item {
         savedItem != nil
     }
 
-    var isVideo: Bool {
+    public var isVideo: Bool {
         hasVideo == .isVideo
     }
 
-    var isImage: Bool {
+    public var isImage: Bool {
         hasImage == .isImage
     }
 
-    var hasArticleComponents: Bool {
+    public var hasArticleComponents: Bool {
         article?.components.isEmpty == false
     }
 
-    var isCollection: Bool {
+    public var isCollection: Bool {
         CollectionUrlFormatter.isCollectionUrl(givenURL)
     }
 
-    var collectionSlug: String? {
+    public var collectionSlug: String? {
         CollectionUrlFormatter.slug(from: givenURL)
     }
 
-    var bestDomain: String? {
+    public var bestDomain: String? {
         syndicatedArticle?.publisherName
         ?? domainMetadata?.name
         ?? domain
