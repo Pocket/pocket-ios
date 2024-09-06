@@ -8,6 +8,8 @@ import Textile
 
 struct HomeHeroView: View {
     var model: ItemCellViewModel
+    // TODO: this will reflect the state of the saved item
+    @State private var state: SaveButtonState = .save
 
     var body: some View {
         VStack(alignment: .leading, spacing: Constants.stackSpacing) {
@@ -21,48 +23,47 @@ struct HomeHeroView: View {
             }
 
             if let collectionText = model.attributedCollection {
-                Text(collectionText.string)
-                    .font(.subheadline)
+                Text(AttributedString(collectionText))
                     .lineLimit(Constants.numberOfCollectionLines)
                     .accessibilityIdentifier("collection-label")
             }
 
-            Text(model.attributedTitle.string)
-                .font(.headline)
+            Text(AttributedString(model.attributedTitle))
                 .lineLimit(Constants.numberOfTitleLines)
                 .accessibilityIdentifier("title-label")
 
-            Text(model.attributedDomain.string)
-                .font(.subheadline)
-                .lineLimit(Constants.numberOfSubtitleLines)
-                .accessibilityIdentifier("domain-label")
-
-            Text(model.attributedTimeToRead.string)
-                .font(.subheadline)
-                .lineLimit(Constants.numberOfTimeToReadLines)
-                .accessibilityIdentifier("time-to-read-label")
-
             if let excerptText = model.attributedExcerpt {
-                Text(excerptText.string)
-                    .font(.body)
+                Text(AttributedString(excerptText))
                     .lineLimit(nil)
                     .accessibilityIdentifier("excerpt-text")
             }
 
             HStack {
-                Button(action: {}) {
-                    Text("Save")
+                VStack {
+                    Text(AttributedString(model.attributedDomain))
+                        .lineLimit(Constants.numberOfSubtitleLines)
+                        .accessibilityIdentifier("domain-label")
+
+                    Text(AttributedString(model.attributedTimeToRead))
+                        .lineLimit(Constants.numberOfTimeToReadLines)
+                        .accessibilityIdentifier("time-to-read-label")
+                }
+                Spacer()
+                HomeSaveButton(state: $state) {
+                    if let handler = model.primaryAction?.handler {
+                        handler(nil)
+                    }
                 }
                 .accessibilityIdentifier("save-button")
 
-                Spacer()
-
                 Menu {
                     ForEach(model.overflowActions ?? [], id: \.self) { action in
-                        Button(action: {
-                            // Handle action
-                        }) {
-                            Text(action.title)
+                        if let handler = action.handler {
+                            Button(action: {
+                                handler(nil)
+                            }) {
+                                Text(action.title)
+                            }
                         }
                     }
                 } label: {

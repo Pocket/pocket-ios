@@ -6,85 +6,64 @@ import Localization
 import SwiftUI
 import Textile
 
+enum SaveButtonState {
+    case save
+    case saved
+
+    var title: String {
+        switch self {
+        case .save:
+            return Localization.Recommendation.save
+        case .saved:
+            return Localization.Recommendation.saved
+        }
+    }
+
+    var image: ImageAsset {
+        switch self {
+        case .save:
+            return .save
+        case .saved:
+            return .saved
+        }
+    }
+}
+
 /// Save/Saved button used in all home cards
 struct HomeSaveButton: View {
-    enum Mode {
-        case save
-        case saved
+    @Binding var state: SaveButtonState
 
-        var title: String {
-            switch self {
-            case .save:
-                return Localization.Recommendation.save
-            case .saved:
-                return Localization.Recommendation.saved
-            }
-        }
-
-        var image: ImageAsset {
-            switch self {
-            case .save:
-                return .save
-            case .saved:
-                return .saved
-            }
-        }
-
-        var textColor: Color {
-            switch self {
-            case .save:
-                return Color(.ui.coral2)
-            case .saved:
-                return Color(.ui.coral2)
-            }
-        }
-    }
-    // TODO: this needs to be changed from outer scope
-    @State private var mode: Mode = .save
-    @State private var isTitleHidden: Bool = false
-
-    private var titleStyle: Font {
-        return Font.custom("SansSerif", size: 17).weight(.medium)
-    }
+    let action: () -> Void
 
     var body: some View {
         Button(action: {
-            // Toggle mode for demonstration purposes
-            mode = mode == .save ? .saved : .save
+            action()
         }) {
-            HStack(spacing: 6) {
-                Image(asset: mode.image)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .foregroundColor(imageColor())
-                    .frame(width: 24, height: 24)
-
-                if !isTitleHidden {
-                    Text(mode.title)
-                        .font(titleStyle)
-                        .foregroundColor(textColor())
-                }
-            }
-            .padding(EdgeInsets(top: 16, leading: 8, bottom: 16, trailing: 8))
-            .background(RoundedRectangle(cornerRadius: 8).fill(Color.white))
+            EmptyView()
         }
+        .buttonStyle(SaveButtonStyle(state: $state))
     }
+}
 
-    private func imageColor() -> Color {
-        switch mode {
-        case .save:
-            return Color(.ui.coral2)
-        case .saved:
-            return Color(.ui.coral2)
-        }
-    }
+struct SaveButtonStyle: ButtonStyle {
+    @Binding var state: SaveButtonState
 
-    private func textColor() -> Color {
-        switch mode {
-        case .save:
-            return Color(.ui.coral2)
-        case .saved:
-            return Color(.ui.coral2)
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(spacing: 6) {
+            Image(asset: state.image)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .foregroundColor(Color(configuration.isPressed ? .ui.coral1 : .ui.coral2))
+                .frame(width: 24, height: 24)
+
+            Text(state.title)
+                .style(configuration.isPressed ? .saveTitleHighlighted : .saveTitle)
         }
+        .padding(EdgeInsets(top: 16, leading: 8, bottom: 16, trailing: 8))
     }
+}
+
+private extension Style {
+    static let saveTitle: Style = .header.sansSerif.p4.with(weight: .medium).with(maxScaleSize: 17).with(color: .ui.saveButtonText)
+    static let saveTitleHighlighted: Style = .header.sansSerif.p4.with(color: .ui.grey1).with(weight: .medium).with(maxScaleSize: 17)
 }
