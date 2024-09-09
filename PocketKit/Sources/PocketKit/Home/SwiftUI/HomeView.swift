@@ -7,15 +7,15 @@ import SwiftUI
 import Sync
 
 struct HomeView: View {
-    @Query(sort: \Recommendation.sortIndex)
-    var recommendations: [Recommendation]
+    @Query(sort: \Slate.sortIndex, order: .forward)
+    var slates: [Slate]
     var body: some View {
-        List(recommendations) { recommendation in
-            if let item = recommendation.item {
-                HomeHeroView(model: HomeItemCellViewModel2(item: item, imageURL: item.topImageURL))
-                    .listRowInsets(EdgeInsets(top: 8, leading: 12, bottom: 8, trailing: 12))
+        ScrollView {
+            VStack {
+                ForEach(slates) {
+                    HomeSlateView(remoteID: $0.remoteID, slateTitle: $0.name!)
+                }
             }
         }
-        .listStyle(.plain)
     }
 }

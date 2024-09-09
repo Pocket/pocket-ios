@@ -9,7 +9,17 @@ import Textile
 struct HomeHeroView: View {
     var model: ItemCellViewModel
     // TODO: this will reflect the state of the saved item
-    @State private var state: SaveButtonState = .save
+    @State private var state: SaveButtonState
+
+    init(model: ItemCellViewModel) {
+        self.model = model
+        switch model.saveButtonMode {
+        case .save:
+            self.state = .save
+        case .saved:
+            self.state = .saved
+        }
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
