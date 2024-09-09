@@ -9,15 +9,15 @@ import SwiftData
 @Model
 public class Recommendation {
     // #Unique<Recommendation>([\.remoteID])
-    var analyticsID: String
-    var excerpt: String?
-    var imageURL: URL?
-    var remoteID: String
-    var sortIndex: Int16? = 0
-    var title: String?
-    var image: Image?
-    var item: Item?
-    var slate: Slate?
+    public var analyticsID: String
+    public var excerpt: String?
+    public var imageURL: URL?
+    public var remoteID: String
+    public var sortIndex: Int16? = 0
+    public var title: String?
+    public var image: Image?
+    public var item: Item?
+    public var slate: Slate?
     public init(analyticsID: String, remoteID: String) {
         self.analyticsID = analyticsID
         self.remoteID = remoteID

@@ -8,12 +8,12 @@ import SwiftData
 
 @Model
 public class Highlight {
-    var createdAt: Date
-    var patch: String
-    var quote: String
-    var remoteID: String
-    var updatedAt: Date
-    var version: Int16 = 0
+    public var createdAt: Date
+    public var patch: String
+    public var quote: String
+    public var remoteID: String
+    public var updatedAt: Date
+    public var version: Int16 = 0
     @Relationship(inverse: \SavedItem.highlights)
     var savedItem: SavedItem?
     public init(createdAt: Date, patch: String, quote: String, remoteID: String, updatedAt: Date) {

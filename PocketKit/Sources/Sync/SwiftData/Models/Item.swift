@@ -10,38 +10,38 @@ import SwiftData
 public class Item {
     // #Unique<Item>([\.givenURL])
     @Attribute(.transformable(by: ArticleTransformer.self))
-    var article: Article?
-    var datePublished: Date?
-    var domain: String?
-    var excerpt: String?
-    var givenURL: String
-    var imageness: String?
-    var isArticle: Bool?
-    var language: String?
-    var remoteID: String
-    var resolvedURL: String?
-    var shareURL: String?
-    var timeToRead: Int32? = 0
-    var title: String?
-    var topImageURL: URL?
-    var videoness: String?
-    var wordCount: Int16? = 0
+    public var article: Article?
+    public var datePublished: Date?
+    public var domain: String?
+    public var excerpt: String?
+    public var givenURL: String
+    public var imageness: String?
+    public var isArticle: Bool?
+    public var language: String?
+    public var remoteID: String
+    public var resolvedURL: String?
+    public var shareURL: String?
+    public var timeToRead: Int32? = 0
+    public var title: String?
+    public var topImageURL: URL?
+    public var videoness: String?
+    public var wordCount: Int16? = 0
     @Relationship(deleteRule: .cascade)
-    var authors: [Author]?
-    var collection: Collection?
-    var collectionStories: [CollectionStory]?
+    public var authors: [Author]?
+    public var collection: Collection?
+    public var collectionStories: [CollectionStory]?
     @Relationship(deleteRule: .cascade, inverse: \DomainMetadata.item)
-    var domainMetadata: DomainMetadata?
+    public var domainMetadata: DomainMetadata?
     @Relationship(deleteRule: .cascade)
-    var images: [Image]?
+    public var images: [Image]?
     @Relationship(inverse: \Recommendation.item)
-    var recommendation: Recommendation?
+    public var recommendation: Recommendation?
     @Relationship(inverse: \SavedItem.item)
-    var savedItem: SavedItem?
+    public var savedItem: SavedItem?
     @Relationship(inverse: \SharedWithYouItem.item)
-    var sharedWithYouItem: SharedWithYouItem?
+    public var sharedWithYouItem: SharedWithYouItem?
     @Relationship(inverse: \SyndicatedArticle.item)
-    var syndicatedArticle: SyndicatedArticle?
+    public var syndicatedArticle: SyndicatedArticle?
     public init(givenURL: String, remoteID: String) {
         self.givenURL = givenURL
         self.remoteID = remoteID
@@ -49,4 +49,83 @@ public class Item {
 
 // #warning("The property \"ordered\" on Item:authors is unsupported in SwiftData.")
 // #warning("The property \"ordered\" on Item:images is unsupported in SwiftData.")
+}
+
+// MARK: Helpers
+extension Item {
+    public var bestURL: String {
+        resolvedURL ?? givenURL
+    }
+
+    public var hasImage: ItemImageness? {
+        imageness.flatMap(ItemImageness.init)
+    }
+
+    public var hasVideo: ItemVideoness? {
+        videoness.flatMap(ItemVideoness.init)
+    }
+
+    public func shouldOpenInWebView(override: Bool) -> Bool {
+        if override == true {
+            return true
+        }
+
+        if isSyndicated {
+            return false
+        }
+
+        if isSaved {
+            // We are legally allowed to open the item in reader view
+            // BUT: if any of the following are true...
+            // a) the item is not an article (i.e. it was not parseable)
+            // b) the item is an image
+            // c) the item is a video
+            if isArticle == false || isImage || isVideo {
+                // then we should open in web view
+                return true
+            } else {
+                // the item is safe to open in reader view
+                return false
+            }
+        } else {
+            // We are not legally allowed to open the item in reader view
+            // open in web view
+            return true
+        }
+    }
+
+    public var isSyndicated: Bool {
+        syndicatedArticle != nil
+    }
+
+    public var isSaved: Bool {
+        savedItem != nil
+    }
+
+    public var isVideo: Bool {
+        hasVideo == .isVideo
+    }
+
+    public var isImage: Bool {
+        hasImage == .isImage
+    }
+
+    public var hasArticleComponents: Bool {
+        article?.components.isEmpty == false
+    }
+
+    public var isCollection: Bool {
+        CollectionUrlFormatter.isCollectionUrl(givenURL)
+    }
+
+    public var collectionSlug: String? {
+        CollectionUrlFormatter.slug(from: givenURL)
+    }
+
+    public var bestDomain: String? {
+        syndicatedArticle?.publisherName
+        ?? domainMetadata?.name
+        ?? domain
+        ?? URL(percentEncoding: bestURL)?.host
+    }
 }
