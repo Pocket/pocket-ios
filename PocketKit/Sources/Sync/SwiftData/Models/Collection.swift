@@ -9,15 +9,15 @@ import SwiftData
 @Model
 public class Collection {
     // #Unique<Collection>([\.slug])
-    var intro: String?
-    var publishedAt: Date?
-    var slug: String
-    var title: String
-    var authors: [CollectionAuthor]
+    public var intro: String?
+    public var publishedAt: Date?
+    public var slug: String
+    public var title: String
+    public var authors: [CollectionAuthor]
     @Relationship(inverse: \Item.collection)
-    var item: Item?
+    public var item: Item?
     @Relationship(inverse: \CollectionStory.collection)
-    var stories: [CollectionStory]
+    public var stories: [CollectionStory]
     public init(slug: String, title: String, authors: [CollectionAuthor] = [], stories: [CollectionStory] = []) {
         self.slug = slug
         self.title = title

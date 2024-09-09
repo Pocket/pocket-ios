@@ -8,11 +8,11 @@ import SwiftData
 
 @Model
 public class SlateLineup {
-    var experimentID: String
-    var remoteID: String
-    var requestID: String
+    public var experimentID: String
+    public var remoteID: String
+    public var requestID: String
     @Relationship(deleteRule: .cascade, inverse: \Slate.slateLineup)
-    var slates: [Slate]?
+    public var slates: [Slate]?
     public init(experimentID: String, remoteID: String, requestID: String) {
         self.experimentID = experimentID
         self.remoteID = remoteID

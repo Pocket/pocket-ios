@@ -9,10 +9,10 @@ import SwiftData
 @Model
 public class Author {
     public var id: String
-    var name: String?
-    var url: URL?
+    public var name: String?
+    public var url: URL?
     @Relationship(inverse: \Item.authors)
-    var item: Item?
+    public var item: Item?
     public init(id: String) {
         self.id = id
     }

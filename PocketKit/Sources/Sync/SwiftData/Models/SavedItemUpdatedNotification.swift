@@ -8,7 +8,7 @@ import SwiftData
 
 @Model
 public class SavedItemUpdatedNotification {
-    var savedItem: SavedItem?
+    public var savedItem: SavedItem?
     public init() {
     }
 }
