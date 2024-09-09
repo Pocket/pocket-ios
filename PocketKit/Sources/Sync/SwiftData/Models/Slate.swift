@@ -8,15 +8,15 @@ import SwiftData
 
 @Model
 public class Slate {
-    var experimentID: String
-    var name: String?
-    var remoteID: String
-    var requestID: String
-    var slateDescription: String?
-    var sortIndex: Int16? = 0
+    public var experimentID: String
+    public var name: String?
+    public var remoteID: String
+    public var requestID: String
+    public var slateDescription: String?
+    public var sortIndex: Int16? = 0
     @Relationship(deleteRule: .cascade)
-    var recommendations: [Recommendation]?
-    var slateLineup: SlateLineup?
+    public var recommendations: [Recommendation]?
+    public var slateLineup: SlateLineup?
     public init(experimentID: String, remoteID: String, requestID: String) {
         self.experimentID = experimentID
         self.remoteID = remoteID

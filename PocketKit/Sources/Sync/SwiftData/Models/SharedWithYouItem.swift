@@ -8,9 +8,9 @@ import SwiftData
 
 @Model
 public class SharedWithYouItem {
-    var sortOrder: Int32 = 0
-    var url: String
-    var item: Item?
+    public var sortOrder: Int32 = 0
+    public var url: String
+    public var item: Item?
     public init(url: String) {
         self.url = url
     }

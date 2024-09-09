@@ -8,14 +8,14 @@ import SwiftData
 
 @Model
 public class Image {
-    var isDownloaded: Bool? = false
-    var source: URL?
+    public var isDownloaded: Bool? = false
+    public var source: URL?
     @Relationship(inverse: \Item.images)
-    var item: Item?
+    public var item: Item?
     @Relationship(inverse: \Recommendation.image)
-    var recommendation: Recommendation?
+    public var recommendation: Recommendation?
     @Relationship(inverse: \SyndicatedArticle.image)
-    var syndicatedArticle: SyndicatedArticle?
+    public var syndicatedArticle: SyndicatedArticle?
     public init() {
     }
 }

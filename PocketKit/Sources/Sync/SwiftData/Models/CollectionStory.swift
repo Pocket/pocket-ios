@@ -8,15 +8,15 @@ import SwiftData
 
 @Model
 public class CollectionStory {
-    var excerpt: String
-    var imageUrl: String?
-    var publisher: String?
-    var sortOrder: Int32? = 0
-    var title: String
-    var url: String
-    var authors: [CollectionAuthor]
-    var collection: Sync.Collection?
-    var item: Item?
+    public var excerpt: String
+    public var imageUrl: String?
+    public var publisher: String?
+    public var sortOrder: Int32? = 0
+    public var title: String
+    public var url: String
+    public var authors: [CollectionAuthor]
+    public var collection: Sync.Collection?
+    public var item: Item?
     public init(excerpt: String, title: String, url: String, authors: [CollectionAuthor] = []) {
         self.excerpt = excerpt
         self.title = title
