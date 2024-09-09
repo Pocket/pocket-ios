@@ -9,9 +9,9 @@ import SwiftData
 @Model
 public class Tag {
     // #Unique<Tag>([\.name])
-    var name: String
-    var remoteID: String?
-    var savedItems: [SavedItem]?
+    public var name: String
+    public var remoteID: String?
+    public var savedItems: [SavedItem]?
     public init(name: String) {
         self.name = name
     }

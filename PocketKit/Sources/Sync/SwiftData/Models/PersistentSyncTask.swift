@@ -8,10 +8,10 @@ import SwiftData
 
 @Model
 public class PersistentSyncTask {
-    var createdAt: Date? = Date(timeIntervalSinceReferenceDate: 666643260.000000)
-    var currentCursor: String?
+    public var createdAt: Date? = Date(timeIntervalSinceReferenceDate: 666643260.000000)
+    public var currentCursor: String?
     @Attribute(.transformable(by: SyncTaskTransformer.self))
-    var syncTaskContainer: SyncTaskContainer?
+    public var syncTaskContainer: SyncTaskContainer?
     public init(syncTaskContainer: SyncTaskContainer) {
         self.syncTaskContainer = syncTaskContainer
     }

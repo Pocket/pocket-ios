@@ -8,10 +8,10 @@ import SwiftData
 
 @Model
 public class FeatureFlag {
-    var assigned: Bool
-    var name: String
-    var payloadValue: String?
-    var variant: String?
+    public var assigned: Bool
+    public var name: String
+    public var payloadValue: String?
+    public var variant: String?
     public init(assigned: Bool, name: String) {
         self.assigned = assigned
         self.name = name

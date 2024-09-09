@@ -9,22 +9,22 @@ import SwiftData
 @Model
 public class SavedItem {
     // #Unique<SavedItem>([\.url])
-    var archivedAt: Date?
-    var createdAt: Date
-    var cursor: String?
-    var deletedAt: Date?
-    var isArchived: Bool = false
-    var isFavorite: Bool = false
-    var remoteID: String?
-    var url: String
-    var highlights: [Highlight]?
-    var item: Item?
+    public var archivedAt: Date?
+    public var createdAt: Date
+    public var cursor: String?
+    public var deletedAt: Date?
+    public var isArchived: Bool = false
+    public var isFavorite: Bool = false
+    public var remoteID: String?
+    public var url: String
+    public var highlights: [Highlight]?
+    public var item: Item?
     @Relationship(inverse: \SavedItemUpdatedNotification.savedItem)
-    var savedItemUpdatedNotification: SavedItemUpdatedNotification?
+    public var savedItemUpdatedNotification: SavedItemUpdatedNotification?
     @Relationship(inverse: \Tag.savedItems)
-    var tags: [Tag]?
+    public var tags: [Tag]?
     @Relationship(inverse: \UnresolvedSavedItem.savedItem)
-    var unresolvedSavedItem: UnresolvedSavedItem?
+    public var unresolvedSavedItem: UnresolvedSavedItem?
     public init(createdAt: Date, url: String) {
         self.createdAt = createdAt
         self.url = url

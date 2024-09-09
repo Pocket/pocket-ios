@@ -9,13 +9,13 @@ import SwiftData
 @Model
 public class SyndicatedArticle {
     // #Unique<SyndicatedArticle>([\.itemID])
-    var excerpt: String?
-    var imageURL: URL?
-    var itemID: String
-    var publisherName: String?
-    var title: String
-    var image: Image?
-    var item: Item?
+    public var excerpt: String?
+    public var imageURL: URL?
+    public var itemID: String
+    public var publisherName: String?
+    public var title: String
+    public var image: Image?
+    public var item: Item?
     public init(itemID: String, title: String) {
         self.itemID = itemID
         self.title = title

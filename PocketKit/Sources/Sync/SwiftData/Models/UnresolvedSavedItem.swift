@@ -8,7 +8,7 @@ import SwiftData
 
 @Model
 public class UnresolvedSavedItem {
-    var savedItem: SavedItem?
+    public var savedItem: SavedItem?
     public init() {
     }
 }
