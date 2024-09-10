@@ -10,10 +10,10 @@ import SharedWithYou
 
 /// Cell for the carousel items in the Home screen
 class HomeCarouselCell: UICollectionViewCell {
-    let topView: HomeCarouselView
+    let topView: HomeCarouselViewUIKit
 
     override init(frame: CGRect) {
-        topView = HomeCarouselView(frame: .zero)
+        topView = HomeCarouselViewUIKit(frame: .zero)
         super.init(frame: frame)
         accessibilityIdentifier = "home-carousel-item"
         topView.translatesAutoresizingMaskIntoConstraints = false
