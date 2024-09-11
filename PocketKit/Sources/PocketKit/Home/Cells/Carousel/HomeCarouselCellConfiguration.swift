@@ -16,3 +16,17 @@ protocol HomeCarouselCellConfiguration {
     var attributedTimeToRead: NSAttributedString { get }
     var sharedWithYouUrlString: String? { get }
 }
+
+// TODO: SWIFTUI - Once we are fully migrated, remove the above and rename this
+protocol HomeCarouselCellConfiguration2 {
+    var thumbnailURL: URL? { get }
+    var saveButtonMode: ItemCellSaveButton.Mode? { get }
+    var favoriteAction: ItemAction? { get }
+    var overflowActions: [ItemAction]? { get }
+    var saveAction: ItemAction? { get }
+    var attributedCollection: AttributedString? { get }
+    var attributedTitle: AttributedString { get }
+    var attributedDomain: AttributedString { get }
+    var attributedTimeToRead: AttributedString { get }
+    var sharedWithYouUrlString: String? { get }
+}

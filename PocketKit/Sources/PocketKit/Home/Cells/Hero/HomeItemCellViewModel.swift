@@ -81,7 +81,8 @@ extension HomeItemCellViewModel: ItemCellViewModel {
     }
 }
 
-class HomeItemCellViewModel2 {
+// TODO: SWIFTUI - Once we are fully migrated, remove the above and rename this
+struct HomeItemCellViewModel2 {
     let item: Item
     let overflowActions: [ItemAction]?
     let primaryAction: ItemAction?
@@ -111,27 +112,27 @@ class HomeItemCellViewModel2 {
     }
 }
 
-extension HomeItemCellViewModel2: ItemCellViewModel {
-    var attributedCollection: NSAttributedString? {
+extension HomeItemCellViewModel2: ItemCellViewModel2 {
+    var attributedCollection: AttributedString? {
         guard item.isCollection else { return nil }
-        return NSAttributedString(string: Localization.Constants.collection, style: .recommendation.collection)
+        return AttributedString(NSAttributedString(string: Localization.Constants.collection, style: .recommendation.collection))
     }
 
-    var attributedTitle: NSAttributedString {
-        NSAttributedString(string: title ?? "", style: .recommendation.heroTitle)
+    var attributedTitle: AttributedString {
+        AttributedString(NSAttributedString(string: title ?? "", style: .recommendation.heroTitle))
     }
 
-    var attributedExcerpt: NSAttributedString? {
+    var attributedExcerpt: AttributedString? {
         return nil
     }
 
-    var attributedDomain: NSAttributedString {
+    var attributedDomain: AttributedString {
         let detailString = NSMutableAttributedString(string: domain ?? "", style: .recommendation.domain)
-        return item.isSyndicated ? detailString.addSyndicatedIndicator(with: .recommendation.domain) : detailString
+        return AttributedString(item.isSyndicated ? detailString.addSyndicatedIndicator(with: .recommendation.domain) : detailString)
     }
 
-    var attributedTimeToRead: NSAttributedString {
-        NSAttributedString(string: timeToRead ?? "", style: .recommendation.timeToRead)
+    var attributedTimeToRead: AttributedString {
+        AttributedString(NSAttributedString(string: timeToRead ?? "", style: .recommendation.timeToRead))
     }
 
     var saveButtonMode: ItemCellSaveButton.Mode {

@@ -2,23 +2,19 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import SwiftUI
+import Localization
 import Kingfisher
+import SwiftUI
 import Textile
 
 struct HomeHeroView: View {
-    var model: ItemCellViewModel
+    var model: ItemCellViewModel2
     // TODO: this will reflect the state of the saved item
-    @State private var state: SaveButtonState
+    @State private var isSaved: Bool
 
-    init(model: ItemCellViewModel) {
+    init(model: ItemCellViewModel2) {
         self.model = model
-        switch model.saveButtonMode {
-        case .save:
-            self.state = .save
-        case .saved:
-            self.state = .saved
-        }
+        self.isSaved = model.saveButtonMode == .saved ? true : false
     }
 
     var body: some View {
@@ -38,37 +34,38 @@ struct HomeHeroView: View {
 
 // MARK: View builders
 private extension HomeHeroView {
-    /// Build the image
+    /// Iimage
     func makeImage() -> some View {
         RemoteImage(url: model.imageURL, imageSize: imageSize)
             .aspectRatio(Constants.imageAspectRatio, contentMode: .fit)
             .fixedSize(horizontal: false, vertical: true)
-            .frame(maxWidth: .infinity)
+            .frame(minWidth: 0, maxWidth: .infinity)
             .clipped()
     }
 
-    /// Build the text content of the Hero View
+    /// Text content of the Hero View
     func makeTextStack() -> some View {
         VStack(alignment: .leading, spacing: Constants.textStackSpacing) {
             if let collectionText = model.attributedCollection {
-                Text(AttributedString(collectionText))
+                Text(collectionText)
                     .lineLimit(Constants.numberOfCollectionLines)
                     .accessibilityIdentifier("collection-label")
             }
 
-            Text(AttributedString(model.attributedTitle))
+            Text(model.attributedTitle)
                 .lineLimit(Constants.numberOfTitleLines)
                 .accessibilityIdentifier("title-label")
 
             if let excerptText = model.attributedExcerpt {
-                Text(AttributedString(excerptText))
+                Text(excerptText)
                     .lineLimit(nil)
                     .accessibilityIdentifier("excerpt-text")
             }
         }
-        .padding()
+        .padding(Constants.textPadding)
     }
 
+    /// Footer
     func makeFooter() -> some View {
         HStack {
             makeFooterDescription()
@@ -79,22 +76,30 @@ private extension HomeHeroView {
         .padding(Constants.footerPadding)
     }
 
-    /// Build the descriptive portion of the footer, containing domain and time to read
+    /// Descriptive portion of the footer, containing domain and time to read
     func makeFooterDescription() -> some View {
         VStack(alignment: .leading) {
-            Text(AttributedString(model.attributedDomain))
+            Text(model.attributedDomain)
                 .lineLimit(Constants.numberOfSubtitleLines)
                 .accessibilityIdentifier("domain-label")
 
-            Text(AttributedString(model.attributedTimeToRead))
+            Text(model.attributedTimeToRead)
                 .lineLimit(Constants.numberOfTimeToReadLines)
                 .accessibilityIdentifier("time-to-read-label")
         }
     }
 
-    /// Build the save/saved button
+    /// Save/saved button
     func makeSaveButton() -> some View {
-        HomeSaveButton(state: $state) {
+        HomeActionButton(
+            isActive: $isSaved,
+            activeImage: .saved,
+            inactiveImage: .save,
+            activeTitle: Localization.Recommendation.saved,
+            inactiveTitle: Localization.Recommendation.save,
+            highlightedColor: .ui.coral1,
+            activeColor: .ui.coral2
+        ) {
             if let handler = model.primaryAction?.handler {
                 handler(nil)
             }
@@ -102,7 +107,7 @@ private extension HomeHeroView {
         .accessibilityIdentifier("save-button")
     }
 
-    /// Build the overflow menu
+    /// Overflow menu
     func makeOverflowMenu() -> some View {
         Menu {
             ForEach(model.overflowActions ?? [], id: \.self) { action in
@@ -146,6 +151,7 @@ extension HomeHeroView {
         static let numberOfCollectionLines = 1
         static let numberOfTitleLines = 3
         static let numberOfSubtitleLines = 2
+        static let textPadding = EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16)
         // Footer
         static let numberOfTimeToReadLines = 1
         static let footerPadding = EdgeInsets(top: 4, leading: 16, bottom: 0, trailing: 16)
