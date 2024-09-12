@@ -27,7 +27,7 @@ struct HomeSlateView: View {
             Text(slateTitle)
             if let item = recommendations.first?.item {
                 HomeHeroView(
-                    model: HomeItemCellViewModel2(
+                    model: HomeCardModel(
                         item: item,
                         imageURL: item.topImageURL
                     )
@@ -38,11 +38,9 @@ struct HomeSlateView: View {
                     ForEach(recommendations.dropFirst()) { recommendation in
                         if let item = recommendation.item {
                             HomeCarouselView(
-                                configuration: RecommendationCellConfiguration2(
-                                    viewModel: HomeItemCellViewModel2(
-                                        item: item,
-                                        imageURL: item.topImageURL
-                                    )
+                                model: HomeCardModel(
+                                    item: item,
+                                    imageURL: item.topImageURL
                                 )
                             )
                         }

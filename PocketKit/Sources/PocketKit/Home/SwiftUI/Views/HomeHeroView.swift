@@ -8,11 +8,11 @@ import SwiftUI
 import Textile
 
 struct HomeHeroView: View {
-    var model: ItemCellViewModel2
+    var model: HomeCardModel
     // TODO: this will reflect the state of the saved item
     @State private var isSaved: Bool
 
-    init(model: ItemCellViewModel2) {
+    init(model: HomeCardModel) {
         self.model = model
         self.isSaved = model.saveButtonMode == .saved ? true : false
     }
@@ -108,12 +108,12 @@ private extension HomeHeroView {
     /// Overflow menu
     func makeOverflowMenu() -> some View {
         Menu {
-            ForEach(model.overflowActions ?? [], id: \.self) { action in
-                if let handler = action.handler {
+            ForEach(model.overflowActions, id: \.self) { buttonAction in
+                if let title = buttonAction.title {
                     Button(action: {
-                        handler(nil)
+                        buttonAction.action()
                     }) {
-                        Text(action.title)
+                        Text(title)
                     }
                 }
             }

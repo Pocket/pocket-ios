@@ -7,13 +7,13 @@ import SwiftUI
 import Textile
 
 struct HomeCarouselView: View {
-    var configuration: HomeCarouselCellConfiguration2
+    var model: HomeCardModel
     // TODO: this will reflect the state of the saved item
     @State private var isSaved: Bool = false
     @State private var isFavorited: Bool = false
 
-    init(configuration: HomeCarouselCellConfiguration2) {
-        self.configuration = configuration
+    init(model: HomeCardModel) {
+        self.model = model
     }
 
     var body: some View {
@@ -45,18 +45,18 @@ private extension HomeCarouselView {
     /// Text stack
     func makeTextStack() -> some View {
         VStack(alignment: .leading) {
-            if let attributedCollection = configuration.attributedCollection {
+            if let attributedCollection = model.attributedCollection {
                 Text(attributedCollection)
                     .lineLimit(Constants.collectionLineLimit)
             }
-            Text(configuration.attributedTitle)
+            Text(model.attributedTitle)
                 .lineLimit(Constants.titleLineLimit)
         }
     }
 
     /// Thumbnail
     func makeImage() -> some View {
-        RemoteImage(url: configuration.thumbnailURL, imageSize: Constants.thumbnailSize)
+        RemoteImage(url: model.imageURL, imageSize: Constants.thumbnailSize)
             .aspectRatio(contentMode: .fit)
             // .fixedSize(horizontal: false, vertical: true)
             .frame(width: Constants.thumbnailSize.width, height: Constants.thumbnailSize.height)
@@ -77,24 +77,27 @@ private extension HomeCarouselView {
     /// Footer description
     func makeFooterDescription() -> some View {
         VStack(alignment: .leading, spacing: Constants.stackSpacing) {
-            Text(configuration.attributedDomain)
+            Text(model.attributedDomain)
                 .lineLimit(Constants.footerElementLineLimit)
-            Text(configuration.attributedTimeToRead)
+            Text(model.attributedTimeToRead)
                 .lineLimit(Constants.footerElementLineLimit)
         }
     }
 
-    /// Action button: save/saved or favorite
+    /// Action button: save/saved and/or favorite
     @ViewBuilder
     func makeActionButton() -> some View {
-        if let favoriteAction = configuration.favoriteAction, let handler = favoriteAction.handler {
-            makeFavoriteButton(handler: handler)
-        } else if let saveAction = configuration.saveAction, let handler = saveAction.handler {
-            makeSaveButton(handler: handler)
+        HStack {
+            if let favoriteAction = model.favoriteAction {
+                makeFavoriteButton(handler: favoriteAction.action)
+            }
+            if let saveAction = model.primaryAction {
+                makeSaveButton(handler: saveAction.action)
+            }
         }
     }
 
-    func makeFavoriteButton(handler: @escaping ((Any?) -> Void)) -> some View {
+    func makeFavoriteButton(handler: @escaping (() -> Void)) -> some View {
         HomeActionButton(
             isActive: isFavorited,
             activeImage: .favoriteFilled,
@@ -103,12 +106,12 @@ private extension HomeCarouselView {
             activeColor: .branding.amber4,
             inactiveColor: .ui.grey8
         ) {
-            handler(nil)
+            handler()
         }
         .accessibilityIdentifier("save-button")
     }
 
-    func makeSaveButton(handler: @escaping ((Any?) -> Void)) -> some View {
+    func makeSaveButton(handler: @escaping (() -> Void)) -> some View {
         HomeActionButton(
             isActive: isSaved,
             activeImage: .saved,
@@ -118,7 +121,7 @@ private extension HomeCarouselView {
             highlightedColor: .ui.coral1,
             activeColor: .ui.coral2
         ) {
-            handler(nil)
+            handler()
         }
         .accessibilityIdentifier("save-button")
     }
@@ -126,12 +129,12 @@ private extension HomeCarouselView {
     /// Overflow menu
     func makeOverflowMenu() -> some View {
         Menu {
-            ForEach(configuration.overflowActions ?? [], id: \.self) { action in
-                if let handler = action.handler {
+            ForEach(model.overflowActions, id: \.self) { buttonAction in
+                if let title = buttonAction.title {
                     Button(action: {
-                        handler(nil)
+                        buttonAction.action()
                     }) {
-                        Text(action.title)
+                        Text(title)
                     }
                 }
             }
