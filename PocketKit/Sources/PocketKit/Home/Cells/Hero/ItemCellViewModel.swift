@@ -18,17 +18,3 @@ protocol ItemCellViewModel {
     var primaryAction: ItemAction? { get }
     var sharedWithYouUrlString: String? { get }
 }
-
-// TODO: SWIFTUI - Once we are fully migrated, remove the above and rename this
-protocol ItemCellViewModel2 {
-    var attributedCollection: AttributedString? { get }
-    var attributedTitle: AttributedString { get }
-    var attributedExcerpt: AttributedString? { get }
-    var attributedDomain: AttributedString { get }
-    var attributedTimeToRead: AttributedString { get }
-    var imageURL: URL? { get }
-    var saveButtonMode: ItemCellSaveButton.Mode { get }
-    var overflowActions: [ItemAction]? { get }
-    var primaryAction: ItemAction? { get }
-    var sharedWithYouUrlString: String? { get }
-}

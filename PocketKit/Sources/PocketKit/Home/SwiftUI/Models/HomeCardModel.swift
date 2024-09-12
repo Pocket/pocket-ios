@@ -6,34 +6,12 @@ import Localization
 import Sync
 import SwiftUI
 
-struct ButtonAction: Identifiable, Hashable {
-    static func == (lhs: ButtonAction, rhs: ButtonAction) -> Bool {
-        lhs.id == rhs.id &&
-        lhs.title == rhs.title
-    }
-
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(title)
-        hasher.combine(id)
-    }
-
-    var id: UUID
-    let action: () -> Void
-    let title: String?
-
-    init(title: String? = nil, action: @escaping () -> Void) {
-        self.id = UUID()
-        self.action = action
-        self.title = title
-    }
-}
-
 @Observable
 final class HomeCardModel {
     let item: Item
-    let overflowActions: [ButtonAction]
-    let primaryAction: ButtonAction?
-    let favoriteAction: ButtonAction?
+    let overflowActions: [HomeButtonAction]
+    let primaryAction: HomeButtonAction?
+    let favoriteAction: HomeButtonAction?
     var imageURL: URL?
     var title: String?
     var sharedWithYouUrlString: String?
@@ -45,9 +23,9 @@ final class HomeCardModel {
 
     init(
         item: Item,
-        overflowActions: [ButtonAction] = [],
-        primaryAction: ButtonAction? = nil,
-        favoriteAction: ButtonAction? = nil,
+        overflowActions: [HomeButtonAction] = [],
+        primaryAction: HomeButtonAction? = nil,
+        favoriteAction: HomeButtonAction? = nil,
         imageURL: URL?,
         title: String? = nil,
         sharedWithYouUrlString: String? = nil
