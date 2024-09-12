@@ -92,7 +92,7 @@ private extension HomeHeroView {
     /// Save/saved button
     func makeSaveButton() -> some View {
         HomeActionButton(
-            isActive: $isSaved,
+            isActive: isSaved,
             activeImage: .saved,
             inactiveImage: .save,
             activeTitle: Localization.Recommendation.saved,
@@ -100,9 +100,7 @@ private extension HomeHeroView {
             highlightedColor: .ui.coral1,
             activeColor: .ui.coral2
         ) {
-            if let handler = model.primaryAction?.handler {
-                handler(nil)
-            }
+            isSaved.toggle()
         }
         .accessibilityIdentifier("save-button")
     }

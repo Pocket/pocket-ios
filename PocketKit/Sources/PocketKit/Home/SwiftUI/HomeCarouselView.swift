@@ -96,7 +96,7 @@ private extension HomeCarouselView {
 
     func makeFavoriteButton(handler: @escaping ((Any?) -> Void)) -> some View {
         HomeActionButton(
-            isActive: $isFavorited,
+            isActive: isFavorited,
             activeImage: .favoriteFilled,
             inactiveImage: .favorite,
             highlightedColor: .branding.amber1,
@@ -110,7 +110,7 @@ private extension HomeCarouselView {
 
     func makeSaveButton(handler: @escaping ((Any?) -> Void)) -> some View {
         HomeActionButton(
-            isActive: $isSaved,
+            isActive: isSaved,
             activeImage: .saved,
             inactiveImage: .save,
             activeTitle: Localization.Recommendation.saved,
