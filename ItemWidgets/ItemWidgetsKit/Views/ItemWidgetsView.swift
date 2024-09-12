@@ -11,7 +11,7 @@ struct ItemWidgetsView: View {
     @Environment(\.widgetFamily)
     private var widgetFamily
 
-    @Environment (\.hasVeryLargeFonts)
+    @Environment(\.hasVeryLargeFonts)
     private var hasVeryLargeFonts
 
     @Environment(\.maxNumberOfItems)
