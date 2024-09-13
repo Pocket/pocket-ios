@@ -84,11 +84,15 @@ public protocol Source {
 
     func save(recommendation: CDRecommendation)
 
+    func save(from givenURL: String)
+
     func save(item: CDItem)
 
     func save(collectionStory: CDCollectionStory)
 
     func archive(recommendation: CDRecommendation)
+
+    func archive(from givenURL: String)
 
     func archive(collectionStory: CDCollectionStory)
 

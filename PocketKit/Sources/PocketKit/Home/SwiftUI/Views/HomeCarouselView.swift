@@ -3,17 +3,26 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import Localization
+import SwiftData
 import SwiftUI
+import Sync
 import Textile
 
 struct HomeCarouselView: View {
     var model: HomeCardModel
-    // TODO: this will reflect the state of the saved item
-    @State private var isSaved: Bool = false
-    @State private var isFavorited: Bool = false
+
+    @Query var savedItem: [SavedItem]
+    var currentSavedItem: SavedItem? {
+        savedItem.first
+    }
 
     init(model: HomeCardModel) {
         self.model = model
+
+        let givenUrl = model.item.givenURL
+        var descriptor = FetchDescriptor<SavedItem>(predicate: #Predicate<SavedItem> { $0.item?.givenURL == givenUrl })
+        descriptor.fetchLimit = 1
+        _savedItem = Query(descriptor, animation: .default)
     }
 
     var body: some View {
@@ -99,7 +108,7 @@ private extension HomeCarouselView {
 
     func makeFavoriteButton(handler: @escaping (() -> Void)) -> some View {
         HomeActionButton(
-            isActive: isFavorited,
+            isActive: currentSavedItem?.isFavorite == false,
             activeImage: .favoriteFilled,
             inactiveImage: .favorite,
             highlightedColor: .branding.amber1,
@@ -113,7 +122,7 @@ private extension HomeCarouselView {
 
     func makeSaveButton(handler: @escaping (() -> Void)) -> some View {
         HomeActionButton(
-            isActive: isSaved,
+            isActive: currentSavedItem?.isArchived == false,
             activeImage: .saved,
             inactiveImage: .save,
             activeTitle: Localization.Recommendation.saved,
@@ -121,7 +130,7 @@ private extension HomeCarouselView {
             highlightedColor: .ui.coral1,
             activeColor: .ui.coral2
         ) {
-            handler()
+            model.primaryAction?.action()
         }
         .accessibilityIdentifier("save-button")
     }
