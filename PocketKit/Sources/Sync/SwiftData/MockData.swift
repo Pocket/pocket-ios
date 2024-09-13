@@ -15,15 +15,15 @@ class MockData {
     static func insertFakeData(container: ModelContainer) {
         let faker = Faker(locale: "en-US")
         var items: [Item] = []
-        for _ in 0...5 {
+        (0...5).forEach { _ in
             let item = Item(givenURL: faker.internet.url(), remoteID: String(faker.number.increasingUniqueId()))
             item.title = faker.lorem.words(amount: 8)
             item.excerpt = faker.lorem.sentences(amount: 2)
             items.append(item)
         }
 
-        for item in items {
-            container.mainContext.insert(item)
+        items.forEach {
+            container.mainContext.insert($0)
         }
 
         // TODO: Random generate everything.
