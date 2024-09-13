@@ -9,7 +9,7 @@ import SharedPocketKit
 import SharedWithYou
 
 class SharedWithYouCarouselCell: UICollectionViewCell {
-    let topView: HomeCarouselView
+    let topView: HomeCarouselViewUIKit
 
     /// The top-most stack view, that allows to add accessory views.
     /// If no accessory view is present, it only contains `topView`
@@ -29,7 +29,7 @@ class SharedWithYouCarouselCell: UICollectionViewCell {
     }()
 
     override init(frame: CGRect) {
-        topView = HomeCarouselView(frame: .zero)
+        topView = HomeCarouselViewUIKit(frame: .zero)
         super.init(frame: frame)
         topView.translatesAutoresizingMaskIntoConstraints = false
         topStackView.translatesAutoresizingMaskIntoConstraints = false
