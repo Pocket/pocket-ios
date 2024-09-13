@@ -11,8 +11,8 @@ import Textile
 
 struct HomeHeroView: View {
     var model: HomeCardModel
-    @Query var savedItem: [SavedItem]
 
+    @Query var savedItem: [SavedItem]
     var currentSavedItem: SavedItem? {
         savedItem.first
     }
@@ -108,7 +108,7 @@ private extension HomeHeroView {
             highlightedColor: .ui.coral1,
             activeColor: .ui.coral2
         ) {
-            // isSaved.toggle()
+            model.primaryAction?.action()
         }
         .accessibilityIdentifier("save-button")
     }
