@@ -6,15 +6,20 @@ import Localization
 import Sync
 import SwiftUI
 
+// TODO: SWIFTUI - Add analytics
+
+@MainActor
 @Observable
 final class HomeCardModel {
     let item: Item
     let overflowActions: [HomeButtonAction]
-    let primaryAction: HomeButtonAction?
+    private(set) var primaryAction: HomeButtonAction?
     let favoriteAction: HomeButtonAction?
     var imageURL: URL?
     var title: String?
     var sharedWithYouUrlString: String?
+    // TODO: SWIFTUI - Once we are fully migrated to SwiftUI, this should come from the environment.
+    private let source = Services.shared.source
 
     var isSaved: Bool {
         item.savedItem != nil &&
@@ -32,11 +37,19 @@ final class HomeCardModel {
     ) {
         self.item = item
         self.overflowActions = overflowActions
-        self.primaryAction = primaryAction
         self.favoriteAction = favoriteAction
         self.imageURL = imageURL
         self.title = title ?? item.syndicatedArticle?.title ?? item.title
         self.sharedWithYouUrlString = sharedWithYouUrlString
+
+        self.primaryAction = HomeButtonAction { [weak self] in
+            guard let self else { return }
+            if isSaved {
+                source.archive(from: item.givenURL)
+            } else {
+                source.save(from: item.givenURL)
+            }
+        }
     }
 }
 
