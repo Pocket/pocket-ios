@@ -5,7 +5,7 @@
 import CoreData
 import SharedPocketKit
 
-public class PersistentContainer: NSPersistentContainer {
+public class PersistentContainer: NSPersistentContainer, @unchecked Sendable {
     public lazy var rootSpace = { Space(backgroundContext: backgroundContext, viewContext: modifiedViewContext) }()
 
     private lazy var backgroundContext = {
@@ -14,7 +14,7 @@ public class PersistentContainer: NSPersistentContainer {
         return context
     }()
 
-    private (set) var spotlightIndexer: CoreDataSpotlightDelegate?
+    private(set) var spotlightIndexer: CoreDataSpotlightDelegate?
 
     private lazy var modifiedViewContext: NSManagedObjectContext = {
         viewContext.automaticallyMergesChangesFromParent = true

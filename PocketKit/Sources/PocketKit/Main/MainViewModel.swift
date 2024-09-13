@@ -225,7 +225,7 @@ public class MainViewModel: ObservableObject {
 
     private func loadStartingAppSection() {
         let selectedSectionID = userDefaults.string(forKey: UserDefaults.Key.startingAppSection)
-        selectedSection = .newHome // AppSection(from: selectedSectionID)
+        selectedSection = AppSection(from: selectedSectionID)
     }
 
     private func saveStartingAppSection() {

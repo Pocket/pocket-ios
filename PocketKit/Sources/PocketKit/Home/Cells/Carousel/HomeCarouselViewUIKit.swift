@@ -7,7 +7,7 @@ import Kingfisher
 import Textile
 import SharedPocketKit
 
-class HomeCarouselView: UIView {
+class HomeCarouselViewUIKit: UIView {
     private let collectionLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = Constants.maxCollectionLines
@@ -124,7 +124,7 @@ class HomeCarouselView: UIView {
 }
 
 // MARK: configuration
-extension HomeCarouselView {
+extension HomeCarouselViewUIKit {
     func configure(with configuration: HomeCarouselCellConfiguration) {
         titleLabel.attributedText = configuration.attributedTitle
         domainLabel.attributedText = configuration.attributedDomain
@@ -199,7 +199,7 @@ extension HomeCarouselView {
 }
 
 // MARK: private helpers
-private extension HomeCarouselView {
+private extension HomeCarouselViewUIKit {
     enum Constants {
         static let cornerRadius: CGFloat = 16
         static let maxTitleLines = 3
