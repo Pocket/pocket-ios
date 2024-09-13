@@ -8,6 +8,10 @@ import CoreData
 import Combine
 
 class MockSource: Source {
+    func archive(from givenURL: String) {}
+
+    func save(from givenURL: String) {}
+
     func readerItem(by slug: String) async throws -> (Sync.CDSavedItem?, Sync.CDItem?) {
         return (nil, nil)
     }

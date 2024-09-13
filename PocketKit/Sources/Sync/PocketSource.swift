@@ -1212,6 +1212,23 @@ extension PocketSource {
         }
     }
 
+    public func save(from givenURL: String) {
+        space.performAndWait {
+            guard let item = try? space.fetchItem(byURL: givenURL) else {
+                return
+            }
+            if let savedItem = try? space.fetchSavedItem(byURL: givenURL) {
+                unarchive(item: savedItem)
+            } else {
+                let savedItem: CDSavedItem = CDSavedItem(context: space.backgroundContext, url: givenURL)
+                savedItem.update(from: item)
+                try? space.save()
+
+                save(item: savedItem)
+            }
+        }
+    }
+
     public func save(item: CDItem) {
         space.performAndWait {
             guard let item = space.backgroundObject(with: item.objectID) as? CDItem else {
@@ -1264,6 +1281,15 @@ extension PocketSource {
         space.performAndWait {
             guard let collectionStory = space.backgroundObject(with: collectionStory.objectID) as? CDCollectionStory,
                   let savedItem = collectionStory.item?.savedItem, savedItem.isArchived == false else {
+                return
+            }
+            archive(item: savedItem)
+        }
+    }
+
+    public func archive(from givenURL: String) {
+        space.performAndWait {
+            guard let item = try? space.fetchItem(byURL: givenURL), let savedItem = item.savedItem else {
                 return
             }
             archive(item: savedItem)
