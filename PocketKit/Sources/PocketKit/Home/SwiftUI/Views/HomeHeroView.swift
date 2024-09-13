@@ -4,17 +4,25 @@
 
 import Localization
 import Kingfisher
+import SwiftData
 import SwiftUI
+import Sync
 import Textile
 
 struct HomeHeroView: View {
     var model: HomeCardModel
-    // TODO: this will reflect the state of the saved item
-    @State private var isSaved: Bool
+
+    @Query var savedItem: [SavedItem]
+    var currentSavedItem: SavedItem? {
+        savedItem.first
+    }
 
     init(model: HomeCardModel) {
         self.model = model
-        self.isSaved = model.saveButtonMode == .saved ? true : false
+        let givenUrl = model.item.givenURL
+        var descriptor = FetchDescriptor<SavedItem>(predicate: #Predicate<SavedItem> { $0.item?.givenURL == givenUrl })
+        descriptor.fetchLimit = 1
+        _savedItem = Query(descriptor, animation: .default)
     }
 
     var body: some View {
@@ -92,7 +100,7 @@ private extension HomeHeroView {
     /// Save/saved button
     func makeSaveButton() -> some View {
         HomeActionButton(
-            isActive: isSaved,
+            isActive: currentSavedItem?.isArchived == false,
             activeImage: .saved,
             inactiveImage: .save,
             activeTitle: Localization.Recommendation.saved,
@@ -100,7 +108,7 @@ private extension HomeHeroView {
             highlightedColor: .ui.coral1,
             activeColor: .ui.coral2
         ) {
-            isSaved.toggle()
+            model.primaryAction?.action()
         }
         .accessibilityIdentifier("save-button")
     }

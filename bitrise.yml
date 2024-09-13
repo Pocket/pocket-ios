@@ -265,7 +265,7 @@ workflows:
           title: Unit Tests
           inputs:
             - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UnitTests_iphonesimulator18.0.xctestrun'
-            - destination: platform=iOS Simulator,name=iPhone 15,OS=18.0
+            - destination: platform=iOS Simulator,name=iPhone 16,OS=18.0
       - deploy-to-bitrise-io@2:
           inputs:
             - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UNIT_XCRESULT_PATH'
@@ -294,7 +294,7 @@ workflows:
           title: UI Test Suite 1
           inputs:
             - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests-1_iphonesimulator18.0-arm64-x86_64.xctestrun'
-            - destination: platform=iOS Simulator,name=iPhone 15,OS=18.0
+            - destination: platform=iOS Simulator,name=iPhone 16,OS=18.0
       - deploy-to-bitrise-io@2:
           inputs:
             - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UITESTS_1_XCRESULT_PATH'
@@ -309,7 +309,7 @@ workflows:
           title: UI Test Suite 2
           inputs:
             - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests-2_iphonesimulator18.0-arm64-x86_64.xctestrun'
-            - destination: platform=iOS Simulator,name=iPhone 15,OS=18.0
+            - destination: platform=iOS Simulator,name=iPhone 16,OS=18.0
       - deploy-to-bitrise-io@2:
           inputs:
             - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UITESTS_2_XCRESULT_PATH'
@@ -324,7 +324,7 @@ workflows:
           title: UI Test Suite 3
           inputs:
             - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests-3_iphonesimulator18.0-arm64-x86_64.xctestrun'
-            - destination: platform=iOS Simulator,name=iPhone 15,OS=18.0
+            - destination: platform=iOS Simulator,name=iPhone 16,OS=18.0
       - deploy-to-bitrise-io@2:
           inputs:
             - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UITESTS_3_XCRESULT_PATH'
@@ -339,7 +339,7 @@ workflows:
           title: UI Test Suite 4
           inputs:
             - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests-4_iphonesimulator18.0-arm64-x86_64.xctestrun'
-            - destination: platform=iOS Simulator,name=iPhone 15,OS=18.0
+            - destination: platform=iOS Simulator,name=iPhone 16,OS=18.0
       - deploy-to-bitrise-io@2:
           inputs:
             - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UITESTS_4_XCRESULT_PATH'
