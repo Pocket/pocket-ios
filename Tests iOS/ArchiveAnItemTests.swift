@@ -105,11 +105,9 @@ class ArchiveAnItemTests: PocketXCTestCase {
             }
             return .fallbackResponses(apiRequest: apiRequest)
         }
-        app.launch()
-
         let home = app.launch().homeView.wait()
 
-        let itemCell = home.recentSavesView(matching: "Item 2")
+        let itemCell = home.recentSavesView(matching: "Item 2").wait()
 
         app.tabBar.homeButton.tap()
 

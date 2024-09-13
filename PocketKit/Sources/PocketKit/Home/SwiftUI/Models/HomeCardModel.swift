@@ -2,18 +2,16 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import Foundation
-import Sync
-import Combine
-import Textile
-import CoreData
 import Localization
+import Sync
+import SwiftUI
 
-/// View model for Item cells in unified Home
-class HomeItemCellViewModel {
-    let item: CDItem
-    let overflowActions: [ItemAction]?
-    let primaryAction: ItemAction?
+@Observable
+final class HomeCardModel {
+    let item: Item
+    let overflowActions: [HomeButtonAction]
+    let primaryAction: HomeButtonAction?
+    let favoriteAction: HomeButtonAction?
     var imageURL: URL?
     var title: String?
     var sharedWithYouUrlString: String?
@@ -24,9 +22,10 @@ class HomeItemCellViewModel {
     }
 
     init(
-        item: CDItem,
-        overflowActions: [ItemAction]? = nil,
-        primaryAction: ItemAction? = nil,
+        item: Item,
+        overflowActions: [HomeButtonAction] = [],
+        primaryAction: HomeButtonAction? = nil,
+        favoriteAction: HomeButtonAction? = nil,
         imageURL: URL?,
         title: String? = nil,
         sharedWithYouUrlString: String? = nil
@@ -34,46 +33,47 @@ class HomeItemCellViewModel {
         self.item = item
         self.overflowActions = overflowActions
         self.primaryAction = primaryAction
+        self.favoriteAction = favoriteAction
         self.imageURL = imageURL
         self.title = title ?? item.syndicatedArticle?.title ?? item.title
         self.sharedWithYouUrlString = sharedWithYouUrlString
     }
 }
 
-extension HomeItemCellViewModel: ItemCellViewModel {
-    var attributedCollection: NSAttributedString? {
+extension HomeCardModel {
+    var attributedCollection: AttributedString? {
         guard item.isCollection else { return nil }
-        return NSAttributedString(string: Localization.Constants.collection, style: .recommendation.collection)
+        return AttributedString(NSAttributedString(string: Localization.Constants.collection, style: .recommendation.collection))
     }
 
-    var attributedTitle: NSAttributedString {
-        NSAttributedString(string: title ?? "", style: .recommendation.heroTitle)
+    var attributedTitle: AttributedString {
+        AttributedString(NSAttributedString(string: title ?? "", style: .recommendation.heroTitle))
     }
 
-    var attributedExcerpt: NSAttributedString? {
+    var attributedExcerpt: AttributedString? {
         return nil
     }
 
-    var attributedDomain: NSAttributedString {
+    var attributedDomain: AttributedString {
         let detailString = NSMutableAttributedString(string: domain ?? "", style: .recommendation.domain)
-        return item.isSyndicated ? detailString.addSyndicatedIndicator(with: .recommendation.domain) : detailString
+        return AttributedString(item.isSyndicated ? detailString.addSyndicatedIndicator(with: .recommendation.domain) : detailString)
     }
 
-    var attributedTimeToRead: NSAttributedString {
-        NSAttributedString(string: timeToRead ?? "", style: .recommendation.timeToRead)
+    var attributedTimeToRead: AttributedString {
+        AttributedString(NSAttributedString(string: timeToRead ?? "", style: .recommendation.timeToRead))
     }
 
     var saveButtonMode: ItemCellSaveButton.Mode {
         isSaved ? .saved : .save
     }
 
-    var domain: String? {
+    private var domain: String? {
         item.bestDomain
     }
 
-    var timeToRead: String? {
+    private var timeToRead: String? {
         guard let timeToRead = item.timeToRead,
-              timeToRead.intValue > 0 else {
+              timeToRead > 0 else {
             return nil
         }
 
