@@ -18,7 +18,7 @@ final class HomeCardModel {
     var imageURL: URL?
     var title: String?
     var sharedWithYouUrlString: String?
-
+    // TODO: SWIFTUI - Once we are fully migrated to SwiftUI, this should come from the environment.
     private let source = Services.shared.source
 
     var isSaved: Bool {
