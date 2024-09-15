@@ -31,5 +31,8 @@ public extension Style {
             .with { (paragraph: ParagraphStyle) -> ParagraphStyle in
                 paragraph.with(lineSpacing: 4)
             }
+        public func adaptiveTitle(_ largeTitle: Bool) -> Style {
+            largeTitle ? heroTitle : title
+        }
     }
 }

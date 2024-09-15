@@ -12,8 +12,14 @@ struct HomeView: View {
     var body: some View {
         ScrollView {
             VStack {
-                ForEach(slates) {
-                    HomeSlateView(remoteID: $0.remoteID, slateTitle: $0.name!)
+                ForEach(slates) { slate in
+                    HomeSlateView(
+                        remoteID: slate.remoteID,
+                        slateTitle: slate.name!,
+                        recommendations: slate.recommendations!.sorted {
+                            $0.sortIndex! < $1.sortIndex!
+                        }
+                    )
                 }
             }
         }

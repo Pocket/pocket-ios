@@ -13,27 +13,22 @@ import SwiftUI
 final class HomeCardModel {
     let item: Item
     let overflowActions: [HomeButtonAction]
-    private(set) var primaryAction: HomeButtonAction?
     let favoriteAction: HomeButtonAction?
     var imageURL: URL?
     var title: String?
     var sharedWithYouUrlString: String?
+    let useLargeTitle: Bool
     // TODO: SWIFTUI - Once we are fully migrated to SwiftUI, this should come from the environment.
     private let source = Services.shared.source
-
-    var isSaved: Bool {
-        item.savedItem != nil &&
-        item.savedItem?.isArchived == false
-    }
 
     init(
         item: Item,
         overflowActions: [HomeButtonAction] = [],
-        primaryAction: HomeButtonAction? = nil,
         favoriteAction: HomeButtonAction? = nil,
         imageURL: URL?,
         title: String? = nil,
-        sharedWithYouUrlString: String? = nil
+        sharedWithYouUrlString: String? = nil,
+        uselargeTitle: Bool = false
     ) {
         self.item = item
         self.overflowActions = overflowActions
@@ -41,14 +36,14 @@ final class HomeCardModel {
         self.imageURL = imageURL
         self.title = title ?? item.syndicatedArticle?.title ?? item.title
         self.sharedWithYouUrlString = sharedWithYouUrlString
+        self.useLargeTitle = uselargeTitle
+    }
 
-        self.primaryAction = HomeButtonAction { [weak self] in
-            guard let self else { return }
-            if isSaved {
-                source.archive(from: item.givenURL)
-            } else {
-                source.save(from: item.givenURL)
-            }
+    func saveAction(isSaved: Bool) {
+        if isSaved {
+            source.archive(from: item.givenURL)
+        } else {
+            source.save(from: item.givenURL)
         }
     }
 }
@@ -60,24 +55,22 @@ extension HomeCardModel {
     }
 
     var attributedTitle: AttributedString {
-        AttributedString(NSAttributedString(string: title ?? "", style: .recommendation.heroTitle))
+        AttributedString(NSAttributedString(string: title ?? "", style: .recommendation.adaptiveTitle(useLargeTitle)))
     }
 
     var attributedExcerpt: AttributedString? {
         return nil
     }
 
-    var attributedDomain: AttributedString {
-        let detailString = NSMutableAttributedString(string: domain ?? "", style: .recommendation.domain)
+    var attributedDomain: AttributedString? {
+        guard let domain else { return nil }
+        let detailString = NSMutableAttributedString(string: domain, style: .recommendation.domain)
         return AttributedString(item.isSyndicated ? detailString.addSyndicatedIndicator(with: .recommendation.domain) : detailString)
     }
 
-    var attributedTimeToRead: AttributedString {
-        AttributedString(NSAttributedString(string: timeToRead ?? "", style: .recommendation.timeToRead))
-    }
-
-    var saveButtonMode: ItemCellSaveButton.Mode {
-        isSaved ? .saved : .save
+    var attributedTimeToRead: AttributedString? {
+        guard let timeToRead else { return nil }
+        return AttributedString(NSAttributedString(string: timeToRead, style: .recommendation.timeToRead))
     }
 
     private var domain: String? {

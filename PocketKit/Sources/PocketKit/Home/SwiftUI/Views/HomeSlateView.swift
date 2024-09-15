@@ -2,6 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import Foundation
 import SwiftUI
 import Sync
 import SwiftData
@@ -9,46 +10,30 @@ import SwiftData
 struct HomeSlateView: View {
     let remoteID: String
     let slateTitle: String
-    @Query var recommendations: [Recommendation]
+    let recommendations: [Recommendation]
 
-    init(remoteID: String, slateTitle: String) {
-        self.remoteID = remoteID
-        self.slateTitle = slateTitle
-        // TODO: SWIFTUI - we might want to use a FetchDescriptor
-        // also look into FetchResultsCollection
-        let predicate = #Predicate<Recommendation> {
-            $0.slate?.remoteID == remoteID
+    var heroRecommendations: [Recommendation] {
+        var recommendations = self.recommendations
+        var actualRecommendations = [Recommendation]()
+        (0..<3).forEach { _ in
+            let element = recommendations.removeFirst()
+            actualRecommendations.append(element)
         }
-        _recommendations = Query(filter: predicate, sort: \Recommendation.sortIndex, order: .forward)
+        return actualRecommendations
     }
+
+    var carouselRecommendations: [Recommendation] {
+        Array(recommendations.dropFirst(3))
+    }
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            // TODO: replace with section header
-            Text(slateTitle)
-            if let item = recommendations.first?.item {
-                HomeHeroView(
-                    model: HomeCardModel(
-                        item: item,
-                        imageURL: item.topImageURL
-                    )
-                )
+        VStack(alignment: .leading, spacing: 0) {
+            VStack(alignment: .leading) {
+                Text(slateTitle)
+                HomeHeroSection(remoteID: remoteID, recommendations: heroRecommendations)
             }
-            ScrollView(.horizontal) {
-                LazyHStack {
-                    ForEach(recommendations.dropFirst()) { recommendation in
-                        if let item = recommendation.item {
-                            HomeCarouselView(
-                                model: HomeCardModel(
-                                    item: item,
-                                    imageURL: item.topImageURL
-                                )
-                            )
-                        }
-                    }
-                }
-            }
-            .scrollIndicators(.hidden)
+            .padding(EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16))
+            HomeCarouselSection(remoteID: remoteID, recommendations: carouselRecommendations)
         }
-        .padding()
     }
 }

@@ -89,7 +89,7 @@ private struct SaveButtonStyle: ButtonStyle {
     }
 
     func makeBody(configuration: Configuration) -> some View {
-        HStack(spacing: 6) {
+        HStack(alignment: .center, spacing: 6) {
             Image(asset: image)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
@@ -100,7 +100,6 @@ private struct SaveButtonStyle: ButtonStyle {
                     .style(configuration.isPressed ? .saveTitleHighlighted : .saveTitle)
             }
         }
-        .padding(EdgeInsets(top: 16, leading: 8, bottom: 16, trailing: 8))
     }
 }
 

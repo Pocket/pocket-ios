@@ -22,7 +22,7 @@ struct HomeCarouselView: View {
         let givenUrl = model.item.givenURL
         var descriptor = FetchDescriptor<SavedItem>(predicate: #Predicate<SavedItem> { $0.item?.givenURL == givenUrl })
         descriptor.fetchLimit = 1
-        _savedItem = Query(descriptor, animation: .default)
+        _savedItem = Query(descriptor, animation: .easeIn)
     }
 
     var body: some View {
@@ -31,20 +31,18 @@ struct HomeCarouselView: View {
             Spacer()
             makeFooter()
         }
-        .frame(width: UIScreen.main.bounds.width * 0.75)
         .padding()
-        .background(Color(UIColor(.ui.homeCellBackground)))
+        .background(Color(.ui.homeCellBackground))
         .clipShape(RoundedRectangle(cornerRadius: Constants.cornerRadius))
-        .shadow(color: Color(UIColor(.ui.border)), radius: Constants.shadowRadius, x: 0, y: 0)
-        .listRowSeparator(.hidden)
-        .listRowSpacing(0)
+        .frame(minWidth: 0, idealWidth: UIScreen.main.bounds.width * 0.8, maxWidth: .infinity, idealHeight: Constants.cardHeight)
+        .shadow(color: Color(.ui.border), radius: Constants.shadowRadius, x: 0, y: 0)
     }
 }
 
 // MARK: View builders
 private extension HomeCarouselView {
     func makeTopContent() -> some View {
-        HStack {
+        HStack(alignment: .top) {
             makeTextStack()
             Spacer()
             makeImage()
@@ -56,53 +54,59 @@ private extension HomeCarouselView {
         VStack(alignment: .leading) {
             if let attributedCollection = model.attributedCollection {
                 Text(attributedCollection)
-                    .lineLimit(Constants.collectionLineLimit)
             }
             Text(model.attributedTitle)
+                .lineSpacing(Constants.titleLineSpacing)
                 .lineLimit(Constants.titleLineLimit)
         }
     }
 
     /// Thumbnail
     func makeImage() -> some View {
-        RemoteImage(url: model.imageURL, imageSize: Constants.thumbnailSize)
-            .aspectRatio(contentMode: .fit)
-            // .fixedSize(horizontal: false, vertical: true)
-            .frame(width: Constants.thumbnailSize.width, height: Constants.thumbnailSize.height)
-            .clipShape(RoundedRectangle(cornerRadius: Constants.cornerRadius))
-            .clipped()
+        VStack {
+            RemoteImage(url: model.imageURL, imageSize: Constants.thumbnailSize)
+                .aspectRatio(contentMode: .fit)
+                .frame(width: Constants.thumbnailSize.width, height: Constants.thumbnailSize.height)
+                .clipShape(RoundedRectangle(cornerRadius: Constants.cornerRadius))
+                .clipped()
+            Spacer()
+        }
     }
 
     /// Footer
     func makeFooter() -> some View {
-        HStack {
+        HStack(alignment: .bottom) {
             makeFooterDescription()
             Spacer()
-            makeActionButton()
-            makeOverflowMenu()
+            HStack(alignment: .center) {
+                makeActionButton()
+                makeOverflowMenu()
+            }
         }
     }
 
     /// Footer description
     func makeFooterDescription() -> some View {
         VStack(alignment: .leading, spacing: Constants.stackSpacing) {
-            Text(model.attributedDomain)
-                .lineLimit(Constants.footerElementLineLimit)
-            Text(model.attributedTimeToRead)
-                .lineLimit(Constants.footerElementLineLimit)
+            if let domain = model.attributedDomain {
+                Text(domain)
+                    .lineLimit(Constants.footerElementLineLimit)
+            }
+            if let timeToRead = model.attributedTimeToRead {
+                Text(timeToRead)
+                    .lineLimit(Constants.footerElementLineLimit)
+            }
         }
     }
 
     /// Action button: save/saved and/or favorite
     @ViewBuilder
     func makeActionButton() -> some View {
-        HStack {
+        HStack(alignment: .bottom) {
             if let favoriteAction = model.favoriteAction {
                 makeFavoriteButton(handler: favoriteAction.action)
             }
-            if let saveAction = model.primaryAction {
-                makeSaveButton(handler: saveAction.action)
-            }
+                makeSaveButton()
         }
     }
 
@@ -120,7 +124,7 @@ private extension HomeCarouselView {
         .accessibilityIdentifier("save-button")
     }
 
-    func makeSaveButton(handler: @escaping (() -> Void)) -> some View {
+    func makeSaveButton() -> some View {
         HomeActionButton(
             isActive: currentSavedItem?.isArchived == false,
             activeImage: .saved,
@@ -130,7 +134,7 @@ private extension HomeCarouselView {
             highlightedColor: .ui.coral1,
             activeColor: .ui.coral2
         ) {
-            model.primaryAction?.action()
+            model.saveAction(isSaved: currentSavedItem != nil && currentSavedItem?.isArchived == false)
         }
         .accessibilityIdentifier("save-button")
     }
@@ -167,5 +171,9 @@ private extension HomeCarouselView {
         static let layoutMargins = UIEdgeInsets(top: Margins.normal.rawValue, left: Margins.normal.rawValue, bottom: Margins.normal.rawValue, right: Margins.normal.rawValue)
         static let stackSpacing: CGFloat = 4
         static let shadowRadius: CGFloat = 6
+        static let titleLineSpacing: CGFloat = 4
+        static var cardHeight: CGFloat {
+            min(UIFontMetrics.default.scaledValue(for: 146), 300)
+        }
     }
 }
