@@ -65,9 +65,11 @@ private extension HomeCarouselView {
     func makeTextStack() -> some View {
         VStack(alignment: .leading) {
             if currentItem?.isCollection == true {
-                Text(model.attributedCollection)
+                Text(Localization.Constants.collection)
+                    .style(model.collectionStyle)
             }
-            Text(model.attributedTitle(currentItem?.bestTitle ?? model.givenURL))
+            Text(currentItem?.bestTitle ?? model.givenURL)
+                .style(model.titleStyle)
                 .lineSpacing(Constants.titleLineSpacing)
                 .lineLimit(Constants.titleLineLimit)
         }
@@ -84,7 +86,7 @@ private extension HomeCarouselView {
             Spacer()
         }
     }
-
+    // TODO: SWIFTUI - Extract footer in a view since it's basically the same between hero and carousel.
     /// Footer
     func makeFooter() -> some View {
         HStack(alignment: .bottom) {
@@ -101,13 +103,22 @@ private extension HomeCarouselView {
     func makeFooterDescription() -> some View {
         VStack(alignment: .leading, spacing: Constants.stackSpacing) {
             if let domain = currentItem?.bestDomain {
-                Text(model.attributedDomain(domain, isSyndicated: currentItem?.isSyndicated == true))
+                makeDomain(domain)
+                    .style(model.domainStyle)
                     .lineLimit(Constants.footerElementLineLimit)
             }
             if let timeToRead = currentItem?.timeToRead, timeToRead > 0 {
                 Text(model.timeToRead(timeToRead))
                     .lineLimit(Constants.footerElementLineLimit)
             }
+        }
+    }
+
+    func makeDomain(_ domain: String) -> Text {
+        if currentItem?.isSyndicated == true {
+            return Text(domain) + Text(" ") + Text(Image(systemName: "checkmark.seal"))
+        } else {
+            return Text(domain)
         }
     }
 

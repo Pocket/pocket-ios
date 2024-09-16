@@ -5,6 +5,7 @@
 import Localization
 import Sync
 import SwiftUI
+import Textile
 
 // TODO: SWIFTUI - Add analytics
 
@@ -35,7 +36,10 @@ struct HomeCardModel {
         self.sharedWithYouUrlString = sharedWithYouUrlString
         self.useLargeTitle = uselargeTitle
     }
+}
 
+// MARK: Actions
+extension HomeCardModel {
     func saveAction(isSaved: Bool) {
         if isSaved {
             source.archive(from: givenURL)
@@ -45,22 +49,23 @@ struct HomeCardModel {
     }
 }
 
+// MARK: Styler
 extension HomeCardModel {
-    var attributedCollection: AttributedString {
-        return AttributedString(NSAttributedString(string: Localization.Constants.collection, style: .recommendation.collection))
+    var collectionStyle: Style {
+        .recommendation.collection
     }
 
+    // TODO: SWIFTUI - use the proper style here once we do native collections
     var attributedExcerpt: AttributedString? {
         return nil
     }
 
-    func attributedTitle(_ title: String) -> AttributedString {
-        AttributedString(NSAttributedString(string: title, style: .recommendation.adaptiveTitle(useLargeTitle)))
+    var titleStyle: Style {
+        .recommendation.adaptiveTitle(useLargeTitle)
     }
 
-    func attributedDomain(_ domain: String, isSyndicated: Bool) -> AttributedString {
-        let detailString = NSMutableAttributedString(string: domain, style: .recommendation.domain)
-        return AttributedString(isSyndicated ? detailString.addSyndicatedIndicator(with: .recommendation.domain) : detailString)
+    var domainStyle: Style {
+        .recommendation.domain
     }
 
     func timeToRead(_ timeToRead: Int32) -> AttributedString {

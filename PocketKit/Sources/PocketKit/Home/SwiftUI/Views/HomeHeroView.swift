@@ -64,11 +64,13 @@ private extension HomeHeroView {
     func makeTextStack() -> some View {
         VStack(alignment: .leading, spacing: Constants.textStackSpacing) {
             if currentItem?.isCollection == true {
-                Text(model.attributedCollection)
+                Text(Localization.Constants.collection)
+                    .style(model.collectionStyle)
                     .accessibilityIdentifier("collection-label")
             }
 
-            Text(model.attributedTitle(currentItem?.bestTitle ?? model.givenURL))
+            Text(currentItem?.bestTitle ?? model.givenURL)
+                .style(model.titleStyle)
                 .lineSpacing(Constants.titleLineSpacing)
                 .lineLimit(Constants.numberOfTitleLines)
                 .accessibilityIdentifier("title-label")
@@ -97,7 +99,8 @@ private extension HomeHeroView {
     func makeFooterDescription() -> some View {
         VStack(alignment: .leading) {
             if let domain = currentItem?.bestDomain {
-                Text(model.attributedDomain(domain, isSyndicated: currentItem?.isSyndicated == true))
+                makeDomain(domain)
+                    .style(model.domainStyle)
                     .lineLimit(Constants.numberOfSubtitleLines)
                     .accessibilityIdentifier("domain-label")
             }
@@ -107,6 +110,14 @@ private extension HomeHeroView {
                     .lineLimit(Constants.numberOfTimeToReadLines)
                     .accessibilityIdentifier("time-to-read-label")
             }
+        }
+    }
+
+    func makeDomain(_ domain: String) -> Text {
+        if currentItem?.isSyndicated == true {
+            return Text(domain) + Text(" ") + Text(Image(systemName: "checkmark.seal"))
+        } else {
+            return Text(domain)
         }
     }
 

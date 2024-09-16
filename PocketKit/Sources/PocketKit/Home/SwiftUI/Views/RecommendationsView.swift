@@ -8,9 +8,7 @@ import SwiftUI
 import Sync
 
 struct RecommendationsView: View {
-    @Environment(\.modelContext)
-    private var modelContext
-
+    // TODO: SWIFTUI - Worth exploring if in this case we should do a direct fetch, this would require manual updated though.
     @Query(sort: \Slate.sortIndex, order: .forward)
     private var slates: [Slate]
 
@@ -29,17 +27,6 @@ struct RecommendationsView: View {
                 Text("Pocket")
             }
         }
-        // TODO: SWIFTUI - this is an alternative to the @Query, more efficient since we control when to fetch
-        // but might miss updates from elsewhere on Slates (e.g. a remote fetch updates them). TBD if we want
-        // to fetch explicitly, but then we need to update manually.
-//        .onAppear {
-//            let descriptor = FetchDescriptor<Slate>(sortBy: [SortDescriptor(\Slate.sortIndex, order: .forward)])
-//            do {
-//                slates = try modelContext.fetch(descriptor)
-//            } catch {
-//                print(error)
-//            }
-//        }
     }
 }
 
