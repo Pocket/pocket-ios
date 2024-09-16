@@ -69,8 +69,3 @@ private extension HomeCarouselSection {
         .padding(EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16))
     }
 }
-
-private extension HomeCarouselSection {
-    // TODO: SWIFTUI - These will change to a computed var once we introduce the iPad layout
-    static let useCarousel = false
-}
