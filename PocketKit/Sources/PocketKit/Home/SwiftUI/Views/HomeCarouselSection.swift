@@ -9,12 +9,13 @@ import Sync
 struct HomeCarouselSection: View {
     let remoteID: String
     let recommendations: [Recommendation]
+    let useGrid: Bool
 
     var body: some View {
-        if Self.useCarousel {
-            makeCarousel()
-        } else {
+        if useGrid {
             makeGrid()
+        } else {
+            makeCarousel()
         }
     }
 }
@@ -27,7 +28,7 @@ private extension HomeCarouselSection {
                     if let item = recommendation.item {
                         HomeCarouselView(
                             model: HomeCardModel(
-                                item: item,
+                                givenURL: item.givenURL,
                                 imageURL: item.topImageURL
                             )
                         )
@@ -56,7 +57,7 @@ private extension HomeCarouselSection {
                         if let item = recommendation.item {
                             HomeCarouselView(
                                 model: HomeCardModel(
-                                    item: item,
+                                    givenURL: item.givenURL,
                                     imageURL: item.topImageURL
                                 )
                             )

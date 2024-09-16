@@ -97,13 +97,8 @@ private struct SaveButtonStyle: ButtonStyle {
                 .frame(width: 20, height: 20)
             if let title {
                 Text(title)
-                    .style(configuration.isPressed ? .saveTitleHighlighted : .saveTitle)
+                    .style(configuration.isPressed ? .homeButton.saveTitleHighlighted : .homeButton.saveTitle)
             }
         }
     }
-}
-
-private extension Style {
-    static let saveTitle: Style = .header.sansSerif.p4.with(weight: .medium).with(maxScaleSize: 17).with(color: .ui.saveButtonText)
-    static let saveTitleHighlighted: Style = .header.sansSerif.p4.with(color: .ui.grey1).with(weight: .medium).with(maxScaleSize: 17)
 }

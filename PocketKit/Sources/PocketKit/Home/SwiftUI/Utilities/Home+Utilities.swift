@@ -2,7 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import Foundation
+import SwiftUI
 import Sync
 
 /// An identifiable type containing a row of recommendations to be used in a `GridRow`
@@ -17,5 +17,16 @@ extension Array {
         return stride(from: 0, to: count, by: size).map {
             Array(self[$0 ..< Swift.min($0 + size, count)])
         }
+    }
+}
+
+/// Environment value to store the carousel width based on the current `Geometry`
+extension EnvironmentValues {
+    @Entry var carouselWidth: CGFloat = 300
+}
+
+extension Item {
+    public var bestTitle: String {
+        syndicatedArticle?.title ?? title ?? givenURL
     }
 }

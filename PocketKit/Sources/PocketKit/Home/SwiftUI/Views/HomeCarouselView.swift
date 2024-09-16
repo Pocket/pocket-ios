@@ -9,20 +9,32 @@ import Sync
 import Textile
 
 struct HomeCarouselView: View {
-    var model: HomeCardModel
+    let model: HomeCardModel
+
+    @Environment(\.carouselWidth)
+    private var carouselWidth
 
     @Query var savedItem: [SavedItem]
     var currentSavedItem: SavedItem? {
         savedItem.first
     }
 
+    @Query var item: [Item]
+    var currentItem: Item? {
+        item.first
+    }
+
     init(model: HomeCardModel) {
         self.model = model
 
-        let givenUrl = model.item.givenURL
+        let givenUrl = model.givenURL
         var descriptor = FetchDescriptor<SavedItem>(predicate: #Predicate<SavedItem> { $0.item?.givenURL == givenUrl })
         descriptor.fetchLimit = 1
         _savedItem = Query(descriptor, animation: .easeIn)
+
+        var itemDescriptor = FetchDescriptor<Item>(predicate: #Predicate<Item> { $0.givenURL == givenUrl })
+        itemDescriptor.fetchLimit = 1
+        _item = Query(itemDescriptor, animation: .easeIn)
     }
 
     var body: some View {
@@ -34,7 +46,7 @@ struct HomeCarouselView: View {
         .padding()
         .background(Color(.ui.homeCellBackground))
         .clipShape(RoundedRectangle(cornerRadius: Constants.cornerRadius))
-        .frame(minWidth: 0, idealWidth: UIScreen.main.bounds.width * 0.8, maxWidth: .infinity, idealHeight: Constants.cardHeight)
+        .frame(minWidth: 0, idealWidth: carouselWidth, maxWidth: .infinity, idealHeight: Constants.cardHeight)
         .shadow(color: Color(.ui.border), radius: Constants.shadowRadius, x: 0, y: 0)
     }
 }
@@ -52,10 +64,10 @@ private extension HomeCarouselView {
     /// Text stack
     func makeTextStack() -> some View {
         VStack(alignment: .leading) {
-            if let attributedCollection = model.attributedCollection {
-                Text(attributedCollection)
+            if currentItem?.isCollection == true {
+                Text(model.attributedCollection)
             }
-            Text(model.attributedTitle)
+            Text(model.attributedTitle(currentItem?.bestTitle ?? model.givenURL))
                 .lineSpacing(Constants.titleLineSpacing)
                 .lineLimit(Constants.titleLineLimit)
         }
@@ -88,12 +100,12 @@ private extension HomeCarouselView {
     /// Footer description
     func makeFooterDescription() -> some View {
         VStack(alignment: .leading, spacing: Constants.stackSpacing) {
-            if let domain = model.attributedDomain {
-                Text(domain)
+            if let domain = currentItem?.bestDomain {
+                Text(model.attributedDomain(domain, isSyndicated: currentItem?.isSyndicated == true))
                     .lineLimit(Constants.footerElementLineLimit)
             }
-            if let timeToRead = model.attributedTimeToRead {
-                Text(timeToRead)
+            if let timeToRead = currentItem?.timeToRead, timeToRead > 0 {
+                Text(model.timeToRead(timeToRead))
                     .lineLimit(Constants.footerElementLineLimit)
             }
         }
@@ -166,7 +178,6 @@ private extension HomeCarouselView {
         static let cornerRadius: CGFloat = 16
         static let titleLineLimit = 3
         static let footerElementLineLimit = 2
-        static let collectionLineLimit = 1
         static let actionButtonImageSize = CGSize(width: 20, height: 20)
         static let layoutMargins = UIEdgeInsets(top: Margins.normal.rawValue, left: Margins.normal.rawValue, bottom: Margins.normal.rawValue, right: Margins.normal.rawValue)
         static let stackSpacing: CGFloat = 4

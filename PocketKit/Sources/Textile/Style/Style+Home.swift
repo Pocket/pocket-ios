@@ -35,4 +35,16 @@ public extension Style {
             largeTitle ? heroTitle : title
         }
     }
+
+    static let homeHeader = HomeHeaderStyle()
+    struct HomeHeaderStyle {
+        public let sectionHeader: Style = .header.sansSerif.h6.with(weight: .semibold)
+        public let buttonText: Style = .header.sansSerif.p4.with(color: .ui.teal2).with(maxScaleSize: 22)
+    }
+
+    static let homeButton = HomeButtonStyle()
+    struct HomeButtonStyle {
+        public let saveTitle: Style = .header.sansSerif.p4.with(weight: .medium).with(maxScaleSize: 17).with(color: .ui.saveButtonText)
+        public let saveTitleHighlighted: Style = .header.sansSerif.p4.with(color: .ui.grey1).with(weight: .medium).with(maxScaleSize: 17)
+    }
 }

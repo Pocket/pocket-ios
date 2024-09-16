@@ -25,7 +25,7 @@ private extension HomeHeroSection {
         if let item = recommendation.item {
             HomeHeroView(
                 model: HomeCardModel(
-                    item: item,
+                    givenURL: item.givenURL,
                     imageURL: recommendation.item?.topImageURL,
                     uselargeTitle: true
                 )
@@ -47,9 +47,4 @@ private extension HomeHeroSection {
             }
         }
     }
-}
-
-private extension HomeHeroSection {
-    // TODO: SWIFTUI - These will change to a computed var once we introduce the iPad layout
-    static let heroCount = 3
 }

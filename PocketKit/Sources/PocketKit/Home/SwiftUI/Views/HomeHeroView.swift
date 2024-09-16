@@ -17,16 +17,25 @@ struct HomeHeroView: View {
         savedItem.first
     }
 
+    @Query var item: [Item]
+    var currentItem: Item? {
+        item.first
+    }
+
     init(model: HomeCardModel) {
         self.model = model
-        let givenUrl = model.item.givenURL
-        var descriptor = FetchDescriptor<SavedItem>(predicate: #Predicate<SavedItem> { $0.item?.givenURL == givenUrl })
-        descriptor.fetchLimit = 1
-        _savedItem = Query(descriptor, animation: .easeIn)
+        let givenUrl = model.givenURL
+        var savedItemDescriptor = FetchDescriptor<SavedItem>(predicate: #Predicate<SavedItem> { $0.item?.givenURL == givenUrl })
+        savedItemDescriptor.fetchLimit = 1
+        _savedItem = Query(savedItemDescriptor, animation: .easeIn)
+
+        var itemDescriptor = FetchDescriptor<Item>(predicate: #Predicate<Item> { $0.givenURL == givenUrl })
+        itemDescriptor.fetchLimit = 1
+        _item = Query(itemDescriptor, animation: .easeIn)
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Constants.mainVStackSpacing) {
+        VStack(alignment: .leading, spacing: 0) {
             makeImage()
             makeTextStack()
             Spacer()
@@ -48,18 +57,18 @@ private extension HomeHeroView {
             .fixedSize(horizontal: false, vertical: true)
             .frame(minWidth: 0, maxWidth: .infinity)
             .clipped()
+            .padding(.bottom, Constants.mainVStackSpacing)
     }
 
     /// Text content of the Hero View
     func makeTextStack() -> some View {
         VStack(alignment: .leading, spacing: Constants.textStackSpacing) {
-            if let collectionText = model.attributedCollection {
-                Text(collectionText)
-                    .lineLimit(Constants.numberOfCollectionLines)
+            if currentItem?.isCollection == true {
+                Text(model.attributedCollection)
                     .accessibilityIdentifier("collection-label")
             }
 
-            Text(model.attributedTitle)
+            Text(model.attributedTitle(currentItem?.bestTitle ?? model.givenURL))
                 .lineSpacing(Constants.titleLineSpacing)
                 .lineLimit(Constants.numberOfTitleLines)
                 .accessibilityIdentifier("title-label")
@@ -87,14 +96,14 @@ private extension HomeHeroView {
     /// Descriptive portion of the footer, containing domain and time to read
     func makeFooterDescription() -> some View {
         VStack(alignment: .leading) {
-            if let domain = model.attributedDomain {
-                Text(domain)
+            if let domain = currentItem?.bestDomain {
+                Text(model.attributedDomain(domain, isSyndicated: currentItem?.isSyndicated == true))
                     .lineLimit(Constants.numberOfSubtitleLines)
                     .accessibilityIdentifier("domain-label")
             }
 
-            if let timeToRead = model.attributedTimeToRead {
-                Text(timeToRead)
+            if let timeToRead = currentItem?.timeToRead, timeToRead > 0 {
+                Text(model.timeToRead(timeToRead))
                     .lineLimit(Constants.numberOfTimeToReadLines)
                     .accessibilityIdentifier("time-to-read-label")
             }
@@ -160,10 +169,9 @@ extension HomeHeroView {
         // Text
         static let titleLineSpacing: CGFloat = 4
         static let textStackSpacing: CGFloat = 4
-        static let numberOfCollectionLines = 1
         static let numberOfTitleLines = 3
         static let numberOfSubtitleLines = 2
-        static let textPadding = EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16)
+        static let textPadding = EdgeInsets(top: 0, leading: 16, bottom: 16, trailing: 16)
         // Footer
         static let numberOfTimeToReadLines = 1
         static let footerPadding = EdgeInsets(top: 0, leading: 16, bottom: 16, trailing: 16)

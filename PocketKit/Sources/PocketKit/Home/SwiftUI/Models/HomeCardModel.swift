@@ -8,81 +8,62 @@ import SwiftUI
 
 // TODO: SWIFTUI - Add analytics
 
+/// Type that holds the configuration of `Hero` and `Carousel` cards
 @MainActor
-@Observable
-final class HomeCardModel {
-    let item: Item
+struct HomeCardModel {
+    let givenURL: String
     let overflowActions: [HomeButtonAction]
     let favoriteAction: HomeButtonAction?
     var imageURL: URL?
-    var title: String?
     var sharedWithYouUrlString: String?
     let useLargeTitle: Bool
     // TODO: SWIFTUI - Once we are fully migrated to SwiftUI, this should come from the environment.
     private let source = Services.shared.source
 
     init(
-        item: Item,
+        givenURL: String,
         overflowActions: [HomeButtonAction] = [],
         favoriteAction: HomeButtonAction? = nil,
         imageURL: URL?,
-        title: String? = nil,
         sharedWithYouUrlString: String? = nil,
         uselargeTitle: Bool = false
     ) {
-        self.item = item
+        self.givenURL = givenURL
         self.overflowActions = overflowActions
         self.favoriteAction = favoriteAction
         self.imageURL = imageURL
-        self.title = title ?? item.syndicatedArticle?.title ?? item.title
         self.sharedWithYouUrlString = sharedWithYouUrlString
         self.useLargeTitle = uselargeTitle
     }
 
     func saveAction(isSaved: Bool) {
         if isSaved {
-            source.archive(from: item.givenURL)
+            source.archive(from: givenURL)
         } else {
-            source.save(from: item.givenURL)
+            source.save(from: givenURL)
         }
     }
 }
 
 extension HomeCardModel {
-    var attributedCollection: AttributedString? {
-        guard item.isCollection else { return nil }
+    var attributedCollection: AttributedString {
         return AttributedString(NSAttributedString(string: Localization.Constants.collection, style: .recommendation.collection))
-    }
-
-    var attributedTitle: AttributedString {
-        AttributedString(NSAttributedString(string: title ?? "", style: .recommendation.adaptiveTitle(useLargeTitle)))
     }
 
     var attributedExcerpt: AttributedString? {
         return nil
     }
 
-    var attributedDomain: AttributedString? {
-        guard let domain else { return nil }
+    func attributedTitle(_ title: String) -> AttributedString {
+        AttributedString(NSAttributedString(string: title, style: .recommendation.adaptiveTitle(useLargeTitle)))
+    }
+
+    func attributedDomain(_ domain: String, isSyndicated: Bool) -> AttributedString {
         let detailString = NSMutableAttributedString(string: domain, style: .recommendation.domain)
-        return AttributedString(item.isSyndicated ? detailString.addSyndicatedIndicator(with: .recommendation.domain) : detailString)
+        return AttributedString(isSyndicated ? detailString.addSyndicatedIndicator(with: .recommendation.domain) : detailString)
     }
 
-    var attributedTimeToRead: AttributedString? {
-        guard let timeToRead else { return nil }
-        return AttributedString(NSAttributedString(string: timeToRead, style: .recommendation.timeToRead))
-    }
-
-    private var domain: String? {
-        item.bestDomain
-    }
-
-    private var timeToRead: String? {
-        guard let timeToRead = item.timeToRead,
-              timeToRead > 0 else {
-            return nil
-        }
-
-        return Localization.Home.Recommendation.readTime(timeToRead)
+    func timeToRead(_ timeToRead: Int32) -> AttributedString {
+        AttributedString(NSAttributedString(string: Localization.Home.Recommendation.readTime(timeToRead), style: .recommendation.timeToRead))
     }
 }
