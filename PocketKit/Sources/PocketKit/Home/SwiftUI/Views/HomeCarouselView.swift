@@ -129,7 +129,7 @@ private extension HomeCarouselView {
             if let favoriteAction = model.favoriteAction {
                 makeFavoriteButton(handler: favoriteAction.action)
             }
-                makeSaveButton()
+            makeSaveButton()
         }
     }
 
