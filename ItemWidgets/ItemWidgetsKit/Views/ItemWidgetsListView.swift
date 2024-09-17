@@ -9,7 +9,7 @@ struct ItemWidgetsListView: View {
     @Environment(\.widgetFamily)
     private var widgetFamily
 
-    @Environment (\.hasVeryLargeFonts)
+    @Environment(\.hasVeryLargeFonts)
     private var hasVeryLargeFonts
 
     let items: [ItemRowContent]

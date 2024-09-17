@@ -14,8 +14,8 @@ public class PersistentContainer: NSPersistentContainer {
         return context
     }()
 
-    private (set) var spotlightIndexer: CoreDataSpotlightDelegate?
-    private (set) var storeDescription: NSPersistentStoreDescription?
+    private(set) var spotlightIndexer: CoreDataSpotlightDelegate?
+    private(set) var storeDescription: NSPersistentStoreDescription?
 
     private lazy var modifiedViewContext: NSManagedObjectContext = {
         viewContext.automaticallyMergesChangesFromParent = true
