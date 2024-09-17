@@ -20,8 +20,9 @@ public class AppSession: ObservableObject {
     }
 
     /// Sets the current session to `anonymous`
-    public func setAnonymousSession() {
-        setCurrentSession(.anonymous())
+    /// - Parameter guid: the anonymous session guid retrieved from the backend
+    public func setAnonymousSession(_ guid: String) {
+        setCurrentSession(.anonymous(guid))
     }
 
     /// Set the current session to the passed session, both in memory and in the keychain

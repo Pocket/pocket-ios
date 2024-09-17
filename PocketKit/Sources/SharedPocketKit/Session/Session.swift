@@ -19,11 +19,12 @@ public struct Session: Codable, Equatable, Sendable {
 extension Session {
     /// True if the session is anonymous
     public var isAnonymous: Bool {
-        guid.isEmpty && accessToken.isEmpty && userIdentifier.isEmpty
+        accessToken.isEmpty && userIdentifier.isEmpty
     }
     /// Instantiates an anonymous session, used for the signed out experience
     /// - Returns: a session with anonymous identifiers & tokens
-    public static func anonymous() -> Session {
+    /// - Parameter guid: the anonymous session guid retrieved from the backend
+    public static func anonymous(_ guid: String) -> Session {
         Session(guid: "", accessToken: "", userIdentifier: "")
     }
 }

@@ -99,6 +99,11 @@ public class RootViewModel: ObservableObject {
             NotificationCenter.default.post(name: .userLoggedOut, object: nil)
             return
         }
+        tracker.resetPersistentEntities([
+            APIUserEntity(consumerKey: Keys.shared.pocketApiConsumerKey),
+            UserEntity(guid: newSession.guid, userID: newSession.userIdentifier, adjustAdId: Adjust.adid())
+        ])
+
         if newSession.isAnonymous {
             let mainViewModel = MainViewModel()
             self.mainViewModel = mainViewModel
@@ -108,6 +113,7 @@ public class RootViewModel: ObservableObject {
         } else {
             let mainViewModel = MainViewModel()
             self.mainViewModel = mainViewModel
+            Log.setUserID(newSession.userIdentifier)
             viewState = .loggedIn(mainViewModel)
             NotificationCenter.default.post(name: .userLoggedIn, object: newSession)
             widgetsSessionService.setStatus(.loggedIn)

@@ -58,7 +58,12 @@ class CollectionViewModelTests: XCTestCase {
             self.mockAuthenticationSession.completionHandler = completion
             return self.mockAuthenticationSession
         }
-        accessService = PocketAccessService(authorizationClient: authClient, appSession: appSession, tracker: tracker)
+        accessService = PocketAccessService(
+            authorizationClient: authClient,
+            appSession: appSession,
+            tracker: tracker,
+            client: MockV3Client()
+        )
     }
 
     override func tearDownWithError() throws {

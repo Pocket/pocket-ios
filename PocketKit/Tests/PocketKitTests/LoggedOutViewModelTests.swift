@@ -78,7 +78,12 @@ class LoggedOutViewModelTests: XCTestCase {
             userManagementService: userManagementService ?? self.userManagementService,
             featureFlags: featureFlags ?? self.featureFlags,
             refreshCoordinator: refreshCoordinator ?? self.refreshCoordinator,
-            accessService: PocketAccessService(authorizationClient: self.authorizationClient, appSession: self.appSession, tracker: self.tracker)
+            accessService: PocketAccessService(
+                authorizationClient: self.authorizationClient,
+                appSession: self.appSession,
+                tracker: self.tracker,
+                client: MockV3Client()
+            )
         )
         return viewModel
     }

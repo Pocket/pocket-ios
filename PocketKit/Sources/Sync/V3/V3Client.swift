@@ -287,6 +287,18 @@ extension V3Client {
     }
 }
 
+// MARK: anonymous guid
+extension V3Client {
+    /// Fetch the `guid` for an anonymous session
+    /// - Returns: the string containing the `guid`
+    public func fetchAnonymousGuid() async throws -> String {
+        let requestBody = AnonymousGuidRequest(consumerKey: consumerKey)
+        let request = try buildRequest(path: "guid", request: requestBody)
+        let response: AnonymousResponse = try await executeRequest(request: request)
+        return response.guid
+    }
+}
+
 // MARK: Response helpers
 private extension HTTPURLResponse {
     /// Validates that `X-Source` is `Pocket`
