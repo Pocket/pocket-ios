@@ -11,7 +11,6 @@ struct HomeCardFooterView: View {
     let domain: String?
     let timeToRead: Int32?
     let isSaved: Bool
-    let isArchived: Bool
     let isFavorite: Bool
     let isSyndicated: Bool
 
@@ -86,7 +85,7 @@ private extension HomeCardFooterView {
 
     func makeSaveButton() -> some View {
         HomeActionButton(
-            isActive: isArchived == false,
+            isActive: isSaved,
             activeImage: .saved,
             inactiveImage: .save,
             activeTitle: Localization.Recommendation.saved,
