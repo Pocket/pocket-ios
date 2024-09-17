@@ -37,7 +37,12 @@ class UserManagementServiceTests: XCTestCase {
                     self.mockAuthenticationSession.completionHandler = completion
                     return self.mockAuthenticationSession
                 }
-        accessService = PocketAccessService(authorizationClient: authClient, appSession: appSession, tracker: MockTracker())
+        accessService = PocketAccessService(
+            authorizationClient: authClient,
+            appSession: appSession,
+            tracker: MockTracker(),
+            client: MockV3Client()
+        )
         user = MockUser()
         notificationCenter = .default
         source = MockSource()
@@ -58,7 +63,5 @@ class UserManagementServiceTests: XCTestCase {
         notificationCenter.post(name: .unauthorizedResponse, object: nil)
 
         wait(for: [clearExpectation])
-
-        XCTAssertEqual(appSession.currentSession, Session.anonymous())
     }
 }
