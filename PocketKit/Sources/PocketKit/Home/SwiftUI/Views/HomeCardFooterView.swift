@@ -71,7 +71,7 @@ private extension HomeCardFooterView {
 
     func makeFavoriteButton(handler: @escaping (() -> Void)) -> some View {
         HomeActionButton(
-            isActive: isFavorite == false,
+            isActive: isFavorite,
             activeImage: .favoriteFilled,
             inactiveImage: .favorite,
             highlightedColor: .branding.amber1,
