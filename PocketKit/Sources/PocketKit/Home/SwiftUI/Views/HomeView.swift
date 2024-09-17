@@ -7,15 +7,12 @@ import SwiftUI
 import Sync
 
 struct HomeView: View {
-    @Query(sort: \Slate.sortIndex, order: .forward)
-    var slates: [Slate]
     var body: some View {
-        ScrollView {
-            VStack {
-                ForEach(slates) {
-                    HomeSlateView(remoteID: $0.remoteID, slateTitle: $0.name!)
-                }
+        GeometryReader { proxy in
+            ScrollView {
+                RecommendationsView()
             }
+            .environment(\.carouselWidth, proxy.size.width * 0.8)
         }
     }
 }
