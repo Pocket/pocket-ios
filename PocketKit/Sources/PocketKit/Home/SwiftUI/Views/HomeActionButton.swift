@@ -89,7 +89,7 @@ private struct SaveButtonStyle: ButtonStyle {
     }
 
     func makeBody(configuration: Configuration) -> some View {
-        HStack(spacing: 6) {
+        HStack(alignment: .center, spacing: 6) {
             Image(asset: image)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
@@ -97,14 +97,8 @@ private struct SaveButtonStyle: ButtonStyle {
                 .frame(width: 20, height: 20)
             if let title {
                 Text(title)
-                    .style(configuration.isPressed ? .saveTitleHighlighted : .saveTitle)
+                    .style(configuration.isPressed ? .homeButton.saveTitleHighlighted : .homeButton.saveTitle)
             }
         }
-        .padding(EdgeInsets(top: 16, leading: 8, bottom: 16, trailing: 8))
     }
-}
-
-private extension Style {
-    static let saveTitle: Style = .header.sansSerif.p4.with(weight: .medium).with(maxScaleSize: 17).with(color: .ui.saveButtonText)
-    static let saveTitleHighlighted: Style = .header.sansSerif.p4.with(color: .ui.grey1).with(weight: .medium).with(maxScaleSize: 17)
 }
