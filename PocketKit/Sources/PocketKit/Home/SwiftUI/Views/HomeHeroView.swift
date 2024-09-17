@@ -17,26 +17,34 @@ struct HomeHeroView: View {
         savedItem.first
     }
 
+    @Query var item: [Item]
+    var currentItem: Item? {
+        item.first
+    }
+
     init(model: HomeCardModel) {
         self.model = model
-        let givenUrl = model.item.givenURL
-        var descriptor = FetchDescriptor<SavedItem>(predicate: #Predicate<SavedItem> { $0.item?.givenURL == givenUrl })
-        descriptor.fetchLimit = 1
-        _savedItem = Query(descriptor, animation: .default)
+        let givenUrl = model.givenURL
+        var savedItemDescriptor = FetchDescriptor<SavedItem>(predicate: #Predicate<SavedItem> { $0.item?.givenURL == givenUrl })
+        savedItemDescriptor.fetchLimit = 1
+        _savedItem = Query(savedItemDescriptor, animation: .easeIn)
+
+        var itemDescriptor = FetchDescriptor<Item>(predicate: #Predicate<Item> { $0.givenURL == givenUrl })
+        itemDescriptor.fetchLimit = 1
+        _item = Query(itemDescriptor, animation: .easeIn)
     }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             makeImage()
             makeTextStack()
+            Spacer()
             makeFooter()
         }
         .background(Color(UIColor(.ui.homeCellBackground)))
         .clipShape(RoundedRectangle(cornerRadius: Constants.cornerRadius))
         .padding(.vertical, Constants.layoutMargins.top)
         .shadow(color: Color(UIColor(.ui.border)), radius: Constants.shadowRadius, x: 0, y: 0)
-        .listRowSeparator(.hidden)
-        .listRowSpacing(0)
     }
 }
 
@@ -49,18 +57,21 @@ private extension HomeHeroView {
             .fixedSize(horizontal: false, vertical: true)
             .frame(minWidth: 0, maxWidth: .infinity)
             .clipped()
+            .padding(.bottom, Constants.mainVStackSpacing)
     }
 
     /// Text content of the Hero View
     func makeTextStack() -> some View {
         VStack(alignment: .leading, spacing: Constants.textStackSpacing) {
-            if let collectionText = model.attributedCollection {
-                Text(collectionText)
-                    .lineLimit(Constants.numberOfCollectionLines)
+            if currentItem?.isCollection == true {
+                Text(Localization.Constants.collection)
+                    .style(model.collectionStyle)
                     .accessibilityIdentifier("collection-label")
             }
 
-            Text(model.attributedTitle)
+            Text(currentItem?.bestTitle ?? model.givenURL)
+                .style(model.titleStyle)
+                .lineSpacing(Constants.titleLineSpacing)
                 .lineLimit(Constants.numberOfTitleLines)
                 .accessibilityIdentifier("title-label")
 
@@ -87,13 +98,26 @@ private extension HomeHeroView {
     /// Descriptive portion of the footer, containing domain and time to read
     func makeFooterDescription() -> some View {
         VStack(alignment: .leading) {
-            Text(model.attributedDomain)
-                .lineLimit(Constants.numberOfSubtitleLines)
-                .accessibilityIdentifier("domain-label")
+            if let domain = currentItem?.bestDomain {
+                makeDomain(domain)
+                    .style(model.domainStyle)
+                    .lineLimit(Constants.numberOfSubtitleLines)
+                    .accessibilityIdentifier("domain-label")
+            }
 
-            Text(model.attributedTimeToRead)
-                .lineLimit(Constants.numberOfTimeToReadLines)
-                .accessibilityIdentifier("time-to-read-label")
+            if let timeToRead = currentItem?.timeToRead, timeToRead > 0 {
+                Text(model.timeToRead(timeToRead))
+                    .lineLimit(Constants.numberOfTimeToReadLines)
+                    .accessibilityIdentifier("time-to-read-label")
+            }
+        }
+    }
+
+    func makeDomain(_ domain: String) -> Text {
+        if currentItem?.isSyndicated == true {
+            return Text(domain) + Text(" ") + Text(Image(systemName: "checkmark.seal"))
+        } else {
+            return Text(domain)
         }
     }
 
@@ -108,7 +132,7 @@ private extension HomeHeroView {
             highlightedColor: .ui.coral1,
             activeColor: .ui.coral2
         ) {
-            model.primaryAction?.action()
+            model.saveAction(isSaved: currentSavedItem != nil && currentSavedItem?.isArchived == false)
         }
         .accessibilityIdentifier("save-button")
     }
@@ -147,19 +171,20 @@ private extension HomeHeroView {
 extension HomeHeroView {
     enum Constants {
         // General
+        static let mainVStackSpacing: CGFloat = 16
         static let cornerRadius: CGFloat = 16
         static let shadowRadius: CGFloat = 6
         static let layoutMargins = EdgeInsets(top: 0, leading: 16, bottom: 16, trailing: 16)
         // Image
         static let imageAspectRatio: CGFloat = 16/9
         // Text
+        static let titleLineSpacing: CGFloat = 4
         static let textStackSpacing: CGFloat = 4
-        static let numberOfCollectionLines = 1
         static let numberOfTitleLines = 3
         static let numberOfSubtitleLines = 2
-        static let textPadding = EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16)
+        static let textPadding = EdgeInsets(top: 0, leading: 16, bottom: 16, trailing: 16)
         // Footer
         static let numberOfTimeToReadLines = 1
-        static let footerPadding = EdgeInsets(top: 4, leading: 16, bottom: 0, trailing: 16)
+        static let footerPadding = EdgeInsets(top: 0, leading: 16, bottom: 16, trailing: 16)
     }
 }

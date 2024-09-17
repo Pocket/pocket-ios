@@ -13,7 +13,7 @@ public class Recommendation {
     public var excerpt: String?
     public var imageURL: URL?
     public var remoteID: String
-    public var sortIndex: Int16? = 0
+    public var sortIndex: Int16 = 0
     public var title: String?
     public var image: Image?
     public var item: Item?
