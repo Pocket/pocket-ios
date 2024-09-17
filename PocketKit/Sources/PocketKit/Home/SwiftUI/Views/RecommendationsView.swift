@@ -13,7 +13,7 @@ struct RecommendationsView: View {
     private var slates: [Slate]
 
     var body: some View {
-        VStack(spacing: 32) {
+        LazyVStack(spacing: 32) {
             if !slates.isEmpty {
                 ForEach(slates) { slate in
                     HomeSlateView(

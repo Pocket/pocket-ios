@@ -39,7 +39,16 @@ struct HomeHeroView: View {
             makeImage()
             makeTextStack()
             Spacer()
-            makeFooter()
+            HomeCardFooterView(
+                model: model,
+                domain: currentItem?.bestDomain,
+                timeToRead: currentItem?.timeToRead,
+                isSaved: currentSavedItem != nil && currentSavedItem?.isArchived == false,
+                isArchived: currentSavedItem?.isArchived == true,
+                isFavorite: currentSavedItem?.isFavorite == true,
+                isSyndicated: currentItem?.isSyndicated == true
+            )
+            .padding(Constants.footerPadding)
         }
         .background(Color(UIColor(.ui.homeCellBackground)))
         .clipShape(RoundedRectangle(cornerRadius: Constants.cornerRadius))
@@ -82,78 +91,6 @@ private extension HomeHeroView {
             }
         }
         .padding(Constants.textPadding)
-    }
-
-    /// Footer
-    func makeFooter() -> some View {
-        HStack {
-            makeFooterDescription()
-            Spacer()
-            makeSaveButton()
-            makeOverflowMenu()
-        }
-        .padding(Constants.footerPadding)
-    }
-
-    /// Descriptive portion of the footer, containing domain and time to read
-    func makeFooterDescription() -> some View {
-        VStack(alignment: .leading) {
-            if let domain = currentItem?.bestDomain {
-                makeDomain(domain)
-                    .style(model.domainStyle)
-                    .lineLimit(Constants.numberOfSubtitleLines)
-                    .accessibilityIdentifier("domain-label")
-            }
-
-            if let timeToRead = currentItem?.timeToRead, timeToRead > 0 {
-                Text(model.timeToRead(timeToRead))
-                    .lineLimit(Constants.numberOfTimeToReadLines)
-                    .accessibilityIdentifier("time-to-read-label")
-            }
-        }
-    }
-
-    func makeDomain(_ domain: String) -> Text {
-        if currentItem?.isSyndicated == true {
-            return Text(domain) + Text(" ") + Text(Image(systemName: "checkmark.seal"))
-        } else {
-            return Text(domain)
-        }
-    }
-
-    /// Save/saved button
-    func makeSaveButton() -> some View {
-        HomeActionButton(
-            isActive: currentSavedItem?.isArchived == false,
-            activeImage: .saved,
-            inactiveImage: .save,
-            activeTitle: Localization.Recommendation.saved,
-            inactiveTitle: Localization.Recommendation.save,
-            highlightedColor: .ui.coral1,
-            activeColor: .ui.coral2
-        ) {
-            model.saveAction(isSaved: currentSavedItem != nil && currentSavedItem?.isArchived == false)
-        }
-        .accessibilityIdentifier("save-button")
-    }
-
-    /// Overflow menu
-    func makeOverflowMenu() -> some View {
-        Menu {
-            ForEach(model.overflowActions, id: \.self) { buttonAction in
-                if let title = buttonAction.title {
-                    Button(action: {
-                        buttonAction.action()
-                    }) {
-                        Text(title)
-                    }
-                }
-            }
-        } label: {
-            Image(systemName: "ellipsis")
-                .foregroundColor(Color(.ui.saveButtonText))
-        }
-        .accessibilityIdentifier("overflow-button")
     }
 
     /// The size of the image to be used by `RemoteImage`
