@@ -44,7 +44,6 @@ struct HomeHeroView: View {
                 domain: currentItem?.bestDomain,
                 timeToRead: currentItem?.timeToRead,
                 isSaved: currentSavedItem != nil && currentSavedItem?.isArchived == false,
-                isArchived: currentSavedItem?.isArchived == true,
                 isFavorite: currentSavedItem?.isFavorite == true,
                 isSyndicated: currentItem?.isSyndicated == true
             )
