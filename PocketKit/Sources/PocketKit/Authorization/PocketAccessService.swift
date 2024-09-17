@@ -6,6 +6,7 @@ import Analytics
 import AuthenticationServices
 import Combine
 import SharedPocketKit
+import Sync
 
 /// Core service that determines the access level to the app. Full access is granted upon authentication. Anonymous access provides limited access.
 /// The property `accessLevel` reflects what type of access the current user is granted.
@@ -21,6 +22,7 @@ final class PocketAccessService: NSObject, ObservableObject {
     private let authorizationClient: AuthorizationClient
     private let appSession: AppSession
     private let tracker: Tracker
+    private let client: V3ClientProtocol
 
     private var subscriptions = Set<AnyCancellable>()
 
@@ -30,10 +32,16 @@ final class PocketAccessService: NSObject, ObservableObject {
     /// Publish any authentication related error, for the client to manage.
     @Published private(set) var authenticationError: Error?
 
-    init(authorizationClient: AuthorizationClient, appSession: AppSession, tracker: Tracker) {
+    init(
+        authorizationClient: AuthorizationClient,
+        appSession: AppSession,
+        tracker: Tracker,
+        client: V3ClientProtocol
+    ) {
         self.authorizationClient = authorizationClient
         self.appSession = appSession
         self.tracker = tracker
+        self.client = client
 
         if let session = appSession.currentSession {
             self.accessLevel = session.isAnonymous ? .anonymous : .authenticated
@@ -68,7 +76,17 @@ final class PocketAccessService: NSObject, ObservableObject {
 
     /// Request anonymous access for the current user
     func requestAnonymousAccess() {
-        appSession.setAnonymousSession()
+        Task { @MainActor in
+            do {
+                let guid = try await client.fetchAnonymousGuid()
+                appSession.setAnonymousSession(guid)
+            } catch {
+                Log.capture(message: "Unable to assign a guid to the anonymous session: \(error)")
+                // this will still ensure that users can use the signed out features, we don't want
+                // the app to fail even if we're not able to track analytics.
+                appSession.setAnonymousSession("")
+            }
+        }
     }
 
     /// nullifies the app session and goes back to the onboarding screen

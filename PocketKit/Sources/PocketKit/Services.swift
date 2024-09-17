@@ -76,7 +76,7 @@ struct Services {
             tracker: tracker,
             authenticationSessionFactory: ASWebAuthenticationSession.init
         )
-        accessService = PocketAccessService(authorizationClient: authClient, appSession: appSession, tracker: tracker)
+
         user = PocketUser(userDefaults: userDefaults)
 
         source = PocketSource(
@@ -91,6 +91,13 @@ struct Services {
         v3Client = V3Client.createDefault(
             sessionProvider: appSession,
             consumerKey: Keys.shared.pocketApiConsumerKey
+        )
+
+        accessService = PocketAccessService(
+            authorizationClient: authClient,
+            appSession: appSession,
+            tracker: tracker,
+            client: v3Client
         )
 
         sceneTracker = SceneTracker(tracker: tracker, userDefaults: userDefaults)

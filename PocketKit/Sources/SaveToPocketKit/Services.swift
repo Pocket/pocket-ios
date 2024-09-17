@@ -19,6 +19,7 @@ struct Services {
     let notificationCenter: NotificationCenter
     let braze: SaveToBraze
     let recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService
+    let v3Client: V3ClientProtocol
 
     /// The user management service that will log a user out when the correct notification is posted.
     /// This is marked as private since we do not need to access it, but we need it to be around for the lifetime
@@ -59,8 +60,20 @@ struct Services {
             groupdID: Keys.shared.groupID
         )
 
-        userManagementService = SaveToUserManagementService(appSession: appSession, user: user, notificationCenter: notificationCenter)
-        recentSavesWidgetUpdateService = RecentSavesWidgetUpdateService(store: UserDefaultsItemWidgetsStore(userDefaults: userDefaults, key: .recentSavesWidget))
+        v3Client = V3Client.createDefault(
+            sessionProvider: appSession,
+            consumerKey: Keys.shared.pocketApiConsumerKey
+        )
+
+        userManagementService = SaveToUserManagementService(
+            appSession: appSession,
+            user: user,
+            notificationCenter: notificationCenter,
+            client: v3Client
+        )
+        recentSavesWidgetUpdateService = RecentSavesWidgetUpdateService(
+            store: UserDefaultsItemWidgetsStore(userDefaults: userDefaults, key: .recentSavesWidget)
+        )
     }
 
     /// Starts up all services as required.

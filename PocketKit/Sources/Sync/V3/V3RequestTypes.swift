@@ -10,6 +10,18 @@ protocol V3Request: Encodable {
     var guid: String { get }
 }
 
+public struct AnonymousGuidRequest: Codable, Equatable, V3Request {
+    let accessToken: String
+    let consumerKey: String
+    let guid: String
+
+    init(consumerKey: String) {
+        self.accessToken = ""
+        self.guid = ""
+        self.consumerKey = consumerKey
+    }
+}
+
 public struct RegisterPushTokenRequest: Codable, Equatable, V3Request {
     let accessToken: String
 

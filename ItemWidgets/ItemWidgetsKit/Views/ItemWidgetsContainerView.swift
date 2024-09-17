@@ -9,7 +9,7 @@ struct ItemWidgetsContainerView: View {
     @Environment(\.widgetFamily)
     private var widgetFamily
 
-    @Environment (\.dynamicTypeSize)
+    @Environment(\.dynamicTypeSize)
     private var textSize
 
     /// The list of saved items to be displayed

@@ -43,6 +43,11 @@ public struct DeregisterPushTokenResponse: Decodable, BasicV3Response {
     var status: Int
 }
 
+// MARK: Anonymous response
+public struct AnonymousResponse: Decodable {
+    let guid: String
+}
+
 // MARK: Premium Status
 public struct PremiumStatusResponse: Decodable, BasicV3Response {
     var error, status: Int

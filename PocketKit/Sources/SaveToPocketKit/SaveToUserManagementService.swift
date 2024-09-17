@@ -15,6 +15,7 @@ final class SaveToUserManagementService: ObservableObject, SaveToUserManagementS
     let appSession: AppSession
     let user: User
     let notificationCenter: NotificationCenter
+    let client: V3ClientProtocol
 
     // Deletion state
     @Published public private(set) var accountDeleted: Bool = false
@@ -22,10 +23,16 @@ final class SaveToUserManagementService: ObservableObject, SaveToUserManagementS
 
     private var subscriptions: Set<AnyCancellable> = []
 
-    init(appSession: AppSession, user: User, notificationCenter: NotificationCenter) {
+    init(
+        appSession: AppSession,
+        user: User,
+        notificationCenter: NotificationCenter,
+        client: V3ClientProtocol
+    ) {
         self.appSession = appSession
         self.user = user
         self.notificationCenter = notificationCenter
+        self.client = client
 
         notificationCenter
             .publisher(for: .unauthorizedResponse)
@@ -42,7 +49,17 @@ final class SaveToUserManagementService: ObservableObject, SaveToUserManagementS
     /// We do this on the main thread because the Notification Center will post to areas that will change the UI
     @MainActor
     func logout() {
-        user.clear()
-        appSession.setAnonymousSession()
+    user.clear()
+        Task { @MainActor in
+            do {
+                let guid = try await client.fetchAnonymousGuid()
+                appSession.setAnonymousSession(guid)
+            } catch {
+                Log.capture(message: "Unable to fetch anonymous guid \(error)")
+                // this will still ensure that users can use the signed out features, we don't want
+                // the app to fail even if we're not able to track analytics.
+                appSession.setAnonymousSession("")
+            }
+        }
     }
 }
