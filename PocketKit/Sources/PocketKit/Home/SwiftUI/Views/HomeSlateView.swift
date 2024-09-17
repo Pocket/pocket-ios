@@ -2,53 +2,58 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import Foundation
 import SwiftUI
 import Sync
 import SwiftData
 
 struct HomeSlateView: View {
     let remoteID: String
-    let slateTitle: String
-    @Query var recommendations: [Recommendation]
+    let slateTitle: String?
+    let recommendations: [Recommendation]
 
-    init(remoteID: String, slateTitle: String) {
-        self.remoteID = remoteID
-        self.slateTitle = slateTitle
-        // TODO: SWIFTUI - we might want to use a FetchDescriptor
-        // also look into FetchResultsCollection
-        let predicate = #Predicate<Recommendation> {
-            $0.slate?.remoteID == remoteID
-        }
-        _recommendations = Query(filter: predicate, sort: \Recommendation.sortIndex, order: .forward)
-    }
+    @Environment(\.horizontalSizeClass)
+    var horizontalSizeClass
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            // TODO: replace with section header
-            Text(slateTitle)
-            if let item = recommendations.first?.item {
-                HomeHeroView(
-                    model: HomeCardModel(
-                        item: item,
-                        imageURL: item.topImageURL
-                    )
-                )
-            }
-            ScrollView(.horizontal) {
-                LazyHStack {
-                    ForEach(recommendations.dropFirst()) { recommendation in
-                        if let item = recommendation.item {
-                            HomeCarouselView(
-                                model: HomeCardModel(
-                                    item: item,
-                                    imageURL: item.topImageURL
-                                )
-                            )
-                        }
-                    }
+        VStack(alignment: .leading, spacing: 0) {
+            VStack(alignment: .leading, spacing: 16) {
+                if let slateTitle {
+                    Text(AttributedString(NSAttributedString(string: slateTitle, style: .homeHeader.sectionHeader)))
                 }
+                HomeHeroSection(remoteID: remoteID, recommendations: heroRecommendations)
             }
-            .scrollIndicators(.hidden)
+            .padding(EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16))
+            HomeCarouselSection(remoteID: remoteID, recommendations: carouselRecommendations, useGrid: useWideLayout)
         }
-        .padding()
+    }
+}
+
+private extension HomeSlateView {
+    /// Determines how many hero cell should be used, depending on the user interface idiom and horizontal size class
+    /// - Parameter isWideLayout: true if wide layout should be used
+    /// - Returns: the actual number of hero cells
+    static func heroCount(_ useWideLayout: Bool) -> Int {
+        useWideLayout ? 2 : 1
+    }
+
+    /// Determines if the wide layout setting should be used
+    var useWideLayout: Bool {
+        horizontalSizeClass == .regular && UIDevice.current.userInterfaceIdiom == .pad
+    }
+
+    /// Determines how many hero cells should be used
+    var heroCount: Int {
+        Self.heroCount(useWideLayout)
+    }
+
+    /// Extract the Hero recommendations
+    var heroRecommendations: [Recommendation] {
+        Array(recommendations.prefix(upTo: heroCount))
+    }
+
+    /// Extract the carousel recommendation
+    var carouselRecommendations: [Recommendation] {
+        Array(recommendations.dropFirst(heroCount))
     }
 }

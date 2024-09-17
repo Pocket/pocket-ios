@@ -29,6 +29,7 @@ public class Item {
     @Relationship(deleteRule: .cascade)
     public var authors: [Author]?
     public var collection: Collection?
+    @Relationship(deleteRule: .nullify, inverse: \CollectionStory.item)
     public var collectionStories: [CollectionStory]?
     @Relationship(deleteRule: .cascade, inverse: \DomainMetadata.item)
     public var domainMetadata: DomainMetadata?
