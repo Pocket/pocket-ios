@@ -50,7 +50,7 @@ struct ActionButton: View {
             EmptyView()
         }
         .buttonStyle(
-            SaveButtonStyle(
+            ActionButtonStyle(
             isActive: isActive,
             activeImage: activeImage,
             inactiveImage: inactiveImage,
@@ -64,7 +64,7 @@ struct ActionButton: View {
     }
 }
 
-private struct SaveButtonStyle: ButtonStyle {
+private struct ActionButtonStyle: ButtonStyle {
     var isActive: Bool
 
     let activeImage: ImageAsset

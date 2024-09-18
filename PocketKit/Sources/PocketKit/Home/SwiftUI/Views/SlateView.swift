@@ -21,10 +21,10 @@ struct SlateView: View {
                 if let slateTitle {
                     Text(AttributedString(NSAttributedString(string: slateTitle, style: .homeHeader.sectionHeader)))
                 }
-                HomeHeroSection(remoteID: remoteID, recommendations: heroRecommendations)
+                HeroView(remoteID: remoteID, recommendations: heroRecommendations)
             }
             .padding(EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16))
-            HomeCarouselSection(remoteID: remoteID, recommendations: carouselRecommendations, useGrid: useWideLayout)
+            CarouselView(remoteID: remoteID, recommendations: carouselRecommendations, useGrid: useWideLayout)
         }
     }
 }

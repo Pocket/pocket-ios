@@ -6,7 +6,7 @@ import SwiftData
 import SwiftUI
 import Sync
 
-struct Hero: View {
+struct HeroView: View {
     let remoteID: String
     let recommendations: [Recommendation]
 
@@ -19,7 +19,7 @@ struct Hero: View {
     }
 }
 
-private extension Hero {
+private extension HeroView {
     @ViewBuilder
     func makeHeroCard(_ recommendation: Recommendation) -> some View {
         if let item = recommendation.item {

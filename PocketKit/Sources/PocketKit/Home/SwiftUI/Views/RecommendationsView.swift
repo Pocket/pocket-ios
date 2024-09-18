@@ -13,10 +13,10 @@ struct RecommendationsView: View {
     private var slates: [Slate]
 
     var body: some View {
-        LazyVStack(spacing: 32) {
+        VStack(spacing: 32) {
             if !slates.isEmpty {
                 ForEach(slates) { slate in
-                    HomeSlateView(
+                    SlateView(
                         remoteID: slate.remoteID,
                         slateTitle: slate.name,
                         recommendations: slate.homeRecommendations

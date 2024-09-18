@@ -27,8 +27,8 @@ struct ListItem: View {
             HStack(alignment: .center, spacing: constants.tags.horizontalSpacing) {
                 ItemTags(tags: viewModel.item.tags, tagCount: viewModel.item.tagCount)
                 Spacer()
-                ActionButton(viewModel.favoriteAction(), selected: viewModel.isFavorite)
-                ActionButton(viewModel.shareAction())
+                UIKitHomeActionButton(viewModel.favoriteAction(), selected: viewModel.isFavorite)
+                UIKitHomeActionButton(viewModel.shareAction())
                     .sheet(isPresented: $viewModel.presentShareSheet) {
                         ShareSheetView(activity: PocketItemActivity.fromSaves(url: viewModel.item.bestURL))
                             .presentationDetents([.medium])

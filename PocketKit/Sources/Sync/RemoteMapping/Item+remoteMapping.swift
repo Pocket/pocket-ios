@@ -96,6 +96,9 @@ extension CDItem {
     func update(from corpusItem: CorpusSlateParts.Recommendation.CorpusItem, in space: Space) {
         givenURL = corpusItem.url
         title = corpusItem.title
+        if let timeToRead = corpusItem.timeToRead {
+            self.timeToRead = NSNumber(value: timeToRead)
+        }
         topImageURL = URL(string: corpusItem.imageUrl)
         domain = corpusItem.publisher
         excerpt = corpusItem.excerpt

@@ -6,7 +6,7 @@ import Localization
 import SwiftUI
 import Textile
 
-struct HomeCardFooterView: View {
+struct CardFooter: View {
     let model: HomeCardModel
     let domain: String?
     let timeToRead: Int32?
@@ -20,7 +20,7 @@ struct HomeCardFooterView: View {
 }
 
 // MARK: view builders
-private extension HomeCardFooterView {
+private extension CardFooter {
     /// Footer
     func makeFooter() -> some View {
         HStack(alignment: .bottom) {
@@ -119,7 +119,7 @@ private extension HomeCardFooterView {
 }
 
 // MARK: constants
-private extension HomeCardFooterView {
+private extension CardFooter {
     static let stackSpacing: CGFloat = 4
     static let footerElementLineLimit = 2
 }
