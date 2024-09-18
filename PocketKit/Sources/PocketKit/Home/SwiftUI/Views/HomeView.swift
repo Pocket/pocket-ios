@@ -10,7 +10,10 @@ struct HomeView: View {
     var body: some View {
         GeometryReader { proxy in
             ScrollView {
-                RecommendationsView()
+                VStack(spacing: 32) {
+                    RecentSavesView()
+                    RecommendationsView()
+                }
             }
             .environment(\.carouselWidth, proxy.size.width * 0.8)
         }

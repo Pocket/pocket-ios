@@ -5,10 +5,10 @@
 import SwiftUI
 import Sync
 
-/// An identifiable type containing a row of recommendations to be used in a `GridRow`
-struct RecommendationsRow: Identifiable {
+/// An identifiable type containing a row of `Item`s to be used in a `GridRow`
+struct ItemsRow: Identifiable {
     let id = UUID()
-    let row: [Recommendation]
+    let row: [Item]
 }
 
 /// Array extension that divides an array into chunks of a predefined size.

@@ -11,8 +11,8 @@ struct HeroView: View {
     let recommendations: [Recommendation]
 
     var body: some View {
-        if recommendations.count == 1, let recommendation = recommendations.first {
-            makeHeroCard(recommendation)
+        if recommendations.count == 1, let recommendation = recommendations.first, let item = recommendation.item {
+            makeHeroCard(item)
         } else {
             makeHeroGrid()
         }
@@ -21,27 +21,23 @@ struct HeroView: View {
 
 private extension HeroView {
     @ViewBuilder
-    func makeHeroCard(_ recommendation: Recommendation) -> some View {
-        if let item = recommendation.item {
+    func makeHeroCard(_ item: Item) -> some View {
             HeroCard(
                 model: HomeCardModel(
                     givenURL: item.givenURL,
-                    imageURL: recommendation.item?.topImageURL,
+                    imageURL: item.topImageURL,
                     uselargeTitle: true
                 )
             )
-        } else {
-            EmptyView()
-        }
     }
 
     func makeHeroGrid() -> some View {
-        let recs = recommendations.chunked(into: 2).map { RecommendationsRow(row: $0) }
+        let items = recommendations.compactMap({ $0.item }).chunked(into: 2).map { ItemsRow(row: $0) }
         return Grid {
-            ForEach(recs) { recRow in
+            ForEach(items) { itemsInRow in
                 GridRow {
-                    ForEach(recRow.row) { recommendation in
-                        makeHeroCard(recommendation)
+                    ForEach(itemsInRow.row) { item in
+                        makeHeroCard(item)
                     }
                 }
             }

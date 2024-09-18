@@ -7,8 +7,7 @@ import SwiftUI
 import Sync
 
 struct CarouselView: View {
-    let remoteID: String
-    let recommendations: [Recommendation]
+    let items: [Item]
     let useGrid: Bool
 
     var body: some View {
@@ -24,16 +23,14 @@ private extension CarouselView {
     func makeCarousel() -> some View {
         ScrollView(.horizontal) {
             LazyHStack(spacing: 16) {
-                ForEach(recommendations) { recommendation in
-                    if let item = recommendation.item {
-                        CarouselCard(
-                            model: HomeCardModel(
-                                givenURL: item.givenURL,
-                                imageURL: item.topImageURL
-                            )
+                ForEach(items) { item in
+                    CarouselCard(
+                        model: HomeCardModel(
+                            givenURL: item.givenURL,
+                            imageURL: item.topImageURL
                         )
-                        .padding(.vertical, 16)
-                    }
+                    )
+                    .padding(.vertical, 16)
                 }
             }
         }
@@ -49,19 +46,17 @@ private extension CarouselView {
     }
 
     func makeGrid() -> some View {
-        let recs = recommendations.chunked(into: 2).map { RecommendationsRow(row: $0) }
+        let itemsInRow = items.chunked(into: 2).map { ItemsRow(row: $0) }
         return Grid {
-            ForEach(recs) { recRow in
+            ForEach(itemsInRow) { itemsRow in
                 GridRow {
-                    ForEach(recRow.row) { recommendation in
-                        if let item = recommendation.item {
-                            CarouselCard(
-                                model: HomeCardModel(
-                                    givenURL: item.givenURL,
-                                    imageURL: item.topImageURL
-                                )
+                    ForEach(itemsRow.row) { item in
+                        CarouselCard(
+                            model: HomeCardModel(
+                                givenURL: item.givenURL,
+                                imageURL: item.topImageURL
                             )
-                        }
+                        )
                     }
                 }
             }

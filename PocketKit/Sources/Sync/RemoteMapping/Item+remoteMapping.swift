@@ -10,16 +10,18 @@ import SharedPocketKit
 
 extension CDItem {
     /// Update an equatable value only if different from the existing, to minimize object updates that translate into model changes and view updates
+    ///  courtssy of https://forums.swift.org/t/assign-if-different/61168/18
     /// - Parameters:
     ///   - path: keypath to the property to update
     ///   - newValue: proposed value
     public func updateIfNotEqual<T: Equatable>(
         _ path: ReferenceWritableKeyPath<CDItem, T>,
-        _ newValue: T) {
-            if self[keyPath: path] != newValue {
-                self[keyPath: path] = newValue
-            }
+        _ newValue: T
+    ) {
+        if self[keyPath: path] != newValue {
+            self[keyPath: path] = newValue
         }
+    }
 }
 
 extension CDItem {
@@ -28,8 +30,8 @@ extension CDItem {
         updateIfNotEqual(\.givenURL, remote.givenUrl)
         updateIfNotEqual(\.resolvedURL, remote.resolvedUrl)
         updateIfNotEqual(\.title, remote.title)
-        if let imageUlr = (remote.topImageUrl ?? remote.collection?.imageUrl).flatMap(URL.init(string:)) {
-            updateIfNotEqual(\.topImageURL, imageUlr)
+        if let imageUrl = (remote.topImageUrl ?? remote.collection?.imageUrl).flatMap(URL.init(string:)) {
+            updateIfNotEqual(\.topImageURL, imageUrl)
         }
         updateIfNotEqual(\.domain, remote.domain)
         updateIfNotEqual(\.language, remote.language)

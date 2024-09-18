@@ -24,7 +24,7 @@ struct SlateView: View {
                 HeroView(remoteID: remoteID, recommendations: heroRecommendations)
             }
             .padding(EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16))
-            CarouselView(remoteID: remoteID, recommendations: carouselRecommendations, useGrid: useWideLayout)
+            CarouselView(items: carouselItems, useGrid: useWideLayout)
         }
     }
 }
@@ -52,8 +52,13 @@ private extension SlateView {
         Array(recommendations.prefix(upTo: heroCount))
     }
 
-    /// Extract the carousel recommendation
+    /// Extract the carousel recommendations
     var carouselRecommendations: [Recommendation] {
         Array(recommendations.dropFirst(heroCount))
+    }
+
+    /// Items associated to the carousel recommendations
+    var carouselItems: [Item] {
+        carouselRecommendations.compactMap { $0.item }
     }
 }
