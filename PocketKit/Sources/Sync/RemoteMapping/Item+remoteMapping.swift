@@ -9,33 +9,44 @@ import PocketGraph
 import SharedPocketKit
 
 extension CDItem {
-    func update(remote: ItemParts, with space: Space) {
-        remoteID = remote.remoteID
+    /// Update an equatable value only if different from the existing, to minimize object updates that translate into model changes and view updates
+    /// - Parameters:
+    ///   - path: keypath to the property to update
+    ///   - newValue: proposed value
+    public func updateIfNotEqual<T: Equatable>(
+        _ path: ReferenceWritableKeyPath<CDItem, T>,
+        _ newValue: T) {
+            if self[keyPath: path] != newValue {
+                self[keyPath: path] = newValue
+            }
+        }
+}
 
-        givenURL = remote.givenUrl
-        resolvedURL = remote.resolvedUrl
-        title = remote.title
-        topImageURL = (remote.topImageUrl ?? remote.collection?.imageUrl).flatMap(URL.init(string:))
-        domain = remote.domain
-        language = remote.language
+extension CDItem {
+    func updateIfNeeded(remote: ItemParts, with space: Space) {
+        updateIfNotEqual(\.remoteID, remote.remoteID)
+        updateIfNotEqual(\.givenURL, remote.givenUrl)
+        updateIfNotEqual(\.resolvedURL, remote.resolvedUrl)
+        updateIfNotEqual(\.title, remote.title)
+        if let imageUlr = (remote.topImageUrl ?? remote.collection?.imageUrl).flatMap(URL.init(string:)) {
+            updateIfNotEqual(\.topImageURL, imageUlr)
+        }
+        updateIfNotEqual(\.domain, remote.domain)
+        updateIfNotEqual(\.language, remote.language)
 
         if let readTime = remote.timeToRead {
-            timeToRead = NSNumber(value: readTime)
-        } else {
-            timeToRead = 0
+            updateIfNotEqual(\.timeToRead, NSNumber(value: readTime))
         }
 
         if let words = remote.wordCount {
-            wordCount = NSNumber(value: words)
-        } else {
-            wordCount = 0
+            updateIfNotEqual(\.wordCount, NSNumber(value: words))
         }
 
-        excerpt = remote.excerpt
-        datePublished = remote.datePublished.flatMap { DateFormatter.clientAPI.date(from: $0) }
-        isArticle = remote.isArticle ?? false
-        imageness = remote.hasImage?.rawValue
-        videoness = remote.hasVideo?.rawValue
+        updateIfNotEqual(\.excerpt, remote.excerpt)
+        updateIfNotEqual(\.datePublished, remote.datePublished.flatMap { DateFormatter.clientAPI.date(from: $0) })
+        updateIfNotEqual(\.isArticle, remote.isArticle ?? false)
+        updateIfNotEqual(\.imageness, remote.hasImage?.rawValue)
+        updateIfNotEqual(\.videoness, remote.hasVideo?.rawValue)
 
         guard let context = managedObjectContext else {
             return
