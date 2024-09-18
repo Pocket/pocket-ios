@@ -27,6 +27,16 @@ extension EnvironmentValues {
 
 extension Item {
     public var bestTitle: String {
-        syndicatedArticle?.title ?? title ?? givenURL
+        validTitle(recommendation?.title) ??
+        validTitle(syndicatedArticle?.title) ??
+        validTitle(title) ??
+        givenURL
+    }
+
+    private func validTitle(_ title: String?) -> String? {
+        guard let title, !title.isEmpty else {
+            return nil
+        }
+        return title
     }
 }
