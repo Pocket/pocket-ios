@@ -70,7 +70,7 @@ private extension HomeCardFooterView {
     }
 
     func makeFavoriteButton(handler: @escaping (() -> Void)) -> some View {
-        HomeActionButton(
+        ActionButton(
             isActive: isFavorite,
             activeImage: .favoriteFilled,
             inactiveImage: .favorite,
@@ -84,7 +84,7 @@ private extension HomeCardFooterView {
     }
 
     func makeSaveButton() -> some View {
-        HomeActionButton(
+        ActionButton(
             isActive: isSaved,
             activeImage: .saved,
             inactiveImage: .save,

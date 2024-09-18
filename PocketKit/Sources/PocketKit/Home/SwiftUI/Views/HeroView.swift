@@ -6,24 +6,24 @@ import SwiftData
 import SwiftUI
 import Sync
 
-struct HomeHeroSection: View {
+struct Hero: View {
     let remoteID: String
     let recommendations: [Recommendation]
 
     var body: some View {
         if recommendations.count == 1, let recommendation = recommendations.first {
-            makeHeroView(recommendation)
+            makeHeroCard(recommendation)
         } else {
             makeHeroGrid()
         }
     }
 }
 
-private extension HomeHeroSection {
+private extension Hero {
     @ViewBuilder
-    func makeHeroView(_ recommendation: Recommendation) -> some View {
+    func makeHeroCard(_ recommendation: Recommendation) -> some View {
         if let item = recommendation.item {
-            HomeHeroView(
+            HeroCard(
                 model: HomeCardModel(
                     givenURL: item.givenURL,
                     imageURL: recommendation.item?.topImageURL,
@@ -41,7 +41,7 @@ private extension HomeHeroSection {
             ForEach(recs) { recRow in
                 GridRow {
                     ForEach(recRow.row) { recommendation in
-                        makeHeroView(recommendation)
+                        makeHeroCard(recommendation)
                     }
                 }
             }

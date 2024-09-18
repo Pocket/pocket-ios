@@ -8,7 +8,7 @@ import SwiftUI
 import Sync
 import Textile
 
-struct HomeCarouselView: View {
+struct CarouselCard: View {
     let model: HomeCardModel
 
     @Environment(\.carouselWidth)
@@ -41,7 +41,7 @@ struct HomeCarouselView: View {
         VStack(alignment: .leading) {
             makeTopContent()
             Spacer()
-            HomeCardFooterView(
+            CardFooter(
                 model: model,
                 domain: currentItem?.bestDomain,
                 timeToRead: currentItem?.timeToRead,
@@ -59,7 +59,7 @@ struct HomeCarouselView: View {
 }
 
 // MARK: View builders
-private extension HomeCarouselView {
+private extension CarouselCard {
     func makeTopContent() -> some View {
         HStack(alignment: .top) {
             makeTextStack()
@@ -96,7 +96,7 @@ private extension HomeCarouselView {
 }
 
 // MARK: Appearance constants
-private extension HomeCarouselView {
+private extension CarouselCard {
     enum Constants {
         static let thumbnailSize = CGSize(width: 90, height: 60)
         static let cornerRadius: CGFloat = 16

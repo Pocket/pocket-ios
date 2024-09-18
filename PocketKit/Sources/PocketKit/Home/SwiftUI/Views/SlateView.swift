@@ -7,7 +7,7 @@ import SwiftUI
 import Sync
 import SwiftData
 
-struct HomeSlateView: View {
+struct SlateView: View {
     let remoteID: String
     let slateTitle: String?
     let recommendations: [Recommendation]
@@ -29,7 +29,7 @@ struct HomeSlateView: View {
     }
 }
 
-private extension HomeSlateView {
+private extension SlateView {
     /// Determines how many hero cell should be used, depending on the user interface idiom and horizontal size class
     /// - Parameter isWideLayout: true if wide layout should be used
     /// - Returns: the actual number of hero cells

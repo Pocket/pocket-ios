@@ -5,7 +5,7 @@
 import SwiftUI
 import Textile
 
-struct ActionButton: View {
+struct UIKitHomeActionButton: View {
     private var itemAction: ItemAction?
     private var selected: Bool = false
 

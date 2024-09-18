@@ -6,7 +6,7 @@ import SwiftData
 import SwiftUI
 import Sync
 
-struct HomeCarouselSection: View {
+struct Carousel: View {
     let remoteID: String
     let recommendations: [Recommendation]
     let useGrid: Bool
@@ -20,13 +20,13 @@ struct HomeCarouselSection: View {
     }
 }
 
-private extension HomeCarouselSection {
+private extension Carousel {
     func makeCarousel() -> some View {
         ScrollView(.horizontal) {
             LazyHStack(spacing: 16) {
                 ForEach(recommendations) { recommendation in
                     if let item = recommendation.item {
-                        HomeCarouselView(
+                        CarouselCard(
                             model: HomeCardModel(
                                 givenURL: item.givenURL,
                                 imageURL: item.topImageURL
@@ -55,7 +55,7 @@ private extension HomeCarouselSection {
                 GridRow {
                     ForEach(recRow.row) { recommendation in
                         if let item = recommendation.item {
-                            HomeCarouselView(
+                            CarouselCard(
                                 model: HomeCardModel(
                                     givenURL: item.givenURL,
                                     imageURL: item.topImageURL

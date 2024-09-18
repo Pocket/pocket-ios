@@ -9,7 +9,7 @@ import SwiftUI
 import Sync
 import Textile
 
-struct HomeHeroView: View {
+struct HeroCard: View {
     var model: HomeCardModel
 
     @Query var savedItem: [SavedItem]
@@ -39,7 +39,7 @@ struct HomeHeroView: View {
             makeImage()
             makeTextStack()
             Spacer()
-            HomeCardFooterView(
+            CardFooter(
                 model: model,
                 domain: currentItem?.bestDomain,
                 timeToRead: currentItem?.timeToRead,
@@ -57,7 +57,7 @@ struct HomeHeroView: View {
 }
 
 // MARK: View builders
-private extension HomeHeroView {
+private extension HeroCard {
     /// Iimage
     func makeImage() -> some View {
         RemoteImage(url: model.imageURL, imageSize: imageSize)
@@ -104,7 +104,7 @@ private extension HomeHeroView {
 }
 
 // MARK: Appearance constants
-extension HomeHeroView {
+extension HeroCard {
     enum Constants {
         // General
         static let mainVStackSpacing: CGFloat = 16

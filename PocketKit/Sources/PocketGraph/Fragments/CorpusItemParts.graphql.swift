@@ -5,7 +5,7 @@
 
 public struct CorpusItemParts: PocketGraph.SelectionSet, Fragment {
   public static var fragmentDefinition: StaticString {
-    #"fragment CorpusItemParts on CorpusItem { __typename id url title excerpt imageUrl publisher target { __typename ... on SyndicatedArticle { __typename ...SyndicatedArticleParts } ... on Collection { __typename ...CollectionSummary } } }"#
+    #"fragment CorpusItemParts on CorpusItem { __typename id url title timeToRead excerpt imageUrl publisher target { __typename ... on SyndicatedArticle { __typename ...SyndicatedArticleParts } ... on Collection { __typename ...CollectionSummary } } }"#
   }
 
   public let __data: DataDict
@@ -17,6 +17,7 @@ public struct CorpusItemParts: PocketGraph.SelectionSet, Fragment {
     .field("id", PocketGraph.ID.self),
     .field("url", PocketGraph.Url.self),
     .field("title", String.self),
+    .field("timeToRead", Int?.self),
     .field("excerpt", String.self),
     .field("imageUrl", PocketGraph.Url.self),
     .field("publisher", String.self),
@@ -29,6 +30,8 @@ public struct CorpusItemParts: PocketGraph.SelectionSet, Fragment {
   public var url: PocketGraph.Url { __data["url"] }
   /// The title of the Approved Item.
   public var title: String { __data["title"] }
+  /// Time to read in minutes. Is nullable.
+  public var timeToRead: Int? { __data["timeToRead"] }
   /// The excerpt of the Approved Item.
   public var excerpt: String { __data["excerpt"] }
   /// The image URL for this item's accompanying picture.
@@ -42,6 +45,7 @@ public struct CorpusItemParts: PocketGraph.SelectionSet, Fragment {
     id: PocketGraph.ID,
     url: PocketGraph.Url,
     title: String,
+    timeToRead: Int? = nil,
     excerpt: String,
     imageUrl: PocketGraph.Url,
     publisher: String,
@@ -53,6 +57,7 @@ public struct CorpusItemParts: PocketGraph.SelectionSet, Fragment {
         "id": id,
         "url": url,
         "title": title,
+        "timeToRead": timeToRead,
         "excerpt": excerpt,
         "imageUrl": imageUrl,
         "publisher": publisher,
