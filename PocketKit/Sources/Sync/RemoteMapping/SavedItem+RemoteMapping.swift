@@ -68,7 +68,7 @@ extension CDSavedItem {
 
             let givenURL = itemParts.givenUrl
             let itemToUpdate = (try? space.fetchItem(byURL: givenURL, context: context)) ?? CDItem(context: context, givenURL: givenURL, remoteID: itemParts.remoteID)
-            itemToUpdate.update(remote: itemParts, with: space)
+            itemToUpdate.updateIfNeeded(remote: itemParts, with: space)
             if let corpusItem = remote.corpusItem {
                 itemToUpdate.domain = corpusItem.publisher
             }

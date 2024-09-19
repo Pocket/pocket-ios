@@ -2,6 +2,7 @@ fragment CorpusItemParts on CorpusItem {
     id
     url
     title
+    timeToRead
     excerpt
     imageUrl
     publisher

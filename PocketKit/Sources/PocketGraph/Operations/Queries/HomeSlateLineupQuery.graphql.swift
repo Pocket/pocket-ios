@@ -115,6 +115,8 @@ public class HomeSlateLineupQuery: GraphQLQuery {
             public var url: PocketGraph.Url { __data["url"] }
             /// The title of the Approved Item.
             public var title: String { __data["title"] }
+            /// Time to read in minutes. Is nullable.
+            public var timeToRead: Int? { __data["timeToRead"] }
             /// The excerpt of the Approved Item.
             public var excerpt: String { __data["excerpt"] }
             /// The image URL for this item's accompanying picture.

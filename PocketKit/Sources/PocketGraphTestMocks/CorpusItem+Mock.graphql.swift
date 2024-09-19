@@ -15,6 +15,7 @@ public class CorpusItem: MockObject {
     @Field<PocketGraph.Url>("imageUrl") public var imageUrl
     @Field<String>("publisher") public var publisher
     @Field<CorpusTarget>("target") public var target
+    @Field<Int>("timeToRead") public var timeToRead
     @Field<String>("title") public var title
     @Field<PocketGraph.Url>("url") public var url
   }
@@ -27,6 +28,7 @@ public extension Mock where O == CorpusItem {
     imageUrl: PocketGraph.Url? = nil,
     publisher: String? = nil,
     target: AnyMock? = nil,
+    timeToRead: Int? = nil,
     title: String? = nil,
     url: PocketGraph.Url? = nil
   ) {
@@ -36,6 +38,7 @@ public extension Mock where O == CorpusItem {
     _setScalar(imageUrl, for: \.imageUrl)
     _setScalar(publisher, for: \.publisher)
     _setEntity(target, for: \.target)
+    _setScalar(timeToRead, for: \.timeToRead)
     _setScalar(title, for: \.title)
     _setScalar(url, for: \.url)
   }

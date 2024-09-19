@@ -7,13 +7,13 @@ import SwiftUI
 import Sync
 import SwiftData
 
-struct HomeSlateView: View {
+struct SlateView: View {
     let remoteID: String
     let slateTitle: String?
     let recommendations: [Recommendation]
 
-    @Environment(\.horizontalSizeClass)
-    var horizontalSizeClass
+    @Environment(\.useWideLayout)
+    private var useWideLayout
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -21,25 +21,20 @@ struct HomeSlateView: View {
                 if let slateTitle {
                     Text(AttributedString(NSAttributedString(string: slateTitle, style: .homeHeader.sectionHeader)))
                 }
-                HomeHeroSection(remoteID: remoteID, recommendations: heroRecommendations)
+                HeroView(remoteID: remoteID, recommendations: heroRecommendations)
             }
             .padding(EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16))
-            HomeCarouselSection(remoteID: remoteID, recommendations: carouselRecommendations, useGrid: useWideLayout)
+            CarouselView(items: carouselItems, useGrid: useWideLayout)
         }
     }
 }
 
-private extension HomeSlateView {
+private extension SlateView {
     /// Determines how many hero cell should be used, depending on the user interface idiom and horizontal size class
     /// - Parameter isWideLayout: true if wide layout should be used
     /// - Returns: the actual number of hero cells
     static func heroCount(_ useWideLayout: Bool) -> Int {
         useWideLayout ? 2 : 1
-    }
-
-    /// Determines if the wide layout setting should be used
-    var useWideLayout: Bool {
-        horizontalSizeClass == .regular && UIDevice.current.userInterfaceIdiom == .pad
     }
 
     /// Determines how many hero cells should be used
@@ -52,8 +47,13 @@ private extension HomeSlateView {
         Array(recommendations.prefix(upTo: heroCount))
     }
 
-    /// Extract the carousel recommendation
+    /// Extract the carousel recommendations
     var carouselRecommendations: [Recommendation] {
         Array(recommendations.dropFirst(heroCount))
+    }
+
+    /// Items associated to the carousel recommendations
+    var carouselItems: [Item] {
+        carouselRecommendations.compactMap { $0.item }
     }
 }
