@@ -8,7 +8,7 @@ import Textile
 
 /// Two-state action button with an image and an optional title
 /// Typical usage: save/saved, favorite/unfavorite
-struct HomeActionButton: View {
+struct ActionButton: View {
     var isActive: Bool
 
     let activeImage: ImageAsset
@@ -50,7 +50,7 @@ struct HomeActionButton: View {
             EmptyView()
         }
         .buttonStyle(
-            SaveButtonStyle(
+            ActionButtonStyle(
             isActive: isActive,
             activeImage: activeImage,
             inactiveImage: inactiveImage,
@@ -64,7 +64,7 @@ struct HomeActionButton: View {
     }
 }
 
-private struct SaveButtonStyle: ButtonStyle {
+private struct ActionButtonStyle: ButtonStyle {
     var isActive: Bool
 
     let activeImage: ImageAsset

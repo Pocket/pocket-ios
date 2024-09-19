@@ -5,10 +5,10 @@
 import SwiftUI
 import Sync
 
-/// An identifiable type containing a row of recommendations to be used in a `GridRow`
-struct RecommendationsRow: Identifiable {
+/// An identifiable type containing a row of `Item`s to be used in a `GridRow`
+struct ItemsRow: Identifiable {
     let id = UUID()
-    let row: [Recommendation]
+    let row: [Item]
 }
 
 /// Array extension that divides an array into chunks of a predefined size.
@@ -20,13 +20,27 @@ extension Array {
     }
 }
 
-/// Environment value to store the carousel width based on the current `Geometry`
+/// Convenience environment valus
 extension EnvironmentValues {
+    /// Store the carousel width based on the current `Geometry`
     @Entry var carouselWidth: CGFloat = 300
+
+    /// True if the iPad/w regular size should be used
+    @Entry var useWideLayout: Bool = false
 }
 
 extension Item {
     public var bestTitle: String {
-        syndicatedArticle?.title ?? title ?? givenURL
+        validTitle(recommendation?.title) ??
+        validTitle(syndicatedArticle?.title) ??
+        validTitle(title) ??
+        givenURL
+    }
+
+    private func validTitle(_ title: String?) -> String? {
+        guard let title, !title.isEmpty else {
+            return nil
+        }
+        return title
     }
 }

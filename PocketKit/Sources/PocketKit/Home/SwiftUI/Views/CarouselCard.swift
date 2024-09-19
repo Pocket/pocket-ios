@@ -8,7 +8,7 @@ import SwiftUI
 import Sync
 import Textile
 
-struct HomeCarouselView: View {
+struct CarouselCard: View {
     let model: HomeCardModel
 
     @Environment(\.carouselWidth)
@@ -41,7 +41,14 @@ struct HomeCarouselView: View {
         VStack(alignment: .leading) {
             makeTopContent()
             Spacer()
-            makeFooter()
+            CardFooter(
+                model: model,
+                domain: currentItem?.bestDomain,
+                timeToRead: currentItem?.timeToRead,
+                isSaved: currentSavedItem != nil && currentSavedItem?.isArchived == false,
+                isFavorite: currentSavedItem?.isFavorite == true,
+                isSyndicated: currentItem?.isSyndicated == true
+            )
         }
         .padding()
         .background(Color(.ui.homeCellBackground))
@@ -52,7 +59,7 @@ struct HomeCarouselView: View {
 }
 
 // MARK: View builders
-private extension HomeCarouselView {
+private extension CarouselCard {
     func makeTopContent() -> some View {
         HStack(alignment: .top) {
             makeTextStack()
@@ -86,104 +93,10 @@ private extension HomeCarouselView {
             Spacer()
         }
     }
-    // TODO: SWIFTUI - Extract footer in a view since it's basically the same between hero and carousel.
-    /// Footer
-    func makeFooter() -> some View {
-        HStack(alignment: .bottom) {
-            makeFooterDescription()
-            Spacer()
-            HStack(alignment: .center) {
-                makeActionButton()
-                makeOverflowMenu()
-            }
-        }
-    }
-
-    /// Footer description
-    func makeFooterDescription() -> some View {
-        VStack(alignment: .leading, spacing: Constants.stackSpacing) {
-            if let domain = currentItem?.bestDomain {
-                makeDomain(domain)
-                    .style(model.domainStyle)
-                    .lineLimit(Constants.footerElementLineLimit)
-            }
-            if let timeToRead = currentItem?.timeToRead, timeToRead > 0 {
-                Text(model.timeToRead(timeToRead))
-                    .lineLimit(Constants.footerElementLineLimit)
-            }
-        }
-    }
-
-    func makeDomain(_ domain: String) -> Text {
-        if currentItem?.isSyndicated == true {
-            return Text(domain) + Text(" ") + Text(Image(systemName: "checkmark.seal"))
-        } else {
-            return Text(domain)
-        }
-    }
-
-    /// Action button: save/saved and/or favorite
-    @ViewBuilder
-    func makeActionButton() -> some View {
-        HStack(alignment: .bottom) {
-            if let favoriteAction = model.favoriteAction {
-                makeFavoriteButton(handler: favoriteAction.action)
-            }
-            makeSaveButton()
-        }
-    }
-
-    func makeFavoriteButton(handler: @escaping (() -> Void)) -> some View {
-        HomeActionButton(
-            isActive: currentSavedItem?.isFavorite == false,
-            activeImage: .favoriteFilled,
-            inactiveImage: .favorite,
-            highlightedColor: .branding.amber1,
-            activeColor: .branding.amber4,
-            inactiveColor: .ui.grey8
-        ) {
-            handler()
-        }
-        .accessibilityIdentifier("save-button")
-    }
-
-    func makeSaveButton() -> some View {
-        HomeActionButton(
-            isActive: currentSavedItem?.isArchived == false,
-            activeImage: .saved,
-            inactiveImage: .save,
-            activeTitle: Localization.Recommendation.saved,
-            inactiveTitle: Localization.Recommendation.save,
-            highlightedColor: .ui.coral1,
-            activeColor: .ui.coral2
-        ) {
-            model.saveAction(isSaved: currentSavedItem != nil && currentSavedItem?.isArchived == false)
-        }
-        .accessibilityIdentifier("save-button")
-    }
-
-    /// Overflow menu
-    func makeOverflowMenu() -> some View {
-        Menu {
-            ForEach(model.overflowActions, id: \.self) { buttonAction in
-                if let title = buttonAction.title {
-                    Button(action: {
-                        buttonAction.action()
-                    }) {
-                        Text(title)
-                    }
-                }
-            }
-        } label: {
-            Image(systemName: "ellipsis")
-                .foregroundColor(Color(.ui.saveButtonText))
-        }
-        .accessibilityIdentifier("overflow-button")
-    }
 }
 
 // MARK: Appearance constants
-private extension HomeCarouselView {
+private extension CarouselCard {
     enum Constants {
         static let thumbnailSize = CGSize(width: 90, height: 60)
         static let cornerRadius: CGFloat = 16

@@ -862,7 +862,7 @@ extension PocketSource {
                 Log.capture(message: "Could not fetch a background item when fetching details for Recommendations")
                 return false
             }
-            backgroundItem.update(remote: remoteItem, with: space)
+            backgroundItem.updateIfNeeded(remote: remoteItem, with: space)
             try space.save()
 
             return remoteItem.marticle?.isEmpty == false
@@ -902,7 +902,7 @@ extension PocketSource {
                         .fetch(query: ItemByURLQuery(url: url))
                         .data?.itemByUrl?.fragments.itemParts {
                         try viewContext.performAndWait {
-                            item.update(remote: remoteItem, with: space)
+                            item.updateIfNeeded(remote: remoteItem, with: space)
                             try space.save(context: viewContext)
                         }
                     }
@@ -919,7 +919,7 @@ extension PocketSource {
         let context = space.viewContext
         let updatedItem = try context.performAndWait {
             let item = CDItem(context: context, givenURL: remoteItem.givenUrl, remoteID: remoteItem.remoteID)
-            item.update(remote: remoteItem, with: space)
+            item.updateIfNeeded(remote: remoteItem, with: space)
             try space.save(context: context)
             return item
         }
