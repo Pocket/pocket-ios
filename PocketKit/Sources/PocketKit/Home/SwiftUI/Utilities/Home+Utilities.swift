@@ -20,9 +20,13 @@ extension Array {
     }
 }
 
-/// Environment value to store the carousel width based on the current `Geometry`
+/// Convenience environment valus
 extension EnvironmentValues {
+    /// Store the carousel width based on the current `Geometry`
     @Entry var carouselWidth: CGFloat = 300
+
+    /// True if the iPad/w regular size should be used
+    @Entry var useWideLayout: Bool = false
 }
 
 extension Item {

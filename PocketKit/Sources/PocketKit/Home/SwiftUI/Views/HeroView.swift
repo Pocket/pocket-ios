@@ -19,6 +19,7 @@ struct HeroView: View {
     }
 }
 
+// MARK: View builders
 private extension HeroView {
     @ViewBuilder
     func makeHeroCard(_ item: Item) -> some View {
@@ -32,8 +33,8 @@ private extension HeroView {
     }
 
     func makeHeroGrid() -> some View {
-        let items = recommendations.compactMap({ $0.item }).chunked(into: 2).map { ItemsRow(row: $0) }
-        return Grid {
+        let items = recommendations.compactMap({ $0.item }).chunked(into: Self.rowSize).map { ItemsRow(row: $0) }
+        return Grid(horizontalSpacing: Self.defaultSpacing, verticalSpacing: Self.defaultSpacing) {
             ForEach(items) { itemsInRow in
                 GridRow {
                     ForEach(itemsInRow.row) { item in
@@ -43,4 +44,10 @@ private extension HeroView {
             }
         }
     }
+}
+
+// MARK: constants
+private extension HeroView {
+    static let defaultSpacing: CGFloat = 16
+    static let rowSize: Int = 2
 }

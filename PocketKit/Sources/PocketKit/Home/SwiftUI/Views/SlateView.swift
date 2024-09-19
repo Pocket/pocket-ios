@@ -12,8 +12,8 @@ struct SlateView: View {
     let slateTitle: String?
     let recommendations: [Recommendation]
 
-    @Environment(\.horizontalSizeClass)
-    var horizontalSizeClass
+    @Environment(\.useWideLayout)
+    private var useWideLayout
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -35,11 +35,6 @@ private extension SlateView {
     /// - Returns: the actual number of hero cells
     static func heroCount(_ useWideLayout: Bool) -> Int {
         useWideLayout ? 2 : 1
-    }
-
-    /// Determines if the wide layout setting should be used
-    var useWideLayout: Bool {
-        horizontalSizeClass == .regular && UIDevice.current.userInterfaceIdiom == .pad
     }
 
     /// Determines how many hero cells should be used

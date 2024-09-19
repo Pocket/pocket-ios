@@ -47,7 +47,7 @@ private extension CarouselView {
 
     func makeGrid() -> some View {
         let itemsInRow = items.chunked(into: 2).map { ItemsRow(row: $0) }
-        return Grid {
+        return Grid(horizontalSpacing: 16, verticalSpacing: 16) {
             ForEach(itemsInRow) { itemsRow in
                 GridRow {
                     ForEach(itemsRow.row) { item in
