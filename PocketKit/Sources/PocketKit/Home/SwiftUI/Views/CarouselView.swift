@@ -7,7 +7,7 @@ import SwiftUI
 import Sync
 
 struct CarouselView: View {
-    let items: [Item]
+    let cards: [HomeCard]
     let useGrid: Bool
 
     var body: some View {
@@ -19,48 +19,50 @@ struct CarouselView: View {
     }
 }
 
+// MARK: view builders
 private extension CarouselView {
     func makeCarousel() -> some View {
         ScrollView(.horizontal) {
-            LazyHStack(spacing: 16) {
-                ForEach(items) { item in
+            LazyHStack(spacing: Self.defaultSpacing) {
+                ForEach(cards) {
                     CarouselCard(
-                        model: HomeCardModel(
-                            givenURL: item.givenURL,
-                            imageURL: item.topImageURL
-                        )
+                        card: $0
                     )
-                    .padding(.vertical, 16)
+                    .padding(.vertical, Self.defaultSpacing)
                 }
             }
         }
         .scrollIndicators(.hidden)
         .safeAreaInset(edge: .leading) {
             Spacer()
-                .frame(width: 8)
+                .frame(width: Self.carouselInset)
         }
         .safeAreaInset(edge: .trailing) {
             Spacer()
-                .frame(width: 8)
+                .frame(width: Self.carouselInset)
         }
     }
 
     func makeGrid() -> some View {
-        let itemsInRow = items.chunked(into: 2).map { ItemsRow(row: $0) }
-        return Grid(horizontalSpacing: 16, verticalSpacing: 16) {
-            ForEach(itemsInRow) { itemsRow in
+        let itemsRows = cards.chunked(into: 2).map { HomeRow(cards: $0) }
+        return Grid(horizontalSpacing: Self.defaultSpacing, verticalSpacing: Self.defaultSpacing) {
+            ForEach(itemsRows) { itemsRow in
                 GridRow {
-                    ForEach(itemsRow.row) { item in
+                    ForEach(itemsRow.cards) { card in
                         CarouselCard(
-                            model: HomeCardModel(
-                                givenURL: item.givenURL,
-                                imageURL: item.topImageURL
-                            )
+                            card: card
                         )
                     }
                 }
             }
         }
-        .padding(EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16))
+        .padding(Self.gridInsets)
     }
+}
+
+// MARK: constants
+private extension CarouselView {
+    static let defaultSpacing: CGFloat = 16
+    static let carouselInset: CGFloat = 8
+    static let gridInsets = EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16)
 }

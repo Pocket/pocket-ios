@@ -10,7 +10,7 @@ import Sync
 import Textile
 
 struct HeroCard: View {
-    var model: HomeCardModel
+    var card: HomeCard
 
     @Query var savedItem: [SavedItem]
     var currentSavedItem: SavedItem? {
@@ -22,9 +22,9 @@ struct HeroCard: View {
         item.first
     }
 
-    init(model: HomeCardModel) {
-        self.model = model
-        let givenUrl = model.givenURL
+    init(card: HomeCard) {
+        self.card = card
+        let givenUrl = card.givenURL
         var savedItemDescriptor = FetchDescriptor<SavedItem>(predicate: #Predicate<SavedItem> { $0.item?.givenURL == givenUrl })
         savedItemDescriptor.fetchLimit = 1
         _savedItem = Query(savedItemDescriptor, animation: .easeIn)
@@ -40,7 +40,7 @@ struct HeroCard: View {
             makeTextStack()
             Spacer()
             CardFooter(
-                model: model,
+                card: card,
                 domain: currentItem?.bestDomain,
                 timeToRead: currentItem?.timeToRead,
                 isSaved: currentSavedItem != nil && currentSavedItem?.isArchived == false,
@@ -60,7 +60,7 @@ struct HeroCard: View {
 private extension HeroCard {
     /// Iimage
     func makeImage() -> some View {
-        RemoteImage(url: model.imageURL, imageSize: imageSize)
+        RemoteImage(url: card.imageURL, imageSize: imageSize)
             .aspectRatio(Constants.imageAspectRatio, contentMode: .fit)
             .fixedSize(horizontal: false, vertical: true)
             .frame(minWidth: 0, maxWidth: .infinity)
@@ -73,17 +73,17 @@ private extension HeroCard {
         VStack(alignment: .leading, spacing: Constants.textStackSpacing) {
             if currentItem?.isCollection == true {
                 Text(Localization.Constants.collection)
-                    .style(model.collectionStyle)
+                    .style(card.collectionStyle)
                     .accessibilityIdentifier("collection-label")
             }
 
-            Text(currentItem?.bestTitle ?? model.givenURL)
-                .style(model.titleStyle)
+            Text(currentItem?.bestTitle ?? card.givenURL)
+                .style(card.titleStyle)
                 .lineSpacing(Constants.titleLineSpacing)
                 .lineLimit(Constants.numberOfTitleLines)
                 .accessibilityIdentifier("title-label")
 
-            if let excerptText = model.attributedExcerpt {
+            if let excerptText = card.attributedExcerpt {
                 Text(excerptText)
                     .lineLimit(nil)
                     .accessibilityIdentifier("excerpt-text")

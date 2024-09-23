@@ -7,7 +7,7 @@ import SwiftUI
 import Textile
 
 struct CardFooter: View {
-    let model: HomeCardModel
+    let card: HomeCard
     let domain: String?
     let timeToRead: Int32?
     let isSaved: Bool
@@ -38,12 +38,12 @@ private extension CardFooter {
         VStack(alignment: .leading, spacing: Self.stackSpacing) {
             if let domain {
                 makeDomain(domain)
-                    .style(model.domainStyle)
+                    .style(card.domainStyle)
                     .lineLimit(Self.footerElementLineLimit)
                     .accessibilityIdentifier("domain-label")
             }
             if let timeToRead, timeToRead > 0 {
-                Text(model.timeToRead(timeToRead))
+                Text(card.timeToRead(timeToRead))
                     .lineLimit(Self.footerElementLineLimit)
                     .accessibilityIdentifier("time-to-read-label")
             }
@@ -62,7 +62,7 @@ private extension CardFooter {
     @ViewBuilder
     func makeActionButton() -> some View {
         HStack(alignment: .bottom) {
-            if let favoriteAction = model.favoriteAction {
+            if let favoriteAction = card.favoriteAction {
                 makeFavoriteButton(handler: favoriteAction.action)
             }
             makeSaveButton()
@@ -93,7 +93,7 @@ private extension CardFooter {
             highlightedColor: .ui.coral1,
             activeColor: .ui.coral2
         ) {
-            model.saveAction(isSaved: isSaved)
+            card.saveAction(isSaved: isSaved)
         }
         .accessibilityIdentifier("save-button")
     }
@@ -101,7 +101,7 @@ private extension CardFooter {
     /// Overflow menu
     func makeOverflowMenu() -> some View {
         Menu {
-            ForEach(model.overflowActions, id: \.self) { buttonAction in
+            ForEach(card.overflowActions, id: \.self) { buttonAction in
                 if let title = buttonAction.title {
                     Button(action: {
                         buttonAction.action()
