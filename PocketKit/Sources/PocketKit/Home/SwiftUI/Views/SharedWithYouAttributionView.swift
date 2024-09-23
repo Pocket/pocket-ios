@@ -7,7 +7,6 @@ import SwiftUI
 import SharedPocketKit
 
 struct SharedWithYouAttributionView: UIViewRepresentable {
-    @State var isValid: Bool = false
     let url: URL
 
     var attributionView: SWAttributionView?
@@ -24,10 +23,8 @@ struct SharedWithYouAttributionView: UIViewRepresentable {
                 let highlight = try await SWHighlightCenter().highlight(for: url)
                 guard let atttributionView = uiView as? SWAttributionView else { return }
                 atttributionView.highlight = highlight
-                self.isValid = true
             } catch {
                 Log.capture(message: "SWH: item cell configuration - unable to retrieve highlight for url: \(url.absoluteString) - Error: \(error)")
-                self.isValid = false
             }
         }
     }
