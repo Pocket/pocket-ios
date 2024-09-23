@@ -8,11 +8,11 @@ import Sync
 
 struct HeroView: View {
     let remoteID: String
-    let recommendations: [Recommendation]
+    let cards: [HomeCard]
 
     var body: some View {
-        if recommendations.count == 1, let recommendation = recommendations.first, let item = recommendation.item {
-            makeHeroCard(item)
+        if cards.count == 1, let card = cards.first {
+            makeHeroCard(card)
         } else {
             makeHeroGrid()
         }
@@ -21,28 +21,25 @@ struct HeroView: View {
 
 // MARK: View builders
 private extension HeroView {
-    @ViewBuilder
-    func makeHeroCard(_ item: Item) -> some View {
-            HeroCard(
-                model: HomeCardModel(
-                    givenURL: item.givenURL,
-                    imageURL: item.topImageURL,
-                    uselargeTitle: true
-                )
-            )
+    func makeHeroCard(_ card: HomeCard) -> some View {
+        HeroCard(card: card)
     }
 
     func makeHeroGrid() -> some View {
-        let items = recommendations.compactMap({ $0.item }).chunked(into: Self.rowSize).map { ItemsRow(row: $0) }
+        let itemsRows = cards.chunked(into: 2).map { HomeRow(cards: $0) }
+
         return Grid(horizontalSpacing: Self.defaultSpacing, verticalSpacing: Self.defaultSpacing) {
-            ForEach(items) { itemsInRow in
+            ForEach(itemsRows) { itemsRow in
                 GridRow {
-                    ForEach(itemsInRow.row) { item in
-                        makeHeroCard(item)
+                    ForEach(itemsRow.cards) { card in
+                        CarouselCard(
+                            card: card
+                        )
                     }
                 }
             }
         }
+        .padding(Self.gridInsets)
     }
 }
 
@@ -50,4 +47,5 @@ private extension HeroView {
 private extension HeroView {
     static let defaultSpacing: CGFloat = 16
     static let rowSize: Int = 2
+    static let gridInsets = EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16)
 }

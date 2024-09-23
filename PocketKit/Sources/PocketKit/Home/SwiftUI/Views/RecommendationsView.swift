@@ -13,12 +13,14 @@ struct RecommendationsView: View {
     var body: some View {
         VStack(spacing: 32) {
             if !slates.isEmpty {
-                ForEach(slates) { slate in
-                    SlateView(
-                        remoteID: slate.remoteID,
-                        slateTitle: slate.name,
-                        recommendations: slate.homeRecommendations
-                    )
+                ForEach(slates) {
+                    if let recommendations = $0.recommendations, !recommendations.isEmpty {
+                        SlateView(
+                            remoteID: $0.remoteID,
+                            slateTitle: $0.name,
+                            cards: cards(for: recommendations)
+                        )
+                    }
                 }
             } else {
                 // TODO: SWIFTUI - Replace with the lottie animation
@@ -28,13 +30,18 @@ struct RecommendationsView: View {
     }
 }
 
-private extension Slate {
-    var homeRecommendations: [Recommendation] {
-        if let slice = recommendations?
-            .sorted(by: { $0.sortIndex < $1.sortIndex })
-            .prefix(upTo: 6) {
-                return Array(slice)
+private extension RecommendationsView {
+    func cards( for recommendations: [Recommendation]) -> [HomeCard] {
+        recommendations.compactMap {
+            if let item = $0.item {
+                return HomeCard(
+                    givenURL: item.givenURL,
+                    imageURL: item.topImageURL,
+                    sharedWithYouUrlString: nil,
+                    uselargeTitle: false
+                )
             }
-        return []
+            return nil
+        }
     }
 }

@@ -2,43 +2,42 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import Localization
 import SwiftData
 import SwiftUI
 import Sync
 import Textile
+import SharedWithYou
 
-struct RecentSavesView: View {
-    @Query private var savedItems: [SavedItem]
+struct SharedWithYouView: View {
+    @Query private var sharedWithYouItems: [SharedWithYouItem]
 
     init() {
-        let predicate = #Predicate<SavedItem> { $0.isArchived == false && $0.deletedAt == nil }
-        let sortDescriptor = SortDescriptor<SavedItem>(\.createdAt, order: .reverse)
-        var fetchDescriptor = FetchDescriptor<SavedItem>(predicate: predicate, sortBy: [sortDescriptor])
+        let sortDescriptor = SortDescriptor<SharedWithYouItem>(\.sortOrder, order: .forward)
+        var fetchDescriptor = FetchDescriptor<SharedWithYouItem>(sortBy: [sortDescriptor])
         fetchDescriptor.fetchLimit = 5
-        _savedItems = Query(fetchDescriptor, animation: .easeIn)
+        _sharedWithYouItems = Query(fetchDescriptor, animation: .easeIn)
     }
 
     var body: some View {
-        if !carouselCards.isEmpty {
+        if !cards.isEmpty {
             VStack(alignment: .leading, spacing: 0) {
-                Text(Localization.recentSaves)
+                Text(SWHighlightCenter.highlightCollectionTitle)
                     .style(.homeHeader.sectionHeader)
                     .padding(.leading, 16)
-                CarouselView(cards: carouselCards, useGrid: false)
+                CarouselView(cards: cards, useGrid: false)
             }
         }
     }
 }
 
-private extension RecentSavesView {
-    var carouselCards: [HomeCard] {
-        savedItems.compactMap {
+private extension SharedWithYouView {
+    var cards: [HomeCard] {
+        sharedWithYouItems.compactMap {
             if let item = $0.item {
                 return HomeCard(
                     givenURL: item.givenURL,
                     imageURL: item.topImageURL,
-                    sharedWithYouUrlString: nil,
+                    sharedWithYouUrlString: $0.url,
                     uselargeTitle: false
                 )
             }

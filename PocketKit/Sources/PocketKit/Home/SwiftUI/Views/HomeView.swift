@@ -15,6 +15,7 @@ struct HomeView: View {
             ScrollView {
                 VStack(spacing: 32) {
                     RecentSavesView()
+                    SharedWithYouView()
                     RecommendationsView()
                 }
             }
