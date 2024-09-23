@@ -28,7 +28,7 @@ private extension HeroView {
     func makeHeroGrid() -> some View {
         let itemsRows = cards.chunked(into: 2).map { HomeRow(cards: $0) }
 
-        return Grid(horizontalSpacing: 16, verticalSpacing: 16) {
+        return Grid(horizontalSpacing: Self.defaultSpacing, verticalSpacing: Self.defaultSpacing) {
             ForEach(itemsRows) { itemsRow in
                 GridRow {
                     ForEach(itemsRow.cards) { card in
@@ -39,7 +39,7 @@ private extension HeroView {
                 }
             }
         }
-        .padding(EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16))
+        .padding(Self.gridInsets)
     }
 }
 
@@ -47,4 +47,5 @@ private extension HeroView {
 private extension HeroView {
     static let defaultSpacing: CGFloat = 16
     static let rowSize: Int = 2
+    static let gridInsets = EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16)
 }
