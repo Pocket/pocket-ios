@@ -10,7 +10,7 @@ import SwiftData
 struct SlateView: View {
     let remoteID: String
     let slateTitle: String?
-    let recommendations: [Recommendation]
+    let cards: [HomeCard]
 
     @Environment(\.useWideLayout)
     private var useWideLayout
@@ -21,10 +21,10 @@ struct SlateView: View {
                 if let slateTitle {
                     Text(AttributedString(NSAttributedString(string: slateTitle, style: .homeHeader.sectionHeader)))
                 }
-                HeroView(remoteID: remoteID, recommendations: heroRecommendations)
+                HeroView(remoteID: remoteID, cards: herolCards)
             }
             .padding(EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16))
-            CarouselView(items: carouselItems, useGrid: useWideLayout)
+            CarouselView(cards: carouselCards, useGrid: useWideLayout)
         }
     }
 }
@@ -43,17 +43,12 @@ private extension SlateView {
     }
 
     /// Extract the Hero recommendations
-    var heroRecommendations: [Recommendation] {
-        Array(recommendations.prefix(upTo: heroCount))
+    var herolCards: [HomeCard] {
+        Array(cards.prefix(upTo: heroCount))
     }
 
     /// Extract the carousel recommendations
-    var carouselRecommendations: [Recommendation] {
-        Array(recommendations.dropFirst(heroCount))
-    }
-
-    /// Items associated to the carousel recommendations
-    var carouselItems: [Item] {
-        carouselRecommendations.compactMap { $0.item }
+    var carouselCards: [HomeCard] {
+        Array(cards.dropFirst(heroCount))
     }
 }

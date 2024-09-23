@@ -9,9 +9,10 @@ import Textile
 
 // TODO: SWIFTUI - Add analytics
 
-/// Type that holds the configuration of `Hero` and `Carousel` cards
+/// Model for `Hero` and `Carousel` cards
 @MainActor
-struct HomeCardModel {
+struct HomeCard: Identifiable {
+    var id = UUID()
     let givenURL: String
     let overflowActions: [HomeButtonAction]
     let favoriteAction: HomeButtonAction?
@@ -39,7 +40,7 @@ struct HomeCardModel {
 }
 
 // MARK: Actions
-extension HomeCardModel {
+extension HomeCard {
     func saveAction(isSaved: Bool) {
         if isSaved {
             source.archive(from: givenURL)
@@ -50,7 +51,7 @@ extension HomeCardModel {
 }
 
 // MARK: Styler
-extension HomeCardModel {
+extension HomeCard {
     var collectionStyle: Style {
         .recommendation.collection
     }

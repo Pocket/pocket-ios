@@ -7,7 +7,7 @@ import SwiftUI
 import Sync
 
 struct CarouselView: View {
-    let items: [Item]
+    let cards: [HomeCard]
     let useGrid: Bool
 
     var body: some View {
@@ -23,12 +23,9 @@ private extension CarouselView {
     func makeCarousel() -> some View {
         ScrollView(.horizontal) {
             LazyHStack(spacing: 16) {
-                ForEach(items) { item in
+                ForEach(cards) {
                     CarouselCard(
-                        model: HomeCardModel(
-                            givenURL: item.givenURL,
-                            imageURL: item.topImageURL
-                        )
+                        card: $0
                     )
                     .padding(.vertical, 16)
                 }
@@ -46,16 +43,13 @@ private extension CarouselView {
     }
 
     func makeGrid() -> some View {
-        let itemsInRow = items.chunked(into: 2).map { ItemsRow(row: $0) }
+        let itemsRows = cards.chunked(into: 2).map { HomeRow(cards: $0) }
         return Grid(horizontalSpacing: 16, verticalSpacing: 16) {
-            ForEach(itemsInRow) { itemsRow in
+            ForEach(itemsRows) { itemsRow in
                 GridRow {
-                    ForEach(itemsRow.row) { item in
+                    ForEach(itemsRow.cards) { card in
                         CarouselCard(
-                            model: HomeCardModel(
-                                givenURL: item.givenURL,
-                                imageURL: item.topImageURL
-                            )
+                            card: card
                         )
                     }
                 }

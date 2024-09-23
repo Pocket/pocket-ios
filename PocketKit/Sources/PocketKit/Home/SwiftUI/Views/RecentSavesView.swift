@@ -24,13 +24,23 @@ struct RecentSavesView: View {
             Text(Localization.recentSaves)
                 .style(.homeHeader.sectionHeader)
                 .padding(.leading, 16)
-            CarouselView(items: items, useGrid: false)
+            CarouselView(cards: carouselCards, useGrid: false)
         }
     }
 }
 
 private extension RecentSavesView {
-    var items: [Item] {
-        savedItems.compactMap { $0.item }
+    var carouselCards: [HomeCard] {
+        savedItems.compactMap {
+            if let item = $0.item {
+                return HomeCard(
+                    givenURL: item.givenURL,
+                    imageURL: item.topImageURL,
+                    sharedWithYouUrlString: nil,
+                    uselargeTitle: false
+                )
+            }
+            return nil
+        }
     }
 }

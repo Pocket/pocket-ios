@@ -9,7 +9,7 @@ import Sync
 import Textile
 
 struct CarouselCard: View {
-    let model: HomeCardModel
+    let card: HomeCard
 
     @Environment(\.carouselWidth)
     private var carouselWidth
@@ -24,10 +24,10 @@ struct CarouselCard: View {
         item.first
     }
 
-    init(model: HomeCardModel) {
-        self.model = model
+    init(card: HomeCard) {
+        self.card = card
 
-        let givenUrl = model.givenURL
+        let givenUrl = card.givenURL
         var descriptor = FetchDescriptor<SavedItem>(predicate: #Predicate<SavedItem> { $0.item?.givenURL == givenUrl })
         descriptor.fetchLimit = 1
         _savedItem = Query(descriptor, animation: .easeIn)
@@ -42,7 +42,7 @@ struct CarouselCard: View {
             makeTopContent()
             Spacer()
             CardFooter(
-                model: model,
+                card: card,
                 domain: currentItem?.bestDomain,
                 timeToRead: currentItem?.timeToRead,
                 isSaved: currentSavedItem != nil && currentSavedItem?.isArchived == false,
@@ -73,10 +73,10 @@ private extension CarouselCard {
         VStack(alignment: .leading) {
             if currentItem?.isCollection == true {
                 Text(Localization.Constants.collection)
-                    .style(model.collectionStyle)
+                    .style(card.collectionStyle)
             }
-            Text(currentItem?.bestTitle ?? model.givenURL)
-                .style(model.titleStyle)
+            Text(currentItem?.bestTitle ?? card.givenURL)
+                .style(card.titleStyle)
                 .lineSpacing(Constants.titleLineSpacing)
                 .lineLimit(Constants.titleLineLimit)
         }
@@ -85,7 +85,7 @@ private extension CarouselCard {
     /// Thumbnail
     func makeImage() -> some View {
         VStack {
-            RemoteImage(url: model.imageURL, imageSize: Constants.thumbnailSize)
+            RemoteImage(url: card.imageURL, imageSize: Constants.thumbnailSize)
                 .aspectRatio(contentMode: .fit)
                 .frame(width: Constants.thumbnailSize.width, height: Constants.thumbnailSize.height)
                 .clipShape(RoundedRectangle(cornerRadius: Constants.cornerRadius))
