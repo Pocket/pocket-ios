@@ -70,14 +70,14 @@ private extension CarouselCard {
         .shadow(color: Color(.ui.border), radius: Constants.shadowRadius, x: 0, y: 0)
     }
 
-    /// Builds a Shared With You card, which is a general carousel card with an attribution view at the bottom of iy
+    /// Builds a Shared With You card, which is a general carousel card with an attribution view at the bottom
     /// - Returns: the card view with the attribution view
     func makeSharedWithYouCard(_ urlString: String) -> some View {
         VStack {
             makeGeneralCard()
             if let url = URL(string: urlString) {
                 SharedWithYouAttributionView(url: url)
-                    .frame(height: 32)
+                    .frame(height: Constants.sharedWithYouAttributionViewHeight)
             }
         }
     }
@@ -119,17 +119,17 @@ private extension CarouselCard {
 // MARK: Appearance constants
 private extension CarouselCard {
     enum Constants {
-        static let thumbnailSize = CGSize(width: 90, height: 60)
+        // General
         static let cornerRadius: CGFloat = 16
-        static let titleLineLimit = 3
-        static let footerElementLineLimit = 2
-        static let actionButtonImageSize = CGSize(width: 20, height: 20)
-        static let layoutMargins = UIEdgeInsets(top: Margins.normal.rawValue, left: Margins.normal.rawValue, bottom: Margins.normal.rawValue, right: Margins.normal.rawValue)
-        static let stackSpacing: CGFloat = 4
-        static let shadowRadius: CGFloat = 6
-        static let titleLineSpacing: CGFloat = 4
         static var cardHeight: CGFloat {
             min(UIFontMetrics.default.scaledValue(for: 146), 300)
         }
+        static let sharedWithYouAttributionViewHeight: CGFloat = 32
+        static let shadowRadius: CGFloat = 6
+        // Thumbnail
+        static let thumbnailSize = CGSize(width: 90, height: 60)
+        // Title
+        static let titleLineLimit = 3
+        static let titleLineSpacing: CGFloat = 4
     }
 }

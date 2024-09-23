@@ -6,6 +6,7 @@ import SwiftUI
 @preconcurrency import SharedWithYou
 import SharedPocketKit
 
+/// SwiftUI version of a `SWAttributionView`
 struct SharedWithYouAttributionView: UIViewRepresentable {
     let url: URL
 
