@@ -4,6 +4,7 @@
 
 import Foundation
 
+/// Model for a row of cards in a grid
 struct HomeRow: Identifiable {
     var id = UUID()
     let cards: [HomeCard]

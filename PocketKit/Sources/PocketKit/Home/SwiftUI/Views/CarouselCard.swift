@@ -38,6 +38,19 @@ struct CarouselCard: View {
     }
 
     var body: some View {
+        if let url = card.sharedWithYouUrlString {
+            makeSharedWithYouCard(url)
+        } else {
+            makeGeneralCard()
+        }
+    }
+}
+
+// MARK: View builders
+private extension CarouselCard {
+    /// Builds a general purpose card, used for any item in a carousel
+    /// - Returns: the card view
+    func makeGeneralCard() -> some View {
         VStack(alignment: .leading) {
             makeTopContent()
             Spacer()
@@ -56,10 +69,18 @@ struct CarouselCard: View {
         .frame(minWidth: 0, idealWidth: carouselWidth, maxWidth: .infinity, idealHeight: Constants.cardHeight)
         .shadow(color: Color(.ui.border), radius: Constants.shadowRadius, x: 0, y: 0)
     }
-}
 
-// MARK: View builders
-private extension CarouselCard {
+    /// Builds a Shared With You card, which is a general carousel card with an attribution view at the bottom of iy
+    /// - Returns: the card view with the attribution view
+    func makeSharedWithYouCard(_ urlString: String) -> some View {
+        VStack {
+            makeGeneralCard()
+            if let url = URL(string: urlString) {
+                SharedWithYouAttributionView(url: url)
+                    .frame(height: 32)
+            }
+        }
+    }
     func makeTopContent() -> some View {
         HStack(alignment: .top) {
             makeTextStack()

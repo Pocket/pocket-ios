@@ -1,0 +1,34 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+import SwiftUI
+@preconcurrency import SharedWithYou
+import SharedPocketKit
+
+struct SharedWithYouAttributionView: UIViewRepresentable {
+    @State var isValid: Bool = false
+    let url: URL
+
+    var attributionView: SWAttributionView?
+
+    func makeUIView(context: Context) -> UIView {
+        let attributionView = SWAttributionView()
+        attributionView.displayContext = .summary
+        return attributionView
+    }
+
+    func updateUIView(_ uiView: UIView, context: Context) {
+        Task {
+            do {
+                let highlight = try await SWHighlightCenter().highlight(for: url)
+                guard let atttributionView = uiView as? SWAttributionView else { return }
+                atttributionView.highlight = highlight
+                self.isValid = true
+            } catch {
+                Log.capture(message: "SWH: item cell configuration - unable to retrieve highlight for url: \(url.absoluteString) - Error: \(error)")
+                self.isValid = false
+            }
+        }
+    }
+}

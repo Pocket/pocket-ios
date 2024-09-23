@@ -9,15 +9,23 @@ import Textile
 import SharedWithYou
 
 struct SharedWithYouView: View {
-    @Query(sort: \SharedWithYouItem.sortOrder, order: .forward, animation: .easeIn)
-    private var sharedWithYouItems: [SharedWithYouItem]
+    @Query private var sharedWithYouItems: [SharedWithYouItem]
+
+    init() {
+        let sortDescriptor = SortDescriptor<SharedWithYouItem>(\.sortOrder, order: .forward)
+        var fetchDescriptor = FetchDescriptor<SharedWithYouItem>(sortBy: [sortDescriptor])
+        fetchDescriptor.fetchLimit = 5
+        _sharedWithYouItems = Query(fetchDescriptor, animation: .easeIn)
+    }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Text(SWHighlightCenter.highlightCollectionTitle)
-                .style(.homeHeader.sectionHeader)
-                .padding(.leading, 16)
-            CarouselView(cards: cards, useGrid: false)
+        if !cards.isEmpty {
+            VStack(alignment: .leading, spacing: 0) {
+                Text(SWHighlightCenter.highlightCollectionTitle)
+                    .style(.homeHeader.sectionHeader)
+                    .padding(.leading, 16)
+                CarouselView(cards: cards, useGrid: false)
+            }
         }
     }
 }

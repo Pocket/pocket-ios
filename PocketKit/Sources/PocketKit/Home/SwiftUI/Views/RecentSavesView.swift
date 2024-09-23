@@ -20,11 +20,13 @@ struct RecentSavesView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Text(Localization.recentSaves)
-                .style(.homeHeader.sectionHeader)
-                .padding(.leading, 16)
-            CarouselView(cards: carouselCards, useGrid: false)
+        if !carouselCards.isEmpty {
+            VStack(alignment: .leading, spacing: 0) {
+                Text(Localization.recentSaves)
+                    .style(.homeHeader.sectionHeader)
+                    .padding(.leading, 16)
+                CarouselView(cards: carouselCards, useGrid: false)
+            }
         }
     }
 }
