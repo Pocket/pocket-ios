@@ -10,8 +10,6 @@ import SharedPocketKit
 struct SharedWithYouAttributionView: UIViewRepresentable {
     let url: URL
 
-    var attributionView: SWAttributionView?
-
     func makeUIView(context: Context) -> UIView {
         let attributionView = SWAttributionView()
         attributionView.displayContext = .summary
