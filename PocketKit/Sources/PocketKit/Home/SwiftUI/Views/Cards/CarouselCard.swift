@@ -14,6 +14,9 @@ struct CarouselCard: View {
     @Environment(\.carouselWidth)
     private var carouselWidth
 
+    @Environment(HomeCoordinator.self)
+    var coordinator
+
     @Query var savedItem: [SavedItem]
     var currentSavedItem: SavedItem? {
         savedItem.first
@@ -68,6 +71,17 @@ private extension CarouselCard {
         .clipShape(RoundedRectangle(cornerRadius: Constants.cornerRadius))
         .frame(minWidth: 0, idealWidth: carouselWidth, maxWidth: .infinity, idealHeight: Constants.cardHeight)
         .shadow(color: Color(.ui.border), radius: Constants.shadowRadius, x: 0, y: 0)
+        .onTapGesture {
+            if let savedItem = currentSavedItem, let ID = savedItem.remoteID {
+                coordinator.navigateTo(ReadableRoute(.saved(ID)))
+            } else if let syndicatedArticle = currentItem?.syndicatedArticle {
+                coordinator.navigateTo(ReadableRoute(.syndicated(syndicatedArticle.itemID)))
+            } else if let slug = currentItem?.collection?.slug {
+                coordinator.navigateTo(NativeCollectionRoute(slug: slug))
+            } else if let url = URL(string: card.givenURL) {
+                coordinator.path.append(WebViewRoute(url: url))
+            }
+        }
     }
 
     /// Builds a Shared With You card, which is a general carousel card with an attribution view at the bottom
@@ -106,7 +120,7 @@ private extension CarouselCard {
     /// Thumbnail
     func makeImage() -> some View {
         VStack {
-            RemoteImage(url: card.imageURL, imageSize: Constants.thumbnailSize)
+            RemoteImage(url: card.imageURL, imageSize: Constants.thumbnailSize, usePlaceholder: false)
                 .aspectRatio(contentMode: .fit)
                 .frame(width: Constants.thumbnailSize.width, height: Constants.thumbnailSize.height)
                 .clipShape(RoundedRectangle(cornerRadius: Constants.cornerRadius))

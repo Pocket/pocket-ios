@@ -12,7 +12,7 @@ import Textile
 struct RemoteImage: View {
     let url: URL?
     let imageSize: CGSize
-    let usePlaceholder: Bool = true
+    let usePlaceholder: Bool
 
     var body: some View {
         if let url {
@@ -38,6 +38,8 @@ struct RemoteImage: View {
                 .resizable()
         } else if usePlaceholder {
             Color(.ui.grey6)
+        } else {
+            EmptyView()
         }
     }
 }
