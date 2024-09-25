@@ -6,6 +6,8 @@ import SwiftUI
 
 /// SwiftUI version of the `Reader`
 struct ReaderView: UIViewControllerRepresentable {
+    let route: ReadableRoute
+
     func makeUIViewController(context: Context) -> UINavigationController {
         // TODO: SWIFTUI - add implementation
         UINavigationController(rootViewController: UIViewController())

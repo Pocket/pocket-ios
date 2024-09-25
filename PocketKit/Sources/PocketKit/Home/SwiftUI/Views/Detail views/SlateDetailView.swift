@@ -5,6 +5,8 @@
 import SwiftUI
 
 struct SlateDetailView: View {
+    let route: SlateRoute
+
     var body: some View {
         // TODO: SWIFTUI - add implementation.
         Text("This will show recommendations for the selected topic.")

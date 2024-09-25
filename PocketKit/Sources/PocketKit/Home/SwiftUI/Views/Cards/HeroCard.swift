@@ -22,6 +22,9 @@ struct HeroCard: View {
         item.first
     }
 
+    @Environment(HomeCoordinator.self)
+    var coordinator
+
     init(card: HomeCard) {
         self.card = card
         let givenUrl = card.givenURL
@@ -53,6 +56,17 @@ struct HeroCard: View {
         .clipShape(RoundedRectangle(cornerRadius: Constants.cornerRadius))
         .padding(.vertical, Constants.layoutMargins.top)
         .shadow(color: Color(UIColor(.ui.border)), radius: Constants.shadowRadius, x: 0, y: 0)
+        .onTapGesture {
+            if let savedItem = currentSavedItem, let ID = savedItem.remoteID {
+                coordinator.navigateTo(ReadableRoute(.saved(ID)))
+            } else if let syndicatedArticle = currentItem?.syndicatedArticle {
+                coordinator.navigateTo(ReadableRoute(.syndicated(syndicatedArticle.itemID)))
+            } else if let slug = currentItem?.collection?.slug {
+                coordinator.navigateTo(NativeCollectionRoute(slug: slug))
+            } else if let url = URL(string: card.givenURL) {
+                coordinator.path.append(WebViewRoute(url: url))
+            }
+        }
     }
 }
 
@@ -60,7 +74,7 @@ struct HeroCard: View {
 private extension HeroCard {
     /// Iimage
     func makeImage() -> some View {
-        RemoteImage(url: card.imageURL, imageSize: imageSize)
+        RemoteImage(url: card.imageURL, imageSize: imageSize, usePlaceholder: true)
             .aspectRatio(Constants.imageAspectRatio, contentMode: .fit)
             .fixedSize(horizontal: false, vertical: true)
             .frame(minWidth: 0, maxWidth: .infinity)

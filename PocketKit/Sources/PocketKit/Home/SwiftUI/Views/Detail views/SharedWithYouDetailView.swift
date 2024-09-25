@@ -4,11 +4,11 @@
 
 import SwiftUI
 
-struct NativeCollectionView: View {
-    let route: NativeCollectionRoute
+struct SharedWithYouDetailView: View {
+    let route: SharedWithYouRoute
 
     var body: some View {
         // TODO: SWIFTUI - add implementation.
-        Text("This will show the contents of the selected collection.")
+        Text("This will show all Shared With You items.")
     }
 }

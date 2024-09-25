@@ -11,6 +11,9 @@ import SharedWithYou
 struct SharedWithYouView: View {
     @Query private var sharedWithYouItems: [SharedWithYouItem]
 
+    @Environment(HomeCoordinator.self)
+    var coordinator
+
     init() {
         let sortDescriptor = SortDescriptor<SharedWithYouItem>(\.sortOrder, order: .forward)
         var fetchDescriptor = FetchDescriptor<SharedWithYouItem>(sortBy: [sortDescriptor])
@@ -31,6 +34,29 @@ struct SharedWithYouView: View {
 }
 
 private extension SharedWithYouView {
+    func makeHeader(_ title: String) -> some View {
+        HStack {
+            Text(title)
+                .style(.homeHeader.sectionHeader)
+            Spacer()
+            Button(action: {
+                coordinator.navigateTo(SharedWithYouRoute(title: title))
+            }) {
+                HStack {
+                    Text(SWHighlightCenter.highlightCollectionTitle)
+                        .style(.homeHeader.buttonText)
+                    Image(asset: .chevronRight)
+                        .resizable()
+                        .renderingMode(.template)
+                        .foregroundColor(Color(.ui.teal2))
+                        .frame(width: 6.75, height: 12)
+                }
+            }
+        }
+        .padding(.leading, 16)
+        .padding(.trailing, 16)
+    }
+
     var cards: [HomeCard] {
         sharedWithYouItems.compactMap {
             if let item = $0.item {

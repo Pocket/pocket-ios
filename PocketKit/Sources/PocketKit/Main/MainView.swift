@@ -60,7 +60,7 @@ public struct MainView: View {
             }
             .accessibilityIdentifier("account-tab-bar-button")
             .tag(MainViewModel.AppSection.account)
-            HomeView()
+            HomeRootView()
                 .navigationViewStyle(.stack)
                 .background(Color(.ui.white1))
                 .tabBarHeightOffset { offset in tabBarHeightOffset = offset }
@@ -89,5 +89,7 @@ public struct MainView: View {
                 }
             }
         }
+        // TODO: SWIFTUI - This is used for tab navigation purposes only, will change as we re-architect the app.
+        .environmentObject(model)
     }
 }
