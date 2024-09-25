@@ -2,7 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import Foundation
+import Localization
 import SwiftUI
 import Sync
 import SwiftData
@@ -15,11 +15,14 @@ struct SlateView: View {
     @Environment(\.useWideLayout)
     private var useWideLayout
 
+    @Environment(HomeCoordinator.self)
+    var coordinator
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             VStack(alignment: .leading, spacing: 16) {
                 if let slateTitle {
-                    Text(AttributedString(NSAttributedString(string: slateTitle, style: .homeHeader.sectionHeader)))
+                    makeHeader(slateTitle)
                 }
                 HeroView(remoteID: remoteID, cards: herolCards)
             }
@@ -30,6 +33,12 @@ struct SlateView: View {
 }
 
 private extension SlateView {
+    func makeHeader(_ title: String) -> some View {
+        SectionHeader(title: title) {
+            coordinator.navigateTo(SlateRoute(slateID: remoteID))
+        }
+    }
+
     /// Determines how many hero cell should be used, depending on the user interface idiom and horizontal size class
     /// - Parameter isWideLayout: true if wide layout should be used
     /// - Returns: the actual number of hero cells
