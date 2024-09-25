@@ -2,6 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import Localization
 import SwiftData
 import SwiftUI
 import Sync
@@ -24,9 +25,7 @@ struct SharedWithYouView: View {
     var body: some View {
         if !cards.isEmpty {
             VStack(alignment: .leading, spacing: 0) {
-                Text(SWHighlightCenter.highlightCollectionTitle)
-                    .style(.homeHeader.sectionHeader)
-                    .padding(.leading, 16)
+                makeHeader(SWHighlightCenter.highlightCollectionTitle)
                 CarouselView(cards: cards, useGrid: false)
             }
         }
@@ -35,23 +34,8 @@ struct SharedWithYouView: View {
 
 private extension SharedWithYouView {
     func makeHeader(_ title: String) -> some View {
-        HStack {
-            Text(title)
-                .style(.homeHeader.sectionHeader)
-            Spacer()
-            Button(action: {
-                coordinator.navigateTo(SharedWithYouRoute(title: title))
-            }) {
-                HStack {
-                    Text(SWHighlightCenter.highlightCollectionTitle)
-                        .style(.homeHeader.buttonText)
-                    Image(asset: .chevronRight)
-                        .resizable()
-                        .renderingMode(.template)
-                        .foregroundColor(Color(.ui.teal2))
-                        .frame(width: 6.75, height: 12)
-                }
-            }
+        SectionHeader(title: title) {
+            coordinator.navigateTo(SharedWithYouRoute(title: title))
         }
         .padding(.leading, 16)
         .padding(.trailing, 16)

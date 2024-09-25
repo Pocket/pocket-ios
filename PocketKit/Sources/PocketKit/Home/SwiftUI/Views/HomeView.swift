@@ -14,7 +14,7 @@ struct HomeView: View {
     var body: some View {
         GeometryReader { proxy in
             ScrollView(.vertical) {
-                VStack(spacing: 32) {
+                LazyVStack(spacing: 32) {
                     RecentSavesView()
                     SharedWithYouView()
                     RecommendationsView()

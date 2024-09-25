@@ -34,23 +34,8 @@ struct SlateView: View {
 
 private extension SlateView {
     func makeHeader(_ title: String) -> some View {
-        HStack {
-            Text(title)
-                .style(.homeHeader.sectionHeader)
-            Spacer()
-            Button(action: {
-                coordinator.navigateTo(SlateRoute(slateID: remoteID))
-            }) {
-                HStack {
-                    Text(Localization.seeAll)
-                        .style(.homeHeader.buttonText)
-                    Image(asset: .chevronRight)
-                        .resizable()
-                        .renderingMode(.template)
-                        .foregroundColor(Color(.ui.teal2))
-                        .frame(width: 6.75, height: 12)
-                }
-            }
+        SectionHeader(title: title) {
+            coordinator.navigateTo(SlateRoute(slateID: remoteID))
         }
     }
 

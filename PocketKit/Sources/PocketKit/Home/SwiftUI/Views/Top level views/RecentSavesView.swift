@@ -32,27 +32,13 @@ struct RecentSavesView: View {
 
 private extension RecentSavesView {
     func makeHeader() -> some View {
-        HStack {
-            Text(Localization.recentSaves)
-                .style(.homeHeader.sectionHeader)
-            Spacer()
-            Button(action: {
-                mainViewModel.selectedSection = .saves
-            }) {
-                HStack {
-                    Text(Localization.seeAll)
-                        .style(.homeHeader.buttonText)
-                    Image(asset: .chevronRight)
-                        .resizable()
-                        .renderingMode(.template)
-                        .foregroundColor(Color(.ui.teal2))
-                        .frame(width: 6.75, height: 12)
-                }
-            }
+        SectionHeader(title: Localization.recentSaves) {
+            mainViewModel.selectedSection = .saves
         }
         .padding(.leading, 16)
         .padding(.trailing, 16)
     }
+
     var carouselCards: [HomeCard] {
         savedItems.compactMap {
             if let item = $0.item {
