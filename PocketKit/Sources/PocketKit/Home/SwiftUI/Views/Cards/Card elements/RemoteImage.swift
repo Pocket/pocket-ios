@@ -32,7 +32,6 @@ struct RemoteImage: View {
                         )
                     )
                 )
-                .callbackQueue(.dispatch(.global(qos: .userInteractive)))
                 .backgroundDecode()
                 .scaleFactor(UIScreen.main.scale)
                 .resizable()
