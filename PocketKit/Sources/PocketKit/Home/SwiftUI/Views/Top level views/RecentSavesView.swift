@@ -10,6 +10,7 @@ import Textile
 
 struct RecentSavesView: View {
     @Query private var savedItems: [SavedItem]
+    @EnvironmentObject private var mainViewModel: MainViewModel
 
     init() {
         let predicate = #Predicate<SavedItem> { $0.isArchived == false && $0.deletedAt == nil }
@@ -22,9 +23,7 @@ struct RecentSavesView: View {
     var body: some View {
         if !carouselCards.isEmpty {
             VStack(alignment: .leading, spacing: 0) {
-                Text(Localization.recentSaves)
-                    .style(.homeHeader.sectionHeader)
-                    .padding(.leading, 16)
+                makeHeader()
                 CarouselView(cards: carouselCards, useGrid: false)
             }
         }
@@ -32,6 +31,14 @@ struct RecentSavesView: View {
 }
 
 private extension RecentSavesView {
+    func makeHeader() -> some View {
+        SectionHeader(title: Localization.recentSaves) {
+            mainViewModel.selectedSection = .saves
+        }
+        .padding(.leading, 16)
+        .padding(.trailing, 16)
+    }
+
     var carouselCards: [HomeCard] {
         savedItems.compactMap {
             if let item = $0.item {
