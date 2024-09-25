@@ -18,6 +18,7 @@ struct HomeRootView: View {
                 .navigationDestination(for: NativeCollectionRoute.self) { NativeCollectionView(route: $0) }
                 .navigationDestination(for: ReadableRoute.self) { ReaderView(route: $0) }
                 .navigationDestination(for: SlateRoute.self) { SlateDetailView(route: $0) }
+                .navigationDestination(for: SharedWithYouRoute.self) { SharedWithYouDetailView(route: $0) }
         }
         .environment(homeCoordinator)
         .onChange(of: scenePhase) { _, newValue in
