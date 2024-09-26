@@ -32,7 +32,7 @@ private extension HeroView {
             ForEach(itemsRows) { itemsRow in
                 GridRow {
                     ForEach(itemsRow.cards) { card in
-                        CarouselCard(
+                        HeroCard(
                             card: card
                         )
                     }
@@ -47,5 +47,5 @@ private extension HeroView {
 private extension HeroView {
     static let defaultSpacing: CGFloat = 16
     static let rowSize: Int = 2
-    static let gridInsets = EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16)
+    static let gridInsets = EdgeInsets(top: 16, leading: 0, bottom: 0, trailing: 0)
 }

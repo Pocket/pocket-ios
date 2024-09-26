@@ -22,7 +22,7 @@ struct RecentSavesView: View {
 
     var body: some View {
         if !carouselCards.isEmpty {
-            VStack(alignment: .leading, spacing: 0) {
+            LazyVStack(alignment: .leading, spacing: 0) {
                 makeHeader()
                 CarouselView(cards: carouselCards, useGrid: false)
             }

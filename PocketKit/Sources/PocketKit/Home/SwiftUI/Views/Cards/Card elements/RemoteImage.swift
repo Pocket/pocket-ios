@@ -17,9 +17,13 @@ struct RemoteImage: View {
     var body: some View {
         if let url {
             KFImage(url)
-                .placeholder {
-                    ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle(tint: Color(.ui.grey4)))
+                .placeholder { progress in
+                    if !progress.isFinished && !progress.isCancelled && !progress.isIndeterminate {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: Color(.ui.grey4)))
+                    } else {
+                        EmptyView()
+                    }
                 }
                 .setProcessor(
                     ResizingImageProcessor(
