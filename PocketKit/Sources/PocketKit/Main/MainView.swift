@@ -62,7 +62,6 @@ public struct MainView: View {
             .tag(MainViewModel.AppSection.account)
             HomeRootView()
                 .navigationViewStyle(.stack)
-                .background(Color(.ui.white1))
                 .tabBarHeightOffset { offset in tabBarHeightOffset = offset }
                 .tabItem {
                     if model.selectedSection == .newHome {

@@ -17,7 +17,7 @@ struct SharedWithYouAttributionView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: UIView, context: Context) {
-        Task {
+        Task { @MainActor in
             do {
                 let highlight = try await SWHighlightCenter().highlight(for: url)
                 guard let atttributionView = uiView as? SWAttributionView else { return }

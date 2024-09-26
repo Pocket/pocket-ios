@@ -17,27 +17,25 @@ struct CarouselCard: View {
     @Environment(HomeCoordinator.self)
     var coordinator
 
-    @Query var savedItem: [SavedItem]
-    var currentSavedItem: SavedItem? {
-        savedItem.first
+    @State private var presentWebView: Bool = false
+
+    @Query private var items: [Item]
+
+    private var item: Item? {
+        items.first
     }
 
-    @Query var item: [Item]
-    var currentItem: Item? {
-        item.first
+    private var savedItem: SavedItem? {
+        item?.savedItem
     }
 
     init(card: HomeCard) {
         self.card = card
 
         let givenUrl = card.givenURL
-        var descriptor = FetchDescriptor<SavedItem>(predicate: #Predicate<SavedItem> { $0.item?.givenURL == givenUrl })
-        descriptor.fetchLimit = 1
-        _savedItem = Query(descriptor, animation: .easeIn)
-
         var itemDescriptor = FetchDescriptor<Item>(predicate: #Predicate<Item> { $0.givenURL == givenUrl })
         itemDescriptor.fetchLimit = 1
-        _item = Query(itemDescriptor, animation: .easeIn)
+        _items = Query(itemDescriptor, animation: .easeIn)
     }
 
     var body: some View {
@@ -59,11 +57,11 @@ private extension CarouselCard {
             Spacer()
             CardFooter(
                 card: card,
-                domain: currentItem?.bestDomain,
-                timeToRead: currentItem?.timeToRead,
-                isSaved: currentSavedItem != nil && currentSavedItem?.isArchived == false,
-                isFavorite: currentSavedItem?.isFavorite == true,
-                isSyndicated: currentItem?.isSyndicated == true
+                domain: item?.bestDomain,
+                timeToRead: item?.timeToRead,
+                isSaved: savedItem != nil && savedItem?.isArchived == false,
+                isFavorite: savedItem?.isFavorite == true,
+                isSyndicated: item?.isSyndicated == true
             )
         }
         .padding()
@@ -71,15 +69,19 @@ private extension CarouselCard {
         .clipShape(RoundedRectangle(cornerRadius: Constants.cornerRadius))
         .frame(minWidth: 0, idealWidth: carouselWidth, maxWidth: .infinity, idealHeight: Constants.cardHeight)
         .shadow(color: Color(.ui.border), radius: Constants.shadowRadius, x: 0, y: 0)
+        .fullScreenCover(isPresented: $presentWebView) {
+            SFSafariView(url: URL(string: card.givenURL)!)
+                .ignoresSafeArea(.all)
+        }
         .onTapGesture {
-            if let savedItem = currentSavedItem, let ID = savedItem.remoteID {
+            if let savedItem = savedItem, let ID = savedItem.remoteID {
                 coordinator.navigateTo(ReadableRoute(.saved(ID)))
-            } else if let syndicatedArticle = currentItem?.syndicatedArticle {
+            } else if let syndicatedArticle = item?.syndicatedArticle {
                 coordinator.navigateTo(ReadableRoute(.syndicated(syndicatedArticle.itemID)))
-            } else if let slug = currentItem?.collection?.slug {
+            } else if let slug = item?.collection?.slug {
                 coordinator.navigateTo(NativeCollectionRoute(slug: slug))
-            } else if let url = URL(string: card.givenURL) {
-                coordinator.path.append(WebViewRoute(url: url))
+            } else if URL(string: card.givenURL) != nil {
+                presentWebView = true
             }
         }
     }
@@ -106,11 +108,11 @@ private extension CarouselCard {
     /// Text stack
     func makeTextStack() -> some View {
         VStack(alignment: .leading) {
-            if currentItem?.isCollection == true {
+            if item?.isCollection == true {
                 Text(Localization.Constants.collection)
                     .style(card.collectionStyle)
             }
-            Text(currentItem?.bestTitle ?? card.givenURL)
+            Text(item?.bestTitle ?? card.givenURL)
                 .style(card.titleStyle)
                 .lineSpacing(Constants.titleLineSpacing)
                 .lineLimit(Constants.titleLineLimit)

@@ -32,7 +32,10 @@ struct RecommendationsView: View {
 
 private extension RecommendationsView {
     func cards( for recommendations: [Recommendation]) -> [HomeCard] {
-        recommendations.sorted(by: { $0.sortIndex < $1.sortIndex }).compactMap {
+        recommendations
+            .sorted(by: { $0.sortIndex < $1.sortIndex })
+            .prefix(6)
+            .compactMap {
             if let item = $0.item {
                 return HomeCard(
                     givenURL: item.givenURL,
