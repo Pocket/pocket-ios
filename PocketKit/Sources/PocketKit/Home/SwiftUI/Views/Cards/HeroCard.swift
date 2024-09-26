@@ -12,29 +12,26 @@ import Textile
 struct HeroCard: View {
     var card: HomeCard
 
-    @Query var savedItem: [SavedItem]
-    var currentSavedItem: SavedItem? {
-        savedItem.first
+    @Query var items: [Item]
+    var item: Item? {
+        items.first
     }
 
-    @Query var item: [Item]
-    var currentItem: Item? {
-        item.first
+    var savedItem: SavedItem? {
+        item?.savedItem
     }
 
     @Environment(HomeCoordinator.self)
     var coordinator
 
+    @State private var presentWebView: Bool = false
+
     init(card: HomeCard) {
         self.card = card
         let givenUrl = card.givenURL
-        var savedItemDescriptor = FetchDescriptor<SavedItem>(predicate: #Predicate<SavedItem> { $0.item?.givenURL == givenUrl })
-        savedItemDescriptor.fetchLimit = 1
-        _savedItem = Query(savedItemDescriptor, animation: .easeIn)
-
         var itemDescriptor = FetchDescriptor<Item>(predicate: #Predicate<Item> { $0.givenURL == givenUrl })
         itemDescriptor.fetchLimit = 1
-        _item = Query(itemDescriptor, animation: .easeIn)
+        _items = Query(itemDescriptor, animation: .easeIn)
     }
 
     var body: some View {
@@ -44,11 +41,11 @@ struct HeroCard: View {
             Spacer()
             CardFooter(
                 card: card,
-                domain: currentItem?.bestDomain,
-                timeToRead: currentItem?.timeToRead,
-                isSaved: currentSavedItem != nil && currentSavedItem?.isArchived == false,
-                isFavorite: currentSavedItem?.isFavorite == true,
-                isSyndicated: currentItem?.isSyndicated == true
+                domain: item?.bestDomain,
+                timeToRead: item?.timeToRead,
+                isSaved: savedItem != nil && savedItem?.isArchived == false,
+                isFavorite: savedItem?.isFavorite == true,
+                isSyndicated: item?.isSyndicated == true
             )
             .padding(Constants.footerPadding)
         }
@@ -56,15 +53,19 @@ struct HeroCard: View {
         .clipShape(RoundedRectangle(cornerRadius: Constants.cornerRadius))
         .padding(.vertical, Constants.layoutMargins.top)
         .shadow(color: Color(UIColor(.ui.border)), radius: Constants.shadowRadius, x: 0, y: 0)
+        .fullScreenCover(isPresented: $presentWebView) {
+            SFSafariView(url: URL(string: card.givenURL)!)
+                .ignoresSafeArea(.all)
+        }
         .onTapGesture {
-            if let savedItem = currentSavedItem, let ID = savedItem.remoteID {
+            if let savedItem = savedItem, let ID = savedItem.remoteID {
                 coordinator.navigateTo(ReadableRoute(.saved(ID)))
-            } else if let syndicatedArticle = currentItem?.syndicatedArticle {
+            } else if let syndicatedArticle = item?.syndicatedArticle {
                 coordinator.navigateTo(ReadableRoute(.syndicated(syndicatedArticle.itemID)))
-            } else if let slug = currentItem?.collection?.slug {
+            } else if let slug = item?.collection?.slug {
                 coordinator.navigateTo(NativeCollectionRoute(slug: slug))
-            } else if let url = URL(string: card.givenURL) {
-                coordinator.path.append(WebViewRoute(url: url))
+            } else if URL(string: card.givenURL) != nil {
+                presentWebView = true
             }
         }
     }
@@ -85,13 +86,13 @@ private extension HeroCard {
     /// Text content of the Hero View
     func makeTextStack() -> some View {
         VStack(alignment: .leading, spacing: Constants.textStackSpacing) {
-            if currentItem?.isCollection == true {
+            if item?.isCollection == true {
                 Text(Localization.Constants.collection)
                     .style(card.collectionStyle)
                     .accessibilityIdentifier("collection-label")
             }
 
-            Text(currentItem?.bestTitle ?? card.givenURL)
+            Text(item?.bestTitle ?? card.givenURL)
                 .style(card.titleStyle)
                 .lineSpacing(Constants.titleLineSpacing)
                 .lineLimit(Constants.numberOfTitleLines)
