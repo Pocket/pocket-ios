@@ -3,7 +3,6 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import Localization
-import Kingfisher
 import SwiftData
 import SwiftUI
 import Sync
@@ -12,19 +11,20 @@ import Textile
 struct HeroCard: View {
     var card: HomeCard
 
-    @Query var items: [Item]
-    var item: Item? {
+    @Environment(HomeCoordinator.self)
+    private var coordinator
+
+    @State private var presentWebView: Bool = false
+
+    @Query private var items: [Item]
+
+    private var item: Item? {
         items.first
     }
 
-    var savedItem: SavedItem? {
+    private var savedItem: SavedItem? {
         item?.savedItem
     }
-
-    @Environment(HomeCoordinator.self)
-    var coordinator
-
-    @State private var presentWebView: Bool = false
 
     init(card: HomeCard) {
         self.card = card

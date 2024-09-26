@@ -17,17 +17,17 @@ struct CarouselCard: View {
     @Environment(HomeCoordinator.self)
     var coordinator
 
-    @Query var items: [Item]
+    @State private var presentWebView: Bool = false
 
-    var item: Item? {
+    @Query private var items: [Item]
+
+    private var item: Item? {
         items.first
     }
 
-    var savedItem: SavedItem? {
+    private var savedItem: SavedItem? {
         item?.savedItem
     }
-
-    @State private var presentWebView: Bool = false
 
     init(card: HomeCard) {
         self.card = card
