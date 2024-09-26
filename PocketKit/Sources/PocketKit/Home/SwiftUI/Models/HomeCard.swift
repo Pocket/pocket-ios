@@ -9,7 +9,7 @@ import Textile
 
 // TODO: SWIFTUI - Add analytics
 
-/// Model for `Hero` and `Carousel` cards
+/// Representation of an `Item` suitable for being displayed in a `Hero` or a `Carousel` card.
 @MainActor
 struct HomeCard: Identifiable {
     var id = UUID()
