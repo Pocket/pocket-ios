@@ -66,15 +66,12 @@ private extension RecentSavesView {
 
     var proposedCards: [HomeCard] {
         savedItems.compactMap {
-            if let item = $0.item {
-                return HomeCard(
-                    givenURL: item.givenURL,
-                    imageURL: item.topImageURL,
-                    sharedWithYouUrlString: nil,
-                    uselargeTitle: false
-                )
-            }
-            return nil
+            HomeCard(
+                givenURL: $0.item?.givenURL ?? $0.url,
+                imageURL: $0.item?.topImageURL,
+                sharedWithYouUrlString: nil,
+                uselargeTitle: false
+            )
         }
     }
 }
