@@ -11,7 +11,13 @@ import Textile
 
 /// Representation of an `Item` suitable for being displayed in a `Hero` or a `Carousel` card.
 @MainActor
-struct HomeCard: Identifiable {
+struct HomeCard: Identifiable, @preconcurrency Equatable {
+    static func == (lhs: HomeCard, rhs: HomeCard) -> Bool {
+        lhs.givenURL == rhs.givenURL &&
+        lhs.imageURL == rhs.imageURL &&
+        lhs.sharedWithYouUrlString == rhs.sharedWithYouUrlString
+    }
+
     var id = UUID()
     let givenURL: String
     let overflowActions: [HomeButtonAction]
