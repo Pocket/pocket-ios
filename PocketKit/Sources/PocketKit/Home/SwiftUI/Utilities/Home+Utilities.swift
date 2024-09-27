@@ -25,9 +25,9 @@ extension EnvironmentValues {
 
 extension Item {
     public var bestTitle: String {
-        validTitle(recommendation?.title) ??
         validTitle(syndicatedArticle?.title) ??
         validTitle(title) ??
+        validTitle(recommendation?.title) ??
         givenURL
     }
 
