@@ -62,14 +62,16 @@ private extension CardFooter {
     @ViewBuilder
     func makeActionButton() -> some View {
         HStack(alignment: .bottom) {
-            if let favoriteAction = card.favoriteAction {
-                makeFavoriteButton(handler: favoriteAction.action)
+            if card.enableFavoriteAction {
+                makeFavoriteButton()
             }
-            makeSaveButton()
+            if card.enableSaveAction {
+                makeSaveButton()
+            }
         }
     }
 
-    func makeFavoriteButton(handler: @escaping (() -> Void)) -> some View {
+    func makeFavoriteButton() -> some View {
         ActionButton(
             isActive: isFavorite,
             activeImage: .favoriteFilled,
@@ -78,9 +80,9 @@ private extension CardFooter {
             activeColor: .branding.amber4,
             inactiveColor: .ui.grey8
         ) {
-            handler()
+            card.favoriteAction(isFavorite: isFavorite, givenURL: card.givenURL)
         }
-        .accessibilityIdentifier("save-button")
+        .accessibilityIdentifier("favorite-button")
     }
 
     func makeSaveButton() -> some View {
