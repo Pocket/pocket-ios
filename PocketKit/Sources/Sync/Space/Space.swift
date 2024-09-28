@@ -293,10 +293,6 @@ extension Space {
         return try fetch(Requests.fetchSavedItem(byURL: url), context: context).first
     }
 
-    func fetchSavedItem(byURL url: String) throws -> CDSavedItem? {
-        return try fetch(Requests.fetchSavedItem(byURL: url)).first
-    }
-
     func fetchSavedItems(bySearchTerm searchTerm: String, userPremium isPremium: Bool) throws -> [CDSavedItem]? {
         return try fetch(Requests.fetchSavedItems(bySearchTerm: searchTerm, userPremium: isPremium))
     }

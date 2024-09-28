@@ -52,7 +52,11 @@ public protocol Source {
 
     func favorite(item: CDSavedItem)
 
+    func favorite(_ givenURL: String)
+
     func unfavorite(item: CDSavedItem)
+
+    func unFavorite(_ givenURL: String)
 
     func delete(item: CDSavedItem)
 

@@ -25,8 +25,10 @@ struct HomeCard: Identifiable, @preconcurrency Equatable {
     var imageURL: URL?
     var sharedWithYouUrlString: String?
     let useLargeTitle: Bool
-    // TODO: SWIFTUI - Once we are fully migrated to SwiftUI, this should come from the environment.
-    private let source = Services.shared.source
+
+    // actions configuration
+    let enableSaveAction: Bool
+    let enableFavoriteAction: Bool
 
     init(
         givenURL: String,
@@ -34,7 +36,9 @@ struct HomeCard: Identifiable, @preconcurrency Equatable {
         favoriteAction: HomeButtonAction? = nil,
         imageURL: URL?,
         sharedWithYouUrlString: String? = nil,
-        uselargeTitle: Bool = false
+        uselargeTitle: Bool = false,
+        enableSaveAction: Bool = false,
+        enableFavoriteAction: Bool = false
     ) {
         self.givenURL = givenURL
         self.overflowActions = overflowActions
@@ -42,16 +46,30 @@ struct HomeCard: Identifiable, @preconcurrency Equatable {
         self.imageURL = imageURL
         self.sharedWithYouUrlString = sharedWithYouUrlString
         self.useLargeTitle = uselargeTitle
+        self.enableSaveAction = enableSaveAction
+        self.enableFavoriteAction = enableFavoriteAction
     }
 }
 
 // MARK: Actions
 extension HomeCard {
     func saveAction(isSaved: Bool) {
+        // TODO: SWIFTUI - Once we are fully migrated to SwiftUI, this should come from the environment.
+        let source = Services.shared.source
         if isSaved {
             source.archive(from: givenURL)
         } else {
             source.save(from: givenURL)
+        }
+    }
+
+    func favoriteAction(isFavorite: Bool, givenURL: String) {
+        // TODO: SWIFTUI - Once we are fully migrated to SwiftUI, this should come from the environment.
+        let source = Services.shared.source
+        if isFavorite {
+            source.unFavorite(givenURL)
+        } else {
+            source.favorite(givenURL)
         }
     }
 }

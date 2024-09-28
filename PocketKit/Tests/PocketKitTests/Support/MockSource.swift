@@ -12,6 +12,10 @@ class MockSource: Source {
 
     func save(from givenURL: String) {}
 
+    func favorite(_ givenURL: String) {}
+
+    func unFavorite(_ givenURL: String) {}
+
     func readerItem(by slug: String) async throws -> (Sync.CDSavedItem?, Sync.CDItem?) {
         return (nil, nil)
     }
