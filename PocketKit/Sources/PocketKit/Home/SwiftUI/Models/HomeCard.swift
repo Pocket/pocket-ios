@@ -63,8 +63,10 @@ struct HomeCard: Identifiable, @preconcurrency Equatable {
 
 // MARK: Actions
 extension HomeCard {
+    // TODO: SWIFTUI - the following methods use a reference to Services that only lives in their scope.
+    // This is on purpose since we do not want to keep a reference in the model, and once we are fully
+    // migrated to SwiftUI we will likely leverage the environment for dependency injection.
     func saveAction(isSaved: Bool) {
-        // TODO: SWIFTUI - Once we are fully migrated to SwiftUI, this should come from the environment.
         let source = Services.shared.source
         if isSaved {
             source.archive(from: givenURL)
@@ -74,15 +76,16 @@ extension HomeCard {
     }
 
     func archiveAction() {
-        // TODO: SWIFTUI - add implementation
+        let source = Services.shared.source
+        source.archive(from: givenURL)
     }
 
     func deleteAction() {
-        // TODO: SWIFTUI - add implementation
+        let source = Services.shared.source
+        source.delete(from: givenURL)
     }
 
     func favoriteAction(isFavorite: Bool, givenURL: String) {
-        // TODO: SWIFTUI - Once we are fully migrated to SwiftUI, this should come from the environment.
         let source = Services.shared.source
         if isFavorite {
             source.unFavorite(givenURL)
@@ -92,7 +95,6 @@ extension HomeCard {
     }
 
     func shareableUrl() async -> String? {
-        // TODO: SWIFTUI - Once we are fully migrated to SwiftUI, this should come from the environment.
         let source = Services.shared.source
         if let shareURL {
             return shareURL
