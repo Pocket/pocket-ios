@@ -61,7 +61,8 @@ private extension CarouselCard {
                 timeToRead: item?.timeToRead,
                 isSaved: savedItem != nil && savedItem?.isArchived == false,
                 isFavorite: savedItem?.isFavorite == true,
-                isSyndicated: item?.isSyndicated == true
+                isSyndicated: item?.isSyndicated == true,
+                recommendationID: item?.recommendation?.analyticsID
             )
         }
         .padding()

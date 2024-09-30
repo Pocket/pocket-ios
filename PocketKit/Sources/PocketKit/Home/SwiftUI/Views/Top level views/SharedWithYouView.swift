@@ -70,7 +70,10 @@ private extension SharedWithYouView {
                 givenURL: $0.item?.givenURL ?? $0.url,
                 imageURL: $0.item?.topImageURL,
                 sharedWithYouUrlString: $0.url,
-                uselargeTitle: false
+                ShareURL: $0.item?.shareURL,
+                uselargeTitle: false,
+                enableSaveAction: true,
+                enableShareMenuAction: true
             )
         }
     }
