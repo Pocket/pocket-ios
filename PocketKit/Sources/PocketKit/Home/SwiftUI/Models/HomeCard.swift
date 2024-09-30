@@ -128,3 +128,22 @@ extension HomeCard {
         AttributedString(NSAttributedString(string: Localization.Home.Recommendation.readTime(timeToRead), style: .recommendation.timeToRead))
     }
 }
+
+// MARK: Helpers
+extension HomeCard {
+    func withLargeTitle(_ useLargeTitle: Bool) -> HomeCard {
+        HomeCard(
+            givenURL: self.givenURL,
+            imageURL: self.imageURL,
+            sharedWithYouUrlString: self.sharedWithYouUrlString,
+            ShareURL: self.shareURL,
+            uselargeTitle: useLargeTitle,
+            enableSaveAction: self.enableSaveAction,
+            enableFavoriteAction: self.enableFavoriteAction,
+            enableShareMenuAction: self.enableShareMenuAction,
+            enableReportMenuAction: self.enableReportMenuAction,
+            enableArchiveMenuAction: self.enableArchiveMenuAction,
+            enableDeleteMenuAction: self.enableDeleteMenuAction
+        )
+    }
+}
