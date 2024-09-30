@@ -13,6 +13,14 @@ struct CardFooter: View {
     let isSaved: Bool
     let isFavorite: Bool
     let isSyndicated: Bool
+    let recommendationID: String?
+
+    @State private var showReportArticle: Bool = false
+    @State private var showReportError: Bool = false
+
+    @State private var showDeleteAlert: Bool = false
+
+    @State private var showShareSheet: Bool = false
 
     var body: some View {
         makeFooter()
@@ -30,6 +38,24 @@ private extension CardFooter {
                 makeActionButton()
                 makeOverflowMenu()
             }
+        }
+        .sheet(isPresented: $showReportArticle) {
+            ReportRecommendationView(
+                givenURL: card.givenURL,
+                recommendationId: recommendationID!,
+                tracker: Services.shared.tracker
+           )
+        }
+        .alert(Localization.areYouSureYouWantToDeleteThisItem, isPresented: $showDeleteAlert) {
+            Button(Localization.no, role: .cancel) { }
+            Button(Localization.yes, role: .destructive) {
+                withAnimation {
+                    card.deleteAction()
+                }
+            }
+        }
+        .alert(Localization.General.Error.serverError, isPresented: $showReportError) {
+            Button(Localization.ok, role: .cancel) { }
         }
     }
 
@@ -103,18 +129,42 @@ private extension CardFooter {
     /// Overflow menu
     func makeOverflowMenu() -> some View {
         Menu {
-            ForEach(card.overflowActions, id: \.self) { buttonAction in
-                if let title = buttonAction.title {
-                    Button(action: {
-                        buttonAction.action()
-                    }) {
-                        Text(title)
+            if card.enableArchiveMenuAction {
+                Button(action: {
+                    card.archiveAction()
+                }) {
+                    Text(Localization.ItemAction.archive)
+                }
+            }
+            if card.enableDeleteMenuAction {
+                Button(action: {
+                    showDeleteAlert = true
+                }) {
+                    Label {
+                        Text(Localization.ItemAction.delete)
+                    } icon: {
+                        Image(asset: .delete)
                     }
                 }
             }
+            if card.enableReportMenuAction {
+                Button(action: {
+                    if recommendationID != nil {
+                        showReportArticle = true
+                    } else {
+                        showReportError = true
+                    }
+                }) {
+                    Text(Localization.ItemAction.report)
+                }
+            }
+
+            if card.enableShareMenuAction {
+                ShareableURLView(card: card)
+            }
         } label: {
-            Image(systemName: "ellipsis")
-                .foregroundColor(Color(.ui.saveButtonText))
+            Image(asset: .overflow)
+                .homeOverflowMenyStyle()
         }
         .accessibilityIdentifier("overflow-button")
     }
