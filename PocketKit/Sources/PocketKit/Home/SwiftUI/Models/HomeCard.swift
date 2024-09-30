@@ -3,7 +3,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import Localization
-import Sync
+@preconcurrency import Sync
 import SwiftUI
 import Textile
 
@@ -20,34 +20,44 @@ struct HomeCard: Identifiable, @preconcurrency Equatable {
 
     var id = UUID()
     let givenURL: String
-    let overflowActions: [HomeButtonAction]
-    let favoriteAction: HomeButtonAction?
-    var imageURL: URL?
-    var sharedWithYouUrlString: String?
+    let imageURL: URL?
+    let sharedWithYouUrlString: String?
+    let shareURL: String?
     let useLargeTitle: Bool
 
     // actions configuration
     let enableSaveAction: Bool
     let enableFavoriteAction: Bool
+    // menu actions configuration
+    let enableShareMenuAction: Bool
+    let enableReportMenuAction: Bool
+    let enableArchiveMenuAction: Bool
+    let enableDeleteMenuAction: Bool
 
     init(
         givenURL: String,
-        overflowActions: [HomeButtonAction] = [],
-        favoriteAction: HomeButtonAction? = nil,
         imageURL: URL?,
         sharedWithYouUrlString: String? = nil,
+        ShareURL: String? = nil,
         uselargeTitle: Bool = false,
         enableSaveAction: Bool = false,
-        enableFavoriteAction: Bool = false
+        enableFavoriteAction: Bool = false,
+        enableShareMenuAction: Bool = false,
+        enableReportMenuAction: Bool = false,
+        enableArchiveMenuAction: Bool = false,
+        enableDeleteMenuAction: Bool = false
     ) {
         self.givenURL = givenURL
-        self.overflowActions = overflowActions
-        self.favoriteAction = favoriteAction
         self.imageURL = imageURL
         self.sharedWithYouUrlString = sharedWithYouUrlString
+        self.shareURL = ShareURL
         self.useLargeTitle = uselargeTitle
         self.enableSaveAction = enableSaveAction
         self.enableFavoriteAction = enableFavoriteAction
+        self.enableShareMenuAction = enableShareMenuAction
+        self.enableReportMenuAction = enableReportMenuAction
+        self.enableArchiveMenuAction = enableArchiveMenuAction
+        self.enableDeleteMenuAction = enableDeleteMenuAction
     }
 }
 
@@ -63,6 +73,14 @@ extension HomeCard {
         }
     }
 
+    func archiveAction() {
+        // TODO: SWIFTUI - add implementation
+    }
+
+    func deleteAction() {
+        // TODO: SWIFTUI - add implementation
+    }
+
     func favoriteAction(isFavorite: Bool, givenURL: String) {
         // TODO: SWIFTUI - Once we are fully migrated to SwiftUI, this should come from the environment.
         let source = Services.shared.source
@@ -70,6 +88,17 @@ extension HomeCard {
             source.unFavorite(givenURL)
         } else {
             source.favorite(givenURL)
+        }
+    }
+
+    func shareableUrl() async -> String? {
+        // TODO: SWIFTUI - Once we are fully migrated to SwiftUI, this should come from the environment.
+        let source = Services.shared.source
+        if let shareURL {
+            return shareURL
+        } else {
+            let remoteShareUrl = try? await source.requestShareUrl(givenURL)
+            return remoteShareUrl
         }
     }
 }
