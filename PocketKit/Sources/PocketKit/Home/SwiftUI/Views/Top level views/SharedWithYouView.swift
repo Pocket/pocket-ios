@@ -15,6 +15,8 @@ struct SharedWithYouView: View {
     @Environment(HomeCoordinator.self)
     var coordinator
 
+    @State private var cards: [HomeCard] = []
+
     init() {
         let sortDescriptor = SortDescriptor<SharedWithYouItem>(\.sortOrder, order: .forward)
         var fetchDescriptor = FetchDescriptor<SharedWithYouItem>(sortBy: [sortDescriptor])
@@ -23,16 +25,37 @@ struct SharedWithYouView: View {
     }
 
     var body: some View {
+        ZStack {
+            makeBody()
+        }
+        // TODO: SWIFTUI -  the animation included with @Query does not seem to behave as we want, so we do it here
+        .onChange(of: sharedWithYouItems, initial: true) {
+            // this prevents unwanted view refreshes if the query updates (because Core Data receives updates)
+            // but the recent saves do not actually change
+            if proposedCards != cards {
+                cards = proposedCards
+            }
+        }
+        // TODO: SWIFTUI - this animation works well when removing on top of the list, not so well otherwise
+        // investigate better animation options
+        .animation(.smooth, value: cards)
+    }
+}
+
+private extension SharedWithYouView {
+    @ViewBuilder
+    func makeBody() -> some View {
         if !cards.isEmpty {
             VStack(alignment: .leading, spacing: 0) {
                 makeHeader(SWHighlightCenter.highlightCollectionTitle)
                 CarouselView(cards: cards, useGrid: false)
             }
+            .padding(.bottom, 32)
+        } else {
+            Spacer()
+                .frame(height: .zero)
         }
     }
-}
-
-private extension SharedWithYouView {
     func makeHeader(_ title: String) -> some View {
         SectionHeader(title: title) {
             coordinator.navigateTo(SharedWithYouRoute(title: title))
@@ -41,17 +64,17 @@ private extension SharedWithYouView {
         .padding(.trailing, 16)
     }
 
-    var cards: [HomeCard] {
+    var proposedCards: [HomeCard] {
         sharedWithYouItems.compactMap {
-            if let item = $0.item {
-                return HomeCard(
-                    givenURL: item.givenURL,
-                    imageURL: item.topImageURL,
-                    sharedWithYouUrlString: $0.url,
-                    uselargeTitle: false
-                )
-            }
-            return nil
+            HomeCard(
+                givenURL: $0.item?.givenURL ?? $0.url,
+                imageURL: $0.item?.topImageURL,
+                sharedWithYouUrlString: $0.url,
+                ShareURL: $0.item?.shareURL,
+                uselargeTitle: false,
+                enableSaveAction: true,
+                enableShareMenuAction: true
+            )
         }
     }
 }

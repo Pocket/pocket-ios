@@ -16,4 +16,14 @@ extension Image {
             .frame(width: constants.imageSize, height: constants.imageSize, alignment: .center)
             .padding(trailingPadding ? [.all] : [.vertical, .leading], constants.padding)
     }
+
+    func homeOverflowMenyStyle(trailingPadding: Bool = true) -> some View {
+        self
+            .renderingMode(.template)
+            .resizable()
+            .foregroundColor(Color(.ui.saveButtonText))
+            .scaledToFit()
+            .frame(width: constants.imageSize, height: constants.imageSize, alignment: .center)
+            .padding(trailingPadding ? [.all] : [.vertical, .leading], constants.padding)
+    }
 }

@@ -15,21 +15,16 @@ struct HomeView: View {
         GeometryReader { proxy in
             ScrollView(.vertical) {
                 LazyVStack(alignment: .leading) {
-                    Text(Localization.home)
-                        .font(.largeTitle)
-                        .bold()
-                        .padding(.leading, 16)
+                    Spacer()
+                        .frame(height: 16)
                     RecentSavesView()
-                        .padding(.bottom, 32)
                     SharedWithYouView()
-                        .padding(.bottom, 32)
                     RecommendationsView()
                 }
             }
             .scrollIndicators(.hidden)
             .background(Color(.ui.white1))
             .navigationTitle(Localization.home)
-            .navigationBarHidden(true)
             .environment(\.carouselWidth, carouselWidth(proxy.size.width))
             .environment(\.useWideLayout, useWideLayout())
         }

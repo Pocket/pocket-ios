@@ -41,7 +41,11 @@ private extension RecommendationsView {
                     givenURL: item.givenURL,
                     imageURL: item.topImageURL,
                     sharedWithYouUrlString: nil,
-                    uselargeTitle: false
+                    ShareURL: item.shareURL,
+                    uselargeTitle: false,
+                    enableSaveAction: true,
+                    enableShareMenuAction: true,
+                    enableReportMenuAction: true
                 )
             }
             return nil

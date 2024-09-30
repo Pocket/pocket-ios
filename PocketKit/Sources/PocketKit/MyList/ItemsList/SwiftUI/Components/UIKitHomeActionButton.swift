@@ -5,6 +5,8 @@
 import SwiftUI
 import Textile
 
+// TODO: SWIFTUI - Remove when not necessary anymore
+// Despite being a SwiftUI view, this type has a UIKit prefix name because it's used in the old UIKit based view hierarchy
 struct UIKitHomeActionButton: View {
     private var itemAction: ItemAction?
     private var selected: Bool = false

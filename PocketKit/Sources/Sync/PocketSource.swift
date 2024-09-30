@@ -351,6 +351,68 @@ extension PocketSource {
         }
     }
 
+    public func favorite(_ givenURL: String) {
+        Log.breadcrumb(category: "sync", level: .debug, message: "Favoriting item with url \(givenURL)")
+        space.performAndWait {
+            guard let item = try? space.fetchItem(byURL: givenURL),
+                  let savedItem = item.savedItem else {
+                Log.capture(message: "Could not retreive Saved Item from background context for mutation")
+                return
+            }
+
+            savedItem.isFavorite = true
+            do {
+                try space.save()
+            } catch {
+                Log.capture(error: error)
+            }
+
+            // Fall back to SavedItem.url if a nested item.givenURL does not exist
+            // This may occur when an item has been saved offline, but not yet archived
+            let givenURL = savedItem.item?.givenURL ?? savedItem.url
+            let operation = operations.savedItemMutationOperation(
+                apollo: apollo,
+                events: _events,
+                mutation: FavoriteItemMutation(
+                    givenUrl: givenURL,
+                    timestamp: ISO8601DateFormatter.pocketGraphFormatter.string(from: .now)
+                )
+            )
+
+            enqueue(operation: operation, task: .favorite(givenURL: givenURL), queue: saveQueue)
+        }
+    }
+
+    public func unFavorite(_ givenURL: String) {
+        Log.breadcrumb(category: "sync", level: .debug, message: "Unavoriting item with url \(givenURL)")
+        space.performAndWait {
+            guard let item = try? space.fetchItem(byURL: givenURL),
+                  let savedItem = item.savedItem else {
+                Log.capture(message: "Could not retreive Saved Item from background context for mutation")
+                return
+            }
+            savedItem.isFavorite = false
+            do {
+                try space.save()
+            } catch {
+                Log.capture(error: error)
+            }
+
+            // Fall back to SavedItem.url if a nested item.givenURL does not exist
+            // This may occur when an item has been saved offline, but not yet archived
+            let givenURL = savedItem.item?.givenURL ?? savedItem.url
+            let operation = operations.savedItemMutationOperation(
+                apollo: apollo,
+                events: _events,
+                mutation: UnfavoriteItemMutation(
+                    givenUrl: givenURL,
+                    timestamp: ISO8601DateFormatter.pocketGraphFormatter.string(from: .now)
+                )
+            )
+            enqueue(operation: operation, task: .unfavorite(givenURL: givenURL), queue: saveQueue)
+        }
+    }
+
     public func unfavorite(item: CDSavedItem) {
         Log.breadcrumb(category: "sync", level: .debug, message: "Unfavoriting item with id \(String(describing: item.remoteID))")
         space.performAndWait {
@@ -378,6 +440,39 @@ extension PocketSource {
                 )
             )
             enqueue(operation: operation, task: .unfavorite(givenURL: givenURL), queue: saveQueue)
+        }
+    }
+
+    public func delete(from givenURL: String) {
+        Log.breadcrumb(category: "sync", level: .debug, message: "Deleting saved item from item with url \(givenURL)")
+        space.performAndWait {
+            guard let item = try? space.fetchItem(byURL: givenURL),
+                  let savedItem = item.savedItem else {
+                Log.capture(message: "Could not retreive item from background context for mutation")
+                return
+            }
+
+            space.delete(savedItem)
+
+            if item.recommendation == nil {
+                space.delete(item)
+            }
+
+            do {
+                try space.save()
+            } catch {
+                Log.capture(error: error)
+            }
+
+            let operation = operations.savedItemMutationOperation(
+                apollo: apollo,
+                events: _events,
+                mutation: DeleteItemMutation(
+                    givenUrl: givenURL,
+                    timestamp: ISO8601DateFormatter.pocketGraphFormatter.string(from: .now)
+                )
+            )
+            enqueue(operation: operation, task: .delete(givenURL: givenURL), queue: saveQueue)
         }
     }
 
