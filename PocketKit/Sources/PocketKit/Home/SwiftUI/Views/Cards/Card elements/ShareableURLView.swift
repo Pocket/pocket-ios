@@ -3,6 +3,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import SwiftUI
+import Localization
 
 /// A view that retrieves a shareable URL and opens the share sheet when tapped.
 struct ShareableURLView: View {
@@ -13,7 +14,13 @@ struct ShareableURLView: View {
     var body: some View {
         ZStack {
             if let shareableURL {
-                ShareLink(item: shareableURL)
+                ShareLink(item: shareableURL) {
+                    HStack {
+                        Text(Localization.ItemAction.share)
+                        Spacer()
+                        Image(asset: .share)
+                    }
+                }
             }
         }
         .onAppear {
