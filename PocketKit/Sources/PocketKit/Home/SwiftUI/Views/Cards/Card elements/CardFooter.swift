@@ -133,9 +133,14 @@ private extension CardFooter {
                 Button(action: {
                     card.archiveAction()
                 }) {
-                    Text(Localization.ItemAction.archive)
+                    Label {
+                        Text(Localization.ItemAction.archive)
+                    } icon: {
+                        Image(asset: .archive)
+                    }
                 }
             }
+
             if card.enableDeleteMenuAction {
                 Button(action: {
                     showDeleteAlert = true
@@ -147,6 +152,7 @@ private extension CardFooter {
                     }
                 }
             }
+
             if card.enableReportMenuAction {
                 Button(action: {
                     if recommendationID != nil {
@@ -155,7 +161,11 @@ private extension CardFooter {
                         showReportError = true
                     }
                 }) {
-                    Text(Localization.ItemAction.report)
+                    Label {
+                        Text(Localization.ItemAction.report)
+                    } icon: {
+                        Image(asset: .alert)
+                    }
                 }
             }
 
