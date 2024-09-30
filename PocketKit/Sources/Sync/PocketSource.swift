@@ -443,6 +443,39 @@ extension PocketSource {
         }
     }
 
+    public func delete(from givenURL: String) {
+        Log.breadcrumb(category: "sync", level: .debug, message: "Deleting saved item from item with url \(givenURL)")
+        space.performAndWait {
+            guard let item = try? space.fetchItem(byURL: givenURL),
+                  let savedItem = item.savedItem else {
+                Log.capture(message: "Could not retreive item from background context for mutation")
+                return
+            }
+
+            space.delete(savedItem)
+
+            if item.recommendation == nil {
+                space.delete(item)
+            }
+
+            do {
+                try space.save()
+            } catch {
+                Log.capture(error: error)
+            }
+
+            let operation = operations.savedItemMutationOperation(
+                apollo: apollo,
+                events: _events,
+                mutation: DeleteItemMutation(
+                    givenUrl: givenURL,
+                    timestamp: ISO8601DateFormatter.pocketGraphFormatter.string(from: .now)
+                )
+            )
+            enqueue(operation: operation, task: .delete(givenURL: givenURL), queue: saveQueue)
+        }
+    }
+
     public func delete(item savedItem: CDSavedItem) {
         Log.breadcrumb(category: "sync", level: .debug, message: "Deleting item with id \(String(describing: savedItem.remoteID))")
         space.performAndWait {

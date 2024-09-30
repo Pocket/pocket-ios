@@ -16,6 +16,8 @@ class MockSource: Source {
 
     func unFavorite(_ givenURL: String) {}
 
+    func delete(from givenURL: String) {}
+
     func readerItem(by slug: String) async throws -> (Sync.CDSavedItem?, Sync.CDItem?) {
         return (nil, nil)
     }

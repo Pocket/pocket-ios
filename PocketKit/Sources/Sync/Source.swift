@@ -62,6 +62,8 @@ public protocol Source {
 
     func archive(item: CDSavedItem)
 
+    func delete(from givenURL: String)
+
     func unarchive(item: CDSavedItem)
 
     func addTags(item: CDSavedItem, tags: [String])

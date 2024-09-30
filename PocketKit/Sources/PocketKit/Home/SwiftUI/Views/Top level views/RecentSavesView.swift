@@ -70,8 +70,12 @@ private extension RecentSavesView {
                 givenURL: $0.item?.givenURL ?? $0.url,
                 imageURL: $0.item?.topImageURL,
                 sharedWithYouUrlString: nil,
+                ShareURL: $0.item?.shareURL,
                 uselargeTitle: false,
-                enableFavoriteAction: true
+                enableFavoriteAction: true,
+                enableShareMenuAction: true,
+                enableArchiveMenuAction: true,
+                enableDeleteMenuAction: true
             )
         }
     }
