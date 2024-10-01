@@ -53,7 +53,7 @@ private extension SlateView {
 
     /// Extract the Hero recommendations
     var herolCards: [HomeCard] {
-        Array(cards.prefix(upTo: heroCount)).map { $0.withLargeTitle(true) }
+        Array(cards.prefix(upTo: heroCount))
     }
 
     /// Extract the carousel recommendations

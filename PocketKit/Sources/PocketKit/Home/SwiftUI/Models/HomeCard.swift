@@ -23,7 +23,6 @@ struct HomeCard: Identifiable, @preconcurrency Equatable {
     let imageURL: URL?
     let sharedWithYouUrlString: String?
     let shareURL: String?
-    let useLargeTitle: Bool
 
     // actions configuration
     let enableSaveAction: Bool
@@ -51,7 +50,6 @@ struct HomeCard: Identifiable, @preconcurrency Equatable {
         self.imageURL = imageURL
         self.sharedWithYouUrlString = sharedWithYouUrlString
         self.shareURL = ShareURL
-        self.useLargeTitle = uselargeTitle
         self.enableSaveAction = enableSaveAction
         self.enableFavoriteAction = enableFavoriteAction
         self.enableShareMenuAction = enableShareMenuAction
@@ -116,8 +114,8 @@ extension HomeCard {
         return nil
     }
 
-    var titleStyle: Style {
-        .recommendation.adaptiveTitle(useLargeTitle)
+    func titleStyle(largeTitle: Bool) -> Style {
+        .recommendation.adaptiveTitle(largeTitle)
     }
 
     var domainStyle: Style {
@@ -126,24 +124,5 @@ extension HomeCard {
 
     func timeToRead(_ timeToRead: Int32) -> AttributedString {
         AttributedString(NSAttributedString(string: Localization.Home.Recommendation.readTime(timeToRead), style: .recommendation.timeToRead))
-    }
-}
-
-// MARK: Helpers
-extension HomeCard {
-    func withLargeTitle(_ useLargeTitle: Bool) -> HomeCard {
-        HomeCard(
-            givenURL: self.givenURL,
-            imageURL: self.imageURL,
-            sharedWithYouUrlString: self.sharedWithYouUrlString,
-            ShareURL: self.shareURL,
-            uselargeTitle: useLargeTitle,
-            enableSaveAction: self.enableSaveAction,
-            enableFavoriteAction: self.enableFavoriteAction,
-            enableShareMenuAction: self.enableShareMenuAction,
-            enableReportMenuAction: self.enableReportMenuAction,
-            enableArchiveMenuAction: self.enableArchiveMenuAction,
-            enableDeleteMenuAction: self.enableDeleteMenuAction
-        )
     }
 }

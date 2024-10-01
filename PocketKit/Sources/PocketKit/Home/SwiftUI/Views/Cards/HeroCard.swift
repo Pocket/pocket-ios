@@ -94,7 +94,7 @@ private extension HeroCard {
             }
 
             Text(item?.bestTitle ?? card.givenURL)
-                .style(card.titleStyle)
+                .style(card.titleStyle(largeTitle: true))
                 .lineSpacing(Constants.titleLineSpacing)
                 .lineLimit(Constants.numberOfTitleLines)
                 .accessibilityIdentifier("title-label")

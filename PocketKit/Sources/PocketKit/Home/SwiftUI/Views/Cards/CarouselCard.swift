@@ -114,7 +114,7 @@ private extension CarouselCard {
                     .style(card.collectionStyle)
             }
             Text(item?.bestTitle ?? card.givenURL)
-                .style(card.titleStyle)
+                .style(card.titleStyle(largeTitle: false))
                 .lineSpacing(Constants.titleLineSpacing)
                 .lineLimit(Constants.titleLineLimit)
         }
