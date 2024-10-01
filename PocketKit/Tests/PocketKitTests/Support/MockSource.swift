@@ -18,6 +18,10 @@ class MockSource: Source {
 
     func delete(from givenURL: String) {}
 
+    func fetchSavedItem(_ url: String) -> CDSavedItem? {
+        return nil
+    }
+
     func readerItem(by slug: String) async throws -> (Sync.CDSavedItem?, Sync.CDItem?) {
         return (nil, nil)
     }

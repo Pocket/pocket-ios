@@ -1530,6 +1530,10 @@ extension PocketSource {
     public func fetchViewContextSavedItem(_ url: String) -> CDSavedItem? {
         try? space.fetchSavedItem(byURL: url, context: viewContext)
     }
+
+    public func fetchSavedItem(_ url: String) -> CDSavedItem? {
+        try? space.fetchSavedItem(byURL: url)
+    }
 }
 
 // MARK: UI Helpers

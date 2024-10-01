@@ -36,15 +36,15 @@ struct ReadableRoute: NavigationRoute {
 
     init(_ type: RouteType) {
         switch type {
-        case .syndicated(let itemID):
-            self.itemID = itemID
-            self.savedItemID = nil
-        case .saved(let itemID):
-            self.itemID = nil
-            self.savedItemID = itemID
+        case .syndicated(let urlString):
+            self.savedItemUrlString = nil
+            self.itemUrlString = urlString
+        case .saved(let urlString):
+            self.itemUrlString = nil
+            self.savedItemUrlString = urlString
         }
     }
 
-    let itemID: String?
-    let savedItemID: String?
+    let itemUrlString: String?
+    let savedItemUrlString: String?
 }

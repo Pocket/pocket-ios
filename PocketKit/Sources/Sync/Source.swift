@@ -130,6 +130,8 @@ public protocol Source {
 
     func fetchViewContextSavedItem(_ url: String) -> CDSavedItem?
 
+    func fetchSavedItem(_ url: String) -> CDSavedItem?
+
     /// Get the count of unread saves
     /// - Returns: Int of unread saves
     func unreadSaves() throws -> Int

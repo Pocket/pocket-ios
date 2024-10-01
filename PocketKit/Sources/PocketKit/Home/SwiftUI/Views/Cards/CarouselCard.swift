@@ -75,10 +75,10 @@ private extension CarouselCard {
                 .ignoresSafeArea(.all)
         }
         .onTapGesture {
-            if let savedItem = savedItem, let ID = savedItem.remoteID {
-                coordinator.navigateTo(ReadableRoute(.saved(ID)))
-            } else if let syndicatedArticle = item?.syndicatedArticle {
-                coordinator.navigateTo(ReadableRoute(.syndicated(syndicatedArticle.itemID)))
+            if savedItem != nil {
+                coordinator.navigateTo(ReadableRoute(.saved(card.givenURL)))
+            } else if item?.syndicatedArticle != nil {
+                coordinator.navigateTo(ReadableRoute(.syndicated(card.givenURL)))
             } else if let slug = item?.collection?.slug {
                 coordinator.navigateTo(NativeCollectionRoute(slug: slug))
             } else if URL(string: card.givenURL) != nil {

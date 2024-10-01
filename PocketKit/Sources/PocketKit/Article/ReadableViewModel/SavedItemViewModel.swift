@@ -723,3 +723,25 @@ extension SavedItemViewModel {
         UIHostingController(rootView: PremiumUpgradeSuccessView())
     }
 }
+
+// MARK: instantiation from url
+extension SavedItemViewModel {
+    static func fromURL(_ urlString: String) -> SavedItemViewModel? {
+        let source = Services.shared.source
+        if let savedItem = source.fetchSavedItem(urlString) {
+            return SavedItemViewModel(
+                item: savedItem,
+                source: source,
+                tracker: Services.shared.tracker,
+                pasteboard: UIPasteboard.general,
+                user: Services.shared.user,
+                store: Services.shared.subscriptionStore,
+                networkPathMonitor: NWPathMonitor(),
+                userDefaults: Services.shared.userDefaults,
+                notificationCenter: Services.shared.notificationCenter,
+                featureFlagService: Services.shared.featureFlagService
+            )
+        }
+        return nil
+    }
+}

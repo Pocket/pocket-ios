@@ -402,3 +402,23 @@ extension RecommendableItemViewModel {
         selectedItemToReport = nil
     }
 }
+
+// MARK: instantiation from url
+extension RecommendableItemViewModel {
+    static func fromURL(_ urlString: String) -> RecommendableItemViewModel? {
+        let source = Services.shared.source
+        if let item = source.fetchItem(urlString) {
+            return RecommendableItemViewModel(
+                item: item,
+                source: source,
+                accessService: Services.shared.accessService,
+                tracker: Services.shared.tracker,
+                pasteboard: UIPasteboard.general,
+                user: Services.shared.user,
+                userDefaults: Services.shared.userDefaults,
+                readableSource: .external
+            )
+        }
+        return nil
+    }
+}
