@@ -12,7 +12,7 @@ import SharedPocketKit
 import Textile
 import Network
 
-public enum SavesViewType {
+public enum SavesViewType: String {
     case saves
     case archive
 }
@@ -349,12 +349,12 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
     private func _favorite(item: SavedItem) {
         source.favorite(item: item)
-        tracker.track(event: Events.Saves.favoriteItem(engagementIndex(item)))
+        tracker.track(event: Events.Saves.favoriteItem(engagementIndex(item), listType: viewType.rawValue))
     }
 
     private func _unfavorite(item: SavedItem) {
         source.unfavorite(item: item)
-        tracker.track(event: Events.Saves.unFavoriteItem(engagementIndex(item)))
+        tracker.track(event: Events.Saves.unFavoriteItem(engagementIndex(item), listType: viewType.rawValue))
     }
 
     func shareAction(for objectID: NSManagedObjectID) -> ItemAction? {
@@ -379,7 +379,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         }
         let shareableUrl = shareUrl ?? item.url
         sharedActivity = PocketItemActivity.fromSaves(url: shareableUrl, sender: sender)
-        tracker.track(event: Events.Saves.shareItem(engagementIndex(item)))
+        tracker.track(event: Events.Saves.shareItem(engagementIndex(item), listType: viewType.rawValue))
     }
 
     func overflowActions(for objectID: NSManagedObjectID) -> [ItemAction] {
@@ -409,7 +409,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         }
         return UIAction(title: "", handler: { [weak self] _ in
             Haptics.defaultTap()
-            self?.tracker.track(event: Events.Saves.overflow(self?.engagementIndex(item)))
+            self?.tracker.track(event: Events.Saves.overflow(self?.engagementIndex(item), listType: self?.viewType.rawValue))
         })
     }
 
@@ -419,7 +419,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         }
         return ItemAction(title: "", identifier: UIAction.Identifier(rawValue: ""), accessibilityIdentifier: "", image: nil) { [weak self] _ in
             Haptics.defaultTap()
-            self?.tracker.track(event: Events.Saves.overflow(self?.engagementIndex(item)))
+            self?.tracker.track(event: Events.Saves.overflow(self?.engagementIndex(item), listType: self?.viewType.rawValue))
         }
     }
 
@@ -455,12 +455,12 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
     private func _archive(item: SavedItem) {
         source.archive(item: item)
-        tracker.track(event: Events.Saves.archiveItem(engagementIndex(item)))
+        tracker.track(event: Events.Saves.archiveItem(engagementIndex(item), listType: viewType.rawValue))
     }
 
     private func _moveToSaves(item: SavedItem) {
         source.unarchive(item: item)
-        tracker.track(event: Events.Saves.unArchiveItem(engagementIndex(item)))
+        tracker.track(event: Events.Saves.unArchiveItem(engagementIndex(item), listType: viewType.rawValue))
     }
 
     private func confirmDelete(item: SavedItem) {
@@ -483,7 +483,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     private func _delete(item: SavedItem) {
         presentedAlert = nil
         source.delete(item: item)
-        tracker.track(event: Events.Saves.deleteItem(engagementIndex(item)))
+        tracker.track(event: Events.Saves.deleteItem(engagementIndex(item), listType: viewType.rawValue))
     }
 
     private func bareItem(with id: NSManagedObjectID) -> SavedItem? {
@@ -557,7 +557,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     func willDisplay(_ cell: ItemsListCell<NSManagedObjectID>) {
         if case .item = cell {
             withSavedItem(from: cell) { [weak self] item in
-                self?.tracker.track(event: Events.Saves.cardViewed(self?.engagementIndex(item)))
+                self?.tracker.track(event: Events.Saves.cardViewed(self?.engagementIndex(item), listType: self?.viewType.rawValue))
             }
         }
     }
@@ -567,7 +567,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     private func trackContentOpen(destination: ContentOpen.Destination, item: SavedItem) {
-        tracker.track(event: Events.Saves.contentOpen(destination: destination, url: item.bestURL))
+        tracker.track(event: Events.Saves.contentOpen(destination: destination, url: item.bestURL, listType: viewType.rawValue))
     }
 
     private func withSavedItem(from cell: ItemsListCell<ItemIdentifier>, handler: ((SavedItem) -> Void)?) {
@@ -819,7 +819,7 @@ extension SavedItemsListViewModel {
                 self?.refresh()
             }
         )
-        tracker.track(event: Events.Saves.overflowEditTags(engagementIndex(item)))
+        tracker.track(event: Events.Saves.overflowEditTags(engagementIndex(item), listType: viewType.rawValue))
     }
 }
 
