@@ -348,13 +348,13 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     private func _favorite(item: SavedItem) {
-        track(item: item, identifier: .itemFavorite)
         source.favorite(item: item)
+        tracker.track(event: Events.Saves.favoriteItem(engagementIndex(item)))
     }
 
     private func _unfavorite(item: SavedItem) {
-        track(item: item, identifier: .itemUnfavorite)
         source.unfavorite(item: item)
+        tracker.track(event: Events.Saves.unFavoriteItem(engagementIndex(item)))
     }
 
     func shareAction(for objectID: NSManagedObjectID) -> ItemAction? {
@@ -379,7 +379,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         }
         let shareableUrl = shareUrl ?? item.url
         sharedActivity = PocketItemActivity.fromSaves(url: shareableUrl, sender: sender)
-        track(item: item, identifier: .itemShare)
+        tracker.track(event: Events.Saves.shareItem(engagementIndex(item)))
     }
 
     func overflowActions(for objectID: NSManagedObjectID) -> [ItemAction] {
@@ -409,7 +409,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         }
         return UIAction(title: "", handler: { [weak self] _ in
             Haptics.defaultTap()
-            self?.trackButton(item: item, identifier: .itemOverflow)
+            self?.tracker.track(event: Events.Saves.overflow(self?.engagementIndex(item)))
         })
     }
 
@@ -419,7 +419,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         }
         return ItemAction(title: "", identifier: UIAction.Identifier(rawValue: ""), accessibilityIdentifier: "", image: nil) { [weak self] _ in
             Haptics.defaultTap()
-            self?.trackButton(item: item, identifier: .itemOverflow)
+            self?.tracker.track(event: Events.Saves.overflow(self?.engagementIndex(item)))
         }
     }
 
@@ -454,13 +454,13 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     private func _archive(item: SavedItem) {
-        track(item: item, identifier: .itemArchive)
         source.archive(item: item)
+        tracker.track(event: Events.Saves.archiveItem(engagementIndex(item)))
     }
 
     private func _moveToSaves(item: SavedItem) {
-        track(item: item, identifier: .itemSave)
         source.unarchive(item: item)
+        tracker.track(event: Events.Saves.unArchiveItem(engagementIndex(item)))
     }
 
     private func confirmDelete(item: SavedItem) {
@@ -481,9 +481,9 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     private func _delete(item: SavedItem) {
-        track(item: item, identifier: .itemDelete)
         presentedAlert = nil
         source.delete(item: item)
+        tracker.track(event: Events.Saves.deleteItem(engagementIndex(item)))
     }
 
     private func bareItem(with id: NSManagedObjectID) -> SavedItem? {
@@ -556,61 +556,18 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
     func willDisplay(_ cell: ItemsListCell<NSManagedObjectID>) {
         if case .item = cell {
-            withSavedItem(from: cell) { item in
-                self.trackImpression(of: item)
+            withSavedItem(from: cell) { [weak self] item in
+                self?.tracker.track(event: Events.Saves.cardViewed(self?.engagementIndex(item)))
             }
         }
     }
 
-    private func track(item: SavedItem, identifier: UIContext.Identifier) {
-        guard let indexPath = itemsController.indexPath(forObject: item) else {
-            return
-        }
-
-        var contexts: [Context] = [
-            UIContext.saves.item(index: UIIndex(indexPath.item)),
-            UIContext.button(identifier: identifier),
-            ContentContext(url: item.bestURL)
-        ]
-
-        if selectedFilters.contains(.favorites) {
-            contexts.insert(UIContext.saves.favorites, at: 0)
-        }
-
-        let event = SnowplowEngagement(type: .general, value: nil)
-        tracker.track(event: event, contexts)
+    private func engagementIndex(_ item: SavedItem) -> Int? {
+        itemsController.indexPath(forObject: item)?.item
     }
 
     private func trackContentOpen(destination: ContentOpen.Destination, item: SavedItem) {
         tracker.track(event: Events.Saves.contentOpen(destination: destination, url: item.bestURL))
-    }
-
-    private func trackButton(item: SavedItem, identifier: UIContext.Identifier) {
-        let contexts: [Context] = [
-            UIContext.button(identifier: identifier),
-            ContentContext(url: item.bestURL)
-        ]
-
-        let event = SnowplowEngagement(type: .general, value: nil)
-        tracker.track(event: event, contexts)
-    }
-
-    private func trackImpression(of item: SavedItem) {
-        guard let indexPath = self.itemsController.indexPath(forObject: item) else {
-            return
-        }
-
-        var contexts: [Context] = [
-            UIContext.saves.item(index: UIIndex(indexPath.item)),
-            ContentContext(url: item.bestURL)
-        ]
-
-        if selectedFilters.contains(.favorites) {
-            contexts.insert(UIContext.saves.favorites, at: 0)
-        }
-
-        let event = ImpressionEvent(component: .card, requirement: .instant)
-        self.tracker.track(event: event, contexts)
     }
 
     private func withSavedItem(from cell: ItemsListCell<ItemIdentifier>, handler: ((SavedItem) -> Void)?) {
@@ -862,7 +819,7 @@ extension SavedItemsListViewModel {
                 self?.refresh()
             }
         )
-        trackButton(item: item, identifier: .itemEditTags)
+        tracker.track(event: Events.Saves.overflowEditTags(engagementIndex(item)))
     }
 }
 

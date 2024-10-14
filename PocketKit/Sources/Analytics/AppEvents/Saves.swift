@@ -27,6 +27,18 @@ public extension Events.Saves {
         )
     }
 
+    static func cardViewed(_ index: Int?) -> Impression {
+        return Impression(
+            component: .card,
+            requirement: .viewable,
+            uiEntity: UiEntity(
+                .card,
+                identifier: "saves.card.impression",
+                index: index
+            )
+        )
+    }
+
     static func userDidOpenAddSavedItem() -> Impression {
         Impression(
             component: .screen,
@@ -43,5 +55,85 @@ public extension Events.Saves {
         let identifier = saveSucceeded ? "saves.addItem.success" : "saves.addItem.fail"
 
         return Engagement(uiEntity: UiEntity(.button, identifier: identifier))
+    }
+
+    static func archiveItem(_ index: Int?) -> Engagement {
+        Engagement(
+            uiEntity: UiEntity(
+                .card,
+                identifier: "saves.archive",
+                index: index
+            )
+        )
+    }
+
+    static func favoriteItem(_ index: Int?) -> Engagement {
+        Engagement(
+            uiEntity: UiEntity(
+                .card,
+                identifier: "saves.favorite",
+                index: index
+            )
+        )
+    }
+
+    static func unFavoriteItem(_ index: Int?) -> Engagement {
+        Engagement(
+            uiEntity: UiEntity(
+                .card,
+                identifier: "saves.un-favorite",
+                index: index
+            )
+        )
+    }
+
+    static func unArchiveItem(_ index: Int?) -> Engagement {
+        Engagement(
+            uiEntity: UiEntity(
+                .card,
+                identifier: "saves.unarchive",
+                index: index
+            )
+        )
+    }
+
+    static func deleteItem(_ index: Int?) -> Engagement {
+        Engagement(
+            uiEntity: UiEntity(
+                .card,
+                identifier: "saves.delete",
+                index: index
+            )
+        )
+    }
+
+    static func shareItem(_ index: Int?) -> Engagement {
+        Engagement(
+            uiEntity: UiEntity(
+                .card,
+                identifier: "saves.share",
+                index: index
+            )
+        )
+    }
+
+    static func overflow(_ index: Int?) -> Engagement {
+        Engagement(
+            uiEntity: UiEntity(
+                .card,
+                identifier: "saves.overflow",
+                index: index
+            )
+        )
+    }
+
+    static func overflowEditTags(_ index: Int?) -> Engagement {
+        Engagement(
+            uiEntity: UiEntity(
+                .card,
+                identifier: "saves.overflow.edittags",
+                index: index
+            )
+        )
     }
 }

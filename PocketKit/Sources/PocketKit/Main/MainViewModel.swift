@@ -55,7 +55,7 @@ public class MainViewModel: ObservableObject {
             searchList: defaultSearch,
             savedItemsList: SavedItemsListViewModel(
                 source: Services.shared.source,
-                tracker: Services.shared.tracker.childTracker(hosting: .saves.saves),
+                tracker: Services.shared.tracker,
                 viewType: .saves,
                 listOptions: .saved(userDefaults: Services.shared.userDefaults),
                 notificationCenter: .default,
@@ -69,7 +69,7 @@ public class MainViewModel: ObservableObject {
             ),
             archivedItemsList: SavedItemsListViewModel(
                 source: Services.shared.source,
-                tracker: Services.shared.tracker.childTracker(hosting: .saves.archive),
+                tracker: Services.shared.tracker,
                 viewType: .archive,
                 listOptions: .archived(userDefaults: Services.shared.userDefaults),
                 notificationCenter: .default,
