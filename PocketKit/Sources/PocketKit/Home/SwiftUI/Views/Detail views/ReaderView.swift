@@ -9,17 +9,33 @@ import Network
 struct ReaderView: UIViewControllerRepresentable {
     let route: ReadableRoute
 
+    class Coordinator {
+            var parentObserver: NSKeyValueObservation?
+        }
+
     func makeUIViewController(context: Context) -> UIViewController {
-        // TODO: SWIFTUI - add implementation
         if let model = makeReadableViewModel() {
-            return ReadableViewController(readable: model, readerSettings: model.readerSettings)
+            let viewController = ReadableHostViewController(readableViewModel: model)
+            context.coordinator.parentObserver = viewController.observe(\.parent, changeHandler: { viewController, _ in
+                Task {
+                    await update(viewController: viewController)
+                }
+            })
+            return viewController
         }
         return UIViewController()
     }
 
-    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
-        // TODO: SWIFTUI - add implementation
+    @MainActor
+    private func update(viewController: UIViewController) -> UIViewController {
+        viewController.parent?.title = viewController.title
+        viewController.parent?.navigationItem.rightBarButtonItems = viewController.navigationItem.rightBarButtonItems
+        return viewController
     }
+
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
+
+    func makeCoordinator() -> Self.Coordinator { Coordinator() }
 }
 
 private extension ReaderView {
@@ -30,7 +46,6 @@ private extension ReaderView {
         if let syndictedUrlString = route.itemUrlString {
             return RecommendableItemViewModel.fromURL(syndictedUrlString)
         }
-
         return nil
     }
 }
