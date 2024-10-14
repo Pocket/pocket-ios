@@ -15,10 +15,14 @@ struct HomeRootView: View {
         NavigationStack(path: $homeCoordinator.path) {
             HomeView()
                 .navigationDestination(for: NativeCollectionRoute.self) { NativeCollectionView(route: $0) }
-                .navigationDestination(for: ReadableRoute.self) { ReaderView(route: $0) }
+                .navigationDestination(for: ReadableRoute.self) {
+                    ReaderView(route: $0)
+                        .ignoresSafeArea(.all)
+                }
                 .navigationDestination(for: SlateRoute.self) { SlateDetailView(route: $0) }
                 .navigationDestination(for: SharedWithYouRoute.self) { SharedWithYouDetailView(route: $0) }
         }
+        .accentColor(Color(.ui.black1))
         .environment(homeCoordinator)
         .onChange(of: scenePhase) { _, newValue in
             if newValue == .background {
