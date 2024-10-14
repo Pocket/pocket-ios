@@ -11,6 +11,7 @@ import Localization
 import Kingfisher
 import SafariServices
 import TipKit
+import SharedPocketKit
 
 @MainActor
 protocol ReadableViewControllerDelegate: AnyObject {
@@ -139,6 +140,121 @@ class ReadableViewController: UIViewController {
                     self.present(viewModel.makeHoorayViewController(), animated: true)
                 }
                 .store(in: &subscriptions)
+
+            viewModel.$presentedAlert.sink { [weak self] alert in
+                self?.present(alert: alert)
+            }.store(in: &subscriptions)
+
+            viewModel.$presentedWebReaderURL.sink { [weak self] url in
+                self?.present(url: url)
+            }.store(in: &subscriptions)
+
+            viewModel.$sharedActivity.sink { [weak self] activity in
+                self?.present(activity: activity)
+            }.store(in: &subscriptions)
+
+            viewModel.$isPresentingReaderSettings.sink { [weak self] isPresenting in
+                self?.presentReaderSettings(isPresenting, on: readable)
+            }.store(in: &subscriptions)
+
+            viewModel.$presentedAddTags.sink { [weak self] addTagsViewModel in
+                self?.present(viewModel: addTagsViewModel)
+            }.store(in: &subscriptions)
+
+            viewModel.events.sink { [weak self] event in
+                switch event {
+                case .contentUpdated:
+                    break
+                case .archive, .delete:
+                    self?.popToPreviousScreen(navigationController: self?.navigationController)
+                }
+            }.store(in: &subscriptions)
+        }
+    }
+
+    private func present(alert: PocketAlert?) {
+        guard let alert = alert else { return }
+        guard let presentedVC = self.presentedViewController else {
+            self.present(UIAlertController(alert), animated: true)
+            return
+        }
+        presentedVC.present(UIAlertController(alert), animated: true)
+    }
+
+    private func present(viewModel: PocketAddTagsViewModel?) {
+        guard let viewModel else {
+            return
+        }
+        let hostingController = UIHostingController(rootView: AddTagsView(viewModel: viewModel))
+        hostingController.modalPresentationStyle = .formSheet
+        self.present(hostingController, animated: true)
+    }
+
+    private func present(tagsFilterViewModel: TagsFilterViewModel?) {
+        guard let tagsFilterViewModel else {
+            return
+        }
+        let hostingController = UIHostingController(rootView: TagsFilterView(viewModel: tagsFilterViewModel).environment(\.managedObjectContext, Services.shared.source.viewContext))
+        hostingController.configurePocketDefaultDetents()
+        self.present(hostingController, animated: true)
+    }
+
+    private func present(activity: PocketActivity?) {
+        guard let activity else {
+            return
+        }
+
+        let activityVC = ShareSheetController(activity: activity, completion: nil)
+         activityVC.modalPresentationStyle = .formSheet
+        self.present(activityVC, animated: true)
+    }
+
+    private func present(url: URL?) {
+        guard let url else {
+            return
+        }
+
+        let safariVC = SFSafariViewController(url: url)
+        safariVC.delegate = self
+        self.present(safariVC, animated: true)
+    }
+
+    private func presentReaderSettings(_ isPresenting: Bool?, on readable: ReadableViewModel?) {
+        guard isPresenting == true, let readable else {
+            return
+        }
+
+        let readerSettingsVC = ReaderSettingsViewController(settings: readable.readerSettings) { [weak self] in
+            // self?.model.clearIsPresentingReaderSettings()
+        }
+        readerSettingsVC.configurePocketDefaultDetents()
+        self.present(readerSettingsVC, animated: true)
+    }
+
+    func presentSortMenu(presentedSortFilterViewModel: SortMenuViewModel?) {
+        guard let sortFilterVM = presentedSortFilterViewModel else {
+            if navigationController?.presentedViewController is SortMenuViewController {
+                navigationController?.dismiss(animated: true)
+            }
+            return
+        }
+
+        let viewController = SortMenuViewController(viewModel: sortFilterVM)
+        viewController.configurePocketDefaultDetents()
+        navigationController?.present(viewController, animated: true)
+    }
+
+    private func popToPreviousScreen(navigationController: UINavigationController?) {
+        guard let navController = navigationController else {
+            return
+        }
+
+        if let presentedVC = navController.presentedViewController {
+            presentedVC.dismiss(animated: true) {
+                navController.popToRootViewController(animated: true)
+            }
+        } else {
+            navController.popViewController(animated: true)
         }
     }
 
@@ -579,3 +695,52 @@ extension ReadableViewController {
 
 // MARK: TippableViewController conformance
 extension ReadableViewController: TippableViewController {}
+
+extension ReadableViewController: SFSafariViewControllerDelegate {
+    func safariViewController(_ controller: SFSafariViewController, activityItemsFor URL: URL, title: String?) -> [UIActivity] {
+        return webViewActivityItems(url: URL)
+    }
+
+//    func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
+//        model.clearPresentedWebReaderURL()
+//    }
+    func webViewActivityItems(url: URL) -> [UIActivity] {
+        guard let item = Services.shared.source.fetchItem(url.absoluteString), let savedItem = item.savedItem else {
+            return []
+        }
+
+        return webViewActivityItems(for: savedItem)
+    }
+
+    func webViewActivityItems(for item: CDSavedItem) -> [UIActivity] {
+        let archiveActivityTitle: WebActivityTitle = (item.isArchived
+                                                      ? .moveToSaves
+                                                       : .archive)
+        let archiveActivity = ReaderActionsWebActivity(title: archiveActivityTitle) { [weak self] in
+            if item.isArchived == true {
+                self?.readableViewModel.moveFromArchiveToSaves { _ in }
+            } else {
+                self?.readableViewModel.archive()
+            }
+        }
+
+        let deleteActivity = ReaderActionsWebActivity(title: .delete) { [weak self] in
+            self?.readableViewModel.confirmDelete()
+        }
+
+        let favoriteActivityTitle: WebActivityTitle = (item.isFavorite
+                                                        ? .unfavorite
+                                                        : .favorite
+        )
+
+        let favoriteActivity = ReaderActionsWebActivity(title: favoriteActivityTitle) { [weak self] in
+            if item.isFavorite == true {
+                self?.readableViewModel.unfavorite()
+            } else {
+                self?.readableViewModel.favorite()
+            }
+        }
+
+        return [archiveActivity, deleteActivity, favoriteActivity]
+    }
+}
