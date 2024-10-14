@@ -12,10 +12,6 @@ struct ItemWidgetsBundle: WidgetBundle {
     }
 
     func makeWidgets() -> some Widget {
-        if #available(iOS 17.0, *) {
-            return WidgetBundleBuilder.buildBlock(RecentSavesWidget(), TopicRecommendationsWidget())
-        } else {
-            return WidgetBundleBuilder.buildBlock(RecentSavesWidget(), RecommendationsWidget())
-        }
+        WidgetBundleBuilder.buildBlock(RecentSavesWidget(), TopicRecommendationsWidget())
     }
 }

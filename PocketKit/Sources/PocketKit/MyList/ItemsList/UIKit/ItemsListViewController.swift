@@ -74,7 +74,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         // do not vend the tip if there are no items to swipe
-        if #available(iOS 17.0, *), model.emptyState == nil {
+        if model.emptyState == nil {
             PocketTipEvents.showSwipeArchiveTip.sendDonation()
             displayTip(SwipeArchiveTip(), configuration: nil, sourceView: nil)
         }

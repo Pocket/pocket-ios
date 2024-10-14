@@ -79,15 +79,13 @@ public struct MainView: View {
         .banner(data: bannerPresenter.bannerData, show: $bannerPresenter.shouldPresentBanner, bottomOffset: 49)
         .task {
             // Initialize tips at app start/user login
-            if #available(iOS 17.0, *) {
-                if CommandLine.arguments.contains("hideAllTipsForTesting") {
-                    Tips.hideAllTipsForTesting()
-                }
-                do {
-                    try Tips.configure()
-                } catch {
-                    Log.capture(message: "Unable to initialize tips - \(error)")
-                }
+            if CommandLine.arguments.contains("hideAllTipsForTesting") {
+                Tips.hideAllTipsForTesting()
+            }
+            do {
+                try Tips.configure()
+            } catch {
+                Log.capture(message: "Unable to initialize tips - \(error)")
             }
         }
         // TODO: SWIFTUI - This is used for tab navigation purposes only, will change as we re-architect the app.
