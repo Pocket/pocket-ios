@@ -60,6 +60,7 @@ public struct MainView: View {
             }
             .accessibilityIdentifier("account-tab-bar-button")
             .tag(MainViewModel.AppSection.account)
+#if DEBUG
             HomeRootView()
                 .navigationViewStyle(.stack)
                 .tabBarHeightOffset { offset in tabBarHeightOffset = offset }
@@ -72,6 +73,7 @@ public struct MainView: View {
                     Text("SwiftUI Home")
                 }
                 .tag(MainViewModel.AppSection.newHome)
+#endif
         }
         .zIndex(-1)
         .banner(data: bannerPresenter.bannerData, show: $bannerPresenter.shouldPresentBanner, bottomOffset: 49)
