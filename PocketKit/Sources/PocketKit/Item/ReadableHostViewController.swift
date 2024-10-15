@@ -98,6 +98,20 @@ class ReadableHostViewController: UIViewController {
         readableViewModel.actions.receive(on: DispatchQueue.main).sink { [weak self] actions in
             self?.buildOverflowMenu(from: actions)
         }.store(in: &subscriptions)
+
+        readableViewModel
+            .events
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] event in
+                if case .save = event,
+                   let items = self?.navigationItem.rightBarButtonItems,
+                   let saveButton = self?.saveButton,
+                   let index = items.firstIndex(of: saveButton),
+                   let archiveButton = self?.archiveButton {
+                    self?.navigationItem.rightBarButtonItems?[index] = archiveButton
+                }
+            }
+            .store(in: &subscriptions)
     }
 
     override func viewDidLoad() {
@@ -195,15 +209,7 @@ class ReadableHostViewController: UIViewController {
 
     @objc
     private func save() {
-        readableViewModel.save { [weak self] success in
-            if success,
-               let items = self?.navigationItem.rightBarButtonItems,
-               let saveButton = self?.saveButton,
-               let index = items.firstIndex(of: saveButton),
-               let archiveButton = self?.archiveButton {
-                self?.navigationItem.rightBarButtonItems?[index] = archiveButton
-            }
-        }
+        readableViewModel.save { _ in }
     }
 
     @objc

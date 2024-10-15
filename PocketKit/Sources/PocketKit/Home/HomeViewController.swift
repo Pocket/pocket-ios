@@ -515,7 +515,7 @@ extension HomeViewController {
 
         viewModel.$events.receive(on: DispatchQueue.main).sink { [weak self] event in
             switch event {
-            case .contentUpdated, .none:
+            case .contentUpdated, .save, .none:
                 break
             case .archive, .delete:
                 self?.popToPreviousScreen()
