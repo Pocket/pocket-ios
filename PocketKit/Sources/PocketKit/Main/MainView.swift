@@ -7,12 +7,19 @@ import Textile
 import Localization
 import TipKit
 import SharedPocketKit
+import Sync
+import SwiftData
 
 public struct MainView: View {
     @ObservedObject var model: MainViewModel
     @ObservedObject var bannerPresenter: BannerPresenter
 
     @State var tabBarHeightOffset: CGFloat = 0
+    // TODO: SWIFTUI - Remove the following two properties once we release SwiftUI Home
+    @Query(filter: #Predicate<FeatureFlag> { $0.name == "temp.ios.swiftui.home" })
+    private var featureFlag: [FeatureFlag]
+
+    @State private var assigned: Bool = false
 
     public var body: some View {
         TabView(selection: $model.selectedSection) {
@@ -60,22 +67,28 @@ public struct MainView: View {
             }
             .accessibilityIdentifier("account-tab-bar-button")
             .tag(MainViewModel.AppSection.account)
-#if DEBUG
-            HomeRootView()
-                .navigationViewStyle(.stack)
-                .tabBarHeightOffset { offset in tabBarHeightOffset = offset }
-                .tabItem {
-                    if model.selectedSection == .newHome {
-                        Image(asset: .tabHomeSelected)
-                    } else {
-                        Image(asset: .tabHomeDeselected)
+            if assigned {
+                HomeRootView()
+                    .navigationViewStyle(.stack)
+                    .tabBarHeightOffset { offset in tabBarHeightOffset = offset }
+                    .tabItem {
+                        if model.selectedSection == .newHome {
+                            Image(asset: .tabHomeSelected)
+                        } else {
+                            Image(asset: .tabHomeDeselected)
+                        }
+                        Text("SwiftUI Home")
                     }
-                    Text("SwiftUI Home")
-                }
-                .tag(MainViewModel.AppSection.newHome)
-#endif
+                    .tag(MainViewModel.AppSection.newHome)
+            }
         }
         .zIndex(-1)
+        .onChange(of: featureFlag, initial: false) {
+            guard let swiftuiFeatureFlag = featureFlag.first else {
+                return
+            }
+            assigned = swiftuiFeatureFlag.assigned
+        }
         .banner(data: bannerPresenter.bannerData, show: $bannerPresenter.shouldPresentBanner, bottomOffset: 49)
         .task {
             // Initialize tips at app start/user login

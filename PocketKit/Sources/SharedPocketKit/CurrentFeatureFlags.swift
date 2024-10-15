@@ -14,6 +14,7 @@ public enum CurrentFeatureFlags: String, CaseIterable {
     case premiumSearchScopesExperiment = "EXPERIMENT_POCKET_PREMIUM_SEARCH_SCOPES"
     case bestOf20231PercentSticker = "BEST_OF_2023_1_PERCENT_STICKER"
     case bestOf20235PercentSticker = "BEST_OF_2023_5_PERCENT_STICKER"
+    case swiftUiHome = "temp.ios.swiftui.home"
 
     /// Description to use in a debug menu
     public var description: String {
@@ -36,6 +37,8 @@ public enum CurrentFeatureFlags: String, CaseIterable {
             return "User is part of the top 1 percent of Pocket readers"
         case .bestOf20235PercentSticker:
             return "User is part of the top 5 percent of Pocket readers"
+        case .swiftUiHome:
+            return "Enable the SwiftUI home screen"
         }
     }
 }
