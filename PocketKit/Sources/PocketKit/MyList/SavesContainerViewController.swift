@@ -66,7 +66,6 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate, UISea
     private var model: SavesContainerViewModel
 
     private var subscriptions: [AnyCancellable] = []
-    private var readableSubscriptions: [AnyCancellable] = []
     private var collectionSubscriptions = SubscriptionsStack()
 
     init(savesContainerModel: SavesContainerViewModel, viewControllers: [SelectableViewController]) {
@@ -344,19 +343,6 @@ extension SavesContainerViewController {
         case .readable(let readable):
             self.push(savedItem: readable)
         case .webView(let readable):
-            readable?.$presentedAlert.sink { [weak self] alert in
-                self?.present(alert: alert)
-            }.store(in: &readableSubscriptions)
-
-            readable?.events.sink { [weak self] event in
-                switch event {
-                case .contentUpdated:
-                    break
-                case .archive, .delete:
-                    self?.popToPreviousScreen(navigationController: self?.navigationController)
-                }
-            }.store(in: &readableSubscriptions)
-
             guard let premiumURL = readable?.premiumURL, let url = URL(percentEncoding: premiumURL) else { return }
             self.present(url: url)
         }
@@ -364,39 +350,8 @@ extension SavesContainerViewController {
 
     private func push(savedItem: SavedItemViewModel?) {
         guard let readable = savedItem else {
-            readableSubscriptions = []
             return
         }
-
-        readable.$presentedAlert.sink { [weak self] alert in
-            self?.present(alert: alert)
-        }.store(in: &readableSubscriptions)
-
-        readable.$presentedWebReaderURL.sink { [weak self] url in
-            self?.present(url: url)
-        }.store(in: &readableSubscriptions)
-
-        readable.$sharedActivity.sink { [weak self] activity in
-            self?.present(activity: activity)
-        }.store(in: &readableSubscriptions)
-
-        readable.$isPresentingReaderSettings.sink { [weak self] isPresenting in
-            self?.presentReaderSettings(isPresenting, on: readable)
-        }.store(in: &readableSubscriptions)
-
-        readable.$presentedAddTags.sink { [weak self] addTagsViewModel in
-            self?.present(viewModel: addTagsViewModel)
-        }.store(in: &readableSubscriptions)
-
-        readable.events.sink { [weak self] event in
-            switch event {
-            case .contentUpdated:
-                break
-            case .archive, .delete:
-                self?.popToPreviousScreen(navigationController: self?.navigationController)
-            }
-        }.store(in: &readableSubscriptions)
-
         navigationController?.pushViewController(
             ReadableHostViewController(readableViewModel: readable),
             animated: true
@@ -404,7 +359,6 @@ extension SavesContainerViewController {
     }
 
     func show(_ recommendation: RecommendableItemViewModel?) {
-        readableSubscriptions = []
         guard let recommendation = recommendation else {
             return
         }
@@ -413,20 +367,10 @@ extension SavesContainerViewController {
             ReadableHostViewController(readableViewModel: recommendation),
             animated: true
         )
-
-        recommendation.events.receive(on: DispatchQueue.main).sink { [weak self] event in
-            switch event {
-            case .contentUpdated:
-                break
-            case .archive, .delete:
-                self?.popToPreviousScreen(navigationController: self?.navigationController)
-            }
-        }.store(in: &readableSubscriptions)
     }
 
     private func push(collection: CollectionViewModel?) {
         guard let collection else {
-            readableSubscriptions.removeAll()
             collectionSubscriptions.empty()
             return
         }

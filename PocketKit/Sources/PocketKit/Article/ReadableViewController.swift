@@ -224,9 +224,7 @@ class ReadableViewController: UIViewController {
             return
         }
 
-        let readerSettingsVC = ReaderSettingsViewController(settings: readable.readerSettings) { [weak self] in
-            // self?.model.clearIsPresentingReaderSettings()
-        }
+        let readerSettingsVC = ReaderSettingsViewController(settings: readable.readerSettings) {}
         readerSettingsVC.configurePocketDefaultDetents()
         self.present(readerSettingsVC, animated: true)
     }

@@ -36,7 +36,6 @@ class HomeViewController: UIViewController {
     private let sectionProvider: HomeViewControllerSectionProvider
     private var subscriptions: [AnyCancellable] = []
     private var slateDetailSubscriptions: [AnyCancellable] = []
-    private var readerSubscriptions: [AnyCancellable] = []
     private var sharedWithYouSubscriptions: [AnyCancellable] = []
 
     private var collectionSubscriptions = SubscriptionsStack()
@@ -396,21 +395,21 @@ extension HomeViewController {
     func show(_ readableType: ReadableType?) {
         switch readableType {
         case .savedItem(let viewModel):
-            show(viewModel)
+            navigationController?.pushViewController(
+                ReadableHostViewController(readableViewModel: viewModel),
+                animated: true
+            )
         case .recommendable(let viewModel):
-            show(viewModel)
+            navigationController?.pushViewController(
+                ReadableHostViewController(readableViewModel: viewModel),
+                animated: true
+            )
         case .webViewRecommendable(let viewModel):
-            showRecommendable(forWebView: viewModel)
-            // Since the view model is not publishing a direct request to present a url (e.g presentedWebReaderURL),
-            // we'll utilize its premium url to present a premium Pocket web page as necessary
             present(url: viewModel.premiumURL)
         case .webViewSavedItem(let viewModel):
-            showSavedItem(forWebView: viewModel)
-            // Since the view model is not publishing a direct request to present a url (e.g presentedWebReaderURL),
-            // we'll utilize its premium url to present a premium Pocket web page as necessary
             present(url: viewModel.premiumURL)
         case .none:
-            readerSubscriptions.removeAll()
+            break
         case .collection(let viewModel):
             showCollection(viewModel)
         }
@@ -429,7 +428,13 @@ extension HomeViewController {
         )
 
         viewModel.$selectedReadableViewModel.sink { [weak self] readable in
-            self?.show(readable)
+            guard let self, let readable else {
+                return
+            }
+            navigationController?.pushViewController(
+                ReadableHostViewController(readableViewModel: readable),
+                animated: true
+            )
         }.store(in: &slateDetailSubscriptions)
 
         viewModel.$selectedRecommendationToReport.sink { [weak self] recommendation in
@@ -456,7 +461,13 @@ extension HomeViewController {
         navigationController?.pushViewController(SharedWithYouListViewController(viewModel: viewModel), animated: true)
 
         viewModel.$selectedReadableViewModel.sink { [weak self] readable in
-            self?.show(readable)
+            guard let self, let readable else {
+                return
+            }
+            navigationController?.pushViewController(
+                ReadableHostViewController(readableViewModel: readable),
+                animated: true
+            )
         }.store(in: &sharedWithYouSubscriptions)
 
         viewModel.$presentedWebReaderURL.sink { [weak self] url in
@@ -473,90 +484,6 @@ extension HomeViewController {
                 self?.showCollection(viewModel)
             }
             .store(in: &sharedWithYouSubscriptions)
-    }
-
-    func show(_ recommendable: RecommendableItemViewModel?) {
-        readerSubscriptions.removeAll()
-        guard let recommendable else {
-            return
-        }
-        resetView(for: recommendable.readableSource)
-        navigationController?.pushViewController(
-            ReadableHostViewController(readableViewModel: recommendable),
-            animated: true
-        )
-
-        // TODO: Listen
-
-        recommendable.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
-            self?.present(alert: alert)
-        }.store(in: &readerSubscriptions)
-
-        recommendable.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
-            self?.present(activity: activity)
-        }.store(in: &readerSubscriptions)
-
-        recommendable.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
-            self?.present(url: url?.absoluteString)
-        }.store(in: &readerSubscriptions)
-
-        recommendable.$isPresentingReaderSettings.receive(on: DispatchQueue.main).sink { [weak self] isPresenting in
-            self?.presentReaderSettings(isPresenting, on: recommendable)
-        }.store(in: &readerSubscriptions)
-
-        recommendable.$selectedItemToReport.receive(on: DispatchQueue.main).sink { [weak self] selected in
-            self?.report(selected?.givenURL, recommendationId: selected?.recommendation?.analyticsID)
-        }.store(in: &readerSubscriptions)
-
-        recommendable.events.receive(on: DispatchQueue.main).sink { [weak self] event in
-            switch event {
-            case .contentUpdated:
-                break
-            case .archive, .delete:
-                self?.popToPreviousScreen()
-            }
-        }.store(in: &readerSubscriptions)
-    }
-
-    func show(_ savedItem: SavedItemViewModel) {
-        resetView(for: savedItem.readableSource)
-        readerSubscriptions.removeAll()
-
-        navigationController?.pushViewController(
-            ReadableHostViewController(readableViewModel: savedItem),
-            animated: true
-        )
-
-        // TODO: Listen
-
-        savedItem.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
-            self?.present(alert: alert)
-        }.store(in: &readerSubscriptions)
-
-        savedItem.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
-            self?.present(activity: activity)
-        }.store(in: &readerSubscriptions)
-
-        savedItem.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
-            self?.present(url: url?.absoluteString)
-        }.store(in: &readerSubscriptions)
-
-        savedItem.$isPresentingReaderSettings.receive(on: DispatchQueue.main).sink { [weak self] isPresenting in
-            self?.presentReaderSettings(isPresenting, on: savedItem)
-        }.store(in: &readerSubscriptions)
-
-        savedItem.$presentedAddTags.receive(on: DispatchQueue.main).sink { [weak self] addTagsViewModel in
-            self?.present(addTagsViewModel)
-        }.store(in: &readerSubscriptions)
-
-        savedItem.events.receive(on: DispatchQueue.main).sink { [weak self] event in
-            switch event {
-            case .contentUpdated:
-                break
-            case .archive, .delete:
-                self?.popToPreviousScreen()
-            }
-        }.store(in: &readerSubscriptions)
     }
 
     private func showCollection(_ viewModel: CollectionViewModel) {
@@ -600,9 +527,15 @@ extension HomeViewController {
             case .collection(let collection):
                 self?.showCollection(collection)
             case .savedItem(let savedItem):
-                self?.show(savedItem)
+                self?.navigationController?.pushViewController(
+                    ReadableHostViewController(readableViewModel: savedItem),
+                    animated: true
+                )
             case .recommendable(let recommendation):
-                self?.show(recommendation)
+                self?.navigationController?.pushViewController(
+                    ReadableHostViewController(readableViewModel: recommendation),
+                    animated: true
+                )
             default:
                 break
             }
@@ -632,42 +565,6 @@ extension HomeViewController {
         }.store(in: &subscriptionSet)
 
         collectionSubscriptions.push(subscriptionSet)
-    }
-
-    private func showRecommendable(forWebView viewModel: RecommendableItemViewModel) {
-        resetView(for: viewModel.readableSource)
-        viewModel.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
-            self?.present(alert: alert)
-        }.store(in: &readerSubscriptions)
-
-        viewModel.$selectedItemToReport.receive(on: DispatchQueue.main).sink { [weak self] item in
-            self?.report(item?.givenURL, recommendationId: item?.recommendation?.analyticsID)
-        }.store(in: &readerSubscriptions)
-
-        viewModel.events.receive(on: DispatchQueue.main).sink { [weak self] event in
-            switch event {
-            case .contentUpdated:
-                break
-            case .archive, .delete:
-                self?.popToPreviousScreen()
-            }
-        }.store(in: &readerSubscriptions)
-    }
-
-    private func showSavedItem(forWebView viewModel: SavedItemViewModel) {
-        resetView(for: viewModel.readableSource)
-        viewModel.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
-            self?.present(alert: alert)
-        }.store(in: &readerSubscriptions)
-
-        viewModel.events.receive(on: DispatchQueue.main).sink { [weak self] event in
-            switch event {
-            case .contentUpdated:
-                break
-            case .archive, .delete:
-                self?.popToPreviousScreen()
-            }
-        }.store(in: &readerSubscriptions)
     }
 
     func report(_ givenURL: String?, recommendationId: String?) {
