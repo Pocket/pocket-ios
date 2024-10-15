@@ -580,24 +580,6 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         tracker.track(event: event, contexts)
     }
 
-    private func trackImpression(of item: CDSavedItem) {
-        guard let indexPath = self.itemsController.indexPath(forObject: item) else {
-            return
-        }
-
-        var contexts: [Context] = [
-            UIContext.saves.item(index: UIIndex(indexPath.item)),
-            ContentContext(url: item.bestURL)
-        ]
-
-        if selectedFilters.contains(.favorites) {
-            contexts.insert(UIContext.saves.favorites, at: 0)
-        }
-
-        let event = ImpressionEvent(component: .card, requirement: .instant)
-        self.tracker.track(event: event, contexts)
-    }
-
     private func withSavedItem(from cell: ItemsListCell<ItemIdentifier>, handler: ((CDSavedItem) -> Void)?) {
         guard case .item(let identifier) = cell, let item = bareItem(with: identifier) else {
             return
