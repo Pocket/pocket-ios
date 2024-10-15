@@ -94,8 +94,8 @@ class ReadableViewController: UIViewController {
             self?.updateContent()
         }.store(in: &subscriptions)
 
-        // we only want highlights for saved items
         if let viewModel = readableViewModel as? SavedItemViewModel {
+            // we only want highlights for saved items
             viewModel
                 .$isPresentingHighlights
                 .receive(on: DispatchQueue.main)
@@ -121,7 +121,8 @@ class ReadableViewController: UIViewController {
                 }
                 .store(in: &subscriptions)
 
-            viewModel.$isPresentingPremiumUpsell
+            viewModel
+                .$isPresentingPremiumUpsell
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] isPresenting in
                     guard let self, isPresenting else {
@@ -131,7 +132,8 @@ class ReadableViewController: UIViewController {
                 }
                 .store(in: &subscriptions)
 
-            viewModel.$isPresentingHooray
+            viewModel
+                .$isPresentingHooray
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] isPresenting in
                     guard let self, isPresenting else {
@@ -141,21 +143,37 @@ class ReadableViewController: UIViewController {
                 }
                 .store(in: &subscriptions)
 
-            viewModel.$presentedAlert.sink { [weak self] alert in
-                self?.present(alert: alert)
-            }.store(in: &subscriptions)
+            viewModel
+                .$presentedAlert
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] alert in
+                    self?.present(alert: alert)
+                }
+                .store(in: &subscriptions)
 
-            viewModel.$presentedWebReaderURL.sink { [weak self] url in
-                self?.present(url: url)
-            }.store(in: &subscriptions)
+            viewModel
+                .$presentedWebReaderURL
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] url in
+                    self?.present(url: url)
+                }
+                .store(in: &subscriptions)
 
-            viewModel.$sharedActivity.sink { [weak self] activity in
-                self?.present(activity: activity)
-            }.store(in: &subscriptions)
+            viewModel
+                .$sharedActivity
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] activity in
+                    self?.present(activity: activity)
+                }
+                .store(in: &subscriptions)
 
-            viewModel.$isPresentingReaderSettings.sink { [weak self] isPresenting in
-                self?.presentReaderSettings(isPresenting, on: readable)
-            }.store(in: &subscriptions)
+            viewModel
+                .$isPresentingReaderSettings
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] isPresenting in
+                    self?.presentReaderSettings(isPresenting, on: readable)
+                }
+                .store(in: &subscriptions)
 
             viewModel.$presentedAddTags.sink { [weak self] addTagsViewModel in
                 self?.present(viewModel: addTagsViewModel)
@@ -163,13 +181,81 @@ class ReadableViewController: UIViewController {
 
             viewModel.events.sink { [weak self] event in
                 switch event {
-                case .contentUpdated:
+                case .contentUpdated, .save:
                     break
                 case .archive, .delete:
                     self?.popToPreviousScreen(navigationController: self?.navigationController)
                 }
             }.store(in: &subscriptions)
+        } else if let viewModel = readableViewModel as? RecommendableItemViewModel {
+            viewModel
+                .$presentedAlert
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] alert in
+                    self?.present(alert: alert)
+                }
+                .store(in: &subscriptions)
+
+            viewModel
+                .$presentedWebReaderURL
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] url in
+                    self?.present(url: url)
+                }
+                .store(in: &subscriptions)
+
+            viewModel
+                .$presentedWebReaderURL
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] url in
+                    self?.present(url: url)
+                }
+                .store(in: &subscriptions)
+
+            viewModel
+                .$sharedActivity
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] activity in
+                    self?.present(activity: activity)
+                }
+                .store(in: &subscriptions)
+
+            viewModel
+                .$isPresentingReaderSettings
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] isPresenting in
+                    self?.presentReaderSettings(isPresenting, on: readable)
+                }
+                .store(in: &subscriptions)
+
+            viewModel
+                .$selectedItemToReport
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] selected in
+                self?.report(selected?.givenURL, recommendationId: selected?.recommendation?.analyticsID)
+            }
+            .store(in: &subscriptions)
         }
+    }
+
+    private func report(_ givenURL: String?, recommendationId: String?) {
+        guard let givenURL, let recommendationId else {
+            return
+        }
+
+        let host = ReportRecommendationHostingController(
+            givenURL: givenURL,
+            recommendationId: recommendationId,
+            tracker: readableViewModel.tracker,
+            onDismiss: {}
+        )
+
+        host.modalPresentationStyle = .formSheet
+        guard let presentedVC = self.presentedViewController else {
+            self.present(host, animated: true)
+            return
+        }
+        presentedVC.present(host, animated: true)
     }
 
     private func present(alert: PocketAlert?) {
@@ -224,9 +310,7 @@ class ReadableViewController: UIViewController {
             return
         }
 
-        let readerSettingsVC = ReaderSettingsViewController(settings: readable.readerSettings) { [weak self] in
-            // self?.model.clearIsPresentingReaderSettings()
-        }
+        let readerSettingsVC = ReaderSettingsViewController(settings: readable.readerSettings) {}
         readerSettingsVC.configurePocketDefaultDetents()
         self.present(readerSettingsVC, animated: true)
     }

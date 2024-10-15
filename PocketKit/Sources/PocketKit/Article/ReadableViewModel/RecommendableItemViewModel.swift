@@ -368,6 +368,7 @@ extension RecommendableItemViewModel {
         }
         source.save(item: item)
         trackSave()
+        _events.send(.save)
         completion(true)
     }
 

@@ -5,6 +5,7 @@
 import Sync
 
 enum ReadableEvent {
+    case save
     case archive
     case delete
     case contentUpdated
