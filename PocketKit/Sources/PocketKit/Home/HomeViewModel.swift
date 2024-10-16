@@ -476,7 +476,6 @@ extension HomeViewModel {
             let slate = recommendation.slate,
             let slateLineup = slate.slateLineup
         else {
-            Log.capture(message: "Selected recommendation without an associated slate and slatelineup, not logging analytics")
             return
         }
 
@@ -657,7 +656,6 @@ extension HomeViewModel {
         var snapshot = Snapshot()
         snapshot.appendSections([.loading])
         snapshot.appendItems([.loading], toSection: .loading)
-        Log.breadcrumb(category: "home", level: .debug, message: "➡️ Sending loading snapshot.")
         return snapshot
     }
 }
@@ -914,28 +912,21 @@ extension HomeViewModel {
             return
         case .sharedWithYou(let objectID):
             guard let sharedWithYouItem = source.viewObject(id: objectID) as? CDSharedWithYouItem else {
-                Log.breadcrumb(category: "home", level: .debug, message: "Could retrieve Shared With You Item from objectID: \(String(describing: objectID))")
-                Log.capture(message: "Shared With You Item is null on willDisplay Home Recent Saves")
                 return
             }
             tracker.track(event: Events.Home.sharedWithYouCardImpression(url: sharedWithYouItem.url, positionInList: indexPath.item))
         case .recentSaves(let objectID):
             guard let savedItem = source.viewObject(id: objectID) as? CDSavedItem else {
-                Log.breadcrumb(category: "home", level: .debug, message: "Could not turn recent save into Saved Item from objectID: \(String(describing: objectID))")
-                Log.capture(message: "SavedItem is null on willDisplay Home Recent Saves")
                 return
             }
             tracker.track(event: Events.Home.RecentSavesCardImpression(url: savedItem.url, positionInList: indexPath.item))
             return
         case .recommendationHero(let objectID), .recommendationCarousel(let objectID):
             guard let recommendation = source.viewObject(id: objectID) as? CDRecommendation else {
-                Log.breadcrumb(category: "home", level: .debug, message: "Could not turn recomendation into Recommendation from objectID: \(String(describing: objectID))")
-                Log.capture(message: "Recommendation is null on willDisplay Home Recommendation")
                 return
             }
             let item = recommendation.item
             guard recommendation.slate?.slateLineup != nil else {
-                Log.breadcrumb(category: "home", level: .debug, message: "Tried to display recommendation without slate and slatelineup, not logging analytics")
                 return
             }
 
@@ -1047,7 +1038,6 @@ extension HomeViewModel: NSFetchedResultsControllerDelegate {
                 newSnapshot.reloadItems(reloadedItems)
                 newSnapshot.reconfigureItems(reconfiguredItems)
                 updateRecentSavesWidget()
-                Log.breadcrumb(category: "home", level: .debug, message: "➡️ Building recent saves section in didChangeContentWith. #reloaded items: \(reloadedItems.count), #reconfigured items: \(reconfiguredItems.count)")
             }
         }
 
@@ -1055,7 +1045,6 @@ extension HomeViewModel: NSFetchedResultsControllerDelegate {
             // If we are offline don't try and do anything with Slates, and let the snapshot show the offline
             setRecommendationsWidgetOffline()
             self.snapshot = newSnapshot
-            Log.breadcrumb(category: "home", level: .debug, message: "➡️ Providing offline snapshot.")
             return
         }
 
@@ -1078,7 +1067,6 @@ extension HomeViewModel: NSFetchedResultsControllerDelegate {
             // Tell the new snapshot to reconfigure just the ones that exist
             newSnapshot.reconfigureItems(reconfiguredItems)
             updateRecommendationsWidget()
-            Log.breadcrumb(category: "home", level: .debug, message: "➡️ Building recommendations section in didChangeContentWith. #reloaded items: \(reloadedItems.count), #reconfigured items: \(reconfiguredItems.count)")
         }
 
         if let session = appSession.currentSession,
@@ -1097,7 +1085,6 @@ extension HomeViewModel: NSFetchedResultsControllerDelegate {
                 .filter { existingItemIdentifiers.contains($0) }
             newSnapshot.reloadItems(reloadedItems)
             newSnapshot.reconfigureItems(reconfiguredItems)
-            Log.breadcrumb(category: "home", level: .debug, message: "➡️ Building shared with you section in didChangeContentWith. #reloaded items: \(reloadedItems.count), #reconfigured items: \(reconfiguredItems.count)")
         }
 
         self.snapshot = newSnapshot

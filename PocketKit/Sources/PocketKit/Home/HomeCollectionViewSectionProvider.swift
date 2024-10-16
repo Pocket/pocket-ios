@@ -39,7 +39,6 @@ class HomeViewControllerSectionProvider {
     func recentSavesSection(in viewModel: HomeViewModel, environment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? {
         let numberOfRecentSavesItems = viewModel.numberOfRecentSavesItem()
         guard numberOfRecentSavesItems > 0 else {
-            Log.breadcrumb(category: "home", level: .debug, message: "➡️ Returning an empty section when building Recent Saves section in section provider. Reason: number of items is 0.")
             return .empty()
         }
 
@@ -104,7 +103,6 @@ class HomeViewControllerSectionProvider {
 
         guard !recommendations.isEmpty,
               let hero = viewModel.recommendationHeroViewModel(for: recommendations[safe: 0]?.objectID) else {
-            Log.breadcrumb(category: "home", level: .debug, message: "➡️ Returning an empty section when building Hero section in section provider. Reason: could not retrieve the recommendation.")
             return .empty()
         }
         let width = environment.container.effectiveContentSize.width
@@ -170,7 +168,6 @@ class HomeViewControllerSectionProvider {
     private func carouselSection(for slateID: NSManagedObjectID, in viewModel: HomeViewModel, environment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? {
         let numberOfCarouselItems = viewModel.numberOfCarouselItemsForSlate(with: slateID)
         guard numberOfCarouselItems > 0 else {
-            Log.breadcrumb(category: "home", level: .debug, message: "➡️ Returning an empty section when building Carousel section in section provider. Reason: number of carousel items is 0.")
             return .empty()
         }
 
@@ -195,7 +192,6 @@ class HomeViewControllerSectionProvider {
     func sharedWithYouSection(in viewModel: HomeViewModel, environment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? {
         let numberOfSharedWithYouItems = viewModel.numberOfSharedWithYouItems
         guard numberOfSharedWithYouItems > 0 else {
-            Log.breadcrumb(category: "home", level: .debug, message: "➡️ Returning an empty section when building Shared With You section in section provider. Reason: number of shared with you items is 0.")
             return .empty()
         }
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
@@ -244,7 +240,6 @@ class HomeViewControllerSectionProvider {
     private func recommendationCellGridSection(for slateID: NSManagedObjectID, in viewModel: HomeViewModel, environment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection {
         let numberOfCarouselItems = viewModel.numberOfCarouselItemsForSlate(with: slateID)
         guard numberOfCarouselItems > 0 else {
-            Log.breadcrumb(category: "home", level: .debug, message: "➡️ Returning an empty section when building Carousel Grid section in section provider. Reason: number of carousel items is 0.")
             return .empty()
         }
 
