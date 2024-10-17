@@ -17,34 +17,39 @@
                         "remoteID": "recommended-item-1",
                         "givenUrl": "https://example.com/recommended-item-1",
                         "resolvedUrl": "https://example.com/recommended-item-1",
-                        "title": "Slate 1, Recommendation 1",
                         "language": "en",
-                        "topImageUrl": "http://example.com/slate-1-rec-1/top-image.png",
                         "timeToRead": 1,
                         "wordCount": 200,
-                        "authors": [
-                            {
-                                "__typename": "Author",
-                                "id": "author-1",
-                                "name": "Jacob",
-                                "url": "http://example.com/authors/author-1"
+                        "preview" : {
+            "__typename": "[type-name-here]",
+                            "authors": [
+                                {
+                                    "__typename": "Author",
+                                    "id": "author-1",
+                                    "name": "Jacob",
+                                    "url": "https://example.com/authors/jacob"
+                                },
+                                {
+                                    "__typename": "Author",
+                                    "id": "author-2",
+                                    "name": "David",
+                                    "url": "https://example.com/authors/david"
+                                }
+                            ],
+                            "excerpt": "Cursus Aenean Elit",
+                            "title": "Slate 1, Recommendation 1",
+                            "datePublished": "2021-01-01 12:01:01",
+                            "image" : {
+                        "__typename": "[type-name-here]",
+                                "url": "http://example.com/slate-1-rec-1/top-image.png"
                             },
-                            {
-                                "__typename": "Author",
-                                "id": "author-2",
-                                "name": "David",
-                                "url": "http://example.com/authors/author-2"
+                            "domain": {
+                                "__typename": "[some-type-name]",
+                                "name": "slate-1-rec-1.example.com",
+                                "logo": "https://slate-1-rec-1.example.com/logo.png"
                             }
-                        ],
-                        "datePublished": "2021-01-01 12:01:01",
-                        "images": [],
-                        "excerpt": "Cursus Aenean Elit",
-                        "domain": "slate-1-rec-1.example.com",
-                        "domainMetadata": {
-                            "__typename": "[some-type-name]",
-                            "name": "Lifehacker",
-                            "logo": "https://slate-1-rec-1.example.com/logo.png"
                         },
+                        "images": [],
                         "isArticle": true,
                         "hasImage": "HAS_IMAGES",
                         "hasVideo": "HAS_VIDEOS",
@@ -60,20 +65,25 @@
                         "remoteID": "recommended-item-2",
                         "givenUrl": "https://example.com/recommended-item-2",
                         "resolvedUrl": "https://example.com/recommended-item-2",
-                        "title": "Slate 1, Recommendation 2",
                         "language": "en",
-                        "topImageUrl": "http://example.com/slate-1-rec-2/top-image.png",
                         "timeToRead": 2,
                         "wordCount": 200,
-                        "authors": [],
-                        "datePublished": "2021-01-01 12:01:01",
                         "images": [],
-                        "excerpt": "Cursus Aenean Elit",
-                        "domain": "slate-1-rec-2.example.com",
-                        "domainMetadata": {
-                            "__typename": "[some-type-name]",
-                            "name": "Lifehacker",
-                            "logo": "https://slate-1-rec-2.example.com/logo.png"
+                        "preview" : {
+            "__typename": "[type-name-here]",
+                            "authors": [],
+                            "excerpt": "Cursus Aenean Elit",
+                            "title": "Slate 1, Recommendation 2",
+                            "datePublished": "2021-01-01 12:01:01",
+                            "image" : {
+                        "__typename": "[type-name-here]",
+                                "url": "http://example.com/slate-1-rec-2/top-image.png"
+                            },
+                            "domain": {
+                                "__typename": "[some-type-name]",
+                                "name": "slate-1-rec-2.example.com",
+                                "logo": "https://slate-1-rec-1.example.com/logo.png"
+                            }
                         },
                         "isArticle": true,
                         "hasImage": "HAS_IMAGES",
@@ -90,20 +100,25 @@
                         "remoteID": "recommended-item-3",
                         "givenUrl": "https://example.com/recommended-item-3",
                         "resolvedUrl": "https://example.com/recommended-item-3",
-                        "title": "Slate 1, Recommendation 3",
                         "language": "en",
-                        "topImageUrl": "http://example.com/slate-1-rec-3/top-image.png",
                         "timeToRead": 3,
                         "wordCount": 200,
-                        "authors": [],
-                        "datePublished": "2021-01-01 12:01:01",
                         "images": [],
-                        "excerpt": "Cursus Aenean Elit",
-                        "domain": "slate-1-rec-3.example.com",
-                        "domainMetadata": {
-                            "__typename": "[some-type-name]",
-                            "name": "Lifehacker",
-                            "logo": "https://slate-1-rec-3.example.com/logo.png"
+                        "preview" : {
+            "__typename": "[type-name-here]",
+                            "authors": [],
+                            "excerpt": "Cursus Aenean Elit",
+                            "title": "Slate 1, Recommendation 3",
+                            "datePublished": "2021-01-01 12:01:01",
+                            "image" : {
+                        "__typename": "[type-name-here]",
+                                "url": "http://example.com/slate-1-rec-3/top-image.png"
+                            },
+                            "domain": {
+                                "__typename": "[some-type-name]",
+                                "name": "slate-1-rec-1.example.com",
+                                "logo": "https://slate-1-rec-3.example.com/logo.png"
+                            }
                         },
                         "isArticle": true,
                         "hasImage": "HAS_IMAGES",

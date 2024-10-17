@@ -30,16 +30,9 @@
                 "remoteID": "archived-item-2",
                 "givenUrl": "https://example.com/items/archived-item-2",
                 "resolvedUrl": "https://example.com/items/archived-item-2",
-                "title": "Archived Item 2",
-                "topImageUrl": "https://example.com/items/archived-item-2/images/top-image.jpg",
-                "domain": "wired.com",
                 "language": "en",
                 "timeToRead": 6,
                 "wordCount": 500,
-                "domainMetadata": null,
-                "authors": [],
-                "datePublished": "1999-01-01 12:01:01",
-                "excerpt": "Vehicula Nibh Ligula Porta Magna",
                 "images": [],
                 "isArticle": true,
                 "hasImage": "HAS_IMAGES",
@@ -51,6 +44,22 @@
                   "title": "Archived Item 2",
                   "excerpt": null,
                   "publisher": null
+                },
+                "preview" : {
+            "__typename": "[type-name-here]",
+                    "authors": [],
+                    "excerpt": "Vehicula Nibh Ligula Porta Magna",
+                    "title": "Archived Item 2",
+                    "datePublished": "2021-01-01 12:01:01",
+                    "image" : {
+                        "__typename": "[type-name-here]",
+                        "url": "https://example.com/items/archived-item-2/images/top-image.jpg"
+                    },
+                    "domain": {
+                        "__typename": "[type-name-here]",
+                        "name": "wired.com",
+                        "logo": "http://example.com/item-1/domain-logo.jpg"
+                    }
                 }
               }
             }
@@ -72,28 +81,33 @@
               "item": {
                 "__typename": "Item",
                 "remoteID": "archived-item-1",
-                "title": "Archived Item 1",
                 "givenUrl": "http://example.com/items/archived-item-1",
                 "resolvedUrl": "http://example.com/items/archived-item-1",
-                "topImageUrl": "https://example.com/archived-item-1/top-image.jpg",
-                "domain": "wired.com",
                 "language": "en",
                 "timeToRead": 6,
                 "wordCount": 500,
-                "excerpt": "Risus Aenean Ultricies Nullam Vehicula",
-                "datePublished": "2001-01-01 12:01:01",
-                "authors": [
-                  {
-                    "__typename": "Author",
-                    "id": "archived-author-1",
-                    "name": "Socrates",
-                    "url": "https://example.com/authors/socrates"
-                  }
-                ],
-                "domainMetadata": {
-                  "__typename": "[type-name-here]",
-                  "name": "WIRED",
-                  "logo": "http://example.com/item-1/domain-logo.jpg"
+                "preview" : {
+            "__typename": "[type-name-here]",
+                    "authors": [
+                      {
+                        "__typename": "Author",
+                        "id": "archived-author-1",
+                        "name": "Socrates",
+                        "url": "https://example.com/authors/socrates"
+                      }
+                    ],
+                    "excerpt": "Vehicula Nibh Ligula Porta Magna",
+                    "title": "Archived Item 2",
+                    "datePublished": "2021-01-01 12:01:01",
+                    "image" : {
+                        "__typename": "[type-name-here]",
+                        "url": "https://example.com/items/archived-item-1/images/top-image.jpg"
+                    },
+                    "domain": {
+                        "__typename": "[type-name-here]",
+                        "name": "wired.com",
+                        "logo": "http://example.com/item-1/domain-logo.jpg"
+                    }
                 },
                 "images": [
                   {

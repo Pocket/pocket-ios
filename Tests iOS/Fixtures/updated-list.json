@@ -32,21 +32,26 @@
                 "remoteID": "item-1",
                 "givenUrl": "http://localhost:8080/hello",
                 "resolvedUrl": "http://localhost:8080/hello",
-                "title": "Updated Item 1",
-                "topImageUrl": "https://example.com/item-1/top-image.jpg",
-                "domain": null,
                 "language": "en",
                 "timeToRead": 6,
                 "wordCount": 500,
                 "marticle": [],
-                "authors": [],
                 "collection": null,
-                "datePublished": "2021-01-01 12:01:01",
-                "excerpt": "Cursus Aenean Elit",
-                "domainMetadata": {
-                  "__typename": "[type-name-here]",
-                  "name": "WIRED",
-                  "logo": "http://example.com/item-1/domain-logo.jpg"
+                "preview" : {
+            "__typename": "[type-name-here]",
+                    "authors": [],
+                    "excerpt": "Cursus Aenean Elit",
+                    "title": "Updated Item 1",
+                    "datePublished": "2021-01-01 12:01:01",
+                    "image" : {
+                        "__typename": "[type-name-here]",
+                        "url": "https://example.com/item-1/top-image.jpg"
+                    },
+                    "domain": {
+                        "__typename": "[type-name-here]",
+                        "name": "WIRED",
+                        "logo": "http://example.com/item-1/domain-logo.jpg"
+                    }
                 },
                 "images": [
                   {
@@ -84,22 +89,11 @@
                 "remoteID": "item-2",
                 "givenUrl": "https://example.com/item-2",
                 "resolvedUrl": "https://example.com/item-2",
-                "title": "Updated Item 2",
-                "topImageUrl": "https://example.com/item-2/top-image.jpg",
-                "domain": null,
                 "language": "en",
                 "timeToRead": 6,
                 "wordCount": 500,
                 "marticle": [],
-                "authors": [],
                 "collection": null,
-                "datePublished": "2021-01-01 12:01:01",
-                "excerpt": "Cursus Aenean Elit",
-                "domainMetadata": {
-                  "__typename": "[type-name-here]",
-                  "name": "WIRED",
-                  "logo": "http://example.com/item-2/domain-logo.jpg"
-                },
                 "images": [
                   {
                     "__typename": "[type-name-here]",
@@ -112,7 +106,23 @@
                 "isArticle": true,
                 "hasImage": "HAS_IMAGES",
                 "hasVideo": "HAS_VIDEOS",
-                "syndicatedArticle": null
+                "syndicatedArticle": null,
+                "preview" : {
+            "__typename": "[type-name-here]",
+                    "authors": [],
+                    "excerpt": "Cursus Aenean Elit",
+                    "title": "Updated Item 2",
+                    "datePublished": "2021-01-01 12:01:01",
+                    "image" : {
+                        "__typename": "[type-name-here]",
+                        "url": "https://example.com/item-2/top-image.jpg"
+                    },
+                    "domain": {
+                        "__typename": "[type-name-here]",
+                        "name": "WIRED",
+                        "logo": "http://example.com/item-2/domain-logo.jpg"
+                    }
+                }
               }
             }
           }

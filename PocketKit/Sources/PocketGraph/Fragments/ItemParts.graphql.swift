@@ -5,7 +5,7 @@
 
 public struct ItemParts: PocketGraph.SelectionSet, Fragment {
   public static var fragmentDefinition: StaticString {
-    #"fragment ItemParts on Item { __typename remoteID: itemId givenUrl resolvedUrl title language topImageUrl timeToRead domain datePublished isArticle hasImage hasVideo wordCount authors { __typename id name url } collection { __typename slug title imageUrl } marticle { __typename ...MarticleTextParts ...ImageParts ...MarticleDividerParts ...MarticleTableParts ...MarticleHeadingParts ...MarticleCodeBlockParts ...VideoParts ...MarticleBulletedListParts ...MarticleNumberedListParts ...MarticleBlockquoteParts } excerpt domainMetadata { __typename ...DomainMetadataParts } images { __typename height width src imageId } syndicatedArticle { __typename ...SyndicatedArticleParts } }"#
+    #"fragment ItemParts on Item { __typename remoteID: itemId givenUrl resolvedUrl language timeToRead isArticle hasImage hasVideo wordCount collection { __typename slug title imageUrl } preview { __typename authors { __typename id name url } excerpt title datePublished image { __typename url } domain { __typename ...DomainMetadataParts } } marticle { __typename ...MarticleTextParts ...ImageParts ...MarticleDividerParts ...MarticleTableParts ...MarticleHeadingParts ...MarticleCodeBlockParts ...VideoParts ...MarticleBulletedListParts ...MarticleNumberedListParts ...MarticleBlockquoteParts } images { __typename height width src imageId } syndicatedArticle { __typename ...SyndicatedArticleParts } }"#
   }
 
   public let __data: DataDict
@@ -17,21 +17,15 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
     .field("itemId", alias: "remoteID", String.self),
     .field("givenUrl", PocketGraph.Url.self),
     .field("resolvedUrl", PocketGraph.Url?.self),
-    .field("title", String?.self),
     .field("language", String?.self),
-    .field("topImageUrl", PocketGraph.Url?.self),
     .field("timeToRead", Int?.self),
-    .field("domain", String?.self),
-    .field("datePublished", PocketGraph.DateString?.self),
     .field("isArticle", Bool?.self),
     .field("hasImage", GraphQLEnum<PocketGraph.Imageness>?.self),
     .field("hasVideo", GraphQLEnum<PocketGraph.Videoness>?.self),
     .field("wordCount", Int?.self),
-    .field("authors", [Author?]?.self),
     .field("collection", Collection?.self),
+    .field("preview", Preview?.self),
     .field("marticle", [Marticle]?.self),
-    .field("excerpt", String?.self),
-    .field("domainMetadata", DomainMetadata?.self),
     .field("images", [Image?]?.self),
     .field("syndicatedArticle", SyndicatedArticle?.self),
   ] }
@@ -44,19 +38,10 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
   public var givenUrl: PocketGraph.Url { __data["givenUrl"] }
   /// If the givenUrl redirects (once or many times), this is the final url. Otherwise, same as givenUrl
   public var resolvedUrl: PocketGraph.Url? { __data["resolvedUrl"] }
-  /// The title as determined by the parser.
-  public var title: String? { __data["title"] }
   /// The detected language of the article
   public var language: String? { __data["language"] }
-  /// The page's / publisher's preferred thumbnail image
-  @available(*, deprecated, message: "use the topImage object")
-  public var topImageUrl: PocketGraph.Url? { __data["topImageUrl"] }
   /// How long it will take to read the article (TODO in what time unit? and by what calculation?)
   public var timeToRead: Int? { __data["timeToRead"] }
-  /// The domain, such as 'getpocket.com' of the resolved_url
-  public var domain: String? { __data["domain"] }
-  /// The date the article was published
-  public var datePublished: PocketGraph.DateString? { __data["datePublished"] }
   /// true if the item is an article
   public var isArticle: Bool? { __data["isArticle"] }
   /// 0=no images, 1=contains images, 2=is an image
@@ -65,16 +50,12 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
   public var hasVideo: GraphQLEnum<PocketGraph.Videoness>? { __data["hasVideo"] }
   /// Number of words in the article
   public var wordCount: Int? { __data["wordCount"] }
-  /// List of Authors involved with this article
-  public var authors: [Author?]? { __data["authors"] }
   /// If the item is a collection allow them to get the collection information
   public var collection: Collection? { __data["collection"] }
+  /// The client preview/display logic for this url. The requires for each object should be kept in sync with the sub objects requires field.
+  public var preview: Preview? { __data["preview"] }
   /// The Marticle format of the article, used by clients for native article view.
   public var marticle: [Marticle]? { __data["marticle"] }
-  /// A snippet of text from the article
-  public var excerpt: String? { __data["excerpt"] }
-  /// Additional information about the item domain, when present, use this for displaying the domain name
-  public var domainMetadata: DomainMetadata? { __data["domainMetadata"] }
   /// Array of images within an article
   public var images: [Image?]? { __data["images"] }
   /// If the item has a syndicated counterpart the syndication information
@@ -84,21 +65,15 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
     remoteID: String,
     givenUrl: PocketGraph.Url,
     resolvedUrl: PocketGraph.Url? = nil,
-    title: String? = nil,
     language: String? = nil,
-    topImageUrl: PocketGraph.Url? = nil,
     timeToRead: Int? = nil,
-    domain: String? = nil,
-    datePublished: PocketGraph.DateString? = nil,
     isArticle: Bool? = nil,
     hasImage: GraphQLEnum<PocketGraph.Imageness>? = nil,
     hasVideo: GraphQLEnum<PocketGraph.Videoness>? = nil,
     wordCount: Int? = nil,
-    authors: [Author?]? = nil,
     collection: Collection? = nil,
+    preview: Preview? = nil,
     marticle: [Marticle]? = nil,
-    excerpt: String? = nil,
-    domainMetadata: DomainMetadata? = nil,
     images: [Image?]? = nil,
     syndicatedArticle: SyndicatedArticle? = nil
   ) {
@@ -108,21 +83,15 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
         "remoteID": remoteID,
         "givenUrl": givenUrl,
         "resolvedUrl": resolvedUrl,
-        "title": title,
         "language": language,
-        "topImageUrl": topImageUrl,
         "timeToRead": timeToRead,
-        "domain": domain,
-        "datePublished": datePublished,
         "isArticle": isArticle,
         "hasImage": hasImage,
         "hasVideo": hasVideo,
         "wordCount": wordCount,
-        "authors": authors._fieldData,
         "collection": collection._fieldData,
+        "preview": preview._fieldData,
         "marticle": marticle._fieldData,
-        "excerpt": excerpt,
-        "domainMetadata": domainMetadata._fieldData,
         "images": images._fieldData,
         "syndicatedArticle": syndicatedArticle._fieldData,
       ],
@@ -130,47 +99,6 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
         ObjectIdentifier(ItemParts.self)
       ]
     ))
-  }
-
-  /// Author
-  ///
-  /// Parent Type: `Author`
-  public struct Author: PocketGraph.SelectionSet {
-    public let __data: DataDict
-    public init(_dataDict: DataDict) { __data = _dataDict }
-
-    public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Author }
-    public static var __selections: [ApolloAPI.Selection] { [
-      .field("__typename", String.self),
-      .field("id", PocketGraph.ID.self),
-      .field("name", String?.self),
-      .field("url", String?.self),
-    ] }
-
-    /// Unique id for that Author
-    public var id: PocketGraph.ID { __data["id"] }
-    /// Display name
-    public var name: String? { __data["name"] }
-    /// A url to that Author's site
-    public var url: String? { __data["url"] }
-
-    public init(
-      id: PocketGraph.ID,
-      name: String? = nil,
-      url: String? = nil
-    ) {
-      self.init(_dataDict: DataDict(
-        data: [
-          "__typename": PocketGraph.Objects.Author.typename,
-          "id": id,
-          "name": name,
-          "url": url,
-        ],
-        fulfilledFragments: [
-          ObjectIdentifier(ItemParts.Author.self)
-        ]
-      ))
-    }
   }
 
   /// Collection
@@ -208,6 +136,172 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
           ObjectIdentifier(ItemParts.Collection.self)
         ]
       ))
+    }
+  }
+
+  /// Preview
+  ///
+  /// Parent Type: `PocketMetadata`
+  public struct Preview: PocketGraph.SelectionSet {
+    public let __data: DataDict
+    public init(_dataDict: DataDict) { __data = _dataDict }
+
+    public static var __parentType: ApolloAPI.ParentType { PocketGraph.Interfaces.PocketMetadata }
+    public static var __selections: [ApolloAPI.Selection] { [
+      .field("__typename", String.self),
+      .field("authors", [Author]?.self),
+      .field("excerpt", String?.self),
+      .field("title", String?.self),
+      .field("datePublished", PocketGraph.ISOString?.self),
+      .field("image", Image?.self),
+      .field("domain", Domain?.self),
+    ] }
+
+    public var authors: [Author]? { __data["authors"] }
+    public var excerpt: String? { __data["excerpt"] }
+    public var title: String? { __data["title"] }
+    public var datePublished: PocketGraph.ISOString? { __data["datePublished"] }
+    public var image: Image? { __data["image"] }
+    public var domain: Domain? { __data["domain"] }
+
+    public init(
+      __typename: String,
+      authors: [Author]? = nil,
+      excerpt: String? = nil,
+      title: String? = nil,
+      datePublished: PocketGraph.ISOString? = nil,
+      image: Image? = nil,
+      domain: Domain? = nil
+    ) {
+      self.init(_dataDict: DataDict(
+        data: [
+          "__typename": __typename,
+          "authors": authors._fieldData,
+          "excerpt": excerpt,
+          "title": title,
+          "datePublished": datePublished,
+          "image": image._fieldData,
+          "domain": domain._fieldData,
+        ],
+        fulfilledFragments: [
+          ObjectIdentifier(ItemParts.Preview.self)
+        ]
+      ))
+    }
+
+    /// Preview.Author
+    ///
+    /// Parent Type: `Author`
+    public struct Author: PocketGraph.SelectionSet {
+      public let __data: DataDict
+      public init(_dataDict: DataDict) { __data = _dataDict }
+
+      public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Author }
+      public static var __selections: [ApolloAPI.Selection] { [
+        .field("__typename", String.self),
+        .field("id", PocketGraph.ID.self),
+        .field("name", String?.self),
+        .field("url", String?.self),
+      ] }
+
+      /// Unique id for that Author
+      public var id: PocketGraph.ID { __data["id"] }
+      /// Display name
+      public var name: String? { __data["name"] }
+      /// A url to that Author's site
+      public var url: String? { __data["url"] }
+
+      public init(
+        id: PocketGraph.ID,
+        name: String? = nil,
+        url: String? = nil
+      ) {
+        self.init(_dataDict: DataDict(
+          data: [
+            "__typename": PocketGraph.Objects.Author.typename,
+            "id": id,
+            "name": name,
+            "url": url,
+          ],
+          fulfilledFragments: [
+            ObjectIdentifier(ItemParts.Preview.Author.self)
+          ]
+        ))
+      }
+    }
+
+    /// Preview.Image
+    ///
+    /// Parent Type: `Image`
+    public struct Image: PocketGraph.SelectionSet {
+      public let __data: DataDict
+      public init(_dataDict: DataDict) { __data = _dataDict }
+
+      public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Image }
+      public static var __selections: [ApolloAPI.Selection] { [
+        .field("__typename", String.self),
+        .field("url", PocketGraph.Url.self),
+      ] }
+
+      /// The url of the image
+      public var url: PocketGraph.Url { __data["url"] }
+
+      public init(
+        url: PocketGraph.Url
+      ) {
+        self.init(_dataDict: DataDict(
+          data: [
+            "__typename": PocketGraph.Objects.Image.typename,
+            "url": url,
+          ],
+          fulfilledFragments: [
+            ObjectIdentifier(ItemParts.Preview.Image.self)
+          ]
+        ))
+      }
+    }
+
+    /// Preview.Domain
+    ///
+    /// Parent Type: `DomainMetadata`
+    public struct Domain: PocketGraph.SelectionSet {
+      public let __data: DataDict
+      public init(_dataDict: DataDict) { __data = _dataDict }
+
+      public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.DomainMetadata }
+      public static var __selections: [ApolloAPI.Selection] { [
+        .field("__typename", String.self),
+        .fragment(DomainMetadataParts.self),
+      ] }
+
+      /// The name of the domain (e.g., The New York Times)
+      public var name: String? { __data["name"] }
+      /// Url for the logo image
+      public var logo: PocketGraph.Url? { __data["logo"] }
+
+      public struct Fragments: FragmentContainer {
+        public let __data: DataDict
+        public init(_dataDict: DataDict) { __data = _dataDict }
+
+        public var domainMetadataParts: DomainMetadataParts { _toFragment() }
+      }
+
+      public init(
+        name: String? = nil,
+        logo: PocketGraph.Url? = nil
+      ) {
+        self.init(_dataDict: DataDict(
+          data: [
+            "__typename": PocketGraph.Objects.DomainMetadata.typename,
+            "name": name,
+            "logo": logo,
+          ],
+          fulfilledFragments: [
+            ObjectIdentifier(ItemParts.Preview.Domain.self),
+            ObjectIdentifier(DomainMetadataParts.self)
+          ]
+        ))
+      }
     }
   }
 
@@ -710,49 +804,6 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
           ]
         ))
       }
-    }
-  }
-
-  /// DomainMetadata
-  ///
-  /// Parent Type: `DomainMetadata`
-  public struct DomainMetadata: PocketGraph.SelectionSet {
-    public let __data: DataDict
-    public init(_dataDict: DataDict) { __data = _dataDict }
-
-    public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.DomainMetadata }
-    public static var __selections: [ApolloAPI.Selection] { [
-      .field("__typename", String.self),
-      .fragment(DomainMetadataParts.self),
-    ] }
-
-    /// The name of the domain (e.g., The New York Times)
-    public var name: String? { __data["name"] }
-    /// Url for the logo image
-    public var logo: PocketGraph.Url? { __data["logo"] }
-
-    public struct Fragments: FragmentContainer {
-      public let __data: DataDict
-      public init(_dataDict: DataDict) { __data = _dataDict }
-
-      public var domainMetadataParts: DomainMetadataParts { _toFragment() }
-    }
-
-    public init(
-      name: String? = nil,
-      logo: PocketGraph.Url? = nil
-    ) {
-      self.init(_dataDict: DataDict(
-        data: [
-          "__typename": PocketGraph.Objects.DomainMetadata.typename,
-          "name": name,
-          "logo": logo,
-        ],
-        fulfilledFragments: [
-          ObjectIdentifier(ItemParts.DomainMetadata.self),
-          ObjectIdentifier(DomainMetadataParts.self)
-        ]
-      ))
     }
   }
 

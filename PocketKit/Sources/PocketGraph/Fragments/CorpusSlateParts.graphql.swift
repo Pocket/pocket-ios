@@ -104,16 +104,14 @@ public struct CorpusSlateParts: PocketGraph.SelectionSet, Fragment {
       public var id: PocketGraph.ID { __data["id"] }
       /// The URL of the Approved Item.
       public var url: PocketGraph.Url { __data["url"] }
-      /// The title of the Approved Item.
-      public var title: String { __data["title"] }
       /// Time to read in minutes. Is nullable.
       public var timeToRead: Int? { __data["timeToRead"] }
-      /// The excerpt of the Approved Item.
-      public var excerpt: String { __data["excerpt"] }
       /// The image URL for this item's accompanying picture.
       public var imageUrl: PocketGraph.Url { __data["imageUrl"] }
       /// The name of the online publication that published this story.
       public var publisher: String { __data["publisher"] }
+      /// The preview of the search result
+      public var preview: Preview { __data["preview"] }
       /// If the Corpus Item is pocket owned with a specific type, this is the associated object (Collection or SyndicatedArticle).
       public var target: Target? { __data["target"] }
 
@@ -127,11 +125,10 @@ public struct CorpusSlateParts: PocketGraph.SelectionSet, Fragment {
       public init(
         id: PocketGraph.ID,
         url: PocketGraph.Url,
-        title: String,
         timeToRead: Int? = nil,
-        excerpt: String,
         imageUrl: PocketGraph.Url,
         publisher: String,
+        preview: Preview,
         target: Target? = nil
       ) {
         self.init(_dataDict: DataDict(
@@ -139,11 +136,10 @@ public struct CorpusSlateParts: PocketGraph.SelectionSet, Fragment {
             "__typename": PocketGraph.Objects.CorpusItem.typename,
             "id": id,
             "url": url,
-            "title": title,
             "timeToRead": timeToRead,
-            "excerpt": excerpt,
             "imageUrl": imageUrl,
             "publisher": publisher,
+            "preview": preview._fieldData,
             "target": target._fieldData,
           ],
           fulfilledFragments: [
@@ -153,6 +149,8 @@ public struct CorpusSlateParts: PocketGraph.SelectionSet, Fragment {
           ]
         ))
       }
+
+      public typealias Preview = CorpusItemParts.Preview
 
       /// Recommendation.CorpusItem.Target
       ///

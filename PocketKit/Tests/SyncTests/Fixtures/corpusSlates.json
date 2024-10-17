@@ -17,11 +17,25 @@
                                 "__typename": "[some-type-name]",
                                 "id": "item-1",
                                 "url": "https://given.example.com/slate-1-rec-1",
-                                "title": "Slate 1, Recommendation 1",
                                 "timeToRead": 0,
-                                "excerpt": "Cursus Aenean Elit",
                                 "imageUrl": "http://example.com/slate-1-rec-1/top-image.png",
-                                "publisher":"slate-1-rec-1.example.com",
+                                "publisher": "slate-1-rec-1.example.com",
+                                "preview" : {
+            "__typename": "[type-name-here]",
+                                    "authors": [],
+                                    "excerpt": "Cursus Aenean Elit",
+                                    "title": "Slate 1, Recommendation 1",
+                                    "datePublished": "2021-01-01 12:01:01",
+                                    "image" : {
+                        "__typename": "[type-name-here]",
+                                        "url": "http://example.com/slate-1-rec-1/top-image.png"
+                                    },
+                                    "domain": {
+                                        "__typename": "[type-name-here]",
+                                        "name": "slate-1-rec-1.example.com",
+                                        "logo": "http://example.com/item-2/domain-logo.jpg"
+                                    }
+                                },
                                 "target": {
                                     "__typename": "[some-type-name]",
                                     "itemId": "slate-1-rec-1-corpusItem-1-syndicated",
@@ -41,11 +55,25 @@
                                 "__typename": "[some-type-name]",
                                 "id": "item-2",
                                 "url": "https://given.example.com/slate-1-rec-2",
-                                "title": "Slate 1, Recommendation 2",
                                 "timeToRead": 0,
-                                "excerpt": "Cursus Aenean Elit",
                                 "imageUrl": "http://example.com/slate-1-rec-2/top-image.png",
                                 "publisher":"slate-1-rec-2.example.com",
+                                "preview" : {
+            "__typename": "[type-name-here]",
+                                    "authors": [],
+                                    "excerpt": "Cursus Aenean Elit",
+                                    "title": "Slate 1, Recommendation 2",
+                                    "datePublished": "2021-01-01 12:01:01",
+                                    "image" : {
+                        "__typename": "[type-name-here]",
+                                        "url": "http://example.com/slate-1-rec-2/top-image.png"
+                                    },
+                                    "domain": {
+                                        "__typename": "[type-name-here]",
+                                        "name": "slate-1-rec-2.example.com",
+                                        "logo": "http://example.com/item-2/domain-logo.jpg"
+                                    }
+                                },
                                 "target": {
                                     "__typename": "[some-type-name]",
                                     "itemId": "slate-1-rec-2-corpusItem-2-syndicated",
@@ -73,11 +101,25 @@
                                 "__typename": "[some-type-name]",
                                 "id": "item-3",
                                 "url": "https://given.example.com/slate-2-rec-1",
-                                "title": "Slate 2, Recommendation 1",
                                 "timeToRead": 0,
-                                "excerpt": "Cursus Aenean Elit",
                                 "imageUrl": "http://example.com/slate-2-rec-1/top-image.png",
                                 "publisher":"slate-2-rec-1.example.com",
+                                "preview" : {
+            "__typename": "[type-name-here]",
+                                    "authors": [],
+                                    "excerpt": "Cursus Aenean Elit",
+                                    "title": "Slate 2, Recommendation 1",
+                                    "datePublished": "2021-01-01 12:01:01",
+                                    "image" : {
+                        "__typename": "[type-name-here]",
+                                        "url": "http://example.com/slate-2-rec-1/top-image.png"
+                                    },
+                                    "domain": {
+                                        "__typename": "[type-name-here]",
+                                        "name": "slate-2-rec-1.example.com",
+                                        "logo": "http://example.com/item-2/domain-logo.jpg"
+                                    }
+                                },
                                 "target": {
                                     "__typename": "[some-type-name]",
                                     "itemId": "slate-2-rec-1-corpusItem-3-syndicated",

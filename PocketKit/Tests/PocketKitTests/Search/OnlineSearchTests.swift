@@ -181,8 +181,7 @@ class OnlineSearchTests: XCTestCase {
             _createdAt: 1,
             item: SavedItemParts.Item.AsItem(
                 remoteID: "item-1",
-                givenUrl: "http://localhost:8080/hello",
-                title: term
+                givenUrl: "http://localhost:8080/hello"
             ).asRootEntityType
         )
 
@@ -204,8 +203,7 @@ class OnlineSearchTests: XCTestCase {
             _createdAt: 1,
             item: SavedItemParts.Item.AsItem(
                 remoteID: "item-1",
-                givenUrl: "http://localhost:8080/hello",
-                title: term
+                givenUrl: "http://localhost:8080/hello"
             ).asRootEntityType
         )
 

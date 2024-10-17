@@ -240,8 +240,7 @@ class PocketItemViewModelTests: XCTestCase {
             _createdAt: 1,
             item: SavedItemParts.Item.AsItem(
                 remoteID: "item-1",
-                givenUrl: "http://localhost:8080/hello",
-                title: "Item 1"
+                givenUrl: "http://localhost:8080/hello"
             ).asRootEntityType
         )
         return SearchSavedItem(remoteItem: itemParts)

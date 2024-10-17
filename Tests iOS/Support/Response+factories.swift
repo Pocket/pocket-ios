@@ -443,7 +443,6 @@ extension Response {
         authors: [Mock<Author>?]? = nil,
         datePublished: PocketGraph.DateString? = "2021-01-01 12:01:01",
         domain: String? = nil,
-        domainMetadata: Mock<DomainMetadata>? = nil,
         excerpt: String? = "Cursus Aenean Elit",
         givenUrl: PocketGraph.Url,
         hasImage: GraphQLEnum<PocketGraph.Imageness>? = nil,
@@ -452,6 +451,7 @@ extension Response {
         isArticle: Bool? = true,
         language: String? = "en",
         marticle: [AnyMock]? = createMarticleData(),
+        preview: Mock<ItemSummary>? = nil,
         remoteID: String? = nil,
         resolvedUrl: PocketGraph.Url? = nil,
         syndicatedArticle: Mock<SyndicatedArticle>? = nil,
@@ -474,17 +474,22 @@ extension Response {
         ]
 
         let domainMetadata = Mock<DomainMetadata>(logo: "http://example.com/domain-logo.jpg", name: "WIRED")
+        let image = Mock<Image>(url: topImageUrl)
+
+        let preview = Mock<ItemSummary>(
+            authors: authors,
+            datePublished: datePublished,
+            domain: domainMetadata,
+            excerpt: excerpt,
+            image: image,
+            title: title
+        )
 
         let images = [
             Mock<Image>(height: 1, imageId: 1, src: "http://example.com/image.jpg", width: 1)
         ]
 
         return Mock<Item>(
-            authors: authors,
-            datePublished: datePublished,
-            domain: domain,
-            domainMetadata: domainMetadata,
-            excerpt: excerpt,
             givenUrl: givenUrl,
             hasImage: hasImage,
             hasVideo: hasVideo,
@@ -492,12 +497,11 @@ extension Response {
             isArticle: isArticle,
             language: language,
             marticle: marticle,
+            preview: preview,
             remoteID: Data(givenUrl.utf8).base64EncodedString(),
             resolvedUrl: resolvedUrl,
             syndicatedArticle: syndicatedArticle,
             timeToRead: timeToRead,
-            title: title,
-            topImageUrl: topImageUrl,
             wordCount: wordCount
         )
     }

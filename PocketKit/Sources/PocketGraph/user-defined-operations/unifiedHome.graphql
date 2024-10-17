@@ -1,11 +1,26 @@
 fragment CorpusItemParts on CorpusItem {
     id
     url
-    title
     timeToRead
-    excerpt
     imageUrl
     publisher
+    preview {
+        authors {
+            id
+            name
+            url
+        }
+        excerpt
+        title
+        datePublished
+        image {
+            url
+        }
+        domain {
+            __typename
+            ...DomainMetadataParts
+        }
+    }
     target {
         ... on SyndicatedArticle {
             __typename

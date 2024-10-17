@@ -812,7 +812,7 @@ class DefaultSearchViewModelTests: XCTestCase {
             item: SavedItemParts.Item.AsItem(
                 remoteID: "item-1",
                 givenUrl: "http://localhost:8080/hello",
-                title: term
+                preview: SavedItemParts.Item.AsItem.Preview(__typename: "ItemSummary", title: term)
             ).asRootEntityType
         )
         let item = SearchSavedItem(remoteItem: itemParts)

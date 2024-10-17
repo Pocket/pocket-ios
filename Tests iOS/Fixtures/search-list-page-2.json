@@ -31,35 +31,40 @@
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-31",
-                  "title": "Item 31",
                   "givenUrl": "https://given.example.com/item-31/",
                   "resolvedUrl": "https://resolved.example.com/item-31",
-                  "topImageUrl": "https://example.com/item-31/top-image.jpg",
-                  "domain": null,
                   "language": "en",
                   "timeToRead": 6,
                   "wordCount": 500,
                   "marticle": [],
-                  "datePublished": "2021-01-01 12:01:01",
-                  "excerpt": "Cursus Aenean Elit",
-                  "authors": [
-                    {
-                      "__typename": "Author",
-                      "id": "author-1",
-                      "name": "Jacob",
-                      "url": "https://example.com/authors/jacob"
-                    },
-                    {
-                      "__typename": "Author",
-                      "id": "author-2",
-                      "name": "David",
-                      "url": "https://example.com/authors/david"
-                    }
-                  ],
-                  "domainMetadata": {
-                    "__typename": "[type-name-here]",
-                    "name": "WIRED",
-                    "logo": "http://example.com/item-31/domain-logo.jpg"
+                  "preview" : {
+            "__typename": "[type-name-here]",
+                      "authors": [
+                          {
+                              "__typename": "Author",
+                              "id": "author-1",
+                              "name": "Jacob",
+                              "url": "https://example.com/authors/jacob"
+                          },
+                          {
+                              "__typename": "Author",
+                              "id": "author-2",
+                              "name": "David",
+                              "url": "https://example.com/authors/david"
+                          }
+                      ],
+                      "excerpt": "Cursus Aenean Elit",
+                      "title": "Item 3",
+                      "datePublished": "2021-01-01 12:01:01",
+                      "image" : {
+                        "__typename": "[type-name-here]",
+                          "url": "https://example.com/item-3/top-image.jpg"
+                      },
+                      "domain": {
+                          "__typename": "[type-name-here]",
+                          "name": "WIRED",
+                          "logo": "http://example.com/item-3/domain-logo.jpg"
+                      }
                   },
                   "images": [
                     {
@@ -105,35 +110,40 @@
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-32",
-                  "title": "Item 32",
                   "givenUrl": "https://given.example.com/item-32/",
                   "resolvedUrl": "https://resolved.example.com/item-32",
-                  "topImageUrl": "https://example.com/item-32/top-image.jpg",
-                  "domain": null,
                   "language": "en",
                   "timeToRead": 6,
                   "wordCount": 500,
                   "marticle": [],
-                  "datePublished": "2021-01-01 12:01:01",
-                  "excerpt": "Cursus Aenean Elit",
-                  "authors": [
-                    {
-                      "__typename": "Author",
-                      "id": "author-1",
-                      "name": "Jacob",
-                      "url": "https://example.com/authors/jacob"
-                    },
-                    {
-                      "__typename": "Author",
-                      "id": "author-2",
-                      "name": "David",
-                      "url": "https://example.com/authors/david"
-                    }
-                  ],
-                  "domainMetadata": {
-                    "__typename": "[type-name-here]",
-                    "name": "WIRED",
-                    "logo": "http://example.com/item-32/domain-logo.jpg"
+                  "preview" : {
+            "__typename": "[type-name-here]",
+                      "authors": [
+                          {
+                              "__typename": "Author",
+                              "id": "author-1",
+                              "name": "Jacob",
+                              "url": "https://example.com/authors/jacob"
+                          },
+                          {
+                              "__typename": "Author",
+                              "id": "author-2",
+                              "name": "David",
+                              "url": "https://example.com/authors/david"
+                          }
+                      ],
+                      "excerpt": "Cursus Aenean Elit",
+                      "title": "Item 3",
+                      "datePublished": "2021-01-01 12:01:01",
+                      "image" : {
+                        "__typename": "[type-name-here]",
+                          "url": "https://example.com/item-3/top-image.jpg"
+                      },
+                      "domain": {
+                          "__typename": "[type-name-here]",
+                          "name": "WIRED",
+                          "logo": "http://example.com/item-3/domain-logo.jpg"
+                      }
                   },
                   "images": [
                     {
@@ -179,35 +189,40 @@
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-33",
-                  "title": "Item 33",
                   "givenUrl": "https://given.example.com/item-33/",
                   "resolvedUrl": "https://resolved.example.com/item-33",
-                  "topImageUrl": "https://example.com/item-33/top-image.jpg",
-                  "domain": null,
                   "language": "en",
                   "timeToRead": 6,
                   "wordCount": 500,
                   "marticle": [],
-                  "datePublished": "2021-01-01 12:01:01",
-                  "excerpt": "Cursus Aenean Elit",
-                  "authors": [
-                    {
-                      "__typename": "Author",
-                      "id": "author-1",
-                      "name": "Jacob",
-                      "url": "https://example.com/authors/jacob"
-                    },
-                    {
-                      "__typename": "Author",
-                      "id": "author-2",
-                      "name": "David",
-                      "url": "https://example.com/authors/david"
-                    }
-                  ],
-                  "domainMetadata": {
-                    "__typename": "[type-name-here]",
-                    "name": "WIRED",
-                    "logo": "http://example.com/item-33/domain-logo.jpg"
+                  "preview" : {
+            "__typename": "[type-name-here]",
+                      "authors": [
+                          {
+                              "__typename": "Author",
+                              "id": "author-1",
+                              "name": "Jacob",
+                              "url": "https://example.com/authors/jacob"
+                          },
+                          {
+                              "__typename": "Author",
+                              "id": "author-2",
+                              "name": "David",
+                              "url": "https://example.com/authors/david"
+                          }
+                      ],
+                      "excerpt": "Cursus Aenean Elit",
+                      "title": "Item 3",
+                      "datePublished": "2021-01-01 12:01:01",
+                      "image" : {
+                        "__typename": "[type-name-here]",
+                          "url": "https://example.com/item-3/top-image.jpg"
+                      },
+                      "domain": {
+                          "__typename": "[type-name-here]",
+                          "name": "WIRED",
+                          "logo": "http://example.com/item-3/domain-logo.jpg"
+                      }
                   },
                   "images": [
                     {
@@ -253,35 +268,40 @@
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-34",
-                  "title": "Item 34",
                   "givenUrl": "https://given.example.com/item-34/",
                   "resolvedUrl": "https://resolved.example.com/item-34",
-                  "topImageUrl": "https://example.com/item-34/top-image.jpg",
-                  "domain": null,
                   "language": "en",
                   "timeToRead": 6,
                   "wordCount": 500,
                   "marticle": [],
-                  "datePublished": "2021-01-01 12:01:01",
-                  "excerpt": "Cursus Aenean Elit",
-                  "authors": [
-                    {
-                      "__typename": "Author",
-                      "id": "author-1",
-                      "name": "Jacob",
-                      "url": "https://example.com/authors/jacob"
-                    },
-                    {
-                      "__typename": "Author",
-                      "id": "author-2",
-                      "name": "David",
-                      "url": "https://example.com/authors/david"
-                    }
-                  ],
-                  "domainMetadata": {
-                    "__typename": "[type-name-here]",
-                    "name": "WIRED",
-                    "logo": "http://example.com/item-34/domain-logo.jpg"
+                  "preview" : {
+            "__typename": "[type-name-here]",
+                      "authors": [
+                          {
+                              "__typename": "Author",
+                              "id": "author-1",
+                              "name": "Jacob",
+                              "url": "https://example.com/authors/jacob"
+                          },
+                          {
+                              "__typename": "Author",
+                              "id": "author-2",
+                              "name": "David",
+                              "url": "https://example.com/authors/david"
+                          }
+                      ],
+                      "excerpt": "Cursus Aenean Elit",
+                      "title": "Item 3",
+                      "datePublished": "2021-01-01 12:01:01",
+                      "image" : {
+                        "__typename": "[type-name-here]",
+                          "url": "https://example.com/item-3/top-image.jpg"
+                      },
+                      "domain": {
+                          "__typename": "[type-name-here]",
+                          "name": "WIRED",
+                          "logo": "http://example.com/item-3/domain-logo.jpg"
+                      }
                   },
                   "images": [
                     {
@@ -327,35 +347,40 @@
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-35",
-                  "title": "Item 35",
                   "givenUrl": "https://given.example.com/item-35/",
                   "resolvedUrl": "https://resolved.example.com/item-35",
-                  "topImageUrl": "https://example.com/item-35/top-image.jpg",
-                  "domain": null,
                   "language": "en",
                   "timeToRead": 6,
                   "wordCount": 500,
                   "marticle": [],
-                  "datePublished": "2021-01-01 12:01:01",
-                  "excerpt": "Cursus Aenean Elit",
-                  "authors": [
-                    {
-                      "__typename": "Author",
-                      "id": "author-1",
-                      "name": "Jacob",
-                      "url": "https://example.com/authors/jacob"
-                    },
-                    {
-                      "__typename": "Author",
-                      "id": "author-2",
-                      "name": "David",
-                      "url": "https://example.com/authors/david"
-                    }
-                  ],
-                  "domainMetadata": {
-                    "__typename": "[type-name-here]",
-                    "name": "WIRED",
-                    "logo": "http://example.com/item-35/domain-logo.jpg"
+                  "preview" : {
+            "__typename": "[type-name-here]",
+                      "authors": [
+                          {
+                              "__typename": "Author",
+                              "id": "author-1",
+                              "name": "Jacob",
+                              "url": "https://example.com/authors/jacob"
+                          },
+                          {
+                              "__typename": "Author",
+                              "id": "author-2",
+                              "name": "David",
+                              "url": "https://example.com/authors/david"
+                          }
+                      ],
+                      "excerpt": "Cursus Aenean Elit",
+                      "title": "Item 3",
+                      "datePublished": "2021-01-01 12:01:01",
+                      "image" : {
+                        "__typename": "[type-name-here]",
+                          "url": "https://example.com/item-3/top-image.jpg"
+                      },
+                      "domain": {
+                          "__typename": "[type-name-here]",
+                          "name": "WIRED",
+                          "logo": "http://example.com/item-3/domain-logo.jpg"
+                      }
                   },
                   "images": [
                     {
@@ -401,35 +426,40 @@
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-36",
-                  "title": "Item 36",
                   "givenUrl": "https://given.example.com/item-36/",
                   "resolvedUrl": "https://resolved.example.com/item-36",
-                  "topImageUrl": "https://example.com/item-36/top-image.jpg",
-                  "domain": null,
                   "language": "en",
                   "timeToRead": 6,
                   "wordCount": 500,
                   "marticle": [],
-                  "datePublished": "2021-01-01 12:01:01",
-                  "excerpt": "Cursus Aenean Elit",
-                  "authors": [
-                    {
-                      "__typename": "Author",
-                      "id": "author-1",
-                      "name": "Jacob",
-                      "url": "https://example.com/authors/jacob"
-                    },
-                    {
-                      "__typename": "Author",
-                      "id": "author-2",
-                      "name": "David",
-                      "url": "https://example.com/authors/david"
-                    }
-                  ],
-                  "domainMetadata": {
-                    "__typename": "[type-name-here]",
-                    "name": "WIRED",
-                    "logo": "http://example.com/item-36/domain-logo.jpg"
+                  "preview" : {
+            "__typename": "[type-name-here]",
+                      "authors": [
+                          {
+                              "__typename": "Author",
+                              "id": "author-1",
+                              "name": "Jacob",
+                              "url": "https://example.com/authors/jacob"
+                          },
+                          {
+                              "__typename": "Author",
+                              "id": "author-2",
+                              "name": "David",
+                              "url": "https://example.com/authors/david"
+                          }
+                      ],
+                      "excerpt": "Cursus Aenean Elit",
+                      "title": "Item 3",
+                      "datePublished": "2021-01-01 12:01:01",
+                      "image" : {
+                        "__typename": "[type-name-here]",
+                          "url": "https://example.com/item-3/top-image.jpg"
+                      },
+                      "domain": {
+                          "__typename": "[type-name-here]",
+                          "name": "WIRED",
+                          "logo": "http://example.com/item-3/domain-logo.jpg"
+                      }
                   },
                   "images": [
                     {
@@ -475,35 +505,40 @@
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-37",
-                  "title": "Item 37",
                   "givenUrl": "https://given.example.com/item-37/",
                   "resolvedUrl": "https://resolved.example.com/item-37",
-                  "topImageUrl": "https://example.com/item-37/top-image.jpg",
-                  "domain": null,
                   "language": "en",
                   "timeToRead": 6,
                   "wordCount": 500,
                   "marticle": [],
-                  "datePublished": "2021-01-01 12:01:01",
-                  "excerpt": "Cursus Aenean Elit",
-                  "authors": [
-                    {
-                      "__typename": "Author",
-                      "id": "author-1",
-                      "name": "Jacob",
-                      "url": "https://example.com/authors/jacob"
-                    },
-                    {
-                      "__typename": "Author",
-                      "id": "author-2",
-                      "name": "David",
-                      "url": "https://example.com/authors/david"
-                    }
-                  ],
-                  "domainMetadata": {
-                    "__typename": "[type-name-here]",
-                    "name": "WIRED",
-                    "logo": "http://example.com/item-37/domain-logo.jpg"
+                  "preview" : {
+            "__typename": "[type-name-here]",
+                      "authors": [
+                          {
+                              "__typename": "Author",
+                              "id": "author-1",
+                              "name": "Jacob",
+                              "url": "https://example.com/authors/jacob"
+                          },
+                          {
+                              "__typename": "Author",
+                              "id": "author-2",
+                              "name": "David",
+                              "url": "https://example.com/authors/david"
+                          }
+                      ],
+                      "excerpt": "Cursus Aenean Elit",
+                      "title": "Item 3",
+                      "datePublished": "2021-01-01 12:01:01",
+                      "image" : {
+                        "__typename": "[type-name-here]",
+                          "url": "https://example.com/item-3/top-image.jpg"
+                      },
+                      "domain": {
+                          "__typename": "[type-name-here]",
+                          "name": "WIRED",
+                          "logo": "http://example.com/item-3/domain-logo.jpg"
+                      }
                   },
                   "images": [
                     {
@@ -549,35 +584,40 @@
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-38",
-                  "title": "Item 38",
                   "givenUrl": "https://given.example.com/item-38/",
                   "resolvedUrl": "https://resolved.example.com/item-38",
-                  "topImageUrl": "https://example.com/item-38/top-image.jpg",
-                  "domain": null,
                   "language": "en",
                   "timeToRead": 6,
                   "wordCount": 500,
                   "marticle": [],
-                  "datePublished": "2021-01-01 12:01:01",
-                  "excerpt": "Cursus Aenean Elit",
-                  "authors": [
-                    {
-                      "__typename": "Author",
-                      "id": "author-1",
-                      "name": "Jacob",
-                      "url": "https://example.com/authors/jacob"
-                    },
-                    {
-                      "__typename": "Author",
-                      "id": "author-2",
-                      "name": "David",
-                      "url": "https://example.com/authors/david"
-                    }
-                  ],
-                  "domainMetadata": {
-                    "__typename": "[type-name-here]",
-                    "name": "WIRED",
-                    "logo": "http://example.com/item-38/domain-logo.jpg"
+                  "preview" : {
+            "__typename": "[type-name-here]",
+                      "authors": [
+                          {
+                              "__typename": "Author",
+                              "id": "author-1",
+                              "name": "Jacob",
+                              "url": "https://example.com/authors/jacob"
+                          },
+                          {
+                              "__typename": "Author",
+                              "id": "author-2",
+                              "name": "David",
+                              "url": "https://example.com/authors/david"
+                          }
+                      ],
+                      "excerpt": "Cursus Aenean Elit",
+                      "title": "Item 3",
+                      "datePublished": "2021-01-01 12:01:01",
+                      "image" : {
+                        "__typename": "[type-name-here]",
+                          "url": "https://example.com/item-3/top-image.jpg"
+                      },
+                      "domain": {
+                          "__typename": "[type-name-here]",
+                          "name": "WIRED",
+                          "logo": "http://example.com/item-3/domain-logo.jpg"
+                      }
                   },
                   "images": [
                     {
@@ -623,35 +663,40 @@
                 "item": {
                   "__typename": "Item",
                   "remoteID": "item-39",
-                  "title": "Item 39",
                   "givenUrl": "https://given.example.com/item-39/",
                   "resolvedUrl": "https://resolved.example.com/item-39",
-                  "topImageUrl": "https://example.com/item-39/top-image.jpg",
-                  "domain": null,
                   "language": "en",
                   "timeToRead": 6,
                   "wordCount": 500,
                   "marticle": [],
-                  "datePublished": "2021-01-01 12:01:01",
-                  "excerpt": "Cursus Aenean Elit",
-                  "authors": [
-                    {
-                      "__typename": "Author",
-                      "id": "author-1",
-                      "name": "Jacob",
-                      "url": "https://example.com/authors/jacob"
-                    },
-                    {
-                      "__typename": "Author",
-                      "id": "author-2",
-                      "name": "David",
-                      "url": "https://example.com/authors/david"
-                    }
-                  ],
-                  "domainMetadata": {
-                    "__typename": "[type-name-here]",
-                    "name": "WIRED",
-                    "logo": "http://example.com/item-39/domain-logo.jpg"
+                  "preview" : {
+            "__typename": "[type-name-here]",
+                      "authors": [
+                          {
+                              "__typename": "Author",
+                              "id": "author-1",
+                              "name": "Jacob",
+                              "url": "https://example.com/authors/jacob"
+                          },
+                          {
+                              "__typename": "Author",
+                              "id": "author-2",
+                              "name": "David",
+                              "url": "https://example.com/authors/david"
+                          }
+                      ],
+                      "excerpt": "Cursus Aenean Elit",
+                      "title": "Item 3",
+                      "datePublished": "2021-01-01 12:01:01",
+                      "image" : {
+                        "__typename": "[type-name-here]",
+                          "url": "https://example.com/item-3/top-image.jpg"
+                      },
+                      "domain": {
+                          "__typename": "[type-name-here]",
+                          "name": "WIRED",
+                          "logo": "http://example.com/item-3/domain-logo.jpg"
+                      }
                   },
                   "images": [
                     {

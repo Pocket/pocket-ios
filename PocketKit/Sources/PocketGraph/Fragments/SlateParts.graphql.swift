@@ -120,19 +120,10 @@ public struct SlateParts: PocketGraph.SelectionSet, Fragment {
       public var givenUrl: PocketGraph.Url { __data["givenUrl"] }
       /// If the givenUrl redirects (once or many times), this is the final url. Otherwise, same as givenUrl
       public var resolvedUrl: PocketGraph.Url? { __data["resolvedUrl"] }
-      /// The title as determined by the parser.
-      public var title: String? { __data["title"] }
       /// The detected language of the article
       public var language: String? { __data["language"] }
-      /// The page's / publisher's preferred thumbnail image
-      @available(*, deprecated, message: "use the topImage object")
-      public var topImageUrl: PocketGraph.Url? { __data["topImageUrl"] }
       /// How long it will take to read the article (TODO in what time unit? and by what calculation?)
       public var timeToRead: Int? { __data["timeToRead"] }
-      /// The domain, such as 'getpocket.com' of the resolved_url
-      public var domain: String? { __data["domain"] }
-      /// The date the article was published
-      public var datePublished: PocketGraph.DateString? { __data["datePublished"] }
       /// true if the item is an article
       public var isArticle: Bool? { __data["isArticle"] }
       /// 0=no images, 1=contains images, 2=is an image
@@ -141,14 +132,10 @@ public struct SlateParts: PocketGraph.SelectionSet, Fragment {
       public var hasVideo: GraphQLEnum<PocketGraph.Videoness>? { __data["hasVideo"] }
       /// Number of words in the article
       public var wordCount: Int? { __data["wordCount"] }
-      /// List of Authors involved with this article
-      public var authors: [Author?]? { __data["authors"] }
-      /// A snippet of text from the article
-      public var excerpt: String? { __data["excerpt"] }
-      /// Additional information about the item domain, when present, use this for displaying the domain name
-      public var domainMetadata: DomainMetadata? { __data["domainMetadata"] }
       /// Array of images within an article
       public var images: [Image?]? { __data["images"] }
+      /// The client preview/display logic for this url. The requires for each object should be kept in sync with the sub objects requires field.
+      public var preview: Preview? { __data["preview"] }
       /// If the item has a syndicated counterpart the syndication information
       public var syndicatedArticle: SyndicatedArticle? { __data["syndicatedArticle"] }
 
@@ -163,20 +150,14 @@ public struct SlateParts: PocketGraph.SelectionSet, Fragment {
         remoteID: String,
         givenUrl: PocketGraph.Url,
         resolvedUrl: PocketGraph.Url? = nil,
-        title: String? = nil,
         language: String? = nil,
-        topImageUrl: PocketGraph.Url? = nil,
         timeToRead: Int? = nil,
-        domain: String? = nil,
-        datePublished: PocketGraph.DateString? = nil,
         isArticle: Bool? = nil,
         hasImage: GraphQLEnum<PocketGraph.Imageness>? = nil,
         hasVideo: GraphQLEnum<PocketGraph.Videoness>? = nil,
         wordCount: Int? = nil,
-        authors: [Author?]? = nil,
-        excerpt: String? = nil,
-        domainMetadata: DomainMetadata? = nil,
         images: [Image?]? = nil,
+        preview: Preview? = nil,
         syndicatedArticle: SyndicatedArticle? = nil
       ) {
         self.init(_dataDict: DataDict(
@@ -185,20 +166,14 @@ public struct SlateParts: PocketGraph.SelectionSet, Fragment {
             "remoteID": remoteID,
             "givenUrl": givenUrl,
             "resolvedUrl": resolvedUrl,
-            "title": title,
             "language": language,
-            "topImageUrl": topImageUrl,
             "timeToRead": timeToRead,
-            "domain": domain,
-            "datePublished": datePublished,
             "isArticle": isArticle,
             "hasImage": hasImage,
             "hasVideo": hasVideo,
             "wordCount": wordCount,
-            "authors": authors._fieldData,
-            "excerpt": excerpt,
-            "domainMetadata": domainMetadata._fieldData,
             "images": images._fieldData,
+            "preview": preview._fieldData,
             "syndicatedArticle": syndicatedArticle._fieldData,
           ],
           fulfilledFragments: [
@@ -208,49 +183,9 @@ public struct SlateParts: PocketGraph.SelectionSet, Fragment {
         ))
       }
 
-      public typealias Author = CompactItem.Author
-
-      /// Recommendation.Item.DomainMetadata
-      ///
-      /// Parent Type: `DomainMetadata`
-      public struct DomainMetadata: PocketGraph.SelectionSet {
-        public let __data: DataDict
-        public init(_dataDict: DataDict) { __data = _dataDict }
-
-        public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.DomainMetadata }
-
-        /// The name of the domain (e.g., The New York Times)
-        public var name: String? { __data["name"] }
-        /// Url for the logo image
-        public var logo: PocketGraph.Url? { __data["logo"] }
-
-        public struct Fragments: FragmentContainer {
-          public let __data: DataDict
-          public init(_dataDict: DataDict) { __data = _dataDict }
-
-          public var domainMetadataParts: DomainMetadataParts { _toFragment() }
-        }
-
-        public init(
-          name: String? = nil,
-          logo: PocketGraph.Url? = nil
-        ) {
-          self.init(_dataDict: DataDict(
-            data: [
-              "__typename": PocketGraph.Objects.DomainMetadata.typename,
-              "name": name,
-              "logo": logo,
-            ],
-            fulfilledFragments: [
-              ObjectIdentifier(SlateParts.Recommendation.Item.DomainMetadata.self),
-              ObjectIdentifier(CompactItem.DomainMetadata.self),
-              ObjectIdentifier(DomainMetadataParts.self)
-            ]
-          ))
-        }
-      }
-
       public typealias Image = CompactItem.Image
+
+      public typealias Preview = CompactItem.Preview
 
       /// Recommendation.Item.SyndicatedArticle
       ///
