@@ -6,26 +6,13 @@
       "__typename": "[some-type-name]",
       "givenUrl": "https://getpocket.com/explore/item/article-2",
       "resolvedUrl": "https://getpocket.com/explore/item/article-2",
-      "title": "Slate 1, Recommendation 2",
       "language": "en",
-      "topImageUrl": "http://example.com/slate-1-rec-2/top-image.png",
       "timeToRead": 3,
       "wordCount": 200,
-      "authors": [
-
-      ],
       "collection": null,
-      "datePublished": "2021-01-01 12:01:01",
       "images": [
 
       ],
-      "excerpt": "Cursus Aenean Elit",
-      "domain": "slate-1-rec-2.example.com",
-      "domainMetadata": {
-        "__typename": "DomainMetadata",
-        "name": "Pocket",
-        "logo": "https://getpocket.com/logo.png"
-      },
       "isArticle": true,
       "hasImage": "HAS_IMAGES",
       "hasVideo": "HAS_VIDEOS",
@@ -40,7 +27,23 @@
           "name": "Mozilla"
         }
       },
-      "marticle": #MARTICLE#
+      "marticle": #MARTICLE#,
+      "preview" : {
+          "__typename": "[type-name-here]",
+          "authors": [],
+          "excerpt": "Cursus Aenean Elit",
+          "title": "Slate 1, Recommendation 2",
+          "datePublished": "2021-01-01 12:01:01",
+          "image" : {
+            "__typename": "[type-name-here]",
+              "url": "http://example.com/slate-1-rec-2/top-image.png"
+          },
+          "domain": {
+              "__typename": "[type-name-here]",
+              "name": "slate-1-rec-2.example.com",
+              "logo": "https://getpocket.com/logo.png"
+          }
+      }
     }
   }
 }

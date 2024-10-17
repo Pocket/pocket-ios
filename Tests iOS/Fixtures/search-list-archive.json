@@ -39,7 +39,7 @@
                   "marticle": [],
                   "collection": null,
                   "preview" : {
-            "__typename": "[type-name-here]",
+                      "__typename": "[type-name-here]",
                       "authors": [
                           {
                               "__typename": "Author",
