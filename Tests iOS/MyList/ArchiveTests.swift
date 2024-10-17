@@ -76,7 +76,7 @@ class ArchiveTests: XCTestCase {
         let expectedContent = [
             "Archived Item 1",
             "Socrates",
-            "January 1, 2001",
+            "January 1, 2021",
         ]
 
         for expectedString in expectedContent {
