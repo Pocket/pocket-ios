@@ -35,11 +35,11 @@ extension SearchSavedItem: ItemsListItem {
     }
 
     var displayDomain: String? {
-        item.asItem?.domainMetadata?.name ?? item.asItem?.domain ?? host
+        item.asItem?.preview?.domain?.name ?? item.asItem?.preview?.domain?.name ?? host
     }
 
     var displayAuthors: String? {
-        let authors = item.asItem?.authors?.compactMap { $0?.name }
+        let authors = item.asItem?.preview?.authors?.compactMap { $0.name }
         return authors?.joined(separator: ", ")
     }
 
@@ -66,7 +66,7 @@ extension SearchSavedItem: ItemsListItem {
     }
 
     var title: String? {
-        item.asItem?.title
+        item.asItem?.preview?.title
     }
 
     var bestURL: String {
@@ -83,16 +83,16 @@ extension SearchSavedItem: ItemsListItem {
     }
 
     var topImageURL: URL? {
-        guard let topImageUrl = item.asItem?.topImageUrl else { return nil }
+        guard let topImageUrl = item.asItem?.preview?.image?.url else { return nil }
         return URL(string: topImageUrl)
     }
 
     var domain: String? {
-        item.asItem?.domain
+        item.asItem?.preview?.domain?.name
     }
 
     var domainMetadata: ItemsListItemDomainMetadata? {
-        item.asItem?.domainMetadata
+        item.asItem?.preview?.domain
     }
 
     var timeToRead: Int? {
@@ -124,4 +124,4 @@ extension SearchSavedItem: ItemsListItem {
     }
 }
 
-extension SavedItemParts.Item.AsItem.DomainMetadata: ItemsListItemDomainMetadata { }
+extension SavedItemParts.Item.AsItem.Preview.Domain: ItemsListItemDomainMetadata { }

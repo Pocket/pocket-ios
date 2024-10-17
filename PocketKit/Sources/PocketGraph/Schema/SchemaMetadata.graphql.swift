@@ -29,9 +29,11 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "Tag": return PocketGraph.Objects.Tag
     case "PendingItem": return PocketGraph.Objects.PendingItem
     case "Item": return PocketGraph.Objects.Item
+    case "Image": return PocketGraph.Objects.Image
+    case "ItemSummary": return PocketGraph.Objects.ItemSummary
+    case "OEmbed": return PocketGraph.Objects.OEmbed
     case "Author": return PocketGraph.Objects.Author
     case "DomainMetadata": return PocketGraph.Objects.DomainMetadata
-    case "Image": return PocketGraph.Objects.Image
     case "SyndicatedArticle": return PocketGraph.Objects.SyndicatedArticle
     case "Publisher": return PocketGraph.Objects.Publisher
     case "CorpusItem": return PocketGraph.Objects.CorpusItem
@@ -51,8 +53,6 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "NumberedListElement": return PocketGraph.Objects.NumberedListElement
     case "Mutation": return PocketGraph.Objects.Mutation
     case "PocketShare": return PocketGraph.Objects.PocketShare
-    case "ItemSummary": return PocketGraph.Objects.ItemSummary
-    case "OEmbed": return PocketGraph.Objects.OEmbed
     case "ShareNotFound": return PocketGraph.Objects.ShareNotFound
     case "ReaderViewResult": return PocketGraph.Objects.ReaderViewResult
     case "ReaderInterstitial": return PocketGraph.Objects.ReaderInterstitial

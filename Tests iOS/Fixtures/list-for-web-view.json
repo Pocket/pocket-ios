@@ -30,37 +30,40 @@
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "web-item-1",
-                                "title": "Item 1",
                                 "givenUrl": "https://given.example.com/item-1",
                                 "resolvedUrl": "http://localhost:8080/item-1",
-                                "topImageUrl": "https://example.com/item-1/top-image.jpg",
                                 "shortUrl": null,
-                                "domain": null,
                                 "language": "en",
                                 "timeToRead": 6,
-                    "wordCount": 500,
+                                "wordCount": 500,
                                 "marticle": #MARTICLE#,
-                                "excerpt": "Cursus Aenean Elit",
-                                "datePublished": "2021-01-01 12:01:01",
-                                "authors": [
-                                    {
-                                        "__typename": "Author",
-                                        "id": "author-1",
-                                        "name": "Jacob",
-                                        "url": "https://example.com/authors/jacob"
-                                    },
-                                    {
-                                        "__typename": "Author",
-                                        "id": "author-2",
-                                        "name": "David",
-                                        "url": "https://example.com/authors/david"
-                                    }
-                                ],
                                 "collection": null,
-                                "domainMetadata": {
-                                    "__typename": "[type-name-here]",
-                                    "name": "WIRED",
-                                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                                "preview" : {
+                                    "authors": [
+                                        {
+                                            "__typename": "Author",
+                                            "id": "author-1",
+                                            "name": "Jacob",
+                                            "url": "https://example.com/authors/jacob"
+                                        },
+                                        {
+                                            "__typename": "Author",
+                                            "id": "author-2",
+                                            "name": "David",
+                                            "url": "https://example.com/authors/david"
+                                        }
+                                    ],
+                                    "excerpt": "Cursus Aenean Elit",
+                                    "title": "Item 1",
+                                    "datePublished": "2021-01-01 12:01:01",
+                                    "image" : {
+                                        "url": "https://example.com/item-1/top-image.jpg"
+                                    },
+                                    "domain": {
+                                        "__typename": "[type-name-here]",
+                                        "name": "WIRED",
+                                        "logo": "http://example.com/item-1/domain-logo.jpg"
+                                    }
                                 },
                                 "images": [
                                     {
@@ -98,19 +101,12 @@
                                 "remoteID": "item-2",
                                 "givenUrl": "https://given.example.com/item-2",
                                 "resolvedUrl": "http://localhost:8080/item-2",
-                                "title": "Item 2",
-                                "topImageUrl": "https://example.com/item-2/top-image.jpg",
                                 "shortUrl": null,
-                                "domain": "wired.com",
                                 "language": "en",
                                 "timeToRead": 6,
-                    "wordCount": 500,
-                                "domainMetadata": null,
+                                "wordCount": 500,
                                 "marticle": [],
-                                "authors": [],
                                 "collection": null,
-                                "datePublished": "2021-01-01 12:01:01",
-                                "excerpt": "Cursus Aenean Elit",
                                 "images": [
                                     {
                                         "__typename": "[type-name-here]",
@@ -123,7 +119,21 @@
                                 "isArticle": true,
                                 "hasImage": "",
                                 "hasVideo": "IS_VIDEO",
-                                "syndicatedArticle": null
+                                "syndicatedArticle": null,
+                                "preview" : {
+                                    "authors": [],
+                                    "excerpt": "Cursus Aenean Elit",
+                                    "title": "Item 2",
+                                    "datePublished": "2021-01-01 12:01:01",
+                                    "image" : {
+                                        "url": "https://example.com/item-2/top-image.jpg"
+                                    },
+                                    "domain": {
+                                        "__typename": "[type-name-here]",
+                                        "name": "wired.com",
+                                        "logo": "http://example.com/item-2/domain-logo.jpg"
+                                    }
+                                }
                             }
                         }
                     },
@@ -147,19 +157,12 @@
                                 "remoteID": "item-3",
                                 "givenUrl": "https://given.example.com/item-3",
                                 "resolvedUrl": "http://localhost:8080/item-3",
-                                "title": "Item 3",
-                                "topImageUrl": "https://example.com/item-3/top-image.jpg",
                                 "shortUrl": null,
-                                "domain": "wired.com",
                                 "language": "en",
                                 "timeToRead": 6,
-                    "wordCount": 500,
-                                "domainMetadata": null,
+                                "wordCount": 500,
                                 "marticle": [],
-                                "authors": [],
                                 "collection": null,
-                                "datePublished": "2021-01-01 12:01:01",
-                                "excerpt": "Cursus Aenean Elit",
                                 "images": [
                                     {
                                         "__typename": "[type-name-here]",
@@ -172,7 +175,21 @@
                                 "isArticle": false,
                                 "hasImage": "",
                                 "hasVideo": "",
-                                "syndicatedArticle": null
+                                "syndicatedArticle": null,
+                                "preview" : {
+                                    "authors": [],
+                                    "excerpt": "Cursus Aenean Elit",
+                                    "title": "Item 3",
+                                    "datePublished": "2021-01-01 12:01:01",
+                                    "image" : {
+                                        "url": "https://example.com/item-3/top-image.jpg"
+                                    },
+                                    "domain": {
+                                        "__typename": "[type-name-here]",
+                                        "name": "wired.com",
+                                        "logo": "http://example.com/item-3/domain-logo.jpg"
+                                    }
+                                }
                             }
                         }
                     }

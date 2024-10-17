@@ -8,7 +8,7 @@ public class HomeSlateLineupQuery: GraphQLQuery {
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
       #"query HomeSlateLineup($locale: String!) { homeSlateLineup(locale: $locale) { __typename id slates { __typename ...CorpusSlateParts } } }"#,
-      fragments: [CollectionAuthorSummary.self, CollectionSummary.self, CorpusItemParts.self, CorpusRecommendationParts.self, CorpusSlateParts.self, SyndicatedArticleParts.self]
+      fragments: [CollectionAuthorSummary.self, CollectionSummary.self, CorpusItemParts.self, CorpusRecommendationParts.self, CorpusSlateParts.self, DomainMetadataParts.self, SyndicatedArticleParts.self]
     ))
 
   public var locale: String
@@ -113,16 +113,14 @@ public class HomeSlateLineupQuery: GraphQLQuery {
             public var id: PocketGraph.ID { __data["id"] }
             /// The URL of the Approved Item.
             public var url: PocketGraph.Url { __data["url"] }
-            /// The title of the Approved Item.
-            public var title: String { __data["title"] }
             /// Time to read in minutes. Is nullable.
             public var timeToRead: Int? { __data["timeToRead"] }
-            /// The excerpt of the Approved Item.
-            public var excerpt: String { __data["excerpt"] }
             /// The image URL for this item's accompanying picture.
             public var imageUrl: PocketGraph.Url { __data["imageUrl"] }
             /// The name of the online publication that published this story.
             public var publisher: String { __data["publisher"] }
+            /// The preview of the search result
+            public var preview: Preview { __data["preview"] }
             /// If the Corpus Item is pocket owned with a specific type, this is the associated object (Collection or SyndicatedArticle).
             public var target: Target? { __data["target"] }
 
@@ -132,6 +130,8 @@ public class HomeSlateLineupQuery: GraphQLQuery {
 
               public var corpusItemParts: CorpusItemParts { _toFragment() }
             }
+
+            public typealias Preview = CorpusItemParts.Preview
 
             /// HomeSlateLineup.Slate.Recommendation.CorpusItem.Target
             ///

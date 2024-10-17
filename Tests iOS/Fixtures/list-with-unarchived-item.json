@@ -29,32 +29,39 @@
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "archived-item-1",
-                                "title": "Archived Item 1",
                                 "givenUrl": "http://example.com/items/archived-item-1",
                                 "resolvedUrl": "http://example.com/items/archived-item-1",
-                                "topImageUrl": "https://example.com/archived-item-1/top-image.jpg",
-                                "domain": null,
                                 "language": "en",
                                 "timeToRead": 6,
-                    "wordCount": 500,
+                                "wordCount": 500,
                                 "marticle": #MARTICLE#,
-                                "excerpt": "Risus Aenean Ultricies Nullam Vehicula",
-                                "datePublished": "2001-01-01 12:01:01",
-                                "authors": [
-                                    {
-                                        "__typename": "Author",
-                                        "id": "archived-author-1",
-                                        "name": "Socrates",
-                                        "url": "https://example.com/authors/socrates"
-                                    }
-                                ],
                                 "collection": null,
-                                "domainMetadata": null,
                                 "images": [],
                                 "isArticle": true,
                                 "hasImage": "HAS_IMAGES",
                                 "hasVideo": "HAS_VIDEOS",
-                                "syndicatedArticle": null
+                                "syndicatedArticle": null,
+                                "preview" : {
+                                    "authors": [
+                                        {
+                                            "__typename": "Author",
+                                            "id": "archived-author-1",
+                                            "name": "Socrates",
+                                            "url": "https://example.com/authors/socrates"
+                                        }
+                                    ],
+                                    "excerpt": "Risus Aenean Ultricies Nullam Vehicula",
+                                    "title": "Archived Item 1",
+                                    "datePublished": "2021-01-01 12:01:01",
+                                    "image" : {
+                                        "url": "https://example.com/archived-item-1/top-image.jpg"
+                                    },
+                                    "domain": {
+                                        "__typename": "[type-name-here]",
+                                        "name": "WIRED",
+                                        "logo": "http://example.com/item-1/domain-logo.jpg"
+                                    }
+                                },
                             }
                         }
                     }

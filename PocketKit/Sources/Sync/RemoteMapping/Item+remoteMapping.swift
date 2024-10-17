@@ -29,11 +29,11 @@ extension CDItem {
         updateIfNotEqual(\.remoteID, remote.remoteID)
         updateIfNotEqual(\.givenURL, remote.givenUrl)
         updateIfNotEqual(\.resolvedURL, remote.resolvedUrl)
-        updateIfNotEqual(\.title, remote.title)
-        if let imageUrl = (remote.topImageUrl ?? remote.collection?.imageUrl).flatMap(URL.init(string:)) {
+        updateIfNotEqual(\.title, remote.preview?.title)
+        if let imageUrl = (remote.preview?.image?.url ?? remote.collection?.imageUrl).flatMap(URL.init(string:)) {
             updateIfNotEqual(\.topImageURL, imageUrl)
         }
-        updateIfNotEqual(\.domain, remote.domain)
+        updateIfNotEqual(\.domain, remote.preview?.domain?.name)
         updateIfNotEqual(\.language, remote.language)
 
         if let readTime = remote.timeToRead {
@@ -44,8 +44,8 @@ extension CDItem {
             updateIfNotEqual(\.wordCount, NSNumber(value: words))
         }
 
-        updateIfNotEqual(\.excerpt, remote.excerpt)
-        updateIfNotEqual(\.datePublished, remote.datePublished.flatMap { DateFormatter.clientAPI.date(from: $0) })
+        updateIfNotEqual(\.excerpt, remote.preview?.excerpt)
+        updateIfNotEqual(\.datePublished, remote.preview?.datePublished.flatMap { DateFormatter.clientAPI.date(from: $0) })
         updateIfNotEqual(\.isArticle, remote.isArticle ?? false)
         updateIfNotEqual(\.imageness, remote.hasImage?.rawValue)
         updateIfNotEqual(\.videoness, remote.hasVideo?.rawValue)
@@ -54,7 +54,7 @@ extension CDItem {
             return
         }
 
-        if let metaParts = remote.domainMetadata?.fragments.domainMetadataParts {
+        if let metaParts = remote.preview?.domain?.fragments.domainMetadataParts {
             domainMetadata = domainMetadata ?? CDDomainMetadata(context: context)
             domainMetadata?.update(remote: metaParts)
         }
@@ -67,11 +67,7 @@ extension CDItem {
         if let authors = authors {
             removeFromAuthors(authors)
         }
-        remote.authors?.forEach { remoteAuthor in
-            guard let remoteAuthor = remoteAuthor else {
-                return
-            }
-
+        remote.preview?.authors?.forEach { remoteAuthor in
             addToAuthors(CDAuthor(remote: remoteAuthor, context: context))
         }
 
@@ -108,13 +104,13 @@ extension CDItem {
 
     func update(from corpusItem: CorpusSlateParts.Recommendation.CorpusItem, in space: Space) {
         givenURL = corpusItem.url
-        title = corpusItem.title
+        title = corpusItem.preview.title
         if let timeToRead = corpusItem.timeToRead {
             self.timeToRead = NSNumber(value: timeToRead)
         }
-        topImageURL = URL(string: corpusItem.imageUrl)
-        domain = corpusItem.publisher
-        excerpt = corpusItem.excerpt
+        topImageURL = URL(string: corpusItem.preview.image?.url ?? corpusItem.imageUrl)
+        domain = corpusItem.preview.domain?.name
+        excerpt = corpusItem.preview.excerpt
 
         guard let context = managedObjectContext else {
             return
@@ -122,6 +118,18 @@ extension CDItem {
 
         if let topImageURL {
             addToImages(CDImage(url: topImageURL, context: context))
+        }
+
+        if let authors = authors {
+            removeFromAuthors(authors)
+        }
+        corpusItem.preview.authors?.forEach { remoteAuthor in
+           addToAuthors(CDAuthor(remote: remoteAuthor, context: context))
+        }
+
+        if let metaParts = corpusItem.preview.domain?.fragments.domainMetadataParts {
+            domainMetadata = domainMetadata ?? CDDomainMetadata(context: context)
+            domainMetadata?.update(remote: metaParts)
         }
 
         if let syndicatedArticle = corpusItem.target?.asSyndicatedArticle, let itemId = syndicatedArticle.itemId {
@@ -148,9 +156,9 @@ extension CDItem {
     }
 
     func update(from storyItem: GetCollectionBySlugQuery.Data.Collection.Story.Item, in space: Space) {
-        title = storyItem.title
-        domain = storyItem.domain
-        excerpt = storyItem.excerpt
+        title = storyItem.preview?.title
+        domain = storyItem.preview?.domain?.name
+        excerpt = storyItem.preview?.excerpt
         language = storyItem.language
 
         if let readTime = storyItem.timeToRead {
@@ -165,7 +173,7 @@ extension CDItem {
             wordCount = 0
         }
 
-        datePublished = storyItem.datePublished.flatMap { DateFormatter.clientAPI.date(from: $0) }
+        datePublished = storyItem.preview?.datePublished.flatMap { DateFormatter.clientAPI.date(from: $0) }
         isArticle = storyItem.isArticle ?? false
         imageness = storyItem.hasImage?.rawValue
         videoness = storyItem.hasVideo?.rawValue
@@ -173,12 +181,12 @@ extension CDItem {
         guard let context = managedObjectContext else {
             return
         }
-        if let imageUrl = storyItem.topImageUrl, let url = URL(string: imageUrl) {
+        if let imageUrl = storyItem.preview?.image?.url, let url = URL(string: imageUrl) {
             topImageURL = url
             addToImages(CDImage(url: url, context: context))
         }
 
-        if let metaParts = storyItem.domainMetadata?.fragments.domainMetadataParts {
+        if let metaParts = storyItem.preview?.domain?.fragments.domainMetadataParts {
             domainMetadata = domainMetadata ?? CDDomainMetadata(context: context)
             domainMetadata?.update(remote: metaParts)
         }
@@ -191,11 +199,7 @@ extension CDItem {
         if let authors = authors {
             removeFromAuthors(authors)
         }
-        storyItem.authors?.forEach { remoteAuthor in
-            guard let remoteAuthor = remoteAuthor else {
-                return
-            }
-
+        storyItem.preview?.authors?.forEach { remoteAuthor in
             addToAuthors(CDAuthor(remote: remoteAuthor, context: context))
         }
 
@@ -222,9 +226,11 @@ extension CDItem {
 
         givenURL = summary.givenUrl
         resolvedURL = summary.resolvedUrl
-        title = summary.title
-        topImageURL = summary.topImageUrl.flatMap(URL.init(string:))
-        domain = summary.domain
+        title = summary.preview?.title
+        if let urlString = summary.preview?.image?.url {
+            topImageURL = URL(string: urlString)
+        }
+        domain = summary.preview?.domain?.name
         language = summary.language
 
         if let readTime = summary.timeToRead {
@@ -237,8 +243,8 @@ extension CDItem {
         } else {
             wordCount = 0
         }
-        excerpt = summary.excerpt
-        datePublished = summary.datePublished.flatMap { DateFormatter.clientAPI.date(from: $0) }
+        excerpt = summary.preview?.excerpt
+        datePublished = summary.preview?.datePublished.flatMap { DateFormatter.clientAPI.date(from: $0) }
         isArticle = summary.isArticle ?? false
         imageness = summary.hasImage?.rawValue
         videoness = summary.hasVideo?.rawValue
@@ -251,7 +257,7 @@ extension CDItem {
             addToImages(CDImage(url: topImageURL, context: context))
         }
 
-        if let metaParts = summary.domainMetadata?.fragments.domainMetadataParts {
+        if let metaParts = summary.preview?.domain?.fragments.domainMetadataParts {
             domainMetadata = domainMetadata ?? CDDomainMetadata(context: context)
             domainMetadata?.update(remote: metaParts)
         }
@@ -260,11 +266,7 @@ extension CDItem {
             removeFromAuthors(authors)
         }
 
-        summary.authors?.forEach { remoteAuthor in
-            guard let remoteAuthor = remoteAuthor else {
-                return
-            }
-
+        summary.preview?.authors?.forEach { remoteAuthor in
             addToAuthors(CDAuthor(remote: remoteAuthor, context: context))
         }
 

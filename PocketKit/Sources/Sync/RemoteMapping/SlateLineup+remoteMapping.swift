@@ -54,8 +54,8 @@ extension CDRecommendation {
     public typealias RemoteCorpusRecommendation = CorpusSlateParts.Recommendation
 
     func update(from remote: RemoteCorpusRecommendation, in space: Space, context: NSManagedObjectContext) {
-        title = remote.corpusItem.title
-        excerpt = remote.corpusItem.excerpt
+        title = remote.corpusItem.preview.title
+        excerpt = remote.corpusItem.preview.excerpt
         imageURL = URL(string: remote.corpusItem.imageUrl)
         image = CDImage(src: remote.corpusItem.imageUrl, context: context)
         let url = remote.corpusItem.url

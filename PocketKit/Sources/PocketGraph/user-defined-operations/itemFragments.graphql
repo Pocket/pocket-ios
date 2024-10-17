@@ -2,25 +2,33 @@ fragment ItemParts on Item {
   remoteID: itemId
   givenUrl
   resolvedUrl
-  title
   language
-  topImageUrl
   timeToRead
-  domain
-  datePublished
   isArticle
   hasImage
   hasVideo
   wordCount
-  authors {
-    id
-    name
-    url
-  }
   collection {
     slug
     title
     imageUrl
+  }
+  preview {
+    authors {
+      id
+      name
+      url
+    }
+    excerpt
+    title
+    datePublished
+    image {
+      url
+    }
+    domain {
+      __typename
+      ...DomainMetadataParts
+    }
   }
   marticle {
     __typename
@@ -34,11 +42,6 @@ fragment ItemParts on Item {
     ...MarticleBulletedListParts
     ...MarticleNumberedListParts
     ...MarticleBlockquoteParts
-  }
-  excerpt
-  domainMetadata {
-    __typename
-    ...DomainMetadataParts
   }
   images {
     __typename
@@ -78,30 +81,34 @@ fragment CompactItem on Item {
   remoteID: itemId
   givenUrl
   resolvedUrl
-  title
   language
-  topImageUrl
   timeToRead
-  domain
-  datePublished
   isArticle
   hasImage
   hasVideo
   wordCount
-  authors {
-    id
-    name
-    url
-  }
-  excerpt
-  domainMetadata {
-    ...DomainMetadataParts
-  }
   images {
     height
     width
     src
     imageId
+  }
+  preview {
+    authors {
+      id
+      name
+      url
+    }
+    excerpt
+    title
+    datePublished
+    image {
+      url
+    }
+    domain {
+      __typename
+      ...DomainMetadataParts
+    }
   }
   syndicatedArticle {
     ...SyndicatedArticleParts

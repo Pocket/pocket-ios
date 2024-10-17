@@ -31,21 +31,25 @@
                                 "remoteID": "item-1",
                                 "givenUrl": "https://given.example.com/item-1",
                                 "resolvedUrl": "http://resolved.example.com/item-1",
-                                "title": "Updated Item 1",
-                                "topImageUrl": "https://example.com/item-1/top-image.jpg",
-                                "domain": null,
                                 "language": "en",
                                 "timeToRead": 6,
                                 "wordCount": 500,
                                 "marticle": [],
-                                "excerpt": "Cursus Aenean Elit",
-                                "datePublished": "2021-01-01 12:01:01",
                                 "authors": [],
                                 "collection": null,
-                                "domainMetadata": {
-                                    "__typename": "[type-name-here]",
-                                    "name": "WIRED",
-                                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                                "preview" : {
+                                    "authors": [],
+                                    "excerpt": "Cursus Aenean Elit",
+                                    "title": "Updated Item 1",
+                                    "datePublished": "2021-01-01 12:01:01",
+                                    "image" : {
+                                        "url": "https://example.com/item-1/top-image.jpg"
+                                    },
+                                    "domain": {
+                                        "__typename": "[type-name-here]",
+                                        "name": "WIRED",
+                                        "logo": "http://example.com/item-1/domain-logo.jpg"
+                                    }
                                 },
                                 "images": [
                                     {

@@ -17,6 +17,7 @@ public class Image: MockObject {
     @Field<Int>("imageId") public var imageId
     @available(*, deprecated, message: "use url property moving forward")
     @Field<String>("src") public var src
+    @Field<PocketGraph.Url>("url") public var url
     @Field<Int>("width") public var width
   }
 }
@@ -29,6 +30,7 @@ public extension Mock where O == Image {
     imageID: Int? = nil,
     imageId: Int? = nil,
     src: String? = nil,
+    url: PocketGraph.Url? = nil,
     width: Int? = nil
   ) {
     self.init()
@@ -38,6 +40,7 @@ public extension Mock where O == Image {
     _setScalar(imageID, for: \.imageID)
     _setScalar(imageId, for: \.imageId)
     _setScalar(src, for: \.src)
+    _setScalar(url, for: \.url)
     _setScalar(width, for: \.width)
   }
 }

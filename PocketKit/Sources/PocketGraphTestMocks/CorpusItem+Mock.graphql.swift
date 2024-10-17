@@ -10,36 +10,33 @@ public class CorpusItem: MockObject {
   public typealias MockValueCollectionType = Array<Mock<CorpusItem>>
 
   public struct MockFields {
-    @Field<String>("excerpt") public var excerpt
     @Field<PocketGraph.ID>("id") public var id
     @Field<PocketGraph.Url>("imageUrl") public var imageUrl
+    @Field<PocketMetadata>("preview") public var preview
     @Field<String>("publisher") public var publisher
     @Field<CorpusTarget>("target") public var target
     @Field<Int>("timeToRead") public var timeToRead
-    @Field<String>("title") public var title
     @Field<PocketGraph.Url>("url") public var url
   }
 }
 
 public extension Mock where O == CorpusItem {
   convenience init(
-    excerpt: String? = nil,
     id: PocketGraph.ID? = nil,
     imageUrl: PocketGraph.Url? = nil,
+    preview: AnyMock? = nil,
     publisher: String? = nil,
     target: AnyMock? = nil,
     timeToRead: Int? = nil,
-    title: String? = nil,
     url: PocketGraph.Url? = nil
   ) {
     self.init()
-    _setScalar(excerpt, for: \.excerpt)
     _setScalar(id, for: \.id)
     _setScalar(imageUrl, for: \.imageUrl)
+    _setEntity(preview, for: \.preview)
     _setScalar(publisher, for: \.publisher)
     _setEntity(target, for: \.target)
     _setScalar(timeToRead, for: \.timeToRead)
-    _setScalar(title, for: \.title)
     _setScalar(url, for: \.url)
   }
 }
