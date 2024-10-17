@@ -108,6 +108,7 @@ extension CDItem {
         if let timeToRead = corpusItem.timeToRead {
             self.timeToRead = NSNumber(value: timeToRead)
         }
+        // TODO: PREVIEW - after a bit of testing, we should remove the option of using corpusItem.imageUrl
         topImageURL = URL(string: corpusItem.preview.image?.url ?? corpusItem.imageUrl)
         domain = corpusItem.preview.domain?.name
         excerpt = corpusItem.preview.excerpt

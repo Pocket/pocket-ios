@@ -35,7 +35,7 @@ extension SearchSavedItem: ItemsListItem {
     }
 
     var displayDomain: String? {
-        item.asItem?.preview?.domain?.name ?? item.asItem?.preview?.domain?.name ?? host
+        item.asItem?.preview?.domain?.name
     }
 
     var displayAuthors: String? {
