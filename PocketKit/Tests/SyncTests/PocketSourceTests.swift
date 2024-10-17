@@ -736,7 +736,8 @@ extension PocketSourceTests {
             _createdAt: 1,
             item: SavedItemParts.Item.AsItem(
                 remoteID: "item-1",
-                givenUrl: "http://localhost:8080/hello"
+                givenUrl: "http://localhost:8080/hello",
+                preview: SavedItemParts.Item.AsItem.Preview(__typename: "[some-type-name]", title: "item-title")
             ).asRootEntityType
         )
 

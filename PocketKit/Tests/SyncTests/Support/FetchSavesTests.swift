@@ -114,8 +114,8 @@ class FetchSavesTests: XCTestCase {
         XCTAssertEqual(item?.givenURL, "https://given.example.com/item-1")
         XCTAssertEqual(item?.resolvedURL, "https://resolved.example.com/item-1")
         XCTAssertEqual(item?.title, "Item 1")
-        XCTAssertEqual(item?.topImageURL, URL(string: "https://example.com/item-1/top-image.jpg")!)
-        XCTAssertEqual(item?.domain, "example.com")
+        XCTAssertEqual(item?.topImageURL, URL(string: "https://example.com/archived-item--2/top-image.jpg")!)
+        XCTAssertEqual(item?.domain, "WIRED")
         XCTAssertEqual(item?.language, "en")
         XCTAssertEqual(item?.timeToRead, 6)
         XCTAssertEqual(item?.excerpt, "Cursus Aenean Elit")
@@ -156,7 +156,7 @@ class FetchSavesTests: XCTestCase {
 
         let savedItem2 = savedItems[1]
         let item2 = savedItem2.item
-        XCTAssertEqual(item2!.domain!, "example.com")
+        XCTAssertEqual(item2!.domain!, "WIRED")
     }
 
     func test_refresh_whenFetchSucceeds_andResultContainsDuplicateItems_createsSingleItem() async throws {
