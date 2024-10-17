@@ -474,17 +474,22 @@ extension Response {
         ]
 
         let domainMetadata = Mock<DomainMetadata>(logo: "http://example.com/domain-logo.jpg", name: "WIRED")
+        let image = Mock<Image>(url: topImageUrl)
 
-        let preview = Mock<ItemSummary>(authors: authors, domain: domainMetadata)
+        let preview = Mock<ItemSummary>(
+            authors: authors,
+            datePublished: datePublished,
+            domain: domainMetadata,
+            excerpt: excerpt,
+            image: image,
+            title: title
+        )
 
         let images = [
             Mock<Image>(height: 1, imageId: 1, src: "http://example.com/image.jpg", width: 1)
         ]
 
         return Mock<Item>(
-            datePublished: datePublished,
-            domain: domain,
-            excerpt: excerpt,
             givenUrl: givenUrl,
             hasImage: hasImage,
             hasVideo: hasVideo,
@@ -497,8 +502,6 @@ extension Response {
             resolvedUrl: resolvedUrl,
             syndicatedArticle: syndicatedArticle,
             timeToRead: timeToRead,
-            title: title,
-            topImageUrl: topImageUrl,
             wordCount: wordCount
         )
     }
