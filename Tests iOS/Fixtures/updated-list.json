@@ -38,11 +38,13 @@
                 "marticle": [],
                 "collection": null,
                 "preview" : {
+            "__typename": "[type-name-here]",
                     "authors": [],
                     "excerpt": "Cursus Aenean Elit",
                     "title": "Updated Item 1",
                     "datePublished": "2021-01-01 12:01:01",
                     "image" : {
+                        "__typename": "[type-name-here]",
                         "url": "https://example.com/item-1/top-image.jpg"
                     },
                     "domain": {
@@ -106,11 +108,13 @@
                 "hasVideo": "HAS_VIDEOS",
                 "syndicatedArticle": null,
                 "preview" : {
+            "__typename": "[type-name-here]",
                     "authors": [],
                     "excerpt": "Cursus Aenean Elit",
                     "title": "Updated Item 2",
                     "datePublished": "2021-01-01 12:01:01",
                     "image" : {
+                        "__typename": "[type-name-here]",
                         "url": "https://example.com/item-2/top-image.jpg"
                     },
                     "domain": {

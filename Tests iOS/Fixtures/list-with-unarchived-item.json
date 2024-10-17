@@ -42,6 +42,7 @@
                                 "hasVideo": "HAS_VIDEOS",
                                 "syndicatedArticle": null,
                                 "preview" : {
+            "__typename": "[type-name-here]",
                                     "authors": [
                                         {
                                             "__typename": "Author",
@@ -54,6 +55,7 @@
                                     "title": "Archived Item 1",
                                     "datePublished": "2021-01-01 12:01:01",
                                     "image" : {
+                        "__typename": "[type-name-here]",
                                         "url": "https://example.com/archived-item-1/top-image.jpg"
                                     },
                                     "domain": {

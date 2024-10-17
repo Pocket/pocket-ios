@@ -26,6 +26,7 @@
                 "hasVideo": "HAS_VIDEOS",
                 "syndicatedArticle": null,
                 "preview" : {
+            "__typename": "[type-name-here]",
                     "authors": [
                         {
                             "__typename": "Author",
@@ -44,6 +45,7 @@
                     "title": "Slate 1, Recommendation 1",
                     "datePublished": "2021-01-01 12:01:01",
                     "image" : {
+                        "__typename": "[type-name-here]",
                         "url": "http://example.com/slate-1-rec-1/top-image.png"
                     },
                     "domain": {

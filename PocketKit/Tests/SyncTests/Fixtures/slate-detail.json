@@ -23,11 +23,13 @@
                         "marticle": [],
                         "images": [],
                         "preview" : {
+            "__typename": "[type-name-here]",
                             "authors": [],
                             "excerpt": "Cursus Aenean Elit",
                             "title": "Slate 1, Recommendation 1",
                             "datePublished": "2021-01-01 12:01:01",
                             "image" : {
+                        "__typename": "[type-name-here]",
                                 "url": "http://example.com/slate-1-rec-1/top-image.png"
                             },
                             "domain": {
@@ -57,11 +59,13 @@
                         "marticle": [],
                         "images": [],
                         "preview" : {
+            "__typename": "[type-name-here]",
                             "authors": [],
                             "excerpt": "Cursus Aenean Elit",
                             "title": "Slate 1, Recommendation 2",
                             "datePublished": "2021-01-01 12:01:01",
                             "image" : {
+                        "__typename": "[type-name-here]",
                                 "url": "http://example.com/slate-1-rec-2/top-image.png"
                             },
                             "domain": {
@@ -91,11 +95,13 @@
                         "marticle": [],
                         "images": [],
                         "preview" : {
+            "__typename": "[type-name-here]",
                             "authors": [],
                             "excerpt": "Cursus Aenean Elit",
                             "title": "Slate 1, Recommendation 3",
                             "datePublished": "2021-01-01 12:01:01",
                             "image" : {
+                        "__typename": "[type-name-here]",
                                 "url": "http://example.com/slate-1-rec-3/top-image.png"
                             },
                             "domain": {

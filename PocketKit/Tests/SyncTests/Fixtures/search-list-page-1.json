@@ -39,6 +39,7 @@
                   "marticle": [],
                   "collection": null,
                   "preview" : {
+            "__typename": "[type-name-here]",
                       "authors": [
                         {
                           "__typename": "Author",
@@ -57,6 +58,7 @@
                       "title": "Item 1",
                       "datePublished": "2021-01-01 12:01:01",
                       "image" : {
+                        "__typename": "[type-name-here]",
                           "url": "https://example.com/archived-item--2/top-image.jpg"
                       },
                       "domain": {
@@ -116,6 +118,7 @@
                   "marticle": [],
                   "collection": null,
                   "preview" : {
+            "__typename": "[type-name-here]",
                       "authors": [
                         {
                           "__typename": "Author",
@@ -134,6 +137,7 @@
                       "title": "Item 2",
                       "datePublished": "2021-01-01 12:01:01",
                       "image" : {
+                        "__typename": "[type-name-here]",
                           "url": "https://example.com/archived-item--2/top-image.jpg"
                       },
                       "domain": {

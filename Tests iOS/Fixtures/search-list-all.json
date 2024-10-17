@@ -39,6 +39,7 @@
                   "marticle": [],
                   "collection": null,
                   "preview" : {
+            "__typename": "[type-name-here]",
                       "authors": [
                           {
                               "__typename": "Author",
@@ -57,6 +58,7 @@
                       "title": "Item 1",
                       "datePublished": "2021-01-01 12:01:01",
                       "image" : {
+                        "__typename": "[type-name-here]",
                           "url": "https://example.com/item-1/top-image.jpg"
                       },
                       "domain": {
@@ -115,6 +117,7 @@
                   "wordCount": 500,
                   "marticle": [],
                   "preview" : {
+            "__typename": "[type-name-here]",
                       "authors": [
                           {
                               "__typename": "Author",
@@ -133,6 +136,7 @@
                       "title": "Item 2",
                       "datePublished": "2021-01-01 12:01:01",
                       "image" : {
+                        "__typename": "[type-name-here]",
                           "url": "https://example.com/item-2/top-image.jpg"
                       },
                       "domain": {
@@ -192,6 +196,7 @@
                   "wordCount": 500,
                   "marticle": [],
                   "preview" : {
+            "__typename": "[type-name-here]",
                       "authors": [
                           {
                               "__typename": "Author",
@@ -210,6 +215,7 @@
                       "title": "Item 3",
                       "datePublished": "2021-01-01 12:01:01",
                       "image" : {
+                        "__typename": "[type-name-here]",
                           "url": "https://example.com/item-3/top-image.jpg"
                       },
                       "domain": {
