@@ -26,7 +26,27 @@ class Listen: NSObject {
         self.source = source
         super.init()
         // Set a default set of languages that the server will overwrite when it loads
-        PKTListen.supportedLanguages = ["en"]
+        PKTListen.supportedLanguages = [
+            "da",
+            "nl",
+            "ko",
+            "ja",
+            "is",
+            "ro",
+            "cy",
+            "fr",
+            "it",
+            "ru",
+            "pt",
+            "sv",
+            "tr",
+            "en",
+            "es",
+            "pl",
+            "de",
+            "no"
+        ]
+
         PKTSetConsumerKey(consumerKey)
         PKTLocalRuntime.shared().start()
         PKTListen.sharedInstance().sessionDelegate = self
