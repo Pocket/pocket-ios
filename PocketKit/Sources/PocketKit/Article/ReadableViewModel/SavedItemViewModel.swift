@@ -125,11 +125,22 @@ class SavedItemViewModel: ReadableViewModel, ObservableObject {
         self.featureFlagService = featureFlagService
         self.shouldOpenListenOnAppear = shouldOpenListenOnAppear
 
+        // TODO: SWIFTUI - relying on these publishers potentially generates multiple calls because items might get more updates
+        // e. g. favoriting an item will queue the request to the backend and update the item from what we receive back
+        // moving forward with SwiftUI we need to find a better way to monitor these changes.
         item.publisher(for: \.isFavorite).sink { [weak self] _ in
             self?.buildActions()
         }.store(in: &subscriptions)
 
         item.publisher(for: \.isArchived).sink { [weak self] _ in
+            self?.buildActions()
+        }.store(in: &subscriptions)
+
+        item.publisher(for: \.highlights).sink { [weak self] _ in
+            self?.buildActions()
+        }.store(in: &subscriptions)
+
+        item.publisher(for: \.tags).sink { [weak self] _ in
             self?.buildActions()
         }.store(in: &subscriptions)
 

@@ -10,13 +10,13 @@ struct ReaderView: UIViewControllerRepresentable {
     let route: ReadableRoute
 
     class Coordinator {
-            var parentObserver: NSKeyValueObservation?
-        }
+        var parentObserver: NSKeyValueObservation?
+    }
 
     func makeUIViewController(context: Context) -> UIViewController {
         if let model = makeReadableViewModel() {
             let viewController = ReadableHostViewController(readableViewModel: model)
-            context.coordinator.parentObserver = viewController.observe(\.parent, changeHandler: { viewController, _ in
+            context.coordinator.parentObserver = viewController.observe(\.parent?.navigationItem.rightBarButtonItems, changeHandler: { viewController, _ in
                 Task {
                     await update(viewController: viewController)
                 }
