@@ -21,8 +21,6 @@ struct RemoteImage: View {
                     if !progress.isFinished && !progress.isCancelled && !progress.isIndeterminate {
                         ProgressView()
                             .progressViewStyle(CircularProgressViewStyle(tint: Color(.ui.grey4)))
-                    } else {
-                        EmptyView()
                     }
                 }
                 .setProcessor(
@@ -41,8 +39,6 @@ struct RemoteImage: View {
                 .resizable()
         } else if usePlaceholder {
             Color(.ui.grey6)
-        } else {
-            EmptyView()
         }
     }
 }
