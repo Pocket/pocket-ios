@@ -25,8 +25,9 @@ private extension CarouselView {
         ScrollView(.horizontal) {
             HStack(spacing: Self.defaultSpacing) {
                 ForEach(cards) {
-                    CarouselCard(
-                        card: $0
+                    CardView(
+                        card: $0,
+                        size: .medium
                     )
                     .padding(.vertical, Self.defaultSpacing)
                 }
@@ -49,8 +50,9 @@ private extension CarouselView {
             ForEach(itemsRows) { itemsRow in
                 GridRow {
                     ForEach(itemsRow.cards) { card in
-                        CarouselCard(
-                            card: card
+                        CardView(
+                            card: card,
+                            size: .medium
                         )
                     }
                 }
