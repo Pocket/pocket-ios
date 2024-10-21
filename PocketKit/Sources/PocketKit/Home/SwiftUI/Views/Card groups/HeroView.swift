@@ -22,7 +22,7 @@ struct HeroView: View {
 // MARK: View builders
 private extension HeroView {
     func makeHeroCard(_ card: HomeCard) -> some View {
-        HeroCard(card: card)
+        CardView(card: card, size: .large)
     }
 
     func makeHeroGrid() -> some View {
@@ -32,8 +32,9 @@ private extension HeroView {
             ForEach(itemsRows) { itemsRow in
                 GridRow {
                     ForEach(itemsRow.cards) { card in
-                        HeroCard(
-                            card: card
+                        CardView(
+                            card: card,
+                            size: .large
                         )
                     }
                 }
