@@ -24,7 +24,7 @@ struct SlateView: View {
                 if let slateTitle {
                     makeHeader(slateTitle)
                 }
-                HeroView(remoteID: remoteID, cards: herolCards)
+                HeroView(remoteID: remoteID, cards: heroCards)
             }
             .padding(EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16))
             CarouselView(cards: carouselCards, useGrid: useWideLayout)
@@ -52,7 +52,7 @@ private extension SlateView {
     }
 
     /// Extract the Hero recommendations
-    var herolCards: [HomeCard] {
+    var heroCards: [HomeCard] {
         Array(cards.prefix(upTo: heroCount))
     }
 
