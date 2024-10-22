@@ -38,7 +38,6 @@ struct HomeCard: Identifiable, @preconcurrency Equatable {
         imageURL: URL?,
         sharedWithYouUrlString: String? = nil,
         ShareURL: String? = nil,
-        uselargeTitle: Bool = false,
         enableSaveAction: Bool = false,
         enableFavoriteAction: Bool = false,
         enableShareMenuAction: Bool = false,
