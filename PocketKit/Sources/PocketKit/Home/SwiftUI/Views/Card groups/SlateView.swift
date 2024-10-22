@@ -35,7 +35,7 @@ struct SlateView: View {
 private extension SlateView {
     func makeHeader(_ title: String) -> some View {
         SectionHeader(title: title) {
-            coordinator.navigateTo(SlateRoute(slateID: remoteID))
+            coordinator.navigateTo(SlateRoute(slateID: remoteID, slateTitle: slateTitle))
         }
     }
 

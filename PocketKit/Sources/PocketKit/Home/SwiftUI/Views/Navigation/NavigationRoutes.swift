@@ -8,6 +8,7 @@ protocol NavigationRoute: Codable, Hashable {}
 
 struct SlateRoute: NavigationRoute {
     let slateID: String
+    let slateTitle: String?
 }
 
 struct NativeCollectionRoute: NavigationRoute {

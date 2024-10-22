@@ -71,7 +71,6 @@ private extension RecentSavesView {
                 imageURL: $0.item?.topImageURL,
                 sharedWithYouUrlString: nil,
                 ShareURL: $0.item?.shareURL,
-                uselargeTitle: false,
                 enableFavoriteAction: true,
                 enableShareMenuAction: true,
                 enableArchiveMenuAction: true,

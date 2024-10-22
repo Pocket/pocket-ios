@@ -71,7 +71,6 @@ private extension SharedWithYouView {
                 imageURL: $0.item?.topImageURL,
                 sharedWithYouUrlString: $0.url,
                 ShareURL: $0.item?.shareURL,
-                uselargeTitle: false,
                 enableSaveAction: true,
                 enableShareMenuAction: true
             )
