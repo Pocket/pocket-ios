@@ -2,8 +2,9 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import UIKit
+import SwiftUI
 import Lottie
+import Localization
 
 public class EndOfFeedAnimationView: UIView {
     private lazy var textLabel: UILabel = {
@@ -122,4 +123,57 @@ private extension LottieColor {
         color.getRed(&r, green: &g, blue: &b, alpha: nil)
         self.init(r: r, g: g, b: b, a: 1)
     }
+}
+
+public struct EndOfFeedView: View {
+    @State private var playbackMode: LottiePlaybackMode = .paused
+
+    public init() {}
+
+    public var body: some View {
+        VStack(alignment: .center) {
+            Text(Localization.youReAllCaughtUpCheckBackLaterForMore)
+                .style(.overscroll)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Lottie.LottieView(animation: .named("end-of-feed.json", bundle: .module, subdirectory: "Assets"))
+                .configure { animationView in
+                    if let provider = colorValueProvider() {
+                        animationView.setValueProvider(
+                            provider,
+                            keypath: AnimationKeypath(
+                                keys: ["Book Animation - DYNAMIC", "PAGE_COLOR", "Group 1", "Stroke 1", "Color"]
+                            )
+                        )
+                    }
+                }
+                .playbackMode(playbackMode)
+                .animationDidFinish { _ in
+                    playbackMode = .paused
+                }
+                .frame(height: 40)
+                .onAppear {
+                    playbackMode = .playing(.fromProgress(0, toProgress: 1, loopMode: .playOnce))
+                }
+        }
+        .padding()
+    }
+
+    private func colorValueProvider() -> ColorValueProvider? {
+        switch UITraitCollection.current.userInterfaceStyle {
+        case .light:
+            return ColorValueProvider(LottieColor(.ui.black))
+        case .dark:
+            return ColorValueProvider(LottieColor(.ui.white))
+        case .unspecified:
+            return nil
+        @unknown default:
+            return nil
+        }
+    }
+}
+
+private extension Style {
+    static let overscroll = Style.header.sansSerif.p3.with { $0.with(alignment: .center) }
 }
