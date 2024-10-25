@@ -2,6 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import Lottie
 import SwiftUI
 import Textile
 
@@ -11,50 +12,57 @@ struct CardList: View {
     let size: CardSize
 
     @State private var showEndOfFeed: Bool = false
-    @State private var proxyValues: ProxyValues = .zero
+    @State private var opacity: Double = 0
 
     var body: some View {
         ZStack {
-            List(Array(cards.enumerated()), id: \.element) { card in
-                CardView(card: card.element, size: size)
-                    .listRowSeparator(.hidden)
-                    .listRowBackground(Color.clear)
-                    .background {
-                        if card.offset == cards.count - 1 {
+            ScrollView {
+                VStack {
+                    ForEach(cards) { card in
+                        CardView(card: card, size: size)
+                            .padding(.bottom, 8)
+                            .listRowSeparator(.hidden)
+                            .listRowBackground(Color.clear)
+                    }
+                    Rectangle()
+                        .fill(Color.clear)
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
+                        .background {
                             GeometryReader { geometry in
-                                Color.clear.preference(
+                                VStack(alignment: .center) {
+                                    HStack {
+                                        Spacer()
+                                        if showEndOfFeed {
+                                            EndOfFeedView()
+                                        }
+                                        Spacer()
+                                    }
+                                }
+                                .opacity(opacity)
+                                .preference(
                                     key: ScrollOffsetPreferenceKey.self,
-                                    value: ProxyValues(maxY: geometry.frame(in: .named("ListView")).maxY, minY: geometry.frame(in: .named("ListView")).minY)
+                                    value: geometry.frame(in: .named("ListView")).maxY
                                 )
                             }
                         }
-                    }
-            }
-            .background {
-                if showEndOfFeed {
-                    VStack {
-                        Spacer()
-                        EndOfFeedView()
-                            .opacity(showEndOfFeed ? 1 : 0)
-                    }
                 }
             }
             .coordinateSpace(.named("ListView"))
-            .listStyle(.plain)
-            .contentMargins([.leading, .trailing], -4, for: .scrollContent)
-            .listRowSpacing(8)
+            .contentMargins([.leading, .trailing], 16, for: .scrollContent)
             .background(Color.clear)
         }
-        .onPreferenceChange(ScrollOffsetPreferenceKey.self) {
-            proxyValues = $0
-            print("---")
-            print(proxyValues)
-            print(UIScreen.main.bounds.height)
-            print(UIScreen.main.bounds.minY)
-            print(UIScreen.main.bounds.midY)
-            print(UIScreen.main.bounds.maxY)
-            withAnimation {
-                showEndOfFeed = proxyValues.maxY < UIScreen.main.bounds.height - 130
+        .onPreferenceChange(ScrollOffsetPreferenceKey.self) { offset in
+            let shouldTriggerEndOfFeed = offset > 0 && offset < UIScreen.main.bounds.height - 200
+            if showEndOfFeed != shouldTriggerEndOfFeed {
+                showEndOfFeed = shouldTriggerEndOfFeed
+                withAnimation(.smooth) {
+                    if shouldTriggerEndOfFeed {
+                        opacity = 1
+                    } else {
+                        opacity = 0
+                    }
+                }
             }
         }
         .background(Color(.ui.white1))
@@ -62,17 +70,8 @@ struct CardList: View {
 }
 
 private struct ScrollOffsetPreferenceKey: PreferenceKey {
-    static let defaultValue: ProxyValues = .zero
-    static func reduce(value: inout ProxyValues, nextValue: () -> ProxyValues) {
-        value = ProxyValues(maxY: value.maxY + nextValue().maxY, minY: value.minY + nextValue().minY)
-    }
-}
-
-struct ProxyValues: Equatable {
-    let maxY: CGFloat
-    let minY: CGFloat
-
-    static var zero: ProxyValues {
-        ProxyValues(maxY: 0, minY: 0)
+    static let defaultValue: CGFloat = .zero
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value += nextValue()
     }
 }

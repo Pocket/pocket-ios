@@ -153,7 +153,7 @@ public struct EndOfFeedView: View {
                     playbackMode = .paused
                 }
                 .frame(height: 40)
-                .onAppear {
+                .task {
                     playbackMode = .playing(.fromProgress(0, toProgress: 1, loopMode: .playOnce))
                 }
         }
