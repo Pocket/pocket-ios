@@ -25,8 +25,8 @@ struct HomeView: View {
             .scrollIndicators(.hidden)
             .background(Color(.ui.white1))
             .navigationTitle(Localization.home)
-            .environment(\.carouselWidth, carouselWidth(proxy.size.width))
-            .environment(\.useWideLayout, useWideLayout())
+            .environment(\.carouselWidth, carouselWidth(proxy.size))
+            .environment(\.layoutWidth, layoutWidth(proxy.size))
         }
     }
 }
@@ -34,12 +34,15 @@ struct HomeView: View {
 // MARK: environment setup
 private extension HomeView {
     /// Determine if the wide layout setting should be used
-    func useWideLayout() -> Bool {
-        horizontalSizeClass == .regular && UIDevice.current.userInterfaceIdiom == .pad
+    func layoutWidth(_ screenSize: CGSize) -> LayoutWidth {
+        guard horizontalSizeClass == .regular && UIDevice.current.userInterfaceIdiom == .pad else {
+            return .compact
+        }
+        return screenSize.width > screenSize.height ? .extraWide : .wide
     }
 
     /// Calculate carousel cell width based on which layout is being used
-    func carouselWidth(_ proxyWidth: CGFloat) -> CGFloat {
-        useWideLayout() ? proxyWidth * 0.5 - 64 : proxyWidth * 0.8
+    func carouselWidth(_ screenSize: CGSize) -> CGFloat {
+        layoutWidth(screenSize).isRegular ? screenSize.width * 0.5 - 64 : screenSize.width * 0.8
     }
 }

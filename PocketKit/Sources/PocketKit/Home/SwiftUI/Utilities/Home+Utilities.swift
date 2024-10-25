@@ -5,6 +5,26 @@
 import SwiftUI
 import Sync
 
+enum LayoutWidth {
+    case compact
+    case wide
+    case extraWide
+
+    var isRegular: Bool {
+        switch self {
+        case .compact: return false
+        case .wide, .extraWide: return true
+        }
+    }
+
+    var isCompact: Bool {
+        switch self {
+        case .compact: return true
+        case .wide, .extraWide: return false
+        }
+    }
+}
+
 /// Array extension that divides an array into chunks of a predefined size.
 extension Array {
     func chunked(into size: Int) -> [[Element]] {
@@ -19,8 +39,8 @@ extension EnvironmentValues {
     /// Store the carousel width based on the current `Geometry`
     @Entry var carouselWidth: CGFloat = 300
 
-    /// True if the iPad/w regular size should be used
-    @Entry var useWideLayout: Bool = false
+    /// The layout width to adopt in views that adapt to it
+    @Entry var layoutWidth: LayoutWidth = .compact
 }
 
 extension Item {

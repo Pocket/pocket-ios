@@ -12,8 +12,8 @@ struct SlateView: View {
     let slateTitle: String?
     let cards: [HomeCard]
 
-    @Environment(\.useWideLayout)
-    private var useWideLayout
+    @Environment(\.layoutWidth)
+    private var layoutWidth
 
     @Environment(HomeCoordinator.self)
     var coordinator
@@ -27,7 +27,7 @@ struct SlateView: View {
                 HeroView(remoteID: remoteID, cards: heroCards)
             }
             .padding(EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16))
-            CarouselView(cards: carouselCards, useGrid: useWideLayout)
+            CarouselView(cards: carouselCards, useGrid: layoutWidth.isRegular)
         }
     }
 }
@@ -48,7 +48,7 @@ private extension SlateView {
 
     /// Determines how many hero cells should be used
     var heroCount: Int {
-        Self.heroCount(useWideLayout)
+        Self.heroCount(layoutWidth.isRegular)
     }
 
     /// Extract the Hero recommendations

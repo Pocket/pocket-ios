@@ -11,7 +11,7 @@ import Textile
 
 /// Representation of an `Item` suitable for being displayed in a `Hero` or a `Carousel` card.
 @MainActor
-struct HomeCard: Identifiable, @preconcurrency Equatable {
+struct HomeCard: Identifiable, @preconcurrency Equatable, Hashable {
     static func == (lhs: HomeCard, rhs: HomeCard) -> Bool {
         lhs.givenURL == rhs.givenURL &&
         lhs.imageURL == rhs.imageURL &&

@@ -24,28 +24,19 @@ struct SlateDetailView: View {
     }
 
     var body: some View {
-        makeList()
+        CardList(cards: cards, size: .large)
         .onChange(of: recommendations, initial: true) {
             if proposedCards != cards {
                 cards = proposedCards
             }
         }
         .animation(.smooth, value: cards)
+        .navigationTitle(route.slateTitle ?? "")
     }
 }
 
 // MARK: view builders
 private extension SlateDetailView {
-    func makeList() -> some View {
-        List(cards) {
-            CardView(card: $0, size: .large)
-                .listRowSeparator(.hidden)
-        }
-        .listStyle(.plain)
-        .contentMargins([.leading, .trailing], -4, for: .scrollContent)
-        .listRowSpacing(8)
-        .navigationTitle(route.slateTitle ?? "Pocket")
-    }
 }
 
 private extension SlateDetailView {
