@@ -21,45 +21,9 @@ struct CardCollection: View {
     @Namespace private var scrollViewCoordinateSpace
 
     var body: some View {
-        ZStack {
-            ScrollView {
-                VStack {
-                    makeContent()
-                    Rectangle()
-                        .fill(Color.clear)
-                        .listRowSeparator(.hidden)
-                        .listRowBackground(Color.clear)
-                        .background {
-                            GeometryReader { geometry in
-                                VStack(alignment: .center) {
-                                    HStack {
-                                        Spacer()
-                                        if showEndOfFeed {
-                                            EndOfFeedView()
-                                        }
-                                        Spacer()
-                                    }
-                                }
-                                .animation(.smooth, value: showEndOfFeed)
-                                .preference(
-                                    key: ScrollOffsetPreferenceKey.self,
-                                    value: geometry.frame(in: .named(scrollViewCoordinateSpace)).maxY
-                                )
-                            }
-                        }
-                }
-            }
-            .coordinateSpace(.named(scrollViewCoordinateSpace))
-            .contentMargins([.leading, .trailing], 16, for: .scrollContent)
-            .background(Color.clear)
+        EndOfFeedScrollView {
+            makeContent()
         }
-        .onPreferenceChange(ScrollOffsetPreferenceKey.self) { offset in
-            let shouldTriggerEndOfFeed = offset > 0 && offset < UIScreen.main.bounds.height - 200
-            if showEndOfFeed != shouldTriggerEndOfFeed {
-                showEndOfFeed = shouldTriggerEndOfFeed
-            }
-        }
-        .background(Color(.ui.white1))
     }
 }
 
@@ -101,11 +65,4 @@ private extension CardCollection {
     static let defaultSpacing: CGFloat = 16
     static let rowSize: Int = 2
     static let gridInsets = EdgeInsets(top: 16, leading: 0, bottom: 0, trailing: 0)
-}
-
-private struct ScrollOffsetPreferenceKey: PreferenceKey {
-    static let defaultValue: CGFloat = .zero
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-        value += nextValue()
-    }
 }

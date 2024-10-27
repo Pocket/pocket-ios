@@ -30,6 +30,7 @@ struct SlateDetailView: View {
     var body: some View {
         GeometryReader { proxy in
             CardCollection(cards: cards, size: .large, layoutWidth: layoutWidth(proxy.size))
+                .background(Color(.ui.white1))
         }
         .onChange(of: recommendations, initial: true) {
             if proposedCards != cards {
