@@ -10,7 +10,11 @@ struct SlateDetailView: View {
     let route: SlateRoute
 
     @Query private var recommendations: [Recommendation]
+
     @State private var cards: [HomeCard] = []
+
+    @Environment(\.horizontalSizeClass)
+    var horizontalSizeClass
 
     init(route: SlateRoute) {
         self.route = route
@@ -24,7 +28,9 @@ struct SlateDetailView: View {
     }
 
     var body: some View {
-        CardList(cards: cards, size: .large)
+        GeometryReader { proxy in
+            CardCollection(cards: cards, size: .large, layoutWidth: layoutWidth(proxy.size))
+        }
         .onChange(of: recommendations, initial: true) {
             if proposedCards != cards {
                 cards = proposedCards
@@ -35,10 +41,7 @@ struct SlateDetailView: View {
     }
 }
 
-// MARK: view builders
-private extension SlateDetailView {
-}
-
+// MARK: helpers
 private extension SlateDetailView {
     var proposedCards: [HomeCard] {
         recommendations.compactMap {
@@ -55,5 +58,14 @@ private extension SlateDetailView {
             }
             return nil
         }
+    }
+    /// Determine the size of the current layout
+    /// **NOTE: turns out that, since this is a detail view, the environment value `layoutWidth`
+    /// cannot be used here since the GeometryReader of HomeView is not active
+    func layoutWidth(_ screenSize: CGSize) -> LayoutWidth {
+        guard horizontalSizeClass == .regular && UIDevice.current.userInterfaceIdiom == .pad else {
+            return .compact
+        }
+        return screenSize.width > screenSize.height ? .extraWide : .wide
     }
 }

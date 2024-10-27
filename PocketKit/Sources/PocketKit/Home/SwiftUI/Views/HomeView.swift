@@ -14,7 +14,7 @@ struct HomeView: View {
     var body: some View {
         GeometryReader { proxy in
             ScrollView(.vertical) {
-                LazyVStack(alignment: .leading) {
+                VStack(alignment: .leading) {
                     Spacer()
                         .frame(height: 16)
                     RecentSavesView()
@@ -33,7 +33,7 @@ struct HomeView: View {
 
 // MARK: environment setup
 private extension HomeView {
-    /// Determine if the wide layout setting should be used
+    /// Determine the size of the current layout
     func layoutWidth(_ screenSize: CGSize) -> LayoutWidth {
         guard horizontalSizeClass == .regular && UIDevice.current.userInterfaceIdiom == .pad else {
             return .compact

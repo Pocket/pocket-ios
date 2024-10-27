@@ -5,6 +5,7 @@
 import SwiftUI
 import Sync
 
+/// Current layout width
 enum LayoutWidth {
     case compact
     case wide
@@ -21,6 +22,17 @@ enum LayoutWidth {
         switch self {
         case .compact: return true
         case .wide, .extraWide: return false
+        }
+    }
+    /// Preferred number of columns in a grid view
+    var preferredNumberOfColumns: Int {
+        switch self {
+        case .compact:
+            return 1
+        case .wide:
+            return 2
+        case .extraWide:
+            return 3
         }
     }
 }
@@ -43,6 +55,7 @@ extension EnvironmentValues {
     @Entry var layoutWidth: LayoutWidth = .compact
 }
 
+/// Convenience properties for Item title
 extension Item {
     public var bestTitle: String {
         validTitle(syndicatedArticle?.title) ??
