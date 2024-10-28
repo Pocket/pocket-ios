@@ -24,6 +24,7 @@ struct CardCollection: View {
         EndOfFeedScrollView {
             makeContent()
         }
+        .contentMargins([.leading, .trailing], 16, for: .scrollContent)
     }
 }
 

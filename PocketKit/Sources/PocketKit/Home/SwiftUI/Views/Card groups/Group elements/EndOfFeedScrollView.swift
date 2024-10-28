@@ -46,7 +46,6 @@ struct EndOfFeedScrollView<Content>: View where Content: View {
         }
         .scrollIndicators(.hidden)
         .coordinateSpace(.named(scrollViewCoordinateSpace))
-        .contentMargins([.leading, .trailing], 16, for: .scrollContent)
         .background(Color.clear)
         .onPreferenceChange(ScrollOffsetPreferenceKey.self) { offset in
             let shouldTriggerEndOfFeed = offset > 0 && offset < UIScreen.main.bounds.height - 200
