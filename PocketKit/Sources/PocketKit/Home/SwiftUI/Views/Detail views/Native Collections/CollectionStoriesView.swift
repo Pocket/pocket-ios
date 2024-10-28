@@ -2,12 +2,15 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import Localization
 import SwiftData
 import SwiftUI
 import Sync
+import Textile
 
 struct CollectionStoriesView: View {
     let slug: String
+    let header: CollectionHeader
 
     @Query private var stories: [CollectionStory]
 
@@ -16,8 +19,9 @@ struct CollectionStoriesView: View {
     @Environment(\.horizontalSizeClass)
     var horizontalSizeClass
 
-    init(slug: String) {
+    init(slug: String, header: CollectionHeader) {
         self.slug = slug
+        self.header = header
 
         _stories = Query(
             filter: #Predicate {
@@ -30,7 +34,7 @@ struct CollectionStoriesView: View {
 
     var body: some View {
         GeometryReader { proxy in
-            CardCollection(cards: cards, size: .large, layoutWidth: layoutWidth(proxy.size))
+            CardCollection(cards: cards, size: .large, layoutWidth: layoutWidth(proxy.size), header: header)
                 .background(Color(.ui.white1))
         }
         .onChange(of: stories, initial: true) {

@@ -6,20 +6,25 @@ import SwiftUI
 import Textile
 
 /// A container scroll view with an end-of-feed animation
-struct EndOfFeedScrollView<Content>: View where Content: View {
+struct EndOfFeedScrollView<Content: View, Header: View>: View {
     @State private var showEndOfFeed: Bool = false
     @Namespace private var scrollViewCoordinateSpace
 
-    let content: () -> Content
+    let content: Content
+    let header: Header?
 
-    init(@ViewBuilder content: @escaping () -> Content) {
-        self.content = content
+    init(@ViewBuilder content: @escaping () -> Content, header: (() -> Header)? = nil) {
+        self.content = content()
+        self.header = header?()
     }
 
     var body: some View {
         ScrollView {
             LazyVStack {
-                content()
+                if let header {
+                    header
+                }
+                content
                 Rectangle()
                     .fill(Color.clear)
                     .listRowSeparator(.hidden)
@@ -53,6 +58,13 @@ struct EndOfFeedScrollView<Content>: View where Content: View {
                 showEndOfFeed = shouldTriggerEndOfFeed
             }
         }
+    }
+}
+
+extension EndOfFeedScrollView where Header == EmptyView {
+    init(@ViewBuilder content: @escaping () -> Content) {
+        self.content = content()
+        self.header = nil
     }
 }
 

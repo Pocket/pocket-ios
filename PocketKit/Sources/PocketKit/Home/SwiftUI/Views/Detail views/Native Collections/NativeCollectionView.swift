@@ -22,7 +22,24 @@ struct NativeCollectionView: View {
     }
 
     var body: some View {
-        // TODO: SWIFTUI - add implementation.
-        Text("This will show the contents of the selected collection.")
+        if let collection {
+            CollectionStoriesView(
+                slug: collection.slug,
+                header: CollectionHeader(
+                    title: collection.title,
+                    intro: collection.intro,
+                    numberOfItems: collection.stories.count,
+                    author: getAuthors(from: collection)
+                )
+            )
+        }
+    }
+
+    private func getAuthors(from collection: Collection) -> String {
+        if let item = collection.item, let authors = item.authors?.compactMap({ $0.name }) {
+            return authors.joined()
+        } else {
+            return collection.authors.compactMap({ $0.name }).joined()
+        }
     }
 }

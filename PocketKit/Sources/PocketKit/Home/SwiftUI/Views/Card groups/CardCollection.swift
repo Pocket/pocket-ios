@@ -2,6 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import Localization
 import Lottie
 import SwiftUI
 import Textile
@@ -15,14 +16,52 @@ struct CardCollection: View {
     let cards: [HomeCard]
     let size: CardSize
     let layoutWidth: LayoutWidth
+    let header: CollectionHeader?
 
     @State private var showEndOfFeed: Bool = false
 
     @Namespace private var scrollViewCoordinateSpace
 
+    init(cards: [HomeCard], size: CardSize, layoutWidth: LayoutWidth, header: CollectionHeader? = nil) {
+        self.cards = cards
+        self.size = size
+        self.layoutWidth = layoutWidth
+        self.header = header
+    }
+
     var body: some View {
         EndOfFeedScrollView {
             makeContent()
+        } header: {
+            VStack(alignment: .leading) {
+                if let header {
+                    HStack(alignment: .center) {
+                        Text(Localization.Constants.collection)
+                            .style(.collection.collection)
+                        Text(" • ")
+                            .style(.collection.authors)
+                        Text(header.author)
+                            .style(.collection.authors)
+                    }
+                    Text(Localization.Collection.Stories.count(header.numberOfItems))
+                        .style(.collection.detail)
+                    Text(header.title)
+                        .style(.collection.title)
+                        .padding(.vertical)
+                    if let intro = header.intro,
+                       let attributedIntro = try? AttributedString(
+                        markdown: intro,
+                        options: .init(
+                            allowsExtendedAttributes: true,
+                            interpretedSyntax: .inlineOnlyPreservingWhitespace
+                        )
+                       ) {
+                        Text(attributedIntro)
+                            .style(.collection.intro)
+                            .padding(.bottom)
+                    }
+                }
+            }
         }
         .contentMargins([.leading, .trailing], 16, for: .scrollContent)
     }
