@@ -9,7 +9,9 @@ import SharedWithYou
 
 struct SharedWithYouDetailView: View {
     let route: SharedWithYouRoute
-
+    // we re-fetch items here because in home we only have 5 items
+    // also, this will allow to receive real time updates on items
+    // e.g. when we save or remove them.
     @Query(sort: \SharedWithYouItem.sortOrder, order: .forward)
     private var sharedWithYouItems: [SharedWithYouItem]
 
