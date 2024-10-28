@@ -26,6 +26,13 @@ struct CardCollection: View {
         }
         .contentMargins([.leading, .trailing], 16, for: .scrollContent)
     }
+
+    func header<Header: View>(@ViewBuilder header: @escaping () -> Header) -> some View {
+        VStack {
+            header()
+            self
+        }
+    }
 }
 
 // MARK: View builders
@@ -64,6 +71,5 @@ private extension CardCollection {
 // MARK: constants
 private extension CardCollection {
     static let defaultSpacing: CGFloat = 16
-    static let rowSize: Int = 2
     static let gridInsets = EdgeInsets(top: 16, leading: 0, bottom: 0, trailing: 0)
 }
