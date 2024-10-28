@@ -13,16 +13,13 @@ struct HomeView: View {
 
     var body: some View {
         GeometryReader { proxy in
-            ScrollView(.vertical) {
-                VStack(alignment: .leading) {
-                    Spacer()
-                        .frame(height: 16)
-                    RecentSavesView()
-                    SharedWithYouView()
-                    RecommendationsView()
-                }
+            EndOfFeedScrollView {
+                Spacer()
+                    .frame(height: 16)
+                RecentSavesView()
+                SharedWithYouView()
+                RecommendationsView()
             }
-            .scrollIndicators(.hidden)
             .background(Color(.ui.white1))
             .navigationTitle(Localization.home)
             .environment(\.carouselWidth, carouselWidth(proxy.size))

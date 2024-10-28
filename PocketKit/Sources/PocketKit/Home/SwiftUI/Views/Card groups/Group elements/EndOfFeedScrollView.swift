@@ -18,7 +18,7 @@ struct EndOfFeedScrollView<Content>: View where Content: View {
 
     var body: some View {
         ScrollView {
-            VStack {
+            LazyVStack {
                 content()
                 Rectangle()
                     .fill(Color.clear)
@@ -44,6 +44,7 @@ struct EndOfFeedScrollView<Content>: View where Content: View {
                     }
             }
         }
+        .scrollIndicators(.hidden)
         .coordinateSpace(.named(scrollViewCoordinateSpace))
         .contentMargins([.leading, .trailing], 16, for: .scrollContent)
         .background(Color.clear)
