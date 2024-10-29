@@ -191,11 +191,6 @@ public class Log {
     public class func captureUserFeedback(message: String, name: String, email: String, comments: String) {
         Log.sentryCaptureUserFeedback(message: message, name: name, email: email, comments: comments)
     }
-
-    /// Helper function to capture an error that a statement tried to execute with a weak self.
-    public class func captureNilWeakSelf(filename: String = #file, line: Int = #line, column: Int = #column, funcName: String = #function) {
-        Log.capture(message: "Nil weak self, this should not happen", filename: filename, line: line, column: column, funcName: funcName)
-    }
 }
 
 /// Wrapping Swift.print() within DEBUG flag
@@ -262,6 +257,8 @@ extension Log {
             options.enableAutoSessionTracking = true
             options.tracesSampler = tracesSampler
             options.profilesSampler = profilesSampler
+            options.enableAppHangTrackingV2 = true
+            options.enableReportNonFullyBlockingAppHangs = false
         }
     }
 

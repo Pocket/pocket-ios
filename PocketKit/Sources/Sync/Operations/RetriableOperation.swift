@@ -60,7 +60,6 @@ class RetriableOperation: AsyncOperation {
         /// See AsyncOperation which makes NSOperation Async
         Task { [weak self] in
             guard let self else {
-                Log.captureNilWeakSelf()
                 return
             }
 
@@ -111,7 +110,6 @@ class RetriableOperation: AsyncOperation {
     private func retry(_ error: Error?) {
         subscription = retrySignal.sink { [weak self] in
             guard let self else {
-                Log.captureNilWeakSelf()
                 return
             }
             self._retry(error)

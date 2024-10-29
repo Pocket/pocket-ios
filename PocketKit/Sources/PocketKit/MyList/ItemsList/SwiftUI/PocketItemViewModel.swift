@@ -40,7 +40,6 @@ class PocketItemViewModel: ObservableObject {
     /// Retrieves view model to present Add Tags view
     var tagsViewModel: PocketAddTagsViewModel? {
         guard let savedItem = fetchSavedItem() else {
-            Log.capture(message: "PocketAddTagsViewModel not returned")
             return nil
         }
 
@@ -77,7 +76,6 @@ class PocketItemViewModel: ObservableObject {
         if isFavorite {
             return .unfavorite { [weak self] _ in
                 guard let self else {
-                    Log.capture(message: "Unfavorite action not taken; self is nil")
                     return
                 }
                 self._unfavorite()
@@ -85,7 +83,6 @@ class PocketItemViewModel: ObservableObject {
         } else {
             return .favorite { [weak self] _ in
                 guard let self else {
-                    Log.capture(message: "Favorite action not taken; self is nil")
                     return
                 }
                 self._favorite()
@@ -155,7 +152,6 @@ class PocketItemViewModel: ObservableObject {
             with: item.savedItemURL,
             and: item.remoteItemParts
         ) else {
-            Log.capture(message: "Saved Item not created")
             return nil
         }
         return savedItem

@@ -77,7 +77,6 @@ extension SearchSavedItem: ItemsListItem {
         } else if let url = item.asPendingItem?.givenUrl {
             return url
         } else {
-            Log.capture(message: "Server returned a search item not as Item or PendingItem")
             return ""
         }
     }

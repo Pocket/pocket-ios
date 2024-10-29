@@ -92,7 +92,6 @@ extension RefreshCoordinator {
         }
         notificationCenter.publisher(for: UIScene.didEnterBackgroundNotification, object: nil).sink { [weak self] _ in
             guard let self else {
-                Log.captureNilWeakSelf()
                 return
             }
             self.submitRequest()
