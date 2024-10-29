@@ -109,6 +109,7 @@ private extension CardFooter {
             activeColor: .branding.amber4,
             inactiveColor: .ui.grey8
         ) {
+            Haptics.defaultTap()
             homeActions.favoriteAction(isFavorite: isFavorite, givenURL: card.givenURL)
         }
         .accessibilityIdentifier("favorite-button")
@@ -124,6 +125,7 @@ private extension CardFooter {
             highlightedColor: .ui.coral1,
             activeColor: .ui.coral2
         ) {
+            Haptics.defaultTap()
             homeActions.saveAction(isSaved: isSaved, givenURL: card.givenURL)
         }
         .accessibilityIdentifier("save-button")
@@ -134,6 +136,7 @@ private extension CardFooter {
         Menu {
             if card.enableArchiveMenuAction {
                 Button(action: {
+                    Haptics.defaultTap()
                     homeActions.archiveAction(givenURL: card.givenURL)
                 }) {
                     Label {
@@ -146,6 +149,7 @@ private extension CardFooter {
 
             if card.enableDeleteMenuAction {
                 Button(action: {
+                    Haptics.defaultTap()
                     showDeleteAlert = true
                 }) {
                     Label {
@@ -158,6 +162,7 @@ private extension CardFooter {
 
             if card.enableReportMenuAction {
                 Button(action: {
+                    Haptics.defaultTap()
                     if recommendationID != nil {
                         showReportArticle = true
                     } else {
@@ -173,7 +178,7 @@ private extension CardFooter {
             }
 
             if card.enableShareMenuAction {
-                ShareableURLView(card: card)
+                ShareableURLView(givenURL: card.givenURL, shareURL: card.shareURL)
             }
         } label: {
             Image(asset: .overflow)
