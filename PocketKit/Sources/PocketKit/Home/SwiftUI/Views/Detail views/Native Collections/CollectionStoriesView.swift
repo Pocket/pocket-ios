@@ -56,6 +56,7 @@ private extension CollectionStoriesView {
                     imageURL: item.topImageURL,
                     sharedWithYouUrlString: nil,
                     ShareURL: item.shareURL,
+                    showExcerpt: true,
                     enableSaveAction: true,
                     enableShareMenuAction: true,
                     enableReportMenuAction: true

@@ -23,6 +23,7 @@ struct HomeCard: Identifiable, @preconcurrency Equatable, Hashable {
     let imageURL: URL?
     let sharedWithYouUrlString: String?
     let shareURL: String?
+    let showExcerpt: Bool
 
     // actions configuration
     let enableSaveAction: Bool
@@ -38,6 +39,7 @@ struct HomeCard: Identifiable, @preconcurrency Equatable, Hashable {
         imageURL: URL?,
         sharedWithYouUrlString: String? = nil,
         ShareURL: String? = nil,
+        showExcerpt: Bool = false,
         enableSaveAction: Bool = false,
         enableFavoriteAction: Bool = false,
         enableShareMenuAction: Bool = false,
@@ -49,6 +51,7 @@ struct HomeCard: Identifiable, @preconcurrency Equatable, Hashable {
         self.imageURL = imageURL
         self.sharedWithYouUrlString = sharedWithYouUrlString
         self.shareURL = ShareURL
+        self.showExcerpt = showExcerpt
         self.enableSaveAction = enableSaveAction
         self.enableFavoriteAction = enableFavoriteAction
         self.enableShareMenuAction = enableShareMenuAction
@@ -58,59 +61,10 @@ struct HomeCard: Identifiable, @preconcurrency Equatable, Hashable {
     }
 }
 
-// MARK: Actions
-extension HomeCard {
-    // TODO: SWIFTUI - the following methods use a reference to Services that only lives in their scope.
-    // This is on purpose since we do not want to keep a reference in the model, and once we are fully
-    // migrated to SwiftUI we will likely leverage the environment for dependency injection.
-    func saveAction(isSaved: Bool) {
-        let source = Services.shared.source
-        if isSaved {
-            source.archive(from: givenURL)
-        } else {
-            source.save(from: givenURL)
-        }
-    }
-
-    func archiveAction() {
-        let source = Services.shared.source
-        source.archive(from: givenURL)
-    }
-
-    func deleteAction() {
-        let source = Services.shared.source
-        source.delete(from: givenURL)
-    }
-
-    func favoriteAction(isFavorite: Bool, givenURL: String) {
-        let source = Services.shared.source
-        if isFavorite {
-            source.unFavorite(givenURL)
-        } else {
-            source.favorite(givenURL)
-        }
-    }
-
-    func shareableUrl() async -> String? {
-        let source = Services.shared.source
-        if let shareURL {
-            return shareURL
-        } else {
-            let remoteShareUrl = try? await source.requestShareUrl(givenURL)
-            return remoteShareUrl
-        }
-    }
-}
-
 // MARK: Styler
 extension HomeCard {
     var collectionStyle: Style {
         .recommendation.collection
-    }
-
-    // TODO: SWIFTUI - use the proper style here once we do native collections
-    var attributedExcerpt: AttributedString? {
-        return nil
     }
 
     func titleStyle(largeTitle: Bool) -> Style {

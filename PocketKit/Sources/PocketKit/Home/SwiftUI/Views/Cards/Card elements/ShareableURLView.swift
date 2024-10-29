@@ -11,6 +11,9 @@ struct ShareableURLView: View {
 
     @State private var shareableURL: URL?
 
+    @Environment(\.homeActions)
+    var homeActions
+
     var body: some View {
         ZStack {
             if let shareableURL {
@@ -35,7 +38,7 @@ struct ShareableURLView: View {
     }
 
     func shareableUrl() async {
-        if let urlString = await card.shareableUrl(),
+        if let urlString = await homeActions.shareableUrl(shareURL: card.shareURL, givenURL: card.givenURL),
            let url = URL(string: urlString) {
             shareableURL = url
         }

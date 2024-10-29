@@ -53,6 +53,9 @@ extension EnvironmentValues {
 
     /// The layout width to adopt in views that adapt to it
     @Entry var layoutWidth: LayoutWidth = .compact
+
+    /// Collection of actions that can be performed from Home
+    @Entry var homeActions = HomeActions()
 }
 
 /// Convenience properties for Item title

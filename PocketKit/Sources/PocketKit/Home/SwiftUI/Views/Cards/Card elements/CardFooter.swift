@@ -22,6 +22,9 @@ struct CardFooter: View {
 
     @State private var showShareSheet: Bool = false
 
+    @Environment(\.homeActions)
+    var homeActions
+
     var body: some View {
         makeFooter()
     }
@@ -50,7 +53,7 @@ private extension CardFooter {
             Button(Localization.no, role: .cancel) { }
             Button(Localization.yes, role: .destructive) {
                 withAnimation {
-                    card.deleteAction()
+                    homeActions.deleteAction(givenURL: card.givenURL)
                 }
             }
         }
@@ -106,7 +109,7 @@ private extension CardFooter {
             activeColor: .branding.amber4,
             inactiveColor: .ui.grey8
         ) {
-            card.favoriteAction(isFavorite: isFavorite, givenURL: card.givenURL)
+            homeActions.favoriteAction(isFavorite: isFavorite, givenURL: card.givenURL)
         }
         .accessibilityIdentifier("favorite-button")
     }
@@ -121,7 +124,7 @@ private extension CardFooter {
             highlightedColor: .ui.coral1,
             activeColor: .ui.coral2
         ) {
-            card.saveAction(isSaved: isSaved)
+            homeActions.saveAction(isSaved: isSaved, givenURL: card.givenURL)
         }
         .accessibilityIdentifier("save-button")
     }
@@ -131,7 +134,7 @@ private extension CardFooter {
         Menu {
             if card.enableArchiveMenuAction {
                 Button(action: {
-                    card.archiveAction()
+                    homeActions.archiveAction(givenURL: card.givenURL)
                 }) {
                     Label {
                         Text(Localization.ItemAction.archive)

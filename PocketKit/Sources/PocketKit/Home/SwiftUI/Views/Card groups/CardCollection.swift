@@ -33,44 +33,9 @@ struct CardCollection: View {
         EndOfFeedScrollView {
             makeContent()
         } header: {
-            VStack(alignment: .leading) {
-                if let header {
-                    HStack(alignment: .center) {
-                        Text(Localization.Constants.collection)
-                            .style(.collection.collection)
-                        Text(" • ")
-                            .style(.collection.authors)
-                        Text(header.author)
-                            .style(.collection.authors)
-                    }
-                    Text(Localization.Collection.Stories.count(header.numberOfItems))
-                        .style(.collection.detail)
-                    Text(header.title)
-                        .style(.collection.title)
-                        .padding(.vertical)
-                    if let intro = header.intro,
-                       let attributedIntro = try? AttributedString(
-                        markdown: intro,
-                        options: .init(
-                            allowsExtendedAttributes: true,
-                            interpretedSyntax: .inlineOnlyPreservingWhitespace
-                        )
-                       ) {
-                        Text(attributedIntro)
-                            .style(.collection.intro)
-                            .padding(.bottom)
-                    }
-                }
-            }
+            makeHeader()
         }
         .contentMargins([.leading, .trailing], 16, for: .scrollContent)
-    }
-
-    func header<Header: View>(@ViewBuilder header: @escaping () -> Header) -> some View {
-        VStack {
-            header()
-            self
-        }
     }
 }
 
@@ -79,6 +44,40 @@ private extension CardCollection {
     var itemsRows: [HomeRow] {
         cards.chunked(into: layoutWidth.preferredNumberOfColumns).map { HomeRow(cards: $0) }
     }
+
+    @ViewBuilder
+    func makeHeader() -> some View {
+        if let header {
+            VStack(alignment: .leading) {
+                HStack(alignment: .center) {
+                    Text(Localization.Constants.collection)
+                        .style(.collection.collection)
+                    Text(" • ")
+                        .style(.collection.authors)
+                    Text(header.author)
+                        .style(.collection.authors)
+                }
+                Text(Localization.Collection.Stories.count(header.numberOfItems))
+                    .style(.collection.detail)
+                Text(header.title)
+                    .style(.collection.title)
+                    .padding(.vertical)
+                if let intro = header.intro,
+                   let attributedIntro = try? AttributedString(
+                    markdown: intro,
+                    options: .init(
+                        allowsExtendedAttributes: true,
+                        interpretedSyntax: .inlineOnlyPreservingWhitespace
+                    )
+                   ) {
+                    Text(attributedIntro)
+                        .style(.collection.intro)
+                        .padding(.bottom)
+                }
+            }
+        }
+    }
+
     @ViewBuilder
     func makeContent() -> some View {
         switch layoutWidth {

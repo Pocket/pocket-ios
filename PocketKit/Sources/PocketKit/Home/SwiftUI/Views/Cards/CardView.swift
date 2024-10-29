@@ -98,17 +98,18 @@ private extension CardView {
             )
             .padding(Constants.footerPadding(size))
         }
+        .contentShape(Rectangle())
         .fullScreenCover(isPresented: $presentWebView) {
             SFSafariView(url: URL(string: card.givenURL)!)
                 .ignoresSafeArea(.all)
         }
         .onTapGesture {
-            if savedItem != nil {
+            if let slug = item?.collection?.slug {
+                coordinator.navigateTo(NativeCollectionRoute(slug: slug))
+            } else if savedItem != nil {
                 coordinator.navigateTo(ReadableRoute(.saved(card.givenURL)))
             } else if item?.syndicatedArticle != nil {
                 coordinator.navigateTo(ReadableRoute(.syndicated(card.givenURL)))
-            } else if let slug = item?.collection?.slug {
-                coordinator.navigateTo(NativeCollectionRoute(slug: slug))
             } else if URL(string: card.givenURL) != nil {
                 presentWebView = true
             }
@@ -150,15 +151,25 @@ private extension CardView {
                     .accessibilityIdentifier("collection-label")
             }
             Text(item?.bestTitle ?? card.givenURL)
-                .style(card.titleStyle(largeTitle: size == .large))
+                .style(card.titleStyle(largeTitle: !card.showExcerpt && size == .large))
                 .lineSpacing(Constants.titleLineSpacing)
                 .lineLimit(Constants.titleLineLimit)
                 .accessibilityIdentifier("title-label")
 
-            if let excerptText = card.attributedExcerpt {
-                Text(excerptText)
+            if card.showExcerpt,
+                let excerpt = item?.excerpt,
+                let attributedExcerpt = try? AttributedString(
+                markdown: excerpt,
+                options: .init(
+                    allowsExtendedAttributes: true,
+                    interpretedSyntax: .inlineOnlyPreservingWhitespace
+                )
+               ) {
+                Text(attributedExcerpt)
+                    .style(.recommendation.excerpt)
                     .lineLimit(nil)
                     .accessibilityIdentifier("excerpt-text")
+                    .padding(.top, 8)
             }
         }
         .padding(Constants.textStackPadding(size))
