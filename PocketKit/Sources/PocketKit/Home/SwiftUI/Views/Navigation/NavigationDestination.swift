@@ -14,6 +14,7 @@ struct SlateDestination: NavigationDestination {
 
 struct NativeCollectionDestination: NavigationDestination {
     let slug: String
+    let givenURL: String
 }
 
 struct SharedWithYouDestination: NavigationDestination {

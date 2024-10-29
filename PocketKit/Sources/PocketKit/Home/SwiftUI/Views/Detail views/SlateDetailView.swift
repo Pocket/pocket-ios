@@ -7,7 +7,7 @@ import SwiftUI
 import Sync
 
 struct SlateDetailView: View {
-    let route: SlateDestination
+    let destination: SlateDestination
 
     @Query private var recommendations: [Recommendation]
 
@@ -16,9 +16,9 @@ struct SlateDetailView: View {
     @Environment(\.horizontalSizeClass)
     var horizontalSizeClass
 
-    init(route: SlateDestination) {
-        self.route = route
-        let slateID = route.slateID
+    init(destination: SlateDestination) {
+        self.destination = destination
+        let slateID = destination.slateID
         let sortDescriptor = SortDescriptor<Recommendation>(\.sortIndex, order: .forward)
         let fetchDescriptor = FetchDescriptor(
             predicate: #Predicate<Recommendation> { $0.slate?.remoteID == slateID },
@@ -38,7 +38,7 @@ struct SlateDetailView: View {
             }
         }
         .animation(.smooth, value: cards)
-        .navigationTitle(route.slateTitle ?? "")
+        .navigationTitle(destination.slateTitle ?? "")
     }
 }
 

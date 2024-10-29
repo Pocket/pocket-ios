@@ -6,12 +6,11 @@ import SharedPocketKit
 import SwiftUI
 
 /// Navigation handler for the Home screen
-@Observable
-final class HomeNavigation {
+final class HomeNavigation: ObservableObject {
     private static let pathKey = "com.mozilla.pocket.home.path"
     private let userDefaults: UserDefaults
 
-    var path: NavigationPath
+    @Published var path: NavigationPath
 
     init() {
         // TODO: SWIFTUI - for now let's instatiate and force unwrap this here, just to make this type auto consistent.
@@ -39,5 +38,9 @@ final class HomeNavigation {
 
     func navigateTo(_ route: any NavigationDestination) {
         path.append(route)
+    }
+
+    func back() {
+        path.removeLast()
     }
 }
