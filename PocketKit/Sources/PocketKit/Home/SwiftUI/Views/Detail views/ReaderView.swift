@@ -7,7 +7,7 @@ import Network
 
 /// SwiftUI version of the `Reader`
 struct ReaderView: UIViewControllerRepresentable {
-    let route: ReadableRoute
+    let route: ReadableDestination
 
     class Coordinator {
         var parentObserver: NSKeyValueObservation?

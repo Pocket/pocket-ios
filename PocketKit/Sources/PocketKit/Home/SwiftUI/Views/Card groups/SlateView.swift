@@ -15,7 +15,7 @@ struct SlateView: View {
     @Environment(\.layoutWidth)
     private var layoutWidth
 
-    @Environment(HomeCoordinator.self)
+    @Environment(HomeNavigation.self)
     var coordinator
 
     var body: some View {
@@ -35,7 +35,7 @@ struct SlateView: View {
 private extension SlateView {
     func makeHeader(_ title: String) -> some View {
         SectionHeader(title: title) {
-            coordinator.navigateTo(SlateRoute(slateID: remoteID, slateTitle: slateTitle))
+            coordinator.navigateTo(SlateDestination(slateID: remoteID, slateTitle: slateTitle))
         }
     }
 

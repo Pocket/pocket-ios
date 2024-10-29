@@ -25,7 +25,7 @@ struct CardView: View {
     @Environment(\.carouselWidth)
     private var carouselWidth
 
-    @Environment(HomeCoordinator.self)
+    @Environment(HomeNavigation.self)
     var coordinator
 
     @State private var presentWebView: Bool = false
@@ -105,11 +105,11 @@ private extension CardView {
         }
         .onTapGesture {
             if let slug = item?.collection?.slug {
-                coordinator.navigateTo(NativeCollectionRoute(slug: slug))
+                coordinator.navigateTo(NativeCollectionDestination(slug: slug))
             } else if savedItem != nil {
-                coordinator.navigateTo(ReadableRoute(.saved(card.givenURL)))
+                coordinator.navigateTo(ReadableDestination(.saved(card.givenURL)))
             } else if item?.syndicatedArticle != nil {
-                coordinator.navigateTo(ReadableRoute(.syndicated(card.givenURL)))
+                coordinator.navigateTo(ReadableDestination(.syndicated(card.givenURL)))
             } else if URL(string: card.givenURL) != nil {
                 presentWebView = true
             }

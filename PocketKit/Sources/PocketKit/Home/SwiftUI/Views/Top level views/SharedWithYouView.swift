@@ -12,7 +12,7 @@ import SharedWithYou
 struct SharedWithYouView: View {
     @Query private var sharedWithYouItems: [SharedWithYouItem]
 
-    @Environment(HomeCoordinator.self)
+    @Environment(HomeNavigation.self)
     var coordinator
 
     @State private var cards: [HomeCard] = []
@@ -58,7 +58,7 @@ private extension SharedWithYouView {
     }
     func makeHeader(_ title: String) -> some View {
         SectionHeader(title: title) {
-            coordinator.navigateTo(SharedWithYouRoute(title: title))
+            coordinator.navigateTo(SharedWithYouDestination(title: title))
         }
         .padding(.leading, 16)
         .padding(.trailing, 16)

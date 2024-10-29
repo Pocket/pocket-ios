@@ -8,7 +8,7 @@ import SwiftUI
 import Sync
 
 struct NativeCollectionView: View {
-    let route: NativeCollectionRoute
+    let route: NativeCollectionDestination
 
     @Query private var collections: [Collection]
     private var collection: Collection? {
@@ -26,7 +26,7 @@ struct NativeCollectionView: View {
         savedItem != nil && savedItem?.isArchived == false
     }
 
-    init(route: NativeCollectionRoute) {
+    init(route: NativeCollectionDestination) {
         self.route = route
         var fetchDescriptor = FetchDescriptor(predicate: #Predicate<Collection> { $0.slug == route.slug })
         fetchDescriptor.fetchLimit = 1

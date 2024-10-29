@@ -5,9 +5,9 @@
 import SharedPocketKit
 import SwiftUI
 
-/// Navigation coordinator for the Home screen
+/// Navigation handler for the Home screen
 @Observable
-final class HomeCoordinator {
+final class HomeNavigation {
     private static let pathKey = "com.mozilla.pocket.home.path"
     private let userDefaults: UserDefaults
 
@@ -37,7 +37,7 @@ final class HomeCoordinator {
         }
     }
 
-    func navigateTo(_ route: any NavigationRoute) {
+    func navigateTo(_ route: any NavigationDestination) {
         path.append(route)
     }
 }

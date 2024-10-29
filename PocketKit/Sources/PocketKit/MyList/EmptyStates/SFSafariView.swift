@@ -11,7 +11,7 @@ struct SFSafariView: UIViewControllerRepresentable {
     let url: URL
     let readerMode: Bool
 
-    init(route: WebViewRoute) {
+    init(route: WebViewDestination) {
         self.url = route.url
         self.readerMode = route.readerMode
     }

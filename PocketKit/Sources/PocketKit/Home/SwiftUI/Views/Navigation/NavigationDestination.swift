@@ -4,22 +4,23 @@
 
 import Foundation
 
-protocol NavigationRoute: Codable, Hashable {}
+/// Navigation destination from Home
+protocol NavigationDestination: Codable, Hashable {}
 
-struct SlateRoute: NavigationRoute {
+struct SlateDestination: NavigationDestination {
     let slateID: String
     let slateTitle: String?
 }
 
-struct NativeCollectionRoute: NavigationRoute {
+struct NativeCollectionDestination: NavigationDestination {
     let slug: String
 }
 
-struct SharedWithYouRoute: NavigationRoute {
+struct SharedWithYouDestination: NavigationDestination {
     let title: String
 }
 
-struct WebViewRoute: NavigationRoute {
+struct WebViewDestination: NavigationDestination {
     let url: URL
     let readerMode: Bool
 
@@ -29,7 +30,7 @@ struct WebViewRoute: NavigationRoute {
     }
 }
 
-struct ReadableRoute: NavigationRoute {
+struct ReadableDestination: NavigationDestination {
     enum RouteType {
         case syndicated(String)
         case saved(String)

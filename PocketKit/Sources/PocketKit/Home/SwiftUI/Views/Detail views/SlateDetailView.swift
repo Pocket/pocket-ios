@@ -7,7 +7,7 @@ import SwiftUI
 import Sync
 
 struct SlateDetailView: View {
-    let route: SlateRoute
+    let route: SlateDestination
 
     @Query private var recommendations: [Recommendation]
 
@@ -16,7 +16,7 @@ struct SlateDetailView: View {
     @Environment(\.horizontalSizeClass)
     var horizontalSizeClass
 
-    init(route: SlateRoute) {
+    init(route: SlateDestination) {
         self.route = route
         let slateID = route.slateID
         let sortDescriptor = SortDescriptor<Recommendation>(\.sortIndex, order: .forward)

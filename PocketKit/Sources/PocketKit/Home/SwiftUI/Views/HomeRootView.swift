@@ -6,7 +6,7 @@ import SwiftUI
 
 struct HomeRootView: View {
     // TODO: SWIFTUI - We might want to move this to the top app as we transition to a full SwiftUI app
-    @State private var homeCoordinator = HomeCoordinator()
+    @State private var homeCoordinator = HomeNavigation()
 
     @Environment(\.scenePhase)
     var scenePhase
@@ -14,13 +14,13 @@ struct HomeRootView: View {
     var body: some View {
         NavigationStack(path: $homeCoordinator.path) {
             HomeView()
-                .navigationDestination(for: NativeCollectionRoute.self) { NativeCollectionView(route: $0) }
-                .navigationDestination(for: ReadableRoute.self) {
+                .navigationDestination(for: NativeCollectionDestination.self) { NativeCollectionView(route: $0) }
+                .navigationDestination(for: ReadableDestination.self) {
                     ReaderView(route: $0)
                         .ignoresSafeArea(.all)
                 }
-                .navigationDestination(for: SlateRoute.self) { SlateDetailView(route: $0) }
-                .navigationDestination(for: SharedWithYouRoute.self) { SharedWithYouDetailView(route: $0) }
+                .navigationDestination(for: SlateDestination.self) { SlateDetailView(route: $0) }
+                .navigationDestination(for: SharedWithYouDestination.self) { SharedWithYouDetailView(route: $0) }
         }
         .accentColor(Color(.ui.black1))
         .environment(homeCoordinator)
