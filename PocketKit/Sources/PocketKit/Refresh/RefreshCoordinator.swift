@@ -99,7 +99,6 @@ extension RefreshCoordinator {
 
         notificationCenter.publisher(for: UIScene.willEnterForegroundNotification, object: nil).sink { [weak self] _ in
             guard let self else {
-                Log.captureNilWeakSelf()
                 return
             }
             self.refreshData {}

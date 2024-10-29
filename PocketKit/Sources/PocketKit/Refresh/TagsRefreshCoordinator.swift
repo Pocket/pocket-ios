@@ -46,7 +46,6 @@ class TagsRefreshCoordinator: RefreshCoordinator {
             Log.breadcrumb(category: "refresh", level: .info, message: "Tags Refresh Occur")
             self.source.refreshTags { [weak self] in
                 guard let self else {
-                    Log.captureNilWeakSelf()
                     completion()
                     return
                 }

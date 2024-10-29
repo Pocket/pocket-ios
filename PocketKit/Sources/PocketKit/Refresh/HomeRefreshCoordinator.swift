@@ -43,7 +43,6 @@ class HomeRefreshCoordinator: RefreshCoordinator {
         if shouldRefresh(isForced: isForced), !isRefreshing {
             Task { [weak self] in
                 guard let self else {
-                    Log.captureNilWeakSelf()
                     completion()
                     return
                 }

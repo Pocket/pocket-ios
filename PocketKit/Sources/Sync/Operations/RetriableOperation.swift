@@ -65,7 +65,6 @@ class RetriableOperation: AsyncOperation {
 
             let taskID = backgroundTaskManager.beginTask(withName: String(describing: type(of: operation))) { [weak self] in
                 guard let self else {
-                    Log.captureNilWeakSelf()
                     return
                 }
                 cancelOperation()
