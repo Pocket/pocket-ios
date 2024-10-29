@@ -7,7 +7,8 @@ import Localization
 
 /// A view that retrieves a shareable URL and opens the share sheet when tapped.
 struct ShareableURLView: View {
-    let card: HomeCard
+    let givenURL: String
+    let shareURL: String?
 
     @State private var shareableURL: URL?
 
@@ -27,8 +28,9 @@ struct ShareableURLView: View {
             }
         }
         .onAppear {
+            // TODO: SWIFTUI - We should use the new Transferable type to get the async url, though it does not seem to resolve it correctly for now
             // assign a default url in case the fetch fails
-            if let temporaryURL = URL(string: card.givenURL) {
+            if let temporaryURL = URL(string: givenURL) {
                 shareableURL = temporaryURL
             }
             Task { @MainActor in
@@ -38,7 +40,7 @@ struct ShareableURLView: View {
     }
 
     func shareableUrl() async {
-        if let urlString = await homeActions.shareableUrl(shareURL: card.shareURL, givenURL: card.givenURL),
+        if let urlString = await homeActions.shareableUrl(shareURL: shareURL, givenURL: givenURL),
            let url = URL(string: urlString) {
             shareableURL = url
         }
