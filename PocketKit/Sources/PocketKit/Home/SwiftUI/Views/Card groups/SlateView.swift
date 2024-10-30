@@ -10,7 +10,7 @@ import SwiftData
 struct SlateView: View {
     let remoteID: String
     let slateTitle: String?
-    let cards: [HomeCard]
+    let cards: [HomeCardConfiguration]
 
     @Environment(\.layoutWidth)
     private var layoutWidth
@@ -51,12 +51,12 @@ private extension SlateView {
     }
 
     /// Extract the Hero recommendations
-    var heroCards: [HomeCard] {
+    var heroCards: [HomeCardConfiguration] {
         Array(cards.prefix(upTo: heroCount))
     }
 
     /// Extract the carousel recommendations
-    var carouselCards: [HomeCard] {
+    var carouselCards: [HomeCardConfiguration] {
         Array(cards.dropFirst(heroCount))
     }
 }

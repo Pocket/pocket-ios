@@ -7,7 +7,7 @@ import SwiftUI
 import Textile
 
 struct CardFooter: View {
-    let card: HomeCard
+    let card: HomeCardConfiguration
     let shareURL: String?
     let domain: String?
     let timeToRead: Int32?

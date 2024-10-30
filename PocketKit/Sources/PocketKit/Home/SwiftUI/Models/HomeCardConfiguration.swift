@@ -9,8 +9,8 @@ import Textile
 
 /// Card configuration
 @MainActor
-struct HomeCard: Identifiable, @preconcurrency Equatable, Hashable {
-    static func == (lhs: HomeCard, rhs: HomeCard) -> Bool {
+struct HomeCardConfiguration: Identifiable, @preconcurrency Equatable, Hashable {
+    static func == (lhs: HomeCardConfiguration, rhs: HomeCardConfiguration) -> Bool {
         lhs.givenURL == rhs.givenURL &&
         lhs.sharedWithYouUrlString == rhs.sharedWithYouUrlString
     }

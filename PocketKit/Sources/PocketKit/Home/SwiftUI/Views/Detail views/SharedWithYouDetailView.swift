@@ -15,7 +15,7 @@ struct SharedWithYouDetailView: View {
     @Query(sort: \SharedWithYouItem.sortOrder, order: .forward)
     private var sharedWithYouItems: [SharedWithYouItem]
 
-    @State private var cards: [HomeCard] = []
+    @State private var cards: [HomeCardConfiguration] = []
 
     @Environment(\.horizontalSizeClass)
     var horizontalSizeClass
@@ -37,10 +37,10 @@ struct SharedWithYouDetailView: View {
 
 // MARK: helpers
 private extension SharedWithYouDetailView {
-    var proposedCards: [HomeCard] {
+    var proposedCards: [HomeCardConfiguration] {
         sharedWithYouItems.compactMap {
             if let item = $0.item {
-                return HomeCard(
+                return HomeCardConfiguration(
                     givenURL: item.givenURL,
                     sharedWithYouUrlString: $0.url,
                     enableSaveAction: true,

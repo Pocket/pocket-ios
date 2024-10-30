@@ -19,7 +19,7 @@ enum CardSize {
 
 /// Card view for the Home screen. Can have various sizes, specified by the `size` property.
 struct CardView: View {
-    let card: HomeCard
+    let card: HomeCardConfiguration
     let size: CardSize
 
     @Environment(\.carouselWidth)
@@ -39,7 +39,7 @@ struct CardView: View {
         fetchedSavedItem.first
     }
 
-    init(card: HomeCard, size: CardSize) {
+    init(card: HomeCardConfiguration, size: CardSize) {
         self.card = card
         self.size = size
 
