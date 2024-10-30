@@ -2,6 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import Analytics
 @preconcurrency import Sync
 
 // TODO: SWIFTUI - Add analytics
@@ -55,5 +56,30 @@ struct HomeActions {
     func fetchCollection(slug: String) async {
         let source = await Services.shared.source
         try? await source.fetchCollection(by: slug)
+    }
+}
+
+// MARK: Analytics
+extension HomeActions {
+    func trackCardImpression(_ type: CardType, url: String, index: Int? = nil, recommendationID: String? = nil) {
+        Task {
+            let tracker = await Services.shared.tracker
+            switch type {
+            case .recentSave:
+                tracker.track(event: Events.Home.RecentSavesCardImpression(url: url, positionInList: index))
+            case .recommendation:
+                guard let recommendationID else { return }
+                tracker.track(event: Events.Home.SlateArticleImpression(url: url, positionInList: index, recommendationId: recommendationID))
+            case .sharedWithYou:
+                tracker.track(event: Events.Home.sharedWithYouCardImpression(url: url, positionInList: index))
+            case .collectionStory:
+                tracker.track(event: Events.Collection.storyImpression(url: url, positionInList: index))
+            case .slateDetail:
+                guard let recommendationID else { return }
+                tracker.track(event: Events.ExpandedSlate.SlateArticleImpression(url: url, positionInList: index, recommendationId: recommendationID))
+            case .sharedWithYouDetail:
+                tracker.track(event: Events.SharedWithYou.cardImpression(url: url, index: index))
+            }
+        }
     }
 }

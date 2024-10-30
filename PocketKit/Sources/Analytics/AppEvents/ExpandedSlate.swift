@@ -50,7 +50,7 @@ public extension Events.ExpandedSlate {
     /**
      Fired when a user sees a card on Home using the /discover API
      */
-    static func SlateArticleImpression(url: String, positionInList: Int, recommendationId: String) -> Impression {
+    static func SlateArticleImpression(url: String, positionInList: Int?, recommendationId: String) -> Impression {
         return Impression(
             component: .card,
             requirement: .viewable,

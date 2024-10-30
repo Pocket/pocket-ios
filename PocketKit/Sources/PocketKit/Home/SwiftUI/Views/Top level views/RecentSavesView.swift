@@ -69,6 +69,7 @@ private extension RecentSavesView {
             HomeCardConfiguration(
                 givenURL: $0.item?.givenURL ?? $0.url,
                 sharedWithYouUrlString: nil,
+                type: .recentSave,
                 enableFavoriteAction: true,
                 enableShareMenuAction: true,
                 enableArchiveMenuAction: true,

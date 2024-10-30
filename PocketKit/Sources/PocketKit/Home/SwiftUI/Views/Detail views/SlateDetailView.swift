@@ -50,6 +50,7 @@ private extension SlateDetailView {
                 return HomeCardConfiguration(
                     givenURL: item.givenURL,
                     sharedWithYouUrlString: nil,
+                    type: .slateDetail,
                     enableSaveAction: true,
                     enableShareMenuAction: true,
                     enableReportMenuAction: true

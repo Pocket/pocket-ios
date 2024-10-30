@@ -40,6 +40,7 @@ private extension RecommendationsView {
                 return HomeCardConfiguration(
                     givenURL: item.givenURL,
                     sharedWithYouUrlString: nil,
+                    type: .recommendation,
                     enableSaveAction: true,
                     enableShareMenuAction: true,
                     enableReportMenuAction: true

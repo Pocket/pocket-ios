@@ -43,6 +43,7 @@ private extension SharedWithYouDetailView {
                 return HomeCardConfiguration(
                     givenURL: item.givenURL,
                     sharedWithYouUrlString: $0.url,
+                    type: .sharedWithYouDetail,
                     enableSaveAction: true,
                     enableShareMenuAction: true,
                     enableReportMenuAction: true

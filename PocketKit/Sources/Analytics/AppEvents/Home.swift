@@ -11,7 +11,7 @@ public extension Events.Home {
     /**
      Fired when a card in the `Recent Saves` section scrolls into view
      */
-    static func RecentSavesCardImpression(url: String, positionInList: Int) -> Impression {
+    static func RecentSavesCardImpression(url: String, positionInList: Int?) -> Impression {
         return Impression(
             component: .card,
             requirement: .viewable,
@@ -112,7 +112,7 @@ public extension Events.Home {
     /**
      Fired when a user sees a card on Home using the homeSlateLineup API
      */
-    static func SlateArticleImpression(url: String, positionInList: Int, recommendationId: String) -> Impression {
+    static func SlateArticleImpression(url: String, positionInList: Int?, recommendationId: String) -> Impression {
         return Impression(
             component: .card,
             requirement: .viewable,
@@ -204,7 +204,7 @@ public extension Events.Home {
 
     // MARK: Shared With You
     /// Shared With You card viewed
-    static func sharedWithYouCardImpression(url: String, positionInList: Int) -> Impression {
+    static func sharedWithYouCardImpression(url: String, positionInList: Int?) -> Impression {
         return Impression(
             component: .card,
             requirement: .viewable,

@@ -24,8 +24,10 @@ struct CardView: View {
 
     @Environment(\.carouselWidth)
     private var carouselWidth
+    @Environment(\.homeActions)
+    private var homeActions
 
-    @EnvironmentObject var navigation: HomeNavigation
+    @EnvironmentObject private var navigation: HomeNavigation
 
     @State private var presentWebView: Bool = false
 
@@ -54,16 +56,28 @@ struct CardView: View {
     }
 
     var body: some View {
+        makeBody()
+            .onAppear {
+                homeActions
+                    .trackCardImpression(
+                        card.type,
+                        url: card.givenURL,
+                        recommendationID: item?.recommendation?.analyticsID
+                    )
+            }
+    }
+}
+
+// MARK: View builders
+private extension CardView {
+    @ViewBuilder
+    func makeBody() -> some View {
         if let url = card.sharedWithYouUrlString {
             makeSharedWithYouCard(url)
         } else {
             makeSizedCard()
         }
     }
-}
-
-// MARK: View builders
-private extension CardView {
     /// Builds the card of the current size
     /// - Returns: the card view
     @ViewBuilder

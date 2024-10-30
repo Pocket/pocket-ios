@@ -68,6 +68,7 @@ private extension SharedWithYouView {
             HomeCardConfiguration(
                 givenURL: $0.item?.givenURL ?? $0.url,
                 sharedWithYouUrlString: $0.url,
+                type: .sharedWithYou,
                 enableSaveAction: true,
                 enableShareMenuAction: true
             )

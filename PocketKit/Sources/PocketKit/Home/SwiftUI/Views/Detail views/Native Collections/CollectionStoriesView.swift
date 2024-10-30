@@ -55,6 +55,7 @@ private extension CollectionStoriesView {
                     givenURL: item.givenURL,
                     sharedWithYouUrlString: nil,
                     showExcerpt: true,
+                    type: .collectionStory,
                     enableSaveAction: true,
                     enableShareMenuAction: true,
                     enableReportMenuAction: true
