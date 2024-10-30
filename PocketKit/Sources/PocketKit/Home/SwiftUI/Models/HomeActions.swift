@@ -4,6 +4,7 @@
 
 @preconcurrency import Sync
 
+// TODO: SWIFTUI - Add analytics
 /// Type that contains all the actions that can be performed from Home and its detail views
 struct HomeActions {
     // TODO: SWIFTUI - the following methods use a reference to Services that only lives in their scope.

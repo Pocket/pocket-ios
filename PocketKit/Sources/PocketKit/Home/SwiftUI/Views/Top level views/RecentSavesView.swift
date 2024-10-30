@@ -68,9 +68,7 @@ private extension RecentSavesView {
         savedItems.compactMap {
             HomeCard(
                 givenURL: $0.item?.givenURL ?? $0.url,
-                imageURL: $0.item?.topImageURL,
                 sharedWithYouUrlString: nil,
-                ShareURL: $0.item?.shareURL,
                 enableFavoriteAction: true,
                 enableShareMenuAction: true,
                 enableArchiveMenuAction: true,

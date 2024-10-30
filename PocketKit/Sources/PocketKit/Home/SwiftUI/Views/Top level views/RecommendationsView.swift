@@ -39,9 +39,7 @@ private extension RecommendationsView {
             if let item = $0.item {
                 return HomeCard(
                     givenURL: item.givenURL,
-                    imageURL: item.topImageURL,
                     sharedWithYouUrlString: nil,
-                    ShareURL: item.shareURL,
                     enableSaveAction: true,
                     enableShareMenuAction: true,
                     enableReportMenuAction: true

@@ -53,9 +53,7 @@ private extension CollectionStoriesView {
             if let item = $0.item {
                 return HomeCard(
                     givenURL: item.givenURL,
-                    imageURL: item.topImageURL,
                     sharedWithYouUrlString: nil,
-                    ShareURL: item.shareURL,
                     showExcerpt: true,
                     enableSaveAction: true,
                     enableShareMenuAction: true,

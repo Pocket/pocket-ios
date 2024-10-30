@@ -8,6 +8,7 @@ import Textile
 
 struct CardFooter: View {
     let card: HomeCard
+    let shareURL: String?
     let domain: String?
     let timeToRead: Int32?
     let isSaved: Bool
@@ -17,9 +18,7 @@ struct CardFooter: View {
 
     @State private var showReportArticle: Bool = false
     @State private var showReportError: Bool = false
-
     @State private var showDeleteAlert: Bool = false
-
     @State private var showShareSheet: Bool = false
 
     @Environment(\.homeActions)
@@ -67,16 +66,25 @@ private extension CardFooter {
         VStack(alignment: .leading, spacing: Self.stackSpacing) {
             if let domain {
                 makeDomain(domain)
-                    .style(card.domainStyle)
+                    .style(.recommendation.domain)
                     .lineLimit(Self.footerElementLineLimit)
                     .accessibilityIdentifier("domain-label")
             }
             if let timeToRead, timeToRead > 0 {
-                Text(card.timeToRead(timeToRead))
+                Text(makeTimeToRead(timeToRead))
                     .lineLimit(Self.footerElementLineLimit)
                     .accessibilityIdentifier("time-to-read-label")
             }
         }
+    }
+
+    func makeTimeToRead(_ timeToRead: Int32) -> AttributedString {
+        AttributedString(
+            NSAttributedString(
+                string: Localization.Home.Recommendation.readTime(timeToRead),
+                style: .recommendation.timeToRead
+            )
+        )
     }
 
     func makeDomain(_ domain: String) -> Text {
@@ -178,7 +186,7 @@ private extension CardFooter {
             }
 
             if card.enableShareMenuAction {
-                ShareableURLView(givenURL: card.givenURL, shareURL: card.shareURL)
+                ShareableURLView(givenURL: card.givenURL, shareURL: shareURL)
             }
         } label: {
             Image(asset: .overflow)

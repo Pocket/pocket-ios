@@ -42,9 +42,7 @@ private extension SharedWithYouDetailView {
             if let item = $0.item {
                 return HomeCard(
                     givenURL: item.givenURL,
-                    imageURL: item.topImageURL,
                     sharedWithYouUrlString: $0.url,
-                    ShareURL: item.shareURL,
                     enableSaveAction: true,
                     enableShareMenuAction: true,
                     enableReportMenuAction: true

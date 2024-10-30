@@ -7,22 +7,17 @@ import Localization
 import SwiftUI
 import Textile
 
-// TODO: SWIFTUI - Add analytics
-
-/// Representation of an `Item` suitable for being displayed in a `Hero` or a `Carousel` card.
+/// Card configuration
 @MainActor
 struct HomeCard: Identifiable, @preconcurrency Equatable, Hashable {
     static func == (lhs: HomeCard, rhs: HomeCard) -> Bool {
         lhs.givenURL == rhs.givenURL &&
-        lhs.imageURL == rhs.imageURL &&
         lhs.sharedWithYouUrlString == rhs.sharedWithYouUrlString
     }
 
     var id = UUID()
     let givenURL: String
-    let imageURL: URL?
     let sharedWithYouUrlString: String?
-    let shareURL: String?
     let showExcerpt: Bool
 
     // actions configuration
@@ -36,9 +31,7 @@ struct HomeCard: Identifiable, @preconcurrency Equatable, Hashable {
 
     init(
         givenURL: String,
-        imageURL: URL?,
         sharedWithYouUrlString: String? = nil,
-        ShareURL: String? = nil,
         showExcerpt: Bool = false,
         enableSaveAction: Bool = false,
         enableFavoriteAction: Bool = false,
@@ -48,9 +41,7 @@ struct HomeCard: Identifiable, @preconcurrency Equatable, Hashable {
         enableDeleteMenuAction: Bool = false
     ) {
         self.givenURL = givenURL
-        self.imageURL = imageURL
         self.sharedWithYouUrlString = sharedWithYouUrlString
-        self.shareURL = ShareURL
         self.showExcerpt = showExcerpt
         self.enableSaveAction = enableSaveAction
         self.enableFavoriteAction = enableFavoriteAction
@@ -58,24 +49,5 @@ struct HomeCard: Identifiable, @preconcurrency Equatable, Hashable {
         self.enableReportMenuAction = enableReportMenuAction
         self.enableArchiveMenuAction = enableArchiveMenuAction
         self.enableDeleteMenuAction = enableDeleteMenuAction
-    }
-}
-
-// MARK: Styler
-extension HomeCard {
-    var collectionStyle: Style {
-        .recommendation.collection
-    }
-
-    func titleStyle(largeTitle: Bool) -> Style {
-        .recommendation.adaptiveTitle(largeTitle)
-    }
-
-    var domainStyle: Style {
-        .recommendation.domain
-    }
-
-    func timeToRead(_ timeToRead: Int32) -> AttributedString {
-        AttributedString(NSAttributedString(string: Localization.Home.Recommendation.readTime(timeToRead), style: .recommendation.timeToRead))
     }
 }

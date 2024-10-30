@@ -67,9 +67,7 @@ private extension SharedWithYouView {
         sharedWithYouItems.compactMap {
             HomeCard(
                 givenURL: $0.item?.givenURL ?? $0.url,
-                imageURL: $0.item?.topImageURL,
                 sharedWithYouUrlString: $0.url,
-                ShareURL: $0.item?.shareURL,
                 enableSaveAction: true,
                 enableShareMenuAction: true
             )

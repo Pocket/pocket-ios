@@ -56,7 +56,9 @@ public class RootViewModel: ObservableObject {
             guard let self else { return }
             self.persistentContainerDidReset()
         }
-        AppDependencyManager.shared.add(dependency: self.mainViewModel)
+        // this is to avoid a build error injecting the reference in a sendable closure
+        let intentsViewModel = mainViewModel
+        AppDependencyManager.shared.add(dependency: intentsViewModel)
         startObservingLogin()
     }
 

@@ -29,14 +29,14 @@ struct CardView: View {
 
     @State private var presentWebView: Bool = false
 
-    @Query private var items: [Item]
-
+    @Query private var fetchedItem: [Item]
     private var item: Item? {
-        items.first
+        fetchedItem.first
     }
 
+    @Query private var fetchedSavedItem: [SavedItem]
     private var savedItem: SavedItem? {
-        item?.savedItem
+        fetchedSavedItem.first
     }
 
     init(card: HomeCard, size: CardSize) {
@@ -46,7 +46,11 @@ struct CardView: View {
         let givenUrl = card.givenURL
         var itemDescriptor = FetchDescriptor<Item>(predicate: #Predicate<Item> { $0.givenURL == givenUrl })
         itemDescriptor.fetchLimit = 1
-        _items = Query(itemDescriptor, animation: .easeIn)
+        _fetchedItem = Query(itemDescriptor, animation: .easeIn)
+
+        var savedItemDescriptor = FetchDescriptor<SavedItem>(predicate: #Predicate<SavedItem> { $0.item?.givenURL == givenUrl })
+        savedItemDescriptor.fetchLimit = 1
+        _fetchedSavedItem = Query(savedItemDescriptor, animation: .easeIn)
     }
 
     var body: some View {
@@ -88,6 +92,7 @@ private extension CardView {
             Spacer()
             CardFooter(
                 card: card,
+                shareURL: item?.shareURL,
                 domain: item?.bestDomain,
                 timeToRead: item?.timeToRead,
                 isSaved: savedItem != nil && savedItem?.isArchived == false,
@@ -146,11 +151,11 @@ private extension CardView {
         VStack(alignment: .leading) {
             if item?.isCollection == true {
                 Text(Localization.Constants.collection)
-                    .style(card.collectionStyle)
+                    .style(.recommendation.collection)
                     .accessibilityIdentifier("collection-label")
             }
             Text(item?.bestTitle ?? card.givenURL)
-                .style(card.titleStyle(largeTitle: !card.showExcerpt && size == .large))
+                .style(makeTitleStyle(largeTitle: !card.showExcerpt && size == .large))
                 .lineSpacing(Constants.titleLineSpacing)
                 .lineLimit(Constants.titleLineLimit)
                 .accessibilityIdentifier("title-label")
@@ -174,13 +179,17 @@ private extension CardView {
         .padding(Constants.textStackPadding(size))
     }
 
+    func makeTitleStyle(largeTitle: Bool) -> Style {
+        .recommendation.adaptiveTitle(largeTitle)
+    }
+
     /// Thumbnail
     @ViewBuilder
     func makeImage() -> some View {
         switch size {
         case .medium:
             VStack {
-                RemoteImage(url: card.imageURL, imageSize: Constants.smallThumbnailSize, usePlaceholder: false)
+                RemoteImage(url: item?.topImageURL, imageSize: Constants.smallThumbnailSize, usePlaceholder: false)
                     .aspectRatio(contentMode: .fit)
                     .frame(width: Constants.smallThumbnailSize.width, height: Constants.smallThumbnailSize.height)
                     .clipShape(RoundedRectangle(cornerRadius: Constants.cornerRadius))
@@ -188,7 +197,7 @@ private extension CardView {
                 Spacer()
             }
         case .large:
-            RemoteImage(url: card.imageURL, imageSize: largeImageSize, usePlaceholder: true)
+            RemoteImage(url: item?.topImageURL, imageSize: largeImageSize, usePlaceholder: true)
                 .aspectRatio(Constants.largeThumbnailAspectRatio, contentMode: .fit)
                 .fixedSize(horizontal: false, vertical: true)
                 .frame(minWidth: 0, maxWidth: .infinity)

@@ -5,6 +5,8 @@
 import SharedPocketKit
 import SwiftUI
 
+/// **NOTE: we are using ObservableObject instead of the new @Observable, because it seems that there is a bug,
+/// causing @Observable to be reinit every time the view redraws. More here: https://forums.developer.apple.com/forums/thread/760637 **
 /// Navigation handler for the Home screen
 final class HomeNavigation: ObservableObject {
     private static let pathKey = "com.mozilla.pocket.home.path"
