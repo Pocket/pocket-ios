@@ -14,7 +14,7 @@ struct CollectionStoriesView: View {
 
     @Query private var stories: [CollectionStory]
 
-    @State private var cards: [HomeCard] = []
+    @State private var cards: [HomeCardConfiguration] = []
 
     @Environment(\.horizontalSizeClass)
     var horizontalSizeClass
@@ -48,14 +48,12 @@ struct CollectionStoriesView: View {
 
 // MARK: helpers
 private extension CollectionStoriesView {
-    var proposedCards: [HomeCard] {
+    var proposedCards: [HomeCardConfiguration] {
         stories.compactMap {
             if let item = $0.item {
-                return HomeCard(
+                return HomeCardConfiguration(
                     givenURL: item.givenURL,
-                    imageURL: item.topImageURL,
                     sharedWithYouUrlString: nil,
-                    ShareURL: item.shareURL,
                     showExcerpt: true,
                     enableSaveAction: true,
                     enableShareMenuAction: true,

@@ -13,7 +13,7 @@ import Textile
 /// - `wide`: 2-column vertical grid
 /// - `extraWide`: 3-column vertical grid
 struct CardCollection: View {
-    let cards: [HomeCard]
+    let cards: [HomeCardConfiguration]
     let size: CardSize
     let layoutWidth: LayoutWidth
     let header: CollectionHeader?
@@ -22,7 +22,7 @@ struct CardCollection: View {
 
     @Namespace private var scrollViewCoordinateSpace
 
-    init(cards: [HomeCard], size: CardSize, layoutWidth: LayoutWidth, header: CollectionHeader? = nil) {
+    init(cards: [HomeCardConfiguration], size: CardSize, layoutWidth: LayoutWidth, header: CollectionHeader? = nil) {
         self.cards = cards
         self.size = size
         self.layoutWidth = layoutWidth

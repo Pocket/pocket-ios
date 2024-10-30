@@ -11,7 +11,7 @@ struct SlateDetailView: View {
 
     @Query private var recommendations: [Recommendation]
 
-    @State private var cards: [HomeCard] = []
+    @State private var cards: [HomeCardConfiguration] = []
 
     @Environment(\.horizontalSizeClass)
     var horizontalSizeClass
@@ -44,14 +44,12 @@ struct SlateDetailView: View {
 
 // MARK: helpers
 private extension SlateDetailView {
-    var proposedCards: [HomeCard] {
+    var proposedCards: [HomeCardConfiguration] {
         recommendations.compactMap {
             if let item = $0.item {
-                return HomeCard(
+                return HomeCardConfiguration(
                     givenURL: item.givenURL,
-                    imageURL: item.topImageURL,
                     sharedWithYouUrlString: nil,
-                    ShareURL: item.shareURL,
                     enableSaveAction: true,
                     enableShareMenuAction: true,
                     enableReportMenuAction: true

@@ -8,7 +8,7 @@ import Sync
 
 struct HeroView: View {
     let remoteID: String
-    let cards: [HomeCard]
+    let cards: [HomeCardConfiguration]
 
     var body: some View {
         if cards.count == 1, let card = cards.first {
@@ -21,7 +21,7 @@ struct HeroView: View {
 
 // MARK: View builders
 private extension HeroView {
-    func makeHeroCard(_ card: HomeCard) -> some View {
+    func makeHeroCard(_ card: HomeCardConfiguration) -> some View {
         CardView(card: card, size: .large)
     }
 

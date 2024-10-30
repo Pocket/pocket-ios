@@ -11,26 +11,27 @@ import Textile
 struct NativeCollectionView: View {
     let destination: NativeCollectionDestination
 
-    @Query private var items: [Item]
-
     @State private var showDeleteAlert: Bool = false
     @State private var showReportError: Bool = false
     @State private var showReportArticle: Bool = false
 
+    @Query private var fetchedItem: [Item]
     private var item: Item? {
-        items.first
+        fetchedItem.first
     }
-
     private var collection: Collection? {
         item?.collection
     }
-
-    private var savedItem: SavedItem? {
-        item?.savedItem
-    }
-
     private var recommendationID: String? {
         item?.recommendation?.analyticsID
+    }
+
+    @Query private var fetchedSavedItem: [SavedItem]
+    private var savedItem: SavedItem? {
+        fetchedSavedItem.first
+    }
+    private var isSaved: Bool {
+        savedItem != nil && savedItem?.isArchived == false
     }
 
     @Environment(\.homeActions)
@@ -38,15 +39,17 @@ struct NativeCollectionView: View {
 
     @EnvironmentObject var navigation: HomeNavigation
 
-    var isSaved: Bool {
-        savedItem != nil && savedItem?.isArchived == false
-    }
-
     init(destination: NativeCollectionDestination) {
         self.destination = destination
-        var itemDescriptor = FetchDescriptor<Item>(predicate: #Predicate<Item> { $0.givenURL == destination.givenURL })
+        let givenURL = destination.givenURL
+
+        var itemDescriptor = FetchDescriptor<Item>(predicate: #Predicate<Item> { $0.givenURL == givenURL })
         itemDescriptor.fetchLimit = 1
-        _items = Query(itemDescriptor, animation: .easeIn)
+        _fetchedItem = Query(itemDescriptor, animation: .easeIn)
+
+        var savedItemDescriptor = FetchDescriptor<SavedItem>(predicate: #Predicate<SavedItem> { $0.item?.givenURL == givenURL })
+        savedItemDescriptor.fetchLimit = 1
+        _fetchedSavedItem = Query(savedItemDescriptor, animation: .easeIn)
     }
 
     var body: some View {

@@ -14,7 +14,7 @@ struct SharedWithYouView: View {
 
     @EnvironmentObject var navigation: HomeNavigation
 
-    @State private var cards: [HomeCard] = []
+    @State private var cards: [HomeCardConfiguration] = []
 
     init() {
         let sortDescriptor = SortDescriptor<SharedWithYouItem>(\.sortOrder, order: .forward)
@@ -63,13 +63,11 @@ private extension SharedWithYouView {
         .padding(.trailing, 16)
     }
 
-    var proposedCards: [HomeCard] {
+    var proposedCards: [HomeCardConfiguration] {
         sharedWithYouItems.compactMap {
-            HomeCard(
+            HomeCardConfiguration(
                 givenURL: $0.item?.givenURL ?? $0.url,
-                imageURL: $0.item?.topImageURL,
                 sharedWithYouUrlString: $0.url,
-                ShareURL: $0.item?.shareURL,
                 enableSaveAction: true,
                 enableShareMenuAction: true
             )

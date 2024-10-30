@@ -31,17 +31,15 @@ struct RecommendationsView: View {
 }
 
 private extension RecommendationsView {
-    func cards( for recommendations: [Recommendation]) -> [HomeCard] {
+    func cards( for recommendations: [Recommendation]) -> [HomeCardConfiguration] {
         recommendations
             .sorted(by: { $0.sortIndex < $1.sortIndex })
             .prefix(6)
             .compactMap {
             if let item = $0.item {
-                return HomeCard(
+                return HomeCardConfiguration(
                     givenURL: item.givenURL,
-                    imageURL: item.topImageURL,
                     sharedWithYouUrlString: nil,
-                    ShareURL: item.shareURL,
                     enableSaveAction: true,
                     enableShareMenuAction: true,
                     enableReportMenuAction: true

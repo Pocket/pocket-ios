@@ -13,7 +13,7 @@ struct RecentSavesView: View {
 
     @EnvironmentObject private var mainViewModel: MainViewModel
 
-    @State private var cards: [HomeCard] = []
+    @State private var cards: [HomeCardConfiguration] = []
 
     init() {
         let predicate = #Predicate<SavedItem> { $0.isArchived == false && $0.deletedAt == nil }
@@ -64,13 +64,11 @@ private extension RecentSavesView {
         .padding(.trailing, 16)
     }
 
-    var proposedCards: [HomeCard] {
+    var proposedCards: [HomeCardConfiguration] {
         savedItems.compactMap {
-            HomeCard(
+            HomeCardConfiguration(
                 givenURL: $0.item?.givenURL ?? $0.url,
-                imageURL: $0.item?.topImageURL,
                 sharedWithYouUrlString: nil,
-                ShareURL: $0.item?.shareURL,
                 enableFavoriteAction: true,
                 enableShareMenuAction: true,
                 enableArchiveMenuAction: true,

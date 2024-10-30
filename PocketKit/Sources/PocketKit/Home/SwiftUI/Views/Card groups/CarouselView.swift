@@ -7,7 +7,7 @@ import SwiftUI
 import Sync
 
 struct CarouselView: View {
-    let cards: [HomeCard]
+    let cards: [HomeCardConfiguration]
     let useGrid: Bool
 
     var body: some View {
