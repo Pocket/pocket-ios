@@ -33,7 +33,6 @@ class UserRefreshCoordinator: RefreshCoordinator {
     func refresh(isForced: Bool = false, _ completion: @escaping () -> Void) {
         Task { [weak self] in
             guard let self else {
-                Log.captureNilWeakSelf()
                 completion()
                 return
             }

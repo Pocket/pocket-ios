@@ -39,7 +39,6 @@ class FeatureFlagsRefreshCoordinator: RefreshCoordinator {
         if isForced || !isRefreshing {
             Task { [weak self] in
                 guard let self else {
-                    Log.captureNilWeakSelf()
                     completion()
                     return
                 }

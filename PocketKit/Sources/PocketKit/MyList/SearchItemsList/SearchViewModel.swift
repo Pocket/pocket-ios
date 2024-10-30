@@ -534,7 +534,6 @@ extension DefaultSearchViewModel: SearchResultActionDelegate {
                 and: searchItem.remoteItemParts
             )
         else {
-            Log.capture(message: "Saved Item not created")
             return
         }
 
@@ -636,7 +635,6 @@ extension DefaultSearchViewModel: SearchResultActionDelegate {
             with: searchItem.savedItemURL,
             and: searchItem.remoteItemParts
         ) else {
-            Log.capture(message: "Saved Item not created")
             return nil
         }
         return savedItem

@@ -320,7 +320,6 @@ extension MainViewModel {
             self?.selectedSection = .home
             // extract the slug
             guard let slug = url.pathComponents[safe: 2] else {
-                Log.capture(message: "Unable to extract slug")
                 fallbackAction(url)
                 return
             }
@@ -350,7 +349,6 @@ extension MainViewModel {
             self?.selectedSection = .home
             // extract the slug
             guard let slug = url.pathComponents[safe: 2] else {
-                Log.capture(message: "Unable to extract slug")
                 fallbackAction(url)
                 return
             }
