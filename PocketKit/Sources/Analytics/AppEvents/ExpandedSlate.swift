@@ -30,7 +30,7 @@ public extension Events.ExpandedSlate {
     /**
      Fired when a user clicks a card on Home using the /discover API
      */
-    static func SlateArticleContentOpen(url: String, positionInList: Int, recommendationId: String, destination: ContentOpen.Destination) -> ContentOpen {
+    static func SlateArticleContentOpen(url: String, positionInList: Int?, recommendationId: String, destination: ContentOpen.Destination) -> ContentOpen {
         return ContentOpen(
             destination: destination,
             contentEntity:

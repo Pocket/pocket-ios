@@ -38,7 +38,7 @@ public extension Events.SharedWithYou {
     }
 
     /// Shared With You card tapped
-    static func contentOpen(url: String, index: Int, destination: ContentOpen.Destination) -> ContentOpen {
+    static func contentOpen(url: String, index: Int?, destination: ContentOpen.Destination) -> ContentOpen {
         return ContentOpen(
             destination: destination,
             trigger: .click,

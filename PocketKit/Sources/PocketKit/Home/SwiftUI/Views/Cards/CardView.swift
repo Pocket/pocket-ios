@@ -122,6 +122,8 @@ private extension CardView {
                 .ignoresSafeArea(.all)
         }
         .onTapGesture {
+            // property that determines if the content is opened in Pocket or in a webview, for analytics purposes
+            var externalDestination = false
             if let slug = item?.collection?.slug {
                 navigation.navigateTo(NativeCollectionDestination(slug: slug, givenURL: card.givenURL))
             } else if savedItem != nil {
@@ -129,8 +131,15 @@ private extension CardView {
             } else if item?.syndicatedArticle != nil {
                 navigation.navigateTo(ReadableDestination(.syndicated(card.givenURL)))
             } else if URL(string: card.givenURL) != nil {
+                externalDestination = true
                 presentWebView = true
             }
+            homeActions.trackCardContentOpen(
+                card.type,
+                url: card.givenURL,
+                recommendationID: item?.recommendation?.analyticsID,
+                externalDestination: externalDestination
+            )
         }
     }
 

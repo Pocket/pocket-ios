@@ -62,7 +62,7 @@ struct HomeActions {
 // MARK: Analytics
 extension HomeActions {
     func trackCardImpression(_ type: CardType, url: String, index: Int? = nil, recommendationID: String? = nil) {
-        Task {
+        Task(priority: .background) {
             let tracker = await Services.shared.tracker
             switch type {
             case .recentSave:
@@ -79,6 +79,28 @@ extension HomeActions {
                 tracker.track(event: Events.ExpandedSlate.SlateArticleImpression(url: url, positionInList: index, recommendationId: recommendationID))
             case .sharedWithYouDetail:
                 tracker.track(event: Events.SharedWithYou.cardImpression(url: url, index: index))
+            }
+        }
+    }
+
+    func trackCardContentOpen(_ type: CardType, url: String, index: Int? = nil, recommendationID: String? = nil, externalDestination: Bool) {
+        Task(priority: .background) {
+            let tracker = await Services.shared.tracker
+            switch type {
+            case .recentSave:
+                tracker.track(event: Events.Home.RecentSavesCardContentOpen(url: url, positionInList: index))
+            case .recommendation:
+                guard let recommendationID else { return }
+                tracker.track(event: Events.Home.SlateArticleContentOpen(url: url, positionInList: index, recommendationId: recommendationID, destination: externalDestination ? .external : .internal))
+            case .sharedWithYou:
+                tracker.track(event: Events.Home.sharedWithYouContentOpen(url: url, positionInList: index, destination: externalDestination ? .external : .internal))
+            case .collectionStory:
+                tracker.track(event: Events.Collection.contentOpen(url: url))
+            case .slateDetail:
+                guard let recommendationID else { return }
+                tracker.track(event: Events.ExpandedSlate.SlateArticleContentOpen(url: url, positionInList: index, recommendationId: recommendationID, destination: externalDestination ? .external : .internal))
+            case .sharedWithYouDetail:
+                tracker.track(event: Events.SharedWithYou.contentOpen(url: url, index: index, destination: externalDestination ? .external : .internal))
             }
         }
     }
