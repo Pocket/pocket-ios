@@ -42,10 +42,11 @@ struct HomeActions {
         let source = Services.shared.source
         if isFavorite {
             source.unFavorite(givenURL)
+            trackUnFavorite(info)
         } else {
             source.favorite(givenURL)
+            trackFavorite(info)
         }
-        trackFavorite(info)
     }
 
     func shareableUrl(shareURL: String?, givenURL: String) async -> String? {
