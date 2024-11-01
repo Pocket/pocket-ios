@@ -22,7 +22,7 @@ public extension Events.SharedWithYou {
     }
 
     /// Shared With You card viewed
-    static func cardImpression(url: String, index: Int?) -> Impression {
+    static func cardImpression(url: String, index: Int) -> Impression {
         return Impression(
             component: .card,
             requirement: .viewable,
@@ -38,7 +38,7 @@ public extension Events.SharedWithYou {
     }
 
     /// Shared With You card tapped
-    static func contentOpen(url: String, index: Int?, destination: ContentOpen.Destination) -> ContentOpen {
+    static func contentOpen(url: String, index: Int, destination: ContentOpen.Destination) -> ContentOpen {
         return ContentOpen(
             destination: destination,
             trigger: .click,

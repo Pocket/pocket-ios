@@ -52,7 +52,14 @@ private extension CardFooter {
             Button(Localization.no, role: .cancel) { }
             Button(Localization.yes, role: .destructive) {
                 withAnimation {
-                    homeActions.deleteAction(givenURL: card.givenURL)
+                    homeActions.deleteAction(
+                        givenURL: card.givenURL,
+                        info: AnalyticsInfo(
+                            type: card.type,
+                            url: card.givenURL,
+                            index: card.index
+                        )
+                    )
                 }
             }
         }
@@ -118,7 +125,15 @@ private extension CardFooter {
             inactiveColor: .ui.grey8
         ) {
             Haptics.defaultTap()
-            homeActions.favoriteAction(isFavorite: isFavorite, givenURL: card.givenURL)
+            homeActions.favoriteAction(
+                isFavorite: isFavorite,
+                givenURL: card.givenURL,
+                info: AnalyticsInfo(
+                    type: card.type,
+                    url: card.givenURL,
+                    index: card.index
+                )
+            )
         }
         .accessibilityIdentifier("favorite-button")
     }
@@ -134,7 +149,16 @@ private extension CardFooter {
             activeColor: .ui.coral2
         ) {
             Haptics.defaultTap()
-            homeActions.saveAction(isSaved: isSaved, givenURL: card.givenURL)
+            homeActions.saveAction(
+                isSaved: isSaved,
+                givenURL: card.givenURL,
+                info: AnalyticsInfo(
+                    type: card.type,
+                    url: card.givenURL,
+                    index: card.index,
+                    recommendationID: recommendationID
+                )
+            )
         }
         .accessibilityIdentifier("save-button")
     }
@@ -143,10 +167,20 @@ private extension CardFooter {
     func makeOverflowMenu() -> some View {
         Menu {
             if card.enableArchiveMenuAction {
-                Button(action: {
-                    Haptics.defaultTap()
-                    homeActions.archiveAction(givenURL: card.givenURL)
-                }) {
+                Button(
+                    action: {
+                        Haptics.defaultTap()
+                        homeActions.archiveAction(
+                            givenURL: card.givenURL,
+                            info: AnalyticsInfo(
+                                type: card.type,
+                                url: card.givenURL,
+                                index: card.index,
+                                recommendationID: recommendationID
+                            )
+                        )
+                    }
+                ) {
                     Label {
                         Text(Localization.ItemAction.archive)
                     } icon: {
@@ -187,6 +221,16 @@ private extension CardFooter {
 
             if card.enableShareMenuAction {
                 ShareableURLView(givenURL: card.givenURL, shareURL: shareURL)
+                    .simultaneousGesture(TapGesture().onEnded {
+                        homeActions.trackShare(
+                            AnalyticsInfo(
+                                type: card.type,
+                                url: card.givenURL,
+                                index: card.index,
+                                recommendationID: recommendationID
+                            )
+                        )
+                    })
             }
         } label: {
             Image(asset: .overflow)

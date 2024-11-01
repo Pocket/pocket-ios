@@ -60,9 +60,12 @@ struct CardView: View {
             .onAppear {
                 homeActions
                     .trackCardImpression(
-                        card.type,
-                        url: card.givenURL,
-                        recommendationID: item?.recommendation?.analyticsID
+                        AnalyticsInfo(
+                            type: card.type,
+                            url: card.givenURL,
+                            index: card.index,
+                            recommendationID: item?.recommendation?.analyticsID
+                        )
                     )
             }
     }
@@ -135,10 +138,13 @@ private extension CardView {
                 presentWebView = true
             }
             homeActions.trackCardContentOpen(
-                card.type,
-                url: card.givenURL,
-                recommendationID: item?.recommendation?.analyticsID,
-                externalDestination: externalDestination
+                AnalyticsInfo(
+                    type: card.type,
+                    url: card.givenURL,
+                    index: card.index,
+                    recommendationID: item?.recommendation?.analyticsID,
+                    externalDestination: externalDestination
+                )
             )
         }
     }

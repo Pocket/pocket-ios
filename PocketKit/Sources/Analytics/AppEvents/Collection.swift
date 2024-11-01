@@ -170,7 +170,7 @@ public extension Events.Collection {
 
     // MARK: Tracking Story
     // story card viewed
-    static func storyImpression(url: String, positionInList: Int?) -> Impression {
+    static func storyImpression(url: String, positionInList: Int) -> Impression {
         return Impression(
             component: .card,
             requirement: .viewable,

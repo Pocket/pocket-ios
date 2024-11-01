@@ -498,7 +498,7 @@ extension HomeViewModel {
     ) {
         switch source {
         case .app:
-            tracker.track(event: Events.Home.SlateArticleContentOpen(
+            tracker.track(event: Events.Home.slateArticleContentOpen(
                 url: url,
                 positionInList: positionInList,
                 recommendationId: recommendationId,
@@ -598,7 +598,7 @@ extension HomeViewModel {
     private func trackRecentSavesOpen(url: String, positionInList: Int?, source: ReadableSource) {
         switch source {
         case .app:
-            tracker.track(event: Events.Home.RecentSavesCardContentOpen(url: url, positionInList: positionInList))
+            tracker.track(event: Events.Home.recentSavesCardContentOpen(url: url, positionInList: positionInList))
         case .external:
             tracker.track(event: Events.Deeplinks.deeplinkArticleContentOpen(url: url, destination: .internal))
         case .widget:
@@ -731,7 +731,7 @@ extension HomeViewModel {
 
     private func delete(item: CDSavedItem, indexPath: IndexPath) {
         presentedAlert = nil
-        tracker.track(event: Events.Home.RecentSavesCardDelete(url: item.url, positionInList: indexPath.item))
+        tracker.track(event: Events.Home.recentSavesCardDelete(url: item.url, positionInList: indexPath.item))
         source.delete(item: item)
     }
 }
@@ -856,7 +856,7 @@ extension HomeViewModel {
         // This view model is used within the context of a view that is presented within Saves
         let shareableUrl = await shareableUrl(recommendation.item) ?? recommendation.item.bestURL
         self.sharedActivity = PocketItemActivity.fromHome(url: shareableUrl, sender: sender)
-        tracker.track(event: Events.Home.SlateArticleShare(url: shareableUrl, positionInList: indexPath.item, recommendationId: recommendation.analyticsID))
+        tracker.track(event: Events.Home.slateArticleShare(url: shareableUrl, positionInList: indexPath.item, recommendationId: recommendation.analyticsID))
     }
 
     private func share(_ savedItem: CDSavedItem, at indexPath: IndexPath, with sender: Any?) async {
@@ -864,7 +864,7 @@ extension HomeViewModel {
         // within the context of "Recent Saves"
         let shareableUrl = await shareableUrl(savedItem.item) ?? savedItem.url
         self.sharedActivity = PocketItemActivity.fromSaves(url: shareableUrl, sender: sender)
-        tracker.track(event: Events.Home.RecentSavesCardShare(url: shareableUrl, positionInList: indexPath.item))
+        tracker.track(event: Events.Home.recentSavesCardShare(url: shareableUrl, positionInList: indexPath.item))
     }
 
     private func share(_ sharedWithYouItem: CDSharedWithYouItem, at indexPath: IndexPath, with sender: Any?) async {
@@ -889,18 +889,18 @@ extension HomeViewModel {
     private func save(_ recommendation: CDRecommendation, at indexPath: IndexPath) {
         source.save(recommendation: recommendation)
         let givenURL = recommendation.item.givenURL
-        tracker.track(event: Events.Home.SlateArticleSave(url: givenURL, positionInList: indexPath.item, recommendationId: recommendation.analyticsID))
+        tracker.track(event: Events.Home.slateArticleSave(url: givenURL, positionInList: indexPath.item, recommendationId: recommendation.analyticsID))
     }
 
     private func archive(_ recommendation: CDRecommendation, at indexPath: IndexPath) {
         source.archive(recommendation: recommendation)
         let givenURL = recommendation.item.givenURL
-        tracker.track(event: Events.Home.SlateArticleArchive(url: givenURL, positionInList: indexPath.item, recommendationId: recommendation.analyticsID))
+        tracker.track(event: Events.Home.slateArticleArchive(url: givenURL, positionInList: indexPath.item, recommendationId: recommendation.analyticsID))
     }
 
     private func archive(_ savedItem: CDSavedItem, at indexPath: IndexPath) {
         self.source.archive(item: savedItem)
-        tracker.track(event: Events.Home.RecentSavesCardArchive(url: savedItem.url, positionInList: indexPath.item))
+        tracker.track(event: Events.Home.recentSavesCardArchive(url: savedItem.url, positionInList: indexPath.item))
     }
 }
 
@@ -919,7 +919,7 @@ extension HomeViewModel {
             guard let savedItem = source.viewObject(id: objectID) as? CDSavedItem else {
                 return
             }
-            tracker.track(event: Events.Home.RecentSavesCardImpression(url: savedItem.url, positionInList: indexPath.item))
+            tracker.track(event: Events.Home.recentSavesCardImpression(url: savedItem.url, positionInList: indexPath.item))
             return
         case .recommendationHero(let objectID), .recommendationCarousel(let objectID):
             guard let recommendation = source.viewObject(id: objectID) as? CDRecommendation else {
@@ -931,7 +931,7 @@ extension HomeViewModel {
             }
 
             let givenURL = item.givenURL
-            tracker.track(event: Events.Home.SlateArticleImpression(url: givenURL, positionInList: indexPath.item, recommendationId: recommendation.analyticsID))
+            tracker.track(event: Events.Home.slateArticleImpression(url: givenURL, positionInList: indexPath.item, recommendationId: recommendation.analyticsID))
         case .singinBanner:
             tracker.track(event: Events.SignedOut.signinBannerImpression())
             return

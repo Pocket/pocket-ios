@@ -7,6 +7,7 @@ enum CardType {
     case recentSave
     case recommendation
     case sharedWithYou
+    case collection // This is not a card per se, but contains the same operations as a card
     case collectionStory
     case slateDetail
     case sharedWithYouDetail

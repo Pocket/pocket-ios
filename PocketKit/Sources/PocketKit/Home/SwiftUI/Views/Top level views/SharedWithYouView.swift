@@ -64,11 +64,12 @@ private extension SharedWithYouView {
     }
 
     var proposedCards: [HomeCardConfiguration] {
-        sharedWithYouItems.compactMap {
+        sharedWithYouItems.enumerated().compactMap {
             HomeCardConfiguration(
-                givenURL: $0.item?.givenURL ?? $0.url,
-                sharedWithYouUrlString: $0.url,
+                givenURL: $0.element.item?.givenURL ?? $0.element.url,
+                sharedWithYouUrlString: $0.element.url,
                 type: .sharedWithYou,
+                index: $0.offset,
                 enableSaveAction: true,
                 enableShareMenuAction: true
             )
