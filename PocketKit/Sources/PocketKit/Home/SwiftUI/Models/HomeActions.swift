@@ -196,7 +196,7 @@ extension HomeActions {
             case .collection:
                 tracker.track(event: Events.Collection.favoriteClicked(url: info.url))
             default:
-                break // only recent saves can be favorited
+                break // only recent saves and collections can be favorited. Events from the reader are handled in UIKit for now.
             }
         }
     }
@@ -210,7 +210,7 @@ extension HomeActions {
             case .collection:
                 tracker.track(event: Events.Collection.unfavoriteClicked(url: info.url))
             default:
-                break // only recent saves can be favorited. Events from the reader are handled in UIKit for now.
+                break // only recent saves and collections can be unfavorited. Events from the reader are handled in UIKit for now.
             }
         }
     }
