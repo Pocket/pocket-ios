@@ -13,12 +13,14 @@ struct HomeView: View {
 
     var body: some View {
         GeometryReader { proxy in
-            EndOfFeedScrollView {
-                Spacer()
-                    .frame(height: 16)
-                RecentSavesView()
-                SharedWithYouView()
-                RecommendationsView()
+            ScrollView {
+                VStack {
+                    Spacer()
+                        .frame(height: 16)
+                    RecentSavesView()
+                    SharedWithYouView()
+                    RecommendationsView()
+                }
             }
             .background(Color(.ui.white1))
             .navigationTitle(Localization.home)

@@ -70,8 +70,18 @@ private extension SharedWithYouView {
                 sharedWithYouUrlString: $0.element.url,
                 type: .sharedWithYou,
                 index: $0.offset,
+                shareURL: $0.element.item?.shareURL,
+                domain: $0.element.item?.bestDomain,
+                timeToRead: $0.element.item?.timeToRead,
+                isSyndicated: $0.element.item?.isSyndicated == true,
+                recommendationID: $0.element.item?.recommendation?.analyticsID,
+                bestTitle: $0.element.item?.bestTitle,
+                slug: $0.element.item?.collectionSlug,
+                excerpt: $0.element.item?.excerpt,
+                topImageURL: $0.element.item?.topImageURL,
                 enableSaveAction: true,
-                enableShareMenuAction: true
+                enableShareMenuAction: true,
+                enableReportMenuAction: true
             )
         }
     }

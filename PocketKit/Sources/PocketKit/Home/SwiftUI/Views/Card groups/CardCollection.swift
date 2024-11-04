@@ -30,10 +30,11 @@ struct CardCollection: View {
     }
 
     var body: some View {
-        EndOfFeedScrollView {
-            makeContent()
-        } header: {
-            makeHeader()
+        ScrollView {
+            LazyVStack {
+                makeHeader()
+                makeContent()
+            }
         }
         .contentMargins([.leading, .trailing], 16, for: .scrollContent)
     }

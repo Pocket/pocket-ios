@@ -42,6 +42,15 @@ private extension RecommendationsView {
                     sharedWithYouUrlString: nil,
                     type: .recommendation,
                     index: Int(item.recommendation?.sortIndex ?? 0), // sortIndex should not be nil, but just in case, let's have a default
+                    shareURL: item.shareURL,
+                    domain: item.bestDomain,
+                    timeToRead: item.timeToRead,
+                    isSyndicated: item.isSyndicated,
+                    recommendationID: item.recommendation?.analyticsID,
+                    bestTitle: item.bestTitle,
+                    slug: item.collectionSlug,
+                    excerpt: item.excerpt,
+                    topImageURL: item.topImageURL,
                     enableSaveAction: true,
                     enableShareMenuAction: true,
                     enableReportMenuAction: true

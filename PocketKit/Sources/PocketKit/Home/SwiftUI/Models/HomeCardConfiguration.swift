@@ -22,6 +22,16 @@ struct HomeCardConfiguration: Identifiable, @preconcurrency Equatable, Hashable 
     let type: CardType
     let index: Int
 
+    let shareURL: String?
+    let domain: String?
+    let timeToRead: Int32?
+    let isSyndicated: Bool
+    let recommendationID: String?
+    let bestTitle: String?
+    let slug: String?
+    let excerpt: String?
+    let topImageURL: URL?
+
     // actions configuration
     let enableSaveAction: Bool
     let enableFavoriteAction: Bool
@@ -37,6 +47,15 @@ struct HomeCardConfiguration: Identifiable, @preconcurrency Equatable, Hashable 
         showExcerpt: Bool = false,
         type: CardType,
         index: Int,
+        shareURL: String?,
+        domain: String?,
+        timeToRead: Int32?,
+        isSyndicated: Bool,
+        recommendationID: String?,
+        bestTitle: String?,
+        slug: String?,
+        excerpt: String?,
+        topImageURL: URL?,
         enableSaveAction: Bool = false,
         enableFavoriteAction: Bool = false,
         enableShareMenuAction: Bool = false,
@@ -49,6 +68,15 @@ struct HomeCardConfiguration: Identifiable, @preconcurrency Equatable, Hashable 
         self.showExcerpt = showExcerpt
         self.type = type
         self.index = index
+        self.shareURL = shareURL
+        self.domain = domain
+        self.timeToRead = timeToRead
+        self.isSyndicated = isSyndicated
+        self.recommendationID = recommendationID
+        self.bestTitle = bestTitle
+        self.slug = slug
+        self.excerpt = excerpt
+        self.topImageURL = topImageURL
         self.enableSaveAction = enableSaveAction
         self.enableFavoriteAction = enableFavoriteAction
         self.enableShareMenuAction = enableShareMenuAction

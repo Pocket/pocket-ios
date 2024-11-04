@@ -31,11 +31,6 @@ struct CardView: View {
 
     @State private var presentWebView: Bool = false
 
-    @Query private var fetchedItem: [Item]
-    private var item: Item? {
-        fetchedItem.first
-    }
-
     @Query private var fetchedSavedItem: [SavedItem]
     private var savedItem: SavedItem? {
         fetchedSavedItem.first
@@ -46,13 +41,9 @@ struct CardView: View {
         self.size = size
 
         let givenUrl = card.givenURL
-        var itemDescriptor = FetchDescriptor<Item>(predicate: #Predicate<Item> { $0.givenURL == givenUrl })
-        itemDescriptor.fetchLimit = 1
-        _fetchedItem = Query(itemDescriptor, animation: .easeIn)
-
         var savedItemDescriptor = FetchDescriptor<SavedItem>(predicate: #Predicate<SavedItem> { $0.item?.givenURL == givenUrl })
         savedItemDescriptor.fetchLimit = 1
-        _fetchedSavedItem = Query(savedItemDescriptor, animation: .easeIn)
+        _fetchedSavedItem = Query(savedItemDescriptor) // , animation: .easeIn)
     }
 
     var body: some View {
@@ -64,7 +55,7 @@ struct CardView: View {
                             type: card.type,
                             url: card.givenURL,
                             index: card.index,
-                            recommendationID: item?.recommendation?.analyticsID
+                            recommendationID: card.recommendationID // item?.recommendation?.analyticsID
                         )
                     )
             }
@@ -109,13 +100,13 @@ private extension CardView {
             Spacer()
             CardFooter(
                 card: card,
-                shareURL: item?.shareURL,
-                domain: item?.bestDomain,
-                timeToRead: item?.timeToRead,
+                shareURL: card.shareURL,
+                domain: card.domain,
+                timeToRead: card.timeToRead,
                 isSaved: savedItem != nil && savedItem?.isArchived == false,
                 isFavorite: savedItem?.isFavorite == true,
-                isSyndicated: item?.isSyndicated == true,
-                recommendationID: item?.recommendation?.analyticsID
+                isSyndicated: card.isSyndicated,
+                recommendationID: card.recommendationID
             )
             .padding(Constants.footerPadding(size))
         }
@@ -127,11 +118,11 @@ private extension CardView {
         .onTapGesture {
             // property that determines if the content is opened in Pocket or in a webview, for analytics purposes
             var externalDestination = false
-            if let slug = item?.collection?.slug {
+            if let slug = card.slug {
                 navigation.navigateTo(NativeCollectionDestination(slug: slug, givenURL: card.givenURL))
             } else if savedItem != nil {
                 navigation.navigateTo(ReadableDestination(.saved(card.givenURL)))
-            } else if item?.syndicatedArticle != nil {
+            } else if card.isSyndicated {
                 navigation.navigateTo(ReadableDestination(.syndicated(card.givenURL)))
             } else if URL(string: card.givenURL) != nil {
                 externalDestination = true
@@ -142,7 +133,7 @@ private extension CardView {
                     type: card.type,
                     url: card.givenURL,
                     index: card.index,
-                    recommendationID: item?.recommendation?.analyticsID,
+                    recommendationID: card.recommendationID,
                     externalDestination: externalDestination
                 )
             )
@@ -178,19 +169,19 @@ private extension CardView {
     /// Text stack
     func makeTextStack() -> some View {
         VStack(alignment: .leading) {
-            if item?.isCollection == true {
+            if card.slug != nil {
                 Text(Localization.Constants.collection)
                     .style(.recommendation.collection)
                     .accessibilityIdentifier("collection-label")
             }
-            Text(item?.bestTitle ?? card.givenURL)
+            Text(card.bestTitle ?? card.givenURL)
                 .style(makeTitleStyle(largeTitle: !card.showExcerpt && size == .large))
                 .lineSpacing(Constants.titleLineSpacing)
                 .lineLimit(Constants.titleLineLimit)
                 .accessibilityIdentifier("title-label")
 
             if card.showExcerpt,
-                let excerpt = item?.excerpt,
+                let excerpt = card.excerpt,
                 let attributedExcerpt = try? AttributedString(
                 markdown: excerpt,
                 options: .init(
@@ -218,7 +209,7 @@ private extension CardView {
         switch size {
         case .medium:
             VStack {
-                RemoteImage(url: item?.topImageURL, imageSize: Constants.smallThumbnailSize, usePlaceholder: false)
+                RemoteImage(url: card.topImageURL, imageSize: Constants.smallThumbnailSize, usePlaceholder: false)
                     .aspectRatio(contentMode: .fit)
                     .frame(width: Constants.smallThumbnailSize.width, height: Constants.smallThumbnailSize.height)
                     .clipShape(RoundedRectangle(cornerRadius: Constants.cornerRadius))
@@ -226,7 +217,7 @@ private extension CardView {
                 Spacer()
             }
         case .large:
-            RemoteImage(url: item?.topImageURL, imageSize: largeImageSize, usePlaceholder: true)
+            RemoteImage(url: card.topImageURL, imageSize: largeImageSize, usePlaceholder: true)
                 .aspectRatio(Constants.largeThumbnailAspectRatio, contentMode: .fit)
                 .fixedSize(horizontal: false, vertical: true)
                 .frame(minWidth: 0, maxWidth: .infinity)
