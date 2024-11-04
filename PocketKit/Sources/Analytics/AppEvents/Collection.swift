@@ -169,6 +169,21 @@ public extension Events.Collection {
     }
 
     // MARK: Tracking Story
+    // story card viewed
+    static func storyImpression(url: String, positionInList: Int) -> Impression {
+        return Impression(
+            component: .card,
+            requirement: .viewable,
+            uiEntity: UiEntity(
+                .card,
+                identifier: "collection.story.impression",
+                index: positionInList
+            ),
+            extraEntities: [
+                ContentEntity(url: url)
+            ]
+        )
+    }
     /**
      * Fired when a user clicks a card on a collection
      */

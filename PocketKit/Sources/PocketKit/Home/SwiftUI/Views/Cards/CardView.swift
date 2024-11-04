@@ -24,8 +24,10 @@ struct CardView: View {
 
     @Environment(\.carouselWidth)
     private var carouselWidth
+    @Environment(\.homeActions)
+    private var homeActions
 
-    @EnvironmentObject var navigation: HomeNavigation
+    @EnvironmentObject private var navigation: HomeNavigation
 
     @State private var presentWebView: Bool = false
 
@@ -54,16 +56,31 @@ struct CardView: View {
     }
 
     var body: some View {
+        makeBody()
+            .onAppear {
+                homeActions
+                    .trackCardImpression(
+                        AnalyticsInfo(
+                            type: card.type,
+                            url: card.givenURL,
+                            index: card.index,
+                            recommendationID: item?.recommendation?.analyticsID
+                        )
+                    )
+            }
+    }
+}
+
+// MARK: View builders
+private extension CardView {
+    @ViewBuilder
+    func makeBody() -> some View {
         if let url = card.sharedWithYouUrlString {
             makeSharedWithYouCard(url)
         } else {
             makeSizedCard()
         }
     }
-}
-
-// MARK: View builders
-private extension CardView {
     /// Builds the card of the current size
     /// - Returns: the card view
     @ViewBuilder
@@ -108,6 +125,8 @@ private extension CardView {
                 .ignoresSafeArea(.all)
         }
         .onTapGesture {
+            // property that determines if the content is opened in Pocket or in a webview, for analytics purposes
+            var externalDestination = false
             if let slug = item?.collection?.slug {
                 navigation.navigateTo(NativeCollectionDestination(slug: slug, givenURL: card.givenURL))
             } else if savedItem != nil {
@@ -115,8 +134,18 @@ private extension CardView {
             } else if item?.syndicatedArticle != nil {
                 navigation.navigateTo(ReadableDestination(.syndicated(card.givenURL)))
             } else if URL(string: card.givenURL) != nil {
+                externalDestination = true
                 presentWebView = true
             }
+            homeActions.trackCardContentOpen(
+                AnalyticsInfo(
+                    type: card.type,
+                    url: card.givenURL,
+                    index: card.index,
+                    recommendationID: item?.recommendation?.analyticsID,
+                    externalDestination: externalDestination
+                )
+            )
         }
     }
 

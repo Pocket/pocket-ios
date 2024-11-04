@@ -19,6 +19,8 @@ struct HomeCardConfiguration: Identifiable, @preconcurrency Equatable, Hashable 
     let givenURL: String
     let sharedWithYouUrlString: String?
     let showExcerpt: Bool
+    let type: CardType
+    let index: Int
 
     // actions configuration
     let enableSaveAction: Bool
@@ -33,6 +35,8 @@ struct HomeCardConfiguration: Identifiable, @preconcurrency Equatable, Hashable 
         givenURL: String,
         sharedWithYouUrlString: String? = nil,
         showExcerpt: Bool = false,
+        type: CardType,
+        index: Int,
         enableSaveAction: Bool = false,
         enableFavoriteAction: Bool = false,
         enableShareMenuAction: Bool = false,
@@ -43,6 +47,8 @@ struct HomeCardConfiguration: Identifiable, @preconcurrency Equatable, Hashable 
         self.givenURL = givenURL
         self.sharedWithYouUrlString = sharedWithYouUrlString
         self.showExcerpt = showExcerpt
+        self.type = type
+        self.index = index
         self.enableSaveAction = enableSaveAction
         self.enableFavoriteAction = enableFavoriteAction
         self.enableShareMenuAction = enableShareMenuAction

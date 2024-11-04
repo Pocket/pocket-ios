@@ -11,7 +11,7 @@ public extension Events.ExpandedSlate {
     /**
      Fired when a user views a slate in detail
      */
-    static func SlateExpanded(slateId: String, slateRequestId: String, slateExperimentId: String, slateIndex: Int, slateLineupId: String, slateLineupRequestId: String, slateLineupExperimentId: String) -> Impression {
+    static func slateExpanded(slateId: String, slateRequestId: String, slateExperimentId: String, slateIndex: Int, slateLineupId: String, slateLineupRequestId: String, slateLineupExperimentId: String) -> Impression {
         return Impression(
             component: .screen,
             requirement: .viewable,
@@ -30,7 +30,7 @@ public extension Events.ExpandedSlate {
     /**
      Fired when a user clicks a card on Home using the /discover API
      */
-    static func SlateArticleContentOpen(url: String, positionInList: Int, recommendationId: String, destination: ContentOpen.Destination) -> ContentOpen {
+    static func slateArticleContentOpen(url: String, positionInList: Int, recommendationId: String, destination: ContentOpen.Destination) -> ContentOpen {
         return ContentOpen(
             destination: destination,
             contentEntity:
@@ -50,7 +50,7 @@ public extension Events.ExpandedSlate {
     /**
      Fired when a user sees a card on Home using the /discover API
      */
-    static func SlateArticleImpression(url: String, positionInList: Int, recommendationId: String) -> Impression {
+    static func slateArticleImpression(url: String, positionInList: Int, recommendationId: String) -> Impression {
         return Impression(
             component: .card,
             requirement: .viewable,
@@ -69,7 +69,7 @@ public extension Events.ExpandedSlate {
     /**
      Fired when a user saves a card on Home using the /discover API
      */
-    static func SlateArticleSave(url: String, positionInList: Int, recommendationId: String) -> Engagement {
+    static func slateArticleSave(url: String, positionInList: Int?, recommendationId: String) -> Engagement {
         return Engagement(
             .save(
                 contentEntity: ContentEntity(url: url)
@@ -89,7 +89,7 @@ public extension Events.ExpandedSlate {
     /**
      Fired when a user archives a card on Home using the /discover API
      */
-    static func SlateArticleArchive(url: String, positionInList: Int, recommendationId: String) -> Engagement {
+    static func slateArticleArchive(url: String, positionInList: Int, recommendationId: String) -> Engagement {
         return Engagement(
             .general,
             uiEntity: UiEntity(
@@ -107,7 +107,7 @@ public extension Events.ExpandedSlate {
     /**
      Fired when a user shares a card on Home using the /discover API
      */
-    static func SlateArticleShare(url: String, positionInList: Int, recommendationId: String) -> Engagement {
+    static func slateArticleShare(url: String, positionInList: Int, recommendationId: String) -> Engagement {
         return Engagement(
             .general,
             uiEntity: UiEntity(

@@ -40,6 +40,8 @@ private extension RecommendationsView {
                 return HomeCardConfiguration(
                     givenURL: item.givenURL,
                     sharedWithYouUrlString: nil,
+                    type: .recommendation,
+                    index: Int(item.recommendation?.sortIndex ?? 0), // sortIndex should not be nil, but just in case, let's have a default
                     enableSaveAction: true,
                     enableShareMenuAction: true,
                     enableReportMenuAction: true

@@ -45,11 +45,13 @@ struct SlateDetailView: View {
 // MARK: helpers
 private extension SlateDetailView {
     var proposedCards: [HomeCardConfiguration] {
-        recommendations.compactMap {
-            if let item = $0.item {
+        recommendations.enumerated().compactMap {
+            if let item = $0.element.item {
                 return HomeCardConfiguration(
                     givenURL: item.givenURL,
                     sharedWithYouUrlString: nil,
+                    type: .slateDetail,
+                    index: $0.offset,
                     enableSaveAction: true,
                     enableShareMenuAction: true,
                     enableReportMenuAction: true

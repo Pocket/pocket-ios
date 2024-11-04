@@ -38,11 +38,13 @@ struct SharedWithYouDetailView: View {
 // MARK: helpers
 private extension SharedWithYouDetailView {
     var proposedCards: [HomeCardConfiguration] {
-        sharedWithYouItems.compactMap {
-            if let item = $0.item {
+        sharedWithYouItems.enumerated().compactMap {
+            if let item = $0.element.item {
                 return HomeCardConfiguration(
                     givenURL: item.givenURL,
-                    sharedWithYouUrlString: $0.url,
+                    sharedWithYouUrlString: $0.element.url,
+                    type: .sharedWithYouDetail,
+                    index: $0.offset,
                     enableSaveAction: true,
                     enableShareMenuAction: true,
                     enableReportMenuAction: true

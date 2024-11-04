@@ -49,12 +49,14 @@ struct CollectionStoriesView: View {
 // MARK: helpers
 private extension CollectionStoriesView {
     var proposedCards: [HomeCardConfiguration] {
-        stories.compactMap {
-            if let item = $0.item {
+        stories.enumerated().compactMap {
+            if let item = $0.element.item {
                 return HomeCardConfiguration(
                     givenURL: item.givenURL,
                     sharedWithYouUrlString: nil,
                     showExcerpt: true,
+                    type: .collectionStory,
+                    index: $0.offset,
                     enableSaveAction: true,
                     enableShareMenuAction: true,
                     enableReportMenuAction: true

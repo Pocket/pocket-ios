@@ -65,10 +65,12 @@ private extension RecentSavesView {
     }
 
     var proposedCards: [HomeCardConfiguration] {
-        savedItems.compactMap {
+        savedItems.enumerated().compactMap {
             HomeCardConfiguration(
-                givenURL: $0.item?.givenURL ?? $0.url,
+                givenURL: $0.element.item?.givenURL ?? $0.element.url,
                 sharedWithYouUrlString: nil,
+                type: .recentSave,
+                index: $0.offset,
                 enableFavoriteAction: true,
                 enableShareMenuAction: true,
                 enableArchiveMenuAction: true,
