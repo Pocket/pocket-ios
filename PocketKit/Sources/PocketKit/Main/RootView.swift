@@ -48,11 +48,15 @@ private extension RootView {
             .onContinueUserActivity(CSSearchableItemActionType, perform: { userActivity in
                 model.handleSpotlight(userActivity)
             })
+            // TODO: SWIFTUI - Once we move away from Services, these need to be handled with DI
             .modelContainer(Services.shared.dataController)
+            .environmentObject(Services.shared.accessService)
     }
 
-    func loggedOutView(model: LoggedOutViewModel) -> LoggedOutViewControllerSwiftUI {
+    func loggedOutView(model: LoggedOutViewModel) -> some View {
         LoggedOutViewControllerSwiftUI(model: model)
+            // TODO: SWIFTUI - Once we move away from Services, this needs to be handled with DI
+            .environmentObject(Services.shared.accessService)
     }
 }
 

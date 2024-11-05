@@ -12,15 +12,33 @@ struct HomeActions {
     // This is on purpose since we do not want to keep a reference here, and once we are fully
     // migrated to SwiftUI we will likely leverage the environment or something like swift-dependencies
     // https://github.com/pointfreeco/swift-dependencies for dependency injection.
+
+    /// Prompts the FxA login
+    @MainActor
+    func requestAuthentication(_ type: CardType) {
+        /// **NOTE: recommendation, collection and collectionStory are the only three types of source handled from SwiftUI Home
+        var loginSource: Events.SignedOut.LoginSource = .recommendationCard
+        if type == .collection {
+            loginSource = .collection
+        } else if type == .collectionStory {
+            loginSource = .collectionStory
+        }
+        Services.shared.accessService.requestAuthentication(loginSource)
+    }
+
     @MainActor
     func saveAction(isSaved: Bool, givenURL: String, info: AnalyticsInfo) {
-        let source = Services.shared.source
-        if isSaved {
-            source.archive(from: givenURL)
-        } else {
-            source.save(from: givenURL)
+        if Services.shared.accessService.accessLevel.isAnonymous {
+            requestAuthentication(info.type)
+        } else if Services.shared.accessService.accessLevel.isAuthenticated {
+            let source = Services.shared.source
+            if isSaved {
+                source.archive(from: givenURL)
+            } else {
+                source.save(from: givenURL)
+            }
+            trackSave(info)
         }
-        trackSave(info)
     }
 
     @MainActor

@@ -43,7 +43,7 @@ struct CardView: View {
         let givenUrl = card.givenURL
         var savedItemDescriptor = FetchDescriptor<SavedItem>(predicate: #Predicate<SavedItem> { $0.item?.givenURL == givenUrl })
         savedItemDescriptor.fetchLimit = 1
-        _fetchedSavedItem = Query(savedItemDescriptor) // , animation: .easeIn)
+        _fetchedSavedItem = Query(savedItemDescriptor, animation: .easeInOut)
     }
 
     var body: some View {
@@ -55,7 +55,7 @@ struct CardView: View {
                             type: card.type,
                             url: card.givenURL,
                             index: card.index,
-                            recommendationID: card.recommendationID // item?.recommendation?.analyticsID
+                            recommendationID: card.recommendationID
                         )
                     )
             }

@@ -17,6 +17,20 @@ final class PocketAccessService: NSObject, ObservableObject {
         case onboarding // onboarding screen only
         case anonymous // limited access
         case authenticated // full access
+
+        var isAnonymous: Bool {
+            switch self {
+            case .onboarding, .authenticated: return false
+            case .anonymous: return true
+            }
+        }
+
+        var isAuthenticated: Bool {
+            switch self {
+            case .onboarding, .anonymous: return false
+            case .authenticated: return true
+            }
+        }
     }
 
     private let authorizationClient: AuthorizationClient
