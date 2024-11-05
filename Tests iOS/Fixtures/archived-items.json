@@ -51,7 +51,8 @@
                 "timeToRead": 6,
                 "wordCount": 500,
                 "preview" : {
-            "__typename": "[type-name-here]",
+                    "__typename": "[type-name-here]",
+                    "url": "http://example.com/items/archived-item-1",
                     "authors": [
                         {
                             "__typename": "Author",
@@ -112,7 +113,8 @@
                 "hasVideo": "HAS_VIDEOS",
                 "syndicatedArticle": null,
                 "preview" : {
-            "__typename": "[type-name-here]",
+                    "__typename": "[type-name-here]",
+                    "url": "https://example.com/items/archived-item-2",
                     "authors": [],
                     "excerpt": "Cursus Aenean Elit",
                     "title": "Archived Item 2",

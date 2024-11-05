@@ -38,7 +38,8 @@
                                 "marticle": #MARTICLE#,
                                 "collection": null,
                                 "preview" : {
-            "__typename": "[type-name-here]",
+                                    "__typename": "[type-name-here]",
+                                    "url": "http://localhost:8080/hello/item-1",
                                     "authors": [
                                         {
                                             "__typename": "Author",

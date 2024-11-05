@@ -34,28 +34,29 @@
                 "language": "en",
                 "timeToRead": 6,
                 "wordCount": 500,
-                "preview" : {
-            "__typename": "[type-name-here]",
-                    "authors": [
-                        {
-                            "__typename": "Author",
-                            "id": "archived-author-1",
-                            "name": "Socrates",
-                            "url": "https://example.com/authors/socrates"
-                        }
-                    ],
-                    "excerpt": "Cursus Aenean Elit",
-                    "title": "Archived Item 1",
-                    "datePublished": "2021-01-01 12:01:01",
-                    "image" : {
-                        "__typename": "[type-name-here]",
-                        "url": "https://example.com/archived-item-1/top-image.jpg"
-                    },
-                    "domain": {
-                        "__typename": "[type-name-here]",
-                        "name": "WIRED",
-                        "logo": "http://example.com/item-1/domain-logo.jpg"
+                "preview": {
+                  "__typename": "[type-name-here]",
+                  "authors": [
+                    {
+                      "__typename": "Author",
+                      "id": "archived-author-1",
+                      "name": "Socrates",
+                      "url": "https://example.com/authors/socrates"
                     }
+                  ],
+                  "excerpt": "Cursus Aenean Elit",
+                  "title": "Archived Item 1",
+                  "datePublished": "2021-01-01 12:01:01",
+                  "image": {
+                    "__typename": "[type-name-here]",
+                    "url": "https://example.com/archived-item-1/top-image.jpg"
+                  },
+                  "domain": {
+                    "__typename": "[type-name-here]",
+                    "name": "WIRED",
+                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                  },
+                  "url": "https://given.example.com/web-archived-item-1"
                 },
                 "images": [],
                 "isArticle": true,
@@ -88,21 +89,22 @@
                 "language": "en",
                 "timeToRead": 6,
                 "wordCount": 500,
-                "preview" : {
-            "__typename": "[type-name-here]",
-                    "authors": [],
-                    "excerpt": "Vehicula Nibh Ligula Porta Magna",
-                    "title": "Archived Item 2",
-                    "datePublished": "2021-01-01 12:01:01",
-                    "image" : {
-                        "__typename": "[type-name-here]",
-                        "url": "https://example.com/archived-item-2/top-image.jpg"
-                    },
-                    "domain": {
-                        "__typename": "[type-name-here]",
-                        "name": "WIRED",
-                        "logo": "http://example.com/item-1/domain-logo.jpg"
-                    }
+                "preview": {
+                  "__typename": "[type-name-here]",
+                  "authors": [],
+                  "excerpt": "Vehicula Nibh Ligula Porta Magna",
+                  "title": "Archived Item 2",
+                  "datePublished": "2021-01-01 12:01:01",
+                  "image": {
+                    "__typename": "[type-name-here]",
+                    "url": "https://example.com/archived-item-2/top-image.jpg"
+                  },
+                  "domain": {
+                    "__typename": "[type-name-here]",
+                    "name": "WIRED",
+                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                  },
+                  "url": "https://given.example.com/web-archived-item-2"
                 },
                 "images": [],
                 "isArticle": true,
@@ -135,21 +137,22 @@
                 "language": "en",
                 "timeToRead": 6,
                 "wordCount": 500,
-                "preview" : {
-            "__typename": "[type-name-here]",
-                    "authors": [],
-                    "excerpt": "Vehicula Nibh Ligula Porta Magna",
-                    "title": "Archived Item 3",
-                    "datePublished": "2021-01-01 12:01:01",
-                    "image" : {
-                        "__typename": "[type-name-here]",
-                        "url": "https://example.com/archived-item-3/top-image.jpg"
-                    },
-                    "domain": {
-                        "__typename": "[type-name-here]",
-                        "name": "wired.com",
-                        "logo": "http://example.com/item-1/domain-logo.jpg"
-                    }
+                "preview": {
+                  "__typename": "[type-name-here]",
+                  "authors": [],
+                  "excerpt": "Vehicula Nibh Ligula Porta Magna",
+                  "title": "Archived Item 3",
+                  "datePublished": "2021-01-01 12:01:01",
+                  "image": {
+                    "__typename": "[type-name-here]",
+                    "url": "https://example.com/archived-item-3/top-image.jpg"
+                  },
+                  "domain": {
+                    "__typename": "[type-name-here]",
+                    "name": "wired.com",
+                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                  },
+                  "url": "https://given.example.com/web-archived-item-3"
                 },
                 "images": [],
                 "isArticle": true,

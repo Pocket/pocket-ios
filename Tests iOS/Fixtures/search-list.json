@@ -39,6 +39,7 @@
                                     "marticle": #MARTICLE#,
                                     "preview" : {
             "__typename": "[type-name-here]",
+            "url": "http://localhost:8080/hello",
                                         "authors": [
                                             {
                                                 "__typename": "Author",
@@ -118,6 +119,7 @@
                                     "marticle": #MARTICLE#,
                                     "preview" : {
             "__typename": "[type-name-here]",
+            "url": "http://localhost:8080/hello-2",
                                         "authors": [
                                             {
                                                 "__typename": "Author",

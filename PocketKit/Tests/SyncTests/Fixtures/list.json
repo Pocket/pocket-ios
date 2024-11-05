@@ -47,7 +47,8 @@
                                 "marticle": #MARTICLE#,
                                 "collection": null,
                                 "preview" : {
-            "__typename": "[type-name-here]",
+                                    "__typename": "[type-name-here]",
+                                    "url": "https://given.example.com/item-1",
                                     "authors": [
                                         {
                                             "__typename": "Author",
@@ -121,7 +122,8 @@
                                 "marticle": [],
                                 "collection": null,
                                 "preview" : {
-            "__typename": "[type-name-here]",
+                                    "__typename": "[type-name-here]",
+                                    "url": "https://given.example.com/item-2",
                                     "authors": [],
                                     "excerpt": "Cursus Aenean Elit",
                                     "title": "Item 2",

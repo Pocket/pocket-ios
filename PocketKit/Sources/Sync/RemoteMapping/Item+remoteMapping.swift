@@ -28,7 +28,7 @@ extension CDItem {
     func updateIfNeeded(remote: ItemParts, with space: Space) {
         updateIfNotEqual(\.remoteID, remote.remoteID)
         updateIfNotEqual(\.givenURL, remote.givenUrl)
-        updateIfNotEqual(\.resolvedURL, remote.resolvedUrl)
+        updateIfNotEqual(\.resolvedURL, remote.preview?.url)
         updateIfNotEqual(\.title, remote.preview?.title)
         if let imageUrl = (remote.preview?.image?.url ?? remote.collection?.imageUrl).flatMap(URL.init(string:)) {
             updateIfNotEqual(\.topImageURL, imageUrl)
@@ -104,6 +104,7 @@ extension CDItem {
 
     func update(from corpusItem: CorpusSlateParts.Recommendation.CorpusItem, in space: Space) {
         givenURL = corpusItem.url
+        resolvedURL = corpusItem.preview.url
         title = corpusItem.preview.title
         if let timeToRead = corpusItem.timeToRead {
             self.timeToRead = NSNumber(value: timeToRead)
@@ -226,7 +227,7 @@ extension CDItem {
         remoteID = summary.remoteID
 
         givenURL = summary.givenUrl
-        resolvedURL = summary.resolvedUrl
+        resolvedURL = summary.preview?.url
         title = summary.preview?.title
         if let urlString = summary.preview?.image?.url {
             topImageURL = URL(string: urlString)

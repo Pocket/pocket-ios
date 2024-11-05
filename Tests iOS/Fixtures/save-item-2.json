@@ -22,6 +22,7 @@
         "collection": null,
         "preview" : {
             "__typename": "[type-name-here]",
+            "url": "https://example.com/item-3",
             "authors": [
                 {
                     "__typename": "Author",

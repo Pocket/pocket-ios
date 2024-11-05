@@ -43,6 +43,7 @@
                                 "syndicatedArticle": null,
                                 "preview" : {
             "__typename": "[type-name-here]",
+            "url": "http://example.com/items/archived-item-1",
                                     "authors": [
                                         {
                                             "__typename": "Author",

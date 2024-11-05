@@ -40,7 +40,8 @@
                 "hasVideo": "HAS_VIDEOS",
                 "syndicatedArticle": null,
                 "preview" : {
-            "__typename": "[type-name-here]",
+                    "__typename": "[type-name-here]",
+                    "url": "http://example.com/items/archived-item-1",
                     "authors": [],
                     "excerpt": "Risus Aenean Ultricies Nullam Vehicula",
                     "title": "Archived Item 1",
@@ -87,7 +88,8 @@
                 "hasVideo": "HAS_VIDEOS",
                 "syndicatedArticle": null,
                 "preview" : {
-            "__typename": "[type-name-here]",
+                    "__typename": "[type-name-here]",
+                    "url": "https://example.com/items/archived-item-0",
                     "authors": [],
                     "excerpt": "Vehicula Nibh Ligula Porta Magna",
                     "title": "Archived Item 0",
