@@ -87,7 +87,11 @@ public struct MainView: View {
             guard let swiftuiFeatureFlag = featureFlag.first else {
                 return
             }
+#if DEBUG
+            assigned = true
+#else
             assigned = swiftuiFeatureFlag.assigned
+#endif
         }
         .banner(data: bannerPresenter.bannerData, show: $bannerPresenter.shouldPresentBanner, bottomOffset: 49)
         .task {
