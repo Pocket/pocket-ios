@@ -35,6 +35,7 @@
                 "excerpt": "Cursus Aenean Elit",
                 "preview" : {
             "__typename": "[type-name-here]",
+            "url": "https://given.example.com/item-1",
                     "authors": [],
                     "excerpt": "Cursus Aenean Elit",
                     "title": "Item 1",

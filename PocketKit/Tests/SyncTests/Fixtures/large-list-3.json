@@ -37,21 +37,22 @@
                 "wordCount": 500,
                 "marticle": [],
                 "collection": null,
-                "preview" : {
-            "__typename": "[type-name-here]",
-                    "authors": [],
-                    "excerpt": "Cursus Aenean Elit",
-                    "title": "Item 3",
-                    "datePublished": "2021-01-01 12:01:01",
-                    "image" : {
-                        "__typename": "[type-name-here]",
-                        "url": "https://example.com/archived-item--2/top-image.jpg"
-                    },
-                    "domain": {
-                        "__typename": "[type-name-here]",
-                        "name": "WIRED",
-                        "logo": "http://example.com/item-1/domain-logo.jpg"
-                    }
+                "preview": {
+                  "__typename": "[type-name-here]",
+                  "authors": [],
+                  "excerpt": "Cursus Aenean Elit",
+                  "title": "Item 3",
+                  "datePublished": "2021-01-01 12:01:01",
+                  "image": {
+                    "__typename": "[type-name-here]",
+                    "url": "https://example.com/archived-item--2/top-image.jpg"
+                  },
+                  "domain": {
+                    "__typename": "[type-name-here]",
+                    "name": "WIRED",
+                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                  },
+                  "url": "https://given.example.com/item-3"
                 },
                 "images": [
                   {
@@ -94,78 +95,22 @@
                 "wordCount": 500,
                 "marticle": [],
                 "collection": null,
-                "preview" : {
-            "__typename": "[type-name-here]",
-                    "authors": [],
-                    "excerpt": "Cursus Aenean Elit",
-                    "title": "Item 3",
-                    "datePublished": "2021-01-01 12:01:01",
-                    "image" : {
-                        "__typename": "[type-name-here]",
-                        "url": "https://example.com/archived-item--2/top-image.jpg"
-                    },
-                    "domain": {
-                        "__typename": "[type-name-here]",
-                        "name": "WIRED",
-                        "logo": "http://example.com/item-1/domain-logo.jpg"
-                    }
-                },
-                "images": [
-                  {
+                "preview": {
+                  "__typename": "[type-name-here]",
+                  "authors": [],
+                  "excerpt": "Cursus Aenean Elit",
+                  "title": "Item 3",
+                  "datePublished": "2021-01-01 12:01:01",
+                  "image": {
                     "__typename": "[type-name-here]",
-                    "height": 1,
-                    "width": 2,
-                    "src": "http://example.com/item-3/image-1.jpg",
-                    "imageId": 1
-                  }
-                ],
-                "isArticle": true,
-                "hasImage": "HAS_IMAGES",
-                "hasVideo": "HAS_VIDEOS",
-                "syndicatedArticle": null
-              }
-            }
-          },
-          {
-            "__typename": "[type-name-here]",
-            "cursor": "cursor-3",
-            "node": {
-              "__typename": "[type-name-here]",
-              "remoteID": "saved-item-3",
-              "url": "https://example.com/item-3",
-              "_createdAt": 0,
-              "_deletedAt": null,
-              "archivedAt": null,
-              "isArchived": false,
-              "isFavorite": false,
-              "tags": [],
-              "corpusItem": null,
-              "annotations": null,
-              "item": {
-                "__typename": "Item",
-                "remoteID": "item-3",
-                "givenUrl": "https://given.example.com/item-3",
-                "resolvedUrl": "https://resolved.example.com/item-3",
-                "language": "en",
-                "timeToRead": 6,
-                "wordCount": 500,
-                "marticle": [],
-                "collection": null, 
-                "preview" : {
-            "__typename": "[type-name-here]",
-                    "authors": [],
-                    "excerpt": "Cursus Aenean Elit",
-                    "title": "Item 3",
-                    "datePublished": "2021-01-01 12:01:01",
-                    "image" : {
-                        "__typename": "[type-name-here]",
-                        "url": "https://example.com/archived-item--2/top-image.jpg"
-                    },
-                    "domain": {
-                        "__typename": "[type-name-here]",
-                        "name": "WIRED",
-                        "logo": "http://example.com/item-1/domain-logo.jpg"
-                    }
+                    "url": "https://example.com/archived-item--2/top-image.jpg"
+                  },
+                  "domain": {
+                    "__typename": "[type-name-here]",
+                    "name": "WIRED",
+                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                  },
+                  "url": "https://given.example.com/item-3"
                 },
                 "images": [
                   {
@@ -208,21 +153,22 @@
                 "wordCount": 500,
                 "marticle": [],
                 "collection": null,
-                "preview" : {
-            "__typename": "[type-name-here]",
-                    "authors": [],
-                    "excerpt": "Cursus Aenean Elit",
-                    "title": "Item 3",
-                    "datePublished": "2021-01-01 12:01:01",
-                    "image" : {
-                        "__typename": "[type-name-here]",
-                        "url": "https://example.com/archived-item--2/top-image.jpg"
-                    },
-                    "domain": {
-                        "__typename": "[type-name-here]",
-                        "name": "WIRED",
-                        "logo": "http://example.com/item-1/domain-logo.jpg"
-                    }
+                "preview": {
+                  "__typename": "[type-name-here]",
+                  "authors": [],
+                  "excerpt": "Cursus Aenean Elit",
+                  "title": "Item 3",
+                  "datePublished": "2021-01-01 12:01:01",
+                  "image": {
+                    "__typename": "[type-name-here]",
+                    "url": "https://example.com/archived-item--2/top-image.jpg"
+                  },
+                  "domain": {
+                    "__typename": "[type-name-here]",
+                    "name": "WIRED",
+                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                  },
+                  "url": "https://given.example.com/item-3"
                 },
                 "images": [
                   {
@@ -265,21 +211,22 @@
                 "wordCount": 500,
                 "marticle": [],
                 "collection": null,
-                "preview" : {
-            "__typename": "[type-name-here]",
-                    "authors": [],
-                    "excerpt": "Cursus Aenean Elit",
-                    "title": "Item 3",
-                    "datePublished": "2021-01-01 12:01:01",
-                    "image" : {
-                        "__typename": "[type-name-here]",
-                        "url": "https://example.com/archived-item--2/top-image.jpg"
-                    },
-                    "domain": {
-                        "__typename": "[type-name-here]",
-                        "name": "WIRED",
-                        "logo": "http://example.com/item-1/domain-logo.jpg"
-                    }
+                "preview": {
+                  "__typename": "[type-name-here]",
+                  "authors": [],
+                  "excerpt": "Cursus Aenean Elit",
+                  "title": "Item 3",
+                  "datePublished": "2021-01-01 12:01:01",
+                  "image": {
+                    "__typename": "[type-name-here]",
+                    "url": "https://example.com/archived-item--2/top-image.jpg"
+                  },
+                  "domain": {
+                    "__typename": "[type-name-here]",
+                    "name": "WIRED",
+                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                  },
+                  "url": "https://given.example.com/item-3"
                 },
                 "images": [
                   {
@@ -322,21 +269,22 @@
                 "wordCount": 500,
                 "marticle": [],
                 "collection": null,
-                "preview" : {
-            "__typename": "[type-name-here]",
-                    "authors": [],
-                    "excerpt": "Cursus Aenean Elit",
-                    "title": "Item 3",
-                    "datePublished": "2021-01-01 12:01:01",
-                    "image" : {
-                        "__typename": "[type-name-here]",
-                        "url": "https://example.com/archived-item--2/top-image.jpg"
-                    },
-                    "domain": {
-                        "__typename": "[type-name-here]",
-                        "name": "WIRED",
-                        "logo": "http://example.com/item-1/domain-logo.jpg"
-                    }
+                "preview": {
+                  "__typename": "[type-name-here]",
+                  "authors": [],
+                  "excerpt": "Cursus Aenean Elit",
+                  "title": "Item 3",
+                  "datePublished": "2021-01-01 12:01:01",
+                  "image": {
+                    "__typename": "[type-name-here]",
+                    "url": "https://example.com/archived-item--2/top-image.jpg"
+                  },
+                  "domain": {
+                    "__typename": "[type-name-here]",
+                    "name": "WIRED",
+                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                  },
+                  "url": "https://given.example.com/item-3"
                 },
                 "images": [
                   {
@@ -379,21 +327,22 @@
                 "wordCount": 500,
                 "marticle": [],
                 "collection": null,
-                "preview" : {
-            "__typename": "[type-name-here]",
-                    "authors": [],
-                    "excerpt": "Cursus Aenean Elit",
-                    "title": "Item 3",
-                    "datePublished": "2021-01-01 12:01:01",
-                    "image" : {
-                        "__typename": "[type-name-here]",
-                        "url": "https://example.com/archived-item--2/top-image.jpg"
-                    },
-                    "domain": {
-                        "__typename": "[type-name-here]",
-                        "name": "WIRED",
-                        "logo": "http://example.com/item-1/domain-logo.jpg"
-                    }
+                "preview": {
+                  "__typename": "[type-name-here]",
+                  "authors": [],
+                  "excerpt": "Cursus Aenean Elit",
+                  "title": "Item 3",
+                  "datePublished": "2021-01-01 12:01:01",
+                  "image": {
+                    "__typename": "[type-name-here]",
+                    "url": "https://example.com/archived-item--2/top-image.jpg"
+                  },
+                  "domain": {
+                    "__typename": "[type-name-here]",
+                    "name": "WIRED",
+                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                  },
+                  "url": "https://given.example.com/item-3"
                 },
                 "images": [
                   {
@@ -436,21 +385,22 @@
                 "wordCount": 500,
                 "marticle": [],
                 "collection": null,
-                "preview" : {
-            "__typename": "[type-name-here]",
-                    "authors": [],
-                    "excerpt": "Cursus Aenean Elit",
-                    "title": "Item 3",
-                    "datePublished": "2021-01-01 12:01:01",
-                    "image" : {
-                        "__typename": "[type-name-here]",
-                        "url": "https://example.com/archived-item--2/top-image.jpg"
-                    },
-                    "domain": {
-                        "__typename": "[type-name-here]",
-                        "name": "WIRED",
-                        "logo": "http://example.com/item-1/domain-logo.jpg"
-                    }
+                "preview": {
+                  "__typename": "[type-name-here]",
+                  "authors": [],
+                  "excerpt": "Cursus Aenean Elit",
+                  "title": "Item 3",
+                  "datePublished": "2021-01-01 12:01:01",
+                  "image": {
+                    "__typename": "[type-name-here]",
+                    "url": "https://example.com/archived-item--2/top-image.jpg"
+                  },
+                  "domain": {
+                    "__typename": "[type-name-here]",
+                    "name": "WIRED",
+                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                  },
+                  "url": "https://given.example.com/item-3"
                 },
                 "images": [
                   {
@@ -493,21 +443,22 @@
                 "wordCount": 500,
                 "marticle": [],
                 "collection": null,
-                "preview" : {
-            "__typename": "[type-name-here]",
-                    "authors": [],
-                    "excerpt": "Cursus Aenean Elit",
-                    "title": "Item 3",
-                    "datePublished": "2021-01-01 12:01:01",
-                    "image" : {
-                        "__typename": "[type-name-here]",
-                        "url": "https://example.com/archived-item--2/top-image.jpg"
-                    },
-                    "domain": {
-                        "__typename": "[type-name-here]",
-                        "name": "WIRED",
-                        "logo": "http://example.com/item-1/domain-logo.jpg"
-                    }
+                "preview": {
+                  "__typename": "[type-name-here]",
+                  "authors": [],
+                  "excerpt": "Cursus Aenean Elit",
+                  "title": "Item 3",
+                  "datePublished": "2021-01-01 12:01:01",
+                  "image": {
+                    "__typename": "[type-name-here]",
+                    "url": "https://example.com/archived-item--2/top-image.jpg"
+                  },
+                  "domain": {
+                    "__typename": "[type-name-here]",
+                    "name": "WIRED",
+                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                  },
+                  "url": "https://given.example.com/item-3"
                 },
                 "images": [
                   {
@@ -550,21 +501,22 @@
                 "wordCount": 500,
                 "marticle": [],
                 "collection": null,
-                "preview" : {
-            "__typename": "[type-name-here]",
-                    "authors": [],
-                    "excerpt": "Cursus Aenean Elit",
-                    "title": "Item 3",
-                    "datePublished": "2021-01-01 12:01:01",
-                    "image" : {
-                        "__typename": "[type-name-here]",
-                        "url": "https://example.com/archived-item--2/top-image.jpg"
-                    },
-                    "domain": {
-                        "__typename": "[type-name-here]",
-                        "name": "WIRED",
-                        "logo": "http://example.com/item-1/domain-logo.jpg"
-                    }
+                "preview": {
+                  "__typename": "[type-name-here]",
+                  "authors": [],
+                  "excerpt": "Cursus Aenean Elit",
+                  "title": "Item 3",
+                  "datePublished": "2021-01-01 12:01:01",
+                  "image": {
+                    "__typename": "[type-name-here]",
+                    "url": "https://example.com/archived-item--2/top-image.jpg"
+                  },
+                  "domain": {
+                    "__typename": "[type-name-here]",
+                    "name": "WIRED",
+                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                  },
+                  "url": "https://given.example.com/item-3"
                 },
                 "images": [
                   {
@@ -607,21 +559,22 @@
                 "wordCount": 500,
                 "marticle": [],
                 "collection": null,
-                "preview" : {
-            "__typename": "[type-name-here]",
-                    "authors": [],
-                    "excerpt": "Cursus Aenean Elit",
-                    "title": "Item 3",
-                    "datePublished": "2021-01-01 12:01:01",
-                    "image" : {
-                        "__typename": "[type-name-here]",
-                        "url": "https://example.com/archived-item--2/top-image.jpg"
-                    },
-                    "domain": {
-                        "__typename": "[type-name-here]",
-                        "name": "WIRED",
-                        "logo": "http://example.com/item-1/domain-logo.jpg"
-                    }
+                "preview": {
+                  "__typename": "[type-name-here]",
+                  "authors": [],
+                  "excerpt": "Cursus Aenean Elit",
+                  "title": "Item 3",
+                  "datePublished": "2021-01-01 12:01:01",
+                  "image": {
+                    "__typename": "[type-name-here]",
+                    "url": "https://example.com/archived-item--2/top-image.jpg"
+                  },
+                  "domain": {
+                    "__typename": "[type-name-here]",
+                    "name": "WIRED",
+                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                  },
+                  "url": "https://given.example.com/item-3"
                 },
                 "images": [
                   {
@@ -664,21 +617,22 @@
                 "wordCount": 500,
                 "marticle": [],
                 "collection": null,
-                "preview" : {
-            "__typename": "[type-name-here]",
-                    "authors": [],
-                    "excerpt": "Cursus Aenean Elit",
-                    "title": "Item 3",
-                    "datePublished": "2021-01-01 12:01:01",
-                    "image" : {
-                        "__typename": "[type-name-here]",
-                        "url": "https://example.com/archived-item--2/top-image.jpg"
-                    },
-                    "domain": {
-                        "__typename": "[type-name-here]",
-                        "name": "WIRED",
-                        "logo": "http://example.com/item-1/domain-logo.jpg"
-                    }
+                "preview": {
+                  "__typename": "[type-name-here]",
+                  "authors": [],
+                  "excerpt": "Cursus Aenean Elit",
+                  "title": "Item 3",
+                  "datePublished": "2021-01-01 12:01:01",
+                  "image": {
+                    "__typename": "[type-name-here]",
+                    "url": "https://example.com/archived-item--2/top-image.jpg"
+                  },
+                  "domain": {
+                    "__typename": "[type-name-here]",
+                    "name": "WIRED",
+                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                  },
+                  "url": "https://given.example.com/item-3"
                 },
                 "images": [
                   {
@@ -721,21 +675,22 @@
                 "wordCount": 500,
                 "marticle": [],
                 "collection": null,
-                "preview" : {
-            "__typename": "[type-name-here]",
-                    "authors": [],
-                    "excerpt": "Cursus Aenean Elit",
-                    "title": "Item 3",
-                    "datePublished": "2021-01-01 12:01:01",
-                    "image" : {
-                        "__typename": "[type-name-here]",
-                        "url": "https://example.com/archived-item--2/top-image.jpg"
-                    },
-                    "domain": {
-                        "__typename": "[type-name-here]",
-                        "name": "WIRED",
-                        "logo": "http://example.com/item-1/domain-logo.jpg"
-                    }
+                "preview": {
+                  "__typename": "[type-name-here]",
+                  "authors": [],
+                  "excerpt": "Cursus Aenean Elit",
+                  "title": "Item 3",
+                  "datePublished": "2021-01-01 12:01:01",
+                  "image": {
+                    "__typename": "[type-name-here]",
+                    "url": "https://example.com/archived-item--2/top-image.jpg"
+                  },
+                  "domain": {
+                    "__typename": "[type-name-here]",
+                    "name": "WIRED",
+                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                  },
+                  "url": "https://given.example.com/item-3"
                 },
                 "images": [
                   {
@@ -778,21 +733,22 @@
                 "wordCount": 500,
                 "marticle": [],
                 "collection": null,
-                "preview" : {
-            "__typename": "[type-name-here]",
-                    "authors": [],
-                    "excerpt": "Cursus Aenean Elit",
-                    "title": "Item 3",
-                    "datePublished": "2021-01-01 12:01:01",
-                    "image" : {
-                        "__typename": "[type-name-here]",
-                        "url": "https://example.com/archived-item--2/top-image.jpg"
-                    },
-                    "domain": {
-                        "__typename": "[type-name-here]",
-                        "name": "WIRED",
-                        "logo": "http://example.com/item-1/domain-logo.jpg"
-                    }
+                "preview": {
+                  "__typename": "[type-name-here]",
+                  "authors": [],
+                  "excerpt": "Cursus Aenean Elit",
+                  "title": "Item 3",
+                  "datePublished": "2021-01-01 12:01:01",
+                  "image": {
+                    "__typename": "[type-name-here]",
+                    "url": "https://example.com/archived-item--2/top-image.jpg"
+                  },
+                  "domain": {
+                    "__typename": "[type-name-here]",
+                    "name": "WIRED",
+                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                  },
+                  "url": "https://given.example.com/item-3"
                 },
                 "images": [
                   {
@@ -835,21 +791,22 @@
                 "wordCount": 500,
                 "marticle": [],
                 "collection": null,
-                "preview" : {
-            "__typename": "[type-name-here]",
-                    "authors": [],
-                    "excerpt": "Cursus Aenean Elit",
-                    "title": "Item 3",
-                    "datePublished": "2021-01-01 12:01:01",
-                    "image" : {
-                        "__typename": "[type-name-here]",
-                        "url": "https://example.com/archived-item--2/top-image.jpg"
-                    },
-                    "domain": {
-                        "__typename": "[type-name-here]",
-                        "name": "WIRED",
-                        "logo": "http://example.com/item-1/domain-logo.jpg"
-                    }
+                "preview": {
+                  "__typename": "[type-name-here]",
+                  "authors": [],
+                  "excerpt": "Cursus Aenean Elit",
+                  "title": "Item 3",
+                  "datePublished": "2021-01-01 12:01:01",
+                  "image": {
+                    "__typename": "[type-name-here]",
+                    "url": "https://example.com/archived-item--2/top-image.jpg"
+                  },
+                  "domain": {
+                    "__typename": "[type-name-here]",
+                    "name": "WIRED",
+                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                  },
+                  "url": "https://given.example.com/item-3"
                 },
                 "images": [
                   {
@@ -892,21 +849,22 @@
                 "wordCount": 500,
                 "marticle": [],
                 "collection": null,
-                "preview" : {
-            "__typename": "[type-name-here]",
-                    "authors": [],
-                    "excerpt": "Cursus Aenean Elit",
-                    "title": "Item 3",
-                    "datePublished": "2021-01-01 12:01:01",
-                    "image" : {
-                        "__typename": "[type-name-here]",
-                        "url": "https://example.com/archived-item--2/top-image.jpg"
-                    },
-                    "domain": {
-                        "__typename": "[type-name-here]",
-                        "name": "WIRED",
-                        "logo": "http://example.com/item-1/domain-logo.jpg"
-                    }
+                "preview": {
+                  "__typename": "[type-name-here]",
+                  "authors": [],
+                  "excerpt": "Cursus Aenean Elit",
+                  "title": "Item 3",
+                  "datePublished": "2021-01-01 12:01:01",
+                  "image": {
+                    "__typename": "[type-name-here]",
+                    "url": "https://example.com/archived-item--2/top-image.jpg"
+                  },
+                  "domain": {
+                    "__typename": "[type-name-here]",
+                    "name": "WIRED",
+                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                  },
+                  "url": "https://given.example.com/item-3"
                 },
                 "images": [
                   {
@@ -949,21 +907,22 @@
                 "wordCount": 500,
                 "marticle": [],
                 "collection": null,
-                "preview" : {
-            "__typename": "[type-name-here]",
-                    "authors": [],
-                    "excerpt": "Cursus Aenean Elit",
-                    "title": "Item 3",
-                    "datePublished": "2021-01-01 12:01:01",
-                    "image" : {
-                        "__typename": "[type-name-here]",
-                        "url": "https://example.com/archived-item--2/top-image.jpg"
-                    },
-                    "domain": {
-                        "__typename": "[type-name-here]",
-                        "name": "WIRED",
-                        "logo": "http://example.com/item-1/domain-logo.jpg"
-                    }
+                "preview": {
+                  "__typename": "[type-name-here]",
+                  "authors": [],
+                  "excerpt": "Cursus Aenean Elit",
+                  "title": "Item 3",
+                  "datePublished": "2021-01-01 12:01:01",
+                  "image": {
+                    "__typename": "[type-name-here]",
+                    "url": "https://example.com/archived-item--2/top-image.jpg"
+                  },
+                  "domain": {
+                    "__typename": "[type-name-here]",
+                    "name": "WIRED",
+                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                  },
+                  "url": "https://given.example.com/item-3"
                 },
                 "images": [
                   {
@@ -1006,21 +965,22 @@
                 "wordCount": 500,
                 "marticle": [],
                 "collection": null,
-                "preview" : {
-            "__typename": "[type-name-here]",
-                    "authors": [],
-                    "excerpt": "Cursus Aenean Elit",
-                    "title": "Item 3",
-                    "datePublished": "2021-01-01 12:01:01",
-                    "image" : {
-                        "__typename": "[type-name-here]",
-                        "url": "https://example.com/archived-item--2/top-image.jpg"
-                    },
-                    "domain": {
-                        "__typename": "[type-name-here]",
-                        "name": "WIRED",
-                        "logo": "http://example.com/item-1/domain-logo.jpg"
-                    }
+                "preview": {
+                  "__typename": "[type-name-here]",
+                  "authors": [],
+                  "excerpt": "Cursus Aenean Elit",
+                  "title": "Item 3",
+                  "datePublished": "2021-01-01 12:01:01",
+                  "image": {
+                    "__typename": "[type-name-here]",
+                    "url": "https://example.com/archived-item--2/top-image.jpg"
+                  },
+                  "domain": {
+                    "__typename": "[type-name-here]",
+                    "name": "WIRED",
+                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                  },
+                  "url": "https://given.example.com/item-3"
                 },
                 "images": [
                   {
@@ -1063,21 +1023,22 @@
                 "wordCount": 500,
                 "marticle": [],
                 "collection": null,
-                "preview" : {
-            "__typename": "[type-name-here]",
-                    "authors": [],
-                    "excerpt": "Cursus Aenean Elit",
-                    "title": "Item 3",
-                    "datePublished": "2021-01-01 12:01:01",
-                    "image" : {
-                        "__typename": "[type-name-here]",
-                        "url": "https://example.com/archived-item--2/top-image.jpg"
-                    },
-                    "domain": {
-                        "__typename": "[type-name-here]",
-                        "name": "WIRED",
-                        "logo": "http://example.com/item-1/domain-logo.jpg"
-                    }
+                "preview": {
+                  "__typename": "[type-name-here]",
+                  "authors": [],
+                  "excerpt": "Cursus Aenean Elit",
+                  "title": "Item 3",
+                  "datePublished": "2021-01-01 12:01:01",
+                  "image": {
+                    "__typename": "[type-name-here]",
+                    "url": "https://example.com/archived-item--2/top-image.jpg"
+                  },
+                  "domain": {
+                    "__typename": "[type-name-here]",
+                    "name": "WIRED",
+                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                  },
+                  "url": "https://given.example.com/item-3"
                 },
                 "images": [
                   {
@@ -1120,21 +1081,22 @@
                 "wordCount": 500,
                 "marticle": [],
                 "collection": null,
-                "preview" : {
-            "__typename": "[type-name-here]",
-                    "authors": [],
-                    "excerpt": "Cursus Aenean Elit",
-                    "title": "Item 3",
-                    "datePublished": "2021-01-01 12:01:01",
-                    "image" : {
-                        "__typename": "[type-name-here]",
-                        "url": "https://example.com/archived-item--2/top-image.jpg"
-                    },
-                    "domain": {
-                        "__typename": "[type-name-here]",
-                        "name": "WIRED",
-                        "logo": "http://example.com/item-1/domain-logo.jpg"
-                    }
+                "preview": {
+                  "__typename": "[type-name-here]",
+                  "authors": [],
+                  "excerpt": "Cursus Aenean Elit",
+                  "title": "Item 3",
+                  "datePublished": "2021-01-01 12:01:01",
+                  "image": {
+                    "__typename": "[type-name-here]",
+                    "url": "https://example.com/archived-item--2/top-image.jpg"
+                  },
+                  "domain": {
+                    "__typename": "[type-name-here]",
+                    "name": "WIRED",
+                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                  },
+                  "url": "https://given.example.com/item-3"
                 },
                 "images": [
                   {
@@ -1177,21 +1139,22 @@
                 "wordCount": 500,
                 "marticle": [],
                 "collection": null,
-                "preview" : {
-            "__typename": "[type-name-here]",
-                    "authors": [],
-                    "excerpt": "Cursus Aenean Elit",
-                    "title": "Item 3",
-                    "datePublished": "2021-01-01 12:01:01",
-                    "image" : {
-                        "__typename": "[type-name-here]",
-                        "url": "https://example.com/archived-item--2/top-image.jpg"
-                    },
-                    "domain": {
-                        "__typename": "[type-name-here]",
-                        "name": "WIRED",
-                        "logo": "http://example.com/item-1/domain-logo.jpg"
-                    }
+                "preview": {
+                  "__typename": "[type-name-here]",
+                  "authors": [],
+                  "excerpt": "Cursus Aenean Elit",
+                  "title": "Item 3",
+                  "datePublished": "2021-01-01 12:01:01",
+                  "image": {
+                    "__typename": "[type-name-here]",
+                    "url": "https://example.com/archived-item--2/top-image.jpg"
+                  },
+                  "domain": {
+                    "__typename": "[type-name-here]",
+                    "name": "WIRED",
+                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                  },
+                  "url": "https://given.example.com/item-3"
                 },
                 "images": [
                   {
@@ -1234,21 +1197,22 @@
                 "wordCount": 500,
                 "marticle": [],
                 "collection": null,
-                "preview" : {
-            "__typename": "[type-name-here]",
-                    "authors": [],
-                    "excerpt": "Cursus Aenean Elit",
-                    "title": "Item 3",
-                    "datePublished": "2021-01-01 12:01:01",
-                    "image" : {
-                        "__typename": "[type-name-here]",
-                        "url": "https://example.com/archived-item--2/top-image.jpg"
-                    },
-                    "domain": {
-                        "__typename": "[type-name-here]",
-                        "name": "WIRED",
-                        "logo": "http://example.com/item-1/domain-logo.jpg"
-                    }
+                "preview": {
+                  "__typename": "[type-name-here]",
+                  "authors": [],
+                  "excerpt": "Cursus Aenean Elit",
+                  "title": "Item 3",
+                  "datePublished": "2021-01-01 12:01:01",
+                  "image": {
+                    "__typename": "[type-name-here]",
+                    "url": "https://example.com/archived-item--2/top-image.jpg"
+                  },
+                  "domain": {
+                    "__typename": "[type-name-here]",
+                    "name": "WIRED",
+                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                  },
+                  "url": "https://given.example.com/item-3"
                 },
                 "images": [
                   {
@@ -1291,21 +1255,22 @@
                 "wordCount": 500,
                 "marticle": [],
                 "collection": null,
-                "preview" : {
-            "__typename": "[type-name-here]",
-                    "authors": [],
-                    "excerpt": "Cursus Aenean Elit",
-                    "title": "Item 3",
-                    "datePublished": "2021-01-01 12:01:01",
-                    "image" : {
-                        "__typename": "[type-name-here]",
-                        "url": "https://example.com/archived-item--2/top-image.jpg"
-                    },
-                    "domain": {
-                        "__typename": "[type-name-here]",
-                        "name": "WIRED",
-                        "logo": "http://example.com/item-1/domain-logo.jpg"
-                    }
+                "preview": {
+                  "__typename": "[type-name-here]",
+                  "authors": [],
+                  "excerpt": "Cursus Aenean Elit",
+                  "title": "Item 3",
+                  "datePublished": "2021-01-01 12:01:01",
+                  "image": {
+                    "__typename": "[type-name-here]",
+                    "url": "https://example.com/archived-item--2/top-image.jpg"
+                  },
+                  "domain": {
+                    "__typename": "[type-name-here]",
+                    "name": "WIRED",
+                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                  },
+                  "url": "https://given.example.com/item-3"
                 },
                 "images": [
                   {
@@ -1348,21 +1313,22 @@
                 "wordCount": 500,
                 "marticle": [],
                 "collection": null,
-                "preview" : {
-            "__typename": "[type-name-here]",
-                    "authors": [],
-                    "excerpt": "Cursus Aenean Elit",
-                    "title": "Item 3",
-                    "datePublished": "2021-01-01 12:01:01",
-                    "image" : {
-                        "__typename": "[type-name-here]",
-                        "url": "https://example.com/archived-item--2/top-image.jpg"
-                    },
-                    "domain": {
-                        "__typename": "[type-name-here]",
-                        "name": "WIRED",
-                        "logo": "http://example.com/item-1/domain-logo.jpg"
-                    }
+                "preview": {
+                  "__typename": "[type-name-here]",
+                  "authors": [],
+                  "excerpt": "Cursus Aenean Elit",
+                  "title": "Item 3",
+                  "datePublished": "2021-01-01 12:01:01",
+                  "image": {
+                    "__typename": "[type-name-here]",
+                    "url": "https://example.com/archived-item--2/top-image.jpg"
+                  },
+                  "domain": {
+                    "__typename": "[type-name-here]",
+                    "name": "WIRED",
+                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                  },
+                  "url": "https://given.example.com/item-3"
                 },
                 "images": [
                   {
@@ -1405,21 +1371,22 @@
                 "wordCount": 500,
                 "marticle": [],
                 "collection": null,
-                "preview" : {
-            "__typename": "[type-name-here]",
-                    "authors": [],
-                    "excerpt": "Cursus Aenean Elit",
-                    "title": "Item 3",
-                    "datePublished": "2021-01-01 12:01:01",
-                    "image" : {
-                        "__typename": "[type-name-here]",
-                        "url": "https://example.com/archived-item--2/top-image.jpg"
-                    },
-                    "domain": {
-                        "__typename": "[type-name-here]",
-                        "name": "WIRED",
-                        "logo": "http://example.com/item-1/domain-logo.jpg"
-                    }
+                "preview": {
+                  "__typename": "[type-name-here]",
+                  "authors": [],
+                  "excerpt": "Cursus Aenean Elit",
+                  "title": "Item 3",
+                  "datePublished": "2021-01-01 12:01:01",
+                  "image": {
+                    "__typename": "[type-name-here]",
+                    "url": "https://example.com/archived-item--2/top-image.jpg"
+                  },
+                  "domain": {
+                    "__typename": "[type-name-here]",
+                    "name": "WIRED",
+                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                  },
+                  "url": "https://given.example.com/item-3"
                 },
                 "images": [
                   {
@@ -1462,21 +1429,22 @@
                 "wordCount": 500,
                 "marticle": [],
                 "collection": null,
-                "preview" : {
-            "__typename": "[type-name-here]",
-                    "authors": [],
-                    "excerpt": "Cursus Aenean Elit",
-                    "title": "Item 3",
-                    "datePublished": "2021-01-01 12:01:01",
-                    "image" : {
-                        "__typename": "[type-name-here]",
-                        "url": "https://example.com/archived-item--2/top-image.jpg"
-                    },
-                    "domain": {
-                        "__typename": "[type-name-here]",
-                        "name": "WIRED",
-                        "logo": "http://example.com/item-1/domain-logo.jpg"
-                    }
+                "preview": {
+                  "__typename": "[type-name-here]",
+                  "authors": [],
+                  "excerpt": "Cursus Aenean Elit",
+                  "title": "Item 3",
+                  "datePublished": "2021-01-01 12:01:01",
+                  "image": {
+                    "__typename": "[type-name-here]",
+                    "url": "https://example.com/archived-item--2/top-image.jpg"
+                  },
+                  "domain": {
+                    "__typename": "[type-name-here]",
+                    "name": "WIRED",
+                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                  },
+                  "url": "https://given.example.com/item-3"
                 },
                 "images": [
                   {
@@ -1519,21 +1487,22 @@
                 "wordCount": 500,
                 "marticle": [],
                 "collection": null,
-                "preview" : {
-            "__typename": "[type-name-here]",
-                    "authors": [],
-                    "excerpt": "Cursus Aenean Elit",
-                    "title": "Item 3",
-                    "datePublished": "2021-01-01 12:01:01",
-                    "image" : {
-                        "__typename": "[type-name-here]",
-                        "url": "https://example.com/archived-item--2/top-image.jpg"
-                    },
-                    "domain": {
-                        "__typename": "[type-name-here]",
-                        "name": "WIRED",
-                        "logo": "http://example.com/item-1/domain-logo.jpg"
-                    }
+                "preview": {
+                  "__typename": "[type-name-here]",
+                  "authors": [],
+                  "excerpt": "Cursus Aenean Elit",
+                  "title": "Item 3",
+                  "datePublished": "2021-01-01 12:01:01",
+                  "image": {
+                    "__typename": "[type-name-here]",
+                    "url": "https://example.com/archived-item--2/top-image.jpg"
+                  },
+                  "domain": {
+                    "__typename": "[type-name-here]",
+                    "name": "WIRED",
+                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                  },
+                  "url": "https://given.example.com/item-3"
                 },
                 "images": [
                   {
@@ -1576,21 +1545,22 @@
                 "wordCount": 500,
                 "marticle": [],
                 "collection": null,
-                "preview" : {
-            "__typename": "[type-name-here]",
-                    "authors": [],
-                    "excerpt": "Cursus Aenean Elit",
-                    "title": "Item 3",
-                    "datePublished": "2021-01-01 12:01:01",
-                    "image" : {
-                        "__typename": "[type-name-here]",
-                        "url": "https://example.com/archived-item--2/top-image.jpg"
-                    },
-                    "domain": {
-                        "__typename": "[type-name-here]",
-                        "name": "WIRED",
-                        "logo": "http://example.com/item-1/domain-logo.jpg"
-                    }
+                "preview": {
+                  "__typename": "[type-name-here]",
+                  "authors": [],
+                  "excerpt": "Cursus Aenean Elit",
+                  "title": "Item 3",
+                  "datePublished": "2021-01-01 12:01:01",
+                  "image": {
+                    "__typename": "[type-name-here]",
+                    "url": "https://example.com/archived-item--2/top-image.jpg"
+                  },
+                  "domain": {
+                    "__typename": "[type-name-here]",
+                    "name": "WIRED",
+                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                  },
+                  "url": "https://given.example.com/item-3"
                 },
                 "images": [
                   {
@@ -1633,21 +1603,22 @@
                 "wordCount": 500,
                 "marticle": [],
                 "collection": null,
-                "preview" : {
-            "__typename": "[type-name-here]",
-                    "authors": [],
-                    "excerpt": "Cursus Aenean Elit",
-                    "title": "Item 3",
-                    "datePublished": "2021-01-01 12:01:01",
-                    "image" : {
-                        "__typename": "[type-name-here]",
-                        "url": "https://example.com/archived-item--2/top-image.jpg"
-                    },
-                    "domain": {
-                        "__typename": "[type-name-here]",
-                        "name": "WIRED",
-                        "logo": "http://example.com/item-1/domain-logo.jpg"
-                    }
+                "preview": {
+                  "__typename": "[type-name-here]",
+                  "authors": [],
+                  "excerpt": "Cursus Aenean Elit",
+                  "title": "Item 3",
+                  "datePublished": "2021-01-01 12:01:01",
+                  "image": {
+                    "__typename": "[type-name-here]",
+                    "url": "https://example.com/archived-item--2/top-image.jpg"
+                  },
+                  "domain": {
+                    "__typename": "[type-name-here]",
+                    "name": "WIRED",
+                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                  },
+                  "url": "https://given.example.com/item-3"
                 },
                 "images": [
                   {
@@ -1690,21 +1661,80 @@
                 "wordCount": 500,
                 "marticle": [],
                 "collection": null,
-                "preview" : {
+                "preview": {
+                  "__typename": "[type-name-here]",
+                  "authors": [],
+                  "excerpt": "Cursus Aenean Elit",
+                  "title": "Item 3",
+                  "datePublished": "2021-01-01 12:01:01",
+                  "image": {
+                    "__typename": "[type-name-here]",
+                    "url": "https://example.com/archived-item--2/top-image.jpg"
+                  },
+                  "domain": {
+                    "__typename": "[type-name-here]",
+                    "name": "WIRED",
+                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                  },
+                  "url": "https://given.example.com/item-3"
+                },
+                "images": [
+                  {
+                    "__typename": "[type-name-here]",
+                    "height": 1,
+                    "width": 2,
+                    "src": "http://example.com/item-3/image-1.jpg",
+                    "imageId": 1
+                  }
+                ],
+                "isArticle": true,
+                "hasImage": "HAS_IMAGES",
+                "hasVideo": "HAS_VIDEOS",
+                "syndicatedArticle": null
+              }
+            }
+          },
+          {
             "__typename": "[type-name-here]",
-                    "authors": [],
-                    "excerpt": "Cursus Aenean Elit",
-                    "title": "Item 3",
-                    "datePublished": "2021-01-01 12:01:01",
-                    "image" : {
-                        "__typename": "[type-name-here]",
-                        "url": "https://example.com/archived-item--2/top-image.jpg"
-                    },
-                    "domain": {
-                        "__typename": "[type-name-here]",
-                        "name": "WIRED",
-                        "logo": "http://example.com/item-1/domain-logo.jpg"
-                    }
+            "cursor": "cursor-3",
+            "node": {
+              "__typename": "[type-name-here]",
+              "remoteID": "saved-item-3",
+              "url": "https://example.com/item-3",
+              "_createdAt": 0,
+              "_deletedAt": null,
+              "archivedAt": null,
+              "isArchived": false,
+              "isFavorite": false,
+              "tags": [],
+              "corpusItem": null,
+              "annotations": null,
+              "item": {
+                "__typename": "Item",
+                "remoteID": "item-3",
+                "givenUrl": "https://given.example.com/item-3",
+                "resolvedUrl": "https://resolved.example.com/item-3",
+                "language": "en",
+                "timeToRead": 6,
+                "wordCount": 500,
+                "marticle": [],
+                "collection": null,
+                "preview": {
+                  "__typename": "[type-name-here]",
+                  "authors": [],
+                  "excerpt": "Cursus Aenean Elit",
+                  "title": "Item 3",
+                  "datePublished": "2021-01-01 12:01:01",
+                  "image": {
+                    "__typename": "[type-name-here]",
+                    "url": "https://example.com/archived-item--2/top-image.jpg"
+                  },
+                  "domain": {
+                    "__typename": "[type-name-here]",
+                    "name": "WIRED",
+                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                  },
+                  "url": "https://given.example.com/item-3"
                 },
                 "images": [
                   {

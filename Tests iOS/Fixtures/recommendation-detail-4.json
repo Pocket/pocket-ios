@@ -30,6 +30,7 @@
       "marticle": #MARTICLE#,
       "preview" : {
           "__typename": "[type-name-here]",
+          "url": "https://getpocket.com/explore/item/article-4",
           "authors": [],
           "excerpt": "Cursus Aenean Elit",
           "title": "Slate 2, Recommendation 2",

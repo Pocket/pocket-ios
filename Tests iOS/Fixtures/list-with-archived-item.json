@@ -40,6 +40,7 @@
                 "collection": null,
                 "preview" : {
             "__typename": "[type-name-here]",
+            "url": "http://localhost:8080/hello",
                     "authors": [],
                     "excerpt": "Cursus Aenean Elit",
                     "title": "Item 1",
@@ -115,6 +116,7 @@
                 "syndicatedArticle": null,
                 "preview" : {
             "__typename": "[type-name-here]",
+            "url": "https://example.com/item-2",
                     "authors": [],
                     "excerpt": "Cursus Aenean Elit",
                     "title": "Item 2",
@@ -172,6 +174,7 @@
                 "syndicatedArticle": null,
                 "preview" : {
             "__typename": "[type-name-here]",
+            "url": "https://example.com/item-3",
                     "authors": [],
                     "excerpt": "Cursus Aenean Elit",
                     "title": "Item 3",

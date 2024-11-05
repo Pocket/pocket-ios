@@ -25,7 +25,8 @@
                     "wordCount": 500,
                     "marticle": #MARTICLE#,
                     "preview" : {
-            "__typename": "[type-name-here]",
+                        "__typename": "[type-name-here]",
+                        "url": "http://example.com/items/item-1",
                         "authors": [
                             {
                                 "__typename": "Author",

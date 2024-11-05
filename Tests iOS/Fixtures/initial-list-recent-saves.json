@@ -38,7 +38,8 @@
                                 "marticle": #MARTICLE#,
                                 "collection": null,
                                 "preview" : {
-            "__typename": "[type-name-here]",
+                                    "__typename": "[type-name-here]",
+                                    "url": "http://localhost:8080/hello",
                                     "authors": [
                                         {
                                             "__typename": "Author",
@@ -57,7 +58,7 @@
                                     "title": "Item 1",
                                     "datePublished": "2021-01-01 12:01:01",
                                     "image" : {
-                        "__typename": "[type-name-here]",
+                                        "__typename": "[type-name-here]",
                                         "url": "https://example.com/item-1/top-image.jpg"
                                     },
                                     "domain": {
@@ -127,13 +128,14 @@
                                 "hasVideo": "HAS_VIDEOS",
                                 "syndicatedArticle": null,
                                 "preview" : {
-            "__typename": "[type-name-here]",
+                                    "__typename": "[type-name-here]",
+                                    "url": "https://example.com/item-2",
                                     "authors": [],
                                     "excerpt": "Cursus Aenean Elit",
                                     "title": "Item 2",
                                     "datePublished": "2021-01-01 12:01:01",
                                     "image" : {
-                        "__typename": "[type-name-here]",
+                                        "__typename": "[type-name-here]",
                                         "url": "https://example.com/item-2/top-image.jpg"
                                     },
                                     "domain": {
@@ -176,13 +178,14 @@
                                 "hasVideo": "HAS_VIDEOS",
                                 "syndicatedArticle": null,
                                 "preview" : {
-            "__typename": "[type-name-here]",
+                                    "__typename": "[type-name-here]",
+                                    "url": "https://example.com/item-3",
                                     "authors": [],
                                     "excerpt": "Cursus Aenean Elit",
                                     "title": "Item 3",
                                     "datePublished": "2021-01-01 12:01:01",
                                     "image" : {
-                        "__typename": "[type-name-here]",
+                                        "__typename": "[type-name-here]",
                                         "url": "https://example.com/item-3/top-image.jpg"
                                     },
                                     "domain": {
@@ -225,13 +228,14 @@
                                 "hasVideo": "HAS_VIDEOS",
                                 "syndicatedArticle": null,
                                 "preview" : {
-            "__typename": "[type-name-here]",
+                                    "__typename": "[type-name-here]",
+                                    "url": "https://example.com/item-4",
                                     "authors": [],
                                     "excerpt": "Cursus Aenean Elit",
                                     "title": "Item 4",
                                     "datePublished": "2021-01-01 12:01:01",
                                     "image" : {
-                        "__typename": "[type-name-here]",
+                                        "__typename": "[type-name-here]",
                                         "url": "https://example.com/item-4/top-image.jpg"
                                     },
                                     "domain": {
@@ -274,13 +278,14 @@
                                 "hasVideo": "HAS_VIDEOS",
                                 "syndicatedArticle": null,
                                 "preview" : {
-            "__typename": "[type-name-here]",
+                                    "__typename": "[type-name-here]",
+                                    "url": "https://example.com/item-5",
                                     "authors": [],
                                     "excerpt": "Cursus Aenean Elit",
                                     "title": "Item 5",
                                     "datePublished": "2021-01-01 12:01:01",
                                     "image" : {
-                        "__typename": "[type-name-here]",
+                                        "__typename": "[type-name-here]",
                                         "url": "https://example.com/item-5/top-image.jpg"
                                     },
                                     "domain": {
@@ -323,13 +328,14 @@
                                 "hasVideo": "HAS_VIDEOS",
                                 "syndicatedArticle": null,
                                 "preview" : {
-            "__typename": "[type-name-here]",
+                                    "__typename": "[type-name-here]",
+                                    "url": "https://example.com/item-6",
                                     "authors": [],
                                     "excerpt": "Cursus Aenean Elit",
                                     "title": "Item 6",
                                     "datePublished": "2021-01-01 12:01:01",
                                     "image" : {
-                        "__typename": "[type-name-here]",
+                                        "__typename": "[type-name-here]",
                                         "url": "https://example.com/item-6/top-image.jpg"
                                     },
                                     "domain": {

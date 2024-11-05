@@ -40,6 +40,7 @@
                   "collection": null,
                   "preview" : {
             "__typename": "[type-name-here]",
+            "url": "https://resolved.example.com/saved-item-1",
                       "authors": [
                           {
                               "__typename": "Author",
@@ -118,6 +119,7 @@
                   "marticle": [],
                   "preview" : {
             "__typename": "[type-name-here]",
+            "url": "https://resolved.example.com/saved-item-2",
                       "authors": [
                           {
                               "__typename": "Author",
@@ -197,6 +199,7 @@
                   "marticle": [],
                   "preview" : {
             "__typename": "[type-name-here]",
+            "url": "https://resolved.example.com/saved-item-3",
                       "authors": [
                           {
                               "__typename": "Author",

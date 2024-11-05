@@ -1,122 +1,125 @@
 {
-    "data": {
-        "getSlate": {
+  "data": {
+    "getSlate": {
+      "__typename": "[some-type-name]",
+      "id": "slate-1",
+      "requestId": "slate-1-request",
+      "experimentId": "slate-1-experiment",
+      "displayName": "Slate 1",
+      "description": "The description of slate 1",
+      "recommendations": [
+        {
+          "__typename": "[some-type-name]",
+          "id": "1",
+          "curatedInfo": null,
+          "item": {
             "__typename": "[some-type-name]",
-            "id": "slate-1",
-            "requestId": "slate-1-request",
-            "experimentId": "slate-1-experiment",
-            "displayName": "Slate 1",
-            "description": "The description of slate 1",
-            "recommendations": [
-                {
-                    "__typename": "[some-type-name]",
-                    "id": "1",
-                    "curatedInfo": null,
-                    "item": {
-                        "__typename": "[some-type-name]",
-                        "remoteID": "item-1",
-                        "givenUrl": "https://given.example.com/rec-1",
-                        "resolvedUrl": "https://resolved.example.com/rec-1",
-                        "language": "en",
-                        "timeToRead": 1,
-                        "wordCount": 200,
-                        "marticle": [],
-                        "images": [],
-                        "preview" : {
-            "__typename": "[type-name-here]",
-                            "authors": [],
-                            "excerpt": "Cursus Aenean Elit",
-                            "title": "Slate 1, Recommendation 1",
-                            "datePublished": "2021-01-01 12:01:01",
-                            "image" : {
-                        "__typename": "[type-name-here]",
-                                "url": "http://example.com/slate-1-rec-1/top-image.png"
-                            },
-                            "domain": {
-                                "__typename": "[some-type-name]",
-                                "name": "slate-1-rec-1.example.com",
-                                "logo": "https://slate-1-rec-1.example.com/logo.png"
-                            }
-                        },
-                        "isArticle": true,
-                        "hasImage": "HAS_IMAGES",
-                        "hasVideo": "HAS_VIDEOS",
-                        "syndicatedArticle": null
-                    }
-                },
-                {
-                    "__typename": "[some-type-name]",
-                    "id": "2",
-                    "curatedInfo": null,
-                    "item": {
-                        "__typename": "[some-type-name]",
-                        "remoteID": "item-2",
-                        "givenUrl": "https://given.example.com/rec-2",
-                        "resolvedUrl": "https://resolved.example.com/rec-2",
-                        "language": "en",
-                        "timeToRead": 2,
-                        "wordCount": 200,
-                        "marticle": [],
-                        "images": [],
-                        "preview" : {
-            "__typename": "[type-name-here]",
-                            "authors": [],
-                            "excerpt": "Cursus Aenean Elit",
-                            "title": "Slate 1, Recommendation 2",
-                            "datePublished": "2021-01-01 12:01:01",
-                            "image" : {
-                        "__typename": "[type-name-here]",
-                                "url": "http://example.com/slate-1-rec-2/top-image.png"
-                            },
-                            "domain": {
-                                "__typename": "[some-type-name]",
-                                "name": "slate-1-rec-2.example.com",
-                                "logo": "https://slate-1-rec-1.example.com/logo.png"
-                            }
-                        },
-                        "isArticle": true,
-                        "hasImage": "HAS_IMAGES",
-                        "hasVideo": "HAS_VIDEOS",
-                        "syndicatedArticle": null
-                    }
-                },
-                {
-                    "__typename": "[some-type-name]",
-                    "id": "3",
-                    "curatedInfo": null,
-                    "item": {
-                        "__typename": "[some-type-name]",
-                        "remoteID": "item-3",
-                        "givenUrl": "https://given.example.com/rec-3",
-                        "resolvedUrl": "https://resolved.example.com/rec-3",
-                        "language": "en",
-                        "timeToRead": 3,
-                        "wordCount": 200,
-                        "marticle": [],
-                        "images": [],
-                        "preview" : {
-            "__typename": "[type-name-here]",
-                            "authors": [],
-                            "excerpt": "Cursus Aenean Elit",
-                            "title": "Slate 1, Recommendation 3",
-                            "datePublished": "2021-01-01 12:01:01",
-                            "image" : {
-                        "__typename": "[type-name-here]",
-                                "url": "http://example.com/slate-1-rec-3/top-image.png"
-                            },
-                            "domain": {
-                                "__typename": "[some-type-name]",
-                                "name": "slate-1-rec-3.example.com",
-                                "logo": "https://slate-1-rec-1.example.com/logo.png"
-                            }
-                        },
-                        "isArticle": true,
-                        "hasImage": "HAS_IMAGES",
-                        "hasVideo": "HAS_VIDEOS",
-                        "syndicatedArticle": null
-                    }
-                }
-            ]
+            "remoteID": "item-1",
+            "givenUrl": "https://given.example.com/rec-1",
+            "resolvedUrl": "https://resolved.example.com/rec-1",
+            "language": "en",
+            "timeToRead": 1,
+            "wordCount": 200,
+            "marticle": [],
+            "images": [],
+            "preview": {
+              "__typename": "[type-name-here]",
+              "authors": [],
+              "excerpt": "Cursus Aenean Elit",
+              "title": "Slate 1, Recommendation 1",
+              "datePublished": "2021-01-01 12:01:01",
+              "image": {
+                "__typename": "[type-name-here]",
+                "url": "http://example.com/slate-1-rec-1/top-image.png"
+              },
+              "domain": {
+                "__typename": "[some-type-name]",
+                "name": "slate-1-rec-1.example.com",
+                "logo": "https://slate-1-rec-1.example.com/logo.png"
+              },
+              "url": "https://given.example.com/rec-1"
+            },
+            "isArticle": true,
+            "hasImage": "HAS_IMAGES",
+            "hasVideo": "HAS_VIDEOS",
+            "syndicatedArticle": null
+          }
+        },
+        {
+          "__typename": "[some-type-name]",
+          "id": "2",
+          "curatedInfo": null,
+          "item": {
+            "__typename": "[some-type-name]",
+            "remoteID": "item-2",
+            "givenUrl": "https://given.example.com/rec-2",
+            "resolvedUrl": "https://resolved.example.com/rec-2",
+            "language": "en",
+            "timeToRead": 2,
+            "wordCount": 200,
+            "marticle": [],
+            "images": [],
+            "preview": {
+              "__typename": "[type-name-here]",
+              "authors": [],
+              "excerpt": "Cursus Aenean Elit",
+              "title": "Slate 1, Recommendation 2",
+              "datePublished": "2021-01-01 12:01:01",
+              "image": {
+                "__typename": "[type-name-here]",
+                "url": "http://example.com/slate-1-rec-2/top-image.png"
+              },
+              "domain": {
+                "__typename": "[some-type-name]",
+                "name": "slate-1-rec-2.example.com",
+                "logo": "https://slate-1-rec-1.example.com/logo.png"
+              },
+              "url": "https://given.example.com/rec-2"
+            },
+            "isArticle": true,
+            "hasImage": "HAS_IMAGES",
+            "hasVideo": "HAS_VIDEOS",
+            "syndicatedArticle": null
+          }
+        },
+        {
+          "__typename": "[some-type-name]",
+          "id": "3",
+          "curatedInfo": null,
+          "item": {
+            "__typename": "[some-type-name]",
+            "remoteID": "item-3",
+            "givenUrl": "https://given.example.com/rec-3",
+            "resolvedUrl": "https://resolved.example.com/rec-3",
+            "language": "en",
+            "timeToRead": 3,
+            "wordCount": 200,
+            "marticle": [],
+            "images": [],
+            "preview": {
+              "__typename": "[type-name-here]",
+              "authors": [],
+              "excerpt": "Cursus Aenean Elit",
+              "title": "Slate 1, Recommendation 3",
+              "datePublished": "2021-01-01 12:01:01",
+              "image": {
+                "__typename": "[type-name-here]",
+                "url": "http://example.com/slate-1-rec-3/top-image.png"
+              },
+              "domain": {
+                "__typename": "[some-type-name]",
+                "name": "slate-1-rec-3.example.com",
+                "logo": "https://slate-1-rec-1.example.com/logo.png"
+              },
+              "url": "https://given.example.com/rec-3"
+            },
+            "isArticle": true,
+            "hasImage": "HAS_IMAGES",
+            "hasVideo": "HAS_VIDEOS",
+            "syndicatedArticle": null
+          }
         }
+      ]
     }
+  }
 }

@@ -77,7 +77,7 @@ class SaveItemOperationTests: XCTestCase {
         XCTAssertEqual(performCall?.mutation.input.url, url)
 
         let item = try space.fetchSavedItem(byURL: url)
-        XCTAssertEqual(savedItem.item?.resolvedURL, "https://resolved.example.com/item-1")
+        XCTAssertEqual(savedItem.item?.resolvedURL, "http://example.com/add-me-to-your-list")
         XCTAssertNotNil(item)
     }
 

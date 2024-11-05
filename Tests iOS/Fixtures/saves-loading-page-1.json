@@ -44,6 +44,7 @@
                 "syndicatedArticle": null,
                 "preview" : {
             "__typename": "[type-name-here]",
+            "url": "http://resolved.example.com/item-1",
                     "authors": [],
                     "excerpt": "Cursus Aenean Elit",
                     "title": "Item 1",
@@ -98,6 +99,7 @@
                 "syndicatedArticle": null,
                 "preview" : {
             "__typename": "[type-name-here]",
+            "url": "http://resolved.example.com/item-2",
                     "authors": [],
                     "excerpt": "Cursus Aenean Elit",
                     "title": "Item 2",

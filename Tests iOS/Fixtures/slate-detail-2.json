@@ -22,6 +22,7 @@
                         "wordCount": 200,
                         "preview" : {
             "__typename": "[type-name-here]",
+            "url": "https://example.com/recommended-item-1",
                             "authors": [
                                 {
                                     "__typename": "Author",

@@ -39,13 +39,13 @@
                 "hasImage": "HAS_IMAGES",
                 "hasVideo": "HAS_VIDEOS",
                 "syndicatedArticle": null,
-                "preview" : {
-            "__typename": "[type-name-here]",
+                "preview": {
+                    "__typename": "[type-name-here]",
                     "authors": [],
                     "excerpt": "Risus Aenean Ultricies Nullam Vehicula",
                     "title": "Archived Item -2",
                     "datePublished": "2021-01-01 12:01:01",
-                    "image" : {
+                    "image": {
                         "__typename": "[type-name-here]",
                         "url": "https://example.com/archived-item--2/top-image.jpg"
                     },
@@ -53,7 +53,8 @@
                         "__typename": "[type-name-here]",
                         "name": "wired.com",
                         "logo": "http://example.com/item-1/domain-logo.jpg"
-                    }
+                    },
+                    "url": "http://example.com/items/archived-item--2"
                 }
               }
             }

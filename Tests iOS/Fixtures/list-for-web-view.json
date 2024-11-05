@@ -39,7 +39,8 @@
                                 "marticle": #MARTICLE#,
                                 "collection": null,
                                 "preview" : {
-            "__typename": "[type-name-here]",
+                                    "__typename": "[type-name-here]",
+                                    "url": "http://localhost:8080/item-1",
                                     "authors": [
                                         {
                                             "__typename": "Author",
@@ -58,7 +59,7 @@
                                     "title": "Item 1",
                                     "datePublished": "2021-01-01 12:01:01",
                                     "image" : {
-                        "__typename": "[type-name-here]",
+                                        "__typename": "[type-name-here]",
                                         "url": "https://example.com/item-1/top-image.jpg"
                                     },
                                     "domain": {
@@ -124,6 +125,7 @@
                                 "syndicatedArticle": null,
                                 "preview" : {
             "__typename": "[type-name-here]",
+            "url": "http://localhost:8080/item-2",
                                     "authors": [],
                                     "excerpt": "Cursus Aenean Elit",
                                     "title": "Item 2",
@@ -182,6 +184,7 @@
                                 "syndicatedArticle": null,
                                 "preview" : {
             "__typename": "[type-name-here]",
+            "url": "http://localhost:8080/item-3",
                                     "authors": [],
                                     "excerpt": "Cursus Aenean Elit",
                                     "title": "Item 3",

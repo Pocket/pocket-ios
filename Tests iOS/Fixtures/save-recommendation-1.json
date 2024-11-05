@@ -27,6 +27,7 @@
                 "syndicatedArticle": null,
                 "preview" : {
             "__typename": "[type-name-here]",
+            "url": "http://localhost:8080/slate-1-rec-1",
                     "authors": [
                         {
                             "__typename": "Author",

@@ -37,13 +37,14 @@
                                     }
                                 ],
                                 "preview" : {
-            "__typename": "[type-name-here]",
+                                    "__typename": "[type-name-here]",
+                                    "url": "https://given.example.com/slate-1-rec-1",
                                     "authors": [],
                                     "excerpt": "Cursus Aenean Elit",
                                     "title": "Slate 1, Recommendation 1",
                                     "datePublished": "2021-01-01 12:01:01",
                                     "image" : {
-                        "__typename": "[type-name-here]",
+                                        "__typename": "[type-name-here]",
                                         "url": "http://example.com/slate-1-rec-1/top-image.png"
                                     },
                                     "domain": {
@@ -73,13 +74,14 @@
                                 "marticle": [],
                                 "images": [],
                                 "preview" : {
-            "__typename": "[type-name-here]",
+                                    "__typename": "[type-name-here]",
+                                    "url": "https://given.example.com/slate-1-rec-2",
                                     "authors": [],
                                     "excerpt": "Cursus Aenean Elit",
                                     "title": "Slate 1, Recommendation 2",
                                     "datePublished": "2021-01-01 12:01:01",
                                     "image" : {
-                        "__typename": "[type-name-here]",
+                                        "__typename": "[type-name-here]",
                                         "url": "http://example.com/slate-1-rec-2/top-image.png"
                                     },
                                     "domain": {
@@ -132,7 +134,8 @@
                                     }
                                 ],
                                 "preview" : {
-            "__typename": "[type-name-here]",
+                                    "__typename": "[type-name-here]",
+                                    "url": "https://given.example.com/slate-2-rec-1",
                                     "authors": [
                                         {
                                             "__typename": "Author",
@@ -145,7 +148,7 @@
                                     "title": "Slate 2, Recommendation 1",
                                     "datePublished": "2021-01-01 12:01:01",
                                     "image" : {
-                        "__typename": "[type-name-here]",
+                                        "__typename": "[type-name-here]",
                                         "url": "http://example.com/slate-2-rec-1/top-image.png"
                                     },
                                     "domain": {
