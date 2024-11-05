@@ -5,7 +5,7 @@
 
 public struct CompactItem: PocketGraph.SelectionSet, Fragment {
   public static var fragmentDefinition: StaticString {
-    #"fragment CompactItem on Item { __typename remoteID: itemId givenUrl resolvedUrl language timeToRead isArticle hasImage hasVideo wordCount images { __typename height width src imageId } preview { __typename authors { __typename id name url } excerpt title datePublished image { __typename url } domain { __typename ...DomainMetadataParts } } syndicatedArticle { __typename ...SyndicatedArticleParts } }"#
+    #"fragment CompactItem on Item { __typename remoteID: itemId givenUrl resolvedUrl language timeToRead isArticle hasImage hasVideo wordCount images { __typename height width src imageId } preview { __typename url authors { __typename id name url } excerpt title datePublished image { __typename url } domain { __typename ...DomainMetadataParts } } syndicatedArticle { __typename ...SyndicatedArticleParts } }"#
   }
 
   public let __data: DataDict
@@ -148,6 +148,7 @@ public struct CompactItem: PocketGraph.SelectionSet, Fragment {
     public static var __parentType: ApolloAPI.ParentType { PocketGraph.Interfaces.PocketMetadata }
     public static var __selections: [ApolloAPI.Selection] { [
       .field("__typename", String.self),
+      .field("url", PocketGraph.Url.self),
       .field("authors", [Author]?.self),
       .field("excerpt", String?.self),
       .field("title", String?.self),
@@ -156,6 +157,7 @@ public struct CompactItem: PocketGraph.SelectionSet, Fragment {
       .field("domain", Domain?.self),
     ] }
 
+    public var url: PocketGraph.Url { __data["url"] }
     public var authors: [Author]? { __data["authors"] }
     public var excerpt: String? { __data["excerpt"] }
     public var title: String? { __data["title"] }
@@ -165,6 +167,7 @@ public struct CompactItem: PocketGraph.SelectionSet, Fragment {
 
     public init(
       __typename: String,
+      url: PocketGraph.Url,
       authors: [Author]? = nil,
       excerpt: String? = nil,
       title: String? = nil,
@@ -175,6 +178,7 @@ public struct CompactItem: PocketGraph.SelectionSet, Fragment {
       self.init(_dataDict: DataDict(
         data: [
           "__typename": __typename,
+          "url": url,
           "authors": authors._fieldData,
           "excerpt": excerpt,
           "title": title,

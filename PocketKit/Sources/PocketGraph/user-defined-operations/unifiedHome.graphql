@@ -5,6 +5,7 @@ fragment CorpusItemParts on CorpusItem {
     imageUrl
     publisher
     preview {
+        url
         authors {
             id
             name
