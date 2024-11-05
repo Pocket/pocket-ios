@@ -19,7 +19,7 @@ public struct MainView: View {
     @Query(filter: #Predicate<FeatureFlag> { $0.name == "temp.ios.swiftui.home" })
     private var featureFlag: [FeatureFlag]
 
-    @State private var assigned: Bool = true
+    @State private var assigned: Bool = false
 
     public var body: some View {
         TabView(selection: $model.selectedSection) {
@@ -83,12 +83,12 @@ public struct MainView: View {
             }
         }
         .zIndex(-1)
-//        .onChange(of: featureFlag, initial: false) {
-//            guard let swiftuiFeatureFlag = featureFlag.first else {
-//                return
-//            }
-//            assigned = swiftuiFeatureFlag.assigned
-//        }
+        .onChange(of: featureFlag, initial: false) {
+            guard let swiftuiFeatureFlag = featureFlag.first else {
+                return
+            }
+            assigned = swiftuiFeatureFlag.assigned
+        }
         .banner(data: bannerPresenter.bannerData, show: $bannerPresenter.shouldPresentBanner, bottomOffset: 49)
         .task {
             // Initialize tips at app start/user login
