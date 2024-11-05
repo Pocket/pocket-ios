@@ -163,6 +163,23 @@ struct NativeCollectionView: View {
                 }
             }
 
+            if savedItem == nil {
+                Button(action: {
+                    Haptics.defaultTap()
+                    if recommendationID != nil {
+                        showReportArticle = true
+                    } else {
+                        showReportError = true
+                    }
+                }) {
+                    Label {
+                        Text(Localization.ItemAction.report)
+                    } icon: {
+                        Image(asset: .alert)
+                    }
+                }
+            }
+
             ShareableURLView(givenURL: destination.givenURL, shareURL: item?.shareURL)
                 .simultaneousGesture(TapGesture().onEnded {
                     homeActions.trackShare(

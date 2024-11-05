@@ -11,14 +11,21 @@ struct HomeView: View {
     @Environment(\.horizontalSizeClass)
     var horizontalSizeClass
 
+    @EnvironmentObject private var accessService: PocketAccessService
+
     var body: some View {
         GeometryReader { proxy in
             ScrollView {
                 VStack {
                     Spacer()
                         .frame(height: 16)
-                    RecentSavesView()
-                    SharedWithYouView()
+                    if accessService.accessLevel.isAuthenticated {
+                        RecentSavesView()
+                        SharedWithYouView()
+                    } else if accessService.accessLevel.isAnonymous {
+                        SigninBannerView { accessService.requestAuthentication(.homeBanner) }
+                            .padding()
+                    }
                     RecommendationsView()
                 }
             }
