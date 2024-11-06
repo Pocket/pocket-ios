@@ -29,6 +29,10 @@ struct HomeView: View {
                     RecommendationsView()
                 }
             }
+            .refreshable {
+                // TODO: SWIFTUI - add actual refresh code
+                print("Please code an actual refresh!")
+            }
             .background(Color(.ui.white1))
             .navigationTitle(Localization.home)
             .environment(\.carouselWidth, carouselWidth(proxy.size))
