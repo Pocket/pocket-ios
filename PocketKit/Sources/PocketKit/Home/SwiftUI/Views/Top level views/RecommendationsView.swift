@@ -11,7 +11,7 @@ struct RecommendationsView: View {
     private var slates: [Slate]
 
     var body: some View {
-        LazyVStack(spacing: 32) {
+        VStack(spacing: 32) {
             if !slates.isEmpty {
                 ForEach(slates) {
                     if let recommendations = $0.recommendations, !recommendations.isEmpty {
@@ -23,7 +23,7 @@ struct RecommendationsView: View {
                     }
                 }
             } else {
-                // TODO: SWIFTUI - Replace with the lottie animation
+                // TODO: SWIFTUI - Replace with the lottie animation or offline view, depending on state
                 Text("Pocket")
             }
         }
