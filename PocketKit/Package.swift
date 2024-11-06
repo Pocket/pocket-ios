@@ -36,7 +36,8 @@ let package = Package(
         .package(url: "https://github.com/braze-inc/braze-swift-sdk.git", from: "9.3.0"),
         .package(url: "https://github.com/adjust/ios_sdk", from: "4.38.3"),
         .package(url: "https://github.com/RNCryptor/RNCryptor.git", from: "5.1.0"),
-        .package(url: "https://github.com/vadymmarkov/Fakery", from: "5.1.0")
+        .package(url: "https://github.com/vadymmarkov/Fakery", from: "5.1.0"),
+        .package(url: "https://github.com/kean/Nuke.git", from: "12.8.0")
     ],
     targets: [
         .binaryTarget(
@@ -77,7 +78,11 @@ let package = Package(
                 .product(name: "BrazeUI", package: "braze-swift-sdk"),
                 .product(name: "Adjust", package: "ios_sdk"),
                 // Used by listen, ideally we put this there, but there were some c99 compilker issues, this used to be included by snowplow but is not anymore
-                .product(name: "FMDB", package: "fmdb")
+                .product(name: "FMDB", package: "fmdb"),
+                .product(name: "Nuke", package: "Nuke"),
+                .product(name: "NukeUI", package: "Nuke"),
+                .product(name: "NukeVideo", package: "Nuke"),
+                .product(name: "NukeExtensions", package: "Nuke")
             ],
             swiftSettings: [
                     .enableExperimentalFeature("StrictConcurrency=complete")

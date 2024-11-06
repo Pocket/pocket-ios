@@ -5,6 +5,8 @@
 import Kingfisher
 import SwiftUI
 import Textile
+import NukeUI
+import Nuke
 
 /// A resizable remote image backed by `KingFisher`
 /// if `url` is nil and  `usePlaceholder` is true it will return a placeholder view
@@ -15,6 +17,15 @@ struct RemoteImage: View {
     let usePlaceholder: Bool
 
     var body: some View {
+        // makeNukeImage()
+        makeKFImage()
+        // makeAsyncImage()
+    }
+}
+
+private extension RemoteImage {
+    @ViewBuilder
+    func makeKFImage() -> some View {
         if let url {
             KFImage(url)
                 .placeholder { progress in
@@ -37,6 +48,36 @@ struct RemoteImage: View {
                 .backgroundDecode()
                 .scaleFactor(UIScreen.main.scale)
                 .resizable()
+        } else if usePlaceholder {
+            Color(.ui.grey6)
+        }
+    }
+
+    @ViewBuilder
+    func makeNukeImage() -> some View {
+        if let url {
+            LazyImage(url: url) { state in
+                if let image = state.image {
+                    image
+                        .resizable()
+                }
+            }
+                .processors([ImageProcessors.Resize(size: imageSize, crop: true)])
+        } else if usePlaceholder {
+            Color(.ui.grey6)
+        }
+    }
+
+    @ViewBuilder
+    func makeAsyncImage() -> some View {
+        if let url {
+            AsyncImage(url: url) { phase in
+                if let image = phase.image {
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                }
+            }
         } else if usePlaceholder {
             Color(.ui.grey6)
         }
