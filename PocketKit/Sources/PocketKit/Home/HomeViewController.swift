@@ -585,7 +585,7 @@ extension HomeViewController {
     func show(_ seeAll: SeeAll?) {
         switch seeAll {
         case .saves:
-            self.tabBarController?.selectedIndex = 1
+            break // this case consists of changing the selected index in MainViewModel, thus is handled in MainViewModel
         case .slate(let slateViewModel):
             show(slateViewModel)
         case .sharedWithYou(let sharedWithYouViewModel):

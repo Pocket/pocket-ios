@@ -136,6 +136,14 @@ public class MainViewModel: ObservableObject {
             linkRouter: LinkRouter()
         )
         setupLinkRouter()
+        home
+            .$tappedSeeAll
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] seeAll in
+                guard let self, let seeAll, seeAll.isSaves else { return }
+                selectedSection = .saves
+            }
+            .store(in: &subscriptions)
     }
 
     init(
