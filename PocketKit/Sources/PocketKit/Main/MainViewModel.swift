@@ -136,6 +136,7 @@ public class MainViewModel: ObservableObject {
             linkRouter: LinkRouter()
         )
         setupLinkRouter()
+        // TODO: SWIFTUI - This subscription (as well as the entire HomeViewModel) should be removed when we switch to SwiftUI Home.
         home
             .$tappedSeeAll
             .receive(on: DispatchQueue.main)
