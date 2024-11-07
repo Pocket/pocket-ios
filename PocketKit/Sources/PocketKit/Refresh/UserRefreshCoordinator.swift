@@ -30,6 +30,10 @@ class UserRefreshCoordinator: RefreshCoordinator {
         self.source = source
     }
 
+    func refresh(isForced: Bool) async {
+        // no op
+    }
+
     func refresh(isForced: Bool = false, _ completion: @escaping () -> Void) {
         Task { [weak self] in
             guard let self else {

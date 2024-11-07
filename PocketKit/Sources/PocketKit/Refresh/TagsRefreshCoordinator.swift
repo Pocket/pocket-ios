@@ -38,6 +38,10 @@ class TagsRefreshCoordinator: RefreshCoordinator {
         self.lastRefresh = lastRefresh
     }
 
+    func refresh(isForced: Bool) async {
+        // no op
+    }
+
     func refresh(isForced: Bool = false, _ completion: @escaping () -> Void) {
         Log.debug("Refresh tags called, isForced: \(String(describing: isForced))")
 
