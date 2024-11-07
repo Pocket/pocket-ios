@@ -9,7 +9,10 @@ import Sync
 
 struct HomeView: View {
     @Environment(\.horizontalSizeClass)
-    var horizontalSizeClass
+    private var horizontalSizeClass
+
+    @Environment(\.homeActions)
+    private var homeActions
 
     @EnvironmentObject private var accessService: PocketAccessService
 
@@ -30,8 +33,7 @@ struct HomeView: View {
                 }
             }
             .refreshable {
-                // TODO: SWIFTUI - add actual refresh code
-                print("Please code an actual refresh!")
+                await homeActions.refreshRecommendations(isForced: true)
             }
             .background(Color(.ui.white1))
             .navigationTitle(Localization.home)
