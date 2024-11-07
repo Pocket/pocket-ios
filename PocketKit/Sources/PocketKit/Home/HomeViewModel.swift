@@ -52,6 +52,16 @@ enum SeeAll {
     case saves
     case slate(SlateDetailViewModel)
     case sharedWithYou(SharedWithYouListViewModel)
+
+    var isSaves: Bool {
+        switch self {
+        case .saves:
+            return true
+        default:
+            return false
+        }
+    }
+
     @MainActor
     func clearRecommendationToReport() {
         switch self {
