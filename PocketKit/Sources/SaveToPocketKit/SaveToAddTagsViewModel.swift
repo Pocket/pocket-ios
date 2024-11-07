@@ -68,7 +68,10 @@ class SaveToAddTagsViewModel: AddTagsViewModel {
 
     /// Saves tags to an item
     func saveTags() {
-        addNewTag(with: newTagInput)
+        // if the user has not added any tag from this input, we allow to save it as a new tag
+        if tags.isEmpty {
+            addNewTag(with: newTagInput)
+        }
         trackSaveTagsToItem()
         saveAction(tags)
         recentTagsFactory.updateRecentTags(with: originalTagNames, and: tags)
