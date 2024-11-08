@@ -15,7 +15,7 @@ struct RecommendationsView: View {
         case offline
     }
 
-    @State private var viewState: ViewState = .ready
+    @State private var viewState: ViewState = .loading
 
     @Query(sort: \Slate.sortIndex, order: .forward)
     private var slates: [Slate]
