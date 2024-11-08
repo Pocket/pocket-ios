@@ -26,20 +26,11 @@ public struct MainView: View {
 
     public var body: some View {
         TabView(selection: $model.selectedSection) {
-            HomeViewControllerSwiftUI(model: model.home)
-                .edgesIgnoringSafeArea(.all) // Allow Home to use the entire screen, including under the status bar
-                .tabBarHeightOffset { offset in tabBarHeightOffset = offset }
-                .tabItem {
-                    if model.selectedSection == .home {
-                        Image(asset: .tabHomeSelected)
-                    } else {
-                        Image(asset: .tabHomeDeselected)
-                    }
-                    Text(Localization.home)
-                }
-                .accessibilityIdentifier("home-tab-bar-button")
-                .tag(MainViewModel.AppSection.home)
-
+            if assigned {
+                makeSwiftUIHome()
+            } else {
+                makeUIKitHome()
+            }
             SavesContainerViewControllerSwiftUI(model: model.saves)
                 .edgesIgnoringSafeArea(.all) // Allow Saves to use the entire screen, including under the status bar
                 .tabBarHeightOffset { offset in tabBarHeightOffset = offset }
@@ -70,20 +61,6 @@ public struct MainView: View {
             }
             .accessibilityIdentifier("account-tab-bar-button")
             .tag(MainViewModel.AppSection.account)
-            if assigned {
-                HomeRootView()
-                    .navigationViewStyle(.stack)
-                    .tabBarHeightOffset { offset in tabBarHeightOffset = offset }
-                    .tabItem {
-                        if model.selectedSection == .newHome {
-                            Image(asset: .tabHomeSelected)
-                        } else {
-                            Image(asset: .tabHomeDeselected)
-                        }
-                        Text("SwiftUI Home")
-                    }
-                    .tag(MainViewModel.AppSection.newHome)
-            }
         }
         .zIndex(-1)
         .onChange(of: featureFlag, initial: false) {
@@ -110,5 +87,36 @@ public struct MainView: View {
         }
         // TODO: SWIFTUI - This is used for tab navigation purposes only, will change as we re-architect the app.
         .environmentObject(model)
+    }
+
+    func makeUIKitHome() -> some View {
+        HomeViewControllerSwiftUI(model: model.home)
+            .edgesIgnoringSafeArea(.all) // Allow Home to use the entire screen, including under the status bar
+            .tabBarHeightOffset { offset in tabBarHeightOffset = offset }
+            .tabItem {
+                if model.selectedSection == .home {
+                    Image(asset: .tabHomeSelected)
+                } else {
+                    Image(asset: .tabHomeDeselected)
+                }
+                Text(Localization.home)
+            }
+            .accessibilityIdentifier("home-tab-bar-button")
+            .tag(MainViewModel.AppSection.home)
+    }
+
+    func makeSwiftUIHome() -> some View {
+        HomeRootView()
+            .navigationViewStyle(.stack)
+            .tabBarHeightOffset { offset in tabBarHeightOffset = offset }
+            .tabItem {
+                if model.selectedSection == .home {
+                    Image(asset: .tabHomeSelected)
+                } else {
+                    Image(asset: .tabHomeDeselected)
+                }
+                Text(Localization.home)
+            }
+            .tag(MainViewModel.AppSection.home)
     }
 }

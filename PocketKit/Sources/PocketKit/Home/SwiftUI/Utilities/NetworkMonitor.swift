@@ -6,6 +6,7 @@ import Foundation
 import Sync
 import Network
 
+@MainActor
 final class NetworkMonitor: ObservableObject {
     private let monitor: NetworkPathMonitor
 
@@ -19,7 +20,8 @@ final class NetworkMonitor: ObservableObject {
     }
 
     func start(queue: DispatchQueue? = nil) {
-        let queue = queue ?? DispatchQueue.global(qos: .utility)
+        /// **NOTE: if we don't use main, data races will occur when trying to write a published property, even if the class is not marked @MainActor
+        let queue = queue ?? DispatchQueue.main
         monitor.start(queue: queue)
     }
 
