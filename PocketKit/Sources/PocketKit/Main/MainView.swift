@@ -18,8 +18,11 @@ public struct MainView: View {
     // TODO: SWIFTUI - Remove the following two properties once we release SwiftUI Home
     @Query(filter: #Predicate<FeatureFlag> { $0.name == "temp.ios.swiftui.home" })
     private var featureFlag: [FeatureFlag]
-
+#if DEBUG
+    @State private var assigned: Bool = true
+#else
     @State private var assigned: Bool = false
+#endif
 
     public var body: some View {
         TabView(selection: $model.selectedSection) {
@@ -88,7 +91,7 @@ public struct MainView: View {
                 return
             }
 #if DEBUG
-            assigned = true
+            return
 #else
             assigned = swiftuiFeatureFlag.assigned
 #endif
