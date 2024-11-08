@@ -25,6 +25,7 @@ public struct LoadingView: View {
             Text(message).style(.pocketLoadingView.loadingViewText(textColor))
             Spacer()
         }
+        .frame(minWidth: 0, maxWidth: .infinity)
         .background(Color(backgroundColor))
         .foregroundColor(Color(foregroundColor))
         .opacity(0.9)
