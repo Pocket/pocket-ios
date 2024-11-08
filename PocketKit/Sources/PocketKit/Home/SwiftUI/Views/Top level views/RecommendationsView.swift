@@ -15,7 +15,7 @@ struct RecommendationsView: View {
         case offline
     }
 
-    @State private var viewState: ViewState = .ready
+    @State private var viewState: ViewState = .loading
 
     @Query(sort: \Slate.sortIndex, order: .forward)
     private var slates: [Slate]
@@ -50,9 +50,7 @@ struct RecommendationsView: View {
         }
         .task {
             networkMonitor.start()
-            // TODO: SWIFTUI - remove this flag once we replace existing home with SwiftUI Home
-            let enabled = false
-            guard viewState != .loading, enabled else { return }
+            guard viewState != .loading else { return }
             viewState = .loading
             await homeActions.refreshRecommendations()
             viewState = .ready

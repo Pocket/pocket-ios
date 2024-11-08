@@ -174,13 +174,12 @@ public class MainViewModel: ObservableObject {
 
     enum AppSection: CaseIterable, Identifiable, Hashable {
         static var allCases: [MainViewModel.AppSection] {
-            return [.home, .saves, .account, .newHome]
+            return [.home, .saves, .account]
         }
 
         case home
         case saves
         case account
-        case newHome
 
         init(from rawValue: String?) {
             switch rawValue {
@@ -201,8 +200,6 @@ public class MainViewModel: ObservableObject {
                 return "saves"
             case .account:
                 return "account"
-            case .newHome:
-                return "new SwiftUI Home"
             }
         }
     }
