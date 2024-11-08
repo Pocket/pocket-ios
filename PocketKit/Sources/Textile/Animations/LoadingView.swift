@@ -2,10 +2,10 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import Lottie
 import SwiftUI
-import Textile
 
-public struct PocketLoadingView: View {
+public struct LoadingView: View {
     let message: String
     let textColor: ColorAsset
     let backgroundColor: ColorAsset
@@ -19,7 +19,8 @@ public struct PocketLoadingView: View {
     public var body: some View {
         VStack {
             Spacer()
-            LottieView(.loading)
+            Lottie.LottieView(animation: .named("loading.json", bundle: .module, subdirectory: "Assets"))
+                .playbackMode(.playing(.fromProgress(0, toProgress: 1, loopMode: .loop)))
                 .frame(minWidth: 0, maxWidth: 300, minHeight: 0, maxHeight: 100)
             Text(message).style(.pocketLoadingView.loadingViewText(textColor))
             Spacer()
@@ -32,12 +33,12 @@ public struct PocketLoadingView: View {
 }
 
 // MARK: predefined styles
-public extension PocketLoadingView {
-    static func overlay(_ message: String) -> PocketLoadingView {
-        PocketLoadingView(message, textColor: .ui.white, backgroundColor: .ui.grey3, foregroundColor: .ui.white1)
+public extension LoadingView {
+    static func overlay(_ message: String) -> LoadingView {
+        LoadingView(message, textColor: .ui.white, backgroundColor: .ui.grey3, foregroundColor: .ui.white1)
     }
 
-    static func loadingIndicator(_ message: String) -> PocketLoadingView {
-        PocketLoadingView(message, textColor: .ui.black1, backgroundColor: .ui.white1, foregroundColor: .ui.white1)
+    static func loadingIndicator(_ message: String) -> LoadingView {
+        LoadingView(message, textColor: .ui.black1, backgroundColor: .ui.white1, foregroundColor: .ui.white1)
     }
 }

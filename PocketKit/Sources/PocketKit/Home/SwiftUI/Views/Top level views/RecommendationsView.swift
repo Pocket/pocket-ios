@@ -2,6 +2,8 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import Localization
+import Textile
 import SwiftData
 import SwiftUI
 import Sync
@@ -38,7 +40,7 @@ struct RecommendationsView: View {
                 }
             case .ready:
                 if slates.isEmpty {
-                    makeErrorView()
+                    makeOfflineView()
                 } else {
                     makeSlatesView()
                 }
@@ -46,25 +48,32 @@ struct RecommendationsView: View {
                 makeOfflineView()
             }
         }
-        .onAppear {
+        .task {
+            networkMonitor.start()
             // TODO: SWIFTUI - remove this flag once we replace existing home with SwiftUI Home
             let enabled = false
             guard viewState != .loading, enabled else { return }
-            homeActions.refreshRecommendations {
-                viewState = .ready
-            }
+            viewState = .loading
+            await homeActions.refreshRecommendations()
+            viewState = .ready
         }
-        .onChange(of: networkMonitor.status, initial: false) { oldStatus, newStatus in
+        .onChange(of: networkMonitor.status, initial: true) { oldStatus, newStatus in
             guard oldStatus != newStatus else { return }
             switch newStatus {
             case .unsatisfied, .requiresConnection:
                 viewState = .offline
             case .satisfied:
-                viewState = .ready
-                // TODO: SWIFTUI - handle reloading when transitioning from offline to online
+                viewState = .loading
+                Task {
+                    await homeActions.refreshRecommendations()
+                    viewState = .ready
+                }
             default:
                 break
             }
+        }
+        .onDisappear {
+            networkMonitor.cancel()
         }
     }
 }
@@ -85,18 +94,11 @@ private extension RecommendationsView {
     }
 
     func makeLoadingView() -> some View {
-        // TODO: SWIFTUI - Replace this text with the appropriate view
-        Text("Loading view goes here")
+        LoadingView.loadingIndicator(Localization.LoadingView.message)
     }
 
     func makeOfflineView() -> some View {
-        // TODO: SWIFTUI - Replace this text with the appropriate view
-        Text("Offilne view goes here")
-    }
-
-    func makeErrorView() -> some View {
-        // TODO: SWIFTUI - Replace this text with the appropriate view
-        Text("Error view goes here")
+        OfflineView()
     }
 
     func cards( for recommendations: [Recommendation]) -> [HomeCardConfiguration] {

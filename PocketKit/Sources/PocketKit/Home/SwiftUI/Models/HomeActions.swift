@@ -86,14 +86,6 @@ struct HomeActions {
     /// Refresh recommendations
     /// - Parameters:
     ///   - isForced: Whether or not the user forced the refresh
-    ///   - completion: Completion block to call
-    @MainActor
-    func refreshRecommendations(isForced: Bool = false, completion: @escaping () -> Void) {
-        Services.shared.homeRefreshCoordinator.refresh(isForced: isForced) {
-            completion()
-        }
-    }
-    /// Async version of the recommendation refresh method, with no completion handler.
     @MainActor
     func refreshRecommendations(isForced: Bool = false) async {
         await Services.shared.homeRefreshCoordinator.refresh(isForced: isForced)

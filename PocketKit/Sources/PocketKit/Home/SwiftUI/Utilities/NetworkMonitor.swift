@@ -16,14 +16,14 @@ final class NetworkMonitor: ObservableObject {
         monitor.updateHandler = { [weak self] path in
             self?.status = path.status
         }
+    }
 
-        func start(queue: DispatchQueue? = nil) {
-            let queue = queue ?? DispatchQueue.global(qos: .utility)
-            monitor.start(queue: queue)
-        }
+    func start(queue: DispatchQueue? = nil) {
+        let queue = queue ?? DispatchQueue.global(qos: .utility)
+        monitor.start(queue: queue)
+    }
 
-        func cancel() {
-            monitor.cancel()
-        }
+    func cancel() {
+        monitor.cancel()
     }
 }
