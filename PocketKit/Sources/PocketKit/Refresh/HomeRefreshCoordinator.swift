@@ -37,6 +37,27 @@ class HomeRefreshCoordinator: RefreshCoordinator {
         self.lastRefresh = lastRefresh
     }
 
+    func refresh(isForced: Bool = false) async {
+        if shouldRefresh(isForced: isForced), !isRefreshing {
+            do {
+                if isForced {
+                    forceRefreshedAt = Date()
+                }
+                self.isRefreshing = true
+                try await self.source.fetchUnifiedHomeLineup()
+                self.lastRefresh.refreshedHome()
+                Log.breadcrumb(category: "refresh", level: .info, message: "Home Refresh Occur")
+            } catch {
+                Log.capture(error: error)
+            }
+            isRefreshing = false
+        } else if isRefreshing {
+            Log.debug("Already refreshing Home, not going to add to the queue")
+        } else {
+            Log.debug("Not refreshing Home, too early to ask for new data")
+        }
+    }
+
     func refresh(isForced: Bool = false, _ completion: @escaping () -> Void) {
         Log.debug("Refresh home called, isForced: \(String(describing: isForced))")
 

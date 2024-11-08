@@ -4,6 +4,7 @@
 
 import Analytics
 @preconcurrency import Sync
+import SwiftUI
 
 // TODO: SWIFTUI - Add analytics
 /// Type that contains all the actions that can be performed from Home and its detail views
@@ -80,6 +81,14 @@ struct HomeActions {
     func fetchCollection(slug: String) async {
         let source = await Services.shared.source
         try? await source.fetchCollection(by: slug)
+    }
+
+    /// Refresh recommendations
+    /// - Parameters:
+    ///   - isForced: Whether or not the user forced the refresh
+    @MainActor
+    func refreshRecommendations(isForced: Bool = false) async {
+        await Services.shared.homeRefreshCoordinator.refresh(isForced: isForced)
     }
 }
 

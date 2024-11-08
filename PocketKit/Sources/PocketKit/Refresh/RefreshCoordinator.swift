@@ -36,6 +36,8 @@ protocol RefreshCoordinator: AnyObject {
     /// - Parameter completion: The callback to execute upon finishing data loading
     /// - Parameter isForced: Whether or not a user manaully triggered the refreshing
     func refresh(isForced: Bool, _ completion: @escaping () -> Void)
+    /// Async version of the refresh method, with no completion handler.
+    func refresh(isForced: Bool) async
 }
 
 /// An Abstract extension  that can be used to implement background refreshing and implement some default logic like observing to login/logout and foregorund notifications.

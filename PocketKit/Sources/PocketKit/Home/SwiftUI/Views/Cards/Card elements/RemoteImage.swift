@@ -15,6 +15,15 @@ struct RemoteImage: View {
     let usePlaceholder: Bool
 
     var body: some View {
+        makeKFImage()
+    }
+}
+
+// MARK: view builders
+private extension RemoteImage {
+    // TODO: SWIFTUI - we keep these for comparison for now, when finished, we should remove the dependency and the methods that we won't use.
+    @ViewBuilder
+    func makeKFImage() -> some View {
         if let url {
             KFImage(url)
                 .placeholder { progress in

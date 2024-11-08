@@ -106,8 +106,7 @@ struct NativeCollectionView: View {
                 makeOverflowMenu()
             }
         } else {
-            // TODO: SWIFTUI - Replace this with the loading animation
-            Text("Loading Collection")
+            LoadingView.loadingIndicator(Localization.LoadingView.message)
                 .onAppear {
                     Task {
                         await homeActions.fetchCollection(slug: destination.slug)

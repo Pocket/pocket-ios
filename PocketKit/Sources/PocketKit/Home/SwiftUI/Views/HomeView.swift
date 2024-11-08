@@ -9,7 +9,10 @@ import Sync
 
 struct HomeView: View {
     @Environment(\.horizontalSizeClass)
-    var horizontalSizeClass
+    private var horizontalSizeClass
+
+    @Environment(\.homeActions)
+    private var homeActions
 
     @EnvironmentObject private var accessService: PocketAccessService
 
@@ -28,6 +31,9 @@ struct HomeView: View {
                     }
                     RecommendationsView()
                 }
+            }
+            .refreshable {
+                await homeActions.refreshRecommendations(isForced: true)
             }
             .background(Color(.ui.white1))
             .navigationTitle(Localization.home)

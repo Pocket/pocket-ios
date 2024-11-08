@@ -30,6 +30,10 @@ class ArchiveRefreshCoordinator: RefreshCoordinator {
         self.source = source
     }
 
+    func refresh(isForced: Bool) async {
+        // no op
+    }
+
     func refresh(isForced: Bool = false, _ completion: @escaping () -> Void) {
         self.source.refreshArchive {
             completion()
