@@ -24,9 +24,9 @@ struct RecentSavesView: View {
     }
 
     var body: some View {
-        ZStack {
+        // ZStack {
             makeBody()
-        }
+        // }
         // TODO: SWIFTUI -  the animation included with @Query does not seem to behave as we want, so we do it here
         .onChange(of: savedItems, initial: true) {
             // this prevents unwanted view refreshes if the query updates (because Core Data receives updates)

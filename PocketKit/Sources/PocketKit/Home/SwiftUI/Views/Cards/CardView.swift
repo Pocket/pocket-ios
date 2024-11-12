@@ -17,6 +17,18 @@ enum CardSize {
     case large
 }
 
+struct Payload: Equatable {
+    var card: HomeCardConfiguration
+    var bounds: Anchor<CGRect>
+}
+
+struct VisibleItemsPreference: PreferenceKey {
+    static var defaultValue: [Payload] = []
+    static func reduce(value: inout Value, nextValue: () -> Value) {
+        value.append(contentsOf: nextValue())
+    }
+}
+
 /// Card view for the Home screen. Can have various sizes, specified by the `size` property.
 struct CardView: View {
     let card: HomeCardConfiguration
@@ -48,17 +60,20 @@ struct CardView: View {
 
     var body: some View {
         makeBody()
-            .onAppear {
-                homeActions
-                    .trackCardImpression(
-                        AnalyticsInfo(
-                            type: card.type,
-                            url: card.givenURL,
-                            index: card.index,
-                            recommendationID: card.recommendationID
-                        )
-                    )
-            }
+            .anchorPreference(key: VisibleItemsPreference.self, value: .bounds, transform: { anchor in
+                [.init(card: card, bounds: anchor)]
+            })
+//            .onAppear {
+//                homeActions
+//                    .trackCardImpression(
+//                        AnalyticsInfo(
+//                            type: card.type,
+//                            url: card.givenURL,
+//                            index: card.index,
+//                            recommendationID: card.recommendationID
+//                        )
+//                    )
+//            }
     }
 }
 

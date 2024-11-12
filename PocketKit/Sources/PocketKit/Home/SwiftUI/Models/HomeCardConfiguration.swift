@@ -8,7 +8,6 @@ import SwiftUI
 import Textile
 
 /// Card configuration
-@MainActor
 struct HomeCardConfiguration: Identifiable, @preconcurrency Equatable, Hashable {
     static func == (lhs: HomeCardConfiguration, rhs: HomeCardConfiguration) -> Bool {
         lhs.givenURL == rhs.givenURL &&
