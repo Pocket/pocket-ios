@@ -5,6 +5,7 @@
 
 import Foundation
 import SwiftData
+import SharedPocketKit
 
 @MainActor
 public class DataController {
@@ -50,15 +51,18 @@ public class DataController {
         SyncTaskTransformer.register()
 
         guard let appGroupContainerID = appGroupContainerID else {
+            Log.breadcrumb(category: "SwiftData", level: .fatal, message: "appGroupContainerID must be set before accessing the sharedModelContainer.")
             fatalError("appGroupContainerID must be set before accessing the sharedModelContainer.")
         }
         guard let appGroupContainer = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroupContainerID) else {
+            Log.breadcrumb(category: "SwiftData", level: .fatal, message: "Shared file container could not be created.")
             fatalError("Shared file container could not be created.")
         }
         let url = appGroupContainer.appendingPathComponent("PocketModel.sqlite")
         do {
             return try ModelContainer(for: schema, configurations: ModelConfiguration(url: url))
         } catch {
+            Log.breadcrumb(category: "SwiftData", level: .fatal, message: "Could not create ModelContainer: \(error)")
             fatalError("Could not create ModelContainer: \(error)")
         }
     }()
