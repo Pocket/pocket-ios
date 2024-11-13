@@ -8,7 +8,7 @@ import SwiftUI
 import Textile
 
 /// Card configuration
-struct HomeCardConfiguration: Identifiable, @preconcurrency Equatable, Hashable {
+struct HomeCardConfiguration: Identifiable, Equatable, Hashable, Sendable {
     static func == (lhs: HomeCardConfiguration, rhs: HomeCardConfiguration) -> Bool {
         lhs.givenURL == rhs.givenURL &&
         lhs.sharedWithYouUrlString == rhs.sharedWithYouUrlString &&
