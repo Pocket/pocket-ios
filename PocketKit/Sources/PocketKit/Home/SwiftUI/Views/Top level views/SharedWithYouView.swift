@@ -24,20 +24,18 @@ struct SharedWithYouView: View {
     }
 
     var body: some View {
-        // ZStack {
-            makeBody()
-        // }
+        makeBody()
         // TODO: SWIFTUI -  the animation included with @Query does not seem to behave as we want, so we do it here
-        .onChange(of: sharedWithYouItems, initial: true) {
-            // this prevents unwanted view refreshes if the query updates (because Core Data receives updates)
-            // but the recent saves do not actually change
-            if proposedCards != cards {
-                cards = proposedCards
+            .onChange(of: sharedWithYouItems, initial: true) {
+                // this prevents unwanted view refreshes if the query updates (because Core Data receives updates)
+                // but the recent saves do not actually change
+                if proposedCards != cards {
+                    cards = proposedCards
+                }
             }
-        }
         // TODO: SWIFTUI - this animation works well when removing on top of the list, not so well otherwise
         // investigate better animation options
-        .animation(.smooth, value: cards)
+            .animation(.smooth, value: cards)
     }
 }
 
