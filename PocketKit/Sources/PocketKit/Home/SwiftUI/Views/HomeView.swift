@@ -7,11 +7,6 @@ import SwiftData
 import SwiftUI
 import Sync
 
-struct BoundedCell: Hashable {
-    let inBounds: Bool
-    let card: HomeCardConfiguration
-}
-
 struct HomeView: View {
     @Environment(\.horizontalSizeClass)
     private var horizontalSizeClass
@@ -21,8 +16,11 @@ struct HomeView: View {
 
     @EnvironmentObject private var accessService: PocketAccessService
 
-    @State private var trackableCells = Set<BoundedCell>()
-    @State private var trackedCells = Set<BoundedCell>()
+    @StateObject private var cellTracker: CellImpressionTracker
+
+    init() {
+        _cellTracker = StateObject(wrappedValue: CellImpressionTracker())
+    }
 
     var body: some View {
         GeometryReader { proxy in
@@ -49,43 +47,14 @@ struct HomeView: View {
             .environment(\.layoutWidth, layoutWidth(proxy.size))
             .overlayPreferenceValue(VisibleItemsPreference.self, { value in
                 GeometryReader { proxy in
-                    let myFrame = proxy.frame(in: .local)
-                    let arr: [BoundedCell] = value.sorted(by: { $0.card.index < $1.card.index }).compactMap { boundedCard in
-                        let inBounds = myFrame.intersects(proxy[boundedCard.bounds])
-                        let element = BoundedCell(inBounds: inBounds, card: boundedCard.card)
-                        if inBounds {
-                            if trackableCells.contains(element) {
-                                trackedCells.insert(element)
-                            } else {
-                                trackableCells.insert(element)
-                                trackedCells.remove(element)
-                            }
-                            return (element)
-                        } else {
-                                trackableCells.remove(element)
-                                trackedCells.remove(element)
-                            return nil
+                    let newTrackableCells = trackableCells(value, proxy)
+                    if cellTracker.cells != newTrackableCells {
+                            cellTracker.cells = newTrackableCells
                         }
-                    }
-                    let texts: [Text] = Array(trackableCells).map { boundedCard in
-                        Text("\(boundedCard.card.index)")
-                            .foregroundStyle(boundedCard.inBounds ? .primary : .secondary)
-                    }
-
-                    texts.joined(separator: Text(","))
-                        .foregroundStyle(.white)
-                        .background(.black)
-                        .frame(maxHeight: .infinity)
+                    return Color.clear
                 }
             })
         }
-    }
-}
-
-extension [Text] {
-    func joined(separator: Text) -> Text {
-        guard let f = first else { return Text("") }
-        return dropFirst().reduce(f, { $0 + separator + $1 })
     }
 }
 
@@ -102,5 +71,17 @@ private extension HomeView {
     /// Calculate carousel cell width based on which layout is being used
     func carouselWidth(_ screenSize: CGSize) -> CGFloat {
         layoutWidth(screenSize).isRegular ? screenSize.width * 0.5 - 64 : screenSize.width * 0.8
+    }
+}
+
+// MARK: impression tracking
+private extension HomeView {
+    /// Extracts the trackable cells based on the set of visible cells contained in the preference key value and the current geometry frame.
+    func trackableCells(_ visibleCells: [GeometryCard], _ proxy: GeometryProxy) -> Set<HomeCardConfiguration> {
+        let currentFrame = proxy.frame(in: .local)
+        let arrayOfCells: [HomeCardConfiguration] = visibleCells
+            .filter({ currentFrame.intersects(proxy[$0.bounds]) })
+            .map({ $0.card })
+        return Set(arrayOfCells)
     }
 }
