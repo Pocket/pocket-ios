@@ -47,8 +47,11 @@ public class DataController {
     }()
 
     public static let sharedModelContainer: ModelContainer = {
+        Log.breadcrumb(category: "SWiftData", level: .info, message: "Start initializing shared model container.")
         ArticleTransformer.register()
+        Log.breadcrumb(category: "SWiftData", level: .info, message: "Article transformer registered.")
         SyncTaskTransformer.register()
+        Log.breadcrumb(category: "SWiftData", level: .info, message: "SynkTask transformer registered.")
 
         guard let appGroupContainerID = appGroupContainerID else {
             Log.breadcrumb(category: "SwiftData", level: .fatal, message: "appGroupContainerID must be set before accessing the sharedModelContainer.")
