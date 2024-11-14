@@ -43,6 +43,8 @@ class ReadableViewController: UIViewController {
 
     private var isReloading = false
 
+    var hasAppearedAfterLoading = false
+
     private var userScrollProgress: IndexPath?
     // Tippable view controller properties
     var tipObservationTask: Task<Void, Error>?
@@ -353,7 +355,10 @@ class ReadableViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        scrollToLastKnownPosition()
+        if !hasAppearedAfterLoading {
+            scrollToLastKnownPosition()
+            hasAppearedAfterLoading = true
+        }
         // do not vend the tip on syndicated articles
         if readableViewModel is SavedItemViewModel {
             PocketTipEvents.showSwipeHighlightsTip.sendDonation()
