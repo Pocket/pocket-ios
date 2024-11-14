@@ -63,12 +63,13 @@ struct Services {
         lastRefresh = UserDefaultsLastRefresh(defaults: userDefaults)
         Self.handleUpgrades(lastLaunchedAppVersion: lastLaunchedAppVersion, lastRefresh: lastRefresh)
         notificationCenter = .default
-
+        Log.breadcrumb(category: "SWiftUIHome", level: .debug, message: "Initializing data controller.")
         // Init the Group ID for Swift Data
         DataController.appGroupContainerID = Keys.shared.groupID
         dataController = DataController.sharedModelContainer
+        Log.breadcrumb(category: "SWiftUIHome", level: .debug, message: "Data controller initialized.")
         persistentContainer = .init(storage: .shared, groupID: Keys.shared.groupID)
-
+        Log.breadcrumb(category: "SWiftUIHome", level: .debug, message: "Persistent container initialized.")
         urlSession = URLSession.shared
 
         let snowplow = PocketSnowplowTracker()
