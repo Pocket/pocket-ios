@@ -30,54 +30,56 @@ struct RecommendationsView: View {
     }
 
     var body: some View {
-        VStack(spacing: 32) {
-            switch viewState {
-            case .loading:
-                if slates.isEmpty {
-                    makeLoadingView()
-                } else {
-                    makeSlatesView()
-                }
-            case .ready:
-                if slates.isEmpty {
-                    makeOfflineView()
-                } else {
-                    makeSlatesView()
-                }
-            case .offline:
-                makeOfflineView()
-            }
-        }
-        .task {
-            networkMonitor.start()
-            guard viewState != .loading else { return }
-            viewState = .loading
-            await homeActions.refreshRecommendations()
-            viewState = .ready
-        }
-        .onChange(of: networkMonitor.status, initial: true) { oldStatus, newStatus in
-            guard oldStatus != newStatus else { return }
-            switch newStatus {
-            case .unsatisfied, .requiresConnection:
-                viewState = .offline
-            case .satisfied:
+        makeBody()
+            .task {
+                networkMonitor.start()
+                guard viewState != .loading else { return }
                 viewState = .loading
-                Task {
-                    await homeActions.refreshRecommendations()
-                    viewState = .ready
-                }
-            default:
-                break
+                await homeActions.refreshRecommendations()
+                viewState = .ready
             }
-        }
-        .onDisappear {
-            networkMonitor.cancel()
-        }
+            .onChange(of: networkMonitor.status, initial: true) { oldStatus, newStatus in
+                guard oldStatus != newStatus else { return }
+                switch newStatus {
+                case .unsatisfied, .requiresConnection:
+                    viewState = .offline
+                case .satisfied:
+                    viewState = .loading
+                    Task {
+                        await homeActions.refreshRecommendations()
+                        viewState = .ready
+                    }
+                default:
+                    break
+                }
+            }
+            .onDisappear {
+                networkMonitor.cancel()
+            }
     }
 }
 
 // MARK: view builders and helpers
 private extension RecommendationsView {
+    @ViewBuilder
+    private func makeBody() -> some View {
+        switch viewState {
+        case .loading:
+            if slates.isEmpty {
+                makeLoadingView()
+            } else {
+                makeSlatesView()
+            }
+        case .ready:
+            if slates.isEmpty {
+                makeOfflineView()
+            } else {
+                makeSlatesView()
+            }
+        case .offline:
+            makeOfflineView()
+        }
+    }
     @ViewBuilder
     func makeSlatesView() -> some View {
         ForEach(slates) {
@@ -104,27 +106,27 @@ private extension RecommendationsView {
             .sorted(by: { $0.sortIndex < $1.sortIndex })
             .prefix(6)
             .compactMap {
-            if let item = $0.item {
-                return HomeCardConfiguration(
-                    givenURL: item.givenURL,
-                    sharedWithYouUrlString: nil,
-                    type: .recommendation,
-                    index: Int(item.recommendation?.sortIndex ?? 0), // sortIndex should not be nil, but just in case, let's have a default
-                    shareURL: item.shareURL,
-                    domain: item.bestDomain,
-                    timeToRead: item.timeToRead,
-                    isSyndicated: item.isSyndicated,
-                    recommendationID: item.recommendation?.analyticsID,
-                    bestTitle: item.bestTitle,
-                    slug: item.collectionSlug,
-                    excerpt: item.excerpt,
-                    topImageURL: item.topImageURL,
-                    enableSaveAction: true,
-                    enableShareMenuAction: true,
-                    enableReportMenuAction: true
-                )
+                if let item = $0.item {
+                    return HomeCardConfiguration(
+                        givenURL: item.givenURL,
+                        sharedWithYouUrlString: nil,
+                        type: .recommendation,
+                        index: Int(item.recommendation?.sortIndex ?? 0), // sortIndex should not be nil, but just in case, let's have a default
+                        shareURL: item.shareURL,
+                        domain: item.bestDomain,
+                        timeToRead: item.timeToRead,
+                        isSyndicated: item.isSyndicated,
+                        recommendationID: item.recommendation?.analyticsID,
+                        bestTitle: item.bestTitle,
+                        slug: item.collectionSlug,
+                        excerpt: item.excerpt,
+                        topImageURL: item.topImageURL,
+                        enableSaveAction: true,
+                        enableShareMenuAction: true,
+                        enableReportMenuAction: true
+                    )
+                }
+                return nil
             }
-            return nil
-        }
     }
 }
