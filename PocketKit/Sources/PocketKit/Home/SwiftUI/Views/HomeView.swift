@@ -24,7 +24,7 @@ struct HomeView: View {
                         .frame(height: 16)
                     if accessService.accessLevel.isAuthenticated {
                         RecentSavesView()
-                        // SharedWithYouView()
+                        SharedWithYouView()
                     } else if accessService.accessLevel.isAnonymous {
                         SigninBannerView { accessService.requestAuthentication(.homeBanner) }
                             .padding()
