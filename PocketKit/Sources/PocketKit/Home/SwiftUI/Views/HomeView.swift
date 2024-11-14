@@ -19,7 +19,7 @@ struct HomeView: View {
     var body: some View {
         GeometryReader { proxy in
             ScrollView {
-                VStack {
+                LazyVStack {
                     Spacer()
                         .frame(height: 16)
                     if accessService.accessLevel.isAuthenticated {

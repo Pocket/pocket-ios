@@ -18,7 +18,7 @@ struct SlateView: View {
     @EnvironmentObject var navigation: HomeNavigation
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        LazyVStack(alignment: .leading, spacing: 0) {
             VStack(alignment: .leading, spacing: 16) {
                 if let slateTitle {
                     makeHeader(slateTitle)

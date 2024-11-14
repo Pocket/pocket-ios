@@ -23,7 +23,7 @@ struct CarouselView: View {
 private extension CarouselView {
     func makeCarousel() -> some View {
         ScrollView(.horizontal) {
-            HStack(spacing: Self.defaultSpacing) {
+            LazyHStack(spacing: Self.defaultSpacing) {
                 ForEach(cards) {
                     CardView(
                         card: $0,
