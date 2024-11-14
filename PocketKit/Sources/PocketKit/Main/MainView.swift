@@ -65,6 +65,7 @@ public struct MainView: View {
                 return
             }
             assigned = swiftuiFeatureFlag.assigned
+            Log.breadcrumb(category: "SWiftUIHome", level: .debug, message: "Feature flag for SwiftUI Home assigned.")
         }
         .banner(data: bannerPresenter.bannerData, show: $bannerPresenter.shouldPresentBanner, bottomOffset: 49)
         .task {
@@ -96,6 +97,9 @@ try Tips.configure()
             }
             .accessibilityIdentifier("home-tab-bar-button")
             .tag(MainViewModel.AppSection.home)
+            .task {
+                Log.breadcrumb(category: "SWiftUIHome", level: .debug, message: "UIKit Home initialized.")
+            }
     }
 
     func makeSwiftUIHome() -> some View {
@@ -111,5 +115,8 @@ try Tips.configure()
                 Text(Localization.home)
             }
             .tag(MainViewModel.AppSection.home)
+            .task {
+                Log.breadcrumb(category: "SWiftUIHome", level: .debug, message: "SwiftUI Home initialized.")
+            }
     }
 }
