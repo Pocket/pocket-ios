@@ -18,7 +18,7 @@ struct SlateView: View {
     @EnvironmentObject var navigation: HomeNavigation
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        LazyVStack(alignment: .leading, spacing: 0) {
             VStack(alignment: .leading, spacing: 16) {
                 if let slateTitle {
                     makeHeader(slateTitle)
@@ -28,6 +28,7 @@ struct SlateView: View {
             .padding(EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16))
             CarouselView(cards: carouselCards, useGrid: layoutWidth.isRegular)
         }
+        .padding(.bottom, 32)
     }
 }
 

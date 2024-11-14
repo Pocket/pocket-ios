@@ -48,17 +48,6 @@ struct CardView: View {
 
     var body: some View {
         makeBody()
-            .onAppear {
-                homeActions
-                    .trackCardImpression(
-                        AnalyticsInfo(
-                            type: card.type,
-                            url: card.givenURL,
-                            index: card.index,
-                            recommendationID: card.recommendationID
-                        )
-                    )
-            }
     }
 }
 
@@ -158,10 +147,40 @@ private extension CardView {
             HStack(alignment: .top) {
                 makeTextStack()
                 Spacer()
+                LazyHStack {
+                    Spacer()
+                        .frame(width: 1)
+                        .onAppear {
+                            homeActions
+                                .trackCardImpression(
+                                    AnalyticsInfo(
+                                        type: card.type,
+                                        url: card.givenURL,
+                                        index: card.index,
+                                        recommendationID: card.recommendationID
+                                    )
+                                )
+                        }
+                }
                 makeImage()
             }
         case .large:
             makeImage()
+            LazyVStack {
+                Spacer()
+                    .frame(height: 1)
+                    .onAppear {
+                        homeActions
+                            .trackCardImpression(
+                                AnalyticsInfo(
+                                    type: card.type,
+                                    url: card.givenURL,
+                                    index: card.index,
+                                    recommendationID: card.recommendationID
+                                )
+                            )
+                    }
+            }
             makeTextStack()
         }
     }

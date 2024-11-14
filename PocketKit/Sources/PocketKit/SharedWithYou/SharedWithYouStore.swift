@@ -41,11 +41,6 @@ extension SharedWithYouStore: SWHighlightCenterDelegate {
 // MARK: private helpers
 private extension SharedWithYouStore {
     func start() {
-        do {
-            try source.deleteAllSharedWithYouItems()
-        } catch {
-            Log.capture(message: "SWH: starting store - error while attempting to delete existing highlights. Detail: \(error)")
-        }
         highlightCenter.delegate = self
     }
 
