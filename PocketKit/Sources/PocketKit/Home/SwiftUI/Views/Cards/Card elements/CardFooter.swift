@@ -105,13 +105,11 @@ private extension CardFooter {
     /// Action button: save/saved and/or favorite
     @ViewBuilder
     func makeActionButton() -> some View {
-        HStack(alignment: .bottom) {
-            if card.enableFavoriteAction {
-                makeFavoriteButton()
-            }
-            if card.enableSaveAction {
-                makeSaveButton()
-            }
+        if card.enableFavoriteAction {
+            makeFavoriteButton()
+        }
+        if card.enableSaveAction {
+            makeSaveButton()
         }
     }
 

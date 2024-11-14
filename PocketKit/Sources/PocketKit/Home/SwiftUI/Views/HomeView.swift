@@ -24,7 +24,7 @@ struct HomeView: View {
                         .frame(height: 16)
                     if accessService.accessLevel.isAuthenticated {
                         RecentSavesView()
-                        SharedWithYouView()
+                        // SharedWithYouView()
                     } else if accessService.accessLevel.isAnonymous {
                         SigninBannerView { accessService.requestAuthentication(.homeBanner) }
                             .padding()
@@ -35,6 +35,7 @@ struct HomeView: View {
             .refreshable {
                 await homeActions.refreshRecommendations(isForced: true)
             }
+            .scrollIndicators(.hidden)
             .background(Color(.ui.white1))
             .navigationTitle(Localization.home)
             .environment(\.carouselWidth, carouselWidth(proxy.size))
