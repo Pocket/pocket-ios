@@ -35,6 +35,7 @@ struct HomeView: View {
             .refreshable {
                 await homeActions.refreshRecommendations(isForced: true)
             }
+            .contentMargins(.bottom, -32)
             .scrollIndicators(.hidden)
             .background(Color(.ui.white1))
             .navigationTitle(Localization.home)
