@@ -161,9 +161,7 @@ private extension CardView {
     func makeTopContent() -> some View {
         switch size {
         case .medium:
-            HStack(alignment: .top) {
-                makeMediumTopContnet()
-            }
+            makeMediumTopContnet()
         case .large:
             makeLargeTopContnet()
         }
