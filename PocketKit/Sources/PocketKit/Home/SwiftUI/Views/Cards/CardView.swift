@@ -47,7 +47,24 @@ struct CardView: View {
     }
 
     var body: some View {
-        makeBody()
+        if #available(iOS 18.0, *) {
+            makeBody()
+                .onScrollVisibilityChange(threshold: 0.5) { isVisible in
+                    if isVisible {
+                        homeActions
+                            .trackCardImpression(
+                                AnalyticsInfo(
+                                    type: card.type,
+                                    url: card.givenURL,
+                                    index: card.index,
+                                    recommendationID: card.recommendationID
+                                )
+                            )
+                    }
+                }
+        } else {
+            makeBody()
+        }
     }
 }
 
@@ -144,6 +161,21 @@ private extension CardView {
     func makeTopContent() -> some View {
         switch size {
         case .medium:
+            makeMediumTopContnet()
+        case .large:
+            makeLargeTopContnet()
+        }
+    }
+
+    @ViewBuilder
+    func makeMediumTopContnet() -> some View {
+        if #available(iOS 18.0, *) {
+            HStack(alignment: .top) {
+                makeTextStack()
+                Spacer()
+                makeImage()
+            }
+        } else {
             HStack(alignment: .top) {
                 makeTextStack()
                 Spacer()
@@ -164,7 +196,15 @@ private extension CardView {
                 }
                 makeImage()
             }
-        case .large:
+        }
+    }
+
+    @ViewBuilder
+    func makeLargeTopContnet() -> some View {
+        if #available(iOS 18.0, *) {
+            makeImage()
+            makeTextStack()
+        } else {
             makeImage()
             LazyVStack {
                 Spacer()

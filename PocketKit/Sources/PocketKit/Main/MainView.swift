@@ -74,7 +74,7 @@ public struct MainView: View {
                 Tips.hideAllTipsForTesting()
             }
             do {
-try Tips.configure()
+                try Tips.configure()
             } catch {
                 Log.capture(message: "Unable to initialize tips - \(error)")
             }
