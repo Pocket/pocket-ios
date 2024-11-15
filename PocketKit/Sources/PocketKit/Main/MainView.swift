@@ -19,7 +19,7 @@ public struct MainView: View {
     @Query(filter: #Predicate<FeatureFlag> { $0.name == "temp.ios.swiftui.home" })
     private var featureFlag: [FeatureFlag]
 
-    @State private var assigned: Bool = true
+    @State private var assigned: Bool = false
 
     public var body: some View {
         TabView(selection: $model.selectedSection) {
