@@ -391,6 +391,10 @@ extension MainViewModel {
 
         let externalPremiumUpsellAction: (URL, ReadableSource) -> Void = { [weak self] url, source in
             self?.account.dismissAll()
+            guard Services.shared.accessService.accessLevel.isAuthenticated else {
+                Services.shared.accessService.requestAuthentication(.external)
+                return
+            }
             switch Services.shared.user.status {
             case .premium:
                 self?.selectedSection = .account
