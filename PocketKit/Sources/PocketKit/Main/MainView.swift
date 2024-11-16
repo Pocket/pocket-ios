@@ -14,6 +14,8 @@ public struct MainView: View {
     @ObservedObject var model: MainViewModel
     @ObservedObject var bannerPresenter: BannerPresenter
 
+    @State private var dismissReason: DismissReason = .swipe
+
     @State var tabBarHeightOffset: CGFloat = 0
     // TODO: SWIFTUI - Remove the following two properties once we release SwiftUI Home
     @Query(filter: #Predicate<FeatureFlag> { $0.name == "temp.ios.swiftui.home" })
@@ -81,6 +83,23 @@ public struct MainView: View {
         }
         // TODO: SWIFTUI - This is used for tab navigation purposes only, will change as we re-architect the app.
         .environmentObject(model)
+        .sheet(
+            isPresented: $model.isPresentingPremiumUpgrade,
+            onDismiss: {
+                model.trackPremiumDismissed(dismissReason: dismissReason)
+                if dismissReason == .system {
+                    model.isPresentingHooray = true
+                }
+        }
+        ) {
+            PremiumUpgradeView(dismissReason: self.$dismissReason, viewModel: model.makeExternalPremiumUpgradeViewModel())
+        }
+        .sheet(isPresented: $model.isPresentingHooray) {
+            PremiumUpgradeSuccessView()
+        }
+        .task {
+            model.trackPremiumUpsellViewed()
+        }
     }
 
     func makeUIKitHome() -> some View {

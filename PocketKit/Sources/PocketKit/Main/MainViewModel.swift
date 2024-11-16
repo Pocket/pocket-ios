@@ -13,6 +13,7 @@ import Localization
 import CoreSpotlight
 import SharedPocketKit
 import AppIntents
+import Analytics
 
 @MainActor
 public class MainViewModel: ObservableObject {
@@ -25,6 +26,10 @@ public class MainViewModel: ObservableObject {
     @Published var selectedSection: AppSection = .home
 
     @Published var showBanner: Bool = false
+
+    @Published var isPresentingPremiumUpgrade: Bool = false
+
+    @Published var isPresentingHooray = false
 
     private var subscriptions: Set<AnyCancellable> = []
     private let userDefaults: UserDefaults
@@ -384,6 +389,19 @@ extension MainViewModel {
             self?.account.isPresentingIconSwitcher = true
         }
 
+        let externalPremiumUpsellAction: (URL, ReadableSource) -> Void = { [weak self] url, source in
+            self?.account.dismissAll()
+            switch Services.shared.user.status {
+            case .premium:
+                self?.selectedSection = .account
+                self?.account.isPresentingPremiumStatus = true
+            case .free:
+                self?.isPresentingPremiumUpgrade = true
+            case .unknown:
+                break
+            }
+        }
+
         let navigationAction: (URL, ReadableSource) -> Void = { [weak self] url, source in
             self?.account.dismissAll()
             guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true) else {
@@ -434,6 +452,7 @@ extension MainViewModel {
         let pocketShareRoute = PocketShareRoute(action: pocketShareUrlRoutingAction)
         let pocketReadRoute = PocketReadRoute(action: pocketReadUrlRoutingAction)
         let brazeIconSwitcherRoute = BrazeIconSwitcherRoute(action: brazeShowIconSwitcherAction)
+        let externalPremiumUpsellRoute = ExternalPremiumUpsellRoute(action: externalPremiumUpsellAction)
         let homeRoute = HomeRoute(action: navigationAction)
         let savesRoute = SavesRoute(action: navigationAction)
         let settingsRoute = SettingsRoute(action: navigationAction)
@@ -460,8 +479,36 @@ extension MainViewModel {
                 // pocket.co/[path] routes
                 pocketShareRoute,
                 brazeIconSwitcherRoute,
+                externalPremiumUpsellRoute,
                 shortUrlRoute
             ]
         )
+    }
+}
+
+// MARK: premium upgrade
+extension MainViewModel {
+    /// track premium upgrade view dismissed
+    func trackPremiumDismissed(dismissReason: DismissReason) {
+        switch dismissReason {
+        case .swipe, .button, .closeButton:
+            Services.shared.tracker.track(event: Events.Premium.premiumUpgradeViewDismissed(reason: dismissReason))
+        case .system:
+            break
+        }
+    }
+
+    /// Premium upgrade view model constructor for external deeplink invocation
+    func makeExternalPremiumUpgradeViewModel() -> PremiumUpgradeViewModel {
+        PremiumUpgradeViewModel(
+            store: Services.shared.subscriptionStore,
+            tracker: Services.shared.tracker,
+            source: .external,
+            networkPathMonitor: NWPathMonitor()
+        )
+    }
+    /// track premium upsell viewed
+    func trackPremiumUpsellViewed() {
+        Services.shared.tracker.track(event: Events.Settings.premiumUpsellViewed())
     }
 }

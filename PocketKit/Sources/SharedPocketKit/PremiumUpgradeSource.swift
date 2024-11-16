@@ -9,4 +9,5 @@ public enum PremiumUpgradeSource: String {
     case tags
     case premiumFonts
     case highlights
+    case external
 }

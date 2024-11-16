@@ -244,6 +244,23 @@ struct BrazeIconSwitcherRoute: Route {
 }
 
 @MainActor
+struct ExternalPremiumUpsellRoute: Route {
+    let host: String? = "pocket.co"
+    let scheme = "https"
+    let path = "/braze/premium"
+    let source: ReadableSource = .external
+    let action: (URL, ReadableSource) -> Void
+
+    init(action: @escaping (URL, ReadableSource) -> Void) {
+        self.action = action
+    }
+
+    nonisolated func matchedUrlString(from url: URL) -> String? {
+        url.matched(host: host, scheme: scheme, path: path)
+    }
+}
+
+@MainActor
 struct ListenRoute: Route {
     let host: String? = "getpocket.com"
     let scheme: String = "https"
