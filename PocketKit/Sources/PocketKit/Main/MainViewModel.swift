@@ -462,9 +462,8 @@ extension MainViewModel {
         let settingsRoute = SettingsRoute(action: navigationAction)
         let managePremiumRoute = ManagePremiumRoute(action: navigationAction)
         let listenRoute = ListenRoute(action: listenAction)
-        // NOTE: order matters, because there might be overlapping patterns
-        // we can probably optimize by having exclusive-patterns only routes, and handle additional logic within
-        // the route itself
+        /// **NOTE: order matters here, because there might be overlapping patterns.**
+        /// For example, `/premium/manage` must precede `/premium/`.
         linkRouter.addRoutes(
             [
                 // specialized routes
@@ -479,11 +478,11 @@ extension MainViewModel {
                 savesRoute,
                 settingsRoute,
                 managePremiumRoute,
+                externalPremiumUpsellRoute,
                 genericItemRoute,
                 // pocket.co/[path] routes
                 pocketShareRoute,
                 brazeIconSwitcherRoute,
-                externalPremiumUpsellRoute,
                 shortUrlRoute
             ]
         )
