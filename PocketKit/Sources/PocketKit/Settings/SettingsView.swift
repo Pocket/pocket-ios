@@ -25,7 +25,7 @@ struct SettingsView: View {
 }
 
 struct SettingsForm: View {
-    @State var dismissReason: DismissReason = .swipe
+    @State private var dismissReason: DismissReason = .swipe
     @ObservedObject var model: AccountViewModel
 
     var body: some View {

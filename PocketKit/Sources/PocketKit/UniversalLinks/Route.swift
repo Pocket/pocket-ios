@@ -29,7 +29,7 @@ private extension URLComponents {
 
 private extension URL {
     /// Builds `URLComponents` matching the passed elements, if they exist
-    /// NOTE: the matching criteria for path is contains instead of equality, to account
+    /// NOTE: the matching criteria for path is `contains` instead of `==`, to account
     /// for localized paths.
     /// - Parameters:
     ///   - host: the host to match
@@ -231,6 +231,23 @@ struct BrazeIconSwitcherRoute: Route {
     let host: String? = "pocket.co"
     let scheme = "https"
     let path = "/braze/iconSwitcher"
+    let source: ReadableSource = .external
+    let action: (URL, ReadableSource) -> Void
+
+    init(action: @escaping (URL, ReadableSource) -> Void) {
+        self.action = action
+    }
+
+    nonisolated func matchedUrlString(from url: URL) -> String? {
+        url.matched(host: host, scheme: scheme, path: path)
+    }
+}
+
+@MainActor
+struct ExternalPremiumUpsellRoute: Route {
+    let host: String? = "getpocket.com"
+    let scheme = "https"
+    let path = "/premium/"
     let source: ReadableSource = .external
     let action: (URL, ReadableSource) -> Void
 

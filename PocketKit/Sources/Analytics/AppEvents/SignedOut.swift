@@ -18,6 +18,7 @@ public extension Events.SignedOut {
         case savesFilter
         case savesAddUrl
         case settingsSignin
+        case external
     }
 }
 
