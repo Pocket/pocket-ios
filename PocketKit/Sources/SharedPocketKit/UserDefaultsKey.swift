@@ -40,6 +40,7 @@ public extension UserDefaults {
         case recommendationsWidget = "RecommendationsWidgetKey"
         case forceRefreshFromExtension = "ForceRefreshFromExtentionKey"
         case lastLaunchedAppVersion = "LastLaunchedAppVersion"
+        case enableSwiftUIHome = "com.mozilla.pocket.enableSwiftUIHome"
 
         var isRemovable: Bool {
             switch self {
