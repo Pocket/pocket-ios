@@ -13,3 +13,11 @@ extension DateFormatter {
         return formatter
     }()
 }
+
+extension ISO8601DateFormatter {
+    static var rfc3339WithFractionalSeconds: Self {
+        let formatter = Self()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return formatter
+    }
+}

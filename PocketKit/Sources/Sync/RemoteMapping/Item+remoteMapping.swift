@@ -48,7 +48,7 @@ extension CDItem {
         }
 
         updateIfNotEqual(\.excerpt, remote.preview?.excerpt)
-        updateIfNotEqual(\.datePublished, remote.preview?.datePublished.flatMap { DateFormatter.clientAPI.date(from: $0) })
+        updateIfNotEqual(\.datePublished, remote.preview?.datePublished.flatMap { ISO8601DateFormatter.rfc3339WithFractionalSeconds.date(from: $0) })
         updateIfNotEqual(\.isArticle, remote.isArticle ?? false)
         updateIfNotEqual(\.imageness, remote.hasImage?.rawValue)
         updateIfNotEqual(\.videoness, remote.hasVideo?.rawValue)
@@ -119,6 +119,9 @@ extension CDItem {
         topImageURL = URL(string: corpusItem.preview.image?.url ?? corpusItem.imageUrl)
         domain = corpusItem.preview.domain?.name
         excerpt = corpusItem.preview.excerpt
+        if let date = corpusItem.preview.datePublished {
+            datePublished = ISO8601DateFormatter.rfc3339WithFractionalSeconds.date(from: date)
+        }
 
         guard let context = managedObjectContext else {
             return
@@ -182,7 +185,7 @@ extension CDItem {
             wordCount = 0
         }
 
-        datePublished = storyItem.preview?.datePublished.flatMap { DateFormatter.clientAPI.date(from: $0) }
+        datePublished = storyItem.preview?.datePublished.flatMap { ISO8601DateFormatter.rfc3339WithFractionalSeconds.date(from: $0) }
         isArticle = storyItem.isArticle ?? false
         imageness = storyItem.hasImage?.rawValue
         videoness = storyItem.hasVideo?.rawValue
@@ -256,7 +259,7 @@ extension CDItem {
             wordCount = 0
         }
         excerpt = summary.preview?.excerpt
-        datePublished = summary.preview?.datePublished.flatMap { DateFormatter.clientAPI.date(from: $0) }
+        datePublished = summary.preview?.datePublished.flatMap { ISO8601DateFormatter.rfc3339WithFractionalSeconds.date(from: $0) }
         isArticle = summary.isArticle ?? false
         imageness = summary.hasImage?.rawValue
         videoness = summary.hasVideo?.rawValue
