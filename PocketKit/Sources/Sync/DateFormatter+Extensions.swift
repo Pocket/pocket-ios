@@ -8,8 +8,16 @@ extension DateFormatter {
     static let clientAPI: DateFormatter = {
         let formatter = DateFormatter()
         formatter.timeZone = .init(secondsFromGMT: 0)
-        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
 
         return formatter
     }()
+}
+
+extension ISO8601DateFormatter {
+    static var rfc3339WithFractionalSeconds: Self {
+        let formatter = Self()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return formatter
+    }
 }
