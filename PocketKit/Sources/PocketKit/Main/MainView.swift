@@ -15,17 +15,19 @@ public struct MainView: View {
     @ObservedObject var bannerPresenter: BannerPresenter
 
     @State private var dismissReason: DismissReason = .swipe
-
     @State var tabBarHeightOffset: CGFloat = 0
-    // TODO: SWIFTUI - Remove the following two properties once we release SwiftUI Home
-    @Query(filter: #Predicate<FeatureFlag> { $0.name == "temp.ios.swiftui.home" })
-    private var featureFlag: [FeatureFlag]
 
-    @State private var assigned: Bool = false
+    @AppStorage var isSwiftUIHomeEnabled: Bool
+
+    init(model: MainViewModel, bannerPresenter: BannerPresenter) {
+        self.model = model
+        self.bannerPresenter = bannerPresenter
+        _isSwiftUIHomeEnabled = AppStorage(wrappedValue: false, UserDefaults.Key.enableSwiftUIHome, store: Services.shared.userDefaults)
+    }
 
     public var body: some View {
         TabView(selection: $model.selectedSection) {
-            if assigned {
+            if isSwiftUIHomeEnabled {
                 makeSwiftUIHome()
             } else {
                 makeUIKitHome()
@@ -62,13 +64,6 @@ public struct MainView: View {
             .tag(MainViewModel.AppSection.account)
         }
         .zIndex(-1)
-        .onChange(of: featureFlag, initial: false) {
-            guard let swiftuiFeatureFlag = featureFlag.first else {
-                return
-            }
-            assigned = swiftuiFeatureFlag.assigned
-            Log.breadcrumb(category: "SWiftUIHome", level: .debug, message: "Feature flag for SwiftUI Home assigned.")
-        }
         .banner(data: bannerPresenter.bannerData, show: $bannerPresenter.shouldPresentBanner, bottomOffset: 49)
         .task {
             // Initialize tips at app start/user login
