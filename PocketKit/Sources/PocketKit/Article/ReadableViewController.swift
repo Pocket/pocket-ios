@@ -364,6 +364,7 @@ class ReadableViewController: UIViewController {
             PocketTipEvents.showSwipeHighlightsTip.sendDonation()
             displayTip(SwipeHighlightsTip(), configuration: nil, sourceView: nil)
         }
+        readableViewModel.trackReaderScreenImpression()
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {

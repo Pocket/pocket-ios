@@ -8,6 +8,18 @@ public extension Events {
 }
 
 public extension Events.Home {
+    /// User views the `Home` screen
+    static func homeScreenImpression() -> Impression {
+        return Impression(
+            component: .screen,
+            requirement: .viewable,
+            uiEntity: UiEntity(
+                .screen,
+                identifier: "global-nav.home"
+            )
+        )
+    }
+
     /**
      Fired when a card in the `Recent Saves` section scrolls into view
      */

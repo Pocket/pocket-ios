@@ -9,6 +9,30 @@ public extension Events {
 }
 
 public extension Events.Saves {
+    /// User views the `Saves` screen
+    static func savesScreenImpression() -> Impression {
+        return Impression(
+            component: .screen,
+            requirement: .viewable,
+            uiEntity: UiEntity(
+                .screen,
+                identifier: "global-nav.saves"
+            )
+        )
+    }
+
+    /// User views the `Archived Items` screen
+    static func archivesScreenImpression() -> Impression {
+        return Impression(
+            component: .screen,
+            requirement: .viewable,
+            uiEntity: UiEntity(
+                .screen,
+                identifier: "global-nav.archives"
+            )
+        )
+    }
+
     /// Returns a ContentOpen event for a url that was opened within Saves
     /// - Parameters:
     ///     - destination: Internal, or external, based on whether the content was opened in the reader or web view, respectively

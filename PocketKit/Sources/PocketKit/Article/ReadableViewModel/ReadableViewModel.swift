@@ -171,6 +171,10 @@ extension ReadableViewModel {
 
 // MARK: - Analytics
 extension ReadableViewModel {
+    /// Reader screen viewed
+    func trackReaderScreenImpression() {
+        tracker.track(event: Events.Reader.readerScreenImpression())
+    }
     /// track when user views unsupported content cell
     func trackUnsupportedContentViewed() {
         tracker.track(event: Events.Reader.unsupportedContentViewed(url: url))

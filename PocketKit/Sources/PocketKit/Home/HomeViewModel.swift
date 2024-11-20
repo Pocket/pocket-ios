@@ -1119,7 +1119,7 @@ private extension HomeViewModel {
     }
 }
 
-// MARK: Recommendations - Editor's Picks widget
+// MARK: Recommendations - Recommendations widget
 private extension HomeViewModel {
     func updateRecommendationsWidget() {
         guard let sections = recomendationsController.sections, !sections.isEmpty else {
@@ -1137,5 +1137,12 @@ private extension HomeViewModel {
 
     func setRecommendationsWidgetOffline() {
         recommendationsWidgetUpdateService.update([:])
+    }
+}
+
+// MARK: Screen impression
+extension HomeViewModel {
+    func trackHomeScreenImpression() {
+        tracker.track(event: Events.Home.homeScreenImpression())
     }
 }

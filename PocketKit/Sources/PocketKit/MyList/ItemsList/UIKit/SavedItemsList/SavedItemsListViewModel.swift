@@ -554,6 +554,15 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         return snapshot
     }
 
+    func trackScreenImpression() {
+        switch viewType {
+        case .saves:
+            tracker.track(event: Events.Saves.savesScreenImpression())
+        case .archive:
+            tracker.track(event: Events.Saves.archivesScreenImpression())
+        }
+    }
+
     func willDisplay(_ cell: ItemsListCell<NSManagedObjectID>) {
         if case .item = cell {
             withSavedItem(from: cell) { [weak self] item in

@@ -150,4 +150,6 @@ protocol ItemsListViewModel: AnyObject {
     func prefetch(itemsAt: [IndexPath])
 
     func reloadSnapshot(for identifiers: [ItemsListCell<ItemIdentifier>])
+
+    func trackScreenImpression()
 }

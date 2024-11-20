@@ -92,9 +92,6 @@ public struct MainView: View {
         .sheet(isPresented: $model.isPresentingHooray) {
             PremiumUpgradeSuccessView()
         }
-        .task {
-            model.trackPremiumUpsellViewed()
-        }
     }
 
     func makeUIKitHome() -> some View {

@@ -35,6 +35,9 @@ struct HomeView: View {
             .refreshable {
                 await homeActions.refreshRecommendations(isForced: true)
             }
+            .onAppear {
+                homeActions.trackHomeScreenImpression()
+            }
             .contentMargins(.bottom, -32)
             .scrollIndicators(.hidden)
             .background(Color(.ui.white1))

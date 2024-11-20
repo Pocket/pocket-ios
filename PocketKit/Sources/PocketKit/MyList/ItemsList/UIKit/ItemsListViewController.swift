@@ -78,6 +78,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
             PocketTipEvents.showSwipeArchiveTip.sendDonation()
             displayTip(SwipeArchiveTip(), configuration: nil, sourceView: nil)
         }
+        model.trackScreenImpression()
     }
 
     override func loadView() {
