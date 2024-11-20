@@ -94,6 +94,12 @@ struct HomeActions {
 
 // MARK: Analytics
 extension HomeActions {
+    func trackHomeScreenImpression() {
+        Task(priority: .background) {
+            let tracker = await Services.shared.tracker
+            tracker.track(event: Events.Home.homeScreenImpression())
+        }
+    }
     func trackCardImpression(_ info: AnalyticsInfo) {
         Task(priority: .background) {
             let tracker = await Services.shared.tracker

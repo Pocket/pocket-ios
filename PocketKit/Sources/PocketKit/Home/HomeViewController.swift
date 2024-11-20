@@ -212,6 +212,11 @@ class HomeViewController: UIViewController {
         handleRefresh {}
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        model.trackHomeScreenImpression()
+    }
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
