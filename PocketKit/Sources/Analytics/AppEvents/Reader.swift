@@ -8,6 +8,18 @@ public extension Events {
 }
 
 public extension Events.Reader {
+    /// User views the `Reader` screen
+    static func readerScreenImpression() -> Impression {
+        return Impression(
+            component: .screen,
+            requirement: .viewable,
+            uiEntity: UiEntity(
+                .screen,
+                identifier: "article.screen"
+            )
+        )
+    }
+
     /**
      Fired when the user views an unsupported content cell in the `Reader`
      */
