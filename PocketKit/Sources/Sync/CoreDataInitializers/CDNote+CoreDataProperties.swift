@@ -6,10 +6,9 @@
 import Foundation
 import CoreData
 
-
 extension CDNote {
-
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<CDNote> {
+    @nonobjc
+    public class func fetchRequest() -> NSFetchRequest<CDNote> {
         return NSFetchRequest<CDNote>(entityName: "Note")
     }
 
@@ -21,5 +20,4 @@ extension CDNote {
     @NSManaged public var content: String?
     @NSManaged public var savedItem: CDSavedItem?
     @NSManaged public var image: CDImage?
-
 }

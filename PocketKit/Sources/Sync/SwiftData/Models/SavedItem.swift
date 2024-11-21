@@ -19,6 +19,8 @@ public class SavedItem {
     public var url: String
     public var highlights: [Highlight]?
     public var item: Item?
+    @Relationship(inverse: \Note.savedItem)
+    public var notes: [Note]?
     @Relationship(inverse: \SavedItemUpdatedNotification.savedItem)
     public var savedItemUpdatedNotification: SavedItemUpdatedNotification?
     @Relationship(inverse: \Tag.savedItems)

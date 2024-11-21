@@ -8,5 +8,4 @@ import CoreData
 
 @objc(Note)
 public class CDNote: NSManagedObject {
-
 }

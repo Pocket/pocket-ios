@@ -16,6 +16,8 @@ public class Image {
     public var recommendation: Recommendation?
     @Relationship(inverse: \SyndicatedArticle.image)
     public var syndicatedArticle: SyndicatedArticle?
+    @Relationship(inverse: \Note.image)
+    public var note: Note?
     public init() {
     }
 }

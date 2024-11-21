@@ -342,8 +342,6 @@
 		AA41DD772BD04D09003CEDBF /* RecentSavesWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentSavesWidget.swift; sourceTree = "<group>"; };
 		AA41DD782BD04D09003CEDBF /* RecommendationsWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationsWidget.swift; sourceTree = "<group>"; };
 		AA41DD792BD04D09003CEDBF /* TopicRecommendationsWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicRecommendationsWidget.swift; sourceTree = "<group>"; };
-		AA4C15B42CEFEA0600FA28C9 /* Note+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Note+CoreDataClass.swift"; path = "PocketKit/Sources/Sync/CoreDataInitializers/Note+CoreDataClass.swift"; sourceTree = "<group>"; };
-		AA4C15B52CEFEA0600FA28C9 /* Note+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Note+CoreDataProperties.swift"; path = "PocketKit/Sources/Sync/CoreDataInitializers/Note+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		AA561B8E2C740F10006DF948 /* PocketShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PocketShortcuts.swift; sourceTree = "<group>"; };
 		AA561B8F2C740F10006DF948 /* SearchSavesIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchSavesIntent.swift; sourceTree = "<group>"; };
 		AA69A28329B7FC6E00BBA644 /* SearchGetPremiumEmptyViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchGetPremiumEmptyViewElement.swift; sourceTree = "<group>"; };
@@ -485,8 +483,6 @@
 		166A81A32637406B0015AA1D = {
 			isa = PBXGroup;
 			children = (
-				AA4C15B42CEFEA0600FA28C9 /* Note+CoreDataClass.swift */,
-				AA4C15B52CEFEA0600FA28C9 /* Note+CoreDataProperties.swift */,
 				AA8BADE32BC88A5D004F1959 /* PrivacyInfo.xcprivacy */,
 				65D3105129CEACEE00952D64 /* PKTListenResources.bundle */,
 				653DA73829C3BC1500123847 /* Pocket_iOS_Release.entitlements */,
