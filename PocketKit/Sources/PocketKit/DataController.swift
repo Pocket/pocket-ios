@@ -41,6 +41,7 @@ public struct DataController: Sendable {
         Highlight.self,
         Sync.Image.self,
         Item.self,
+        Note.self,
         PersistentSyncTask.self,
         Recommendation.self,
         SavedItem.self,
