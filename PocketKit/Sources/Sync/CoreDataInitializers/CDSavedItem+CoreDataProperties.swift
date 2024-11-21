@@ -24,6 +24,7 @@ extension CDSavedItem {
     @NSManaged public var savedItemUpdatedNotification: CDSavedItemUpdatedNotification?
     @NSManaged public var tags: NSOrderedSet?
     @NSManaged public var highlights: NSOrderedSet?
+    @NSManaged public var notes: NSOrderedSet?
     @NSManaged public var unresolvedSavedItem: CDUnresolvedSavedItem?
 }
 
