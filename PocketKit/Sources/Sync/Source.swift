@@ -165,4 +165,11 @@ public protocol Source {
 
     // MARK: ObjectID from URI Representation
     func objectID(from uri: URL) -> NSManagedObjectID?
+
+    // MARK: Notes
+    func createNote(title: String?, body: String, url: String?)
+    func deleteNote(note: CDNote)
+    func deleteNote(noteID: UUID)
+    func fetchNote(noteID: UUID) -> CDNote?
+    func fetchNotes(savedItem: SavedItem) -> [CDNote]?
 }

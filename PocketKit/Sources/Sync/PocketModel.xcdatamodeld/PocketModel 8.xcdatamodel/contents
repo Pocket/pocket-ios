@@ -102,14 +102,20 @@
         </uniquenessConstraints>
     </entity>
     <entity name="Note" representedClassName="Note" syncable="YES">
-        <attribute name="content" optional="YES" attributeType="String"/>
+        <attribute name="body" optional="YES" attributeType="String"/>
         <attribute name="contentPreview" optional="YES" attributeType="String"/>
         <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="noteID" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="sourceUrl" optional="YES" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String"/>
         <attribute name="updatedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <relationship name="image" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Image" inverseName="note" inverseEntity="Image"/>
         <relationship name="savedItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SavedItem" inverseName="notes" inverseEntity="SavedItem"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="noteID"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
     </entity>
     <entity name="PersistentSyncTask" representedClassName="CDPersistentSyncTask" syncable="YES">
         <attribute name="createdAt" optional="YES" attributeType="Date" defaultDateTimeInterval="666643260" usesScalarValueType="NO"/>

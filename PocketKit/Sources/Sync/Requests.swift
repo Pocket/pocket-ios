@@ -306,6 +306,27 @@ public enum Requests {
         }
         return request
     }
+
+    public static func fetchAllNotes() -> NSFetchRequest<CDNote> {
+        let request = CDNote.fetchRequest()
+        request.sortDescriptors = [
+            NSSortDescriptor(keyPath: \CDNote.createdAt, ascending: false)
+        ]
+        return request
+    }
+
+    public static func fetchNote(noteID: UUID) -> NSFetchRequest<CDNote> {
+        let request: NSFetchRequest<CDNote> = CDNote.fetchRequest()
+        request.predicate = NSPredicate(format: "noteID = %@", noteID as CVarArg)
+        request.fetchLimit = 1
+        return request
+    }
+
+    public static func fetchNotes(savedItem: CDSavedItem) -> NSFetchRequest<CDNote> {
+        let request = fetchAllNotes()
+        request.predicate = NSPredicate(format: "savedItem = %@", savedItem)
+        return request
+    }
 }
 
 public enum Predicates {

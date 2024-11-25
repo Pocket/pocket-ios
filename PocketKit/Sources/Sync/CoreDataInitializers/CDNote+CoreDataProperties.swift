@@ -11,13 +11,13 @@ extension CDNote {
     public class func fetchRequest() -> NSFetchRequest<CDNote> {
         return NSFetchRequest<CDNote>(entityName: "Note")
     }
-
+    @NSManaged public var noteID: UUID
     @NSManaged public var createdAt: Date?
     @NSManaged public var updatedAt: Date?
     @NSManaged public var sourceUrl: String?
     @NSManaged public var title: String?
     @NSManaged public var contentPreview: String?
-    @NSManaged public var content: String?
+    @NSManaged public var body: String?
     @NSManaged public var savedItem: CDSavedItem?
     @NSManaged public var image: CDImage?
 }

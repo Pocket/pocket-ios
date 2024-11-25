@@ -264,6 +264,20 @@ extension Space {
     }
 }
 
+// MARK: Note
+extension Space {
+    func fetchNotes(context: NSManagedObjectContext? = nil) throws -> [CDNote] {
+        return try fetch(Requests.fetchNotes(savedItem: nil), context: context)
+    }
+    
+    func fetchNote(byRemoteID id: String, context: NSManagedObjectContext? = nil) throws -> CDNote? {
+        let request = Requests.fetchNotes(savedItem: nil)
+        request.predicate = NSPredicate(format: "remoteID = %@", id)
+        request.fetchLimit = 1
+        return try fetch(request, context: context).first
+    }
+}
+
 // MARK: Recommendation
 extension Space {
     func fetchRecommendations(context: NSManagedObjectContext? = nil) throws -> [CDRecommendation] {

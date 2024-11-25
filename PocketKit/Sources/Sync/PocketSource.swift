@@ -1536,6 +1536,17 @@ extension PocketSource {
     }
 }
 
+// MARK: Notes
+extension PocketSource {
+    public func fetchNotes(for savedItem: CDSavedItem) -> [CDNote]? {
+        try? space.fetch(Requests.fetchNotes(savedItem: savedItem))
+    }
+    
+    public func fetchNote(noteID: UUID) -> CDNote? {
+        try? space.fetch(Requests.fetchNote(noteID: noteID)).first
+    }
+}
+
 // MARK: UI Helpers
 /// Functions used by the UI
 extension PocketSource {
