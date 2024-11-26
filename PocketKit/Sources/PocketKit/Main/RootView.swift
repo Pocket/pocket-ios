@@ -49,7 +49,7 @@ private extension RootView {
                 model.handleSpotlight(userActivity)
             })
             // TODO: SWIFTUI - Once we move away from Services, these need to be handled with DI
-            .modelContainer(Services.shared.dataController)
+            .modelContainer(Services.shared.modelContainer)
             .environmentObject(Services.shared.accessService)
     }
 

@@ -42,7 +42,7 @@
                   "authors": [],
                   "excerpt": "Cursus Aenean Elit",
                   "title": "Item 2",
-                  "datePublished": "2021-01-01 12:01:01",
+                  "datePublished": "2021-01-01T12:01:01.000Z",
                   "image": {
                     "__typename": "[type-name-here]",
                     "url": "https://example.com/archived-item--2/top-image.jpg"
@@ -100,7 +100,7 @@
                   "authors": [],
                   "excerpt": "Cursus Aenean Elit",
                   "title": "Item 2",
-                  "datePublished": "2021-01-01 12:01:01",
+                  "datePublished": "2021-01-01T12:01:01.000Z",
                   "image": {
                     "__typename": "[type-name-here]",
                     "url": "https://example.com/archived-item--2/top-image.jpg"
@@ -158,7 +158,7 @@
                   "authors": [],
                   "excerpt": "Cursus Aenean Elit",
                   "title": "Item 2",
-                  "datePublished": "2021-01-01 12:01:01",
+                  "datePublished": "2021-01-01T12:01:01.000Z",
                   "image": {
                     "__typename": "[type-name-here]",
                     "url": "https://example.com/archived-item--2/top-image.jpg"
@@ -216,7 +216,7 @@
                   "authors": [],
                   "excerpt": "Cursus Aenean Elit",
                   "title": "Item 2",
-                  "datePublished": "2021-01-01 12:01:01",
+                  "datePublished": "2021-01-01T12:01:01.000Z",
                   "image": {
                     "__typename": "[type-name-here]",
                     "url": "https://example.com/archived-item--2/top-image.jpg"
@@ -274,7 +274,7 @@
                   "authors": [],
                   "excerpt": "Cursus Aenean Elit",
                   "title": "Item 2",
-                  "datePublished": "2021-01-01 12:01:01",
+                  "datePublished": "2021-01-01T12:01:01.000Z",
                   "image": {
                     "__typename": "[type-name-here]",
                     "url": "https://example.com/archived-item--2/top-image.jpg"
@@ -332,7 +332,7 @@
                   "authors": [],
                   "excerpt": "Cursus Aenean Elit",
                   "title": "Item 2",
-                  "datePublished": "2021-01-01 12:01:01",
+                  "datePublished": "2021-01-01T12:01:01.000Z",
                   "image": {
                     "__typename": "[type-name-here]",
                     "url": "https://example.com/archived-item--2/top-image.jpg"
@@ -390,7 +390,7 @@
                   "authors": [],
                   "excerpt": "Cursus Aenean Elit",
                   "title": "Item 2",
-                  "datePublished": "2021-01-01 12:01:01",
+                  "datePublished": "2021-01-01T12:01:01.000Z",
                   "image": {
                     "__typename": "[type-name-here]",
                     "url": "https://example.com/archived-item--2/top-image.jpg"
@@ -448,7 +448,7 @@
                   "authors": [],
                   "excerpt": "Cursus Aenean Elit",
                   "title": "Item 2",
-                  "datePublished": "2021-01-01 12:01:01",
+                  "datePublished": "2021-01-01T12:01:01.000Z",
                   "image": {
                     "__typename": "[type-name-here]",
                     "url": "https://example.com/archived-item--2/top-image.jpg"
@@ -506,7 +506,7 @@
                   "authors": [],
                   "excerpt": "Cursus Aenean Elit",
                   "title": "Item 2",
-                  "datePublished": "2021-01-01 12:01:01",
+                  "datePublished": "2021-01-01T12:01:01.000Z",
                   "image": {
                     "__typename": "[type-name-here]",
                     "url": "https://example.com/archived-item--2/top-image.jpg"
@@ -564,7 +564,7 @@
                   "authors": [],
                   "excerpt": "Cursus Aenean Elit",
                   "title": "Item 2",
-                  "datePublished": "2021-01-01 12:01:01",
+                  "datePublished": "2021-01-01T12:01:01.000Z",
                   "image": {
                     "__typename": "[type-name-here]",
                     "url": "https://example.com/archived-item--2/top-image.jpg"
@@ -622,7 +622,7 @@
                   "authors": [],
                   "excerpt": "Cursus Aenean Elit",
                   "title": "Item 2",
-                  "datePublished": "2021-01-01 12:01:01",
+                  "datePublished": "2021-01-01T12:01:01.000Z",
                   "image": {
                     "__typename": "[type-name-here]",
                     "url": "https://example.com/archived-item--2/top-image.jpg"
@@ -680,7 +680,7 @@
                   "authors": [],
                   "excerpt": "Cursus Aenean Elit",
                   "title": "Item 2",
-                  "datePublished": "2021-01-01 12:01:01",
+                  "datePublished": "2021-01-01T12:01:01.000Z",
                   "image": {
                     "__typename": "[type-name-here]",
                     "url": "https://example.com/archived-item--2/top-image.jpg"
@@ -738,7 +738,7 @@
                   "authors": [],
                   "excerpt": "Cursus Aenean Elit",
                   "title": "Item 2",
-                  "datePublished": "2021-01-01 12:01:01",
+                  "datePublished": "2021-01-01T12:01:01.000Z",
                   "image": {
                     "__typename": "[type-name-here]",
                     "url": "https://example.com/archived-item--2/top-image.jpg"
@@ -796,7 +796,7 @@
                   "authors": [],
                   "excerpt": "Cursus Aenean Elit",
                   "title": "Item 2",
-                  "datePublished": "2021-01-01 12:01:01",
+                  "datePublished": "2021-01-01T12:01:01.000Z",
                   "image": {
                     "__typename": "[type-name-here]",
                     "url": "https://example.com/archived-item--2/top-image.jpg"
@@ -854,7 +854,7 @@
                   "authors": [],
                   "excerpt": "Cursus Aenean Elit",
                   "title": "Item 2",
-                  "datePublished": "2021-01-01 12:01:01",
+                  "datePublished": "2021-01-01T12:01:01.000Z",
                   "image": {
                     "__typename": "[type-name-here]",
                     "url": "https://example.com/archived-item--2/top-image.jpg"
@@ -912,7 +912,7 @@
                   "authors": [],
                   "excerpt": "Cursus Aenean Elit",
                   "title": "Item 2",
-                  "datePublished": "2021-01-01 12:01:01",
+                  "datePublished": "2021-01-01T12:01:01.000Z",
                   "image": {
                     "__typename": "[type-name-here]",
                     "url": "https://example.com/archived-item--2/top-image.jpg"
@@ -970,7 +970,7 @@
                   "authors": [],
                   "excerpt": "Cursus Aenean Elit",
                   "title": "Item 2",
-                  "datePublished": "2021-01-01 12:01:01",
+                  "datePublished": "2021-01-01T12:01:01.000Z",
                   "image": {
                     "__typename": "[type-name-here]",
                     "url": "https://example.com/archived-item--2/top-image.jpg"
@@ -1028,7 +1028,7 @@
                   "authors": [],
                   "excerpt": "Cursus Aenean Elit",
                   "title": "Item 2",
-                  "datePublished": "2021-01-01 12:01:01",
+                  "datePublished": "2021-01-01T12:01:01.000Z",
                   "image": {
                     "__typename": "[type-name-here]",
                     "url": "https://example.com/archived-item--2/top-image.jpg"
@@ -1086,7 +1086,7 @@
                   "authors": [],
                   "excerpt": "Cursus Aenean Elit",
                   "title": "Item 2",
-                  "datePublished": "2021-01-01 12:01:01",
+                  "datePublished": "2021-01-01T12:01:01.000Z",
                   "image": {
                     "__typename": "[type-name-here]",
                     "url": "https://example.com/archived-item--2/top-image.jpg"
@@ -1144,7 +1144,7 @@
                   "authors": [],
                   "excerpt": "Cursus Aenean Elit",
                   "title": "Item 2",
-                  "datePublished": "2021-01-01 12:01:01",
+                  "datePublished": "2021-01-01T12:01:01.000Z",
                   "image": {
                     "__typename": "[type-name-here]",
                     "url": "https://example.com/archived-item--2/top-image.jpg"
@@ -1202,7 +1202,7 @@
                   "authors": [],
                   "excerpt": "Cursus Aenean Elit",
                   "title": "Item 2",
-                  "datePublished": "2021-01-01 12:01:01",
+                  "datePublished": "2021-01-01T12:01:01.000Z",
                   "image": {
                     "__typename": "[type-name-here]",
                     "url": "https://example.com/archived-item--2/top-image.jpg"
@@ -1260,7 +1260,7 @@
                   "authors": [],
                   "excerpt": "Cursus Aenean Elit",
                   "title": "Item 2",
-                  "datePublished": "2021-01-01 12:01:01",
+                  "datePublished": "2021-01-01T12:01:01.000Z",
                   "image": {
                     "__typename": "[type-name-here]",
                     "url": "https://example.com/archived-item--2/top-image.jpg"
@@ -1318,7 +1318,7 @@
                   "authors": [],
                   "excerpt": "Cursus Aenean Elit",
                   "title": "Item 2",
-                  "datePublished": "2021-01-01 12:01:01",
+                  "datePublished": "2021-01-01T12:01:01.000Z",
                   "image": {
                     "__typename": "[type-name-here]",
                     "url": "https://example.com/archived-item--2/top-image.jpg"
@@ -1376,7 +1376,7 @@
                   "authors": [],
                   "excerpt": "Cursus Aenean Elit",
                   "title": "Item 2",
-                  "datePublished": "2021-01-01 12:01:01",
+                  "datePublished": "2021-01-01T12:01:01.000Z",
                   "image": {
                     "__typename": "[type-name-here]",
                     "url": "https://example.com/archived-item--2/top-image.jpg"
@@ -1434,7 +1434,7 @@
                   "authors": [],
                   "excerpt": "Cursus Aenean Elit",
                   "title": "Item 2",
-                  "datePublished": "2021-01-01 12:01:01",
+                  "datePublished": "2021-01-01T12:01:01.000Z",
                   "image": {
                     "__typename": "[type-name-here]",
                     "url": "https://example.com/archived-item--2/top-image.jpg"
@@ -1492,7 +1492,7 @@
                   "authors": [],
                   "excerpt": "Cursus Aenean Elit",
                   "title": "Item 2",
-                  "datePublished": "2021-01-01 12:01:01",
+                  "datePublished": "2021-01-01T12:01:01.000Z",
                   "image": {
                     "__typename": "[type-name-here]",
                     "url": "https://example.com/archived-item--2/top-image.jpg"
@@ -1550,7 +1550,7 @@
                   "authors": [],
                   "excerpt": "Cursus Aenean Elit",
                   "title": "Item 2",
-                  "datePublished": "2021-01-01 12:01:01",
+                  "datePublished": "2021-01-01T12:01:01.000Z",
                   "image": {
                     "__typename": "[type-name-here]",
                     "url": "https://example.com/archived-item--2/top-image.jpg"
@@ -1608,7 +1608,7 @@
                   "authors": [],
                   "excerpt": "Cursus Aenean Elit",
                   "title": "Item 2",
-                  "datePublished": "2021-01-01 12:01:01",
+                  "datePublished": "2021-01-01T12:01:01.000Z",
                   "image": {
                     "__typename": "[type-name-here]",
                     "url": "https://example.com/archived-item--2/top-image.jpg"
@@ -1666,7 +1666,7 @@
                   "authors": [],
                   "excerpt": "Cursus Aenean Elit",
                   "title": "Item 2",
-                  "datePublished": "2021-01-01 12:01:01",
+                  "datePublished": "2021-01-01T12:01:01.000Z",
                   "image": {
                     "__typename": "[type-name-here]",
                     "url": "https://example.com/archived-item--2/top-image.jpg"
@@ -1724,7 +1724,7 @@
                   "authors": [],
                   "excerpt": "Cursus Aenean Elit",
                   "title": "Item 2",
-                  "datePublished": "2021-01-01 12:01:01",
+                  "datePublished": "2021-01-01T12:01:01.000Z",
                   "image": {
                     "__typename": "[type-name-here]",
                     "url": "https://example.com/archived-item--2/top-image.jpg"
