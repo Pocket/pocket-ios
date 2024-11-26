@@ -45,7 +45,7 @@
                     "authors": [],
                     "excerpt": "Risus Aenean Ultricies Nullam Vehicula",
                     "title": "Archived Item 1",
-                    "datePublished": "2021-01-01 12:01:01",
+                    "datePublished": "2021-01-01T12:01:01.000Z",
                     "image" : {
                         "__typename": "[type-name-here]",
                         "url": "https://example.com/archived-item-1/top-image.jpg"
@@ -93,7 +93,7 @@
                     "authors": [],
                     "excerpt": "Vehicula Nibh Ligula Porta Magna",
                     "title": "Archived Item 0",
-                    "datePublished": "2021-01-01 12:01:01",
+                    "datePublished": "2021-01-01T12:01:01.000Z",
                     "image" : {
                         "__typename": "[type-name-here]",
                         "url": "https://example.com/items/archived-item-0/images/top-image.jpg"
