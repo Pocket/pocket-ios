@@ -39,7 +39,7 @@
                             ],
                             "excerpt": "Cursus Aenean Elit",
                             "title": "Slate 2, Recommendation 1",
-                            "datePublished": "2021-01-01 12:01:01",
+                            "datePublished": "2021-01-01T12:01:01.000Z",
                             "image" : {
                         "__typename": "[type-name-here]",
                                 "url": "http://example.com/slate-2-rec-1/top-image.png"
@@ -50,7 +50,7 @@
                                 "logo": "https://slate-2-rec-1.example.com/logo.png"
                             }
                         },
-                        "datePublished": "2021-01-01 12:01:01",
+                        "datePublished": "2021-01-01T12:01:01.000Z",
                         "images": [],
                         "isArticle": true,
                         "hasImage": "HAS_IMAGES",
