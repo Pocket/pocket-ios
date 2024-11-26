@@ -55,18 +55,18 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         super.init()
     }
 
-    public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
-        startLogging()
-        processCommandLineArguments()
-        setupSession()
-        setupAdjust()
-        setupTracker()
-        initializeCoordinators()
-        initializeTextile()
-        startSubscriptionStore()
-        setupBadge(application: application)
-        return true
-    }
+//    public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
+//        startLogging()
+//        processCommandLineArguments()
+//        setupSession()
+//        setupAdjust()
+//        setupTracker()
+//        initializeCoordinators()
+//        initializeTextile()
+//        startSubscriptionStore()
+//        setupBadge(application: application)
+//        return true
+//    }
 
     /// Sets orientations to use for the views
     /// - Parameters:

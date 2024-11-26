@@ -36,6 +36,7 @@ public class RootViewModel: ObservableObject {
     private var subscriptions: Set<AnyCancellable> = []
 
     private var mainViewModel: MainViewModel?
+    private var appBadgeSetup: AppBadgeSetup?
 
     public convenience init() {
         self.init(services: Services.shared)
@@ -51,6 +52,15 @@ public class RootViewModel: ObservableObject {
             notificationCenter: services.notificationCenter,
             refreshCoordinators: services.refreshCoordinators
         )
+        startLogging()
+        processCommandLineArguments()
+        setupSession()
+        setupAdjust()
+        setupTracker()
+        initializeCoordinators()
+        initializeTextile()
+        startSubscriptionStore()
+        setupBadge(application: UIApplication.shared)
 
         services.start { [weak self] in
             guard let self else { return }
@@ -200,5 +210,132 @@ public class RootViewModel: ObservableObject {
             }
         default: return
         }
+    }
+}
+
+// MARK: didFinishLaunching steps
+extension RootViewModel {
+    /// Starts the `Log` engine
+    private func startLogging() {
+        Log.start(
+            dsn: Keys.shared.sentryDSN,
+            tracesSampler: { context in
+                guard Services.shared.featureFlagService.isAssigned(flag: .traceSampling),
+                      // Get the sentry traces sample value from the feature flag
+                      let sample = Services.shared.featureFlagService.getPayload(flag: .traceSampling)?.numberValue else {
+                    // Traces sampler is disabled or not set, so returning a 0
+                    return 0.0
+                }
+                return sample
+            },
+            profilesSampler: { context in
+                // NOTE: This is relative to the TracesSampler. IE. if tracesSampler responds with 100%, profilesSampler will be called 100% of the time,
+                // if traces responds with 50%, profileSamples will be called 50% of the time.
+                guard Services.shared.featureFlagService.isAssigned(flag: .profileSampling),
+                      // Get the sentry profile sample value from the feature flag
+                      let sample = Services.shared.featureFlagService.getPayload(flag: .profileSampling)?.numberValue else {
+                    // Profiles sampler is disabled or not set, so returning a 0
+                    return 0.0
+                }
+                return sample
+            }
+        )
+    }
+
+    /// Process any command line arguments (e. g. to setup the testing environment)
+    private func processCommandLineArguments() {
+        if CommandLine.arguments.contains("clearKeychain") {
+            appSession.clearCurrentSession()
+        }
+
+        if CommandLine.arguments.contains("clearUserDefaults") {
+            userDefaults.resetKeys()
+        }
+
+        if CommandLine.arguments.contains("clearCoreData") {
+            source.clear()
+        }
+
+        if CommandLine.arguments.contains("clearImageCache") {
+            Textiles.clearImageCache()
+        }
+    }
+
+    /// Clears the session if it's the first launch, otherwise sets it up with the available environment info.
+    private func setupSession() {
+        SignOutOnFirstLaunch(
+            appSession: appSession,
+            user: Services.shared.user,
+            userDefaults: userDefaults
+        ).execute()
+
+        if let guid = ProcessInfo.processInfo.environment["sessionGUID"],
+           let accessToken = ProcessInfo.processInfo.environment["accessToken"],
+           let userIdentifier = ProcessInfo.processInfo.environment["sessionUserID"] {
+            let session = Session(
+                guid: guid,
+                accessToken: accessToken,
+                userIdentifier: userIdentifier
+            )
+            appSession.setCurrentSession(session)
+        }
+    }
+
+    /// Setup the adjust environment
+    /// Note: this needs to be called early on because we attach the ad id to the UserEntity.
+    private func setupAdjust() {
+        let adjustAppToken = Keys.shared.adjustAppToken
+        let environment = ADJEnvironmentProduction
+        let adjustConfig = ADJConfig(
+            appToken: adjustAppToken,
+            environment: environment
+        )
+        Adjust.appDidLaunch(adjustConfig)
+    }
+
+    /// Setup the tracker
+    private func setupTracker() {
+        // Reset and attach at least an api user entity on app launch
+        self.tracker.resetPersistentEntities([
+            APIUserEntity(consumerKey: Keys.shared.pocketApiConsumerKey)
+        ])
+
+        if let currentSession = appSession.currentSession {
+            // Attach a user entity at launch if it exists
+            tracker.addPersistentEntity(UserEntity(guid: currentSession.guid, userID: currentSession.userIdentifier, adjustAdId: Adjust.adid()))
+        }
+    }
+
+    /// Initialize `Textile`
+    private func initializeTextile() {
+        Textiles.initialize()
+    }
+
+    /// Initialize any `RefreshCoordinator`
+    private func initializeCoordinators() {
+        refreshCoordinators.forEach({ $0.initialize() })
+        DispatchQueue.global(qos: .background).async { [weak self] in
+            self?.source.restore()
+        }
+    }
+
+    /// Start pocket premium subscriptions store
+    private func startSubscriptionStore() {
+        if appSession.currentSession != nil {
+            // If the user is not logged in, we can start the subscription
+            // in preparation for in-app purchases. Otherwise, the store
+            // listens for log in / out events to appropriately start / stop.
+            Services.shared.subscriptionStore.start()
+        }
+    }
+
+    /// Setup the badge
+    /// - Parameter application: the current application
+    private func setupBadge(application: UIApplication) {
+        appBadgeSetup = AppBadgeSetup(
+            source: source,
+            userDefaults: userDefaults,
+            badgeProvider: application
+        )
     }
 }
