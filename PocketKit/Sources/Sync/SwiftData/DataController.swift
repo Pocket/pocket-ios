@@ -7,11 +7,28 @@ import Foundation
 import SwiftData
 import SharedPocketKit
 
-@MainActor
-public class DataController {
-    public static var appGroupContainerID: String?
+public struct DataController: Sendable {
+    public static func makeModelContainer(groupID: String) -> ModelContainer {
+        Log.breadcrumb(category: "SWiftUIHome", level: .debug, message: "Start initializing shared model container.")
+        ArticleTransformer.register()
+        Log.breadcrumb(category: "SWiftUIHome", level: .debug, message: "Article transformer registered.")
+        SyncTaskTransformer.register()
+        Log.breadcrumb(category: "SWiftUIHome", level: .debug, message: "SynkTask transformer registered.")
 
-    public static let schema = Schema([
+        guard let appGroupContainer = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: groupID) else {
+            Log.capture(message: "Shared file container could not be created.")
+            fatalError("Shared file container could not be created.")
+        }
+        let url = appGroupContainer.appendingPathComponent("PocketModel.sqlite")
+        do {
+            return try ModelContainer(for: Self.schema, configurations: ModelConfiguration(url: url))
+        } catch {
+            Log.capture(message: "Could not create ModelContainer: \(error)")
+            fatalError("Could not create ModelContainer: \(error)")
+        }
+    }
+
+    private static let schema = Schema([
         Author.self,
         Sync.Collection.self,
         CollectionAuthor.self,
@@ -32,41 +49,4 @@ public class DataController {
         Tag.self,
         UnresolvedSavedItem.self
     ])
-
-    public static let previewContainer: ModelContainer = {
-        ArticleTransformer.register()
-        SyncTaskTransformer.register()
-        do {
-            let config = ModelConfiguration(isStoredInMemoryOnly: true)
-            let container = try ModelContainer(for: schema, configurations: config)
-            MockData.insertFakeData(container: container)
-            return container
-        } catch {
-            fatalError("Failed to create model container for previewing: \(error.localizedDescription)")
-        }
-    }()
-
-    public static let sharedModelContainer: ModelContainer = {
-        Log.breadcrumb(category: "SWiftUIHome", level: .debug, message: "Start initializing shared model container.")
-        ArticleTransformer.register()
-        Log.breadcrumb(category: "SWiftUIHome", level: .debug, message: "Article transformer registered.")
-        SyncTaskTransformer.register()
-        Log.breadcrumb(category: "SWiftUIHome", level: .debug, message: "SynkTask transformer registered.")
-
-        guard let appGroupContainerID = appGroupContainerID else {
-            Log.capture(message: "appGroupContainerID must be set before accessing the sharedModelContainer.")
-            fatalError("appGroupContainerID must be set before accessing the sharedModelContainer.")
-        }
-        guard let appGroupContainer = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroupContainerID) else {
-            Log.capture(message: "Shared file container could not be created.")
-            fatalError("Shared file container could not be created.")
-        }
-        let url = appGroupContainer.appendingPathComponent("PocketModel.sqlite")
-        do {
-            return try ModelContainer(for: schema, configurations: ModelConfiguration(url: url))
-        } catch {
-            Log.capture(message: "Could not create ModelContainer: \(error)")
-            fatalError("Could not create ModelContainer: \(error)")
-        }
-    }()
 }
