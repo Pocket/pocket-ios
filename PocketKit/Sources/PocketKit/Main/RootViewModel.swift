@@ -213,7 +213,7 @@ public class RootViewModel: ObservableObject {
     }
 }
 
-// MARK: didFinishLaunching steps
+// MARK: post-launch setup
 extension RootViewModel {
     /// Starts the `Log` engine
     private func startLogging() {
