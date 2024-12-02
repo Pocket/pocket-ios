@@ -1538,12 +1538,43 @@ extension PocketSource {
 
 // MARK: Notes
 extension PocketSource {
-    public func fetchNotes(for savedItem: CDSavedItem) -> [CDNote]? {
-        try? space.fetch(Requests.fetchNotes(savedItem: savedItem))
+    public func fetchNote(noteID: String) -> CDNote? {
+        do {
+            return try space.fetchNote(byRemoteID: noteID)
+        } catch {
+            Log.capture(message: "Unable to fetch note with id \(noteID) - \(error)")
+            return nil
+        }
     }
-    
-    public func fetchNote(noteID: UUID) -> CDNote? {
-        try? space.fetch(Requests.fetchNote(noteID: noteID)).first
+
+    public func fetchNotes(for savedItem: CDSavedItem) -> [CDNote]? {
+        do {
+            return try space.fetchNotes(for: savedItem)
+        } catch {
+            Log.capture(message: "Unable to fetch notes for saved item with id \(savedItem.remoteID ?? "no_id") - \(error)")
+            return nil
+        }
+    }
+
+    public func fetchAllNotes() -> [CDNote]? {
+        do {
+            return try space.fetchAllNotes()
+        } catch {
+            Log.capture(message: "Unable to fetch notes - \(error)")
+            return nil
+        }
+    }
+
+    public func createNote(title: String?, body: String, url: String?) {
+        <#code#>
+    }
+
+    public func updateNote(noteID: String, title: String?, body: String, url: String?) {
+
+    }
+
+    public func deleteNote(noteID: String) {
+
     }
 }
 

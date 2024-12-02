@@ -315,9 +315,9 @@ public enum Requests {
         return request
     }
 
-    public static func fetchNote(noteID: UUID) -> NSFetchRequest<CDNote> {
+    public static func fetchNote(noteID: String) -> NSFetchRequest<CDNote> {
         let request: NSFetchRequest<CDNote> = CDNote.fetchRequest()
-        request.predicate = NSPredicate(format: "noteID = %@", noteID as CVarArg)
+        request.predicate = NSPredicate(format: "noteID = %@", noteID)
         request.fetchLimit = 1
         return request
     }

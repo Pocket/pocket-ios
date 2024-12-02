@@ -266,15 +266,27 @@ extension Space {
 
 // MARK: Note
 extension Space {
-    func fetchNotes(context: NSManagedObjectContext? = nil) throws -> [CDNote] {
-        return try fetch(Requests.fetchNotes(savedItem: nil), context: context)
-    }
-    
     func fetchNote(byRemoteID id: String, context: NSManagedObjectContext? = nil) throws -> CDNote? {
-        let request = Requests.fetchNotes(savedItem: nil)
+        let request = Requests.fetchNote(noteID: id)
         request.predicate = NSPredicate(format: "remoteID = %@", id)
         request.fetchLimit = 1
         return try fetch(request, context: context).first
+    }
+
+    func fetchNotes(for savedItem: CDSavedItem, context: NSManagedObjectContext? = nil) throws -> [CDNote] {
+        try fetch(Requests.fetchNotes(savedItem: savedItem), context: context)
+    }
+
+    func fetchAllNotes(context: NSManagedObjectContext? = nil) throws -> [CDNote] {
+        return try fetch(Requests.fetchAllNotes(), context: context)
+    }
+
+    func createNote(title: String?, body: String, url: String?) -> CDNote {
+        let note = CDNote(context: backgroundContext)
+        note.title = title
+        note.body = body
+
+        return note
     }
 }
 
