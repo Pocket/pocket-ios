@@ -4,11 +4,11 @@
 //
 
 import Foundation
-import SwiftData
+@preconcurrency import SwiftData
 import SharedPocketKit
 
 public struct DataController: Sendable {
-    public static func makeModelContainer(groupID: String) -> ModelContainer {
+    public func makeModelContainer(groupID: String) -> ModelContainer {
         Log.breadcrumb(category: "SWiftUIHome", level: .debug, message: "Start initializing shared model container.")
         ArticleTransformer.register()
         Log.breadcrumb(category: "SWiftUIHome", level: .debug, message: "Article transformer registered.")
@@ -21,14 +21,16 @@ public struct DataController: Sendable {
         }
         let url = appGroupContainer.appendingPathComponent("PocketModel.sqlite")
         do {
-            return try ModelContainer(for: Self.schema, configurations: ModelConfiguration(url: url))
+            return try ModelContainer(for: self.schema, configurations: ModelConfiguration(url: url))
         } catch {
             Log.capture(message: "Could not create ModelContainer: \(error)")
             fatalError("Could not create ModelContainer: \(error)")
         }
     }
 
-    private static let schema = Schema([
+    public init() {}
+
+    private let schema = Schema([
         Author.self,
         Sync.Collection.self,
         CollectionAuthor.self,
