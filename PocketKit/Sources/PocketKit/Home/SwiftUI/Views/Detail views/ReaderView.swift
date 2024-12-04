@@ -7,7 +7,7 @@ import Network
 
 /// SwiftUI version of the `Reader`
 struct ReaderView: UIViewControllerRepresentable {
-    let route: ReadableDestination
+    let destination: ReadableDestination
 
     class Coordinator {
         var parentObserver: NSKeyValueObservation?
@@ -40,10 +40,10 @@ struct ReaderView: UIViewControllerRepresentable {
 
 private extension ReaderView {
     func makeReadableViewModel() -> ReadableViewModel? {
-        if let savedItemUrlString = route.savedItemUrlString {
+        if let savedItemUrlString = destination.savedItemUrlString {
             return SavedItemViewModel.fromURL(savedItemUrlString)
         }
-        if let syndictedUrlString = route.itemUrlString {
+        if let syndictedUrlString = destination.itemUrlString {
             return RecommendableItemViewModel.fromURL(syndictedUrlString)
         }
         return nil

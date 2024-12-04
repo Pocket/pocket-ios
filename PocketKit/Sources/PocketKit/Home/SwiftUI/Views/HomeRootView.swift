@@ -20,7 +20,7 @@ struct HomeRootView: View {
             HomeView()
                 .navigationDestination(for: NativeCollectionDestination.self) { NativeCollectionView(destination: $0) }
                 .navigationDestination(for: ReadableDestination.self) {
-                    ReaderView(route: $0)
+                    ReaderView(destination: $0)
                         .ignoresSafeArea(.all)
                 }
                 .navigationDestination(for: SlateDestination.self) { SlateDetailView(destination: $0) }
