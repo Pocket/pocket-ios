@@ -126,8 +126,11 @@ private extension CardView {
             var externalDestination = false
             if let slug = card.slug {
                 navigation.navigateTo(NativeCollectionDestination(slug: slug, givenURL: card.givenURL))
-            } else if savedItem != nil {
-                navigation.navigateTo(ReadableDestination(.saved(card.givenURL)))
+            } else if let savedItem,                                                // We are legally allowed to open the item in reader view
+                        savedItem.item?.isArticle == true,                          // except one of the following conditions is met:
+                        savedItem.item?.isVideo == false,                           // a) the item is not an article (i.e. it was not parseable)
+                        savedItem.item?.isImage == false {                          // b) the item is an image
+                navigation.navigateTo(ReadableDestination(.saved(card.givenURL)))   // c) the item is a video
             } else if card.isSyndicated {
                 navigation.navigateTo(ReadableDestination(.syndicated(card.givenURL)))
             } else if URL(string: card.givenURL) != nil {
