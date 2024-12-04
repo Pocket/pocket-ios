@@ -17,21 +17,14 @@ public struct MainView: View {
     @State private var dismissReason: DismissReason = .swipe
     @State var tabBarHeightOffset: CGFloat = 0
 
-    @AppStorage var isSwiftUIHomeEnabled: Bool
-
     init(model: MainViewModel, bannerPresenter: BannerPresenter) {
         self.model = model
         self.bannerPresenter = bannerPresenter
-        _isSwiftUIHomeEnabled = AppStorage(wrappedValue: false, UserDefaults.Key.enableSwiftUIHome, store: Services.shared.userDefaults)
     }
 
     public var body: some View {
         TabView(selection: $model.selectedSection) {
-            if isSwiftUIHomeEnabled {
-                makeSwiftUIHome()
-            } else {
-                makeUIKitHome()
-            }
+            makeSwiftUIHome()
             SavesContainerViewControllerSwiftUI(model: model.saves)
                 .edgesIgnoringSafeArea(.all) // Allow Saves to use the entire screen, including under the status bar
                 .tabBarHeightOffset { offset in tabBarHeightOffset = offset }

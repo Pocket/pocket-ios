@@ -15,23 +15,14 @@ enum SnowplowEndpoint: String, CaseIterable, Identifiable {
 struct DebugMenuView: View {
     @State private var selectedSnowplowEndpoint: SnowplowEndpoint = .micro
     @ObservedObject var viewModel: AccountViewModel
-    @AppStorage var isSwiftUIHomeEnabled: Bool
     let userIdentifier = Services.shared.appSession.currentSession?.userIdentifier ?? ""
 
     init(viewModel: AccountViewModel) {
         self.viewModel = viewModel
-        _isSwiftUIHomeEnabled = AppStorage(wrappedValue: false, UserDefaults.Key.enableSwiftUIHome, store: Services.shared.userDefaults)
     }
 
     var body: some View {
         List {
-            Section {
-                Toggle(isOn: $isSwiftUIHomeEnabled) {
-                    Text("SwiftUI home")
-                }
-            } header: {
-                Text("Enable/Disable SwiftUI home")
-            }
             Section {
                 SettingsRowButton(
                     title: "Reset to onboarding",
