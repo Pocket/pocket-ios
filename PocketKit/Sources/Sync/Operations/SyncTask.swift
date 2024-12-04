@@ -52,7 +52,7 @@ class SyncTaskTransformer: NSSecureUnarchiveFromDataTransformer {
             return nil
         }
 
-        return try? JSONEncoder().encode(syncTaskContainer) as NSData
+        return try? JSONEncoder().encode(syncTaskContainer)
     }
 
     override class func transformedValueClass() -> AnyClass {

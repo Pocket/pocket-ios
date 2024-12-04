@@ -4,6 +4,7 @@
 
 import Foundation
 
+@objc(Article)
 public class Article: NSObject, Codable {
     public static var supportsSecureCoding: Bool = true
 
@@ -11,10 +12,12 @@ public class Article: NSObject, Codable {
 
     public init(components: [ArticleComponent]) {
         self.components = components
+        super.init()
     }
 }
+
 @objc(ArticleTransformer)
-class ArticleTransformer: ValueTransformer {
+class ArticleTransformer: NSSecureUnarchiveFromDataTransformer {
     static let name = NSValueTransformerName(rawValue: String(describing: ArticleTransformer.self))
 
     override func transformedValue(_ value: Any?) -> Any? {
@@ -30,7 +33,7 @@ class ArticleTransformer: ValueTransformer {
             return nil
         }
 
-        return try? JSONEncoder().encode(article) as NSData
+        return try? JSONEncoder().encode(article)
     }
 
     override class func transformedValueClass() -> AnyClass {
