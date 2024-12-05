@@ -130,9 +130,9 @@ private extension CardView {
                         savedItem.item?.isArticle == true,                          // except one of the following conditions is met:
                         savedItem.item?.isVideo == false,                           // a) the item is not an article (i.e. it was not parseable)
                         savedItem.item?.isImage == false {                          // b) the item is an image
-                navigation.navigateTo(ReadableDestination(.saved(card.givenURL)))   // c) the item is a video
+                navigation.navigateTo(ReadableDestination(.saved(card.givenURL), source: .app))   // c) the item is a video
             } else if card.isSyndicated {
-                navigation.navigateTo(ReadableDestination(.syndicated(card.givenURL)))
+                navigation.navigateTo(ReadableDestination(.syndicated(card.givenURL), source: .app))
             } else if URL(string: card.givenURL) != nil {
                 externalDestination = true
                 presentWebView = true

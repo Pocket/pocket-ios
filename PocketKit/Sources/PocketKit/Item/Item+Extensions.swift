@@ -19,7 +19,7 @@ public extension CDSavedItem {
         item == nil
     }
 
-    func shouldOpenInWebView(override: Bool) -> Bool {
+    func shouldOpenInWebView(override: Bool = false) -> Bool {
         item?.shouldOpenInWebView(override: override) == true
     }
 
@@ -29,7 +29,7 @@ public extension CDSavedItem {
 }
 
 public extension CDItem {
-    func shouldOpenInWebView(override: Bool) -> Bool {
+    func shouldOpenInWebView(override: Bool = false) -> Bool {
         if override == true {
             return true
         }

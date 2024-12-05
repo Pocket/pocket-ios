@@ -26,6 +26,7 @@ struct RecentSavesView: View {
     var body: some View {
         ZStack {
             makeBody()
+                .accessibilityIdentifier("recent-saves")
         }
         // TODO: SWIFTUI -  the animation included with @Query does not seem to behave as we want, so we do it here
         .onChange(of: savedItems, initial: true) {

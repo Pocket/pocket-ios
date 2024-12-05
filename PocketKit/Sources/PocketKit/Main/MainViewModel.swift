@@ -17,11 +17,13 @@ import Analytics
 
 @MainActor
 public class MainViewModel: ObservableObject {
-    let home: HomeViewModel
+    // let home: HomeViewModel
     let saves: SavesContainerViewModel
     let account: AccountViewModel
     let source: Source
     private var linkRouter: LinkRouter
+
+    let homeNavigation: HomeNavigation
 
     @Published var selectedSection: AppSection = .home
 
@@ -30,6 +32,9 @@ public class MainViewModel: ObservableObject {
     @Published var isPresentingPremiumUpgrade: Bool = false
 
     @Published var isPresentingHooray = false
+
+    @Published var isPresentingWebView: Bool = false
+    var webViewUrlString: String?
 
     private var subscriptions: Set<AnyCancellable> = []
     private let userDefaults: UserDefaults
@@ -97,21 +102,22 @@ public class MainViewModel: ObservableObject {
         self.init(
             defaultSearch: defaultSearch,
             saves: savesContainerViewModel,
-            home: HomeViewModel(
-                source: Services.shared.source,
-                tracker: Services.shared.tracker.childTracker(hosting: .home.screen),
-                appsession: Services.shared.appSession,
-                accessService: Services.shared.accessService,
-                networkPathMonitor: NWPathMonitor(),
-                homeRefreshCoordinator: Services.shared.homeRefreshCoordinator,
-                user: Services.shared.user,
-                store: Services.shared.subscriptionStore,
-                recentSavesWidgetUpdateService: Services.shared.recentSavesWidgetUpdateService,
-                recommendationsWidgetUpdateService: Services.shared.recommendationsWidgetUpdateService,
-                userDefaults: Services.shared.userDefaults,
-                notificationCenter: Services.shared.notificationCenter,
-                featureFlags: Services.shared.featureFlagService
-            ),
+            homeNavigation: HomeNavigation(),
+//            home: HomeViewModel(
+//                source: Services.shared.source,
+//                tracker: Services.shared.tracker.childTracker(hosting: .home.screen),
+//                appsession: Services.shared.appSession,
+//                accessService: Services.shared.accessService,
+//                networkPathMonitor: NWPathMonitor(),
+//                homeRefreshCoordinator: Services.shared.homeRefreshCoordinator,
+//                user: Services.shared.user,
+//                store: Services.shared.subscriptionStore,
+//                recentSavesWidgetUpdateService: Services.shared.recentSavesWidgetUpdateService,
+//                recommendationsWidgetUpdateService: Services.shared.recommendationsWidgetUpdateService,
+//                userDefaults: Services.shared.userDefaults,
+//                notificationCenter: Services.shared.notificationCenter,
+//                featureFlags: Services.shared.featureFlagService
+//            ),
             account: AccountViewModel(
                 accessService: Services.shared.accessService,
                 user: Services.shared.user,
@@ -142,20 +148,21 @@ public class MainViewModel: ObservableObject {
         )
         setupLinkRouter()
         // TODO: SWIFTUI - This subscription (as well as the entire HomeViewModel) should be removed when we switch to SwiftUI Home.
-        home
-            .$tappedSeeAll
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] seeAll in
-                guard let self, let seeAll, seeAll.isSaves else { return }
-                selectedSection = .saves
-            }
-            .store(in: &subscriptions)
+//        home
+//            .$tappedSeeAll
+//            .receive(on: DispatchQueue.main)
+//            .sink { [weak self] seeAll in
+//                guard let self, let seeAll, seeAll.isSaves else { return }
+//                selectedSection = .saves
+//            }
+//            .store(in: &subscriptions)
     }
 
     init(
         defaultSearch: DefaultSearchViewModel,
         saves: SavesContainerViewModel,
-        home: HomeViewModel,
+        homeNavigation: HomeNavigation,
+//        home: HomeViewModel,
         account: AccountViewModel,
         source: Source,
         userDefaults: UserDefaults,
@@ -163,7 +170,8 @@ public class MainViewModel: ObservableObject {
     ) {
         self.defaultSearch = defaultSearch
         self.saves = saves
-        self.home = home
+        self.homeNavigation = homeNavigation
+//        self.home = home
         self.account = account
         self.source = source
         self.userDefaults = userDefaults
@@ -209,24 +217,24 @@ public class MainViewModel: ObservableObject {
         }
     }
 
-    func clearRecommendationToReport() {
-        home.clearRecommendationToReport()
-    }
-
-    func clearSharedActivity() {
-        home.clearSharedActivity()
-        saves.clearSharedActivity()
-    }
-
-    func clearIsPresentingReaderSettings() {
-        home.clearIsPresentingReaderSettings()
-        saves.clearIsPresentingReaderSettings()
-    }
-
-    func clearPresentedWebReaderURL() {
-        home.clearPresentedWebReaderURL()
-        saves.clearPresentedWebReaderURL()
-    }
+//    func clearRecommendationToReport() {
+//        home.clearRecommendationToReport()
+//    }
+//
+//    func clearSharedActivity() {
+//        home.clearSharedActivity()
+//        saves.clearSharedActivity()
+//    }
+//
+//    func clearIsPresentingReaderSettings() {
+//        home.clearIsPresentingReaderSettings()
+//        saves.clearIsPresentingReaderSettings()
+//    }
+//
+//    func clearPresentedWebReaderURL() {
+//        home.clearPresentedWebReaderURL()
+//        saves.clearPresentedWebReaderURL()
+//    }
 
     public func selectSavesTabForIntent() {
         self.selectedSection = .saves
@@ -270,13 +278,28 @@ extension MainViewModel {
         linkRouter.matchRoute(from: components.url!)
     }
 
+    private func handleHomeNavigation(givenURL: String, collectionSlug: String?, isReadableSavedItem: Bool, isSyndicated: Bool, source: ReadableSource) {
+        if let collectionSlug {
+            homeNavigation.navigateTo(NativeCollectionDestination(slug: collectionSlug, givenURL: givenURL))
+        } else if isReadableSavedItem {
+            homeNavigation.navigateTo(ReadableDestination(.saved(givenURL), source: source))
+        } else if isSyndicated {
+            homeNavigation.navigateTo(ReadableDestination(.syndicated(givenURL), source: source))
+        } else {
+            webViewUrlString = givenURL
+            isPresentingWebView = true
+        }
+    }
+
     private func setupLinkRouter() {
         let fallbackAction: (URL) -> Void = { url in
             UIApplication.shared.open(url)
         }
         linkRouter.setFallbackAction(fallbackAction)
 
-        let routingAction: (URL, ReadableSource) -> Void = { [weak self] url, source in
+        let routingAction: (URL, ReadableSource) -> Void = {
+            [weak self] url,
+            source in
             // dismiss any existing modal
             self?.account.dismissAll()
             // go to home
@@ -284,13 +307,13 @@ extension MainViewModel {
             Task {
                 do {
                     if let item = try await self?.source.fetchViewItem(from: url.absoluteString) {
-                        if let savedItem = item.savedItem {
-                            self?.home.select(savedItem: savedItem, readableSource: source)
-                        } else if let recommendation = item.recommendation {
-                            self?.home.select(recommendation: recommendation, readableSource: source)
-                        } else {
-                            self?.home.select(externalItem: item)
-                        }
+                        self?.handleHomeNavigation(
+                            givenURL: item.givenURL,
+                            collectionSlug: item.recommendation?.collection?.slug ?? item.collectionSlug,
+                            isReadableSavedItem: item.savedItem != nil && item.savedItem?.shouldOpenInWebView() == false,
+                            isSyndicated: item.isSyndicated,
+                            source: source
+                        )
                     } else {
                         fallbackAction(url)
                     }
@@ -308,13 +331,13 @@ extension MainViewModel {
             Task {
                 do {
                     if let item = try await self?.source.fetchShortUrlViewItem(url.absoluteString) {
-                        if let savedItem = item.savedItem {
-                            self?.home.select(savedItem: savedItem, readableSource: source)
-                        } else if let recommendation = item.recommendation {
-                            self?.home.select(recommendation: recommendation, readableSource: source)
-                        } else {
-                            self?.home.select(externalItem: item)
-                        }
+                        self?.handleHomeNavigation(
+                            givenURL: item.givenURL,
+                            collectionSlug: item.recommendation?.collection?.slug ?? item.collectionSlug,
+                            isReadableSavedItem: item.savedItem != nil && item.savedItem?.shouldOpenInWebView() == false,
+                            isSyndicated: item.isSyndicated,
+                            source: source
+                        )
                     } else {
                         fallbackAction(url)
                     }
@@ -337,13 +360,13 @@ extension MainViewModel {
             Task {
                 do {
                     if let item = try await self?.source.item(by: slug) {
-                        if let savedItem = item.savedItem {
-                            self?.home.select(savedItem: savedItem, readableSource: source)
-                        } else if let recommendation = item.recommendation {
-                            self?.home.select(recommendation: recommendation, readableSource: source)
-                        } else {
-                            self?.home.select(externalItem: item)
-                        }
+                        self?.handleHomeNavigation(
+                            givenURL: item.givenURL,
+                            collectionSlug: item.recommendation?.collection?.slug ?? item.collectionSlug,
+                            isReadableSavedItem: item.savedItem != nil && item.savedItem?.shouldOpenInWebView() == false,
+                            isSyndicated: item.isSyndicated,
+                            source: source
+                        )
                     } else {
                         fallbackAction(url)
                     }
@@ -353,7 +376,9 @@ extension MainViewModel {
             }
         }
 
-        let pocketReadUrlRoutingAction: (URL, ReadableSource) -> Void = { [weak self] url, source in
+        let pocketReadUrlRoutingAction: (URL, ReadableSource) -> Void = {
+            [weak self] url,
+            source in
             // dismiss any existing modal
             self?.account.dismissAll()
             // go to home
@@ -367,13 +392,21 @@ extension MainViewModel {
                 do {
                     let itemData = try await self?.source.readerItem(by: slug)
                     if let savedItem = itemData?.0 {
-                        self?.home.select(savedItem: savedItem, readableSource: source)
+                        self?.handleHomeNavigation(
+                            givenURL: savedItem.item?.givenURL ?? url.absoluteString,
+                            collectionSlug: nil,
+                            isReadableSavedItem: !savedItem.shouldOpenInWebView(),
+                            isSyndicated: false,
+                            source: source
+                        )
                     } else if let item = itemData?.1 {
-                        if let recommendation = item.recommendation {
-                            self?.home.select(recommendation: recommendation, readableSource: source)
-                        } else {
-                            self?.home.select(externalItem: item)
-                        }
+                        self?.handleHomeNavigation(
+                            givenURL: item.givenURL,
+                            collectionSlug: item.recommendation?.collection?.slug ?? item.collectionSlug,
+                            isReadableSavedItem: item.savedItem != nil && item.savedItem?.shouldOpenInWebView() == false,
+                            isSyndicated: item.isSyndicated,
+                            source: source
+                        )
                     } else {
                         fallbackAction(url)
                     }
@@ -429,15 +462,13 @@ extension MainViewModel {
             Task {
                 do {
                     if let item = try await self?.source.fetchViewItem(from: url.absoluteString) {
-                        if let savedItem = item.savedItem {
-                            // if the saved item is found, open it and attempt to start listening
-                            self?.home.select(savedItem: savedItem, readableSource: source, shouldOpenListenOnAppear: true)
-                            // otherwise, we can still fall back to the usual actions
-                        } else if let recommendation = item.recommendation {
-                            self?.home.select(recommendation: recommendation, readableSource: source)
-                        } else {
-                            self?.home.select(externalItem: item)
-                        }
+                        self?.handleHomeNavigation(
+                            givenURL: item.givenURL,
+                            collectionSlug: item.recommendation?.collection?.slug ?? item.collectionSlug,
+                            isReadableSavedItem: item.savedItem != nil && item.savedItem?.shouldOpenInWebView() == false,
+                            isSyndicated: item.isSyndicated,
+                            source: source
+                        )
                     } else {
                         fallbackAction(url)
                     }

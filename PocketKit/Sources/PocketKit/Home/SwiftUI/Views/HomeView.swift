@@ -44,6 +44,7 @@ struct HomeView: View {
             .navigationTitle(Localization.home)
             .environment(\.carouselWidth, carouselWidth(proxy.size))
             .environment(\.layoutWidth, layoutWidth(proxy.size))
+            .accessibilityIdentifier("home")
         }
     }
 }

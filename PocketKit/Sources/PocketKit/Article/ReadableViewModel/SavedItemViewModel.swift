@@ -737,7 +737,7 @@ extension SavedItemViewModel {
 
 // MARK: instantiation from url
 extension SavedItemViewModel {
-    static func fromURL(_ urlString: String) -> SavedItemViewModel? {
+    static func fromURL(_ urlString: String, readableSource: ReadableSource) -> SavedItemViewModel? {
         let source = Services.shared.source
         if let savedItem = source.fetchSavedItem(urlString) {
             return SavedItemViewModel(
@@ -750,6 +750,7 @@ extension SavedItemViewModel {
                 networkPathMonitor: NWPathMonitor(),
                 userDefaults: Services.shared.userDefaults,
                 notificationCenter: Services.shared.notificationCenter,
+                readableSource: readableSource,
                 featureFlagService: Services.shared.featureFlagService
             )
         }

@@ -37,7 +37,7 @@ struct ReadableDestination: NavigationDestination {
         case saved(String)
     }
 
-    init(_ type: RouteType) {
+    init(_ type: RouteType, source: ReadableSource) {
         switch type {
         case .syndicated(let urlString):
             self.savedItemUrlString = nil
@@ -46,8 +46,10 @@ struct ReadableDestination: NavigationDestination {
             self.itemUrlString = nil
             self.savedItemUrlString = urlString
         }
+        self.source = source
     }
 
     let itemUrlString: String?
     let savedItemUrlString: String?
+    let source: ReadableSource
 }

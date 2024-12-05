@@ -11,8 +11,8 @@ struct HomeRootView: View {
     @Environment(\.scenePhase)
     var scenePhase
 
-    init() {
-        _homeNavigation = StateObject(wrappedValue: HomeNavigation())
+    init(homeNavigation: HomeNavigation) {
+        _homeNavigation = StateObject(wrappedValue: homeNavigation)
     }
 
     var body: some View {

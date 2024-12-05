@@ -85,29 +85,35 @@ public struct MainView: View {
         .sheet(isPresented: $model.isPresentingHooray) {
             PremiumUpgradeSuccessView()
         }
+        .fullScreenCover(isPresented: $model.isPresentingWebView) {
+            if let urlString = model.webViewUrlString, let url = URL(string: urlString) {
+                SFSafariView(url: url)
+                    .ignoresSafeArea(.all)
+            }
+        }
     }
 
-    func makeUIKitHome() -> some View {
-        HomeViewControllerSwiftUI(model: model.home)
-            .edgesIgnoringSafeArea(.all) // Allow Home to use the entire screen, including under the status bar
-            .tabBarHeightOffset { offset in tabBarHeightOffset = offset }
-            .tabItem {
-                if model.selectedSection == .home {
-                    Image(asset: .tabHomeSelected)
-                } else {
-                    Image(asset: .tabHomeDeselected)
-                }
-                Text(Localization.home)
-            }
-            .accessibilityIdentifier("home-tab-bar-button")
-            .tag(MainViewModel.AppSection.home)
-            .task {
-                Log.breadcrumb(category: "SWiftUIHome", level: .debug, message: "UIKit Home initialized.")
-            }
-    }
+//    func makeUIKitHome() -> some View {
+//        HomeViewControllerSwiftUI(model: model.home)
+//            .edgesIgnoringSafeArea(.all) // Allow Home to use the entire screen, including under the status bar
+//            .tabBarHeightOffset { offset in tabBarHeightOffset = offset }
+//            .tabItem {
+//                if model.selectedSection == .home {
+//                    Image(asset: .tabHomeSelected)
+//                } else {
+//                    Image(asset: .tabHomeDeselected)
+//                }
+//                Text(Localization.home)
+//            }
+//            .accessibilityIdentifier("home-tab-bar-button")
+//            .tag(MainViewModel.AppSection.home)
+//            .task {
+//                Log.breadcrumb(category: "SWiftUIHome", level: .debug, message: "UIKit Home initialized.")
+//            }
+//    }
 
     func makeSwiftUIHome() -> some View {
-        HomeRootView()
+        HomeRootView(homeNavigation: model.homeNavigation)
             .navigationViewStyle(.stack)
             .tabBarHeightOffset { offset in tabBarHeightOffset = offset }
             .tabItem {

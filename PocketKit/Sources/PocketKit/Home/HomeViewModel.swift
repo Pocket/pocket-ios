@@ -36,7 +36,7 @@ enum ReadableType {
     }
 }
 
-enum ReadableSource {
+enum ReadableSource: String, Codable {
     case app
     case widget
     case spotlight

@@ -41,10 +41,10 @@ struct ReaderView: UIViewControllerRepresentable {
 private extension ReaderView {
     func makeReadableViewModel() -> ReadableViewModel? {
         if let savedItemUrlString = destination.savedItemUrlString {
-            return SavedItemViewModel.fromURL(savedItemUrlString)
+            return SavedItemViewModel.fromURL(savedItemUrlString, readableSource: destination.source)
         }
         if let syndictedUrlString = destination.itemUrlString {
-            return RecommendableItemViewModel.fromURL(syndictedUrlString)
+            return RecommendableItemViewModel.fromURL(syndictedUrlString, readableSource: destination.source)
         }
         return nil
     }

@@ -406,7 +406,7 @@ extension RecommendableItemViewModel {
 
 // MARK: instantiation from url
 extension RecommendableItemViewModel {
-    static func fromURL(_ urlString: String) -> RecommendableItemViewModel? {
+    static func fromURL(_ urlString: String, readableSource: ReadableSource) -> RecommendableItemViewModel? {
         let source = Services.shared.source
         if let item = source.fetchItem(urlString) {
             return RecommendableItemViewModel(
@@ -417,7 +417,7 @@ extension RecommendableItemViewModel {
                 pasteboard: UIPasteboard.general,
                 user: Services.shared.user,
                 userDefaults: Services.shared.userDefaults,
-                readableSource: .external
+                readableSource: readableSource
             )
         }
         return nil

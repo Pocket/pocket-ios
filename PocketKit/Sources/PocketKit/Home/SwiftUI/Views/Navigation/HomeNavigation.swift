@@ -45,4 +45,8 @@ final class HomeNavigation: ObservableObject {
     func back() {
         path.removeLast()
     }
+
+    func popToRoot() {
+        path.removeLast(path.count)
+    }
 }

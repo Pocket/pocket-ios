@@ -91,7 +91,7 @@ struct NativeCollectionView: View {
                 if let givenURL = collection.item?.givenURL {
                     ActionButton(
                         isActive: isSaved,
-                        activeImage: .archive,
+                        activeImage: isSaved ? .archive : .save,
                         inactiveImage: .save,
                         highlightedColor: .ui.grey4,
                         activeColor: .ui.black1
@@ -101,7 +101,7 @@ struct NativeCollectionView: View {
                             navigation.back()
                         }
                     }
-                    .accessibilityIdentifier("collection-save-button")
+                    .accessibilityIdentifier(isSaved ? "collection-archive-button" :"collection-save-button")
                 }
                 makeOverflowMenu()
             }
