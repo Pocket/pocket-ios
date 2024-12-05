@@ -38,7 +38,7 @@ struct HomeViewElement: PocketUIElement {
     }
 
     func recentSavesView(matching string: String) -> RecentSavesCellElement {
-        return RecentSavesCellElement(savedItemCell(string))
+        return RecentSavesCellElement(element.otherElements["recent-saves"].staticTexts[string])
     }
 
     func sectionHeader(_ title: String) -> SectionHeaderElement {

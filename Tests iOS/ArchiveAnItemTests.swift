@@ -113,7 +113,7 @@ class ArchiveAnItemTests: PocketXCTestCase {
 
         itemCell.wait().tap()
 
-        let archiveNavButton = XCUIApplication().buttons["archiveNavButton"]
+        let archiveNavButton = XCUIApplication().buttons["collection-archive-button"]
         XCTAssert(archiveNavButton.exists)
         archiveNavButton.wait().tap()
         app.homeView.wait()

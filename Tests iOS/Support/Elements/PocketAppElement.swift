@@ -34,7 +34,7 @@ struct PocketAppElement {
     }
 
     var homeView: HomeViewElement {
-        return HomeViewElement(app.otherElements["home"])
+        return HomeViewElement(app.scrollViews["home"])
     }
 
     var saves: SavesElement {
