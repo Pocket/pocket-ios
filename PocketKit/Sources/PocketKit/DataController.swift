@@ -6,16 +6,17 @@
 import Foundation
 @preconcurrency import SwiftData
 import SharedPocketKit
+import Sync
 
 public struct DataController: Sendable {
-    public func makeModelContainer(groupID: String) -> ModelContainer {
+    public func makeModelContainer() -> ModelContainer {
         Log.breadcrumb(category: "SWiftUIHome", level: .debug, message: "Start initializing shared model container.")
         ArticleTransformer.register()
         Log.breadcrumb(category: "SWiftUIHome", level: .debug, message: "Article transformer registered.")
         SyncTaskTransformer.register()
         Log.breadcrumb(category: "SWiftUIHome", level: .debug, message: "SynkTask transformer registered.")
 
-        guard let appGroupContainer = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: groupID) else {
+        guard let appGroupContainer = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: Keys.shared.groupID) else {
             Log.capture(message: "Shared file container could not be created.")
             fatalError("Shared file container could not be created.")
         }

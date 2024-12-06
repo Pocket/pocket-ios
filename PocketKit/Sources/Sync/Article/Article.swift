@@ -17,10 +17,10 @@ public class Article: NSObject, Codable {
 }
 
 @objc(ArticleTransformer)
-class ArticleTransformer: NSSecureUnarchiveFromDataTransformer {
+public class ArticleTransformer: NSSecureUnarchiveFromDataTransformer {
     static let name = NSValueTransformerName(rawValue: String(describing: ArticleTransformer.self))
 
-    override func transformedValue(_ value: Any?) -> Any? {
+    public override func transformedValue(_ value: Any?) -> Any? {
         guard let data = value as? Data else {
             return nil
         }
@@ -28,7 +28,7 @@ class ArticleTransformer: NSSecureUnarchiveFromDataTransformer {
         return try? JSONDecoder().decode(Article.self, from: data)
     }
 
-    override func reverseTransformedValue(_ value: Any?) -> Any? {
+    public override func reverseTransformedValue(_ value: Any?) -> Any? {
         guard let article = value as? Article else {
             return nil
         }
@@ -36,7 +36,7 @@ class ArticleTransformer: NSSecureUnarchiveFromDataTransformer {
         return try? JSONEncoder().encode(article)
     }
 
-    override class func transformedValueClass() -> AnyClass {
+    public override class func transformedValueClass() -> AnyClass {
         return NSData.self
     }
 

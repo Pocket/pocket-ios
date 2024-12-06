@@ -49,7 +49,7 @@ struct Services {
     let recentSavesWidgetUpdateService: RecentSavesWidgetUpdateService
     let recommendationsWidgetUpdateService: RecommendationsWidgetUpdateService
     let sharedWithYouStore: SharedWithYouStore
-    let modelContainer: ModelContainer
+    // let modelContainer: ModelContainer
 
     private let persistentContainer: PersistentContainer
     private let sceneTracker: SceneTracker
@@ -63,11 +63,6 @@ struct Services {
         lastRefresh = UserDefaultsLastRefresh(defaults: userDefaults)
         Self.handleUpgrades(lastLaunchedAppVersion: lastLaunchedAppVersion, lastRefresh: lastRefresh)
         notificationCenter = .default
-        Log.breadcrumb(category: "SWiftUIHome", level: .debug, message: "Initializing data controller.")
-        // Init the Group ID for Swift Data
-        let dataController = DataController()
-        modelContainer = dataController.makeModelContainer(groupID: Keys.shared.groupID)
-        Log.breadcrumb(category: "SWiftUIHome", level: .debug, message: "Data controller initialized.")
         persistentContainer = .init(storage: .shared, groupID: Keys.shared.groupID)
         Log.breadcrumb(category: "SWiftUIHome", level: .debug, message: "Persistent container initialized.")
         urlSession = URLSession.shared

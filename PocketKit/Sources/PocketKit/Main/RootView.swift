@@ -48,8 +48,6 @@ private extension RootView {
             .onContinueUserActivity(CSSearchableItemActionType, perform: { userActivity in
                 model.handleSpotlight(userActivity)
             })
-            // TODO: SWIFTUI - Once we move away from Services, these need to be handled with DI
-            .modelContainer(Services.shared.modelContainer)
             .environmentObject(Services.shared.accessService)
     }
 

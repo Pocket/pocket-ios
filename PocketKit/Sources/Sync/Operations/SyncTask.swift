@@ -36,10 +36,10 @@ public class SyncTaskContainer: NSObject, Codable {
 }
 
 @objc(SyncTaskTransformer)
-class SyncTaskTransformer: NSSecureUnarchiveFromDataTransformer {
+public class SyncTaskTransformer: NSSecureUnarchiveFromDataTransformer {
     static let name = NSValueTransformerName(rawValue: String(describing: SyncTaskTransformer.self))
 
-    override func transformedValue(_ value: Any?) -> Any? {
+    public override func transformedValue(_ value: Any?) -> Any? {
         guard let data = value as? Data else {
             return nil
         }
@@ -47,7 +47,7 @@ class SyncTaskTransformer: NSSecureUnarchiveFromDataTransformer {
         return try? JSONDecoder().decode(SyncTaskContainer.self, from: data)
     }
 
-    override func reverseTransformedValue(_ value: Any?) -> Any? {
+    public override func reverseTransformedValue(_ value: Any?) -> Any? {
         guard let syncTaskContainer = value as? SyncTaskContainer else {
             return nil
         }
@@ -55,7 +55,7 @@ class SyncTaskTransformer: NSSecureUnarchiveFromDataTransformer {
         return try? JSONEncoder().encode(syncTaskContainer)
     }
 
-    override class func transformedValueClass() -> AnyClass {
+    public override class func transformedValueClass() -> AnyClass {
         return NSData.self
     }
 

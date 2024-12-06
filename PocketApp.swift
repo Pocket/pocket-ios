@@ -4,15 +4,23 @@
 
 import PocketKit
 import SwiftUI
+import SwiftData
 
 @main
 struct PocketApp: App {
     @UIApplicationDelegateAdaptor private var delegate: PocketAppDelegate
 
     @Environment(\.scenePhase)
-    var scenePhase
+    private var scenePhase
 
-    @StateObject private var rootViewModel = RootViewModel()
+    @StateObject private var rootViewModel: RootViewModel
+
+    private let modelContainer: ModelContainer
+
+    init() {
+        _rootViewModel = StateObject(wrappedValue: RootViewModel())
+        modelContainer = DataController().makeModelContainer()
+    }
 
     var body: some Scene {
         WindowGroup {
@@ -20,8 +28,10 @@ struct PocketApp: App {
                 .onAppear {
                     PocketShortcuts.updateAppShortcutParameters()
                 }
-        }.onChange(of: scenePhase) { newValue in
-            rootViewModel.scenePhaseDidChange(newValue)
+        }
+        .modelContainer(modelContainer)
+        .onChange(of: scenePhase) { oldScenePhase, newScenePhase in
+            rootViewModel.scenePhaseDidChange(newScenePhase)
         }
     }
 }
