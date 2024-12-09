@@ -16,6 +16,9 @@ struct SlateDetailView: View {
     @Environment(\.horizontalSizeClass)
     var horizontalSizeClass
 
+    @Environment(\.homeActions)
+    private var homeActions
+
     init(destination: SlateDestination) {
         self.destination = destination
         let slateID = destination.slateID
@@ -36,6 +39,12 @@ struct SlateDetailView: View {
             if proposedCards != cards {
                 cards = proposedCards
             }
+        }
+        .onAppear {
+            guard let slateInfo = destination.slateInfo else {
+                return
+            }
+            homeActions.trackSlateDetailImpression(info: slateInfo)
         }
         .animation(.smooth, value: cards)
         .navigationTitle(destination.slateTitle ?? "")

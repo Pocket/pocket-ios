@@ -53,7 +53,7 @@ struct CardView: View {
                     if isVisible {
                         homeActions
                             .trackCardImpression(
-                                AnalyticsInfo(
+                                ItemInfo(
                                     type: card.type,
                                     url: card.givenURL,
                                     index: card.index,
@@ -140,7 +140,7 @@ private extension CardView {
                 presentWebView = true
             }
             homeActions.trackCardContentOpen(
-                AnalyticsInfo(
+                ItemInfo(
                     type: card.type,
                     url: card.givenURL,
                     index: card.index,
@@ -190,7 +190,7 @@ private extension CardView {
                         .onAppear {
                             homeActions
                                 .trackCardImpression(
-                                    AnalyticsInfo(
+                                    ItemInfo(
                                         type: card.type,
                                         url: card.givenURL,
                                         index: card.index,
@@ -217,7 +217,7 @@ private extension CardView {
                     .onAppear {
                         homeActions
                             .trackCardImpression(
-                                AnalyticsInfo(
+                                ItemInfo(
                                     type: card.type,
                                     url: card.givenURL,
                                     index: card.index,

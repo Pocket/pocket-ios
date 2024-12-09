@@ -28,36 +28,37 @@ struct HomeActions {
     }
 
     @MainActor
-    func saveAction(isSaved: Bool, givenURL: String, info: AnalyticsInfo) {
+    func saveAction(isSaved: Bool, givenURL: String, info: ItemInfo) {
         if Services.shared.accessService.accessLevel.isAnonymous {
             requestAuthentication(info.type)
         } else if Services.shared.accessService.accessLevel.isAuthenticated {
             let source = Services.shared.source
             if isSaved {
                 source.archive(from: givenURL)
+                trackArchive(info)
             } else {
                 source.save(from: givenURL)
+                trackSave(info)
             }
-            trackSave(info)
         }
     }
 
     @MainActor
-    func archiveAction(givenURL: String, info: AnalyticsInfo) {
+    func archiveAction(givenURL: String, info: ItemInfo) {
         let source = Services.shared.source
         source.archive(from: givenURL)
         trackArchive(info)
     }
 
     @MainActor
-    func deleteAction(givenURL: String, info: AnalyticsInfo) {
+    func deleteAction(givenURL: String, info: ItemInfo) {
         let source = Services.shared.source
         source.delete(from: givenURL)
         trackDelete(info)
     }
 
     @MainActor
-    func favoriteAction(isFavorite: Bool, givenURL: String, info: AnalyticsInfo) {
+    func favoriteAction(isFavorite: Bool, givenURL: String, info: ItemInfo) {
         let source = Services.shared.source
         if isFavorite {
             source.unFavorite(givenURL)
@@ -100,7 +101,25 @@ extension HomeActions {
             tracker.track(event: Events.Home.homeScreenImpression())
         }
     }
-    func trackCardImpression(_ info: AnalyticsInfo) {
+
+    func trackSlateDetailImpression(info: SlateInfo) {
+        Task(priority: .background) {
+            let tracker = await Services.shared.tracker
+            tracker.track(
+                event: Events.ExpandedSlate.slateExpanded(
+                    slateId: info.slateId,
+                    slateRequestId: info.slateRequestId,
+                    slateExperimentId: info.slateExperimentId,
+                    slateIndex: info.slateIndex,
+                    slateLineupId: info.slateLineupId,
+                    slateLineupRequestId: info.slateLineupRequestId,
+                    slateLineupExperimentId: info.slateLineupExperimentId
+                )
+            )
+        }
+    }
+
+    func trackCardImpression(_ info: ItemInfo) {
         Task(priority: .background) {
             let tracker = await Services.shared.tracker
             switch info.type {
@@ -124,7 +143,7 @@ extension HomeActions {
         }
     }
 
-    func trackCardContentOpen(_ info: AnalyticsInfo) {
+    func trackCardContentOpen(_ info: ItemInfo) {
         Task(priority: .background) {
             let tracker = await Services.shared.tracker
             switch info.type {
@@ -148,7 +167,7 @@ extension HomeActions {
         }
     }
 
-    func trackSave(_ info: AnalyticsInfo) {
+    func trackSave(_ info: ItemInfo) {
         Task(priority: .background) {
             let tracker = await Services.shared.tracker
             switch info.type {
@@ -172,7 +191,7 @@ extension HomeActions {
         }
     }
 
-    func trackShare(_ info: AnalyticsInfo) {
+    func trackShare(_ info: ItemInfo) {
         Task(priority: .background) {
             let tracker = await Services.shared.tracker
             switch info.type {
@@ -196,7 +215,7 @@ extension HomeActions {
         }
     }
 
-    func trackArchive(_ info: AnalyticsInfo) {
+    func trackArchive(_ info: ItemInfo) {
         Task(priority: .background) {
             let tracker = await Services.shared.tracker
             switch info.type {
@@ -220,7 +239,7 @@ extension HomeActions {
         }
     }
 
-    func trackFavorite(_ info: AnalyticsInfo) {
+    func trackFavorite(_ info: ItemInfo) {
         Task(priority: .background) {
             let tracker = await Services.shared.tracker
             switch info.type {
@@ -234,7 +253,7 @@ extension HomeActions {
         }
     }
 
-    func trackUnFavorite(_ info: AnalyticsInfo) {
+    func trackUnFavorite(_ info: ItemInfo) {
         Task(priority: .background) {
             let tracker = await Services.shared.tracker
             switch info.type {
@@ -248,7 +267,7 @@ extension HomeActions {
         }
     }
 
-    func trackDelete(_ info: AnalyticsInfo) {
+    func trackDelete(_ info: ItemInfo) {
         Task(priority: .background) {
             let tracker = await Services.shared.tracker
             switch info.type {

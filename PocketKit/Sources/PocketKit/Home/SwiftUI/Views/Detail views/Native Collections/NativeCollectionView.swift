@@ -76,7 +76,7 @@ struct NativeCollectionView: View {
                     withAnimation {
                         homeActions.deleteAction(
                             givenURL: destination.givenURL,
-                            info: AnalyticsInfo(
+                            info: ItemInfo(
                                 type: .collection,
                                 url: destination.givenURL
                             )
@@ -96,7 +96,7 @@ struct NativeCollectionView: View {
                         highlightedColor: .ui.grey4,
                         activeColor: .ui.black1
                     ) {
-                        homeActions.saveAction(isSaved: isSaved, givenURL: givenURL, info: AnalyticsInfo(type: .collection, url: givenURL))
+                        homeActions.saveAction(isSaved: isSaved, givenURL: givenURL, info: ItemInfo(type: .collection, url: givenURL))
                         if isSaved {
                             navigation.back()
                         }
@@ -121,7 +121,7 @@ struct NativeCollectionView: View {
             if isSaved {
                 Button(action: {
                     Haptics.defaultTap()
-                    homeActions.archiveAction(givenURL: destination.givenURL, info: AnalyticsInfo(type: .collection, url: destination.givenURL))
+                    homeActions.archiveAction(givenURL: destination.givenURL, info: ItemInfo(type: .collection, url: destination.givenURL))
                     navigation.back()
                 }) {
                     Label {
@@ -182,7 +182,7 @@ struct NativeCollectionView: View {
             ShareableURLView(givenURL: destination.givenURL, shareURL: item?.shareURL)
                 .simultaneousGesture(TapGesture().onEnded {
                     homeActions.trackShare(
-                        AnalyticsInfo(
+                        ItemInfo(
                             type: .collection,
                             url: destination.givenURL
                         )

@@ -54,7 +54,7 @@ private extension CardFooter {
                 withAnimation {
                     homeActions.deleteAction(
                         givenURL: card.givenURL,
-                        info: AnalyticsInfo(
+                        info: ItemInfo(
                             type: card.type,
                             url: card.givenURL,
                             index: card.index
@@ -128,7 +128,7 @@ private extension CardFooter {
             homeActions.favoriteAction(
                 isFavorite: isFavorite,
                 givenURL: card.givenURL,
-                info: AnalyticsInfo(
+                info: ItemInfo(
                     type: card.type,
                     url: card.givenURL,
                     index: card.index
@@ -151,7 +151,7 @@ private extension CardFooter {
             homeActions.saveAction(
                 isSaved: isSaved,
                 givenURL: card.givenURL,
-                info: AnalyticsInfo(
+                info: ItemInfo(
                     type: card.type,
                     url: card.givenURL,
                     index: card.index,
@@ -170,7 +170,7 @@ private extension CardFooter {
                         Haptics.defaultTap()
                         homeActions.archiveAction(
                             givenURL: card.givenURL,
-                            info: AnalyticsInfo(
+                            info: ItemInfo(
                                 type: card.type,
                                 url: card.givenURL,
                                 index: card.index,
@@ -225,7 +225,7 @@ private extension CardFooter {
                     .accessibilityLabel("overflow-share")
                     .simultaneousGesture(TapGesture().onEnded {
                         homeActions.trackShare(
-                            AnalyticsInfo(
+                            ItemInfo(
                                 type: card.type,
                                 url: card.givenURL,
                                 index: card.index,

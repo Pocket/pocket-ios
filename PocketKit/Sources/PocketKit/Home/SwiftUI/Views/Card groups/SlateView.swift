@@ -11,6 +11,7 @@ struct SlateView: View {
     let remoteID: String
     let slateTitle: String?
     let cards: [HomeCardConfiguration]
+    let slateInfo: SlateInfo?
 
     @Environment(\.layoutWidth)
     private var layoutWidth
@@ -35,7 +36,7 @@ struct SlateView: View {
 private extension SlateView {
     func makeHeader(_ title: String) -> some View {
         SectionHeader(title: title) {
-            navigation.navigateTo(SlateDestination(slateID: remoteID, slateTitle: slateTitle))
+            navigation.navigateTo(SlateDestination(slateID: remoteID, slateTitle: slateTitle, slateInfo: slateInfo))
         }
     }
 

@@ -80,6 +80,19 @@ private extension RecommendationsView {
             makeOfflineView()
         }
     }
+    private func slateInfo(_ slate: Slate) -> SlateInfo? {
+        guard let lineup = slate.slateLineup else { return nil }
+        return SlateInfo(
+            slateId: slate.remoteID,
+            slateRequestId: slate.requestID,
+            slateExperimentId: slate.experimentID,
+            slateIndex: Int(slate.sortIndex ?? 0),
+            slateLineupId: lineup.remoteID,
+            slateLineupRequestId: lineup.requestID,
+            slateLineupExperimentId: lineup.experimentID
+        )
+
+    }
     @ViewBuilder
     func makeSlatesView() -> some View {
         ForEach(slates) {
@@ -87,7 +100,8 @@ private extension RecommendationsView {
                 SlateView(
                     remoteID: $0.remoteID,
                     slateTitle: $0.name,
-                    cards: cards(for: recommendations)
+                    cards: cards(for: recommendations),
+                    slateInfo: slateInfo($0)
                 )
             }
         }

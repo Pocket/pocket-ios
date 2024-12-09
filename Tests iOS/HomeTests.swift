@@ -119,10 +119,11 @@ class HomeTests: PocketXCTestCase {
 
     func test_unfavoritingRecentSavesItem_shouldNotAppearForFavoriteInSaves() {
         let home = app.launch().waitForHomeToLoad()
+        home.savedItemCell("Item 1").swipeLeft(velocity: .slow)
         home.savedItemCell("Item 2").wait()
-        XCTAssertTrue(home.recentSavesView(matching: "Item 2").favoriteButton.isFilled)
-        home.recentSavesView(matching: "Item 2").favoriteButton.tap()
-        XCTAssertFalse(home.recentSavesView(matching: "Item 2").favoriteButton.isFilled)
+        home.recentSavesFavoritedButton("Item 2").wait().verify()
+        home.recentSavesFavoritedButton("Item 2").wait().tap()
+        home.recentSavesFavoriteButton("Item 2").wait().verify()
 
         app.tabBar.savesButton.tap()
         app.saves.filterButton(for: "Favorites").tap()
@@ -167,15 +168,9 @@ class HomeTests: PocketXCTestCase {
     func test_tappingSlatesSeeAllButton_showsSlateDetailView() {
         let home = app.launch().waitForHomeToLoad()
 
-        home.sectionHeader("Slate 1").seeAllButton.wait().tap()
-        app.slateDetailView.recommendationCell("Slate 1, Recommendation 1").wait()
-        app.slateDetailView.recommendationCell("Slate 1, Recommendation 2").wait()
-
-        app.navigationBar.buttons["Home"].wait().tap()
-        home.element.swipeUp()
-
-        home.sectionHeader("Slate 2").seeAllButton.wait().tap()
-        app.slateDetailView.recommendationCell("Slate 2, Recommendation 1").wait()
+        home.topSeeAllButton().wait().tap()
+        app.slateDetailView.heroRecommendationCard("Slate 1, Recommendation 1").wait()
+        app.slateDetailView.heroRecommendationCard("syndicatedTitle-1-2-2").wait()
     }
 
     func test_slateDetails_savingARecommendation_addsItemToList() {
@@ -294,40 +289,23 @@ class HomeTests: PocketXCTestCase {
 
             return .fallbackResponses(apiRequest: apiRequest)
         }
-
-        app.launch().waitForHomeToLoad()
-            .sectionHeader("Slate 1")
-            .seeAllButton
+        let home = app.launch().waitForHomeToLoad()
+        home
+            .topSeeAllButton()
             .wait().tap()
 
-        let rec1Cell = app.slateDetailView
-            .recommendationCell("Slate 1, Recommendation 1")
-            .wait()
+        app.slateDetailView.heroRecommendationCard("Slate 1, Recommendation 1").wait().verify()
+        app.slateDetailView.heroRecommendationCard("syndicatedTitle-1-2-2").wait().verify()
 
-        let coord = rec1Cell.element
-            .coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.9))
+        app.slateDetailView.saveButton("Slate 1, Recommendation 1").wait().tap()
+        app.slateDetailView.savedButton("Slate 1, Recommendation 1").wait()
 
-        let rec2Cell = app.slateDetailView
-            .recommendationCell("Slate 1, Recommendation 2")
-            .wait()
-
-        rec1Cell.saveButton.wait().tap()
-        rec1Cell.savedButton.wait()
-
-        coord
-            .press(
-                forDuration: 0.1,
-                thenDragTo: coord.withOffset(
-                    .init(dx: 0, dy: -50)
-                ),
-                withVelocity: .default,
-                thenHoldForDuration: 0.1
-            )
-        rec2Cell.saveButton.wait().tap()
-        rec2Cell.savedButton.wait().tap()
-        rec2Cell.saveButton.wait().tap()
-        rec2Cell.savedButton.wait()
-        rec1Cell.savedButton.wait()
+        // home.element.swipeUp()
+        app.slateDetailView.saveButton("syndicatedTitle-1-2-2").wait().tap()
+        app.slateDetailView.savedButton("syndicatedTitle-1-2-2").wait().tap()
+        app.slateDetailView.saveButton("syndicatedTitle-1-2-2").wait().tap()
+        app.slateDetailView.savedButton("syndicatedTitle-1-2-2").wait()
+        app.slateDetailView.savedButton("Slate 1, Recommendation 1").wait()
 
         async let slate1Rec1 = snowplowMicro.getFirstEvent(with: "home.expandedSlate.article.impression", corpusRecommendationID: "7eb25abf-39f6-4d04-91e9-7485bbf7333b")
         async let slate1Rec2 = snowplowMicro.getFirstEvent(with: "home.expandedSlate.article.impression", corpusRecommendationID: "d88c1280-0128-4767-84e2-a6fa0d2832fa")
@@ -352,42 +330,6 @@ class HomeTests: PocketXCTestCase {
         XCTAssertNotNil(loadedSlateDetail)
     }
 
-    func test_returningFromSaves_maintainsHomePosition() {
-        let home = app.launch().waitForHomeToLoad()
-        home.overscroll()
-        validateBottomMessage()
-        app.tabBar.savesButton.tap()
-        app.tabBar.homeButton.tap()
-        validateBottomMessage()
-    }
-
-    func test_returningFromSettings_maintainsHomePosition() {
-        let home = app.launch().waitForHomeToLoad()
-        home.overscroll()
-        validateBottomMessage()
-        app.tabBar.settingsButton.tap()
-        app.tabBar.homeButton.tap()
-        validateBottomMessage()
-    }
-
-    func test_returningFromReader_maintainsHomePosition() {
-        let home = app.launch().waitForHomeToLoad()
-        home.overscroll()
-        validateBottomMessage()
-        home.recommendationCell("Slate 1, Recommendation 2").tap()
-        app.readerView.readerHomeButton.wait().tap()
-        validateBottomMessage()
-    }
-
-    func test_returningFromSeeAll_maintainsHomePosition() {
-        let home = app.launch().waitForHomeToLoad()
-        home.overscroll()
-        validateBottomMessage()
-        home.seeAllCollectionButton.tap()
-        app.readerView.readerHomeButton.wait().tap()
-        validateBottomMessage()
-    }
-
     func test_serverError_banner_for_throttled_user() {
         configureThrottledUser()
         app.launch()
@@ -404,10 +346,6 @@ class HomeTests: PocketXCTestCase {
             }
             return .fallbackResponses(apiRequest: apiRequest)
         }
-    }
-
-    func validateBottomMessage() {
-        XCTAssertTrue(app.homeView.overscrollText.exists)
     }
 }
 

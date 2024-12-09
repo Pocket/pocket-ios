@@ -3,7 +3,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 /// Set of info to send along actions for analytics purposes
-struct AnalyticsInfo {
+struct ItemInfo {
     let type: CardType
     let url: String
     let index: Int
@@ -17,4 +17,14 @@ struct AnalyticsInfo {
         self.recommendationID = recommendationID
         self.externalDestination = externalDestination
     }
+}
+
+struct SlateInfo: Codable, Equatable, Hashable {
+    let slateId: String
+    let slateRequestId: String
+    let slateExperimentId: String
+    let slateIndex: Int
+    let slateLineupId: String
+    let slateLineupRequestId: String
+    let slateLineupExperimentId: String
 }
