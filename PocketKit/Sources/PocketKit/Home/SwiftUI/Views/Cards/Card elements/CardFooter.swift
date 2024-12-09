@@ -107,9 +107,11 @@ private extension CardFooter {
     func makeActionButton() -> some View {
         if card.enableFavoriteAction {
             makeFavoriteButton()
+                .accessibilityLabel((card.bestTitle ?? "item-action") + (isFavorite ? " - favorited" : " - favorite"))
         }
         if card.enableSaveAction {
             makeSaveButton()
+                .accessibilityLabel((card.bestTitle ?? "item-action") + (isSaved ? " - saved" : " - save"))
         }
     }
 
@@ -133,7 +135,6 @@ private extension CardFooter {
                 )
             )
         }
-        .accessibilityIdentifier("favorite-button")
     }
 
     func makeSaveButton() -> some View {
@@ -158,7 +159,6 @@ private extension CardFooter {
                 )
             )
         }
-        .accessibilityIdentifier("save-button")
     }
 
     /// Overflow menu
@@ -185,6 +185,7 @@ private extension CardFooter {
                         Image(asset: .archive)
                     }
                 }
+                .accessibilityLabel("overflow-archive")
             }
 
             if card.enableDeleteMenuAction {
@@ -198,6 +199,7 @@ private extension CardFooter {
                         Image(asset: .delete)
                     }
                 }
+                .accessibilityLabel("overflow-delete")
             }
 
             if card.enableReportMenuAction {
@@ -215,10 +217,12 @@ private extension CardFooter {
                         Image(asset: .alert)
                     }
                 }
+                .accessibilityLabel("overflow-report")
             }
 
             if card.enableShareMenuAction {
                 ShareableURLView(givenURL: card.givenURL, shareURL: shareURL)
+                    .accessibilityLabel("overflow-share")
                     .simultaneousGesture(TapGesture().onEnded {
                         homeActions.trackShare(
                             AnalyticsInfo(
@@ -234,7 +238,7 @@ private extension CardFooter {
             Image(asset: .overflow)
                 .homeOverflowMenyStyle()
         }
-        .accessibilityIdentifier("overflow-button")
+        .accessibilityLabel((card.bestTitle ?? "item-action") + " - overflow-menu")
     }
 }
 

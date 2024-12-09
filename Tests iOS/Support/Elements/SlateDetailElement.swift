@@ -19,6 +19,24 @@ struct SlateDetailElement: PocketUIElement {
         element.otherElements["slate-detail-overscroll"]
     }
 
+    func heroRecommendationCard(_ tilte: String) -> XCUIElement {
+        element.staticTexts.element(matching: NSPredicate(format: "label = %@", tilte))
+    }
+
+    func carouselRecommendationCard(_ title: String) -> XCUIElement {
+        element.scrollViews.staticTexts.matching(identifier: "home-carousel-item").element(matching: NSPredicate(format: "label = %@", title))
+    }
+
+    func saveButton(_ title: String) -> XCUIElement {
+        let predicate = NSPredicate(format: "label = %@", title + " - save")
+        return element.buttons.element(matching: predicate)
+    }
+
+    func savedButton(_ title: String) -> XCUIElement {
+        let predicate = NSPredicate(format: "label = %@", title + " - saved")
+        return element.buttons.element(matching: predicate)
+    }
+
     func recommendationCell(_ title: String) -> RecommendationCellElement {
         let element = element.cells
             .containing(.staticText, identifier: title)

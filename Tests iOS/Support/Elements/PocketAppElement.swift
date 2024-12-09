@@ -66,7 +66,7 @@ struct PocketAppElement {
     }
 
     var slateDetailView: SlateDetailElement {
-        return SlateDetailElement(app.otherElements["slate-detail"])
+        return SlateDetailElement(app.scrollViews["slate-detail"])
     }
 
     var readerView: ReaderElement {
@@ -135,6 +135,21 @@ struct PocketAppElement {
         app.buttons["item-action-archive"]
     }
 
+    var overflowArchiveButton: XCUIElement {
+        let title = "overflow-archive"
+        return app.buttons.element(matching: NSPredicate(format: "label = %@", title))
+    }
+
+    var overflowDeleteButton: XCUIElement {
+        let title = "overflow-delete"
+        return app.buttons.element(matching: NSPredicate(format: "label = %@", title))
+    }
+
+    var overflowShareButton: XCUIElement {
+        let title = "overflow-share"
+        return app.buttons.element(matching: NSPredicate(format: "label = %@", title))
+    }
+
     var addTagsButton: XCUIElement {
         app.buttons["item-action-add-tags"]
     }
@@ -179,7 +194,7 @@ struct PocketAppElement {
     @discardableResult
     func waitForHomeToLoad() -> HomeViewElement {
         self.homeView.savedItemCell("Item 1").wait()
-        self.homeView.recommendationCell("Slate 1, Recommendation 1").wait()
+        self.homeView.heroRecommendationCard("Slate 1, Recommendation 1").wait()
         return self.homeView
     }
 

@@ -40,13 +40,13 @@ class HomeTests: PocketXCTestCase {
         home.sectionHeader("Slate 1").wait()
         home.element.swipeUp()
 
-        home.recommendationCell("Slate 1, Recommendation 1").verify()
-        home.recommendationCell("Slate 1, Recommendation 2").verify()
+        home.heroRecommendationCard("Slate 1, Recommendation 1").verify()
+        home.carouselRecommendationCard("syndicatedTitle-1-2-2").verify()
 
         home.element.swipeUp()
 
         home.sectionHeader("Slate 2").verify()
-        home.recommendationCell("Slate 2, Recommendation 1").verify()
+        home.carouselRecommendationCard("Slate 2, Recommendation 2").verify()
 
         async let slate1Rec1 = snowplowMicro.getFirstEvent(with: "home.slate.article.impression", corpusRecommendationID: "7eb25abf-39f6-4d04-91e9-7485bbf7333b")
         async let slate1Rec2 = snowplowMicro.getFirstEvent(with: "home.slate.article.impression", corpusRecommendationID: "d88c1280-0128-4767-84e2-a6fa0d2832fa")
@@ -64,7 +64,8 @@ class HomeTests: PocketXCTestCase {
         home.savedItemCell("Item 2").wait()
         home.savedItemCell("Item 1").swipeLeft(velocity: .fast)
         home.savedItemCell("Item 3").swipeLeft(velocity: .fast)
-        waitForDisappearance(of: home.savedItemCell("Item 3"))
+        home.savedItemCell("Item 4").wait()
+        home.savedItemCell("Item 5").wait()
     }
 
     @MainActor
@@ -108,8 +109,8 @@ class HomeTests: PocketXCTestCase {
     func test_favoritingRecentSavesItem_shouldShowFavoriteInSaves() {
         let home = app.launch().waitForHomeToLoad()
         home.savedItemCell("Item 1").wait()
-        home.recentSavesView(matching: "Item 1").favoriteButton.tap()
-        XCTAssertTrue(home.recentSavesView(matching: "Item 1").favoriteButton.isFilled)
+        home.recentSavesFavoriteButton("Item 1").tap()
+        XCTAssertTrue(home.recentSavesFavoritedButton("Item 1").exists)
 
         app.tabBar.savesButton.tap()
         app.saves.filterButton(for: "Favorites").tap()
@@ -131,8 +132,8 @@ class HomeTests: PocketXCTestCase {
     func test_archivingRecentSavesItem_removesItemFromRecentSaves() {
         let home = app.launch().waitForHomeToLoad()
         home.savedItemCell("Item 1").wait()
-        home.recentSavesView(matching: "Item 1").overflowButton.wait().tap()
-        app.archiveButton.wait().tap()
+        home.recentSavesOverflowButton("Item 1").wait().tap()
+        app.overflowArchiveButton.wait().tap()
 
         waitForDisappearance(of: home.savedItemCell("Item 1"))
     }
@@ -140,8 +141,8 @@ class HomeTests: PocketXCTestCase {
     func test_deletingRecentSavesItem_removesItemFromRecentSaves() {
         let home = app.launch().waitForHomeToLoad()
         home.savedItemCell("Item 1").wait()
-        home.recentSavesView(matching: "Item 1").overflowButton.wait().tap()
-        app.deleteButton.wait().tap()
+        home.recentSavesOverflowButton("Item 1").wait().tap()
+        app.overflowDeleteButton.wait().tap()
         app.alert.yes.wait().tap()
         waitForDisappearance(of: home.savedItemCell("Item 1"))
 
@@ -152,8 +153,8 @@ class HomeTests: PocketXCTestCase {
     func test_sharingRecentSavesItem_removesItemFromRecentSaves() {
         let home = app.launch().waitForHomeToLoad()
         home.savedItemCell("Item 1").wait()
-        home.recentSavesView(matching: "Item 1").overflowButton.wait().tap()
-        app.shareButton.wait().tap()
+        home.recentSavesOverflowButton("Item 1").wait().tap()
+        app.overflowShareButton.wait().tap()
         app.shareSheet.wait()
     }
 
@@ -179,13 +180,13 @@ class HomeTests: PocketXCTestCase {
 
     func test_slateDetails_savingARecommendation_addsItemToList() {
         let home = app.launch().waitForHomeToLoad()
-        home.sectionHeader("Slate 1").seeAllButton.wait().tap()
+        home.topSeeAllButton().wait().tap()
 
-        let cell = app.slateDetailView
-            .recommendationCell("Slate 1, Recommendation 1")
+        app.slateDetailView
+            .heroRecommendationCard("Slate 1, Recommendation 1").verify()
 
-        cell.saveButton.wait().tap()
-        cell.savedButton.wait()
+        app.slateDetailView.saveButton("Slate 1, Recommendation 1").wait().tap()
+        app.slateDetailView.savedButton("Slate 1, Recommendation 1").wait()
 
         app.navigationBar.buttons["Home"].tap()
         app.tabBar.savesButton.tap()

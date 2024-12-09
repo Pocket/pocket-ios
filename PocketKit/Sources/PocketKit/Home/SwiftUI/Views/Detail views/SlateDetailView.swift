@@ -39,6 +39,7 @@ struct SlateDetailView: View {
         }
         .animation(.smooth, value: cards)
         .navigationTitle(destination.slateTitle ?? "")
+        .accessibilityIdentifier("slate-detail")
     }
 }
 

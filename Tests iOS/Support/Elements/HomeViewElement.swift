@@ -26,7 +26,7 @@ struct HomeViewElement: PocketUIElement {
 
     func savedItemCell(_ title: String) -> XCUIElement {
         let predicate = NSPredicate(format: "label = %@", title)
-        return savedItemCells.containing(predicate).element(boundBy: 0)
+        return savedItemCells.element(matching: predicate)
     }
 
     func savedItemCell(at index: Int) -> XCUIElement {
@@ -34,11 +34,31 @@ struct HomeViewElement: PocketUIElement {
     }
 
     var savedItemCells: XCUIElementQuery {
-        return element.cells.matching(identifier: "home-carousel-item")
+        return element.scrollViews.staticTexts.matching(identifier: "home-carousel-item")
     }
 
     func recentSavesView(matching string: String) -> RecentSavesCellElement {
         return RecentSavesCellElement(element.otherElements["recent-saves"].staticTexts[string])
+    }
+
+    func recentSavesFavoriteButton(_ title: String) -> XCUIElement {
+        let predicate = NSPredicate(format: "label = %@", title + " - favorite")
+        return element.otherElements["recent-saves"].buttons.element(matching: predicate)
+    }
+
+    func recentSavesFavoritedButton(_ title: String) -> XCUIElement {
+        let predicate = NSPredicate(format: "label = %@", title + " - favorited")
+        return element.otherElements["recent-saves"].buttons.element(matching: predicate)
+    }
+
+    func recentSavesOverflowButton(_ title: String) -> XCUIElement {
+        let predicate = NSPredicate(format: "label = %@", title + " - overflow-menu")
+        return element.otherElements["recent-saves"].buttons.element(matching: predicate)
+    }
+
+    func recentSavesOverflowArchiveButton(_ title: String) -> XCUIElement {
+        let predicate = NSPredicate(format: "label = %@", title + " - overflow-archive")
+        return element.otherElements["recent-saves"].buttons.element(matching: predicate)
     }
 
     func sectionHeader(_ title: String) -> SectionHeaderElement {
@@ -47,12 +67,24 @@ struct HomeViewElement: PocketUIElement {
         return SectionHeaderElement(element)
     }
 
+    func topSeeAllButton() -> XCUIElement {
+        element.buttons["See all"].firstMatch
+    }
+
     func recommendationCell(_ title: String) -> RecommendationCellElement {
         let element = element.cells
             .containing(.staticText, identifier: title)
             .element(boundBy: 0)
 
         return RecommendationCellElement(element)
+    }
+
+    func heroRecommendationCard(_ tilte: String) -> XCUIElement {
+        element.staticTexts.matching(identifier: "home-hero-item").element(matching: NSPredicate(format: "label = %@", tilte))
+    }
+
+    func carouselRecommendationCard(_ title: String) -> XCUIElement {
+        element.scrollViews.staticTexts.matching(identifier: "home-carousel-item").element(matching: NSPredicate(format: "label = %@", title))
     }
 
     func pullToRefresh() {

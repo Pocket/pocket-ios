@@ -90,12 +90,14 @@ private extension CardView {
                 .clipShape(RoundedRectangle(cornerRadius: Constants.cornerRadius))
                 .frame(minWidth: 0, idealWidth: carouselWidth, maxWidth: .infinity, idealHeight: Constants.cardHeight)
                 .shadow(color: Color(.ui.border), radius: Constants.shadowRadius, x: 0, y: 0)
+                .accessibilityIdentifier("home-carousel-item")
         case .large:
             makeCard()
                 .background(Color(UIColor(.ui.homeCellBackground)))
                 .clipShape(RoundedRectangle(cornerRadius: Constants.cornerRadius))
                 .padding(.vertical, Constants.largeCardLayoutMargins.top)
                 .shadow(color: Color(UIColor(.ui.border)), radius: Constants.shadowRadius, x: 0, y: 0)
+                .accessibilityIdentifier("home-hero-item")
         }
     }
 
