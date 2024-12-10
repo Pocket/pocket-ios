@@ -134,8 +134,8 @@ class ReaderTests: XCTestCase {
         app.launch()
 
         // Swipe down to a syndicated item
-        scrollTo(element: app.homeView.recommendationCell("Slate 1, Recommendation 2").element, in: app.homeView.element, direction: .up)
-        app.homeView.recommendationCell("Slate 1, Recommendation 2").wait().tap()
+        app.homeView.element.swipeUp(velocity: .slow)
+        app.homeView.carouselRecommendationCard("syndicatedTitle-1-2-2").wait().tap()
         app.readerView.readerToolbar.moreButton.wait().tap()
         app.readerView.saveButton.wait().tap()
 
