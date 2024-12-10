@@ -63,12 +63,12 @@ struct HomeViewElement: PocketUIElement {
 
     func recommendationsSaveButton(_ title: String) -> XCUIElement {
         let predicate = NSPredicate(format: "label = %@", title + " - save")
-        return element.otherElements["recent-saves"].buttons.element(matching: predicate)
+        return element.otherElements["recommendations"].buttons.element(matching: predicate)
     }
 
     func recommendationsSavedButton(_ title: String) -> XCUIElement {
         let predicate = NSPredicate(format: "label = %@", title + " - saved")
-        return element.otherElements["recent-saves"].buttons.element(matching: predicate)
+        return element.otherElements["recommendations"].buttons.element(matching: predicate)
     }
 
     func sectionHeader(_ title: String) -> SectionHeaderElement {
