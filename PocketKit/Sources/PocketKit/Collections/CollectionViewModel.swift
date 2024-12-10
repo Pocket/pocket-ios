@@ -11,6 +11,31 @@ import Localization
 import Analytics
 import Network
 
+enum ReadableType {
+    case recommendable(RecommendableItemViewModel)
+    case savedItem(SavedItemViewModel)
+    case webViewRecommendable(RecommendableItemViewModel)
+    case webViewSavedItem(SavedItemViewModel)
+    case collection(CollectionViewModel)
+
+    @MainActor
+    func clearIsPresentingReaderSettings() {
+        switch self {
+        case .recommendable(let recommendationViewModel):
+            recommendationViewModel.clearIsPresentingReaderSettings()
+        case .savedItem(let savedItemViewModel):
+            savedItemViewModel.clearIsPresentingReaderSettings()
+        case .webViewRecommendable(let recommendationViewModel):
+            recommendationViewModel.clearPresentedWebReaderURL()
+        case .webViewSavedItem(let savedItemViewModel):
+            savedItemViewModel.clearPresentedWebReaderURL()
+        case .collection:
+            // TODO: NATIVECOLLECTIONS - we might need to do some additional cleanup here
+            break
+        }
+    }
+}
+
 /// View model that holds logic for the native collection view
 @MainActor
 class CollectionViewModel: NSObject {

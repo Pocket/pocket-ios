@@ -17,7 +17,6 @@ import Analytics
 
 @MainActor
 public class MainViewModel: ObservableObject {
-    // let home: HomeViewModel
     let saves: SavesContainerViewModel
     let account: AccountViewModel
     let source: Source
@@ -103,21 +102,6 @@ public class MainViewModel: ObservableObject {
             defaultSearch: defaultSearch,
             saves: savesContainerViewModel,
             homeNavigation: HomeNavigation(),
-//            home: HomeViewModel(
-//                source: Services.shared.source,
-//                tracker: Services.shared.tracker.childTracker(hosting: .home.screen),
-//                appsession: Services.shared.appSession,
-//                accessService: Services.shared.accessService,
-//                networkPathMonitor: NWPathMonitor(),
-//                homeRefreshCoordinator: Services.shared.homeRefreshCoordinator,
-//                user: Services.shared.user,
-//                store: Services.shared.subscriptionStore,
-//                recentSavesWidgetUpdateService: Services.shared.recentSavesWidgetUpdateService,
-//                recommendationsWidgetUpdateService: Services.shared.recommendationsWidgetUpdateService,
-//                userDefaults: Services.shared.userDefaults,
-//                notificationCenter: Services.shared.notificationCenter,
-//                featureFlags: Services.shared.featureFlagService
-//            ),
             account: AccountViewModel(
                 accessService: Services.shared.accessService,
                 user: Services.shared.user,
@@ -147,22 +131,12 @@ public class MainViewModel: ObservableObject {
             linkRouter: LinkRouter()
         )
         setupLinkRouter()
-        // TODO: SWIFTUI - This subscription (as well as the entire HomeViewModel) should be removed when we switch to SwiftUI Home.
-//        home
-//            .$tappedSeeAll
-//            .receive(on: DispatchQueue.main)
-//            .sink { [weak self] seeAll in
-//                guard let self, let seeAll, seeAll.isSaves else { return }
-//                selectedSection = .saves
-//            }
-//            .store(in: &subscriptions)
     }
 
     init(
         defaultSearch: DefaultSearchViewModel,
         saves: SavesContainerViewModel,
         homeNavigation: HomeNavigation,
-//        home: HomeViewModel,
         account: AccountViewModel,
         source: Source,
         userDefaults: UserDefaults,
@@ -171,7 +145,6 @@ public class MainViewModel: ObservableObject {
         self.defaultSearch = defaultSearch
         self.saves = saves
         self.homeNavigation = homeNavigation
-//        self.home = home
         self.account = account
         self.source = source
         self.userDefaults = userDefaults
@@ -216,25 +189,6 @@ public class MainViewModel: ObservableObject {
             }
         }
     }
-
-//    func clearRecommendationToReport() {
-//        home.clearRecommendationToReport()
-//    }
-//
-//    func clearSharedActivity() {
-//        home.clearSharedActivity()
-//        saves.clearSharedActivity()
-//    }
-//
-//    func clearIsPresentingReaderSettings() {
-//        home.clearIsPresentingReaderSettings()
-//        saves.clearIsPresentingReaderSettings()
-//    }
-//
-//    func clearPresentedWebReaderURL() {
-//        home.clearPresentedWebReaderURL()
-//        saves.clearPresentedWebReaderURL()
-//    }
 
     public func selectSavesTabForIntent() {
         self.selectedSection = .saves
