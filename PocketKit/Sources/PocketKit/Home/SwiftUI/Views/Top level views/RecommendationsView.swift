@@ -31,7 +31,6 @@ struct RecommendationsView: View {
 
     var body: some View {
         makeBody()
-            .accessibilityIdentifier("recommendations")
             .task {
                 networkMonitor.start()
                 guard viewState != .loading else { return }
