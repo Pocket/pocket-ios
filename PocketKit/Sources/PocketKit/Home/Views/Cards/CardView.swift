@@ -26,6 +26,8 @@ struct CardView: View {
     private var carouselWidth
     @Environment(\.homeActions)
     private var homeActions
+    @Environment(\.modelContext)
+    private var modelContext
 
     @EnvironmentObject private var navigation: HomeNavigation
 
@@ -128,11 +130,9 @@ private extension CardView {
             var externalDestination = false
             if let slug = card.slug {
                 navigation.navigateTo(NativeCollectionDestination(slug: slug, givenURL: card.givenURL))
-            } else if let savedItem,                                                // We are legally allowed to open the item in reader view
-                        savedItem.item?.isArticle == true,                          // except one of the following conditions is met:
-                        savedItem.item?.isVideo == false,                           // a) the item is not an article (i.e. it was not parseable)
-                        savedItem.item?.isImage == false {                          // b) the item is an image
-                navigation.navigateTo(ReadableDestination(.saved(card.givenURL), source: .app))   // c) the item is a video
+            } else if savedItem != nil,
+                      isReaderSupported() {
+                navigation.navigateTo(ReadableDestination(.saved(card.givenURL), source: .app))
             } else if card.isSyndicated {
                 navigation.navigateTo(ReadableDestination(.syndicated(card.givenURL), source: .app))
             } else if URL(string: card.givenURL) != nil {
@@ -149,6 +149,20 @@ private extension CardView {
                 )
             )
         }
+    }
+
+    /// We are legally allowed to open the item in reader view except one of the following conditions is met:
+    /// a) the item is not an article (i.e. it was not parseable)
+    /// b) the item is an image
+    /// c) the item is a video
+    /// - Returns: true if we can open this item in the reader
+    func isReaderSupported() -> Bool {
+        let givenURL = card.givenURL
+        let fetchDescriptor = FetchDescriptor<Item>(predicate: #Predicate<Item> { $0.givenURL == givenURL })
+        guard let item = try? modelContext.fetch(fetchDescriptor).first else {
+            return false
+        }
+        return item.isArticle == true && item.isImage == false && item.isVideo == false
     }
 
     /// Builds a Shared With You card, which is a sized card with an attribution view at the bottom
