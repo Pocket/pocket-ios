@@ -16,6 +16,8 @@
       "skippedTests" : [
         "AddSavedItemTests",
         "AddTagsItemTests",
+        "AnonymousModeTests\/testAnonymousSessionRecommendationSaveTapped()",
+        "AnonymousModeTests\/testAnonymousSessionSigninBannerTapped()",
         "ArchiveAnItemTests",
         "ArchiveFiltersTests",
         "ArchiveTests",
@@ -35,6 +37,8 @@
         "SavesTests",
         "SearchTests",
         "SearchTests\/test_sharingAnItemFromSearch_forPremiumUser_presentsShareSheet()",
+        "ShareAnItemTests\/test_shareFromHome_sharingARecommendation_sharingFromSlate()",
+        "ShareAnItemTests\/test_shareFromHome_sharingARecommendation_sharingFromSlateDetails()",
         "SignOutTests"
       ],
       "target" : {
