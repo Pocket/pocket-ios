@@ -197,7 +197,7 @@ class HomeTests: PocketXCTestCase {
         }
         app.launch().waitForHomeToLoad()
         app.homeView.element.swipeUp()
-        app.homeView.recommendationCell("Slate 2, Recommendation 2").wait().tap()
+        app.homeView.carouselRecommendationCard("Slate 2, Recommendation 2").wait().tap()
         app.webReaderView
             .staticText(matching: "Hello, world")
             .wait()
@@ -206,10 +206,10 @@ class HomeTests: PocketXCTestCase {
     func test_tappingRecommendationCell_whenItemIsNotSaved_andItemIsSyndicated_opensItemInReaderView() {
         app.launch().waitForHomeToLoad()
 
-        app.homeView.recommendationCell("Slate 1, Recommendation 1")
-            .wait().element.swipeUp()
+        app.homeView.heroRecommendationCard("Slate 1, Recommendation 1").wait().verify()
+        app.homeView.element.swipeUp()
 
-        app.homeView.recommendationCell("Slate 1, Recommendation 2")
+        app.homeView.carouselRecommendationCard("syndicatedTitle-1-2-2")
             .wait().tap()
 
         app.readerView.cell(containing: "Mozilla").wait()
@@ -218,17 +218,18 @@ class HomeTests: PocketXCTestCase {
     func test_tappingRecommendationCell_whenItemIsNotSaved_andItemIsSyndicated_andUserGoesBack_SyndicationInfoStays() {
         app.launch()
             .waitForHomeToLoad()
-            .recommendationCell("Slate 1, Recommendation 1")
-            .wait().element.swipeUp()
+            .heroRecommendationCard("Slate 1, Recommendation 1")
+            .wait().verify()
+        app.homeView.element.swipeUp()
 
-        app.homeView.recommendationCell("Slate 1, Recommendation 2")
+        app.homeView.carouselRecommendationCard("syndicatedTitle-1-2-2")
             .wait().tap()
 
         app.readerView.cell(containing: "Slate 1, Rec 2").wait()
 
         app.navigationBar.buttons["Home"].tap()
 
-        XCTAssertTrue(app.homeView.recommendationCell("Slate 1, Recommendation 2").element.staticTexts["Mozilla "].exists)
+        XCTAssertTrue(app.homeView.carouselCardLabel("Mozilla ").exists)
     }
 
     func test_tappingSaveButtonInRecommendationCell_savesItemToList() {
@@ -249,9 +250,9 @@ class HomeTests: PocketXCTestCase {
             return .fallbackResponses(apiRequest: apiRequest)
         }
 
-        let cell = app.launch().waitForHomeToLoad().recommendationCell("Slate 1, Recommendation 1")
-        cell.saveButton.tap()
-        cell.savedButton.wait()
+        app.launch().waitForHomeToLoad()
+        app.homeView.recommendationsSaveButton("Slate 1, Recommendation 1").wait().tap()
+        app.homeView.recommendationsSavedButton("Slate 1, Recommendation 1").wait().verify()
 
         app.tabBar.savesButton.tap()
         app.saves.itemView(matching: "Slate 1, Recommendation 1").wait()
@@ -262,8 +263,8 @@ class HomeTests: PocketXCTestCase {
 
         app.tabBar.homeButton.tap()
 
-        cell.savedButton.tap()
-        cell.saveButton.wait()
+        app.homeView.recommendationsSavedButton("Slate 1, Recommendation 1").wait().tap()
+        app.homeView.recommendationsSaveButton("Slate 1, Recommendation 1").wait().verify()
 
         wait(for: [archiveRequestExpectation])
         XCTAssertFalse(app.saves.itemView(matching: "Slate 1, Recommendation 1").exists)

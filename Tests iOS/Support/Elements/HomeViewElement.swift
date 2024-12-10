@@ -61,6 +61,16 @@ struct HomeViewElement: PocketUIElement {
         return element.otherElements["recent-saves"].buttons.element(matching: predicate)
     }
 
+    func recommendationsSaveButton(_ title: String) -> XCUIElement {
+        let predicate = NSPredicate(format: "label = %@", title + " - save")
+        return element.otherElements["recent-saves"].buttons.element(matching: predicate)
+    }
+
+    func recommendationsSavedButton(_ title: String) -> XCUIElement {
+        let predicate = NSPredicate(format: "label = %@", title + " - saved")
+        return element.otherElements["recent-saves"].buttons.element(matching: predicate)
+    }
+
     func sectionHeader(_ title: String) -> SectionHeaderElement {
         let predicate = NSPredicate(format: "label = %@", title)
         let element = element.otherElements.containing(predicate).element(boundBy: 0)
@@ -85,6 +95,11 @@ struct HomeViewElement: PocketUIElement {
 
     func carouselRecommendationCard(_ title: String) -> XCUIElement {
         element.scrollViews.staticTexts.matching(identifier: "home-carousel-item").element(matching: NSPredicate(format: "label = %@", title))
+    }
+
+    func carouselCardLabel(_ text: String) -> XCUIElement {
+        let predicate = NSPredicate(format: "label = %@", text)
+        return element.scrollViews.staticTexts.containing(predicate).element
     }
 
     func pullToRefresh() {
