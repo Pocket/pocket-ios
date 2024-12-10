@@ -39,6 +39,7 @@
         "SearchTests\/test_sharingAnItemFromSearch_forPremiumUser_presentsShareSheet()",
         "ShareAnItemTests\/test_shareFromHome_sharingARecommendation_sharingFromSlate()",
         "ShareAnItemTests\/test_shareFromHome_sharingARecommendation_sharingFromSlateDetails()",
+        "ShareAnItemTests\/test_sharingAnItemFromReader_presentsShareSheet()",
         "SignOutTests"
       ],
       "target" : {
