@@ -19,17 +19,19 @@ struct SlateView: View {
     @EnvironmentObject var navigation: HomeNavigation
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            VStack(alignment: .leading, spacing: 16) {
-                if let slateTitle {
-                    makeHeader(slateTitle)
+        if !cards.isEmpty {
+            VStack(alignment: .leading, spacing: 0) {
+                VStack(alignment: .leading, spacing: 16) {
+                    if let slateTitle {
+                        makeHeader(slateTitle)
+                    }
+                    HeroView(remoteID: remoteID, cards: heroCards)
                 }
-                HeroView(remoteID: remoteID, cards: heroCards)
+                .padding(EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16))
+                CarouselView(cards: carouselCards, useGrid: layoutWidth.isRegular)
             }
-            .padding(EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16))
-            CarouselView(cards: carouselCards, useGrid: layoutWidth.isRegular)
+            .padding(.bottom, 32)
         }
-        .padding(.bottom, 32)
     }
 }
 
@@ -49,7 +51,7 @@ private extension SlateView {
 
     /// Determines how many hero cells should be used
     var heroCount: Int {
-        Self.heroCount(layoutWidth.isRegular)
+        min(Self.heroCount(layoutWidth.isRegular), cards.count)
     }
 
     /// Extract the Hero recommendations
