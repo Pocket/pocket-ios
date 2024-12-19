@@ -25,6 +25,9 @@ struct RecommendationsView: View {
     @Environment(\.homeActions)
     private var homeActions
 
+    @Environment(\.modelContext)
+    private var modelContext
+
     init() {
         _networkMonitor = StateObject(wrappedValue: NetworkMonitor())
     }
@@ -87,9 +90,7 @@ private extension RecommendationsView {
             slateRequestId: slate.requestID,
             slateExperimentId: slate.experimentID,
             slateIndex: Int(slate.sortIndex ?? 0),
-            slateLineupId: lineup.remoteID,
-            slateLineupRequestId: lineup.requestID,
-            slateLineupExperimentId: lineup.experimentID
+            slateLineupId: lineup.remoteID
         )
     }
     @ViewBuilder
@@ -99,7 +100,7 @@ private extension RecommendationsView {
                 SlateView(
                     remoteID: $0.remoteID,
                     slateTitle: $0.name,
-                    cards: cards(for: recommendations),
+                    cards: cards(for: $0.remoteID),
                     slateInfo: slateInfo($0)
                 )
             }
@@ -114,17 +115,24 @@ private extension RecommendationsView {
         OfflineView()
     }
 
-    func cards( for recommendations: [Recommendation]) -> [HomeCardConfiguration] {
-        recommendations
-            .sorted(by: { $0.sortIndex < $1.sortIndex })
-            .prefix(6)
+    func fetchRecommendations(_ slateID: String) -> [Recommendation] {
+        let predicate = #Predicate<Recommendation> { $0.slate?.remoteID == slateID }
+        let sortDescriptor = SortDescriptor<Recommendation>(\.sortIndex, order: .forward)
+        var fetchDescriptor = FetchDescriptor<Recommendation>(predicate: predicate, sortBy: [sortDescriptor])
+        fetchDescriptor.fetchLimit = 6
+
+        return (try? modelContext.fetch(fetchDescriptor)) ?? []
+    }
+
+    func cards(for slateID: String) -> [HomeCardConfiguration] {
+        fetchRecommendations(slateID)
             .compactMap {
                 if let item = $0.item {
                     return HomeCardConfiguration(
                         givenURL: item.givenURL,
                         sharedWithYouUrlString: nil,
                         type: .recommendation,
-                        index: Int(item.recommendation?.sortIndex ?? 0), // sortIndex should not be nil, but just in case, let's have a default
+                        index: Int($0.sortIndex),
                         shareURL: item.shareURL,
                         domain: item.bestDomain,
                         timeToRead: item.timeToRead,

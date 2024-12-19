@@ -11,7 +11,7 @@ public extension Events.ExpandedSlate {
     /**
      Fired when a user views a slate in detail
      */
-    static func slateExpanded(slateId: String, slateRequestId: String, slateExperimentId: String, slateIndex: Int, slateLineupId: String, slateLineupRequestId: String, slateLineupExperimentId: String) -> Impression {
+    static func slateExpanded(slateId: String, slateRequestId: String, slateExperimentId: String, slateIndex: Int, slateLineupId: String) -> Impression {
         return Impression(
             component: .screen,
             requirement: .viewable,
@@ -22,7 +22,7 @@ public extension Events.ExpandedSlate {
             ),
             extraEntities: [
                 SlateEntity(id: slateId, requestID: slateRequestId, experiment: slateExperimentId, index: slateIndex),
-                SlateLineupEntity(id: slateLineupId, requestID: slateLineupRequestId, experiment: slateExperimentId),
+                SlateLineupEntity(id: slateLineupId, requestID: "", experiment: ""), // TBD with analytics team but for now we don't have requestID and experimentID
             ]
         )
     }

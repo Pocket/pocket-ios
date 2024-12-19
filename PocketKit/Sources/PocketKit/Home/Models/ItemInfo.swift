@@ -25,6 +25,4 @@ struct SlateInfo: Codable, Equatable, Hashable {
     let slateExperimentId: String
     let slateIndex: Int
     let slateLineupId: String
-    let slateLineupRequestId: String
-    let slateLineupExperimentId: String
 }

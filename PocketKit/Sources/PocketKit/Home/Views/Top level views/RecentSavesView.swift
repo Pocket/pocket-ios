@@ -67,20 +67,23 @@ private extension RecentSavesView {
 
     var proposedCards: [HomeCardConfiguration] {
         savedItems.enumerated().compactMap {
-            HomeCardConfiguration(
-                givenURL: $0.element.item?.givenURL ?? $0.element.url,
+            guard let item = $0.element.item else {
+                return nil
+            }
+            return HomeCardConfiguration(
+                givenURL: item.givenURL,
                 sharedWithYouUrlString: nil,
                 type: .recentSave,
                 index: $0.offset,
-                shareURL: $0.element.item?.shareURL,
-                domain: $0.element.item?.bestDomain,
-                timeToRead: $0.element.item?.timeToRead,
-                isSyndicated: $0.element.item?.isSyndicated == true,
-                recommendationID: $0.element.item?.recommendation?.analyticsID,
-                bestTitle: $0.element.item?.bestTitle,
-                slug: $0.element.item?.collectionSlug,
-                excerpt: $0.element.item?.excerpt,
-                topImageURL: $0.element.item?.topImageURL,
+                shareURL: item.shareURL,
+                domain: item.bestDomain,
+                timeToRead: item.timeToRead,
+                isSyndicated: item.isSyndicated == true,
+                recommendationID: item.recommendation?.analyticsID,
+                bestTitle: item.bestTitle,
+                slug: item.collectionSlug,
+                excerpt: item.excerpt,
+                topImageURL: item.topImageURL,
                 enableFavoriteAction: true,
                 enableShareMenuAction: true,
                 enableArchiveMenuAction: true,

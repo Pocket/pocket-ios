@@ -111,9 +111,7 @@ extension HomeActions {
                     slateRequestId: info.slateRequestId,
                     slateExperimentId: info.slateExperimentId,
                     slateIndex: info.slateIndex,
-                    slateLineupId: info.slateLineupId,
-                    slateLineupRequestId: info.slateLineupRequestId,
-                    slateLineupExperimentId: info.slateLineupExperimentId
+                    slateLineupId: info.slateLineupId
                 )
             )
         }
