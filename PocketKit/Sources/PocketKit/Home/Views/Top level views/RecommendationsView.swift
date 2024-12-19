@@ -115,15 +115,17 @@ private extension RecommendationsView {
         OfflineView()
     }
 
-    func cards( for slateID: String) -> [HomeCardConfiguration] {
+    func fetchRecommendations(_ slateID: String) -> [Recommendation] {
         let predicate = #Predicate<Recommendation> { $0.slate?.remoteID == slateID }
         let sortDescriptor = SortDescriptor<Recommendation>(\.sortIndex, order: .forward)
         var fetchDescriptor = FetchDescriptor<Recommendation>(predicate: predicate, sortBy: [sortDescriptor])
         fetchDescriptor.fetchLimit = 6
 
-        let recommendations = (try? modelContext.fetch(fetchDescriptor)) ?? []
+        return (try? modelContext.fetch(fetchDescriptor)) ?? []
+    }
 
-        return recommendations
+    func cards(for slateID: String) -> [HomeCardConfiguration] {
+        fetchRecommendations(slateID)
             .compactMap {
                 if let item = $0.item {
                     return HomeCardConfiguration(
