@@ -132,7 +132,7 @@ private extension RecommendationsView {
                         givenURL: item.givenURL,
                         sharedWithYouUrlString: nil,
                         type: .recommendation,
-                        index: Int(item.recommendation?.sortIndex ?? 0), // sortIndex should not be nil, but just in case, let's have a default
+                        index: Int($0.sortIndex),
                         shareURL: item.shareURL,
                         domain: item.bestDomain,
                         timeToRead: item.timeToRead,
