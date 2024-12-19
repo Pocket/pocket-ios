@@ -25,6 +25,9 @@ struct RecommendationsView: View {
     @Environment(\.homeActions)
     private var homeActions
 
+    @Environment(\.modelContext)
+    private var modelContext
+
     init() {
         _networkMonitor = StateObject(wrappedValue: NetworkMonitor())
     }
@@ -99,7 +102,7 @@ private extension RecommendationsView {
                 SlateView(
                     remoteID: $0.remoteID,
                     slateTitle: $0.name,
-                    cards: cards(for: recommendations),
+                    cards: cards(for: $0.remoteID),
                     slateInfo: slateInfo($0)
                 )
             }
@@ -114,10 +117,15 @@ private extension RecommendationsView {
         OfflineView()
     }
 
-    func cards( for recommendations: [Recommendation]) -> [HomeCardConfiguration] {
-        recommendations
-            .sorted(by: { $0.sortIndex < $1.sortIndex })
-            .prefix(6)
+    func cards( for slateID: String) -> [HomeCardConfiguration] {
+        let predicate = #Predicate<Recommendation> { $0.slate?.remoteID == slateID }
+        let sortDescriptor = SortDescriptor<Recommendation>(\.sortIndex, order: .forward)
+        var fetchDescriptor = FetchDescriptor<Recommendation>(predicate: predicate, sortBy: [sortDescriptor])
+        fetchDescriptor.fetchLimit = 6
+
+        let recommendations = (try? modelContext.fetch(fetchDescriptor)) ?? []
+
+        return recommendations
             .compactMap {
                 if let item = $0.item {
                     return HomeCardConfiguration(
