@@ -90,9 +90,7 @@ private extension RecommendationsView {
             slateRequestId: slate.requestID,
             slateExperimentId: slate.experimentID,
             slateIndex: Int(slate.sortIndex ?? 0),
-            slateLineupId: lineup.remoteID,
-            slateLineupRequestId: lineup.requestID,
-            slateLineupExperimentId: lineup.experimentID
+            slateLineupId: lineup.remoteID
         )
     }
     @ViewBuilder

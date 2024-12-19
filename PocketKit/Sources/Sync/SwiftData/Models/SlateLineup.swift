@@ -13,7 +13,7 @@ public class SlateLineup {
     public var requestID: String
     @Relationship(deleteRule: .cascade, inverse: \Slate.slateLineup)
     public var slates: [Slate]?
-    public init(experimentID: String, remoteID: String, requestID: String) {
+    public init(experimentID: String = "", remoteID: String = "", requestID: String = "") {
         self.experimentID = experimentID
         self.remoteID = remoteID
         self.requestID = requestID

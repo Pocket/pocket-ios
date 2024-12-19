@@ -112,8 +112,8 @@ extension HomeActions {
                     slateExperimentId: info.slateExperimentId,
                     slateIndex: info.slateIndex,
                     slateLineupId: info.slateLineupId,
-                    slateLineupRequestId: info.slateLineupRequestId,
-                    slateLineupExperimentId: info.slateLineupExperimentId
+                    slateLineupRequestId: "",    // these have not been valorized since we switched to corpus slates. TBD with the analytics team
+                    slateLineupExperimentId: ""  // what we actually need to do with them, but since they were causing crashes, we pass empty for now.
                 )
             )
         }
