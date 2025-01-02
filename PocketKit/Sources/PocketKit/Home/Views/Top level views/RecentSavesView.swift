@@ -15,6 +15,9 @@ struct RecentSavesView: View {
 
     @State private var cards: [HomeCardConfiguration] = []
 
+    @Environment(\.modelContext)
+    private var modelContext
+
     init() {
         let predicate = #Predicate<SavedItem> { $0.isArchived == false && $0.deletedAt == nil }
         let sortDescriptor = SortDescriptor<SavedItem>(\.createdAt, order: .reverse)
@@ -67,7 +70,7 @@ private extension RecentSavesView {
 
     var proposedCards: [HomeCardConfiguration] {
         savedItems.enumerated().compactMap {
-            guard let item = $0.element.item else {
+            guard let remoteID = $0.element.remoteID, let item = fetchItem(remoteID) else {
                 return nil
             }
             return HomeCardConfiguration(
@@ -90,5 +93,17 @@ private extension RecentSavesView {
                 enableDeleteMenuAction: true
             )
         }
+    }
+
+    /// Fetch an `Item` from the underlying `SavedItem`
+    /// - Parameter recommendationID: `SavedItem` ID
+    /// - Returns: the item, if it was found
+    func fetchItem(_ savedItemID: String) -> Item? {
+        let predicate = #Predicate<Item> { $0.savedItem?.remoteID == savedItemID }
+        var fetchDescriptor = FetchDescriptor(predicate: predicate)
+        fetchDescriptor.fetchLimit = 1
+
+        let result = (try? modelContext.fetch(fetchDescriptor)) ?? []
+        return result.first
     }
 }

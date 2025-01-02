@@ -20,6 +20,9 @@ struct SharedWithYouDetailView: View {
     @Environment(\.horizontalSizeClass)
     var horizontalSizeClass
 
+    @Environment(\.modelContext)
+    private var modelContext
+
     var body: some View {
         GeometryReader { proxy in
             CardCollection(cards: cards, size: .large, layoutWidth: layoutWidth(proxy.size))
@@ -39,7 +42,7 @@ struct SharedWithYouDetailView: View {
 private extension SharedWithYouDetailView {
     var proposedCards: [HomeCardConfiguration] {
         sharedWithYouItems.enumerated().compactMap {
-            if let item = $0.element.item {
+            if let item = fetchItem($0.element.url) {
                 return HomeCardConfiguration(
                     givenURL: item.givenURL,
                     sharedWithYouUrlString: $0.element.url,
@@ -62,6 +65,19 @@ private extension SharedWithYouDetailView {
             return nil
         }
     }
+
+    /// Fetch an `Item` from the underlying `SharedWithYouItem`
+    /// - Parameter sharedWithYouUrl: `SharedWithYouItem` url
+    /// - Returns: the item, if it was found
+    func fetchItem(_ sharedWithYouUrl: String) -> Item? {
+        let predicate = #Predicate<Item> { $0.sharedWithYouItem?.url == sharedWithYouUrl }
+        var fetchDescriptor = FetchDescriptor(predicate: predicate)
+        fetchDescriptor.fetchLimit = 1
+
+        let result = (try? modelContext.fetch(fetchDescriptor)) ?? []
+        return result.first
+    }
+
     /// Determine the size of the current layout
     /// **NOTE: turns out that, since this is a detail view, the environment value `layoutWidth`
     /// cannot be used here since the GeometryReader of HomeView is not active

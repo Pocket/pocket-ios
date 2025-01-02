@@ -19,6 +19,9 @@ struct SlateDetailView: View {
     @Environment(\.homeActions)
     private var homeActions
 
+    @Environment(\.modelContext)
+    private var modelContext
+
     init(destination: SlateDestination) {
         self.destination = destination
         let slateID = destination.slateID
@@ -41,7 +44,7 @@ struct SlateDetailView: View {
             }
         }
         .onAppear {
-            guard let slateInfo = destination.slateInfo else {
+            guard let slateInfo = slateInfo(destination) else {
                 return
             }
             homeActions.trackSlateDetailImpression(info: slateInfo)
@@ -56,7 +59,7 @@ struct SlateDetailView: View {
 private extension SlateDetailView {
     var proposedCards: [HomeCardConfiguration] {
         recommendations.enumerated().compactMap {
-            if let item = $0.element.item {
+            if let item = fetchItem($0.element.remoteID) {
                 return HomeCardConfiguration(
                     givenURL: item.givenURL,
                     sharedWithYouUrlString: nil,
@@ -79,6 +82,62 @@ private extension SlateDetailView {
             return nil
         }
     }
+
+    /// Fetch analytics info for this slate
+    /// - Parameter destination: slate destination of this slate
+    /// - Returns: analytics info
+    func slateInfo(_ destination: SlateDestination) -> SlateInfo? {
+        guard let slate = fetchSlate(destination.slateID),
+              let lineup = fetchSlateLineup() else {
+            return nil
+        }
+        return SlateInfo(
+            slateId: slate.remoteID,
+            slateRequestId: slate.requestID,
+            slateExperimentId: slate.experimentID,
+            slateIndex: Int(slate.sortIndex ?? 0),
+            slateLineupId: lineup.remoteID
+        )
+    }
+
+    /// Fetch an `Item` from the underlying `Recommendation`
+    /// - Parameter recommendationID: `Recommendation` ID
+    /// - Returns: the item, if it was found
+    func fetchItem(_ recommendationID: String) -> Item? {
+        let predicate = #Predicate<Item> { $0.recommendation?.remoteID == recommendationID }
+        var fetchDescriptor = FetchDescriptor(predicate: predicate)
+        fetchDescriptor.fetchLimit = 1
+
+        let result = (try? modelContext.fetch(fetchDescriptor)) ?? []
+        return result.first
+    }
+
+    /// Fetch the current slate from SwiftData
+    /// - Parameter remoteID: the remote id of this slate
+    /// - Returns: the slate, if it was found
+    func fetchSlate(_ remoteID: String) -> Slate? {
+        let predicate = #Predicate<Slate> { $0.remoteID == remoteID }
+        var fetchDescriptor = FetchDescriptor(predicate: predicate)
+        fetchDescriptor.fetchLimit = 1
+
+        let result = (try? modelContext.fetch(fetchDescriptor)) ?? []
+        return result.first
+    }
+
+    /// Fettch the current slate lineup
+    /// - Returns: the slate lineup, if it was found
+    func fetchSlateLineup() -> SlateLineup? {
+        // there is only one lineup, so we don't need to filter this query
+        let predicate = #Predicate<SlateLineup> { _ in
+            return true
+        }
+        var fetchDescriptor = FetchDescriptor(predicate: predicate)
+        fetchDescriptor.fetchLimit = 1
+
+        let result = (try? modelContext.fetch(fetchDescriptor)) ?? []
+        return result.first
+    }
+
     /// Determine the size of the current layout
     /// **NOTE: turns out that, since this is a detail view, the environment value `layoutWidth`
     /// cannot be used here since the GeometryReader of HomeView is not active

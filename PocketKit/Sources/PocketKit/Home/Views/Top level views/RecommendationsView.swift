@@ -83,16 +83,7 @@ private extension RecommendationsView {
             makeOfflineView()
         }
     }
-    private func slateInfo(_ slate: Slate) -> SlateInfo? {
-        guard let lineup = slate.slateLineup else { return nil }
-        return SlateInfo(
-            slateId: slate.remoteID,
-            slateRequestId: slate.requestID,
-            slateExperimentId: slate.experimentID,
-            slateIndex: Int(slate.sortIndex ?? 0),
-            slateLineupId: lineup.remoteID
-        )
-    }
+
     @ViewBuilder
     func makeSlatesView() -> some View {
         ForEach(slates) {
@@ -100,8 +91,7 @@ private extension RecommendationsView {
                 SlateView(
                     remoteID: $0.remoteID,
                     slateTitle: $0.name,
-                    cards: cards(for: $0.remoteID),
-                    slateInfo: slateInfo($0)
+                    cards: cards(for: $0.remoteID)
                 )
             }
         }
@@ -115,6 +105,9 @@ private extension RecommendationsView {
         OfflineView()
     }
 
+    /// Fetch `Recommendation`s of the current `Slate`
+    /// - Parameter slateID: `Slate` ID
+    /// - Returns: the collection of `Recommendation`s, limited to 6 elements.
     func fetchRecommendations(_ slateID: String) -> [Recommendation] {
         let predicate = #Predicate<Recommendation> { $0.slate?.remoteID == slateID }
         let sortDescriptor = SortDescriptor<Recommendation>(\.sortIndex, order: .forward)
@@ -124,10 +117,22 @@ private extension RecommendationsView {
         return (try? modelContext.fetch(fetchDescriptor)) ?? []
     }
 
+    /// Fetch an `Item` from the underlying `Recommendation`
+    /// - Parameter recommendationID: `Recommendation` ID
+    /// - Returns: the item, if it was found
+    func fetchItem(_ recommendationID: String) -> Item? {
+        let predicate = #Predicate<Item> { $0.recommendation?.remoteID == recommendationID }
+        var fetchDescriptor = FetchDescriptor(predicate: predicate)
+        fetchDescriptor.fetchLimit = 1
+
+        let result = (try? modelContext.fetch(fetchDescriptor)) ?? []
+        return result.first
+    }
+
     func cards(for slateID: String) -> [HomeCardConfiguration] {
         fetchRecommendations(slateID)
             .compactMap {
-                if let item = $0.item {
+                if let item = fetchItem($0.remoteID) {
                     return HomeCardConfiguration(
                         givenURL: item.givenURL,
                         sharedWithYouUrlString: nil,

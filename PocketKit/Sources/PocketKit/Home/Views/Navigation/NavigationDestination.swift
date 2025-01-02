@@ -10,7 +10,6 @@ protocol NavigationDestination: Codable, Hashable {}
 struct SlateDestination: NavigationDestination {
     let slateID: String
     let slateTitle: String?
-    let slateInfo: SlateInfo?
 }
 
 struct NativeCollectionDestination: NavigationDestination {
