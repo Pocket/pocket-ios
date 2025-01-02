@@ -16,6 +16,9 @@ struct SharedWithYouView: View {
 
     @State private var cards: [HomeCardConfiguration] = []
 
+    @Environment(\.modelContext)
+    private var modelContext
+
     init() {
         let sortDescriptor = SortDescriptor<SharedWithYouItem>(\.sortOrder, order: .forward)
         var fetchDescriptor = FetchDescriptor<SharedWithYouItem>(sortBy: [sortDescriptor])
@@ -63,22 +66,35 @@ private extension SharedWithYouView {
         .padding(.trailing, 16)
     }
 
+    /// Fetch an `Item` from the underlying `SharedWithYouItem`
+    /// - Parameter sharedWithYouUrl: `SharedWithYouItem` url
+    /// - Returns: the item, if it was found
+    func fetchItem(_ sharedWithYouUrl: String) -> Item? {
+        let predicate = #Predicate<Item> { $0.sharedWithYouItem?.url == sharedWithYouUrl }
+        var fetchDescriptor = FetchDescriptor(predicate: predicate)
+        fetchDescriptor.fetchLimit = 1
+
+        let result = (try? modelContext.fetch(fetchDescriptor)) ?? []
+        return result.first
+    }
+
     var proposedCards: [HomeCardConfiguration] {
         sharedWithYouItems.enumerated().compactMap {
-            HomeCardConfiguration(
-                givenURL: $0.element.item?.givenURL ?? $0.element.url,
+            guard let item = fetchItem($0.element.url) else { return nil }
+            return HomeCardConfiguration(
+                givenURL: item.givenURL,
                 sharedWithYouUrlString: $0.element.url,
                 type: .sharedWithYou,
                 index: $0.offset,
-                shareURL: $0.element.item?.shareURL,
-                domain: $0.element.item?.bestDomain,
-                timeToRead: $0.element.item?.timeToRead,
-                isSyndicated: $0.element.item?.isSyndicated == true,
-                recommendationID: $0.element.item?.recommendation?.analyticsID,
-                bestTitle: $0.element.item?.bestTitle,
-                slug: $0.element.item?.collectionSlug,
-                excerpt: $0.element.item?.excerpt,
-                topImageURL: $0.element.item?.topImageURL,
+                shareURL: item.shareURL,
+                domain: item.bestDomain,
+                timeToRead: item.timeToRead,
+                isSyndicated: item.isSyndicated == true,
+                recommendationID: item.recommendation?.analyticsID,
+                bestTitle: item.bestTitle,
+                slug: item.collectionSlug,
+                excerpt: item.excerpt,
+                topImageURL: item.topImageURL,
                 enableSaveAction: true,
                 enableShareMenuAction: true,
                 enableReportMenuAction: true
