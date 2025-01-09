@@ -229,7 +229,7 @@ class HomeTests: PocketXCTestCase {
 
         app.navigationBar.buttons["Home"].tap()
 
-        XCTAssertTrue(app.homeView.carouselCardLabel("Mozilla ").exists)
+        XCTAssertTrue(app.homeView.carouselCardLabel("slate-1-rec-2.example.com ").exists)
     }
 
     func test_tappingSaveButtonInRecommendationCell_savesItemToList() {
