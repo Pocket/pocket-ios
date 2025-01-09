@@ -82,8 +82,8 @@ class PocketSearchServiceTests: XCTestCase {
         await fulfillment(of: [searchExpectation], timeout: 2)
 
         let call: MockApolloClient.FetchCall<SearchSavedItemsQuery>? = self.apollo.fetchCall(at: 0)
-        XCTAssertEqual(call?.query.term, "search-term")
-        XCTAssertNil(call?.query.filter)
+        XCTAssertEqual(call!.query.term, "search-term")
+        XCTAssertNil(call?.query.filter.status)
     }
 
     // MARK: Pagination
@@ -173,7 +173,7 @@ extension PocketSearchServiceTests {
 
         let call: MockApolloClient.FetchCall<SearchSavedItemsQuery>? = self.apollo.fetchCall(at: 0)
         XCTAssertEqual(call?.query.term, "tag:\"search term\"")
-        XCTAssertNil(call?.query.filter)
+        XCTAssertNil(call?.query.filter.status)
     }
 
     func test_search_forTag_withPrefix_fetchesSearchSavedItemsQueryWithCorrectTerm() async throws {
@@ -191,7 +191,7 @@ extension PocketSearchServiceTests {
 
         let call: MockApolloClient.FetchCall<SearchSavedItemsQuery>? = self.apollo.fetchCall(at: 0)
         XCTAssertEqual(call?.query.term, "#search")
-        XCTAssertNil(call?.query.filter)
+        XCTAssertNil(call?.query.filter.status)
     }
 
     func test_search_forContent_fetchesSearchSavedItemsQueryWithTerm() async throws {
@@ -209,7 +209,7 @@ extension PocketSearchServiceTests {
 
         let call: MockApolloClient.FetchCall<SearchSavedItemsQuery>? = self.apollo.fetchCall(at: 0)
         XCTAssertEqual(call?.query.term, "search-term")
-        XCTAssertNil(call?.query.filter)
+        XCTAssertNil(call?.query.filter.status)
     }
 }
 
