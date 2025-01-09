@@ -91,9 +91,9 @@ public class PocketSearchService: SearchService {
         var items: [SearchSavedItem] = []
         let pagination = PaginationInput(after: GraphQLNullable<String>(stringLiteral: lastEndCursor), first: GraphQLNullable<Int>(integerLiteral: Constants.pageSize))
 
-        let filter = getSearchFilter(with: scope)
+        let filter = getSearchFilter(with: scope) ?? .null
         let sortOrder = getSortOrder()
-        let query = SearchSavedItemsQuery(term: getTerm(term, for: scope), pagination: .init(pagination), filter: .some(filter), sort: .some(sortOrder))
+        let query = SearchSavedItemsQuery(term: getTerm(term, for: scope), pagination: .init(pagination), filter: filter, sort: .some(sortOrder))
         let result = try await apollo.fetch(query: query)
         result.data?.user?.searchSavedItems?.edges.forEach { edge in
             var searchSavedItem = SearchSavedItem(remoteItem: edge.node.savedItem.fragments.savedItemParts)
@@ -109,20 +109,20 @@ public class PocketSearchService: SearchService {
         _results = items
     }
 
-    private func getSearchFilter(with scope: SearchScope) -> SearchFilterInput {
+    private func getSearchFilter(with scope: SearchScope) -> SearchFilterInput? {
         switch scope {
         case .saves:
             return SearchFilterInput(status: .init(.unread))
         case .archive:
             return SearchFilterInput(status: .init(.archived))
         case .all:
-            return SearchFilterInput()
+            return nil
         case .premiumSearchByTitle:
             return SearchFilterInput(onlyTitleAndURL: true)
         case .premiumSearchByTag:
-            return SearchFilterInput()
+            return nil
         case .premiumSearchByContent:
-            return SearchFilterInput()
+            return nil
         }
     }
 
