@@ -168,9 +168,8 @@ public protocol Source {
 
     // MARK: Notes
     func fetchNote(noteID: String) -> CDNote?
-    func fetchNotes(savedItem: SavedItem) -> [CDNote]?
+    func fetchNotes(for savedItem: CDSavedItem) -> [CDNote]?
     func fetchAllNotes() -> [CDNote]?
-    func createNote(title: String?, body: String, url: String?)
     func updateNote(noteID: String, title: String?, body: String, url: String?)
     func deleteNote(noteID: String)
 }

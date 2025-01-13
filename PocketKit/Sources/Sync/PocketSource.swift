@@ -1564,17 +1564,11 @@ extension PocketSource {
             return nil
         }
     }
-
-    public func createNote(title: String?, body: String, url: String?) {
-        <#code#>
-    }
-
+    // TODO: NOTES - Add implementation
     public func updateNote(noteID: String, title: String?, body: String, url: String?) {
-
     }
 
     public func deleteNote(noteID: String) {
-
     }
 }
 

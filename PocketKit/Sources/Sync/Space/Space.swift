@@ -281,8 +281,9 @@ extension Space {
         return try fetch(Requests.fetchAllNotes(), context: context)
     }
 
-    func createNote(title: String?, body: String, url: String?) -> CDNote {
-        let note = CDNote(context: backgroundContext)
+    func createNote(title: String?, body: String, url: String?, context: NSManagedObjectContext? = nil) -> CDNote {
+        let noteID = UUID().uuidString
+        let note = CDNote(context: context ?? backgroundContext, noteID: noteID)
         note.title = title
         note.body = body
 

@@ -8,6 +8,22 @@ import CoreData
 import Combine
 
 class MockSource: Source {
+    func fetchNote(noteID: String) -> Sync.CDNote? {
+        nil
+    }
+
+    func fetchNotes(for savedItem: Sync.CDSavedItem) -> [Sync.CDNote]? {
+        nil
+    }
+
+    func fetchAllNotes() -> [Sync.CDNote]? {
+        nil
+    }
+
+    func updateNote(noteID: String, title: String?, body: String, url: String?) {}
+
+    func deleteNote(noteID: String) {}
+
     func archive(from givenURL: String) {}
 
     func save(from givenURL: String) {}

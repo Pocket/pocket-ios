@@ -8,4 +8,23 @@ import CoreData
 
 @objc(Note)
 public class CDNote: NSManagedObject {
+    @available(*, unavailable)
+    public init() {
+        fatalError()
+    }
+
+    @available(*, unavailable)
+    public init(context: NSManagedObjectContext) {
+        fatalError()
+    }
+
+    internal override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?) {
+        super.init(entity: entity, insertInto: context)
+    }
+
+    public init(context: NSManagedObjectContext, noteID: String) {
+        let entity = NSEntityDescription.entity(forEntityName: "Note", in: context)!
+        super.init(entity: entity, insertInto: context)
+        self.noteID = noteID
+    }
 }
