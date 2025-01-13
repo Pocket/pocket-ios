@@ -158,7 +158,9 @@ class OnlineSearchTests: XCTestCase {
         let term = "search-term"
         let expectation = expectation(description: "online search")
         searchService.stubSearch { _, _ in
-            expectation.fulfill()
+            defer {
+                expectation.fulfill()
+            }
             throw TestError.anError
         }
         sut.search(with: term)
