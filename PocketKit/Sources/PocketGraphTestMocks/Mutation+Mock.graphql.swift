@@ -10,11 +10,15 @@ public class Mutation: MockObject {
   public typealias MockValueCollectionType = Array<Mock<Mutation>>
 
   public struct MockFields {
+    @Field<Note>("createNoteMarkdown") public var createNoteMarkdown
     @Field<[Highlight]>("createSavedItemHighlights") public var createSavedItemHighlights
     @Field<PocketShare>("createShareLink") public var createShareLink
+    @Field<PocketGraph.ID>("deleteNote") public var deleteNote
     @Field<PocketGraph.ID>("deleteSavedItemHighlight") public var deleteSavedItemHighlight
     @Field<PocketGraph.ID>("deleteTag") public var deleteTag
     @Field<PocketGraph.ID>("deleteUser") public var deleteUser
+    @Field<Note>("editNoteContentMarkdown") public var editNoteContentMarkdown
+    @Field<Note>("editNoteTitle") public var editNoteTitle
     @available(*, deprecated, message: "use saveBatchUpdateTags")
     @Field<[SavedItem]>("replaceSavedItemTags") public var replaceSavedItemTags
     @Field<SavedItem>("savedItemArchive") public var savedItemArchive
@@ -31,11 +35,15 @@ public class Mutation: MockObject {
 
 public extension Mock where O == Mutation {
   convenience init(
+    createNoteMarkdown: Mock<Note>? = nil,
     createSavedItemHighlights: [Mock<Highlight>]? = nil,
     createShareLink: Mock<PocketShare>? = nil,
+    deleteNote: PocketGraph.ID? = nil,
     deleteSavedItemHighlight: PocketGraph.ID? = nil,
     deleteTag: PocketGraph.ID? = nil,
     deleteUser: PocketGraph.ID? = nil,
+    editNoteContentMarkdown: Mock<Note>? = nil,
+    editNoteTitle: Mock<Note>? = nil,
     replaceSavedItemTags: [Mock<SavedItem>]? = nil,
     savedItemArchive: Mock<SavedItem>? = nil,
     savedItemDelete: PocketGraph.Url? = nil,
@@ -47,11 +55,15 @@ public extension Mock where O == Mutation {
     upsertSavedItem: Mock<SavedItem>? = nil
   ) {
     self.init()
+    _setEntity(createNoteMarkdown, for: \.createNoteMarkdown)
     _setList(createSavedItemHighlights, for: \.createSavedItemHighlights)
     _setEntity(createShareLink, for: \.createShareLink)
+    _setScalar(deleteNote, for: \.deleteNote)
     _setScalar(deleteSavedItemHighlight, for: \.deleteSavedItemHighlight)
     _setScalar(deleteTag, for: \.deleteTag)
     _setScalar(deleteUser, for: \.deleteUser)
+    _setEntity(editNoteContentMarkdown, for: \.editNoteContentMarkdown)
+    _setEntity(editNoteTitle, for: \.editNoteTitle)
     _setList(replaceSavedItemTags, for: \.replaceSavedItemTags)
     _setEntity(savedItemArchive, for: \.savedItemArchive)
     _setScalar(savedItemDelete, for: \.savedItemDelete)

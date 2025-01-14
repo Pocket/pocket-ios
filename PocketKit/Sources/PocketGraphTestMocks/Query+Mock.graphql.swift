@@ -18,6 +18,8 @@ public class Query: MockObject {
     @Field<SlateLineup>("getSlateLineup") public var getSlateLineup
     @Field<CorpusSlateLineup>("homeSlateLineup") public var homeSlateLineup
     @Field<Item>("itemByUrl") public var itemByUrl
+    @Field<Note>("note") public var note
+    @Field<NoteConnection>("notes") public var notes
     @Field<ReaderViewResult>("readerSlug") public var readerSlug
     @Field<ShareResult>("shareSlug") public var shareSlug
     @Field<User>("user") public var user
@@ -32,6 +34,8 @@ public extension Mock where O == Query {
     getSlateLineup: Mock<SlateLineup>? = nil,
     homeSlateLineup: Mock<CorpusSlateLineup>? = nil,
     itemByUrl: Mock<Item>? = nil,
+    note: Mock<Note>? = nil,
+    notes: Mock<NoteConnection>? = nil,
     readerSlug: Mock<ReaderViewResult>? = nil,
     shareSlug: AnyMock? = nil,
     user: Mock<User>? = nil
@@ -43,6 +47,8 @@ public extension Mock where O == Query {
     _setEntity(getSlateLineup, for: \.getSlateLineup)
     _setEntity(homeSlateLineup, for: \.homeSlateLineup)
     _setEntity(itemByUrl, for: \.itemByUrl)
+    _setEntity(note, for: \.note)
+    _setEntity(notes, for: \.notes)
     _setEntity(readerSlug, for: \.readerSlug)
     _setEntity(shareSlug, for: \.shareSlug)
     _setEntity(user, for: \.user)

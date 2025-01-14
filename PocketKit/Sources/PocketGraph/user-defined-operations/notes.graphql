@@ -1,0 +1,64 @@
+fragment NotesPart on Note {
+    contentPreview
+    createdAt
+    id
+    savedItem {
+      id
+    }
+    source
+    title
+    updatedAt
+}
+
+query Note($noteId: ID!) {
+  note(id: $noteId) {
+    __typename
+    ...NotesPart
+  }
+}
+
+query Notes {
+  notes {
+    edges {
+      cursor
+      node {
+        __typename
+        ...NotesPart
+
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+      hasPreviousPage
+      startCursor
+    }
+    totalCount
+  }
+}
+
+
+mutation CreateNoteMarkdown($input: CreateNoteMarkdownInput!) {
+  createNoteMarkdown(input: $input) {
+    __typename
+    ...NotesPart
+  }
+}
+
+mutation DeleteNote($input: DeleteNoteInput!) {
+  deleteNote(input: $input)
+}
+
+mutation EditNoteContentMarkdown($input: EditNoteContentMarkdownInput!) {
+  editNoteContentMarkdown(input: $input) {
+    __typename
+    ...NotesPart
+  }
+}
+
+mutation EditNoteTitle($input: EditNoteTitleInput!) {
+  editNoteTitle(input: $input) {
+    __typename
+    ...NotesPart
+  }
+}
