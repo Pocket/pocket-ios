@@ -20,4 +20,6 @@ public enum VideoType: String, EnumType {
   case iframe = "IFRAME"
   /// Brightcove (v3 value is 8)
   case brightcove = "BRIGHTCOVE"
+  /// Dailymotion (v3 value is 9)
+  case dailymotion = "DAILYMOTION"
 }
