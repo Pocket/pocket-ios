@@ -20,6 +20,7 @@ public extension UserDefaults {
         case lastRefreshedSavesAt = "lastRefreshedSavesAt"
         case lastRefreshedHomeAt = "lastRefreshedHomeAt"
         case lastRefreshedFeatureFlagsAt = "lastRefreshedFeatureFlagsAt"
+        case lastRefreshNotesAt = "lastRefreshNotes"
         case listSelectedSortForSaved = "listSelectedSortForSaved"
         case listSelectedSortForArchive = "listSelectedSortForArchive"
         case readerFontSizeAdjustment = "readerFontSizeAdjustment"

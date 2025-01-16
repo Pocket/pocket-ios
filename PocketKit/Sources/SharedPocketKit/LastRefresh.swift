@@ -10,11 +10,13 @@ public protocol LastRefresh {
     var lastRefreshTags: TimeInterval? { get }
     var lastRefreshHome: TimeInterval? { get }
     var lastRefreshFeatureFlags: TimeInterval? { get }
+    var lastRefreshNotes: TimeInterval? { get }
     func refreshedSaves()
     func refreshedArchive()
     func refreshedTags()
     func refreshedHome()
     func refreshedFeatureFlags()
+    func refreshedNotes()
     func reset()
 }
 
@@ -31,6 +33,7 @@ public struct UserDefaultsLastRefresh: LastRefresh {
         defaults.removeObject(forKey: Self.lastRefreshedTagsAtKey)
         defaults.removeObject(forKey: Self.lastRefreshedHomeAtKey)
         defaults.removeObject(forKey: Self.lastRefreshedFeatureFlagsAtKey)
+        defaults.removeObject(forKey: Self.lastRefreshedNotesAtKey)
     }
 }
 
@@ -119,7 +122,7 @@ extension UserDefaultsLastRefresh {
     }
 }
 
-// MARK: Home
+// MARK: Feature flags
 extension UserDefaultsLastRefresh {
     public static let lastRefreshedFeatureFlagsAtKey = UserDefaults.Key.lastRefreshedFeatureFlagsAt
 
@@ -137,5 +140,26 @@ extension UserDefaultsLastRefresh {
 
     public func refreshedFeatureFlags() {
         defaults.set(Date().timeIntervalSince1970, forKey: Self.lastRefreshedFeatureFlagsAtKey)
+    }
+}
+
+// MARK: Notes
+extension UserDefaultsLastRefresh {
+    public static let lastRefreshedNotesAtKey = UserDefaults.Key.lastRefreshNotesAt
+
+    public var lastRefreshNotes: TimeInterval? {
+        if hasRefreshedNotes {
+            return defaults.double(forKey: Self.lastRefreshedNotesAtKey)
+        } else {
+            return nil
+        }
+    }
+
+    public var hasRefreshedNotes: Bool {
+        defaults.value(forKey: Self.lastRefreshedNotesAtKey) != nil
+    }
+
+    public func refreshedNotes() {
+        defaults.set(Date().timeIntervalSince1970, forKey: Self.lastRefreshedNotesAtKey)
     }
 }

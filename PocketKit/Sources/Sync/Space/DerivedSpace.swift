@@ -24,6 +24,10 @@ protocol TagSpace: Paginated {
     func updateTags(edges: [CDTag.TagEdge?], cursor: String?) throws
 }
 
+protocol NotesSpace: Paginated {
+    func updateNotes(edges: [CDNote.NoteEdge?], cursor: String) throws
+}
+
 protocol SharedWithYouSpace {
     func cleanupSharedWithYouItems(validUrls: [String]) throws
     func updateSharedWithYouItem(url: String, sortOrder: Int, remote: CompactItem) throws
@@ -60,6 +64,14 @@ struct DerivedSpace {
             category: "sync",
             level: .info,
             message: "Updating/Inserting SavedItem with ID: \(itemID)"
+        )
+    }
+
+    private func logNoteUpdated(noteID: String) {
+        Log.breadcrumb(
+            category: "sync",
+            level: .info,
+            message: "Updating/Inserting Note with ID: \(noteID)"
         )
     }
 
@@ -173,6 +185,30 @@ extension DerivedSpace: SharedWithYouSpace {
             let sharedWithYouItem = try space.fetchSharedWithYouItem(with: url, in: context) ??
             CDSharedWithYouItem(context: context, url: url, sortOrder: Int32(sortOrder), item: item)
             sharedWithYouItem.sortOrder = Int32(sortOrder)
+        }
+        try saveContexts()
+    }
+}
+
+extension DerivedSpace: NotesSpace {
+    func updateNotes(edges: [CDNote.NoteEdge?], cursor: String) throws {
+        updateCursor(cursor)
+        edges.forEach {
+            guard let edge = $0, let node = edge.node else {
+                return
+            }
+
+            logNoteUpdated(noteID: node.id)
+
+            context.performAndWait {
+                let ID = node.id
+                let note = (try? space.fetchNote(byRemoteID: ID, context: context)) ?? CDNote(context: context, noteID: ID)
+                note.update(from: edge, with: space)
+
+                if node.deleted {
+                    space.delete(note, in: context)
+                }
+            }
         }
         try saveContexts()
     }

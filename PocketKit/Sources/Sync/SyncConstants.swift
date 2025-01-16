@@ -58,4 +58,18 @@ public struct SyncConstants {
 
         public static let slateLineupIdentifier = "e39bc22a-6b70-4ed2-8247-4b3f1a516bd1"
     }
+
+    public struct Notes {
+        /// How many saves we load when a user logs in. As they save and use pocket they may accumilate more, but we only download the amount of latest saves here to start.
+        public static let firstLoadMaxCount = 10000
+
+        /// How many saves we should load on the first login request for saves, we use a small value here so the user immediately sees content.
+        public  static let initalPageSize = 15
+
+        /// How many saves to load per subsequent page until we hit our load count.
+        public  static let pageSize = 30
+
+        /// How many seconds must pass from the last load of saves data before we allow hitting the server again.
+        public static let timeMustPass = 5.0
+    }
 }
