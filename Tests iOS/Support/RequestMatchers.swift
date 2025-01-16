@@ -45,6 +45,10 @@ struct ClientAPIRequest {
         self.operationName == "FetchSaves" && !contains(#"ARCHIVED"#)
     }
 
+    var isForNotes: Bool {
+        self.operationName == "FetchNotes"
+    }
+
     var isForArchivedContent: Bool {
         self.operationName == "FetchArchive" && contains(#"ARCHIVED"#)
     }

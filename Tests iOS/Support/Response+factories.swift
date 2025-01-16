@@ -21,6 +21,11 @@ extension Response {
         }
     }
 
+    static func notes() -> Response {
+        // TODO: NOTES - Once the UI is ready we can edit this response to ui test Notes
+        Response(status: .ok)
+    }
+
     static func throttle() -> Response {
         Response {
             Status.tooManyRequests
@@ -390,6 +395,8 @@ extension Response {
             return .shortUrl()
         } else if apiRequest.isForCreateShareLink {
             return .createShareLink()
+        } else if apiRequest.isForNotes {
+            return .notes()
         } else {
             fatalError("Unexpected request")
         }
