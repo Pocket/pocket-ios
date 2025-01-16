@@ -1,5 +1,6 @@
 fragment NotesPart on Note {
     contentPreview
+    docMarkdown
     createdAt
     id
     savedItem {
@@ -8,6 +9,8 @@ fragment NotesPart on Note {
     source
     title
     updatedAt
+    archived
+    deleted
 }
 
 query Note($noteId: ID!) {
@@ -17,8 +20,8 @@ query Note($noteId: ID!) {
   }
 }
 
-query Notes {
-  notes {
+query Notes($pagination: PaginationInput, $filter: NoteFilterInput) {
+  notes(pagination: $pagination, filter: $filter) {
     edges {
       cursor
       node {

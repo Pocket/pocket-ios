@@ -5,7 +5,7 @@
 
 public struct NotesPart: PocketGraph.SelectionSet, Fragment {
   public static var fragmentDefinition: StaticString {
-    #"fragment NotesPart on Note { __typename contentPreview createdAt id savedItem { __typename id } source title updatedAt }"#
+    #"fragment NotesPart on Note { __typename contentPreview docMarkdown createdAt id savedItem { __typename id } source title updatedAt archived deleted }"#
   }
 
   public let __data: DataDict
@@ -15,16 +15,21 @@ public struct NotesPart: PocketGraph.SelectionSet, Fragment {
   public static var __selections: [ApolloAPI.Selection] { [
     .field("__typename", String.self),
     .field("contentPreview", PocketGraph.Markdown?.self),
+    .field("docMarkdown", PocketGraph.Markdown?.self),
     .field("createdAt", PocketGraph.ISOString.self),
     .field("id", PocketGraph.ID.self),
     .field("savedItem", SavedItem?.self),
     .field("source", PocketGraph.ValidUrl?.self),
     .field("title", String?.self),
     .field("updatedAt", PocketGraph.ISOString.self),
+    .field("archived", Bool.self),
+    .field("deleted", Bool.self),
   ] }
 
   /// Markdown preview of the note content for summary view.
   public var contentPreview: PocketGraph.Markdown? { __data["contentPreview"] }
+  /// Markdown representation of the note content
+  public var docMarkdown: PocketGraph.Markdown? { __data["docMarkdown"] }
   /// When this note was created
   public var createdAt: PocketGraph.ISOString { __data["createdAt"] }
   /// This Note's identifier
@@ -39,26 +44,38 @@ public struct NotesPart: PocketGraph.SelectionSet, Fragment {
   public var title: String? { __data["title"] }
   /// When this note was last updated
   public var updatedAt: PocketGraph.ISOString { __data["updatedAt"] }
+  /// Whether this Note has been marked as archived (hide from default view).
+  public var archived: Bool { __data["archived"] }
+  /// Whether this Note has been marked for deletion (will be eventually
+  /// removed from the server). Clients should delete Notes from their local
+  /// storage if this value is true.
+  public var deleted: Bool { __data["deleted"] }
 
   public init(
     contentPreview: PocketGraph.Markdown? = nil,
+    docMarkdown: PocketGraph.Markdown? = nil,
     createdAt: PocketGraph.ISOString,
     id: PocketGraph.ID,
     savedItem: SavedItem? = nil,
     source: PocketGraph.ValidUrl? = nil,
     title: String? = nil,
-    updatedAt: PocketGraph.ISOString
+    updatedAt: PocketGraph.ISOString,
+    archived: Bool,
+    deleted: Bool
   ) {
     self.init(_dataDict: DataDict(
       data: [
         "__typename": PocketGraph.Objects.Note.typename,
         "contentPreview": contentPreview,
+        "docMarkdown": docMarkdown,
         "createdAt": createdAt,
         "id": id,
         "savedItem": savedItem._fieldData,
         "source": source,
         "title": title,
         "updatedAt": updatedAt,
+        "archived": archived,
+        "deleted": deleted,
       ],
       fulfilledFragments: [
         ObjectIdentifier(NotesPart.self)

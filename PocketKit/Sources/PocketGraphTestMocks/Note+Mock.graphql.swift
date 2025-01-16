@@ -10,8 +10,11 @@ public class Note: MockObject {
   public typealias MockValueCollectionType = Array<Mock<Note>>
 
   public struct MockFields {
+    @Field<Bool>("archived") public var archived
     @Field<PocketGraph.Markdown>("contentPreview") public var contentPreview
     @Field<PocketGraph.ISOString>("createdAt") public var createdAt
+    @Field<Bool>("deleted") public var deleted
+    @Field<PocketGraph.Markdown>("docMarkdown") public var docMarkdown
     @Field<PocketGraph.ID>("id") public var id
     @Field<SavedItem>("savedItem") public var savedItem
     @Field<PocketGraph.ValidUrl>("source") public var source
@@ -22,8 +25,11 @@ public class Note: MockObject {
 
 public extension Mock where O == Note {
   convenience init(
+    archived: Bool? = nil,
     contentPreview: PocketGraph.Markdown? = nil,
     createdAt: PocketGraph.ISOString? = nil,
+    deleted: Bool? = nil,
+    docMarkdown: PocketGraph.Markdown? = nil,
     id: PocketGraph.ID? = nil,
     savedItem: Mock<SavedItem>? = nil,
     source: PocketGraph.ValidUrl? = nil,
@@ -31,8 +37,11 @@ public extension Mock where O == Note {
     updatedAt: PocketGraph.ISOString? = nil
   ) {
     self.init()
+    _setScalar(archived, for: \.archived)
     _setScalar(contentPreview, for: \.contentPreview)
     _setScalar(createdAt, for: \.createdAt)
+    _setScalar(deleted, for: \.deleted)
+    _setScalar(docMarkdown, for: \.docMarkdown)
     _setScalar(id, for: \.id)
     _setEntity(savedItem, for: \.savedItem)
     _setScalar(source, for: \.source)

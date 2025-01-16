@@ -49,6 +49,8 @@ public class EditNoteTitleMutation: GraphQLMutation {
 
       /// Markdown preview of the note content for summary view.
       public var contentPreview: PocketGraph.Markdown? { __data["contentPreview"] }
+      /// Markdown representation of the note content
+      public var docMarkdown: PocketGraph.Markdown? { __data["docMarkdown"] }
       /// When this note was created
       public var createdAt: PocketGraph.ISOString { __data["createdAt"] }
       /// This Note's identifier
@@ -63,6 +65,12 @@ public class EditNoteTitleMutation: GraphQLMutation {
       public var title: String? { __data["title"] }
       /// When this note was last updated
       public var updatedAt: PocketGraph.ISOString { __data["updatedAt"] }
+      /// Whether this Note has been marked as archived (hide from default view).
+      public var archived: Bool { __data["archived"] }
+      /// Whether this Note has been marked for deletion (will be eventually
+      /// removed from the server). Clients should delete Notes from their local
+      /// storage if this value is true.
+      public var deleted: Bool { __data["deleted"] }
 
       public struct Fragments: FragmentContainer {
         public let __data: DataDict

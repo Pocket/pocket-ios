@@ -7,11 +7,25 @@ public class NotesQuery: GraphQLQuery {
   public static let operationName: String = "Notes"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query Notes { notes { __typename edges { __typename cursor node { __typename ...NotesPart } } pageInfo { __typename endCursor hasNextPage hasPreviousPage startCursor } totalCount } }"#,
+      #"query Notes($pagination: PaginationInput, $filter: NoteFilterInput) { notes(pagination: $pagination, filter: $filter) { __typename edges { __typename cursor node { __typename ...NotesPart } } pageInfo { __typename endCursor hasNextPage hasPreviousPage startCursor } totalCount } }"#,
       fragments: [NotesPart.self]
     ))
 
-  public init() {}
+  public var pagination: GraphQLNullable<PaginationInput>
+  public var filter: GraphQLNullable<NoteFilterInput>
+
+  public init(
+    pagination: GraphQLNullable<PaginationInput>,
+    filter: GraphQLNullable<NoteFilterInput>
+  ) {
+    self.pagination = pagination
+    self.filter = filter
+  }
+
+  public var __variables: Variables? { [
+    "pagination": pagination,
+    "filter": filter
+  ] }
 
   public struct Data: PocketGraph.SelectionSet {
     public let __data: DataDict
@@ -19,7 +33,10 @@ public class NotesQuery: GraphQLQuery {
 
     public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Query }
     public static var __selections: [ApolloAPI.Selection] { [
-      .field("notes", Notes?.self),
+      .field("notes", Notes?.self, arguments: [
+        "pagination": .variable("pagination"),
+        "filter": .variable("filter")
+      ]),
     ] }
 
     /// Retrieve a user's Notes
@@ -81,6 +98,8 @@ public class NotesQuery: GraphQLQuery {
 
           /// Markdown preview of the note content for summary view.
           public var contentPreview: PocketGraph.Markdown? { __data["contentPreview"] }
+          /// Markdown representation of the note content
+          public var docMarkdown: PocketGraph.Markdown? { __data["docMarkdown"] }
           /// When this note was created
           public var createdAt: PocketGraph.ISOString { __data["createdAt"] }
           /// This Note's identifier
@@ -95,6 +114,12 @@ public class NotesQuery: GraphQLQuery {
           public var title: String? { __data["title"] }
           /// When this note was last updated
           public var updatedAt: PocketGraph.ISOString { __data["updatedAt"] }
+          /// Whether this Note has been marked as archived (hide from default view).
+          public var archived: Bool { __data["archived"] }
+          /// Whether this Note has been marked for deletion (will be eventually
+          /// removed from the server). Clients should delete Notes from their local
+          /// storage if this value is true.
+          public var deleted: Bool { __data["deleted"] }
 
           public struct Fragments: FragmentContainer {
             public let __data: DataDict
