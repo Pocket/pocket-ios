@@ -29,6 +29,7 @@ struct Services {
     let homeRefreshCoordinator: HomeRefreshCoordinator
     let userRefreshCoordinator: UserRefreshCoordinator
     let featureFlagsRefreshCoordinator: FeatureFlagsRefreshCoordinator
+    let notesRefreshCoordinator: NotesRefreshCoordinator
     let refreshCoordinators: [RefreshCoordinator]
     let authClient: AuthorizationClient
     let accessService: PocketAccessService
@@ -155,6 +156,13 @@ struct Services {
             lastRefresh: lastRefresh
         )
 
+        notesRefreshCoordinator = NotesRefreshCoordinator(
+            notificationCenter: notificationCenter,
+            taskScheduler: BGTaskScheduler.shared,
+            appSession: appSession,
+            source: source
+        )
+
         refreshCoordinators = [
             savesRefreshCoordinator,
             archiveRefreshCoordinator,
@@ -162,7 +170,8 @@ struct Services {
             unresolvedSavesRefreshCoordinator,
             homeRefreshCoordinator,
             userRefreshCoordinator,
-            featureFlagsRefreshCoordinator
+            featureFlagsRefreshCoordinator,
+            notesRefreshCoordinator
         ]
 
         imageManager = ImageManager(

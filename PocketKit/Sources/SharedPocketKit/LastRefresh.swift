@@ -10,7 +10,8 @@ public protocol LastRefresh {
     var lastRefreshTags: TimeInterval? { get }
     var lastRefreshHome: TimeInterval? { get }
     var lastRefreshFeatureFlags: TimeInterval? { get }
-    var lastRefreshNotes: TimeInterval? { get }
+    // we use the ISO8601 String representation in this case
+    var lastRefreshNotes: String? { get }
     func refreshedSaves()
     func refreshedArchive()
     func refreshedTags()
@@ -38,7 +39,6 @@ public struct UserDefaultsLastRefresh: LastRefresh {
 }
 
 // MARK: Saves
-
 extension UserDefaultsLastRefresh {
     public static let lastRefreshedSavesAtKey = UserDefaults.Key.lastRefreshedSavesAt
 
@@ -147,9 +147,9 @@ extension UserDefaultsLastRefresh {
 extension UserDefaultsLastRefresh {
     public static let lastRefreshedNotesAtKey = UserDefaults.Key.lastRefreshNotesAt
 
-    public var lastRefreshNotes: TimeInterval? {
+    public var lastRefreshNotes: String? {
         if hasRefreshedNotes {
-            return defaults.double(forKey: Self.lastRefreshedNotesAtKey)
+            return defaults.string(forKey: Self.lastRefreshedNotesAtKey)
         } else {
             return nil
         }
@@ -160,6 +160,14 @@ extension UserDefaultsLastRefresh {
     }
 
     public func refreshedNotes() {
-        defaults.set(Date().timeIntervalSince1970, forKey: Self.lastRefreshedNotesAtKey)
+        defaults.set(ISO8601DateFormatter.rfc3339WithFractionalSeconds.string(from: Date()), forKey: Self.lastRefreshedNotesAtKey)
+    }
+}
+
+private extension ISO8601DateFormatter {
+    static var rfc3339WithFractionalSeconds: Self {
+        let formatter = Self()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return formatter
     }
 }

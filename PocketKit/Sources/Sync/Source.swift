@@ -167,6 +167,7 @@ public protocol Source {
     func objectID(from uri: URL) -> NSManagedObjectID?
 
     // MARK: Notes
+    func refreshNotes(completion: (() -> Void)?)
     func fetchNote(noteID: String) -> CDNote?
     func fetchNotes(for savedItem: CDSavedItem) -> [CDNote]?
     func fetchAllNotes() -> [CDNote]?

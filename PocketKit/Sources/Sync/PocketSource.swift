@@ -22,6 +22,7 @@ public class PocketSource: Source {
 
     public var initialSavesDownloadState: CurrentValueSubject<InitialDownloadState, Never>
     public var initialArchiveDownloadState: CurrentValueSubject<InitialDownloadState, Never>
+    public var initialNotesDownloadState: CurrentValueSubject<InitialDownloadState, Never>
 
     private let space: Space
     private let user: User
@@ -71,13 +72,18 @@ public class PocketSource: Source {
         makeBackgroundQueue("com.mozilla.pocket.fetch.sharedWithYou")
     }()
 
+    private let fetchNotesQueue: OperationQueue = {
+        makeBackgroundQueue("com.mozilla.pocket.fetch.notes")
+    }()
+
     private var allQueues: [OperationQueue] {
         [
             saveQueue,
             fetchSavesQueue,
             fetchArchiveQueue,
             fetchTagsQueue,
-            fetchSharedWithYouQueue
+            fetchSharedWithYouQueue,
+            fetchNotesQueue
         ]
     }
 
@@ -143,6 +149,7 @@ public class PocketSource: Source {
         self.osNotificationCenter = osNotificationCenter
         self.initialSavesDownloadState = .init(.unknown)
         self.initialArchiveDownloadState = .init(.unknown)
+        self.initialNotesDownloadState = .init(.unknown)
         self.userService = userService
 
         if lastRefresh.lastRefreshSaves != nil {
@@ -153,6 +160,11 @@ public class PocketSource: Source {
             initialArchiveDownloadState.send(.completed)
         }
 
+        if lastRefresh.lastRefreshNotes != nil {
+            initialNotesDownloadState.send(.completed)
+        }
+        // These notifications are used to notify the app when a SavedItem gets created/updated from the extension
+        // TODO: NOTES - We should be doing this for notes once we support notes creation from a browser extension
         osNotificationCenter.add(observer: notificationObserver, name: .savedItemCreated) { [weak self] in
             self?.handleSavedItemCreatedNotification()
         }
@@ -1241,6 +1253,15 @@ extension PocketSource {
             case .fetchSharedWithYouItems(let urls):
                 let operation = operations.fetchSharedWithYouItems(apollo: apollo, space: space, urls: urls)
                 enqueue(operation: operation, persistentTask: persistentTask, queue: fetchSharedWithYouQueue)
+            case .fetchNotes:
+                let operation = operations.fetchNotes(
+                    apollo: apollo,
+                    space: space,
+                    events: _events,
+                    initialDownloadState: initialNotesDownloadState,
+                    lastRefresh: lastRefresh
+                )
+                enqueue(operation: operation, persistentTask: persistentTask, queue: self.fetchNotesQueue)
             }
         }
     }
@@ -1538,6 +1559,18 @@ extension PocketSource {
 
 // MARK: Notes
 extension PocketSource {
+    public func refreshNotes(completion: (() -> Void)? = nil) {
+        let operation = operations.fetchNotes(
+            apollo: apollo,
+            space: space,
+            events: _events,
+            initialDownloadState: initialNotesDownloadState,
+            lastRefresh: lastRefresh
+        )
+
+        enqueue(operation: operation, task: .fetchNotes, queue: fetchSavesQueue, completion: completion)
+    }
+
     public func fetchNote(noteID: String) -> CDNote? {
         do {
             return try space.fetchNote(byRemoteID: noteID)

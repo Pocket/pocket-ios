@@ -39,6 +39,14 @@ protocol SyncOperationFactory {
             urls: [String]
         ) -> SyncOperation
 
+    func fetchNotes(
+        apollo: ApolloClientProtocol,
+        space: Space,
+        events: SyncEvents,
+        initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>,
+        lastRefresh: LastRefresh
+    ) -> SyncOperation
+
     func savedItemMutationOperation<Mutation: GraphQLMutation>(
         apollo: ApolloClientProtocol,
         events: SyncEvents,
@@ -116,6 +124,22 @@ class OperationFactory: SyncOperationFactory {
             apollo: apollo,
             space: space,
             urls: urls
+        )
+    }
+
+    func fetchNotes(
+        apollo: ApolloClientProtocol,
+        space: Space,
+        events: SyncEvents,
+        initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>,
+        lastRefresh: LastRefresh
+    ) -> SyncOperation {
+        return FetchNotes(
+            apollo: apollo,
+            space: space,
+            events: events,
+            initialDownloadState: initialDownloadState,
+            lastRefresh: lastRefresh
         )
     }
 

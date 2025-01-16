@@ -40,7 +40,9 @@ class FetchNotes: SyncOperation {
 
         do {
             if lastRefresh.lastRefreshNotes != nil {
-                guard let lastRefreshTime = lastRefresh.lastRefreshNotes, Date().timeIntervalSince1970 - Double(lastRefreshTime) > SyncConstants.Notes.timeMustPass else {
+                guard let lastRefreshTime = lastRefresh.lastRefreshNotes,
+                      let lastRefreshDate = ISO8601DateFormatter.rfc3339WithFractionalSeconds.date(from: lastRefreshTime),
+                      Date().timeIntervalSince(lastRefreshDate) > SyncConstants.Notes.timeMustPass else {
                     Log.info("Not refreshing notes from server, last refresh is not above tolerance of \(SyncConstants.Notes.timeMustPass) seconds")
                     return .success
                 }
@@ -127,7 +129,7 @@ class FetchNotes: SyncOperation {
         )
 
         if let updatedSince = lastRefresh.lastRefreshNotes {
-            query.filter = .some(NoteFilterInput(since: .some("\(Int(updatedSince))")))
+            query.filter = .some(NoteFilterInput(since: .some(updatedSince)))
         } else {
             query.filter = .none
         }

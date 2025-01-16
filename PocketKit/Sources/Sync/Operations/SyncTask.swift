@@ -8,6 +8,7 @@ enum SyncTask: Codable {
     case fetchSaves
     case fetchArchive
     case fetchTags
+    case fetchNotes
     case favorite(givenURL: String)
     case unfavorite(givenURL: String)
     case delete(givenURL: String)

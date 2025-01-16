@@ -268,7 +268,7 @@ extension Space {
 extension Space {
     func fetchNote(byRemoteID id: String, context: NSManagedObjectContext? = nil) throws -> CDNote? {
         let request = Requests.fetchNote(noteID: id)
-        request.predicate = NSPredicate(format: "remoteID = %@", id)
+        request.predicate = NSPredicate(format: "noteID = %@", id)
         request.fetchLimit = 1
         return try fetch(request, context: context).first
     }
