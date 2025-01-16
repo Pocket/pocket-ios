@@ -203,7 +203,7 @@ public class PocketSaveService: SaveService {
     }
 }
 
-class SaveOperation<Mutation: GraphQLMutation>: AsyncOperation {
+class SaveOperation<Mutation: GraphQLMutation>: AsyncOperation, @unchecked Sendable {
     private let apollo: ApolloClientProtocol
     private let osNotifications: OSNotificationCenter
     private let space: Space
