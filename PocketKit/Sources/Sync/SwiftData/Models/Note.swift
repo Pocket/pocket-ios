@@ -8,15 +8,15 @@ import SwiftData
 
 @Model
 public class Note {
-    var noteID: String
-    var createdAt: Date
-    var updatedAt: Date?
-    var sourceUrl: String?
-    var title: String?
-    var contentPreview: String?
-    var body: String?
-    var savedItem: SavedItem?
-    var image: Image?
+    public var noteID: String
+    public var createdAt: Date
+    public var updatedAt: Date?
+    public var sourceUrl: String?
+    public var title: String?
+    public var contentPreview: String?
+    public var body: String?
+    public var savedItem: SavedItem?
+    public var image: Image?
     public init(createdAt: Date, noteID: String) {
         self.createdAt = createdAt
         self.noteID = noteID
