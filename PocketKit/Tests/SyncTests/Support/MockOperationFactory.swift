@@ -17,7 +17,61 @@ class MockOperationFactory: SyncOperationFactory {
     private var lock: DispatchQueue = DispatchQueue(label: "")
 }
 
-// MARK: - fetchSaves
+// MARK: Notes
+extension MockOperationFactory {
+    typealias FetchNotesImpl = (
+        ApolloClientProtocol,
+        Space,
+        SyncEvents,
+        CurrentValueSubject<InitialDownloadState, Never>
+    ) -> SyncOperation
+
+    struct FetchNotesCall {
+        let apollo: ApolloClientProtocol
+        let space: Space
+        let events: SyncEvents
+        let initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>
+        let lastRefresh: LastRefresh
+    }
+
+    func stubFetchNotes(impl: @escaping FetchNotesImpl) {
+        implementations["fetchNotes"] = impl
+    }
+
+    func fetchNotes(
+        apollo: ApolloClientProtocol,
+        space: Space,
+        events: SyncEvents,
+        initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>,
+        lastRefresh: LastRefresh
+    ) -> SyncOperation {
+        guard let impl = implementations["fetchNotes"] as? FetchNotesImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        lock.sync {
+            calls["fetchNotes"] = (calls["fetchNotes"] ?? []) + [
+                FetchNotesCall(
+                    apollo: apollo,
+                    space: space,
+                    events: events,
+                    initialDownloadState: initialDownloadState,
+                    lastRefresh: lastRefresh
+                )
+            ]
+        }
+
+        return impl(apollo, space, events, initialDownloadState)
+    }
+
+    func fetchNotesCall(at index: Int) -> FetchNotesCall? {
+        guard let fetchNotesCalls = calls["fetchNotes"], index < fetchNotesCalls.count else {
+            return nil
+        }
+        return fetchNotesCalls[index] as? FetchNotesCall
+    }
+}
+
 extension MockOperationFactory {
     typealias FetchSavesImpl = (
         ApolloClientProtocol,

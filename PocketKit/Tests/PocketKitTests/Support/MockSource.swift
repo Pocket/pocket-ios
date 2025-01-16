@@ -8,6 +8,9 @@ import CoreData
 import Combine
 
 class MockSource: Source {
+    func refreshNotes(completion: (() -> Void)?) {
+    }
+
     func fetchNote(noteID: String) -> Sync.CDNote? {
         nil
     }

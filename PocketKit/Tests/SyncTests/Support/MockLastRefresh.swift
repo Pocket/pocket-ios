@@ -5,6 +5,9 @@
 @testable import SharedPocketKit
 
 class MockLastRefresh: LastRefresh {
+    var lastRefreshNotes: String?
+    func refreshedNotes() {}
+
     // MARK: - lastRefresh saves
     typealias GetLastRefreshSavesImpl = () -> Double?
     private var getLastRefreshSavesImpl: GetLastRefreshSavesImpl?
