@@ -46,7 +46,7 @@ struct ClientAPIRequest {
     }
 
     var isForNotes: Bool {
-        self.operationName == "FetchNotes"
+        self.operationName == "Notes"
     }
 
     var isForArchivedContent: Bool {
