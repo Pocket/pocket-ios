@@ -17,6 +17,11 @@ public enum SavesViewType: String {
     case archive
 }
 
+public enum SavesViewElement: String {
+    case savedItem
+    case note
+}
+
 class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     typealias ItemIdentifier = NSManagedObjectID
     typealias Snapshot = NSDiffableDataSourceSnapshot<ItemsListSection, ItemsListCell<ItemIdentifier>>
@@ -130,7 +135,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
                 .store(in: &subscriptions)
         }
 
-        itemsController.delegate = self
+        itemsController.resultsController.delegate = self
 
         listOptions
             .objectWillChange
@@ -746,22 +751,13 @@ extension SavedItemsListViewModel {
     }
 }
 
-extension SavedItemsListViewModel: SavedItemsControllerDelegate {
+extension SavedItemsListViewModel: NSFetchedResultsControllerDelegate {
+     /// Sets our custom snapshot to reload certain identifiers based on the NSFetched Results controller.
+     /// When reloading data in this view, always call itemController.performFetch which will end up calling this function.
     func controller(
-        _ controller: SavedItemsController,
-        didChange savedItem: CDSavedItem,
-        at indexPath: IndexPath?,
-        for type: NSFetchedResultsChangeType,
-        newIndexPath: IndexPath?
+        _ controller: NSFetchedResultsController<NSFetchRequestResult>,
+        didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference
     ) {
-        // no-op
-    }
-
-    /**
-     Sets our custom snapshot to reload certain identifiers based on the NSFetched Results controller.
-     When reloading data in this view, always call itemController.performFetch which will end up calling this function.
-     */
-    func controller(_ controller: SavedItemsController, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
         // Build up a snapshot for us to use
         var newSnapshot = buildSnapshot()
         if accessService.accessLevel != .anonymous {

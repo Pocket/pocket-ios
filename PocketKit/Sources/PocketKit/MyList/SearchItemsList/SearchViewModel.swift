@@ -36,7 +36,7 @@ protocol SearchResultActionDelegate: AnyObject {
 
 /// View model that holds business logic for the SearchView
 @MainActor
-public class DefaultSearchViewModel: ObservableObject {
+public class DefaultSearchViewModel: NSObject, ObservableObject {
     static let recentSearchesKey = UserDefaults.Key.recentSearches
     // search-specific subscriptions, get cleared at each search
     private var searchSubscriptions = Set<AnyCancellable>()
@@ -153,9 +153,10 @@ public class DefaultSearchViewModel: ObservableObject {
         archiveOnlineSearch = OnlineSearch(source: source, scope: .archive)
         allOnlineSearch = OnlineSearch(source: source, scope: .all)
         premiumOnlineSearch = PremiumOnlineSearch(source: source)
+        super.init()
 
         searchState = defaultState
-        itemsController.delegate = self
+        itemsController.resultsController.delegate = self
         self.itemsController.predicate = Predicates.allItems()
         try? self.itemsController.performFetch()
 
@@ -698,18 +699,11 @@ extension DefaultSearchViewModel {
     }
 }
 
-extension DefaultSearchViewModel: SavedItemsControllerDelegate {
+extension DefaultSearchViewModel: NSFetchedResultsControllerDelegate {
     public func controller(
-        _ controller: SavedItemsController,
-        didChange savedItem: CDSavedItem,
-        at indexPath: IndexPath?,
-        for type: NSFetchedResultsChangeType,
-        newIndexPath: IndexPath?
+        _ controller: NSFetchedResultsController<NSFetchRequestResult>,
+        didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference
     ) {
-        // no-op
-    }
-
-    public func controller(_ controller: SavedItemsController, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
         guard case .searchResults(let items) = searchState, let savedItems = items.map({ $0.item }) as? [CDSavedItem] else {
             return
         }

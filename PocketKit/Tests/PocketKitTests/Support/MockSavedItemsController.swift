@@ -4,12 +4,13 @@
 
 import Sync
 import Foundation
+import CoreData
 
 class MockSavedItemsController: SavedItemsController {
+    let resultsController = NSFetchedResultsController<CDSavedItem>()
+
     private var implementations: [String: Any] = [:]
     private var calls: [String: [Any]] = [:]
-
-    weak var delegate: SavedItemsControllerDelegate?
 
     var predicate: NSPredicate?
 

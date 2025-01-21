@@ -299,38 +299,6 @@ class PocketSourceTests: XCTestCase {
         XCTAssertNotNil(slateService.fetchSlateLineupCall(at: 0))
     }
 
-    func test_savesController_returnsAFetchedResultsController() throws {
-        let source = subject()
-        let item1 = try space.createSavedItem(createdAt: .init(timeIntervalSince1970: TimeInterval(1)), item: space.buildItem(title: "Item 1"))
-        try space.save()
-
-        let savesResultsController = source.makeSavesController()
-        try savesResultsController.performFetch()
-        XCTAssertEqual(savesResultsController.fetchedObjects?.compactMap({ $0.objectID }), [item1.objectID])
-
-        let expectationForUpdatedItems = expectation(description: "updated items")
-        let delegate = TestSavedItemsControllerDelegate {
-            expectationForUpdatedItems.fulfill()
-        }
-        savesResultsController.delegate = delegate
-
-        let item2 = try space.createSavedItem(
-            remoteID: "saved-item-2",
-            url: "http://example.com/item-2",
-            createdAt: .init(timeIntervalSince1970: TimeInterval(0)),
-            item: space.buildItem(
-                remoteID: "item-2",
-                title: "Item 2",
-                givenURL: "https://example.com/items/item-2"
-            )
-        )
-        try space.save()
-        try savesResultsController.performFetch()
-
-        wait(for: [expectationForUpdatedItems], timeout: 2)
-        XCTAssertEqual(savesResultsController.fetchedObjects?.compactMap({ $0.objectID }), [item1.objectID, item2.objectID])
-    }
-
     func test_resolveUnresolvedSavedItems_enqueuesSaveItemOperation() throws {
         let operationStarted = expectation(description: "operationStarted")
         operations.stubSaveItemOperation { _, _, _, _, _ in

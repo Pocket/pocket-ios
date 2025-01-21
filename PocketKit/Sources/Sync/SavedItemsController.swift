@@ -6,20 +6,8 @@ import Foundation
 import CoreData
 import UIKit
 
-public protocol SavedItemsControllerDelegate: AnyObject {
-    func controller(
-        _ controller: SavedItemsController,
-        didChange aSavedItem: CDSavedItem,
-        at indexPath: IndexPath?,
-        for type: NSFetchedResultsChangeType,
-        newIndexPath: IndexPath?
-    )
-
-    func controller(_ controller: SavedItemsController, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference)
-}
-
 public protocol SavedItemsController: AnyObject {
-    var delegate: SavedItemsControllerDelegate? { get set }
+    var resultsController: NSFetchedResultsController<CDSavedItem> { get }
 
     var predicate: NSPredicate? { get set }
 
@@ -33,16 +21,12 @@ public protocol SavedItemsController: AnyObject {
 }
 
 class FetchedSavedItemsController: NSObject, SavedItemsController {
-    weak var delegate: SavedItemsControllerDelegate?
-
-    private let resultsController: NSFetchedResultsController<CDSavedItem>
+    let resultsController: NSFetchedResultsController<CDSavedItem>
 
     init(resultsController: NSFetchedResultsController<CDSavedItem>) {
         self.resultsController = resultsController
 
         super.init()
-
-        resultsController.delegate = self
     }
 
     var sortDescriptors: [NSSortDescriptor]? {
@@ -65,25 +49,5 @@ class FetchedSavedItemsController: NSObject, SavedItemsController {
 
     func indexPath(forObject object: CDSavedItem) -> IndexPath? {
         resultsController.indexPath(forObject: object)
-    }
-}
-
-extension FetchedSavedItemsController: NSFetchedResultsControllerDelegate {
-    func controller(
-        _ controller: NSFetchedResultsController<NSFetchRequestResult>,
-        didChange anObject: Any,
-        at indexPath: IndexPath?,
-        for type: NSFetchedResultsChangeType,
-        newIndexPath: IndexPath?
-    ) {
-        guard let savedItem = anObject as? CDSavedItem else {
-            return
-        }
-
-        delegate?.controller(self, didChange: savedItem, at: indexPath, for: type, newIndexPath: newIndexPath)
-    }
-
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
-        delegate?.controller(self, didChangeContentWith: snapshot)
     }
 }
