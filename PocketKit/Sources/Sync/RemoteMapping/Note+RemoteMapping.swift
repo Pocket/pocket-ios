@@ -22,6 +22,7 @@ extension CDNote {
             self.updatedAt = ISO8601DateFormatter.rfc3339WithFractionalSeconds.date(from: updatedAt)
         }
         self.sourceUrl = noteEdge.node?.source
+        self.archived = noteEdge.node?.archived ?? false
         // TODO: NOTES - Add logic to update related Saved Item when we roll it out (or earlier)
     }
 }

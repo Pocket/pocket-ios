@@ -18,6 +18,7 @@ extension CDNote {
     @NSManaged public var title: String?
     @NSManaged public var contentPreview: String?
     @NSManaged public var body: String?
+    @NSManaged public var archived: Bool
     @NSManaged public var savedItem: CDSavedItem?
     @NSManaged public var image: CDImage?
 }

@@ -15,6 +15,7 @@ public class Note {
     public var title: String?
     public var contentPreview: String?
     public var body: String?
+    public var archived: Bool = false
     public var savedItem: SavedItem?
     public var image: Image?
     public init(createdAt: Date, noteID: String) {
