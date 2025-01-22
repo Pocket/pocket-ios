@@ -58,12 +58,16 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     @Published private var _initialDownloadState: InitialDownloadState
     var initialDownloadState: Published<InitialDownloadState>.Publisher { $_initialDownloadState }
 
+    @Published private var _initialNotesDownloadState: InitialDownloadState
+    var initialNotesDownloadState: Published<InitialDownloadState>.Publisher { $_initialNotesDownloadState }
+
     private let listOptions: ListOptions
 
     private let source: Source
     private let refreshCoordinator: RefreshCoordinator
     private let tracker: Tracker
     private let itemsController: SavedItemsController
+    private let notesController: NSFetchedResultsController<CDNote>
     private let user: User
     private let accessService: PocketAccessService
 
@@ -76,6 +80,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     private let availableFilters: [ItemsListFilter]
     private let notificationCenter: NotificationCenter
     private let viewType: SavesViewType
+    private var viewElement: SavesViewElement = .savedItem
 
     let userDefaults: UserDefaults
 
@@ -115,6 +120,9 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             self.itemsController = source.makeArchiveController()
             self._initialDownloadState = source.initialArchiveDownloadState.value
         }
+        // we do not have archived notes, thus it'll be the same for both view types
+        self.notesController = source.makeNotesController()
+        self._initialNotesDownloadState = source.initialNotesDownloadState.value
 
         self.notificationCenter = notificationCenter
 
@@ -134,6 +142,13 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
                 }
                 .store(in: &subscriptions)
         }
+
+        source.initialNotesDownloadState
+            .receive(on: DispatchQueue.global(qos: .userInteractive))
+            .sink { [weak self] state in
+                self?._initialNotesDownloadState = state
+            }
+            .store(in: &subscriptions)
 
         itemsController.resultsController.delegate = self
 
@@ -187,6 +202,8 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
                 return nil
             case .highlights:
                 return NSPredicate(format: "highlights.@count > 0")
+            case .notes:
+                return nil
             }
         }
         applySorting()
@@ -219,12 +236,13 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     private func fetchItems(with predicates: [NSPredicate]) {
         switch self.viewType {
         case .saves:
-            self.itemsController.predicate = Predicates.savedItems(filters: predicates)
+            itemsController.predicate = Predicates.savedItems(filters: predicates)
         case .archive:
-            self.itemsController.predicate = Predicates.archivedItems(filters: predicates)
+            itemsController.predicate = Predicates.archivedItems(filters: predicates)
         }
 
-        try? self.itemsController.performFetch()
+        try? itemsController.performFetch()
+        try? notesController.performFetch()
     }
 
     func refresh(_ completion: (() -> Void)? = nil) {
@@ -514,6 +532,27 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             return appendEmptySection(to: snapshot)
         }
 
+        let itemCellIDs: [ItemsListCell<ItemIdentifier>] = makeItemCells()
+
+        guard !itemCellIDs.isEmpty else {
+            return appendEmptySection(to: snapshot)
+        }
+
+        snapshot.appendSections([.items])
+        snapshot.appendItems(itemCellIDs, toSection: .items)
+        return snapshot
+    }
+
+    private func makeItemCells() -> [ItemsListCell<ItemIdentifier>] {
+        switch viewElement {
+        case .savedItem:
+            return makeSavedItemCells()
+        case .note:
+            return makeNotesCells()
+        }
+    }
+
+    private func makeSavedItemCells() -> [ItemsListCell<ItemIdentifier>] {
         let itemCellIDs: [ItemsListCell<ItemIdentifier>]
 
         switch self._initialDownloadState {
@@ -541,14 +580,38 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
                 return .item(fetchedObjects[index].objectID)
             }
         }
+        return itemCellIDs
+    }
 
-        guard !itemCellIDs.isEmpty else {
-            return appendEmptySection(to: snapshot)
+    private func makeNotesCells() -> [ItemsListCell<ItemIdentifier>] {
+        let itemCellIDs: [ItemsListCell<ItemIdentifier>]
+
+        switch self._initialNotesDownloadState {
+        case .unknown, .completed:
+            itemCellIDs = notesController
+                .fetchedObjects?
+                .map { .item($0.objectID) } ?? []
+        case .started:
+            // If you background the app, and reopen the Fetch operations can override the sent staus,
+            // so instead we will first make sure we have no objects before switching to placeholders.
+            if let fetchedObjects = notesController.fetchedObjects, !fetchedObjects.isEmpty {
+                itemCellIDs = (0..<fetchedObjects.count).compactMap { index in
+                    .item(fetchedObjects[index].objectID)
+                }
+            } else {
+                itemCellIDs = (0..<4).map { .placeholder($0) }
+            }
+        case .paginating(let totalCount, _):
+            itemCellIDs = (0..<totalCount).compactMap { index in
+                guard let fetchedObjects = notesController.fetchedObjects,
+                      fetchedObjects.count > index else {
+                    return .placeholder(index)
+                }
+
+                return .item(fetchedObjects[index].objectID)
+            }
         }
-
-        snapshot.appendSections([.items])
-        snapshot.appendItems(itemCellIDs, toSection: .items)
-        return snapshot
+        return itemCellIDs
     }
 
     private func appendEmptySection(to snapshot: Snapshot) -> Snapshot {
@@ -683,6 +746,7 @@ extension SavedItemsListViewModel {
     private func handleFilterSelection(with filter: ItemsListFilter, sender: Any? = nil) {
         switch filter {
         case .listen:
+            viewElement = .savedItem
             var title: String = ""
             switch viewType {
             case .saves:
@@ -710,9 +774,11 @@ extension SavedItemsListViewModel {
 
             selectedFilters.remove(.listen)
         case .all:
+            viewElement = .savedItem
             selectedFilters.removeAll()
             selectedFilters.insert(.all)
         case .sortAndFilter:
+            viewElement = .savedItem
             guard let sender = sender else { return }
             presentedSortFilterViewModel = SortMenuViewModel(
                 source: source,
@@ -721,6 +787,7 @@ extension SavedItemsListViewModel {
                 sender: sender
             )
         case .tagged:
+            viewElement = .savedItem
             presentedTagsFilter = TagsFilterViewModel(
                 source: source,
                 tracker: tracker,
@@ -732,13 +799,18 @@ extension SavedItemsListViewModel {
             )
             filterByTag()
         default:
-            if selectedFilters.contains(filter) {
-                selectedFilters.remove(filter)
-                selectedFilters.insert(.all)
-            } else {
-                selectedFilters.removeAll()
-                selectedFilters.insert(filter)
-            }
+            enableOrDisableFilter(filter)
+        }
+    }
+
+    private func enableOrDisableFilter(_ filter: ItemsListFilter) {
+        viewElement = (viewElement != .note && filter == .notes) ? .note : .savedItem
+        if selectedFilters.contains(filter) {
+            selectedFilters.remove(filter)
+            selectedFilters.insert(.all)
+        } else {
+            selectedFilters.removeAll()
+            selectedFilters.insert(filter)
         }
     }
 

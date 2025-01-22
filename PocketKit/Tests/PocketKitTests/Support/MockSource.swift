@@ -8,6 +8,12 @@ import CoreData
 import Combine
 
 class MockSource: Source {
+    func makeNotesController() -> NSFetchedResultsController<Sync.CDNote> {
+        NSFetchedResultsController()
+    }
+
+    var initialNotesDownloadState: CurrentValueSubject<Sync.InitialDownloadState, Never> = .init(.unknown)
+
     func refreshNotes(completion: (() -> Void)?) {
     }
 

@@ -207,6 +207,10 @@ public class PocketSource: Source {
         )
     }
 
+    public func makeNotesController() -> NSFetchedResultsController<CDNote> {
+        space.makeNotesController()
+    }
+
     public func makeSearchService() -> SearchService {
         PocketSearchService(apollo: apollo)
     }

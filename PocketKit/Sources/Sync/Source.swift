@@ -24,6 +24,8 @@ public protocol Source {
 
     var initialArchiveDownloadState: CurrentValueSubject<InitialDownloadState, Never> { get }
 
+    var initialNotesDownloadState: CurrentValueSubject<InitialDownloadState, Never> { get }
+
     func clear()
 
     func deleteAccount() async throws
@@ -35,6 +37,8 @@ public protocol Source {
     func makeSavesController() -> SavedItemsController
 
     func makeArchiveController() -> SavedItemsController
+
+    func makeNotesController() -> NSFetchedResultsController<CDNote>
 
     func makeSearchService() -> SearchService
 

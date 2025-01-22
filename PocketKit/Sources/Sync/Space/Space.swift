@@ -374,6 +374,15 @@ extension Space {
             cacheName: nil
         )
     }
+
+    func makeNotesController() -> NSFetchedResultsController<CDNote> {
+        NSFetchedResultsController(
+            fetchRequest: Requests.fetchAllNotes(),
+            managedObjectContext: viewContext,
+            sectionNameKeyPath: nil,
+            cacheName: nil
+        )
+    }
 }
 
 // MARK: Shared With You
