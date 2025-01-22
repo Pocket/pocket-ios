@@ -72,6 +72,7 @@ extension ImageAsset {
     public static let readerSkeleton = ReaderSkeleton()
     public static let syndicatedIcon = ImageAsset("syndicated-icon")
     public static let highlights = ImageAsset("magicMarker")
+    public static let notes = ImageAsset("notes")
 }
 
 public struct ReaderSkeleton: Sendable {

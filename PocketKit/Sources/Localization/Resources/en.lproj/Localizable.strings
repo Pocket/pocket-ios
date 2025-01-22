@@ -57,6 +57,7 @@
 "itemlist.filter.favorites" = "Favorites";
 "itemlist.filter.sortFilter" = "Sort";
 "itemlist.filter.highlightsFilter" = "Highlights";
+"itemlist.filter.notesFilter" = "Notes";
 "itemList.edit.banner" = "Editing your list is not available in this version of Pocket, but will be returning soon!";
 
 //List view

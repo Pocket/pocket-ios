@@ -64,6 +64,7 @@ enum ItemsListFilter: String, Hashable, CaseIterable {
     case listen = "Listen"
     case tagged = "Tagged"
     case favorites = "Favorites"
+    case notes = "Notes"
     case highlights = "Highlights"
     case sortAndFilter = "Sort/Filter"
 
@@ -81,6 +82,8 @@ enum ItemsListFilter: String, Hashable, CaseIterable {
             return UIImage(asset: .sortFilter)
         case .highlights:
             return UIImage(asset: .highlights)
+        case .notes:
+            return UIImage(asset: .notes)
         }
     }
 
@@ -98,6 +101,8 @@ enum ItemsListFilter: String, Hashable, CaseIterable {
             return Localization.Carousel.listen
         case .highlights:
             return Localization.Itemlist.Filter.highlightsFilter
+        case .notes:
+            return Localization.Itemlist.Filter.notesFilter
         }
     }
 }
@@ -124,6 +129,7 @@ protocol ItemsListViewModel: AnyObject {
     var emptyState: EmptyStateViewModel? { get }
     var snapshot: Published<Snapshot>.Publisher { get }
     var initialDownloadState: Published<InitialDownloadState>.Publisher { get }
+    var initialNotesDownloadState: Published<InitialDownloadState>.Publisher { get }
     var userDefaults: UserDefaults { get }
 
     func fetch()
