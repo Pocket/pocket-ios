@@ -115,6 +115,7 @@ private extension SlateDetailView {
     /// Fetch the current slate from SwiftData
     /// - Parameter remoteID: the remote id of this slate
     /// - Returns: the slate, if it was found
+    @MainActor
     func fetchSlate(_ remoteID: String) -> Slate? {
         let predicate = #Predicate<Slate> { $0.remoteID == remoteID }
         var fetchDescriptor = FetchDescriptor(predicate: predicate)
