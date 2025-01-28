@@ -13,30 +13,6 @@ import Kingfisher
 import Localization
 import SharedPocketKit
 
-private extension Style {
-    static let title: Style = .header.sansSerif.h8
-        .with { paragraph in
-            paragraph
-                .with(lineSpacing: 4)
-                .with(lineBreakMode: .byTruncatingTail)
-        }
-    static let pendingTitle: Style = title.with(color: .ui.grey5)
-
-    static let detail: Style = .header.sansSerif.p4
-        .with(color: .ui.grey4)
-        .with { paragraph in
-            paragraph
-                .with(lineSpacing: 4)
-                .with(lineBreakMode: .byTruncatingTail)
-        }
-    static let pendingDetail: Style = .detail.with(color: .ui.grey5)
-    static let tag: Style = .header.sansSerif.p5.with(color: .ui.grey4).with(weight: .medium).with { paragraph in
-        paragraph
-            .with(lineBreakMode: .byTruncatingTail)
-    }
-    static let tagCount: Style = .header.sansSerif.h8.with(color: .ui.grey4)
-}
-
 class ItemsListItemPresenter {
     private let item: ItemsListItem
     private let isDisabled: Bool
@@ -52,21 +28,21 @@ class ItemsListItemPresenter {
     }
 
     var attributedTitle: NSAttributedString {
-        NSAttributedString(string: title, style: isDisabled ? .pendingTitle : .title)
+        NSAttributedString(string: title, style: isDisabled ? .listCellPendingTitle : .listCellTitle)
     }
 
     var attributedDetail: NSAttributedString {
-        let detailString = NSMutableAttributedString(string: detail, style: isDisabled ? .pendingDetail : .detail)
-        return item.isSyndicated ? detailString.addSyndicatedIndicator(with: isDisabled ? .pendingDetail : .detail) : detailString
+        let detailString = NSMutableAttributedString(string: detail, style: isDisabled ? .listCellPendingDetail : .listCellDetail)
+        return item.isSyndicated ? detailString.addSyndicatedIndicator(with: isDisabled ? .listCellPendingDetail : .listCellDetail) : detailString
     }
 
     var attributedTags: [NSAttributedString]? {
-        tags?.map { NSAttributedString(string: $0, style: .tag) }
+        tags?.map { NSAttributedString(string: $0, style: .listCellTag) }
     }
 
     var attributedTagCount: NSAttributedString? {
         guard let otherTagsCount = otherTagsCount else { return nil }
-        return NSAttributedString(string: "+\(otherTagsCount)", style: .tagCount)
+        return NSAttributedString(string: "+\(otherTagsCount)", style: .listCellTagCount)
     }
 
     var thumbnailURL: URL? {
