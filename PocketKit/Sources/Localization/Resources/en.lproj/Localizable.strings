@@ -385,3 +385,10 @@
 "tips.sharedWithYouActions.title" = "More Actions";
 "tips.sharedWithYouActions.message" = "Tap here to reply to this message or long press to remove this item.";
 
+// Notes
+"notes.cell.deleteAlert.message" = "Are you sure you want to delete this note?";
+"notes.cell.deleteAlert.noButton" = "No";
+"notes.cell.deleteAlert.yesButton" = "Yes";
+"notes.cell.overflowMenu.delete" = "Delete";
+"notes.cell.overflowMenu.edit" = "Edit";
+

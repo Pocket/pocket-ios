@@ -12,7 +12,7 @@ extension CDNote {
         return NSFetchRequest<CDNote>(entityName: "Note")
     }
     @NSManaged public var noteID: String
-    @NSManaged public var createdAt: Date?
+    @NSManaged public var createdAt: Date
     @NSManaged public var updatedAt: Date?
     @NSManaged public var sourceUrl: String?
     @NSManaged public var title: String?

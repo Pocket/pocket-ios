@@ -298,6 +298,26 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         ?? nil
     }
 
+    func presenter(for noteID: ItemIdentifier) -> NoteListPresenter? {
+        guard let note = bareNote(with: noteID), let body = note.body else {
+            return nil
+        }
+
+        let createdAtString = note.createdAt.formatted(date: .long, time: .omitted)
+
+        var updatedAtString: String?
+        if let updatedAt = note.updatedAt {
+            updatedAtString = updatedAt.formatted(date: .long, time: .omitted)
+        }
+        return NoteListPresenter(
+            title: note.title,
+            content: body,
+            createdAt: createdAtString,
+            updatedAt: updatedAtString,
+            sourceUrl: note.sourceUrl
+        )
+    }
+
     func filterButton(with filter: ItemsListFilter) -> TopicChipPresenter {
         return TopicChipPresenter(
             title: filter.localized,
@@ -317,6 +337,9 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         case .item(let objectID):
             guard let item = bareItem(with: objectID) else { return false }
             return !Self.isItemDisabled(item, networkStatus: networkPathMonitor.currentNetworkPath.status)
+        case .note(let objectID):
+            guard let note = bareNote(with: objectID) else { return false }
+            return true
         case .offline, .emptyState, .placeholder, .tag:
             return false
         }
@@ -326,6 +349,8 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         switch cellID {
         case .item(let objectID):
             select(item: objectID)
+        case .note(let objectID):
+            select(note: objectID)
         case .filterButton(let filterID):
             apply(filter: filterID, from: cellID, sender: sender)
         case .offline, .emptyState, .placeholder, .tag:
@@ -513,6 +538,10 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         source.viewObject(id: id)
     }
 
+    private func bareNote(with id: NSManagedObjectID) -> CDNote? {
+        source.viewObject(id: id)
+    }
+
     private func buildSnapshot() -> NSDiffableDataSourceSnapshot<ItemsListSection, ItemsListCell<ItemIdentifier>> {
         var snapshot: NSDiffableDataSourceSnapshot<ItemsListSection, ItemsListCell<ItemIdentifier>> = .init()
         let sections: [ItemsListSection] = [.filters]
@@ -537,10 +566,16 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         guard !itemCellIDs.isEmpty else {
             return appendEmptySection(to: snapshot)
         }
-
-        snapshot.appendSections([.items])
-        snapshot.appendItems(itemCellIDs, toSection: .items)
-        return snapshot
+        switch viewElement {
+        case .savedItem:
+            snapshot.appendSections([.items])
+            snapshot.appendItems(itemCellIDs, toSection: .items)
+            return snapshot
+        case .note:
+            snapshot.appendSections([.notes])
+            snapshot.appendItems(itemCellIDs, toSection: .notes)
+            return snapshot
+        }
     }
 
     private func makeItemCells() -> [ItemsListCell<ItemIdentifier>] {
@@ -590,13 +625,13 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         case .unknown, .completed:
             itemCellIDs = notesController
                 .fetchedObjects?
-                .map { .item($0.objectID) } ?? []
+                .map { .note($0.objectID) } ?? []
         case .started:
             // If you background the app, and reopen the Fetch operations can override the sent staus,
             // so instead we will first make sure we have no objects before switching to placeholders.
             if let fetchedObjects = notesController.fetchedObjects, !fetchedObjects.isEmpty {
                 itemCellIDs = (0..<fetchedObjects.count).compactMap { index in
-                    .item(fetchedObjects[index].objectID)
+                    .note(fetchedObjects[index].objectID)
                 }
             } else {
                 itemCellIDs = (0..<4).map { .placeholder($0) }
@@ -608,7 +643,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
                     return .placeholder(index)
                 }
 
-                return .item(fetchedObjects[index].objectID)
+                return .note(fetchedObjects[index].objectID)
             }
         }
         return itemCellIDs
@@ -708,6 +743,10 @@ extension SavedItemsListViewModel {
 
             trackContentOpen(destination: .internal, item: savedItem)
         }
+    }
+
+    private func select(note noteID: ItemIdentifier) {
+        // TODO: NOTES - Add implementation
     }
 
     private func apply(filter: ItemsListFilter, from cell: ItemsListCell<ItemIdentifier>, sender: Any? = nil) {
@@ -833,13 +872,24 @@ extension SavedItemsListViewModel: NSFetchedResultsControllerDelegate {
         // Build up a snapshot for us to use
         var newSnapshot = buildSnapshot()
         if accessService.accessLevel != .anonymous {
-            // Grab any ids that have changed, filter them based on what newSnapshot contains, map them to .item and then setup our custom snapshot to reload them
-            let idsToReload: [ItemsListCell<ItemIdentifier>] =  snapshot.reloadedItemIdentifiers.compactMap({ .item($0 as! NSManagedObjectID) })
-                .filter { newSnapshot.itemIdentifiers.contains($0) }
-            let idsToReconfigure: [ItemsListCell<ItemIdentifier>] =  snapshot.reconfiguredItemIdentifiers.compactMap({ .item($0 as! NSManagedObjectID) })
-                .filter { newSnapshot.itemIdentifiers.contains($0) }
-            newSnapshot.reloadItems(idsToReload)
-            newSnapshot.reconfigureItems(idsToReconfigure)
+            switch viewElement {
+            case .savedItem:
+                // Grab any ids that have changed, filter them based on what newSnapshot contains, map them to .item and then setup our custom snapshot to reload them
+                let idsToReload: [ItemsListCell<ItemIdentifier>] =  snapshot.reloadedItemIdentifiers.compactMap({ .item($0 as! NSManagedObjectID) })
+                    .filter { newSnapshot.itemIdentifiers.contains($0) }
+                let idsToReconfigure: [ItemsListCell<ItemIdentifier>] =  snapshot.reconfiguredItemIdentifiers.compactMap({ .item($0 as! NSManagedObjectID) })
+                    .filter { newSnapshot.itemIdentifiers.contains($0) }
+                newSnapshot.reloadItems(idsToReload)
+                newSnapshot.reconfigureItems(idsToReconfigure)
+            case .note:
+                // Grab any ids that have changed, filter them based on what newSnapshot contains, map them to .item and then setup our custom snapshot to reload them
+                let idsToReload: [ItemsListCell<ItemIdentifier>] =  snapshot.reloadedItemIdentifiers.compactMap({ .note($0 as! NSManagedObjectID) })
+                    .filter { newSnapshot.itemIdentifiers.contains($0) }
+                let idsToReconfigure: [ItemsListCell<ItemIdentifier>] =  snapshot.reconfiguredItemIdentifiers.compactMap({ .note($0 as! NSManagedObjectID) })
+                    .filter { newSnapshot.itemIdentifiers.contains($0) }
+                newSnapshot.reloadItems(idsToReload)
+                newSnapshot.reconfigureItems(idsToReconfigure)
+            }
         }
         // Set the new snapshot which is subscribed to in ItemListController and will apply this snapshot over the existing one
         _snapshot = newSnapshot

@@ -46,6 +46,7 @@ enum ItemsListSection: Int, CaseIterable {
     case filters
     case tags
     case items
+    case notes
     case emptyState
     case offline
 }
@@ -54,6 +55,7 @@ enum ItemsListCell<ItemIdentifier: Hashable>: Hashable {
     case filterButton(ItemsListFilter)
     case tag(String)
     case item(ItemIdentifier)
+    case note(ItemIdentifier)
     case emptyState
     case offline
     case placeholder(Int)
@@ -138,6 +140,7 @@ protocol ItemsListViewModel: AnyObject {
     func preview(for cell: ItemsListCell<ItemIdentifier>) -> (ReadableViewModel, Bool)?
     func presenter(for cellID: ItemsListCell<ItemIdentifier>) -> ItemsListItemPresenter?
     func presenter(for itemID: ItemIdentifier) -> ItemsListItemPresenter?
+    func presenter(for noteID: ItemIdentifier) -> NoteListPresenter?
     func filterButton(with id: ItemsListFilter) -> TopicChipPresenter
     func tagModel(with name: String) -> SelectedTagChipModel
     func shouldSelectCell(with cell: ItemsListCell<ItemIdentifier>) -> Bool

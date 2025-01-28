@@ -15,8 +15,11 @@ extension CDNote {
         self.title = noteEdge.node?.title
         self.contentPreview = noteEdge.node?.contentPreview
         self.body = noteEdge.node?.docMarkdown
-        if let createdAt = noteEdge.node?.createdAt {
-            self.createdAt = ISO8601DateFormatter.rfc3339WithFractionalSeconds.date(from: createdAt)
+        if let createdAt = noteEdge.node?.createdAt,
+            let date = ISO8601DateFormatter.rfc3339WithFractionalSeconds.date(from: createdAt) {
+            self.createdAt = date
+        } else {
+            self.createdAt = Date()
         }
         if let updatedAt = noteEdge.node?.updatedAt {
             self.updatedAt = ISO8601DateFormatter.rfc3339WithFractionalSeconds.date(from: updatedAt)

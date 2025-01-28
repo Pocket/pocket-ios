@@ -354,6 +354,24 @@ public enum Localization {
       }
     }
   }
+  public enum Notes {
+    public enum Cell {
+      public enum DeleteAlert {
+        /// Are you sure you want to delete this note?
+        public static let message = Localization.tr("Localizable", "notes.cell.deleteAlert.message", fallback: "Are you sure you want to delete this note?")
+        /// No
+        public static let noButton = Localization.tr("Localizable", "notes.cell.deleteAlert.noButton", fallback: "No")
+        /// Yes
+        public static let yesButton = Localization.tr("Localizable", "notes.cell.deleteAlert.yesButton", fallback: "Yes")
+      }
+      public enum OverflowMenu {
+        /// Delete
+        public static let delete = Localization.tr("Localizable", "notes.cell.overflowMenu.delete", fallback: "Delete")
+        /// Edit
+        public static let edit = Localization.tr("Localizable", "notes.cell.overflowMenu.edit", fallback: "Edit")
+      }
+    }
+  }
   public enum Premium {
     public enum InfoView {
       public enum Terms {

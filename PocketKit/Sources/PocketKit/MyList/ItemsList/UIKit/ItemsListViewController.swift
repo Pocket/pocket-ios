@@ -166,6 +166,10 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
             self?.configure(cell: cell, indexPath: indexPath, objectID: objectID)
         }
 
+        let noteCellRegistration: UICollectionView.CellRegistration<NoteListCell, ViewModel.ItemIdentifier> = .init { [weak self] cell, indexPath, objectID in
+            self?.configure(noteCell: cell, indexPath: indexPath, objectID: objectID)
+        }
+
         let emptyCellRegistration: UICollectionView.CellRegistration<EmptyStateCollectionViewCell, String> = .init { [weak self] cell, _, _ in
             self?.configure(cell: cell)
         }
@@ -191,6 +195,8 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
                 return collectionView.dequeueConfiguredReusableCell(using: offlineCellRegistration, for: indexPath, item: "")
             case .placeholder(let index):
                 return collectionView.dequeueConfiguredReusableCell(using: placeholderCellRegistration, for: indexPath, item: index)
+            case .note(let noteID):
+                return collectionView.dequeueConfiguredReusableCell(using: noteCellRegistration, for: indexPath, item: noteID)
             }
         }
     }
@@ -276,6 +282,30 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
                     itemSectionLayout.contentInsets = contentInsets
 
                 return itemSectionLayout
+            case .notes:
+                var config = UICollectionLayoutListConfiguration(appearance: .plain)
+                config.backgroundColor = UIColor(.ui.white1)
+                // TODO: NOTES - Add swipe actions
+//                config.trailingSwipeActionsConfigurationProvider = { [unowned self] indexPath in
+//                    guard case .item(let objectID) = self.dataSource.itemIdentifier(for: indexPath) else {
+//                        return nil
+//                    }
+//
+//                    let actions = self.model.trailingSwipeActions(for: objectID)
+//                    .compactMap(UIContextualAction.init)
+//
+//                    return UISwipeActionsConfiguration(actions: actions)
+//                }
+
+                itemSectionLayout = NSCollectionLayoutSection.list(using: config, layoutEnvironment: env)
+                setContentInsetReferecnce(for: itemSectionLayout)
+
+                var contentInsets = itemSectionLayout.contentInsets
+                    contentInsets.leading = 0
+                    contentInsets.trailing = 0
+                    itemSectionLayout.contentInsets = contentInsets
+
+                return itemSectionLayout
             case .offline:
                 var config = UICollectionLayoutListConfiguration(appearance: .plain)
                 config.backgroundColor = UIColor(.ui.white1)
@@ -325,7 +355,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
     private func configure(cell: ItemsListItemCell, indexPath: IndexPath, objectID: ViewModel.ItemIdentifier) {
         cell.backgroundConfiguration = .listPlainCell()
 
-        guard let presenter = model.presenter(for: objectID) else {
+        guard let presenter: ItemsListItemPresenter = model.presenter(for: objectID) else {
             cell.model = .init(
                 attributedTitle: NSAttributedString(string: ""),
                 attributedDetail: NSAttributedString(string: ""),
@@ -362,6 +392,10 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
             hasHighlights: presenter.hasHighlights,
             highlightsCount: presenter.highlightsCount
         )
+    }
+
+    private func configure(noteCell: NoteListCell, indexPath: IndexPath, objectID: ViewModel.ItemIdentifier) {
+        noteCell.configure(model.presenter(for: objectID))
     }
 
     private func configure(cell: TopicChipCell, indexPath: IndexPath, filterID: ItemsListFilter) {
