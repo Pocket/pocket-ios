@@ -395,7 +395,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
     }
 
     private func configure(noteCell: NoteListCell, indexPath: IndexPath, objectID: ViewModel.ItemIdentifier) {
-        noteCell.configure(model.presenter(for: objectID))
+        noteCell.configure(model.presenter(for: objectID)) { [weak self] in self?.model.confirmDeleteNote(objectID) }
     }
 
     private func configure(cell: TopicChipCell, indexPath: IndexPath, filterID: ItemsListFilter) {

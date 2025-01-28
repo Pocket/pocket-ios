@@ -533,6 +533,23 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         source.delete(item: item)
         tracker.track(event: Events.Saves.deleteItem(engagementIndex(item), listType: viewType.rawValue))
     }
+    // TODO: NOTES - Pass the correct argument here
+    func confirmDeleteNote(_ noteID: ItemIdentifier) {
+        presentedAlert = PocketAlert(
+            title: Localization.Notes.Cell.DeleteAlert.message,
+            message: nil,
+            preferredStyle: .alert,
+            actions: [
+                UIAlertAction(title: Localization.Notes.Cell.DeleteAlert.noButton, style: .default) { [weak self] _ in
+                    self?.presentedAlert = nil
+                },
+                UIAlertAction(title: Localization.Notes.Cell.DeleteAlert.yesButton, style: .destructive) { [weak self] _ in
+                    // TODO: NOTES - Add delete note implementation
+                }
+            ],
+            preferredAction: nil
+        )
+    }
 
     private func bareItem(with id: NSManagedObjectID) -> CDSavedItem? {
         source.viewObject(id: id)

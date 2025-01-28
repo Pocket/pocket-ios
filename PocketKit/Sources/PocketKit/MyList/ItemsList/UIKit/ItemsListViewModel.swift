@@ -141,6 +141,7 @@ protocol ItemsListViewModel: AnyObject {
     func presenter(for cellID: ItemsListCell<ItemIdentifier>) -> ItemsListItemPresenter?
     func presenter(for itemID: ItemIdentifier) -> ItemsListItemPresenter?
     func presenter(for noteID: ItemIdentifier) -> NoteListPresenter?
+    func confirmDeleteNote(_ noteID: ItemIdentifier)
     func filterButton(with id: ItemsListFilter) -> TopicChipPresenter
     func tagModel(with name: String) -> SelectedTagChipModel
     func shouldSelectCell(with cell: ItemsListCell<ItemIdentifier>) -> Bool
