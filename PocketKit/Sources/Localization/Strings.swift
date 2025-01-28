@@ -371,6 +371,10 @@ public enum Localization {
         public static let edit = Localization.tr("Localizable", "notes.cell.overflowMenu.edit", fallback: "Edit")
       }
     }
+    public enum Share {
+      /// Pocket Note
+      public static let defaultNoteTitle = Localization.tr("Localizable", "notes.share.defaultNoteTitle", fallback: "Pocket Note")
+    }
   }
   public enum Premium {
     public enum InfoView {

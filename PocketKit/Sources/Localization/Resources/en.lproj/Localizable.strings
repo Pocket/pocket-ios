@@ -391,4 +391,4 @@
 "notes.cell.deleteAlert.yesButton" = "Yes";
 "notes.cell.overflowMenu.delete" = "Delete";
 "notes.cell.overflowMenu.edit" = "Edit";
-
+"notes.share.defaultNoteTitle" = "Pocket Note";

@@ -5,6 +5,7 @@
 import Localization
 import SwiftUI
 import Textile
+import Combine
 
 @MainActor
 class NoteCellViewModel: ObservableObject {
@@ -13,18 +14,22 @@ class NoteCellViewModel: ObservableObject {
     @Published var createdAt: String = ""
     @Published var updatedAt: String?
     @Published var sourceUrl: String?
+    @Published var showDeleteAlert: Bool = false
 }
 
 class NoteListCell: UICollectionViewCell {
     private let viewModel = NoteCellViewModel()
+    private var subscriptions = Set<AnyCancellable>()
+    private var deleteAction: (() -> Void)?
 
-    func configure(_ presenter: NoteListPresenter?) {
+    func configure(_ presenter: NoteListPresenter?, deleteAction: @escaping () -> Void) {
         guard let presenter else { return }
         viewModel.title = presenter.title
         viewModel.content = presenter.content
         viewModel.createdAt = presenter.createdAt
         viewModel.updatedAt = presenter.updatedAt
         viewModel.sourceUrl = presenter.sourceUrl
+        self.deleteAction = deleteAction
     }
 
     private lazy var noteView: UIView = {
@@ -37,6 +42,17 @@ class NoteListCell: UICollectionViewCell {
         super.init(frame: frame)
         contentView.addSubview(noteView)
         contentView.pinSubviewToAllEdges(noteView)
+
+        viewModel
+            .$showDeleteAlert
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] showAlert in
+                if showAlert {
+                    self?.deleteAction?()
+                    self?.viewModel.showDeleteAlert = false
+                }
+            }
+            .store(in: &subscriptions)
     }
 
     required init?(coder: NSCoder) {
@@ -51,48 +67,82 @@ struct NoteCellView: View {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
 
-    @State private var showDeleteAlert: Bool = false
-
     var body: some View {
         makeBody()
-            .alert(Localization.Notes.Cell.DeleteAlert.message, isPresented: $showDeleteAlert) {
-                Button(Localization.Notes.Cell.DeleteAlert.noButton, role: .cancel) { }
-                Button(Localization.Notes.Cell.DeleteAlert.yesButton, role: .destructive) {
-                    withAnimation {
-                        // TODO: NOTES - Add code to delete a note from Core Data
-                    }
-                }
-            }
     }
 }
 
 // MARK: view builders
 extension NoteCellView {
+    func makeMarkdownString(_ markdown: String) -> AttributedString? {
+        try? AttributedString(
+            markdown: markdown,
+            options: .init(
+                allowsExtendedAttributes: true,
+                interpretedSyntax: .inlineOnlyPreservingWhitespace
+            )
+        )
+    }
+
     func makeBody() -> some View {
         VStack(alignment: .leading) {
             makeTextContent()
             makeBottomContent()
         }
+        .padding()
     }
 
     func makeTextContent() -> some View {
         VStack {
-            Text(viewModel.title ?? "")
-                .font(.headline)
-            Text(viewModel.content)
-                .font(.body)
+            if let title = viewModel.title {
+                Text(title)
+                    .style(.listCellTitle)
+                    .lineLimit(2)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            if let markdownContent = makeMarkdownString(viewModel.content) {
+                Text(markdownContent)
+                    .font(.body)
+                    .foregroundColor(Color(.ui.black1))
+                    .lineSpacing(4)
+                    .lineLimit(3)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.vertical, 4)
+            }
         }
     }
 
     func makeBottomContent() -> some View {
         HStack {
             Text(viewModel.updatedAt ?? viewModel.createdAt)
+                .style(.listCellDetail)
             Spacer()
-            ShareLink(item: viewModel.content) {
-                Image(asset: .share)
+            // TODO: NOTES - Add the sourceUrl case once we have it
+            if let attributedContent = makeMarkdownString(viewModel.content) {
+                ShareLink(
+                    item: attributedContent,
+                    preview: SharePreview(viewModel.title ?? Localization.Notes.Share.defaultNoteTitle)
+                ) {
+                    makeShareLinkIcon()
+                }
+            } else {
+                ShareLink(
+                    item: viewModel.content,
+                    preview: SharePreview(viewModel.title ?? Localization.Notes.Share.defaultNoteTitle)
+                ) {
+                    makeShareLinkIcon()
+                }
             }
             makeOverflowMenu()
         }
+    }
+
+    func makeShareLinkIcon() -> some View {
+        Image(asset: .share)
+            .resizable()
+            .frame(width: 20, height: 20)
+            .foregroundColor(Color(.ui.grey8))
+            .padding(.horizontal, 4)
     }
 
     /// Overflow menu
@@ -100,7 +150,7 @@ extension NoteCellView {
         Menu {
             Button(action: {
                 Haptics.defaultTap()
-                showDeleteAlert = true
+                viewModel.showDeleteAlert = true
             }) {
                 Label {
                     Text(Localization.Notes.Cell.OverflowMenu.delete)
@@ -122,7 +172,10 @@ extension NoteCellView {
             .accessibilityLabel("overflow-edit")
         } label: {
             Image(asset: .overflow)
-                .homeOverflowMenyStyle()
+                .resizable()
+                .frame(width: 20, height: 20)
+                .foregroundColor(Color(.ui.grey8))
+                .padding(.horizontal, 6)
         }
         .accessibilityLabel("note-action - overflow-menu")
     }
