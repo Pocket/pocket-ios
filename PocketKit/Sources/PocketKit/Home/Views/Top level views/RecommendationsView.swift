@@ -139,7 +139,7 @@ private extension RecommendationsView {
                         type: .recommendation,
                         index: Int($0.sortIndex),
                         shareURL: item.shareURL,
-                        domain: item.bestDomain,
+                        domain: item.domain,
                         timeToRead: item.timeToRead,
                         isSyndicated: item.isSyndicated,
                         recommendationID: item.recommendation?.analyticsID,
