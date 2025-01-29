@@ -12,7 +12,7 @@ public struct EditNoteTitleInput: InputObject {
 
   public init(
     id: ID,
-    title: String,
+    title: GraphQLNullable<String> = nil,
     updatedAt: GraphQLNullable<ISOString> = nil
   ) {
     __data = InputDict([
@@ -28,8 +28,9 @@ public struct EditNoteTitleInput: InputObject {
     set { __data["id"] = newValue }
   }
 
-  /// The new title for the note (can be an empty string)
-  public var title: String {
+  /// The new title for the note. If null, sets the title
+  /// field to null (deletes it).
+  public var title: GraphQLNullable<String> {
     get { __data["title"] }
     set { __data["title"] = newValue }
   }
