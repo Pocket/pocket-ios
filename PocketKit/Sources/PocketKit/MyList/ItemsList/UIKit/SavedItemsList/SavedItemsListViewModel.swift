@@ -564,7 +564,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         let sections: [ItemsListSection] = [.filters]
         snapshot.appendSections(sections)
 
-        let cases = ItemsListFilter.allCases
+        let cases = ItemsListFilter.activeFilters(featureFlags.isAssigned(flag: .notes))
 
         snapshot.appendItems(
             cases.map { ItemsListCell<ItemIdentifier>.filterButton($0) },

@@ -89,6 +89,10 @@ enum ItemsListFilter: String, Hashable, CaseIterable {
         }
     }
 
+    static func activeFilters(_ flag: Bool = true) -> [Self] {
+        flag ? Self.allCases : [.all, .listen, .tagged, .favorites, .sortAndFilter, .highlights]
+    }
+
     var localized: String {
         switch self {
         case .all:
