@@ -1036,6 +1036,10 @@ extension PocketSource {
         }
         return updatedItem
     }
+
+    public func fetchSlate( _ slateID: String) -> CDSlate? {
+        try? space.fetchSlate(byRemoteID: slateID)
+    }
 }
 
 // MARK: - Collections

@@ -8,6 +8,10 @@ import CoreData
 import Combine
 
 class MockSource: Source {
+    func fetchSlate(_ slateID: String) -> Sync.CDSlate? {
+        nil
+    }
+
     func makeNotesController() -> NSFetchedResultsController<Sync.CDNote> {
         NSFetchedResultsController()
     }
