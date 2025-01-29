@@ -142,7 +142,7 @@ private extension RecommendationsView {
                         domain: item.domain,
                         timeToRead: item.timeToRead,
                         isSyndicated: item.isSyndicated,
-                        recommendationID: item.recommendation?.analyticsID,
+                        recommendationID: $0.analyticsID,
                         bestTitle: item.bestTitle,
                         slug: item.collectionSlug,
                         excerpt: item.excerpt,
