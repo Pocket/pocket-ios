@@ -102,16 +102,24 @@ extension HomeActions {
         }
     }
 
-    func trackSlateDetailImpression(info: SlateInfo) {
+    func trackSlateDetailImpression(_ slateID: String) {
         Task(priority: .background) {
+            let source = await Services.shared.source
+            guard let slate = source.fetchSlate(slateID) else {
+                return
+            }
             let tracker = await Services.shared.tracker
+            var sortIndex: Int?
+            if let index = slate.sortIndex {
+                sortIndex = Int(truncating: index)
+            }
             tracker.track(
                 event: Events.ExpandedSlate.slateExpanded(
-                    slateId: info.slateId,
-                    slateRequestId: info.slateRequestId,
-                    slateExperimentId: info.slateExperimentId,
-                    slateIndex: info.slateIndex,
-                    slateLineupId: info.slateLineupId
+                    slateId: slateID,
+                    slateRequestId: slate.requestID,
+                    slateExperimentId: slate.experimentID,
+                    slateIndex: sortIndex ?? 0,
+                    slateLineupId: slate.slateLineup?.remoteID ?? ""
                 )
             )
         }
