@@ -312,6 +312,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         return NoteListPresenter(
             title: note.title,
             content: body,
+            preview: note.contentPreview,
             createdAt: createdAtString,
             updatedAt: updatedAtString,
             sourceUrl: note.sourceUrl

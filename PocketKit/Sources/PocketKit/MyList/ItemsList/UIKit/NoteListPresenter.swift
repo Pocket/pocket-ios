@@ -6,6 +6,7 @@ import Foundation
 
 struct NoteListPresenter {
     let title: String?
+    let preview: String?
     let content: String
     let createdAt: String
     let updatedAt: String?
@@ -14,6 +15,7 @@ struct NoteListPresenter {
     init() {
         self.title = nil
         self.content = ""
+        self.preview = nil
         self.createdAt = ""
         self.updatedAt = nil
         self.sourceUrl = nil
@@ -22,12 +24,14 @@ struct NoteListPresenter {
     init(
         title: String?,
         content: String,
+        preview: String?,
         createdAt: String,
         updatedAt: String?,
         sourceUrl: String?
     ) {
         self.title = title
         self.content = content
+        self.preview = preview
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.sourceUrl = sourceUrl

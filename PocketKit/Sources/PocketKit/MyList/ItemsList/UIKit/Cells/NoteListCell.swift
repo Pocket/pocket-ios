@@ -11,6 +11,7 @@ import Combine
 class NoteCellViewModel: ObservableObject {
     @Published var title: String?
     @Published var content: String = ""
+    @Published var preview: String?
     @Published var createdAt: String = ""
     @Published var updatedAt: String?
     @Published var sourceUrl: String?
@@ -26,6 +27,7 @@ class NoteListCell: UICollectionViewCell {
         guard let presenter else { return }
         viewModel.title = presenter.title
         viewModel.content = presenter.content
+        viewModel.preview = presenter.preview
         viewModel.createdAt = presenter.createdAt
         viewModel.updatedAt = presenter.updatedAt
         viewModel.sourceUrl = presenter.sourceUrl
@@ -84,6 +86,10 @@ extension NoteCellView {
         )
     }
 
+    func unformattedString(_ markdown: AttributedString) -> String {
+        String(markdown.characters[...])
+    }
+
     func makeBody() -> some View {
         VStack(alignment: .leading) {
             makeTextContent()
@@ -101,11 +107,11 @@ extension NoteCellView {
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
             if let markdownContent = makeMarkdownString(viewModel.content) {
-                Text(markdownContent)
+                Text(unformattedString(markdownContent))
                     .font(.body)
                     .foregroundColor(Color(.ui.black1))
                     .lineSpacing(4)
-                    .lineLimit(3)
+                    .lineLimit(2)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.vertical, 4)
             }
