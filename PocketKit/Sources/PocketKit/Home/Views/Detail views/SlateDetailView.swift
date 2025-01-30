@@ -44,10 +44,7 @@ struct SlateDetailView: View {
             }
         }
         .onAppear {
-            guard let slateInfo = slateInfo(destination) else {
-                return
-            }
-            homeActions.trackSlateDetailImpression(info: slateInfo)
+            homeActions.trackSlateDetailImpression(destination.slateID)
         }
         .animation(.smooth, value: cards)
         .navigationTitle(destination.slateTitle ?? "")
@@ -66,7 +63,7 @@ private extension SlateDetailView {
                     type: .slateDetail,
                     index: $0.offset,
                     shareURL: item.shareURL,
-                    domain: item.bestDomain,
+                    domain: item.domain,
                     timeToRead: item.timeToRead,
                     isSyndicated: item.isSyndicated,
                     recommendationID: item.recommendation?.analyticsID,
@@ -83,41 +80,11 @@ private extension SlateDetailView {
         }
     }
 
-    /// Fetch analytics info for this slate
-    /// - Parameter destination: slate destination of this slate
-    /// - Returns: analytics info
-    func slateInfo(_ destination: SlateDestination) -> SlateInfo? {
-        guard let slate = fetchSlate(destination.slateID),
-              let lineup = fetchSlateLineup() else {
-            return nil
-        }
-        return SlateInfo(
-            slateId: slate.remoteID,
-            slateRequestId: slate.requestID,
-            slateExperimentId: slate.experimentID,
-            slateIndex: Int(slate.sortIndex ?? 0),
-            slateLineupId: lineup.remoteID
-        )
-    }
-
     /// Fetch an `Item` from the underlying `Recommendation`
     /// - Parameter recommendationID: `Recommendation` ID
     /// - Returns: the item, if it was found
     func fetchItem(_ recommendationID: String) -> Item? {
         let predicate = #Predicate<Item> { $0.recommendation?.remoteID == recommendationID }
-        var fetchDescriptor = FetchDescriptor(predicate: predicate)
-        fetchDescriptor.fetchLimit = 1
-
-        let result = (try? modelContext.fetch(fetchDescriptor)) ?? []
-        return result.first
-    }
-
-    /// Fetch the current slate from SwiftData
-    /// - Parameter remoteID: the remote id of this slate
-    /// - Returns: the slate, if it was found
-    @MainActor
-    func fetchSlate(_ remoteID: String) -> Slate? {
-        let predicate = #Predicate<Slate> { $0.remoteID == remoteID }
         var fetchDescriptor = FetchDescriptor(predicate: predicate)
         fetchDescriptor.fetchLimit = 1
 

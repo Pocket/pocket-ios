@@ -79,7 +79,7 @@ private extension RecentSavesView {
                 type: .recentSave,
                 index: $0.offset,
                 shareURL: item.shareURL,
-                domain: item.bestDomain,
+                domain: item.domain,
                 timeToRead: item.timeToRead,
                 isSyndicated: item.isSyndicated == true,
                 recommendationID: item.recommendation?.analyticsID,
