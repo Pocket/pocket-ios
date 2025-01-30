@@ -6,8 +6,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apollographql/apollo-ios.git",
       "state" : {
-        "revision" : "0d140a1933cb9cbafb2c6861b5d358d422d5f21e",
-        "version" : "1.16.0"
+        "revision" : "e98e9d3b398b6005149074d51b097e31aaa44f63",
+        "version" : "1.17.0"
       }
     },
     {
@@ -105,8 +105,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/getsentry/sentry-cocoa.git",
       "state" : {
-        "revision" : "f45e9c62d7a4d9258ac3cf35a3acf9dbab4481d1",
-        "version" : "8.43.0"
+        "revision" : "0c34e4da899a1dd9183db04082d1ceb6e9c2b301",
+        "version" : "8.44.0"
       }
     },
     {
@@ -114,8 +114,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/snowplow/snowplow-objc-tracker",
       "state" : {
-        "revision" : "c105d9f8b875f2442512c3c8b1c8bbe9c209a302",
-        "version" : "6.0.9"
+        "revision" : "a6bcc214d7beb2464955896fad0606e0f8cb5f27",
+        "version" : "6.1.0"
       }
     },
     {
@@ -150,8 +150,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio.git",
       "state" : {
-        "revision" : "27c839f4700069928196cd0e9fa03b22f297078a",
-        "version" : "2.78.0"
+        "revision" : "dff45738d84a53dbc8ee899c306b3a7227f54f89",
+        "version" : "2.80.0"
       }
     },
     {
