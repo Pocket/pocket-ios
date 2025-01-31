@@ -18,6 +18,9 @@ struct RecentSavesView: View {
     @Environment(\.modelContext)
     private var modelContext
 
+    @Environment(\.homeActions)
+    private var homeActions
+
     init() {
         let predicate = #Predicate<SavedItem> { $0.isArchived == false && $0.deletedAt == nil }
         let sortDescriptor = SortDescriptor<SavedItem>(\.createdAt, order: .reverse)
@@ -37,6 +40,7 @@ struct RecentSavesView: View {
             // but the recent saves do not actually change
             if proposedCards != cards {
                 cards = proposedCards
+                homeActions.updateRecentSavesWidget()
             }
         }
         // TODO: SWIFTUI - this animation works well when removing on top of the list, not so well otherwise

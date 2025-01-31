@@ -5,8 +5,8 @@
 import Analytics
 @preconcurrency import Sync
 import SwiftUI
+import Foundation
 
-// TODO: SWIFTUI - Add analytics
 /// Type that contains all the actions that can be performed from Home and its detail views
 struct HomeActions {
     // TODO: SWIFTUI - the methods here use a reference to Services that only lives in their scope.
@@ -90,6 +90,43 @@ struct HomeActions {
     @MainActor
     func refreshRecommendations(isForced: Bool = false) async {
         await Services.shared.homeRefreshCoordinator.refresh(isForced: isForced)
+    }
+}
+
+// MARK: Widgets
+extension HomeActions {
+    func updateRecentSavesWidget() {
+        Task(priority: .background) {
+            let source = await Services.shared.source
+            guard let recentSaves = source.fetchSAvedItems(limit: 4) else {
+                return
+            }
+            let service = await Services.shared.recentSavesWidgetUpdateService
+            service.update(recentSaves)
+        }
+    }
+
+    func updateRecommendationsWidget() {
+        Task(priority: .background) {
+            let source = await Services.shared.source
+            guard let slates = source.fetchSlates() else {
+                return
+            }
+            let service = await Services.shared.recommendationsWidgetUpdateService
+            let topics = slates.reduce(into: [String: [CDRecommendation]]()) {
+                if let recommendations = $1.recommendations, let name = $1.name {
+                    $0[name] = Array(recommendations.compactMap { $0 as? CDRecommendation }.prefix(4))
+                }
+            }
+            service.update(topics)
+        }
+    }
+
+    func setRecommendationsWidgetsOffline() {
+        Task(priority: .background) {
+            let service = await Services.shared.recommendationsWidgetUpdateService
+            service.update([:])
+        }
     }
 }
 

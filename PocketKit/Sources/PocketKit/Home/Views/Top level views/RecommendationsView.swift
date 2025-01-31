@@ -46,6 +46,7 @@ struct RecommendationsView: View {
                 switch newStatus {
                 case .unsatisfied, .requiresConnection:
                     viewState = .offline
+                    homeActions.setRecommendationsWidgetsOffline()
                 case .satisfied:
                     viewState = .loading
                     Task {
@@ -55,6 +56,9 @@ struct RecommendationsView: View {
                 default:
                     break
                 }
+            }
+            .onChange(of: slates, initial: true) {
+                homeActions.updateRecommendationsWidget()
             }
             .onDisappear {
                 networkMonitor.cancel()
