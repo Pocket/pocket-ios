@@ -8,6 +8,14 @@ import CoreData
 import Combine
 
 class MockSource: Source {
+    func fetchSAvedItems(limit: Int) -> [Sync.CDSavedItem]? {
+        nil
+    }
+
+    func fetchSlates() -> [Sync.CDSlate]? {
+        nil
+    }
+
     func fetchSlate(_ slateID: String) -> Sync.CDSlate? {
         nil
     }

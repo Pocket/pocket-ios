@@ -1040,6 +1040,10 @@ extension PocketSource {
     public func fetchSlate( _ slateID: String) -> CDSlate? {
         try? space.fetchSlate(byRemoteID: slateID)
     }
+
+    public func fetchSlates() -> [CDSlate]? {
+        try? space.fetchSlates()
+    }
 }
 
 // MARK: - Collections
@@ -1529,7 +1533,7 @@ extension PocketSource {
     }
 }
 
-// MARK: - Search term
+// MARK: - Search Saves
 extension PocketSource {
     public func searchSaves(search: String) -> [CDSavedItem]? {
         try? space.fetchSavedItems(bySearchTerm: search, userPremium: user.status == .premium)
@@ -1562,6 +1566,10 @@ extension PocketSource {
 
     public func fetchSavedItem(_ url: String) -> CDSavedItem? {
         try? space.fetchSavedItem(byURL: url)
+    }
+
+    public func fetchSAvedItems(limit: Int) -> [CDSavedItem]? {
+        try? space.fetchSavedItems(limit: limit)
     }
 }
 

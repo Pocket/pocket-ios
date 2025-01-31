@@ -136,7 +136,11 @@ public protocol Source {
 
     func fetchSavedItem(_ url: String) -> CDSavedItem?
 
+    func fetchSAvedItems(limit: Int) -> [CDSavedItem]?
+
     func fetchSlate( _ slateID: String) -> CDSlate?
+
+    func fetchSlates() -> [CDSlate]?
 
     /// Get the count of unread saves
     /// - Returns: Int of unread saves
