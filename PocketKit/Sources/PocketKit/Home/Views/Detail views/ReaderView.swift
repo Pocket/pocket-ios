@@ -16,9 +16,12 @@ struct ReaderView: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> UIViewController {
         if let model = makeReadableViewModel() {
             let viewController = ReadableHostViewController(readableViewModel: model)
-            context.coordinator.parentObserver = viewController.observe(\.parent?.navigationItem.rightBarButtonItems, changeHandler: { viewController, _ in
+            context.coordinator.parentObserver = viewController.observe(\.parent?.navigationItem.rightBarButtonItems, changeHandler: { @MainActor viewController, _ in
+                guard viewController.parent?.title == nil, viewController.parent?.navigationItem.rightBarButtonItem == nil else {
+                    return
+                }
                 Task {
-                    await update(viewController: viewController)
+                    update(viewController: viewController)
                 }
             })
             return viewController
