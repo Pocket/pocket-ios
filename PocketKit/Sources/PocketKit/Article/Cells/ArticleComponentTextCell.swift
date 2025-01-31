@@ -55,7 +55,7 @@ protocol ArticleComponentTextViewDelegate: AnyObject {
 // A subclass of UITextView that overrides certain actions (e.g Share),
 // and delegates the response to these actions to its delegate.
 class ArticleComponentTextView: UITextView {
-    var actionDelegate: ArticleComponentTextViewDelegate?
+    weak var actionDelegate: ArticleComponentTextViewDelegate?
 
     var onHighlight: ((NSRange, String, String) -> Void)?
 
