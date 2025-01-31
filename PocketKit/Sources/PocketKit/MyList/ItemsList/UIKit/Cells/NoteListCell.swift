@@ -103,16 +103,19 @@ extension NoteCellView {
             if let title = viewModel.title {
                 Text(title)
                     .style(.listCellTitle)
-                    .lineLimit(2)
+                    .lineLimit(1)
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.top, 4)
             }
             if let markdownContent = makeMarkdownString(viewModel.content) {
                 Text(unformattedString(markdownContent))
                     .font(.body)
                     .foregroundColor(Color(.ui.black1))
                     .lineSpacing(4)
-                    .lineLimit(2)
+                    .lineLimit(1)
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .fixedSize(horizontal: false, vertical: true)
                     .padding(.vertical, 4)
             }
         }
