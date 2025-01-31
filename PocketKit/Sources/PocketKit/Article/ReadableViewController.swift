@@ -46,8 +46,7 @@ class ReadableViewController: UIViewController {
     var hasAppearedAfterLoading = false
 
     private var userScrollProgress: IndexPath?
-    // Tippable view controller properties
-    var tipObservationTask: Task<Void, Error>?
+
     weak var tipViewController: UIViewController?
 
     private lazy var collectionView: UICollectionView = UICollectionView(
@@ -207,14 +206,6 @@ class ReadableViewController: UIViewController {
                 .store(in: &subscriptions)
 
             viewModel
-                .$presentedWebReaderURL
-                .receive(on: DispatchQueue.main)
-                .sink { [weak self] url in
-                    self?.present(url: url)
-                }
-                .store(in: &subscriptions)
-
-            viewModel
                 .$sharedActivity
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] activity in
@@ -359,11 +350,7 @@ class ReadableViewController: UIViewController {
             scrollToLastKnownPosition()
             hasAppearedAfterLoading = true
         }
-        // do not vend the tip on syndicated articles
-        if readableViewModel is SavedItemViewModel {
-            PocketTipEvents.showSwipeHighlightsTip.sendDonation()
-            displayTip(SwipeHighlightsTip(), configuration: nil, sourceView: nil)
-        }
+
         readableViewModel.trackReaderScreenImpression()
     }
 
@@ -783,17 +770,14 @@ extension ReadableViewController {
     }
 }
 
-// MARK: TippableViewController conformance
-extension ReadableViewController: TippableViewController {}
-
 extension ReadableViewController: SFSafariViewControllerDelegate {
     func safariViewController(_ controller: SFSafariViewController, activityItemsFor URL: URL, title: String?) -> [UIActivity] {
         return webViewActivityItems(url: URL)
     }
 
-//    func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
-//        model.clearPresentedWebReaderURL()
-//    }
+    func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
+        readableViewModel.clearPresentedWebReaderURL()
+    }
     func webViewActivityItems(url: URL) -> [UIActivity] {
         guard let item = Services.shared.source.fetchItem(url.absoluteString), let savedItem = item.savedItem else {
             return []
