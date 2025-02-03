@@ -14,7 +14,7 @@ public struct TopicRecommendationsWidget: Widget {
     let kind: String
 
     public init() {
-        self.kind = WidgetKind.topicRecommendations
+        self.kind = WidgetKind.recommendations
     }
 
     public var body: some WidgetConfiguration {
