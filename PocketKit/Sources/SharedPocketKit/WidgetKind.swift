@@ -6,5 +6,4 @@
 public enum WidgetKind {
     public static let recentSaves = "RecentSavesWidget"
     public static let recommendations = "DiscoverWidget"
-    public static let topicRecommendations = "TopicRecommendationsWidget"
 }

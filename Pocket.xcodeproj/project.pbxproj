@@ -111,7 +111,6 @@
 		AA41DD882BD04DC3003CEDBF /* ItemWidgetsRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA41DD732BD04D09003CEDBF /* ItemWidgetsRow.swift */; };
 		AA41DD892BD04DC7003CEDBF /* ItemWidgetsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA41DD742BD04D09003CEDBF /* ItemWidgetsView.swift */; };
 		AA41DD8B2BD04DD0003CEDBF /* RecentSavesWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA41DD772BD04D09003CEDBF /* RecentSavesWidget.swift */; };
-		AA41DD8C2BD04DD3003CEDBF /* RecommendationsWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA41DD782BD04D09003CEDBF /* RecommendationsWidget.swift */; };
 		AA41DD8D2BD04DD6003CEDBF /* TopicRecommendationsWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA41DD792BD04D09003CEDBF /* TopicRecommendationsWidget.swift */; };
 		AA41DD8F2BD04EC9003CEDBF /* Textile in Frameworks */ = {isa = PBXBuildFile; productRef = AA41DD8E2BD04EC9003CEDBF /* Textile */; };
 		AA41DD912BD04EF0003CEDBF /* Sync in Frameworks */ = {isa = PBXBuildFile; productRef = AA41DD902BD04EF0003CEDBF /* Sync */; };
@@ -340,7 +339,6 @@
 		AA41DD732BD04D09003CEDBF /* ItemWidgetsRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemWidgetsRow.swift; sourceTree = "<group>"; };
 		AA41DD742BD04D09003CEDBF /* ItemWidgetsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemWidgetsView.swift; sourceTree = "<group>"; };
 		AA41DD772BD04D09003CEDBF /* RecentSavesWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentSavesWidget.swift; sourceTree = "<group>"; };
-		AA41DD782BD04D09003CEDBF /* RecommendationsWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationsWidget.swift; sourceTree = "<group>"; };
 		AA41DD792BD04D09003CEDBF /* TopicRecommendationsWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicRecommendationsWidget.swift; sourceTree = "<group>"; };
 		AA561B8E2C740F10006DF948 /* PocketShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PocketShortcuts.swift; sourceTree = "<group>"; };
 		AA561B8F2C740F10006DF948 /* SearchSavesIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchSavesIntent.swift; sourceTree = "<group>"; };
@@ -754,7 +752,6 @@
 			isa = PBXGroup;
 			children = (
 				AA41DD772BD04D09003CEDBF /* RecentSavesWidget.swift */,
-				AA41DD782BD04D09003CEDBF /* RecommendationsWidget.swift */,
 				AA41DD792BD04D09003CEDBF /* TopicRecommendationsWidget.swift */,
 			);
 			path = Widgets;
@@ -1282,7 +1279,6 @@
 				AA41DD892BD04DC7003CEDBF /* ItemWidgetsView.swift in Sources */,
 				AA41DD872BD04DBF003CEDBF /* ItemWidgetsListView.swift in Sources */,
 				AA41DD842BD04DB5003CEDBF /* ItemWidgetsContainerView.swift in Sources */,
-				AA41DD8C2BD04DD3003CEDBF /* RecommendationsWidget.swift in Sources */,
 				AA256B4A2BD1CCC200939C6C /* TopicQuery.swift in Sources */,
 				AA41DD7F2BD04DA1003CEDBF /* ItemRowContent.swift in Sources */,
 				AA41DD882BD04DC3003CEDBF /* ItemWidgetsRow.swift in Sources */,
