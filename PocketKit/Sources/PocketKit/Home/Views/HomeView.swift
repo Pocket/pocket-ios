@@ -38,6 +38,9 @@ struct HomeView: View {
             .onAppear {
                 homeActions.trackHomeScreenImpression()
             }
+            .onChange(of: accessService.accessLevel, initial: true) {
+                homeActions.updateRecentSavesWidget()
+            }
             .contentMargins(.bottom, -32)
             .scrollIndicators(.hidden)
             .background(Color(.ui.white1))
