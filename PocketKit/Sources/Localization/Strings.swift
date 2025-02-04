@@ -492,6 +492,10 @@ public enum Localization {
     public static let tapToDismiss = Localization.tr("Localizable", "saveToPocket.tapToDismiss", fallback: "Tap to dismiss")
   }
   public enum Saves {
+    public enum AddNote {
+      /// Add a Note
+      public static let title = Localization.tr("Localizable", "saves.addNote.title", fallback: "Add a Note")
+    }
     public enum AddSavedItem {
       /// Save to Pocket
       public static let addButton = Localization.tr("Localizable", "saves.addSavedItem.addButton", fallback: "Save to Pocket")

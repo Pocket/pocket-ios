@@ -259,6 +259,8 @@ extension UIAction.Identifier {
     static let open = UIAction.Identifier(rawValue: "open")
     static let showHighlightsItem = UIAction.Identifier(rawValue: "show-highlights-item")
     static let sharedWithYouItemPrimary = UIAction.Identifier(rawValue: "shared-with-you-primary")
+    static let saveNote = UIAction.Identifier("save-note")
+    static let addUrl = UIAction.Identifier("add-url")
 }
 
 extension UIAction {

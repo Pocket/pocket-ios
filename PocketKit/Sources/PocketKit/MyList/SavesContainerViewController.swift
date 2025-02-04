@@ -10,6 +10,7 @@ import Combine
 import SafariServices
 import Textile
 import PKTListen
+import Localization
 
 struct SavesContainerViewControllerSwiftUI: UIViewControllerRepresentable {
     var model: SavesContainerViewModel
@@ -89,8 +90,32 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate, UISea
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonTapped))
+        let menu = UIMenu(
+            image: nil,
+            identifier: nil,
+            options: [],
+            children: [
+                UIAction(
+                    title: Localization.Saves.AddSavedItem.title,
+                    image: UIImage(systemName: "link"),
+                    identifier: .addUrl,
+                    handler: {
+                        [weak self] _ in
+                        self?.addButtonTapped()
+                    }
+                ),
+                UIAction(
+                    title: Localization.Saves.AddNote.title,
+                    image: UIImage(asset: .notes),
+                    identifier: .saveNote,
+                    handler: {
+                        [weak self] _ in
+                        // TODO: NOTES - Add action
+                    }
+                )
+            ]
+        )
+        let addButton = UIBarButtonItem(image: UIImage(systemName: "plus"), menu: menu)
         addButton.accessibilityIdentifier = "add_saved_item_button"
         navigationItem.rightBarButtonItem = addButton
 
