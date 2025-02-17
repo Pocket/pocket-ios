@@ -545,7 +545,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
                     self?.presentedAlert = nil
                 },
                 UIAlertAction(title: Localization.Notes.Cell.DeleteAlert.yesButton, style: .destructive) { [weak self] _ in
-                    // TODO: NOTES - Add delete note implementation
+                    // TODO: NOTES - Add delete note implementation.
                 }
             ],
             preferredAction: nil
