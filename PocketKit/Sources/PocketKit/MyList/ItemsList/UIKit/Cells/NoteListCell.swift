@@ -126,7 +126,7 @@ extension NoteCellView {
             Text(viewModel.updatedAt ?? viewModel.createdAt)
                 .style(.listCellDetail)
             Spacer()
-            // TODO: NOTES - Add the sourceUrl case once we have it
+            // TODO: NOTES - Add the sourceUrl case once we have it.
             if let attributedContent = makeMarkdownString(viewModel.content) {
                 ShareLink(
                     item: attributedContent,
