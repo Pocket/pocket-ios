@@ -105,8 +105,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/getsentry/sentry-cocoa.git",
       "state" : {
-        "revision" : "0c34e4da899a1dd9183db04082d1ceb6e9c2b301",
-        "version" : "8.44.0"
+        "revision" : "3640aaf7849a9fc39996d777e6df866251bb98d6",
+        "version" : "8.45.0"
       }
     },
     {
@@ -114,8 +114,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/snowplow/snowplow-objc-tracker",
       "state" : {
-        "revision" : "a6bcc214d7beb2464955896fad0606e0f8cb5f27",
-        "version" : "6.1.0"
+        "revision" : "3872d6f2e0886a171c388f7b35c52e3ff5f89c0a",
+        "version" : "6.2.0"
       }
     },
     {
@@ -150,8 +150,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio.git",
       "state" : {
-        "revision" : "dff45738d84a53dbc8ee899c306b3a7227f54f89",
-        "version" : "2.80.0"
+        "revision" : "c51907a839e63ebf0ba2076bba73dd96436bd1b9",
+        "version" : "2.81.0"
       }
     },
     {
