@@ -534,7 +534,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         source.delete(item: item)
         tracker.track(event: Events.Saves.deleteItem(engagementIndex(item), listType: viewType.rawValue))
     }
-    // TODO: NOTES - Pass the correct argument here
+    // TODO: NOTES - Pass the correct argument here.
     func confirmDeleteNote(_ noteID: ItemIdentifier) {
         presentedAlert = PocketAlert(
             title: Localization.Notes.Cell.DeleteAlert.message,
