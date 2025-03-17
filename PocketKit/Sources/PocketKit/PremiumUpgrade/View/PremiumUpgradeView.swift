@@ -84,27 +84,6 @@ struct PremiumUpgradeView: View {
                             }
                             .accessibilityIdentifier("premium-upgrade-view-monthly-button")
                         }
-                        Spacer().frame(width: 28)
-                        ZStack(alignment: .topTrailing) {
-                            if viewModel.annualName.isEmpty {
-                                PremiumUpgradeButton(isYearly: true)
-                                    .redacted(reason: .placeholder)
-                            } else {
-                                PremiumUpgradeButton(
-                                    text: viewModel.annualName,
-                                    pricing: viewModel.annualPriceDescription,
-                                    isYearly: true
-                                ) {
-                                    Task {
-                                        viewModel.trackAnnualButtonTapped()
-                                        await viewModel.purchaseAnnualSubscription()
-                                    }
-                                }
-                                .accessibilityIdentifier("premium-upgrade-view-annual-button")
-                                PremiumYearlyPercent()
-                                    .offset(x: OffsetConstant.offsetX, y: OffsetConstant.offsetY)
-                            }
-                        }
                     }
                     if viewModel.monthlyPrice.isEmpty, viewModel.annualPrice.isEmpty {
                         PremiumInfoView(monthlyPrice: viewModel.monthlyPrice, annualPrice: viewModel.annualPrice)
@@ -188,20 +167,7 @@ private struct PremiumUpgradeButton: View {
 
     var body: some View {
         if isYearly {
-            Button(action: { action?() }) {
-                VStack(spacing: 8) {
-                    Text(text)
-                        .style(.yearlyPremiumRow)
-                    Text(pricing)
-                        .style(.yearlyPricing)
-                }
-                .padding()
-                .frame(maxWidth: .infinity, minHeight: 53)
-                .background(
-                    RoundedRectangle(cornerRadius: 4, style: .continuous)
-                        .fill(Color(.ui.coral2))
-                )
-            }
+            
         } else {
             Button(action: { action?() }) {
                 VStack(spacing: 8) {
@@ -218,16 +184,6 @@ private struct PremiumUpgradeButton: View {
                 )
             }
         }
-    }
-}
-
-private struct PremiumYearlyPercent: View {
-    let discountAmount: String = "25%"
-    var body: some View {
-        Text(Localization.Premium.UpgradeView.save + " " + discountAmount)
-            .style(.percentSaved)
-            .frame(width: 60, height: 60, alignment: .center)
-            .background(Circle().fill(Color(.ui.teal3)))
     }
 }
 
