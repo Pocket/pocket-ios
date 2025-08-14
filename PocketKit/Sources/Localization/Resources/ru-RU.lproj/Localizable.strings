@@ -57,6 +57,7 @@
 "itemlist.filter.favorites" = "Избранное";
 "itemlist.filter.sortFilter" = "Сортировка";
 "itemlist.filter.highlightsFilter" = "Highlights";
+"itemlist.filter.notesFilter" = "Примечания";
 "itemList.edit.banner" = "Редактирование списка недоступно в этой версии Pocket, но это ненадолго!";
 
 //List view
@@ -384,3 +385,10 @@
 "tips.sharedWithYouActions.title" = "Другие действия";
 "tips.sharedWithYouActions.message" = "Нажмите здесь, чтобы ответить на это сообщение. Вы также можете нажать и удерживать, чтобы удалить этот элемент.";
 
+// Notes
+"notes.cell.deleteAlert.message" = "Вы действительно хотите удалить эту? заметку";
+"notes.cell.deleteAlert.noButton" = "Нет";
+"notes.cell.deleteAlert.yesButton" = "Да";
+"notes.cell.overflowMenu.delete" = "Удалить";
+"notes.cell.overflowMenu.edit" = "Редактировать";
+"notes.share.defaultNoteTitle" = "Заметка Pocket";
