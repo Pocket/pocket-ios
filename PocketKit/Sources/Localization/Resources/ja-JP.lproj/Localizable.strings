@@ -57,6 +57,7 @@
 "itemlist.filter.favorites" = "お気に入り";
 "itemlist.filter.sortFilter" = "並び替え";
 "itemlist.filter.highlightsFilter" = "Highlights";
+"itemlist.filter.notesFilter" = "メモ";
 "itemList.edit.banner" = "このバージョンの Pocket でリストの編集を利用することはできませんが、間もなく利用できるようになります！";
 
 //List view
@@ -384,3 +385,10 @@
 "tips.sharedWithYouActions.title" = "その他のアクション";
 "tips.sharedWithYouActions.message" = "このメッセージに返信するにはここをタップし、このアイテムを削除するには長押しします。";
 
+// Notes
+"notes.cell.deleteAlert.message" = "このメモを削除してよろしいですか？";
+"notes.cell.deleteAlert.noButton" = "いいえ";
+"notes.cell.deleteAlert.yesButton" = "はい";
+"notes.cell.overflowMenu.delete" = "削除";
+"notes.cell.overflowMenu.edit" = "編集";
+"notes.share.defaultNoteTitle" = "Pocket Note";
