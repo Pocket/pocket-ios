@@ -57,6 +57,7 @@
 "itemlist.filter.favorites" = "Favoritos";
 "itemlist.filter.sortFilter" = "Ordenar";
 "itemlist.filter.highlightsFilter" = "Destacados";
+"itemlist.filter.notesFilter" = "Notas";
 "itemList.edit.banner" = "En esta versión de Pocket no está disponible la edición de tu lista, pero volverá pronto.";
 
 //List view
@@ -384,3 +385,10 @@
 "tips.sharedWithYouActions.title" = "Más acciones";
 "tips.sharedWithYouActions.message" = "Pulsa aquí para responder a este mensaje o mantén pulsado para eliminar este artículo.";
 
+// Notes
+"notes.cell.deleteAlert.message" = "¿Seguro que quieres borrar esta nota?";
+"notes.cell.deleteAlert.noButton" = "No";
+"notes.cell.deleteAlert.yesButton" = "Sí";
+"notes.cell.overflowMenu.delete" = "Eliminar";
+"notes.cell.overflowMenu.edit" = "Editar";
+"notes.share.defaultNoteTitle" = "Nota de Pocket";

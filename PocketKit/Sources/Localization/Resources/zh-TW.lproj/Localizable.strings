@@ -57,6 +57,7 @@
 "itemlist.filter.favorites" = "我的最愛";
 "itemlist.filter.sortFilter" = "排序";
 "itemlist.filter.highlightsFilter" = "Highlights";
+"itemlist.filter.notesFilter" = "附註";
 "itemList.edit.banner" = "暫時無法在此 Pocket 版本中編輯您的清單，但很快就會恢復該功能！";
 
 //List view
@@ -384,3 +385,10 @@
 "tips.sharedWithYouActions.title" = "更多動作";
 "tips.sharedWithYouActions.message" = "點選此處回覆此訊息，或長按移除此項目。";
 
+// Notes
+"notes.cell.deleteAlert.message" = "是否確定要刪除此附註？";
+"notes.cell.deleteAlert.noButton" = "否";
+"notes.cell.deleteAlert.yesButton" = "是";
+"notes.cell.overflowMenu.delete" = "刪除";
+"notes.cell.overflowMenu.edit" = "編輯";
+"notes.share.defaultNoteTitle" = "Pocket 附註";

@@ -57,6 +57,7 @@
 "itemlist.filter.favorites" = "收藏夹";
 "itemlist.filter.sortFilter" = "排序";
 "itemlist.filter.highlightsFilter" = "Highlights";
+"itemlist.filter.notesFilter" = "备注";
 "itemList.edit.banner" = "暂时无法在此 Pocket 版本中编辑您的列表，但很快就会恢复此功能！";
 
 //List view
@@ -384,3 +385,10 @@
 "tips.sharedWithYouActions.title" = "更多操作";
 "tips.sharedWithYouActions.message" = "点击此处回复此信息，或长按删除此项目。";
 
+// Notes
+"notes.cell.deleteAlert.message" = "确定要删除此备注吗？";
+"notes.cell.deleteAlert.noButton" = "否";
+"notes.cell.deleteAlert.yesButton" = "是";
+"notes.cell.overflowMenu.delete" = "删除";
+"notes.cell.overflowMenu.edit" = "编辑";
+"notes.share.defaultNoteTitle" = "Pocket 须知";

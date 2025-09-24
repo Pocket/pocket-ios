@@ -57,6 +57,7 @@
 "itemlist.filter.favorites" = "즐겨찾기";
 "itemlist.filter.sortFilter" = "정렬";
 "itemlist.filter.highlightsFilter" = "Highlights";
+"itemlist.filter.notesFilter" = "메모";
 "itemList.edit.banner" = "이 Pocket 버전에서는 목록을 편집할 수 없지만 곧 다시 제공될 예정입니다!";
 
 //List view
@@ -384,3 +385,10 @@
 "tips.sharedWithYouActions.title" = "추가 작업";
 "tips.sharedWithYouActions.message" = "이 메시지에 답하려면 여기를 탭하고, 이 항목을 제거하려면 길게 누르세요.";
 
+// Notes
+"notes.cell.deleteAlert.message" = "이 메모를 삭제하시겠습니까?";
+"notes.cell.deleteAlert.noButton" = "아니요";
+"notes.cell.deleteAlert.yesButton" = "예";
+"notes.cell.overflowMenu.delete" = "삭제";
+"notes.cell.overflowMenu.edit" = "편집";
+"notes.share.defaultNoteTitle" = "Pocket Note";
